@@ -357,9 +357,9 @@ fun Lyrics(
                             translation.sourceLanguage
                         )
                         val outputText = if(romanizationEnabeled){
-                            if (showSecondLine) {(translation2.pronunciation ?: translation2.sourceText) + "\\n[${translation.translatedText}]"} else translation.pronunciation ?: translation.translatedText
+                            if (showSecondLine && isSync) {(translation2.pronunciation ?: translation2.sourceText) + "\\n[${translation.translatedText}]"} else translation.pronunciation ?: translation.translatedText
                         }else{
-                            if (showSecondLine) {textToTranslate + "\\n[${translation.translatedText}]"} else translation.translatedText
+                            if (showSecondLine && isSync) {textToTranslate + "\\n[${translation.translatedText}]"} else translation.translatedText
                         }
                         outputText.replace("\\r","\r").replace("\\n","\n")
                     } catch (e: Exception) {
