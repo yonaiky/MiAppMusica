@@ -285,6 +285,7 @@ const val restartActivityKey = "restartActivity"
 const val enableYouTubeLoginKey = "enableYoutubeLogin"
 
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
+const val showSecondLineKey = "showSecondLine"
 
 const val quickPicsRelatedPageKey = "quickPicsRelatedPage"
 const val quickPicsChartsPageKey = "quickPicsChartsPage"

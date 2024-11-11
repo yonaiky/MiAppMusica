@@ -153,6 +153,7 @@ import it.fast4x.rimusic.enums.LyricsBackground
 import it.fast4x.rimusic.extensions.pip.isInPip
 import it.fast4x.rimusic.utils.lyricsAlignmentKey
 import it.fast4x.rimusic.utils.romanizationEnabeledKey
+import it.fast4x.rimusic.utils.showSecondLineKey
 import me.bush.translator.Translation
 
 
@@ -236,6 +237,7 @@ fun Lyrics(
         }
 
         var romanizationEnabeled by rememberPreference(romanizationEnabeledKey, false)
+        var showSecondLine by rememberPreference(showSecondLineKey, false)
 
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
@@ -338,6 +340,7 @@ fun Lyrics(
                 val result = withContext(Dispatchers.IO) {
                     try {
                         var translation: Translation?
+                        var translation2: Translation?
                         if(destinationLanguage == Language.AUTO){
                             translation = translator.translate(
                                 textToTranslate,
@@ -351,12 +354,17 @@ fun Lyrics(
                             destLanguage,
                             Language.AUTO
                         )
+                        translation2 = translator.translate(
+                            textToTranslate,
+                            translation.sourceLanguage,
+                            translation.sourceLanguage
+                        )
                         val outputText = if(romanizationEnabeled){
-                            translation.pronunciation ?: translation.translatedText
+                            if (showSecondLine && isSync) {(translation2.pronunciation ?: translation2.sourceText) + "\\n[${translation.translatedText}]"} else translation.pronunciation ?: translation.translatedText
                         }else{
-                            translation.translatedText
+                            if (showSecondLine && isSync) {textToTranslate + "\\n[${translation.translatedText}]"} else translation.translatedText
                         }
-                        outputText.replace("\\r","\r")
+                        outputText.replace("\\r","\r").replace("\\n","\n")
                     } catch (e: Exception) {
                         if(isSync){
                             Timber.e("Lyrics sync translation ${e.stackTraceToString()}")
@@ -2071,12 +2079,21 @@ fun Lyrics(
                                         )
 
                                         MenuEntry(
-                                            icon = R.drawable.translate,
+                                            icon = if (romanizationEnabeled) R.drawable.checkmark else R.drawable.close,
                                             text = stringResource(R.string.toggle_romanization),
                                             enabled = true,
                                             onClick = {
                                                 menuState.hide()
                                                 romanizationEnabeled = !romanizationEnabeled
+                                            }
+                                        )
+                                        MenuEntry(
+                                            icon = if (showSecondLine) R.drawable.checkmark else R.drawable.close,
+                                            text = stringResource(R.string.showsecondline),
+                                            enabled = true,
+                                            onClick = {
+                                                menuState.hide()
+                                                showSecondLine = !showSecondLine
                                             }
                                         )
 
