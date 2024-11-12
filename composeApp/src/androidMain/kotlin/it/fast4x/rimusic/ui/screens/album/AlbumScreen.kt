@@ -53,7 +53,6 @@ import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
-import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
@@ -74,7 +73,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
-import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
@@ -197,10 +195,7 @@ fun AlbumScreen(
      */
 
 
-    RouteHandler(listenToGlobalEmitter = true) {
-        globalRoutes()
 
-        host {
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit =
                 { textButton ->
                     if (album?.timestamp == null) {
@@ -440,6 +435,5 @@ fun AlbumScreen(
                     }
                 }
             }
-        }
-    }
+
 }

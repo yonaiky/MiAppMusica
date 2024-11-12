@@ -56,7 +56,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.itemsPage
 import it.fast4x.innertube.utils.from
@@ -68,7 +67,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -99,12 +97,9 @@ import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlay
-import it.fast4x.rimusic.utils.forcePlayAtIndex
-import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.isDownloadedSong
@@ -120,7 +115,6 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
@@ -136,7 +130,7 @@ import kotlin.random.Random
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
-fun ArtistOverviewModern(
+fun ArtistOverview(
     navController: NavController,
     browseId: String?,
     youtubeArtistPage: Innertube.ArtistPage?,

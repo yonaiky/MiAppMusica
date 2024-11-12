@@ -102,7 +102,7 @@ import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun HomeLibraryModern(
+fun HomeLibrary(
     onPlaylistClick: (Playlist) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit

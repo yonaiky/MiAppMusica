@@ -151,7 +151,7 @@ import kotlin.time.Duration.Companion.days
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun QuickPicksModern(
+fun QuickPicks(
     navController: NavController,
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,

@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import it.fast4x.compose.routing.RouteHandler
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
@@ -51,7 +50,6 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
-import it.fast4x.rimusic.ui.screens.globalRoutes
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -71,16 +69,13 @@ fun SettingsScreen(
     navController: NavController,
     miniPlayer: @Composable () -> Unit = {},
 ) {
-    val context = LocalContext.current
+    //val context = LocalContext.current
     val saveableStateHolder = rememberSaveableStateHolder()
 
     val (tabIndex, onTabChanged) = rememberSaveable {
         mutableStateOf(0)
     }
 
-    RouteHandler(listenToGlobalEmitter = true) {
-        globalRoutes()
-        host {
             Skeleton(
                 navController,
                 tabIndex,
@@ -108,8 +103,6 @@ fun SettingsScreen(
                     }
                 }
             }
-        }
-    }
 }
 
 @Composable
