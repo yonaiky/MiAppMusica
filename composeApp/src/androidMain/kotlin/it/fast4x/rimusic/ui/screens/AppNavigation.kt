@@ -55,7 +55,7 @@ import it.fast4x.rimusic.extensions.games.snake.SnakeGame
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
-import it.fast4x.rimusic.ui.screens.album.AlbumScreenWithoutNavBar
+import it.fast4x.rimusic.ui.screens.album.AlbumScreen
 import it.fast4x.rimusic.ui.screens.artist.ArtistScreen
 import it.fast4x.rimusic.ui.screens.builtinplaylist.BuiltInPlaylistScreen
 import it.fast4x.rimusic.ui.screens.history.HistoryScreen
@@ -272,7 +272,7 @@ fun AppNavigation(
             )
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id") ?: ""
-            AlbumScreenWithoutNavBar(
+            AlbumScreen(
                 navController = navController,
                 browseId = id,
                 miniPlayer = miniPlayer,

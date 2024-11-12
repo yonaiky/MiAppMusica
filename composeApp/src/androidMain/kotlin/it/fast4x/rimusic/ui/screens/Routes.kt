@@ -18,7 +18,6 @@ import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.SearchType
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.models.Mood
-import it.fast4x.rimusic.ui.screens.album.AlbumScreenWithoutScaffold
 import it.fast4x.rimusic.ui.screens.artist.ArtistScreen
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreenWithoutNavBar
 import it.fast4x.rimusic.ui.screens.mood.MoodScreen
@@ -59,10 +58,10 @@ inline fun RouteHandlerScope.globalRoutes() {
     val navController = rememberNavController()
 
     albumRoute { browseId ->
-        AlbumScreenWithoutScaffold(
-            navController = navController,
-            browseId = browseId ?: error("browseId cannot be null")
-        )
+//        AlbumScreenWithoutScaffold(
+//            navController = navController,
+//            browseId = browseId ?: error("browseId cannot be null")
+//        )
         /*
         AlbumScreen(
             browseId = browseId ?: error("browseId cannot be null")

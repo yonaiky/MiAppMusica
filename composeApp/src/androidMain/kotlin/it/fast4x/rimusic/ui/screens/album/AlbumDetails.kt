@@ -108,7 +108,6 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableScrollingTextKey
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
@@ -143,7 +142,7 @@ import timber.log.Timber
 @ExperimentalFoundationApi
 @UnstableApi
 @Composable
-fun AlbumDetailsModern(
+fun AlbumDetails(
     navController: NavController,
     browseId: String,
     albumPage: Innertube.PlaylistOrAlbumPage?,
