@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
 import com.google.gson.Gson
 import it.fast4x.innertube.Innertube
+import it.fast4x.rimusic.models.Song
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -289,6 +290,7 @@ const val enableYouTubeLoginKey = "enableYoutubeLogin"
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 const val showSecondLineKey = "showSecondLine"
 
+const val quickPicsTrendingSongKey = "quickPicsTrendingSong"
 const val quickPicsRelatedPageKey = "quickPicsRelatedPage"
 const val quickPicsChartsPageKey = "quickPicsChartsPage"
 const val quickPicsDiscoverPageKey = "quickPicsDiscoverPage"
@@ -370,6 +372,28 @@ inline fun <reified T : Json> rememberPreference(key: String, defaultValue: T, j
     }
 }
 */
+
+@Composable
+fun rememberPreference(key: String, defaultValue: Song?): MutableState<Song?> {
+    val context = LocalContext.current
+    val json = Json.encodeToString(defaultValue)
+    return remember {
+        mutableStatePreferenceOf(
+            try {
+                context.preferences.getString(key, json)
+                    ?.let { Json.decodeFromString<Song>(it) }
+            } catch (e: Exception) {
+                Timber.e("RememberPreference RelatedPage Error: ${ e.stackTraceToString() }")
+                null
+            }
+        ) {
+            context.preferences.edit { putString(
+                key,
+                Json.encodeToString(it)
+            ) }
+        }
+    }
+}
 
 @Composable
 fun rememberPreference(key: String, defaultValue: Innertube.DiscoverPage?): MutableState<Innertube.DiscoverPage?> {

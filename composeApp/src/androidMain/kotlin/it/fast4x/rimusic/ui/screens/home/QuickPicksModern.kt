@@ -115,6 +115,7 @@ import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.quickPicsChartsPageKey
 import it.fast4x.rimusic.utils.quickPicsDiscoverPageKey
 import it.fast4x.rimusic.utils.quickPicsRelatedPageKey
+import it.fast4x.rimusic.utils.quickPicsTrendingSongKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.selectedCountryCodeKey
@@ -165,6 +166,8 @@ fun QuickPicksModern(
     var playEventType by rememberPreference(playEventsTypeKey, PlayEventsType.MostPlayed)
 
     var trending by persist<Song?>("home/trending")
+    val trendingInit by persist<Song?>(tag = "home/trending")
+    var trendingPreference by rememberPreference(quickPicsTrendingSongKey, trendingInit)
 
     var relatedPageResult by persist<Result<Innertube.RelatedPage?>?>(tag = "home/relatedPageResult")
     var relatedInit by persist<Innertube.RelatedPage?>(tag = "home/relatedPage")
@@ -337,9 +340,6 @@ fun QuickPicksModern(
     cachedSongs?.addAll(downloadedSongs)
 
     val hapticFeedback = LocalHapticFeedback.current
-    //val enableCreateMonthlyPlaylists by rememberPreference(enableCreateMonthlyPlaylistsKey, true)
-    //if (enableCreateMonthlyPlaylists)
-    //    CheckMonthlyPlaylist()
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
@@ -384,6 +384,12 @@ fun QuickPicksModern(
             ) {
 
                 /*   Load data from url or from saved preference   */
+                if (trendingPreference != null && loadedData) {
+                    trending = trendingPreference
+                } else {
+                    trendingPreference = trending
+                }
+
                 if (relatedPreference != null && loadedData) {
                     relatedPageResult = Result.success(relatedPreference)
                     relatedInit = relatedPageResult?.getOrNull()
@@ -553,7 +559,7 @@ fun QuickPicksModern(
                                                         },
                                                         disableScrollingText = disableScrollingText
                                                     )
-                                                };
+                                                }
                                                 hapticFeedback.performHapticFeedback(
                                                     HapticFeedbackType.LongPress
                                                 )
