@@ -777,5 +777,5 @@
     <string name="removed_thumbnail">Miniatür Silindi</string>
     <string name="failed_to_remove_thumbnail">Miniatürü Silmək Olmadı</string>
     <string name="showsecondline">İkinci Cərgədə Tərcüməni Göstər</string>
-    <string name="enter_the_value">Enter The Value</string>
+    <string name="enter_the_value">Dəyər daxil et</string>
 </resources>
