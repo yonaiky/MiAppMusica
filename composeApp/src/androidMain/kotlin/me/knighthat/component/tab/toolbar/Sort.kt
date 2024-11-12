@@ -1,5 +1,8 @@
 package me.knighthat.component.tab.toolbar
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -91,10 +94,15 @@ interface Sort<T: Enum<T>>: Button {
     @Composable
     override fun ToolBarButton() {
         var sortOrder by sortOrderState
+        val animatedArrow by animateFloatAsState(
+            targetValue = sortOrder.rotationZ,
+            animationSpec = tween(durationMillis = 400, easing = LinearEasing),
+            label = ""
+        )
 
         TabToolBar.Icon(
             iconId = R.drawable.arrow_up,
-            modifier = Modifier.graphicsLayer { rotationZ = sortOrder.rotationZ },
+            modifier = Modifier.graphicsLayer { rotationZ = animatedArrow },
             onShortClick = { sortOrder = !sortOrder },
             onLongClick = {
                 menuState.display {
