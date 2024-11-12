@@ -576,27 +576,37 @@ class MainActivity :
                             .allowHardware(false)
                             .build()
                     )
+                    val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
+                    val isDark =
+                        colorPaletteMode == ColorPaletteMode.Dark || isPicthBlack || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
+
                     val bitmap = (result.drawable as? BitmapDrawable)?.bitmap
                     if (bitmap != null) {
                         val palette = Palette
                             .from(bitmap)
                             .maximumColorCount(8)
-                            //.addFilter(if (isDark || isPitchBlack) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
+                            .addFilter(if (isDark) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
                             .generate()
                         println("Mainactivity onmediaItemTransition palette dominantSwatch: ${palette.dominantSwatch}")
-                        val isDark =
-                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
-                        val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
+
                         dynamicColorPaletteOf(bitmap, isDark)?.let {
                             withContext(Dispatchers.Main) {
                                 setSystemBarAppearance(it.isDark)
                             }
                             appearance = appearance.copy(
-                                colorPalette = it,
+                                colorPalette = if (!isPicthBlack) it else it.copy(
+                                    background0 = Color.Black,
+                                    background1 = Color.Black,
+                                    background2 = Color.Black,
+                                    background3 = Color.Black,
+                                    background4 = Color.Black,
+                                   // text = Color.White
+                                ),
                                 typography = appearance.typography.copy(it.text)
                             )
                             println("Mainactivity onmediaItemTransition appearance inside: ${appearance.colorPalette}")
                         }
+
                     }
                 }
                 println("Mainactivity onmediaItemTransition appearance outside: ${appearance.colorPalette}")
@@ -733,11 +743,17 @@ class MainActivity :
                                         if (it.isNotEmpty())
                                             setDynamicPalette(it)
                                         else {
-
+                                            val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
                                             setSystemBarAppearance(colorPalette.isDark)
-
                                             appearance = appearance.copy(
-                                                colorPalette = colorPalette,
+                                                colorPalette = if (!isPicthBlack) colorPalette else colorPalette.copy(
+                                                        background0 = Color.Black,
+                                                        background1 = Color.Black,
+                                                        background2 = Color.Black,
+                                                        background3 = Color.Black,
+                                                        background4 = Color.Black,
+                                                        // text = Color.White
+                                                    ),
                                                 typography = appearance.typography.copy(colorPalette.text),
                                             )
                                         }
@@ -760,10 +776,17 @@ class MainActivity :
                                     }
 
                                     setSystemBarAppearance(colorPalette.isDark)
-
+                                    val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
                                     appearance = appearance.copy(
-                                        colorPalette = colorPalette,
-                                        typography = appearance.typography.copy(colorPalette.text),
+                                        colorPalette = if (!isPicthBlack) colorPalette else colorPalette.copy(
+                                            background0 = Color.Black,
+                                            background1 = Color.Black,
+                                            background2 = Color.Black,
+                                            background3 = Color.Black,
+                                            background4 = Color.Black,
+                                            text = Color.White
+                                        ),
+                                        typography = appearance.typography.copy(if (!isPicthBlack) colorPalette.text else Color.White),
                                     )
                                 }
                             }
@@ -853,7 +876,8 @@ class MainActivity :
                 preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.PitchBlack)
             if (colorPaletteMode == ColorPaletteMode.PitchBlack)
                 appearance = appearance.copy(
-                    colorPalette = appearance.colorPalette.applyPitchBlack
+                    colorPalette = appearance.colorPalette.applyPitchBlack,
+                    typography = appearance.typography.copy(appearance.colorPalette.text)
                 )
 
 
