@@ -12,8 +12,10 @@ import androidx.core.content.edit
 import com.google.gson.Gson
 import it.fast4x.innertube.Innertube
 import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import timber.log.Timber
 
 const val lastPlayerThumbnailSizeKey = "lastPlayerThumbnailSize"
 const val lastPlayerPlayButtonTypeKey = "lastPlayerPlayButtonType"
@@ -372,16 +374,21 @@ inline fun <reified T : Json> rememberPreference(key: String, defaultValue: T, j
 @Composable
 fun rememberPreference(key: String, defaultValue: Innertube.DiscoverPage?): MutableState<Innertube.DiscoverPage?> {
     val context = LocalContext.current
-    val gson = Gson()
-    val json = gson.toJson(defaultValue)
+    val json = Json.encodeToString(defaultValue)
     return remember {
         mutableStatePreferenceOf(
-            gson.fromJson(
-                context.preferences.getString(key, json),
-                Innertube.DiscoverPage::class.java
-            )
+            try {
+                context.preferences.getString(key, json)
+                    ?.let { Json.decodeFromString<Innertube.DiscoverPage>(it) }
+            } catch (e: Exception) {
+                Timber.e("RememberPreference DiscoverPage Error: ${ e.stackTraceToString() }")
+                null
+            }
         ) {
-            context.preferences.edit { putString(key, gson.toJson(it)) }
+            context.preferences.edit { putString(
+                key,
+                Json.encodeToString(it)
+            ) }
         }
     }
 }
@@ -389,16 +396,21 @@ fun rememberPreference(key: String, defaultValue: Innertube.DiscoverPage?): Muta
 @Composable
 fun rememberPreference(key: String, defaultValue: Innertube.ChartsPage?): MutableState<Innertube.ChartsPage?> {
     val context = LocalContext.current
-    val gson = Gson()
-    val json = gson.toJson(defaultValue)
+    val json = Json.encodeToString(defaultValue)
     return remember {
         mutableStatePreferenceOf(
-            gson.fromJson(
-                context.preferences.getString(key, json),
-                Innertube.ChartsPage::class.java
-            )
+            try {
+                context.preferences.getString(key, json)
+                    ?.let { Json.decodeFromString<Innertube.ChartsPage>(it) }
+            } catch (e: Exception) {
+                Timber.e("RememberPreference ChartsPage Error: ${ e.stackTraceToString() }")
+                null
+            }
         ) {
-            context.preferences.edit { putString(key, gson.toJson(it)) }
+            context.preferences.edit { putString(
+                key,
+                Json.encodeToString(it)
+            ) }
         }
     }
 }
@@ -406,16 +418,21 @@ fun rememberPreference(key: String, defaultValue: Innertube.ChartsPage?): Mutabl
 @Composable
 fun rememberPreference(key: String, defaultValue: Innertube.RelatedPage?): MutableState<Innertube.RelatedPage?> {
     val context = LocalContext.current
-    val gson = Gson()
-    val json = gson.toJson(defaultValue)
+    val json = Json.encodeToString(defaultValue)
     return remember {
         mutableStatePreferenceOf(
-            gson.fromJson(
-                context.preferences.getString(key, json),
-                Innertube.RelatedPage::class.java
-            )
+            try {
+                context.preferences.getString(key, json)
+                    ?.let { Json.decodeFromString<Innertube.RelatedPage>(it) }
+            } catch (e: Exception) {
+                Timber.e("RememberPreference RelatedPage Error: ${ e.stackTraceToString() }")
+                null
+            }
         ) {
-            context.preferences.edit { putString(key, gson.toJson(it)) }
+            context.preferences.edit { putString(
+                key,
+                Json.encodeToString(it)
+            ) }
         }
     }
 }
