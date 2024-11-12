@@ -159,11 +159,11 @@ inline fun <reified T : Enum<T>> EnumValueSelectorSettingsEntry(
     title: String,
     titleSecondary: String? = null,
     selectedValue: T,
-    crossinline onValueSelected: (T) -> Unit,
+    noinline onValueSelected: (T) -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
-    crossinline valueText: @Composable (T) -> String,// = Enum<T>::name,
-    noinline trailingContent: (@Composable () -> Unit)? = null
+    noinline valueText: @Composable (T) -> String  = { it.name },
+    noinline trailingContent: (@Composable () -> Unit) = {}
 ) {
     ValueSelectorSettingsEntry(
         title = title,
@@ -184,11 +184,11 @@ inline fun <T> ValueSelectorSettingsEntry(
     titleSecondary: String? = null,
     selectedValue: T,
     values: List<T>,
-    crossinline onValueSelected: (T) -> Unit,
+    noinline onValueSelected: (T) -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
-    crossinline valueText: @Composable (T) -> String, //= { it.toString() },
-    noinline trailingContent: (@Composable () -> Unit)? = null
+    noinline valueText: @Composable (T) -> String = { it.toString() },
+    noinline trailingContent: (@Composable () -> Unit) = {}
 ) {
     var isShowingDialog by remember {
         mutableStateOf(false)

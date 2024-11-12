@@ -304,15 +304,15 @@ inline fun DefaultDialog(
 }
 
 @Composable
-inline fun <T> ValueSelectorDialog(
+fun <T> ValueSelectorDialog(
     modifier: Modifier = Modifier,
-    noinline onDismiss: () -> Unit,
+    onDismiss: () -> Unit,
     title: String,
     titleSecondary: String? = null,
     selectedValue: T,
     values: List<T>,
-    crossinline onValueSelected: (T) -> Unit,
-    crossinline valueText: @Composable (T) -> String = { it.toString() }
+    onValueSelected: (T) -> Unit,
+    valueText: @Composable (T) -> String = { it.toString() }
 ) {
     val colorPalette = colorPalette()
     Dialog(onDismissRequest = onDismiss) {
