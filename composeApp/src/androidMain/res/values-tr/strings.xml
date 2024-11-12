@@ -783,5 +783,5 @@
     <string name="menu_go_to_picture_in_picture">PIP</string>
     <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">From Android 12 pip can be automatically enabled</string>
     <string name="showsecondline">İkinci Satırda Çeviriyi Göster</string>
-    <string name="enter_the_value">Enter The Value</string>
+    <string name="enter_the_value">Değer Giriniz</string>
 </resources>

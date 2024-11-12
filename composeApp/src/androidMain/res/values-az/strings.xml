@@ -777,7 +777,7 @@
     <string name="removed_thumbnail">Miniatür Silindi</string>
     <string name="failed_to_remove_thumbnail">Miniatürü Silmək Olmadı</string>
     <string name="showsecondline">İkinci Cərgədə Tərcüməni Göstər</string>
-    <string name="enter_the_value">Enter The Value</string>
+    <string name="enter_the_value">Dəyər daxil et</string>
     <string name="settings_enable_pip">Enable Picture in Picture</string>
     <string name="settings_enable_pip_auto">Enable Automatic Picture in Picture</string>
     <string name="pipmodule_cover">Cover</string>
