@@ -291,7 +291,6 @@ dependencies {
 
 dependencies {
     implementation(projects.composePersist)
-    //implementation(projects.composeRouting)
     implementation(projects.composeReordering)
     implementation(libs.compose.activity)
     implementation(libs.compose.foundation)
