@@ -136,65 +136,55 @@ fun HomeLibrary(
     // Dialog states
     val newPlaylistToggleState = remember { mutableStateOf( false ) }
 
-    val search = remember {
-        object: Search {
+    val search = object: Search {
             override val visibleState = visibleState
-            override val focusState = focusState
-            override val inputState = inputState
-        }
+        override val focusState = focusState
+        override val inputState = inputState
     }
-    val sort = remember {
-        object: Sort<PlaylistSortBy> {
-            override val menuState = menuState
-            override val sortOrderState = sortOrder
-            override val sortByEnum = PlaylistSortBy.entries
-            override val sortByState = sortBy
-        }
+    val sort = object: Sort<PlaylistSortBy> {
+        override val menuState = menuState
+        override val sortOrderState = sortOrder
+        override val sortByEnum = PlaylistSortBy.entries
+        override val sortByState = sortBy
     }
-    val itemSize = remember {
-        object: ItemSize {
-            override val menuState = menuState
-            override val sizeState = sizeState
-        }
+    val itemSize = object: ItemSize {
+        override val menuState = menuState
+        override val sizeState = sizeState
     }
-    val shuffle = remember(binder) {
-        object: SongsShuffle {
-            override val binder = binder
-            override val context = context
+    val shuffle = object: SongsShuffle {
+        override val binder = binder
+        override val context = context
 
-            override fun query(): Flow<List<Song>?> =
-                when( playlistType ) {
-                    PlaylistsType.Playlist -> Database.songsInAllPlaylists()
-                    PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
-                    PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
-                    PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
-                }
-        }
-    }
-    val newPlaylistDialog = remember {
-        object: InputDialog {
-            override val context = context
-            override val toggleState = newPlaylistToggleState
-            override val iconId = R.drawable.add_in_playlist
-            override val titleId: Int = R.string.enter_the_playlist_name
-            override val messageId: Int = R.string.create_new_playlist
-
-            override fun onSet(newValue: String) {
-
-                if ( isPipedEnabled && pipedSession.token.isNotEmpty() )
-                    createPipedPlaylist(
-                        context = context,
-                        coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession(),
-                        name = newValue
-                    )
-                else
-                    query {
-                        Database.insert( Playlist( name = newValue ) )
-                    }
-
-                onDismiss()
+        override fun query(): Flow<List<Song>?> =
+            when( playlistType ) {
+                PlaylistsType.Playlist -> Database.songsInAllPlaylists()
+                PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
+                PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
+                PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
             }
+    }
+    val newPlaylistDialog = object: InputDialog {
+        override val context = context
+        override val toggleState = newPlaylistToggleState
+        override val iconId = R.drawable.add_in_playlist
+        override val titleId: Int = R.string.enter_the_playlist_name
+        override val messageId: Int = R.string.create_new_playlist
+
+        override fun onSet(newValue: String) {
+
+            if ( isPipedEnabled && pipedSession.token.isNotEmpty() )
+                createPipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
+                    pipedSession = pipedSession.toApiSession(),
+                    name = newValue
+                )
+            else
+                query {
+                    Database.insert( Playlist( name = newValue ) )
+                }
+
+            onDismiss()
         }
     }
     // START - Import playlist
@@ -227,12 +217,10 @@ fun HomeLibrary(
         )
     }
     // END - Import playlist
-    val importPlaylistDialog = remember {
-        object: ImportSongsFromCSV {
-            override val context = context
+    val importPlaylistDialog = object: ImportSongsFromCSV {
+        override val context = context
 
-            override fun onShortClick() = importLauncher.launch( arrayOf("text/csv", "text/comma-separated-values") )
-        }
+        override fun onShortClick() = importLauncher.launch( arrayOf("text/csv", "text/comma-separated-values") )
     }
 
     // Mutable

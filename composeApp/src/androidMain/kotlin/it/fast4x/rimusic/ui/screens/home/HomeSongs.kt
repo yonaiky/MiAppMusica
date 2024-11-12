@@ -286,49 +286,39 @@ fun HomeSongs(
     val deleteSongToggleState = rememberSaveable { mutableStateOf( false ) }
     val hideSongToggleState = rememberSaveable { mutableStateOf( false ) }
 
-    val search = remember {
-        object: Search {
-            override val visibleState = searching
-            override val focusState = isSearchInputFocused
-            override val inputState = filter
-        }
+    val search = object: Search {
+        override val visibleState = searching
+        override val focusState = isSearchInputFocused
+        override val inputState = filter
     }
-    val songSort = remember {
-        object: Sort<SongSortBy> {
-            override val menuState = menuState
-            override val sortOrderState = sortOrderState
-            override val sortByEnum = SongSortBy.entries
-            override val sortByState = songSortState
-        }
+    val songSort = object: Sort<SongSortBy> {
+        override val menuState = menuState
+        override val sortOrderState = sortOrderState
+        override val sortByEnum = SongSortBy.entries
+        override val sortByState = songSortState
     }
-    val deviceSongSort = remember {
-        object: Sort<OnDeviceSongSortBy> {
-            override val menuState = menuState
-            override val sortOrderState = sortOrderState
-            override val sortByEnum = OnDeviceSongSortBy.entries
-            override val sortByState = deviceSongSortState
-        }
+    val deviceSongSort = object: Sort<OnDeviceSongSortBy> {
+        override val menuState = menuState
+        override val sortOrderState = sortOrderState
+        override val sortByEnum = OnDeviceSongSortBy.entries
+        override val sortByState = deviceSongSortState
     }
-    val deviceFolderSort = remember {
-        object: Sort<OnDeviceFolderSortBy> {
-            override val menuState = menuState
-            override val sortOrderState = sortOrderState
-            override val sortByEnum = OnDeviceFolderSortBy.entries
-            override val sortByState = deviceFolderSortState
-        }
+    val deviceFolderSort = object: Sort<OnDeviceFolderSortBy> {
+        override val menuState = menuState
+        override val sortOrderState = sortOrderState
+        override val sortByEnum = OnDeviceFolderSortBy.entries
+        override val sortByState = deviceFolderSortState
     }
-    val shuffle = remember(binder) {
-        object: SongsShuffle {
-            override val binder = binder
-            override val context = context
-            override val dispatcher = Dispatchers.Main
+    val shuffle = object: SongsShuffle {
+        override val binder = binder
+        override val context = context
+        override val dispatcher = Dispatchers.Main
 
-            override fun query(): Flow<List<Song>?> {
-                if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
-                    items = filteredSongs
+        override fun query(): Flow<List<Song>?> {
+            if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
+                items = filteredSongs
 
-                return  flowOf(items.map(SongEntity::song))
-            }
+            return  flowOf(items.map(SongEntity::song))
         }
     }
     // START - Import songs
@@ -345,12 +335,10 @@ fun HomeSongs(
         )
     }
     // END - Import songs
-    val import = remember {
-        object: ImportSongsFromCSV {
-            override val context = context
+    val import = object: ImportSongsFromCSV {
+        override val context = context
 
-            override fun onShortClick() = importLauncher.launch(arrayOf("text/csv", "text/comma-separated-values"))
-        }
+        override fun onShortClick() = importLauncher.launch(arrayOf("text/csv", "text/comma-separated-values"))
     }
     // START - Export songs
     val exportLauncher = rememberLauncherForActivityResult(
@@ -365,117 +353,107 @@ fun HomeSongs(
         )
     }
     // END - Export songs
-    val exportDialog = remember {
-        object: ExportSongsToCSVDialog {
-            override val context = context
-            override val toggleState = exportToggleState
-            override val valueState = playlistNameState
+    val exportDialog = object: ExportSongsToCSVDialog {
+        override val context = context
+        override val toggleState = exportToggleState
+        override val valueState = playlistNameState
 
-            override fun onSet(newValue: String) {
-                exportLauncher.launch( ExportSongsToCSVDialog.fileName( newValue ) )
-            }
+        override fun onSet(newValue: String) {
+            exportLauncher.launch( ExportSongsToCSVDialog.fileName( newValue ) )
         }
     }
-    val downloadAllDialog = remember(binder) {
-        object: DownloadAllDialog {
-            override val context = context
-            override val binder = binder
-            override val toggleState = downloadAllToggleState
-            override val downloadState = downloadState
+    val downloadAllDialog = object: DownloadAllDialog {
+        override val context = context
+        override val binder = binder
+        override val toggleState = downloadAllToggleState
+        override val downloadState = downloadState
 
-            override fun listToProcess(): List<MediaItem> =
-                if( listMediaItems.isNotEmpty() )
-                    listMediaItems
-                else if( items.isNotEmpty() )
-                    items.map( SongEntity::asMediaItem )
-                else
-                    listOf()
-        }
+        override fun listToProcess(): List<MediaItem> =
+            if( listMediaItems.isNotEmpty() )
+                listMediaItems
+            else if( items.isNotEmpty() )
+                items.map( SongEntity::asMediaItem )
+            else
+                listOf()
     }
-    val deleteDownloadsDialog = remember(binder) {
-        object: DeleteDownloadsDialog {
-            override val context = context
-            override val binder = binder
-            override val toggleState = deleteDownloadsToggleState
-            override val downloadState = downloadState
+    val deleteDownloadsDialog = object: DeleteDownloadsDialog {
+        override val context = context
+        override val binder = binder
+        override val toggleState = deleteDownloadsToggleState
+        override val downloadState = downloadState
 
-            override fun listToProcess(): List<MediaItem> =
-                if( listMediaItems.isNotEmpty() )
-                    listMediaItems
-                else if( items.isNotEmpty() )
-                    items.map( SongEntity::asMediaItem )
-                else
-                    emptyList()
-        }
+        override fun listToProcess(): List<MediaItem> =
+            if( listMediaItems.isNotEmpty() )
+                listMediaItems
+            else if( items.isNotEmpty() )
+                items.map( SongEntity::asMediaItem )
+            else
+                emptyList()
     }
-    val deleteSongDialog = remember {
-        object: ConfirmationDialog {
-            override val context = context
-            override val toggleState = deleteSongToggleState
-            override val iconId = -1
-            override val titleId = R.string.delete_song
-            override val messageId = -1
+    val deleteSongDialog = object: ConfirmationDialog {
+        override val context = context
+        override val toggleState = deleteSongToggleState
+        override val iconId = -1
+        override val titleId = R.string.delete_song
+        override val messageId = -1
 
-            var song: Optional<SongEntity> = Optional.empty()
+        var song: Optional<SongEntity> = Optional.empty()
 
-            override fun onDismiss() {
-                // Always override current value with empty Optional
-                // to prevent unwanted outcomes
-                song = Optional.empty()
-                super.onDismiss()
-            }
+        override fun onDismiss() {
+            // Always override current value with empty Optional
+            // to prevent unwanted outcomes
+            song = Optional.empty()
+            super.onDismiss()
+        }
 
-            override fun onConfirm() {
-                song.ifPresent {
-                    query {
-                        menuState.hide()
-                        binder?.cache?.removeResource(it.song.id)
-                        binder?.downloadCache?.removeResource(it.song.id)
-                        Database.delete(it.song)
-                        Database.deleteSongFromPlaylists(it.song.id)
-                        Database.deleteFormat(it.song.id)
-                    }
-                    SmartMessage(context.resources.getString(R.string.deleted), context = context)
+        override fun onConfirm() {
+            song.ifPresent {
+                query {
+                    menuState.hide()
+                    binder?.cache?.removeResource(it.song.id)
+                    binder?.downloadCache?.removeResource(it.song.id)
+                    Database.delete(it.song)
+                    Database.deleteSongFromPlaylists(it.song.id)
+                    Database.deleteFormat(it.song.id)
                 }
-
-                onDismiss()
+                SmartMessage(context.resources.getString(R.string.deleted), context = context)
             }
+
+            onDismiss()
         }
     }
-    val hideSongDialog = remember {
-        object: ConfirmationDialog {
-            override val context = context
-            override val toggleState = hideSongToggleState
-            override val iconId = -1
-            override val titleId = R.string.hidesong
-            override val messageId = -1
+    val hideSongDialog = object: ConfirmationDialog {
+        override val context = context
+        override val toggleState = hideSongToggleState
+        override val iconId = -1
+        override val titleId = R.string.hidesong
+        override val messageId = -1
 
-            var song: Optional<SongEntity> = Optional.empty()
+        var song: Optional<SongEntity> = Optional.empty()
 
-            override fun onDismiss() {
-                // Always override current value with empty Optional
-                // to prevent unwanted outcomes
-                song = Optional.empty()
-                super.onDismiss()
-            }
+        override fun onDismiss() {
+            // Always override current value with empty Optional
+            // to prevent unwanted outcomes
+            song = Optional.empty()
+            super.onDismiss()
+        }
 
-            override fun onConfirm() {
-                song.ifPresent {
-                    query {
-                        menuState.hide()
-                        binder?.cache?.removeResource(it.song.id)
-                        binder?.downloadCache?.removeResource(it.song.id)
-                        Database.resetFormatContentLength(it.song.id)
-                        Database.deleteFormat(it.song.id)
-                        Database.incrementTotalPlayTimeMs(
-                            it.song.id,
-                            -it.song.totalPlayTimeMs
-                        )
-                    }
+        override fun onConfirm() {
+            song.ifPresent {
+                query {
+                    menuState.hide()
+                    binder?.cache?.removeResource(it.song.id)
+                    binder?.downloadCache?.removeResource(it.song.id)
+                    Database.resetFormatContentLength(it.song.id)
+                    Database.deleteFormat(it.song.id)
+                    Database.incrementTotalPlayTimeMs(
+                        it.song.id,
+                        -it.song.totalPlayTimeMs
+                    )
                 }
-
-                onDismiss()
             }
+
+            onDismiss()
         }
     }
 

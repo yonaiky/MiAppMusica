@@ -109,43 +109,33 @@ fun HomeArtists(
         animationSpec = tween(durationMillis = 300), label = ""
     )
 
-    val search = remember {
-        object: Search {
-            override val visibleState = visibleState
-            override val focusState = focusState
-            override val inputState = inputState
-        }
+    val search = object: Search {
+        override val visibleState = visibleState
+        override val focusState = focusState
+        override val inputState = inputState
     }
-    val sort = remember {
-        object: Sort<ArtistSortBy> {
-            override val menuState = menuState
-            override val sortOrderState = sortOrder
-            override val sortByEnum = ArtistSortBy.entries
-            override val sortByState = sortBy
-        }
+    val sort = object: Sort<ArtistSortBy> {
+        override val menuState = menuState
+        override val sortOrderState = sortOrder
+        override val sortByEnum = ArtistSortBy.entries
+        override val sortByState = sortBy
     }
-    val itemSize = remember {
-        object: ItemSize {
-            override val menuState = menuState
-            override val sizeState = sizeState
-        }
+    val itemSize = object: ItemSize {
+        override val menuState = menuState
+        override val sizeState = sizeState
     }
-    val randomizer = remember {
-        object: Randomizer<Artist> {
-            override val itemsState = itemsState
-            override val rotationState = rotationState
-            override val angleState = angleState
+    val randomizer = object: Randomizer<Artist> {
+        override val itemsState = itemsState
+        override val rotationState = rotationState
+        override val angleState = angleState
 
-            override fun onClick(item: Artist) = onArtistClick(item)
-        }
+        override fun onClick(item: Artist) = onArtistClick(item)
     }
-    val shuffle = remember(binder) {
-        object: SongsShuffle{
-            override val binder = binder
-            override val context = context
+    val shuffle = object: SongsShuffle {
+        override val binder = binder
+        override val context = context
 
-            override fun query(): Flow<List<Song>?> = Database.songsInAllFollowedArtists()
-        }
+        override fun query(): Flow<List<Song>?> = Database.songsInAllFollowedArtists()
     }
 
     // Search mutable
