@@ -1792,11 +1792,12 @@ fun Player(
                          )
 
                      if (showVinylThumbnailAnimation)
-                         VinylThumbnailCoverAnimation(
+                         VinylThumbnailCoverAnimationModern(
                              painter = coverPainter,
                              isSongPlaying = player.isPlaying,
-                             modifier = coverModifier
-
+                             modifier = coverModifier,
+                             state = pagerState,
+                             it = it
                          )
                      else
                          Image(
@@ -2625,11 +2626,12 @@ fun Player(
                                          )
 
                                      if (showVinylThumbnailAnimation)
-                                         VinylThumbnailCoverAnimation(
+                                         VinylThumbnailCoverAnimationModern(
                                              painter = coverPainter,
                                              isSongPlaying = player.isPlaying,
-                                             modifier = coverModifier
-
+                                             modifier = coverModifier,
+                                             state = pagerState,
+                                             it = it
                                          )
                                      else
                                          Image(

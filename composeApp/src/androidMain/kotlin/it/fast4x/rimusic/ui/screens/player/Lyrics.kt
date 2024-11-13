@@ -341,7 +341,6 @@ fun Lyrics(
                     try {
                         var translation: Translation?
                         var translation2: Translation?
-
                         if(destinationLanguage == Language.AUTO){
                             translation = translator.translate(
                                 textToTranslate,
@@ -907,6 +906,7 @@ fun Lyrics(
                                         }),
                                         modifier = Modifier
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
+                                            .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                             .clickable {
                                                 if (clickLyricsText)
                                                     binder?.player?.seekTo(sentence.first)
@@ -997,6 +997,7 @@ fun Lyrics(
                                         }),
                                         modifier = Modifier
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
+                                            .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                             .clickable {
                                                 if (clickLyricsText)
                                                     binder?.player?.seekTo(sentence.first)
@@ -1046,6 +1047,7 @@ fun Lyrics(
                                         ),
                                         modifier = Modifier
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
+                                            .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                             .clickable {
                                                 if (clickLyricsText)
                                                     binder?.player?.seekTo(sentence.first)
@@ -1094,6 +1096,7 @@ fun Lyrics(
                                         BasicText(
                                             text = translatedText,
                                             style = TextStyle(
+                                                textAlign = lyricsAlignment.selected,
                                                 drawStyle = Stroke(
                                                     width = if (fontSize == LyricsFontSize.Large)
                                                         if (lyricsOutline == LyricsOutline.White) 3.0f
@@ -1232,6 +1235,7 @@ fun Lyrics(
                                         BasicText(
                                             text = translatedText,
                                             style = TextStyle(
+                                                textAlign = lyricsAlignment.selected,
                                                 brush = brushrainbowdark,
                                                 drawStyle = Stroke(
                                                     width = if (fontSize == LyricsFontSize.Large) if (index == synchronizedLyrics.index) 5.0f else 4f
@@ -1269,16 +1273,17 @@ fun Lyrics(
                                             ),
                                             modifier = Modifier
                                                 .padding(vertical = 4.dp, horizontal = 32.dp)
+                                                .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                                 .clickable {
                                                     if (clickLyricsText)
                                                         binder?.player?.seekTo(sentence.first)
                                                 }
-                                                .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                         )
                                     else //For Glow Outline//
                                         BasicText(
                                             text = translatedText,
                                             style = TextStyle(
+                                                textAlign = lyricsAlignment.selected,
                                                 shadow = Shadow(
                                                     color = if (index == synchronizedLyrics.index)
                                                         if (lyricsColor == LyricsColor.Thememode) Color.White.copy(
@@ -1338,11 +1343,11 @@ fun Lyrics(
                                             ),
                                             modifier = Modifier
                                                 .padding(vertical = 4.dp, horizontal = 32.dp)
+                                                .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                                 .clickable {
                                                     if (clickLyricsText)
                                                         binder?.player?.seekTo(sentence.first)
                                                 }
-                                                .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                         )
                             }
                         }
@@ -1474,7 +1479,9 @@ fun Lyrics(
                                             typography().xlxl.medium.color(
                                                 PureBlackColorPalette.text
                                             )
-                                    })
+                                    }),
+                                    modifier = Modifier
+                                            .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                 )
                             else if ((lyricsColor == LyricsColor.Thememode) || (lyricsColor == LyricsColor.White) || (lyricsColor == LyricsColor.Black) || (lyricsColor == LyricsColor.Accent))
                                 BasicText(
@@ -1518,7 +1525,9 @@ fun Lyrics(
                                                 else if (lyricsColor == LyricsColor.Accent) colorPalette().accent
                                                 else Color.Transparent
                                             )
-                                    })
+                                    }),
+                                    modifier = Modifier
+                                        .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                 )
                             else
                                 BasicText(
@@ -1548,7 +1557,9 @@ fun Lyrics(
                                                     PureBlackColorPalette.text
                                                 )
                                         }
-                                    )
+                                    ),
+                                    modifier = Modifier
+                                        .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                 )
                             //Lyrics Outline Non Synced
                             if (!showlyricsthumbnail)
@@ -1626,7 +1637,9 @@ fun Lyrics(
                                                         else Color.Black.copy(0.6f)
                                                     )
                                             }
-                                        )
+                                        ),
+                                        modifier = Modifier
+                                                .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                     )
                                 else
                                     BasicText(
@@ -1675,7 +1688,9 @@ fun Lyrics(
                                                         else Color.Black.copy(0.6f)
                                                     )
                                             }
-                                        )
+                                        ),
+                                        modifier = Modifier
+                                           .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
                                     )
 
                         }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -109,6 +110,55 @@ fun VinylThumbnailCoverAnimation(
 
     LaunchedEffect(isSongPlaying) {
         if (isSongPlaying) {
+            rotation.animateTo(
+                targetValue = currentRotation + 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(8000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart
+                )
+            ) {
+                currentRotation = value
+            }
+        } else {
+            if (currentRotation > 0f) {
+                rotation.animateTo(
+                    targetValue = currentRotation + 50,
+                    animationSpec = tween(
+                        1250,
+                        easing = LinearOutSlowInEasing
+                    )
+                ) {
+                    currentRotation = value
+                }
+            }
+        }
+    }
+
+    VinylThumnbailCover(
+        painter = painter,
+        rotationDegrees = rotation.value,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun VinylThumbnailCoverAnimationModern(
+    modifier: Modifier = Modifier,
+    isSongPlaying: Boolean = true,
+    painter: Painter,
+    state : PagerState,
+    it : Int
+) {
+    var currentRotation by remember {
+        mutableFloatStateOf(0f)
+    }
+
+    val rotation = remember {
+        Animatable(currentRotation)
+    }
+
+    LaunchedEffect(isSongPlaying) {
+        if (isSongPlaying && it == state.settledPage) {
             rotation.animateTo(
                 targetValue = currentRotation + 360f,
                 animationSpec = infiniteRepeatable(
