@@ -779,4 +779,6 @@ CC-BY-SA 3.0</string>
     <string name="failed_to_remove_thumbnail">Failed to Remove Thumbnail</string>
     <string name="showsecondline">Show Translation in the Second Line</string>
     <string name="enter_the_value">Enter The Value</string>
+    <string name="resume_playback_on_start">Resume Playback On Start</string>
+    <string name="resume_automatically_when_app_opens">Resume Playback automatically when the app is opened</string>
 </resources>
