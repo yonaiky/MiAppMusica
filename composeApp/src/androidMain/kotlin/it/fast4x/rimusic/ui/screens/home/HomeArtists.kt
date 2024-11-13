@@ -60,7 +60,6 @@ import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
-import me.knighthat.preference.Preference
 import me.knighthat.preference.Preference.HOME_ARTIST_ITEM_SIZE
 
 @ExperimentalMaterial3Api
@@ -92,9 +91,6 @@ fun HomeArtists(
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    // Size state
-    val sizeState = Preference.remember( HOME_ARTIST_ITEM_SIZE )
-
     val search = SearchComponent.init()
 
     val sort = object: Sort<ArtistSortBy> {
@@ -103,10 +99,9 @@ fun HomeArtists(
         override val sortByEnum = ArtistSortBy.entries
         override val sortByState = sortBy
     }
-    val itemSize = object: ItemSize {
-        override val menuState = menuState
-        override val sizeState = sizeState
-    }
+
+    val itemSize = ItemSize.init( HOME_ARTIST_ITEM_SIZE )
+
     val randomizer = object: Randomizer<Artist> {
         override fun getItems(): List<Artist> = itemsOnDisplay
         override fun onClick(index: Int) = onArtistClick(itemsOnDisplay[index])
@@ -170,7 +165,7 @@ fun HomeArtists(
 
             LazyVerticalGrid(
                 state = lazyGridState,
-                columns = GridCells.Adaptive( itemSize.sizeState.value.dp ),
+                columns = GridCells.Adaptive( itemSize.size.dp ),
                 modifier = Modifier.background( colorPalette().background0 )
                                    .fillMaxSize(),
                 contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
@@ -178,8 +173,8 @@ fun HomeArtists(
                 items(items = itemsOnDisplay, key = Artist::id) { artist ->
                     ArtistItem(
                         artist = artist,
-                        thumbnailSizeDp = itemSize.sizeState.value.dp,
-                        thumbnailSizePx = itemSize.sizeState.value.px,
+                        thumbnailSizeDp = itemSize.size.dp,
+                        thumbnailSizePx = itemSize.size.px,
                         alternative = true,
                         modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
                                            .clickable(onClick = {

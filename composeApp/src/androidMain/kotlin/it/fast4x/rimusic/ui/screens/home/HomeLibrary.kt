@@ -90,7 +90,6 @@ import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
-import me.knighthat.preference.Preference
 import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
 
 
@@ -126,8 +125,6 @@ fun HomeLibrary(
     // Sort states
     val sortBy = rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
     val sortOrder = rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
-    // Size state
-    val sizeState = Preference.remember( HOME_LIBRARY_ITEM_SIZE )
     // Dialog states
     val newPlaylistToggleState = remember { mutableStateOf( false ) }
 
@@ -139,10 +136,9 @@ fun HomeLibrary(
         override val sortByEnum = PlaylistSortBy.entries
         override val sortByState = sortBy
     }
-    val itemSize = object: ItemSize {
-        override val menuState = menuState
-        override val sizeState = sizeState
-    }
+
+    val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
+
     val shuffle = object: SongsShuffle {
         override val binder = binder
         override val context = context
@@ -310,7 +306,7 @@ fun HomeLibrary(
 
             LazyVerticalGrid(
                 state = lazyGridState,
-                columns = GridCells.Adaptive( itemSize.sizeState.value.dp ),
+                columns = GridCells.Adaptive( itemSize.size.dp ),
                 modifier = Modifier
                     .background(colorPalette().background0)
             ) {
@@ -342,8 +338,8 @@ fun HomeLibrary(
                 ) { preview ->
                     PlaylistItem(
                         playlist = preview,
-                        thumbnailSizeDp = itemSize.sizeState.value.dp,
-                        thumbnailSizePx = itemSize.sizeState.value.px,
+                        thumbnailSizeDp = itemSize.size.dp,
+                        thumbnailSizePx = itemSize.size.px,
                         alternative = true,
                         modifier = Modifier.fillMaxSize()
                                            .animateItem( fadeInSpec = null, fadeOutSpec = null )

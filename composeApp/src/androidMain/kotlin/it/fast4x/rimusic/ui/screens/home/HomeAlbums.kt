@@ -72,7 +72,6 @@ import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
-import me.knighthat.preference.Preference
 import me.knighthat.preference.Preference.HOME_ALBUM_ITEM_SIZE
 import me.knighthat.thumbnailShape
 
@@ -101,8 +100,6 @@ fun HomeAlbums(
     // Sort states
     val sortBy = rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
     val sortOrder = rememberPreference(albumSortOrderKey, SortOrder.Descending)
-    // Size state
-    val sizeState = Preference.remember( HOME_ALBUM_ITEM_SIZE )
 
     var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
 
@@ -114,10 +111,9 @@ fun HomeAlbums(
         override val sortByEnum = AlbumSortBy.entries
         override val sortByState = sortBy
     }
-    val itemSize = object: ItemSize{
-        override val menuState = menuState
-        override val sizeState = sizeState
-    }
+
+    val itemSize = ItemSize.init( HOME_ALBUM_ITEM_SIZE )
+
     val randomizer = object: Randomizer<Album> {
         override fun getItems(): List<Album> = itemsOnDisplay
         override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
@@ -182,7 +178,7 @@ fun HomeAlbums(
 
             LazyVerticalGrid(
                 state = lazyGridState,
-                columns = GridCells.Adaptive( itemSize.sizeState.value.dp ),
+                columns = GridCells.Adaptive( itemSize.size.dp ),
                 //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                 modifier = Modifier.background( colorPalette().background0 )
                                    .fillMaxSize(),
@@ -255,8 +251,8 @@ fun HomeAlbums(
                         alternative = true,
                         showAuthors = true,
                         album = album,
-                        thumbnailSizeDp = itemSize.sizeState.value.dp,
-                        thumbnailSizePx = itemSize.sizeState.value.px,
+                        thumbnailSizeDp = itemSize.size.dp,
+                        thumbnailSizePx = itemSize.size.px,
                         modifier = Modifier
                             .combinedClickable(
 
