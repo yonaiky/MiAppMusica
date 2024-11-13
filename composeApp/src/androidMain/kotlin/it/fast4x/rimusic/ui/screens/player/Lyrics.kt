@@ -47,7 +47,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -151,11 +150,9 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
-import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.lyricsAlignmentKey
 import it.fast4x.rimusic.utils.romanizationEnabeledKey
 import it.fast4x.rimusic.utils.showSecondLineKey
-import it.fast4x.rimusic.utils.showVinylThumbnailAnimationKey
 import me.bush.translator.Translation
 
 
@@ -333,7 +330,6 @@ fun Lyrics(
         }
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
-        var showVinylThumbnailAnimation by rememberPreference(showVinylThumbnailAnimationKey, false)
 
         fun translateLyricsWithRomanization(output: MutableState<String>, textToTranslate: String, isSync: Boolean, destinationLanguage: Language = Language.AUTO) = @Composable{
             LaunchedEffect(showSecondLine, romanizationEnabeled, textToTranslate, destinationLanguage){
