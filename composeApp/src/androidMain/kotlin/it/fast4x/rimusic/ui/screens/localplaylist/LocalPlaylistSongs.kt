@@ -49,7 +49,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -159,10 +158,10 @@ import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.component.tab.toolbar.ConfirmationDialog
 import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
-import me.knighthat.component.tab.toolbar.DetailedSort
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.InputDialog
+import me.knighthat.component.tab.toolbar.PlaylistSongsSortComponent
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.thumbnailShape
@@ -239,22 +238,8 @@ fun LocalPlaylistSongs(
 
     val search = SearchComponent.init()
 
-    val sort = remember {
-        object: DetailedSort<PlaylistSongSortBy>{
-            override val menuState = menuState
-            override val sortOrderState = sortOrderState
-            override val sortByEnum = PlaylistSongSortBy.entries
-            override val sortByState = sortByState
+    val sort = PlaylistSongsSortComponent.init()
 
-            @Composable
-            override fun title( currentValue: PlaylistSongSortBy ): String {
-                return when( currentValue ) {
-                    PlaylistSongSortBy.ArtistAndAlbum -> "${stringResource(R.string.sort_artist)}, ${stringResource(R.string.sort_album)}"
-                    else -> stringResource( currentValue.titleId )
-                }
-            }
-        }
-    }
     val shuffle = remember {
         object: SongsShuffle{
             override val binder = binder
@@ -450,12 +435,8 @@ fun LocalPlaylistSongs(
         }
     }
 
-    // Sort mutable
-    val sortBy by sort.sortByState
-    val sortOrder by sort.sortOrderState
-
-    LaunchedEffect( Unit, sortOrder, sortBy ) {
-        Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
+    LaunchedEffect( sort.sortOrder, sort.sortBy ) {
+        Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder ).filterNotNull()
             .collect { playlistSongs = if (parentalControlEnabled)
                 it.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) } else it }
     }
@@ -484,7 +465,7 @@ fun LocalPlaylistSongs(
 
     if (isRecommendationEnabled) {
         LaunchedEffect(Unit, isRecommendationEnabled) {
-            Database.songsPlaylist(playlistId, sortBy, sortOrder).distinctUntilChanged()
+            Database.songsPlaylist(playlistId, sort.sortBy, sort.sortOrder).distinctUntilChanged()
                 .collect { songs ->
                     val song = songs.firstOrNull()
                     if (relatedSongsRecommendationResult == null || songBaseRecommendation?.song?.id != song?.song?.id) {
@@ -791,7 +772,7 @@ fun LocalPlaylistSongs(
                                     )
                             )
 
-                        if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending)
+                        if (sort.sortBy == PlaylistSongSortBy.Position && sort.sortOrder == SortOrder.Ascending)
                             HeaderIconButton(
                                 icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
                                 enabled = playlistSongs.isNotEmpty() == true,
@@ -800,7 +781,7 @@ fun LocalPlaylistSongs(
                                 modifier = Modifier
                                     .combinedClickable(
                                         onClick = {
-                                            if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                                            if (sort.sortBy == PlaylistSongSortBy.Position && sort.sortOrder == SortOrder.Ascending) {
                                                 isReorderDisabled = !isReorderDisabled
                                             } else {
                                                 SmartMessage(
@@ -1147,7 +1128,7 @@ fun LocalPlaylistSongs(
                         val checkedState = rememberSaveable { mutableStateOf(false) }
                         val positionInPlaylist: Int = index
 
-                        if (!isReorderDisabled && sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
+                        if (!isReorderDisabled && sort.sortBy == PlaylistSongSortBy.Position && sort.sortOrder == SortOrder.Ascending) {
                             Box(
                                 modifier = Modifier
                                     .size(24.dp)
@@ -1252,7 +1233,7 @@ fun LocalPlaylistSongs(
                                     else checkedState.value = false
                                 },
                                 onThumbnailContent = {
-                                    if (sortBy == PlaylistSongSortBy.PlayTime) {
+                                    if (sort.sortBy == PlaylistSongSortBy.PlayTime) {
                                         BasicText(
                                             text = song.song.formattedTotalPlayTime,
                                             style = typography().xxs.semiBold.center.color(

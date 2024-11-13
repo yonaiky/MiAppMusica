@@ -48,7 +48,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.PlaylistsType
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
@@ -71,10 +70,9 @@ import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
-import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.playlistSortByKey
+import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.playlistTypeKey
-import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
@@ -89,7 +87,7 @@ import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.toolbar.Sort
+import me.knighthat.component.tab.toolbar.SortComponent
 import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
 
 
@@ -122,20 +120,16 @@ fun HomeLibrary(
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
-    // Sort states
-    val sortBy = rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
-    val sortOrder = rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
     // Dialog states
     val newPlaylistToggleState = remember { mutableStateOf( false ) }
 
     val search = SearchComponent.init()
 
-    val sort = object: Sort<PlaylistSortBy> {
-        override val menuState = menuState
-        override val sortOrderState = sortOrder
-        override val sortByEnum = PlaylistSortBy.entries
-        override val sortByState = sortBy
-    }
+    val sort = SortComponent.init(
+        playlistSortOrderKey,
+        PlaylistSortBy.entries,
+        rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
+    )
 
     val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
 
@@ -211,8 +205,8 @@ fun HomeLibrary(
         override fun onShortClick() = importLauncher.launch( arrayOf("text/csv", "text/comma-separated-values") )
     }
 
-    LaunchedEffect( sort.sortByState.value, sort.sortOrderState.value ) {
-        Database.playlistPreviews(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
+    LaunchedEffect( sort.sortBy, sort.sortOrder ) {
+        Database.playlistPreviews( sort.sortBy, sort.sortOrder ).collect { items = it }
     }
 
     if ( search.input.isNotBlank() )

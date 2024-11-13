@@ -37,11 +37,9 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -59,7 +57,7 @@ import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.toolbar.Sort
+import me.knighthat.component.tab.toolbar.SortComponent
 import me.knighthat.preference.Preference.HOME_ARTIST_ITEM_SIZE
 
 @ExperimentalMaterial3Api
@@ -76,16 +74,11 @@ fun HomeArtists(
     onSettingsClick: () -> Unit
 ) {
     // Essentials
-    val menuState = LocalMenuState.current
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val lazyGridState = rememberLazyGridState()
 
     var items by persistList<Artist>( "home/artists" )
-
-    // Sort states
-    val sortBy = rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
-    val sortOrder = rememberPreference(artistSortOrderKey, SortOrder.Descending)
 
     var itemsOnDisplay by persistList<Artist>( "home/artists/on_display" )
 
@@ -93,12 +86,11 @@ fun HomeArtists(
 
     val search = SearchComponent.init()
 
-    val sort = object: Sort<ArtistSortBy> {
-        override val menuState = menuState
-        override val sortOrderState = sortOrder
-        override val sortByEnum = ArtistSortBy.entries
-        override val sortByState = sortBy
-    }
+    val sort = SortComponent.init(
+        artistSortOrderKey,
+        ArtistSortBy.entries,
+        rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
+    )
 
     val itemSize = ItemSize.init( HOME_ARTIST_ITEM_SIZE )
 
@@ -114,8 +106,8 @@ fun HomeArtists(
         override fun query(): Flow<List<Song>?> = Database.songsInAllFollowedArtists()
     }
 
-    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value) {
-        Database.artists(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
+    LaunchedEffect( sort.sortBy, sort.sortOrder ) {
+        Database.artists( sort.sortBy, sort.sortOrder ).collect { items = it }
     }
     LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {

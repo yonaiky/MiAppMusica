@@ -41,7 +41,6 @@ import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
@@ -71,7 +70,7 @@ import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.toolbar.Sort
+import me.knighthat.component.tab.toolbar.SortComponent
 import me.knighthat.preference.Preference.HOME_ALBUM_ITEM_SIZE
 import me.knighthat.thumbnailShape
 
@@ -97,20 +96,15 @@ fun HomeAlbums(
 
     var items by persistList<Album>( "home/albums" )
 
-    // Sort states
-    val sortBy = rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
-    val sortOrder = rememberPreference(albumSortOrderKey, SortOrder.Descending)
-
     var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
 
     val search = SearchComponent.init()
 
-    val sort = object: Sort<AlbumSortBy> {
-        override val menuState = menuState
-        override val sortOrderState = sortOrder
-        override val sortByEnum = AlbumSortBy.entries
-        override val sortByState = sortBy
-    }
+    val sort = SortComponent.init(
+        albumSortOrderKey,
+        AlbumSortBy.entries,
+        rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
+    )
 
     val itemSize = ItemSize.init( HOME_ALBUM_ITEM_SIZE )
 
@@ -125,8 +119,8 @@ fun HomeAlbums(
         override fun query(): Flow<List<Song>?> = Database.songsInAllBookmarkedAlbums()
     }
 
-    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value) {
-        Database.albums(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
+    LaunchedEffect( sort.sortBy, sort.sortOrder ) {
+        Database.albums( sort.sortBy, sort.sortOrder ).collect { items = it }
     }
     LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {

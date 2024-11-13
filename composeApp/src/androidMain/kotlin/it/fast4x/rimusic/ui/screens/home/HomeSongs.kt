@@ -10,9 +10,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -161,7 +158,7 @@ import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.toolbar.Sort
+import me.knighthat.component.tab.toolbar.SortComponent
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import timber.log.Timber
@@ -270,11 +267,6 @@ fun HomeSongs(
             }
     }
 
-    // Sort states
-    val deviceSongSortState = rememberPreference(onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded)
-    val deviceFolderSortState = rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
-    val songSortState = rememberPreference(songSortByKey, SongSortBy.DateAdded)
-    val sortOrderState = rememberPreference(songSortOrderKey, SortOrder.Descending)
     // Dialog states
     val exportToggleState = rememberSaveable { mutableStateOf( false ) }
     val downloadAllToggleState = rememberSaveable { mutableStateOf( false ) }
@@ -284,24 +276,21 @@ fun HomeSongs(
 
     val search = SearchComponent.init()
 
-    val songSort = object: Sort<SongSortBy> {
-        override val menuState = menuState
-        override val sortOrderState = sortOrderState
-        override val sortByEnum = SongSortBy.entries
-        override val sortByState = songSortState
-    }
-    val deviceSongSort = object: Sort<OnDeviceSongSortBy> {
-        override val menuState = menuState
-        override val sortOrderState = sortOrderState
-        override val sortByEnum = OnDeviceSongSortBy.entries
-        override val sortByState = deviceSongSortState
-    }
-    val deviceFolderSort = object: Sort<OnDeviceFolderSortBy> {
-        override val menuState = menuState
-        override val sortOrderState = sortOrderState
-        override val sortByEnum = OnDeviceFolderSortBy.entries
-        override val sortByState = deviceFolderSortState
-    }
+    val songSort = SortComponent.init(
+        songSortOrderKey,
+        SongSortBy.entries,
+        rememberPreference(songSortByKey, SongSortBy.DateAdded)
+    )
+    val onDeviceSort = SortComponent.init(
+        songSortOrderKey,
+        OnDeviceSongSortBy.entries,
+        rememberPreference(onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded)
+    )
+    val deviceFolderSort = SortComponent.init(
+        songSortOrderKey,
+        OnDeviceFolderSortBy.entries,
+        rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
+    )
     val shuffle = object: SongsShuffle {
         override val binder = binder
         override val context = context
@@ -450,14 +439,9 @@ fun HomeSongs(
         }
     }
 
-    // Sort mutable
-    val sortOrder by sortOrderState
-    val sortBy by songSort.sortByState
-    val sortByOnDevice by deviceSongSort.sortByState
-
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
 
-    var songsDevice by remember(sortBy, sortOrder) {
+    var songsDevice by remember( songSort.sortBy, onDeviceSort.sortOrder ) {
         mutableStateOf<List<OnDeviceSong>>(emptyList())
     }
 
@@ -492,15 +476,15 @@ fun HomeSongs(
 
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
-            LaunchedEffect( sortBy, sortOrder, showHiddenSongs, includeLocalSongs ) {
+            LaunchedEffect( songSort.sortBy, songSort.sortOrder, showHiddenSongs, includeLocalSongs ) {
                 //Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
-                Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
+                Database.songs(songSort.sortBy, songSort.sortOrder, showHiddenSongs).collect { items = it }
 
             }
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
 
-            LaunchedEffect( Unit, builtInPlaylist, sortBy, sortOrder, topPlaylistPeriod, binder ) {
+            LaunchedEffect( Unit, builtInPlaylist, songSort.sortBy, songSort.sortOrder, topPlaylistPeriod, binder ) {
 
                 var songFlow: Flow<List<SongEntity>> = flowOf()
                 var dispatcher = Dispatchers.Default
@@ -509,12 +493,12 @@ fun HomeSongs(
                 when( builtInPlaylist ) {
                     BuiltInPlaylist.Favorites -> {
 
-                        songFlow = Database.songsFavorites(sortBy, sortOrder)
+                        songFlow = Database.songsFavorites(songSort.sortBy, songSort.sortOrder)
                         filterCondition = { true }
                     }
                     BuiltInPlaylist.Offline -> {
 
-                        songFlow = Database.songsOffline( sortBy, sortOrder )
+                        songFlow = Database.songsOffline( songSort.sortBy, songSort.sortOrder )
                         dispatcher = Dispatchers.IO
                         filterCondition = { song ->
                             song.contentLength?.let {
@@ -564,9 +548,9 @@ fun HomeSongs(
         }
         BuiltInPlaylist.OnDevice -> {
             items = emptyList()
-            LaunchedEffect(sortByOnDevice, sortOrder) {
+            LaunchedEffect( onDeviceSort.sortBy, onDeviceSort.sortOrder ) {
                 if (hasPermission)
-                    context.musicFilesAsFlow(sortByOnDevice, sortOrder, context)
+                    context.musicFilesAsFlow( onDeviceSort.sortBy, onDeviceSort.sortOrder, context )
                         .collect { songsDevice = it.distinctBy { song -> song.id } }
             }
         }
@@ -580,8 +564,8 @@ fun HomeSongs(
             val organized = OnDeviceOrganize.organizeSongsIntoFolders(songsDevice)
             currentFolder = OnDeviceOrganize.getFolderByPath(organized, currentFolderPath)
             songs = OnDeviceOrganize.sortSongs(
-                sortOrder,
-                deviceFolderSort.sortByState.value,
+                deviceFolderSort.sortOrder,
+                deviceFolderSort.sortBy,
                 currentFolder?.songs?.map { it.toSongEntity() } ?: emptyList())
             filteredSongs = songs
             folders = currentFolder?.subFolders?.toList() ?: emptyList()
@@ -600,9 +584,9 @@ fun HomeSongs(
             }
 
     if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
-        when (sortOrder) {
+        when ( songSort.sortOrder ) {
             SortOrder.Ascending -> {
-                when (sortBy) {
+                when ( songSort.sortBy ) {
                     SongSortBy.Title -> items = items.sortedBy { it.song.title }
                     SongSortBy.PlayTime -> items = items.sortedBy { it.song.totalPlayTimeMs }
                     SongSortBy.Duration -> items = items.sortedBy { it.song.durationText }
@@ -614,7 +598,7 @@ fun HomeSongs(
                 }
             }
             SortOrder.Descending -> {
-                when (sortBy) {
+                when ( songSort.sortBy ) {
                     SongSortBy.Title -> items = items.sortedByDescending { it.song.title }
                     SongSortBy.PlayTime -> items = items.sortedByDescending { it.song.totalPlayTimeMs }
                     SongSortBy.Duration -> items = items.sortedByDescending { it.song.durationText }
@@ -646,12 +630,6 @@ fun HomeSongs(
                         || it.song.artistsText?.contains( search.input, true ) ?: false
                         || it.albumTitle?.contains( search.input, true ) ?: false
             }
-    /******** */
-
-    val sortOrderIconRotation by animateFloatAsState(
-        targetValue = if (sortOrder == SortOrder.Ascending) 0f else 180f,
-        animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
-    )
 
     val lazyListState = rememberLazyListState()
 
@@ -718,7 +696,7 @@ fun HomeSongs(
                         if( showFolders )
                             deviceFolderSort.ToolBarButton()
                         else
-                            deviceSongSort.ToolBarButton()
+                            onDeviceSort.ToolBarButton()
                     }
                     else -> songSort.ToolBarButton()
                 }
@@ -1155,7 +1133,7 @@ fun HomeSongs(
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 onThumbnailContent = {
-                                    if (sortBy == SongSortBy.PlayTime) {
+                                    if ( songSort.sortBy == SongSortBy.PlayTime ) {
                                         BasicText(
                                             text = song.song.formattedTotalPlayTime,
                                             style = typography().xxs.semiBold.center.color(colorPalette().onOverlay),
