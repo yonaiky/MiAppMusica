@@ -447,7 +447,6 @@ class PlayerServiceModern : MediaLibraryService(),
         /* Queue is saved in events without scheduling it (remove this in future)*/
         // Load persistent queue when start activity and save periodically in background
         if (isPersistentQueueEnabled) {
-            maybeRestorePlayerQueue()
             maybeResumePlaybackOnStart()
 
             val scheduler = Executors.newScheduledThreadPool(1)

@@ -216,6 +216,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.extensions.pip.rememberPipHandler
 import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimation
+import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimationModern
 import it.fast4x.rimusic.utils.VerticalfadingEdge2
 import it.fast4x.rimusic.utils.actionExpandedKey
 import it.fast4x.rimusic.utils.textoutlineKey
