@@ -120,7 +120,6 @@ import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.deleteFileIfExists
 import it.fast4x.rimusic.utils.deletePipedPlaylist
 import it.fast4x.rimusic.utils.disableScrollingTextKey
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -164,7 +163,7 @@ import me.knighthat.component.tab.toolbar.DetailedSort
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.InputDialog
-import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -227,10 +226,6 @@ fun LocalPlaylistSongs(
         }
     }
 
-    // Search states
-    val visibleState = rememberSaveable { mutableStateOf( false ) }
-    val focusState = rememberSaveable { mutableStateOf( false ) }
-    val inputState = rememberSaveable { mutableStateOf( "" ) }
     // Sort states
     val sortByState = rememberPreference( playlistSongSortByKey, PlaylistSongSortBy.Title )
     val sortOrderState = rememberPreference( songSortOrderKey, SortOrder.Descending )
@@ -242,13 +237,8 @@ fun LocalPlaylistSongs(
     val downloadAllToggleState = rememberSaveable { mutableStateOf( false ) }
     val deleteDownloadsToggleState = rememberSaveable { mutableStateOf( false ) }
 
-    val search = remember {
-        object: Search{
-            override val visibleState = visibleState
-            override val focusState = focusState
-            override val inputState = inputState
-        }
-    }
+    val search = SearchComponent.init()
+
     val sort = remember {
         object: DetailedSort<PlaylistSongSortBy>{
             override val menuState = menuState
@@ -460,26 +450,22 @@ fun LocalPlaylistSongs(
         }
     }
 
-    // Search mutable
-    var isSearchBarVisible by search.visibleState
-    var isSearchBarFocused by search.focusState
-    val searchInput by search.inputState
     // Sort mutable
     val sortBy by sort.sortByState
     val sortOrder by sort.sortOrderState
 
-    LaunchedEffect(Unit, searchInput, sortOrder, sortBy) {
+    LaunchedEffect( Unit, sortOrder, sortBy ) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
             .collect { playlistSongs = if (parentalControlEnabled)
                 it.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) } else it }
     }
 
 
-    if ( searchInput.isNotBlank() )
+    if ( search.input.isNotBlank() )
         playlistSongs = playlistSongs.filter { songItem ->
-            songItem.song.title.contains(searchInput, true)
-                    || songItem.song.artistsText?.contains(searchInput, true) ?: false
-                    || songItem.albumTitle?.contains(searchInput, true) ?: false
+            songItem.song.title.contains(search.input, true)
+                    || songItem.song.artistsText?.contains(search.input, true) ?: false
+                    || songItem.albumTitle?.contains(search.input, true) ?: false
         }
 
     LaunchedEffect(Unit) {
@@ -1335,11 +1321,7 @@ fun LocalPlaylistSongs(
                                         onClick = {
                                             if (!selectItems) {
 
-                                                if (isSearchBarVisible)
-                                                    if (searchInput.isBlank())
-                                                        isSearchBarVisible = false
-                                                    else
-                                                        isSearchBarFocused = false
+                                                search.onItemSelected()
 
                                                 playlistSongs
                                                     .map(SongEntity::asMediaItem)

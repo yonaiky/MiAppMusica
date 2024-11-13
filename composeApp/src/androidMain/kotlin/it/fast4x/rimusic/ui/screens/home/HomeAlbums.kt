@@ -25,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,7 +69,7 @@ import me.knighthat.colorPalette
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Randomizer
-import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
@@ -99,10 +98,6 @@ fun HomeAlbums(
 
     var items by persistList<Album>( "home/albums" )
 
-    // Search states
-    val visibleState = rememberSaveable { mutableStateOf(false) }
-    val focusState = rememberSaveable { mutableStateOf( false ) }
-    val inputState = rememberSaveable { mutableStateOf( "" ) }
     // Sort states
     val sortBy = rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
     val sortOrder = rememberPreference(albumSortOrderKey, SortOrder.Descending)
@@ -111,11 +106,8 @@ fun HomeAlbums(
 
     var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
 
-    val search = object: Search {
-        override val visibleState = visibleState
-        override val focusState = focusState
-        override val inputState = inputState
-    }
+    val search = SearchComponent.init()
+
     val sort = object: Sort<AlbumSortBy> {
         override val menuState = menuState
         override val sortOrderState = sortOrder
@@ -137,19 +129,14 @@ fun HomeAlbums(
         override fun query(): Flow<List<Song>?> = Database.songsInAllBookmarkedAlbums()
     }
 
-    // Search mutable
-    var isSearchBarVisible by search.visibleState
-    var isSearchBarFocused by search.focusState
-    val searchInput by search.inputState
-
     LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value) {
         Database.albums(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
-    LaunchedEffect( items, searchInput ) {
+    LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {
-            it.title?.contains( searchInput, true) ?: false
-                    || it.year?.contains( searchInput, true) ?: false
-                    || it.authorsText?.contains( searchInput, true) ?: false
+            it.title?.contains( search.input, true) ?: false
+                    || it.year?.contains( search.input, true) ?: false
+                    || it.authorsText?.contains( search.input, true) ?: false
         }
     }
 
@@ -329,12 +316,7 @@ fun HomeAlbums(
                                     }
                                 },
                                 onClick = {
-                                    if ( isSearchBarVisible )
-                                        if ( searchInput.isBlank() )
-                                            isSearchBarVisible = false
-                                        else
-                                            isSearchBarFocused = false
-
+                                    search.onItemSelected()
                                     onAlbumClick( album )
                                 }
                             )

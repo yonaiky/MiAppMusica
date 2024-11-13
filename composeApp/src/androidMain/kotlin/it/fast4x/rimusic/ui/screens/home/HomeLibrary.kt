@@ -31,7 +31,6 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -88,7 +87,7 @@ import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.ItemSize
-import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
@@ -124,10 +123,6 @@ fun HomeLibrary(
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
-    // Search states
-    val visibleState = rememberSaveable { mutableStateOf(false) }
-    val focusState = rememberSaveable { mutableStateOf( false ) }
-    val inputState = rememberSaveable { mutableStateOf("") }
     // Sort states
     val sortBy = rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
     val sortOrder = rememberEncryptedPreference(pipedApiTokenKey, SortOrder.Descending)
@@ -136,11 +131,8 @@ fun HomeLibrary(
     // Dialog states
     val newPlaylistToggleState = remember { mutableStateOf( false ) }
 
-    val search = object: Search {
-            override val visibleState = visibleState
-        override val focusState = focusState
-        override val inputState = inputState
-    }
+    val search = SearchComponent.init()
+
     val sort = object: Sort<PlaylistSortBy> {
         override val menuState = menuState
         override val sortOrderState = sortOrder
@@ -223,18 +215,13 @@ fun HomeLibrary(
         override fun onShortClick() = importLauncher.launch( arrayOf("text/csv", "text/comma-separated-values") )
     }
 
-    // Mutable
-    var isSearchBarVisible by search.visibleState
-    var isSearchBarFocused by search.focusState
-    val searchInput by search.inputState
-
-    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
+    LaunchedEffect( sort.sortByState.value, sort.sortOrderState.value ) {
         Database.playlistPreviews(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
 
-    if ( searchInput.isNotBlank() )
+    if ( search.input.isNotBlank() )
         items = items.filter {
-            it.playlist.name.contains( searchInput, true )
+            it.playlist.name.contains( search.input, true )
         }
 
     // START: Additional playlists
@@ -361,12 +348,7 @@ fun HomeLibrary(
                         modifier = Modifier.fillMaxSize()
                                            .animateItem( fadeInSpec = null, fadeOutSpec = null )
                                            .clickable(onClick = {
-                                               if ( isSearchBarVisible )
-                                                   if ( searchInput.isBlank() )
-                                                       isSearchBarVisible = false
-                                                   else
-                                                       isSearchBarFocused = false
-
+                                               search.onItemSelected()
                                                onPlaylistClick( preview.playlist )
                                            }),
                         disableScrollingText = disableScrollingText

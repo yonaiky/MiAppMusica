@@ -84,8 +84,8 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
@@ -159,7 +159,7 @@ import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
-import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.thumbnailShape
@@ -270,10 +270,6 @@ fun HomeSongs(
             }
     }
 
-    // Search states
-    val searching = rememberSaveable { mutableStateOf(false) }
-    val isSearchInputFocused = rememberSaveable { mutableStateOf( false ) }
-    val filter = rememberSaveable { mutableStateOf( "" ) }
     // Sort states
     val deviceSongSortState = rememberPreference(onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded)
     val deviceFolderSortState = rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
@@ -286,11 +282,8 @@ fun HomeSongs(
     val deleteSongToggleState = rememberSaveable { mutableStateOf( false ) }
     val hideSongToggleState = rememberSaveable { mutableStateOf( false ) }
 
-    val search = object: Search {
-        override val visibleState = searching
-        override val focusState = isSearchInputFocused
-        override val inputState = filter
-    }
+    val search = SearchComponent.init()
+
     val songSort = object: Sort<SongSortBy> {
         override val menuState = menuState
         override val sortOrderState = sortOrderState
@@ -457,10 +450,6 @@ fun HomeSongs(
         }
     }
 
-    // Search mutable
-    var isSearchBarVisible by search.visibleState
-    var isSearchBarFocused by search.focusState
-    var searchInput by search.inputState
     // Sort mutable
     val sortOrder by sortOrderState
     val sortBy by songSort.sortByState
@@ -503,7 +492,7 @@ fun HomeSongs(
 
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
-            LaunchedEffect(sortBy, sortOrder, searchInput, showHiddenSongs, includeLocalSongs) {
+            LaunchedEffect( sortBy, sortOrder, showHiddenSongs, includeLocalSongs ) {
                 //Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
                 Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
 
@@ -511,7 +500,7 @@ fun HomeSongs(
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
 
-            LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, searchInput, topPlaylistPeriod, binder) {
+            LaunchedEffect( Unit, builtInPlaylist, sortBy, sortOrder, topPlaylistPeriod, binder ) {
 
                 var songFlow: Flow<List<SongEntity>> = flowOf()
                 var dispatcher = Dispatchers.Default
@@ -640,22 +629,22 @@ fun HomeSongs(
 
     }
 
-    if( searchInput.isNotBlank() )
+    if( search.input.isNotBlank() )
         if( builtInPlaylist == BuiltInPlaylist.OnDevice ) {
             filteredSongs = songs.filter {
-                it.song.title.contains( searchInput, true )
-                        || it.song.artistsText?.contains( searchInput, true ) ?: false
-                        || it.albumTitle?.contains( searchInput, true ) ?: false
+                it.song.title.contains( search.input, true )
+                        || it.song.artistsText?.contains( search.input, true ) ?: false
+                        || it.albumTitle?.contains( search.input, true ) ?: false
             }
 
             filteredFolders = folders.filter {
-                it.name.contains( searchInput, true )
+                it.name.contains( search.input, true )
             }
         } else
             items = items.filter {
-                it.song.title.contains( searchInput, true )
-                        || it.song.artistsText?.contains( searchInput, true ) ?: false
-                        || it.albumTitle?.contains( searchInput, true ) ?: false
+                it.song.title.contains( search.input, true )
+                        || it.song.artistsText?.contains( search.input, true ) ?: false
+                        || it.albumTitle?.contains( search.input, true ) ?: false
             }
     /******** */
 
@@ -1031,12 +1020,7 @@ fun HomeSongs(
                                                 },
                                                 onClick = {
                                                     currentFolderPath += folder.name + "/"
-
-                                                    if (isSearchBarVisible)
-                                                        if (searchInput.isBlank())
-                                                            isSearchBarVisible = false
-                                                        else
-                                                            isSearchBarFocused = false
+                                                    search.onItemSelected()
                                                 }
                                             ),
                                         disableScrollingText = disableScrollingText
@@ -1112,11 +1096,7 @@ fun HomeSongs(
                                                 )
                                             },
                                             onClick = {
-                                                if (isSearchBarVisible)
-                                                    if (searchInput.isBlank())
-                                                        isSearchBarVisible = false
-                                                    else
-                                                        isSearchBarFocused = false
+                                                search.onItemSelected()
 
                                                 if (!selectItems) {
                                                     binder?.stopRadio()
@@ -1261,8 +1241,8 @@ fun HomeSongs(
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         },
                                         onClick = {
-                                            isSearchBarVisible = false
-                                            searchInput = ""
+                                            search.isVisible = false
+                                            search.input = ""
 
                                             val maxSongs = maxSongsInQueue.number.toInt()
                                             val itemsRange: IntRange

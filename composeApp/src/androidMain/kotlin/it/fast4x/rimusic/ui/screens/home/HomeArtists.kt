@@ -24,8 +24,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -59,7 +57,7 @@ import me.knighthat.colorPalette
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Randomizer
-import me.knighthat.component.tab.toolbar.Search
+import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.Sort
 import me.knighthat.preference.Preference
@@ -86,10 +84,6 @@ fun HomeArtists(
 
     var items by persistList<Artist>( "home/artists" )
 
-    // Search states
-    val visibleState = rememberSaveable { mutableStateOf(false) }
-    val focusState = rememberSaveable { mutableStateOf( false ) }
-    val inputState = rememberSaveable { mutableStateOf( "" ) }
     // Sort states
     val sortBy = rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
     val sortOrder = rememberPreference(artistSortOrderKey, SortOrder.Descending)
@@ -101,11 +95,8 @@ fun HomeArtists(
     // Size state
     val sizeState = Preference.remember( HOME_ARTIST_ITEM_SIZE )
 
-    val search = object: Search {
-        override val visibleState = visibleState
-        override val focusState = focusState
-        override val inputState = inputState
-    }
+    val search = SearchComponent.init()
+
     val sort = object: Sort<ArtistSortBy> {
         override val menuState = menuState
         override val sortOrderState = sortOrder
@@ -128,17 +119,12 @@ fun HomeArtists(
         override fun query(): Flow<List<Song>?> = Database.songsInAllFollowedArtists()
     }
 
-    // Search mutable
-    var isSearchBarVisible by search.visibleState
-    var isSearchBarFocused by search.focusState
-    val searchInput by search.inputState
-
     LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value) {
         Database.artists(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
-    LaunchedEffect( items, searchInput ) {
+    LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {
-            it.name?.contains( inputState.value, true ) ?: false
+            it.name?.contains( search.input, true ) ?: false
         }
     }
 
@@ -197,12 +183,7 @@ fun HomeArtists(
                         alternative = true,
                         modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
                                            .clickable(onClick = {
-                                               if ( isSearchBarVisible )
-                                                   if ( searchInput.isBlank() )
-                                                        isSearchBarVisible = false
-                                                   else
-                                                       isSearchBarFocused = false
-
+                                               search.onItemSelected()
                                                onArtistClick( artist )
                                            }),
                         disableScrollingText = disableScrollingText

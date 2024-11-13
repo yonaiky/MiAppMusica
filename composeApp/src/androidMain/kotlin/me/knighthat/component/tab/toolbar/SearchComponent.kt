@@ -21,6 +21,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,11 +48,38 @@ import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.typography
 
-interface Search: Button {
+class SearchComponent private constructor(
+    private val visibleState: MutableState<Boolean>,
+    private val focusState: MutableState<Boolean>,
+    private val inputState: MutableState<String>
+): Button {
 
-    val visibleState: MutableState<Boolean>
-    val focusState: MutableState<Boolean>
-    val inputState: MutableState<String>
+    companion object {
+        @JvmStatic
+        @Composable
+        fun init(): SearchComponent =
+            SearchComponent(
+                rememberSaveable { mutableStateOf(false) },
+                rememberSaveable { mutableStateOf(false) },
+                rememberSaveable { mutableStateOf("") }
+            )
+    }
+
+    var isVisible: Boolean = visibleState.value
+        set(value) {
+            visibleState.value = value
+            field = value
+        }
+    var isFocused: Boolean = focusState.value
+        set(value) {
+            focusState.value = value
+            field = value
+        }
+    var input: String = inputState.value
+        set(value) {
+            inputState.value = value
+            field = value
+        }
 
     @Composable
     private fun ColumnScope.DecorationBox( innerTextField: @Composable () -> Unit ) {
@@ -95,6 +123,14 @@ interface Search: Button {
             // Actual text from user
             innerTextField()
         }
+    }
+
+    fun onItemSelected() {
+        if ( isVisible )
+            if ( input.isBlank() )
+                isVisible = false
+            else
+                isFocused = false
     }
 
     @Composable
@@ -153,6 +189,7 @@ interface Search: Button {
                 keyboardActions = KeyboardActions(onDone = {
                     showSearchBar = input.isNotBlank()
                     isFocused = false
+                    keyboardController?.hide()
                 }),
                 cursorBrush = SolidColor(colorPalette().text),
                 decorationBox = { colScope.DecorationBox( it ) },
