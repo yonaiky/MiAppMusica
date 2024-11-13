@@ -216,6 +216,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimationModern
 import it.fast4x.rimusic.utils.VerticalfadingEdge2
+import it.fast4x.rimusic.utils.VinylSizeKey
 import it.fast4x.rimusic.utils.actionExpandedKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlin.Float.Companion.POSITIVE_INFINITY
@@ -318,10 +319,12 @@ fun Player(
     val defaultOffset = 0f
     val defaultSpacing = 0f
     val defaultFade = 5f
+    val defaultVinylSize = 50f
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
     var thumbnailOffset  by rememberPreference(thumbnailOffsetKey, defaultOffset)
     var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
     var thumbnailFade  by rememberPreference(thumbnailFadeKey, defaultFade)
+    var vinylSize by rememberPreference(VinylSizeKey, defaultVinylSize)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showBlurPlayerDialog by rememberSaveable {
         mutableStateOf(false)
@@ -354,7 +357,8 @@ fun Player(
             onDismiss = { showThumbnailOffsetDialog = false},
             scaleValue = { thumbnailOffset = it },
             spacingValue = { thumbnailSpacing = it },
-            fadeValue = { thumbnailFade = it }
+            fadeValue = { thumbnailFade = it },
+            vinylSizeValue = { vinylSize = it }
         )
     }
 
@@ -1792,7 +1796,8 @@ fun Player(
                              isSongPlaying = player.isPlaying,
                              modifier = coverModifier,
                              state = pagerState,
-                             it = it
+                             it = it,
+                             vinylSize = vinylSize
                          )
                      else
                          Image(
@@ -2626,7 +2631,8 @@ fun Player(
                                              isSongPlaying = player.isPlaying,
                                              modifier = coverModifier,
                                              state = pagerState,
-                                             it = it
+                                             it = it,
+                                             vinylSize = vinylSize
                                          )
                                      else
                                          Image(
