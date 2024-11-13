@@ -214,7 +214,7 @@ import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.QueueLoopType
-import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimation
+import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimationModern
 import it.fast4x.rimusic.utils.VerticalfadingEdge2
 import it.fast4x.rimusic.utils.actionExpandedKey
 import it.fast4x.rimusic.utils.textoutlineKey
@@ -1787,11 +1787,12 @@ fun Player(
                          )
 
                      if (showVinylThumbnailAnimation)
-                         VinylThumbnailCoverAnimation(
+                         VinylThumbnailCoverAnimationModern(
                              painter = coverPainter,
                              isSongPlaying = player.isPlaying,
-                             modifier = coverModifier
-
+                             modifier = coverModifier,
+                             state = pagerState,
+                             it = it
                          )
                      else
                          Image(
@@ -2620,11 +2621,12 @@ fun Player(
                                          )
 
                                      if (showVinylThumbnailAnimation)
-                                         VinylThumbnailCoverAnimation(
+                                         VinylThumbnailCoverAnimationModern(
                                              painter = coverPainter,
                                              isSongPlaying = player.isPlaying,
-                                             modifier = coverModifier
-
+                                             modifier = coverModifier,
+                                             state = pagerState,
+                                             it = it
                                          )
                                      else
                                          Image(
