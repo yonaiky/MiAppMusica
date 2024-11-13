@@ -97,7 +97,7 @@ fun HomeArtists(
     // Size state
     val sizeState = Preference.remember( HOME_ARTIST_ITEM_SIZE )
     // Randomizer states
-    val itemsState = persistList<Artist>( "home/albums" )
+    val itemsState = persistList<Artist>( "home/artists" )
 
     val search = object: Search {
         override val visibleState = visibleState
