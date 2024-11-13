@@ -84,6 +84,8 @@ fun HomeArtists(
     val binder = LocalPlayerServiceBinder.current
     val lazyGridState = rememberLazyGridState()
 
+    var items by persistList<Artist>( "home/artists" )
+
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
     val focusState = rememberSaveable { mutableStateOf( false ) }
@@ -92,12 +94,12 @@ fun HomeArtists(
     val sortBy = rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
     val sortOrder = rememberPreference(artistSortOrderKey, SortOrder.Descending)
 
+    var itemsOnDisplay by persistList<Artist>( "home/artists/on_display" )
+
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     // Size state
     val sizeState = Preference.remember( HOME_ARTIST_ITEM_SIZE )
-    // Randomizer states
-    val itemsState = persistList<Artist>( "home/artists" )
 
     val search = object: Search {
         override val visibleState = visibleState
@@ -115,9 +117,9 @@ fun HomeArtists(
         override val sizeState = sizeState
     }
     val randomizer = object: Randomizer<Artist> {
-        override val itemsState = itemsState
+        override fun getItems(): List<Artist> = itemsOnDisplay
+        override fun onClick(index: Int) = onArtistClick(itemsOnDisplay[index])
 
-        override fun onClick(item: Artist) = onArtistClick(item)
     }
     val shuffle = object: SongsShuffle {
         override val binder = binder
@@ -130,18 +132,15 @@ fun HomeArtists(
     var isSearchBarVisible by search.visibleState
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
-    // Items mutable
-    var items by randomizer.itemsState
 
-    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, inputState) {
+    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value) {
         Database.artists(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
-
-    if ( searchInput.isNotBlank() )
-        items = items
-            .filter {
-                it.name?.contains( searchInput, true) ?: false
-            }
+    LaunchedEffect( items, searchInput ) {
+        itemsOnDisplay = items.filter {
+            it.name?.contains( inputState.value, true ) ?: false
+        }
+    }
 
     Box (
         modifier = Modifier
@@ -190,7 +189,7 @@ fun HomeArtists(
                                    .fillMaxSize(),
                 contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
             ) {
-                items(items = items, key = Artist::id) { artist ->
+                items(items = itemsOnDisplay, key = Artist::id) { artist ->
                     ArtistItem(
                         artist = artist,
                         thumbnailSizeDp = itemSize.sizeState.value.dp,

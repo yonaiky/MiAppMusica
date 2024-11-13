@@ -97,6 +97,8 @@ fun HomeAlbums(
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
+    var items by persistList<Album>( "home/albums" )
+
     // Search states
     val visibleState = rememberSaveable { mutableStateOf(false) }
     val focusState = rememberSaveable { mutableStateOf( false ) }
@@ -106,8 +108,8 @@ fun HomeAlbums(
     val sortOrder = rememberPreference(albumSortOrderKey, SortOrder.Descending)
     // Size state
     val sizeState = Preference.remember( HOME_ALBUM_ITEM_SIZE )
-    // Randomizer states
-    val itemsState = persistList<Album>( "home/albums" )
+
+    var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
 
     val search = object: Search {
         override val visibleState = visibleState
@@ -125,9 +127,8 @@ fun HomeAlbums(
         override val sizeState = sizeState
     }
     val randomizer = object: Randomizer<Album> {
-        override val itemsState = itemsState
-
-        override fun onClick(item: Album) = onAlbumClick(item)
+        override fun getItems(): List<Album> = itemsOnDisplay
+        override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
     }
     val shuffle = object: SongsShuffle{
         override val binder = binder
@@ -140,19 +141,17 @@ fun HomeAlbums(
     var isSearchBarVisible by search.visibleState
     var isSearchBarFocused by search.focusState
     val searchInput by search.inputState
-    // Items mutable
-    var items by randomizer.itemsState
 
-    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value, searchInput) {
+    LaunchedEffect(sort.sortByState.value, sort.sortOrderState.value) {
         Database.albums(sort.sortByState.value, sort.sortOrderState.value).collect { items = it }
     }
-
-    if ( searchInput.isNotBlank() )
-        items = items.filter {
+    LaunchedEffect( items, searchInput ) {
+        itemsOnDisplay = items.filter {
             it.title?.contains( searchInput, true) ?: false
                     || it.year?.contains( searchInput, true) ?: false
                     || it.authorsText?.contains( searchInput, true) ?: false
         }
+    }
 
     Box(
         modifier = Modifier
@@ -203,7 +202,7 @@ fun HomeAlbums(
                 contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
             ) {
                 items(
-                    items = items,
+                    items = itemsOnDisplay,
                     key = Album::id
                 ) { album ->
                     var songs = remember { listOf<Song>() }

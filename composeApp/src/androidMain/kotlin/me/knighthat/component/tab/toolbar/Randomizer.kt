@@ -1,8 +1,6 @@
 package me.knighthat.component.tab.toolbar
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import it.fast4x.rimusic.R
 import me.knighthat.component.header.TabToolBar
 import kotlin.random.Random
@@ -18,19 +16,17 @@ interface Randomizer<T>: Button {
             Random( System.currentTimeMillis() ).nextInt( until )
     }
 
-    val itemsState: MutableState<List<T>>
+    fun getItems(): List<T>
 
-    fun onClick( item: T )
+    fun onClick( index: Int )
 
     @Composable
     override fun ToolBarButton() {
-        val items by itemsState
-
         TabToolBar.Icon(
             iconId = R.drawable.dice,
-            enabled = items.isNotEmpty()
+            enabled = getItems().isNotEmpty()
         ) {
-            onClick( items[nextInt( items.size )] )
+            onClick( nextInt( getItems().size ) )
         }
     }
 }
