@@ -171,6 +171,7 @@ import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
@@ -225,6 +226,8 @@ fun DefaultUiSettings() {
     exoPlayerMinTimeForEvent = ExoPlayerMinTimeForEvent.`20s`
     var persistentQueue by rememberPreference(persistentQueueKey, false)
     persistentQueue = false
+    var resumePlaybackOnStart by rememberPreference(resumePlaybackOnStartKey, false)
+    resumePlaybackOnStart = false
     var closebackgroundPlayer by rememberPreference(closebackgroundPlayerKey, false)
     closebackgroundPlayer = false
     var closeWithBackButton by rememberPreference(closeWithBackButtonKey, true)
@@ -535,6 +538,7 @@ fun UiSettings(
         ExoPlayerMinTimeForEvent.`20s`
     )
     var persistentQueue by rememberPreference(persistentQueueKey, false)
+    var resumePlaybackOnStart by rememberPreference(resumePlaybackOnStartKey, false)
     var closebackgroundPlayer by rememberPreference(closebackgroundPlayerKey, false)
     var closeWithBackButton by rememberPreference(closeWithBackButtonKey, true)
     var resumePlaybackWhenDeviceConnected by rememberPreference(
@@ -1084,6 +1088,23 @@ fun UiSettings(
                 }
             )
             RestartPlayerService(restartService, onRestart = { restartService = false })
+
+            AnimatedVisibility(visible = persistentQueue) {
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    SwitchSettingEntry(
+                        title =  stringResource(R.string.resume_playback_on_start),
+                        text = stringResource(R.string.resume_automatically_when_app_opens),
+                        isChecked = resumePlaybackOnStart,
+                        onCheckedChange = {
+                            resumePlaybackOnStart = it
+                            restartService = true
+                        }
+                    )
+                    RestartPlayerService(restartService, onRestart = { restartService = false } )
+                }
+            }
         }
 
 

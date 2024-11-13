@@ -150,6 +150,7 @@ import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.putEnum
 import it.fast4x.rimusic.utils.queueLoopTypeKey
+import it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
@@ -447,6 +448,7 @@ class PlayerServiceModern : MediaLibraryService(),
         // Load persistent queue when start activity and save periodically in background
         if (isPersistentQueueEnabled) {
             maybeRestorePlayerQueue()
+            maybeResumePlaybackOnStart()
 
             val scheduler = Executors.newScheduledThreadPool(1)
             scheduler.scheduleWithFixedDelay({
@@ -1319,6 +1321,13 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     }
 
+    private fun maybeResumePlaybackOnStart() {
+        if(!isPersistentQueueEnabled || !preferences.getBoolean(resumePlaybackOnStartKey, false)) return
+
+        if(!player.isPlaying) {
+            player.play()
+        }
+    }
 
     @ExperimentalCoroutinesApi
     @FlowPreview
