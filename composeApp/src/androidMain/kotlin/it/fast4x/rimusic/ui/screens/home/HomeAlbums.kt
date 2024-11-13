@@ -2,8 +2,6 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -110,11 +108,6 @@ fun HomeAlbums(
     val sizeState = Preference.remember( HOME_ALBUM_ITEM_SIZE )
     // Randomizer states
     val itemsState = persistList<Album>( "home/albums" )
-    val rotationState = rememberSaveable { mutableStateOf( false ) }
-    val angleState = animateFloatAsState(
-        targetValue = if (rotationState.value) 360F else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
-    )
 
     val search = object: Search {
         override val visibleState = visibleState
@@ -133,8 +126,6 @@ fun HomeAlbums(
     }
     val randomizer = object: Randomizer<Album> {
         override val itemsState = itemsState
-        override val rotationState = rotationState
-        override val angleState = angleState
 
         override fun onClick(item: Album) = onAlbumClick(item)
     }

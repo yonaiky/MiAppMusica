@@ -2,11 +2,7 @@ package me.knighthat.component.tab.toolbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import it.fast4x.rimusic.R
 import me.knighthat.component.header.TabToolBar
 import kotlin.random.Random
@@ -23,22 +19,17 @@ interface Randomizer<T>: Button {
     }
 
     val itemsState: MutableState<List<T>>
-    val rotationState: MutableState<Boolean>
-    val angleState: State<Float>
 
     fun onClick( item: T )
 
     @Composable
     override fun ToolBarButton() {
         val items by itemsState
-        var isRotated by rotationState
 
         TabToolBar.Icon(
             iconId = R.drawable.dice,
-            enabled = items.isNotEmpty(),
-            modifier = Modifier.rotate( angleState.value )
+            enabled = items.isNotEmpty()
         ) {
-            isRotated = !isRotated
             onClick( items[nextInt( items.size )] )
         }
     }

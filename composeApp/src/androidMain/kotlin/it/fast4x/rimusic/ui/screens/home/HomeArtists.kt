@@ -3,8 +3,6 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,8 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -86,7 +82,6 @@ fun HomeArtists(
     val menuState = LocalMenuState.current
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
-    val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
     // Search states
@@ -103,11 +98,6 @@ fun HomeArtists(
     val sizeState = Preference.remember( HOME_ARTIST_ITEM_SIZE )
     // Randomizer states
     val itemsState = persistList<Artist>( "home/albums" )
-    val rotationState = rememberSaveable { mutableStateOf( false ) }
-    val angleState = animateFloatAsState(
-        targetValue = if (rotationState.value) 360F else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
-    )
 
     val search = object: Search {
         override val visibleState = visibleState
@@ -126,8 +116,6 @@ fun HomeArtists(
     }
     val randomizer = object: Randomizer<Artist> {
         override val itemsState = itemsState
-        override val rotationState = rotationState
-        override val angleState = angleState
 
         override fun onClick(item: Artist) = onArtistClick(item)
     }
