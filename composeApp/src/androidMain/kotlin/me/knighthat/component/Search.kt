@@ -49,15 +49,24 @@ import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.MenuIcon
 import me.knighthat.typography
 
+<<<<<<<< HEAD:composeApp/src/androidMain/kotlin/me/knighthat/component/Search.kt
 class Search private constructor(
     private val inputState: MutableState<String>,
     private val visibleState: MutableState<Boolean>,
     private val focusState: MutableState<Boolean>,
 ): MenuIcon, Descriptive {
+========
+class SearchComponent private constructor(
+    private val visibleState: MutableState<Boolean>,
+    private val focusState: MutableState<Boolean>,
+    private val inputState: MutableState<String>
+): Button {
+>>>>>>>> 9ee351301 (moved Search to class SearchComponent):composeApp/src/androidMain/kotlin/me/knighthat/component/tab/toolbar/SearchComponent.kt
 
     companion object {
         @JvmStatic
         @Composable
+<<<<<<<< HEAD:composeApp/src/androidMain/kotlin/me/knighthat/component/Search.kt
         fun init() = Search(
             rememberSaveable { mutableStateOf( "" ) },
             rememberSaveable { mutableStateOf( false ) },
@@ -71,6 +80,16 @@ class Search private constructor(
         @Composable
         get() = stringResource( messageId )
 
+========
+        fun init(): SearchComponent =
+            SearchComponent(
+                rememberSaveable { mutableStateOf(false) },
+                rememberSaveable { mutableStateOf(false) },
+                rememberSaveable { mutableStateOf("") }
+            )
+    }
+
+>>>>>>>> 9ee351301 (moved Search to class SearchComponent):composeApp/src/androidMain/kotlin/me/knighthat/component/tab/toolbar/SearchComponent.kt
     var isVisible: Boolean = visibleState.value
         set(value) {
             visibleState.value = value
