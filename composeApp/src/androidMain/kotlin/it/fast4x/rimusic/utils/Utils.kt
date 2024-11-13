@@ -295,11 +295,7 @@ val MediaItem.cleaned: MediaItem
                 .setTitle(cleanPrefix(mediaMetadata.title.toString()))
                 .setArtist(mediaMetadata.artist)
                 .setArtworkUri(mediaMetadata.artworkUri)
-                .setExtras(
-                    bundleOf(
-                        "durationText" to mediaMetadata.extras?.getString("durationText")
-                    )
-                )
+                .setExtras(mediaMetadata.extras)
                 .build()
         )
         .setMediaId(mediaId)
