@@ -211,7 +211,6 @@ import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 import me.knighthat.colorPalette
 import me.knighthat.component.tab.toolbar.Search
-import timber.log.Timber
 
 @Composable
 fun DefaultUiSettings() {
