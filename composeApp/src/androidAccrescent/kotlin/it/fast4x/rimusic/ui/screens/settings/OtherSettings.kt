@@ -449,6 +449,7 @@ fun OtherSettings() {
                         icon = R.drawable.chevron_back,
                         text = stringResource(R.string.cancel),
                         onClick = {
+                            loadInstances = false
                             showInstances = false
                             menuState.hide()
                         }
@@ -469,6 +470,7 @@ fun OtherSettings() {
                                     //println("mediaItem Instance ${instances[index].apiBaseUrl}")
                                 }
                                  */
+                                loadInstances = false
                                 showInstances = false
                             }
                         )
@@ -477,6 +479,7 @@ fun OtherSettings() {
                         icon = R.drawable.chevron_back,
                         text = stringResource(R.string.cancel),
                         onClick = {
+                            loadInstances = false
                             showInstances = false
                             menuState.hide()
                         }
