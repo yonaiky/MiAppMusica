@@ -58,12 +58,10 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
-import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
@@ -78,7 +76,6 @@ import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import me.knighthat.colorPalette
-import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.InputDialog
@@ -86,6 +83,7 @@ import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.SortComponent
+import me.knighthat.component.tab.toolbar.SyncComponent
 import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
 
 
@@ -111,7 +109,6 @@ fun HomeLibrary(
     // Non-vital
     val pipedSession = getPipedSession()
     var plistId by remember { mutableLongStateOf( 0L ) }
-    var autosync by rememberPreference(autosyncKey, false)
     var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
@@ -198,6 +195,7 @@ fun HomeLibrary(
 
         override fun onShortClick() = importLauncher.launch( arrayOf("text/csv", "text/comma-separated-values") )
     }
+    val sync = SyncComponent.init()
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.playlistPreviews( sort.sortBy, sort.sortOrder ).collect { items = it }
@@ -266,17 +264,7 @@ fun HomeLibrary(
             ) {
                 sort.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.sync,
-                    tint = if (autosync) colorPalette().text else colorPalette().textDisabled,
-                    onShortClick = { autosync = !autosync },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.autosync),
-                            context = context
-                        )
-                    }
-                )
+                sync.ToolBarButton()
 
                 search.ToolBarButton()
 
