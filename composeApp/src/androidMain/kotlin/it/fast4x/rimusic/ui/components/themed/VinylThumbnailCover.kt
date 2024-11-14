@@ -32,6 +32,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.utils.VinylSizeKey
+import it.fast4x.rimusic.utils.rememberPreference
 
 @Composable
 fun VinylThumnbailCover(
@@ -39,7 +41,7 @@ fun VinylThumnbailCover(
     rotationDegrees: Float = 0f,
     painter: Painter
 ) {
-
+    var vinylSize by rememberPreference(VinylSizeKey, 50f)
     val roundedShape = object : Shape {
         override fun createOutline(
             size: Size,
@@ -83,7 +85,7 @@ fun VinylThumnbailCover(
 
         Image(
             modifier = Modifier
-                .fillMaxSize(0.5f)
+                .fillMaxSize(vinylSize*0.01f)
                 .rotate(rotationDegrees)
                 .aspectRatio(1.0f)
                 .align(Alignment.Center)
@@ -147,7 +149,8 @@ fun VinylThumbnailCoverAnimationModern(
     isSongPlaying: Boolean = true,
     painter: Painter,
     state : PagerState,
-    it : Int
+    it : Int,
+    vinylSize : Float
 ) {
     var currentRotation by remember {
         mutableFloatStateOf(0f)
