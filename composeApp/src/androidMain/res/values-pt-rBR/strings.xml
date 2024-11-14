@@ -777,7 +777,7 @@
     <string name="removed_thumbnail">Miniatura removida</string>
     <string name="failed_to_remove_thumbnail">Falha ao remover a miniatura</string>
     <string name="showsecondline">Mostrar a tradução na segunda linha</string>
-    <string name="enter_the_value">Enter The Value</string>
+    <string name="enter_the_value">Insira o valor</string>
     <string name="resume_playback_on_start">Resume Playback On Start</string>
-    <string name="resume_automatically_when_app_opens">Resume Playback automatically when the app is opened</string>
+    <string name="resume_automatically_when_app_opens">Retomar a reprodução automaticamente quando o aplicativo for aberto</string>
 </resources>
