@@ -16,7 +16,7 @@ import me.knighthat.colorPalette
 
 object TabToolBar {
 
-    private val TOOLBAR_ICON_SIZE = 32.dp
+    val TOOLBAR_ICON_SIZE = 32.dp
 
     @Composable
     fun Icon(
