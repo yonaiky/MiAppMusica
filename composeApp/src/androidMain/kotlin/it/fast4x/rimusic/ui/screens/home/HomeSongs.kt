@@ -77,7 +77,6 @@ import it.fast4x.rimusic.enums.TopPlaylistPeriod
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
@@ -291,17 +290,11 @@ fun HomeSongs(
         OnDeviceFolderSortBy.entries,
         rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
     )
-    val shuffle = object: SongsShuffle {
-        override val binder = binder
-        override val context = context
-        override val dispatcher = Dispatchers.Main
+    val shuffle = SongsShuffle.init {
+        if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
+            items = filteredSongs
 
-        override fun query(): Flow<List<Song>?> {
-            if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
-                items = filteredSongs
-
-            return  flowOf(items.map(SongEntity::song))
-        }
+        flowOf(items.map(SongEntity::song))
     }
     // START - Import songs
     val importLauncher = rememberLauncherForActivityResult(

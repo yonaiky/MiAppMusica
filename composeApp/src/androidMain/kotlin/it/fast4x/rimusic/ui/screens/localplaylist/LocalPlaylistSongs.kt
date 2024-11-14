@@ -148,7 +148,6 @@ import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOf
@@ -240,14 +239,8 @@ fun LocalPlaylistSongs(
 
     val sort = PlaylistSongsSortComponent.init()
 
-    val shuffle = remember {
-        object: SongsShuffle{
-            override val binder = binder
-            override val context = context
-            override val dispatcher = Dispatchers.Main
-
-            override fun query(): Flow<List<Song>?> = flowOf( playlistSongs.map( SongEntity::song ) )
-        }
+    val shuffle = SongsShuffle.init {
+        flowOf( playlistSongs.map( SongEntity::song ) )
     }
     val renameDialog = remember {
         object: InputDialog {

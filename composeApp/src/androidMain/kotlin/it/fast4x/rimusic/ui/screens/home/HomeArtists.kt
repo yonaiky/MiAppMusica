@@ -39,7 +39,6 @@ import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -50,7 +49,6 @@ import it.fast4x.rimusic.utils.artistSortOrderKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
-import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
@@ -99,12 +97,7 @@ fun HomeArtists(
         override fun onClick(index: Int) = onArtistClick(itemsOnDisplay[index])
 
     }
-    val shuffle = object: SongsShuffle {
-        override val binder = binder
-        override val context = context
-
-        override fun query(): Flow<List<Song>?> = Database.songsInAllFollowedArtists()
-    }
+    val shuffle = SongsShuffle.init( songs = Database::songsInAllFollowedArtists )
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.artists( sort.sortBy, sort.sortOrder ).collect { items = it }

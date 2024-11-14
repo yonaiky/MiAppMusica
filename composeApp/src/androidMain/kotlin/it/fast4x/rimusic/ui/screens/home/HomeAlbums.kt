@@ -63,7 +63,6 @@ import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
-import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
@@ -112,12 +111,7 @@ fun HomeAlbums(
         override fun getItems(): List<Album> = itemsOnDisplay
         override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
     }
-    val shuffle = object: SongsShuffle{
-        override val binder = binder
-        override val context = context
-
-        override fun query(): Flow<List<Song>?> = Database.songsInAllBookmarkedAlbums()
-    }
+    val shuffle = SongsShuffle.init( songs = Database::songsInAllBookmarkedAlbums )
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.albums( sort.sortBy, sort.sortOrder ).collect { items = it }

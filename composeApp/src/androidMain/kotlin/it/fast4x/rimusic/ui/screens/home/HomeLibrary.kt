@@ -51,7 +51,6 @@ import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.ButtonsRow
@@ -78,7 +77,6 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
-import kotlinx.coroutines.flow.Flow
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
@@ -133,17 +131,13 @@ fun HomeLibrary(
 
     val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
 
-    val shuffle = object: SongsShuffle {
-        override val binder = binder
-        override val context = context
-
-        override fun query(): Flow<List<Song>?> =
-            when( playlistType ) {
-                PlaylistsType.Playlist -> Database.songsInAllPlaylists()
-                PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
-                PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
-                PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
-            }
+    val shuffle = SongsShuffle.init {
+        when( playlistType ) {
+            PlaylistsType.Playlist -> Database.songsInAllPlaylists()
+            PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
+            PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
+            PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
+        }
     }
     val newPlaylistDialog = object: InputDialog {
         override val context = context
