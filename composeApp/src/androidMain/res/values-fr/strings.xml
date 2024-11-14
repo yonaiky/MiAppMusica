@@ -788,4 +788,8 @@
     <string name="enter_the_value">Entrez la valeur</string>
     <string name="resume_playback_on_start">Resume Playback On Start</string>
     <string name="resume_automatically_when_app_opens">Resume Playback automatically when the app is opened</string>
+    <string name="notificationPlayerFirstIcon">First button</string>
+    <string name="notificationPlayerSecondIcon">Second button</string>
+    <string name="notification_player">NOTIFICATION PLAYER</string>
+    <string name="repeat">Repeat</string>
 </resources>
