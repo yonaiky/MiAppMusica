@@ -108,4 +108,52 @@ object TabToolBar {
             )
         ) { }
     }
+
+    @Composable
+    fun Toggleable(
+        @DrawableRes iconId: Int,
+        tintOn: Color = colorPalette().text,
+        tintOff: Color = colorPalette().textDisabled,
+        toggleCondition: Boolean,
+        enabled: Boolean,
+        size: Dp = TOOLBAR_ICON_SIZE,
+        modifier: Modifier = Modifier,
+        onClick: () -> Unit
+    ) {
+        Icon(
+            iconId = iconId,
+            tint = if( toggleCondition ) tintOn else tintOff,
+            size = size,
+            enabled = enabled,
+            modifier = modifier,
+            onClick = onClick
+        )
+    }
+
+    @ExperimentalFoundationApi
+    @Composable
+    fun Toggleable(
+        @DrawableRes iconId: Int,
+        tintOn: Color = colorPalette().text,
+        tintOff: Color = colorPalette().textDisabled,
+        toggleCondition: Boolean,
+        enabled: Boolean,
+        size: Dp = TOOLBAR_ICON_SIZE,
+        modifier: Modifier = Modifier,
+        onShortClick: () -> Unit,
+        onLongClick: () -> Unit
+    ) {
+        Toggleable(
+            iconId,
+            tintOn,
+            tintOff,
+            toggleCondition,
+            enabled,
+            size,
+            modifier.combinedClickable (
+                onClick = onShortClick,
+                onLongClick = onLongClick
+            )
+        ) { }
+    }
 }
