@@ -290,6 +290,7 @@ const val enableYouTubeLoginKey = "enableYoutubeLogin"
 
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 const val showSecondLineKey = "showSecondLine"
+const val VinylSizeKey = "VinylSize"
 
 const val quickPicsTrendingSongKey = "quickPicsTrendingSong"
 const val quickPicsRelatedPageKey = "quickPicsRelatedPage"
