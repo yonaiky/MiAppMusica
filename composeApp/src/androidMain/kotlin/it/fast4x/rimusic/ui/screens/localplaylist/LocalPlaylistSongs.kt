@@ -160,6 +160,7 @@ import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.InputDialog
+import me.knighthat.component.tab.toolbar.LocateComponent
 import me.knighthat.component.tab.toolbar.PlaylistSongsSortComponent
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
@@ -188,6 +189,7 @@ fun LocalPlaylistSongs(
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val coroutineScope = rememberCoroutineScope()
+    val lazyListState = rememberLazyListState()
 
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
@@ -428,6 +430,8 @@ fun LocalPlaylistSongs(
         }
     }
 
+    val locator = LocateComponent.init( lazyListState ) { playlistSongs }
+
     LaunchedEffect( sort.sortOrder, sort.sortBy ) {
         Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder ).filterNotNull()
             .collect { playlistSongs = if (parentalControlEnabled)
@@ -488,7 +492,6 @@ fun LocalPlaylistSongs(
         ThumbnailRoundness.Heavy
     )
 
-    val lazyListState = rememberLazyListState()
 
     val reorderingState = rememberReorderingState(
         lazyListState = lazyListState,
@@ -1028,45 +1031,10 @@ fun LocalPlaylistSongs(
                         sort.SortTitle()
 
                         Row(
-                            horizontalArrangement = Arrangement.End, //Arrangement.spacedBy(10.dp),
+                            horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            HeaderIconButton(
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .combinedClickable(
-                                        onClick = {
-                                            nowPlayingItem = -1
-                                            scrollToNowPlaying = false
-                                            playlistSongs
-                                                .forEachIndexed { index, song ->
-                                                    if (song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                                        nowPlayingItem = index
-                                                }
-
-                                            if (nowPlayingItem > -1)
-                                                scrollToNowPlaying = true
-                                        },
-                                        onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_find_the_song_that_is_playing),
-                                                context = context
-                                            )
-                                        }
-                                    ),
-                                icon = R.drawable.locate,
-                                enabled = playlistSongs.isNotEmpty(),
-                                color = if (playlistSongs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {}
-                            )
-                            LaunchedEffect(scrollToNowPlaying) {
-                                if (scrollToNowPlaying)
-                                    lazyListState.scrollToItem(nowPlayingItem, 1)
-                                scrollToNowPlaying = false
-                            }
-                        }
+                            modifier = Modifier.fillMaxWidth()
+                        ) { locator.ToolBarButton() }
 
                     }
 

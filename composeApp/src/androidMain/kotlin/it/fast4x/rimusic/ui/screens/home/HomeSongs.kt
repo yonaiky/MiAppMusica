@@ -155,6 +155,7 @@ import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
+import me.knighthat.component.tab.toolbar.LocateComponent
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.SortComponent
@@ -185,6 +186,7 @@ fun HomeSongs(
     val menuState = LocalMenuState.current
     val thumbnailSizeDp = Dimensions.thumbnails.song
     val thumbnailSizePx = thumbnailSizeDp.px
+    val lazyListState = rememberLazyListState()
 
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
@@ -213,16 +215,6 @@ fun HomeSongs(
         MaxTopPlaylistItems.`10`
     )
     var topPlaylistPeriod by rememberPreference(topPlaylistPeriodKey, TopPlaylistPeriod.PastWeek)
-
-
-    var scrollToNowPlaying by remember {
-        mutableStateOf(false)
-    }
-
-    var nowPlayingItem by remember {
-        mutableStateOf(-1)
-    }
-
 
     /************ OnDeviceDev */
     val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
@@ -432,6 +424,8 @@ fun HomeSongs(
         }
     }
 
+    val locator = LocateComponent.init( lazyListState ) { items }
+
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
 
     var songsDevice by remember( songSort.sortBy, onDeviceSort.sortOrder ) {
@@ -624,8 +618,6 @@ fun HomeSongs(
                         || it.albumTitle?.contains( search.input, true ) ?: false
             }
 
-    val lazyListState = rememberLazyListState()
-
     var position by remember {
         mutableIntStateOf(0)
     }
@@ -696,38 +688,7 @@ fun HomeSongs(
 
                 search.ToolBarButton()
 
-                TabToolBar.Icon(
-                    iconId = R.drawable.locate,
-                    tint = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
-                    enabled = songs.isNotEmpty(),
-                    onShortClick = {
-                        nowPlayingItem = -1
-                        scrollToNowPlaying = false
-                        items
-                            .forEachIndexed { index, song ->
-                                if (song.song.asMediaItem.mediaId == binder?.player?.currentMediaItem?.mediaId)
-                                    nowPlayingItem = index
-                            }
-
-                        if (nowPlayingItem > -1)
-                            scrollToNowPlaying = true
-                    },
-                    onLongClick = {
-                        SmartMessage(
-                            context.resources.getString(R.string.info_find_the_song_that_is_playing),
-                            context = context
-                        )
-                    }
-                )
-
-
-                LaunchedEffect(scrollToNowPlaying) {
-                    if (scrollToNowPlaying)
-                        lazyListState.scrollToItem(nowPlayingItem, 1)
-                    scrollToNowPlaying = false
-                }
-
-
+                locator.ToolBarButton()
 
                 downloadAllDialog.ToolBarButton()
 
@@ -1028,10 +989,7 @@ fun HomeSongs(
                                     downloadState = Download.STATE_COMPLETED,
                                     thumbnailSizeDp = thumbnailSizeDp,
                                     thumbnailSizePx = thumbnailSizePx,
-                                    onThumbnailContent = {
-                                        if (nowPlayingItem > -1)
-                                            NowPlayingShow(song.asMediaItem.mediaId)
-                                    },
+                                    onThumbnailContent = { NowPlayingShow(song.asMediaItem.mediaId) },
                                     trailingContent = {
                                         val checkedState = rememberSaveable { mutableStateOf(false) }
                                         if (selectItems)
@@ -1148,8 +1106,7 @@ fun HomeSongs(
                                         )
                                     }
 
-                                    if (nowPlayingItem > -1)
-                                        NowPlayingShow(song.song.asMediaItem.mediaId)
+                                    NowPlayingShow(song.song.asMediaItem.mediaId)
 
                                     if (builtInPlaylist == BuiltInPlaylist.Top)
                                         BasicText(
