@@ -1,5 +1,6 @@
 package me.knighthat.component.tab.toolbar
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -45,14 +46,13 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import me.knighthat.colorPalette
-import me.knighthat.component.header.TabToolBar
 import me.knighthat.typography
 
 class SearchComponent private constructor(
     private val visibleState: MutableState<Boolean>,
     private val focusState: MutableState<Boolean>,
     private val inputState: MutableState<String>
-): Button {
+): Icon {
 
     companion object {
         @JvmStatic
@@ -80,6 +80,9 @@ class SearchComponent private constructor(
             inputState.value = value
             field = value
         }
+    override val iconId: Int
+        @DrawableRes
+        get() = R.drawable.search_circle
 
     @Composable
     private fun ColumnScope.DecorationBox( innerTextField: @Composable () -> Unit ) {
@@ -204,13 +207,8 @@ class SearchComponent private constructor(
         }
     }
 
-    @Composable
-    override fun ToolBarButton() {
-        var showSearchBar by visibleState
-
-        TabToolBar.Icon( iconId  = R.drawable.search_circle ) {
-            showSearchBar = !showSearchBar
-            focusState.value = showSearchBar
-        }
+    override fun onShortClick() {
+        isVisible = !isVisible
+        isFocused = isVisible
     }
 }

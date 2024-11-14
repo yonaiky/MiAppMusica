@@ -1,5 +1,6 @@
 package me.knighthat.component.tab.toolbar
 
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +38,7 @@ open class SortComponent<T: Enum<T>> protected constructor(
     protected val sortOrderState: MutableState<SortOrder>,
     protected val sortByEntries: EnumEntries<T>,
     protected val sortByState: MutableState<T>
-): Button {
+): Icon, Clickable {
 
     companion object {
         @JvmStatic
@@ -105,6 +107,13 @@ open class SortComponent<T: Enum<T>> protected constructor(
         }
     }
 
+    private val arrowDirection: State<Float>
+        @Composable
+        get() = animateFloatAsState(
+            targetValue = sortOrder.rotationZ,
+            animationSpec = tween(durationMillis = 400, easing = LinearEasing),
+            label = ""
+        )
     var sortOrder: SortOrder = sortOrderState.value
         set(value) {
             sortOrderState.value = value
@@ -115,27 +124,33 @@ open class SortComponent<T: Enum<T>> protected constructor(
             sortByState.value = value
             field = value
         }
+    override val iconId: Int
+        @DrawableRes
+        get() = R.drawable.arrow_up
+
+    override fun onShortClick() { sortOrder = !sortOrder }
+
+    override fun onLongClick() {
+        menuState.display {
+            Menu(
+                onDismiss = menuState::hide,
+                entries = sortByEntries
+            ) { sortByState.value = it }
+        }
+    }
 
     @Composable
     override fun ToolBarButton() {
-        val animatedArrow by animateFloatAsState(
-            targetValue = sortOrder.rotationZ,
-            animationSpec = tween(durationMillis = 400, easing = LinearEasing),
-            label = ""
-        )
+        val animatedArrow by arrowDirection
 
         TabToolBar.Icon(
-            iconId = R.drawable.arrow_up,
-            modifier = Modifier.graphicsLayer { rotationZ = animatedArrow },
-            onShortClick = { sortOrder = !sortOrder },
-            onLongClick = {
-                menuState.display {
-                    Menu(
-                        onDismiss = menuState::hide,
-                        entries = sortByEntries
-                    ) { sortByState.value = it }
-                }
-            }
+            this.iconId,
+            color,
+            sizeDp,
+            Modifier.graphicsLayer { rotationZ = animatedArrow },
+            isEnabled,
+            ::onShortClick,
+            ::onLongClick
         )
     }
 }

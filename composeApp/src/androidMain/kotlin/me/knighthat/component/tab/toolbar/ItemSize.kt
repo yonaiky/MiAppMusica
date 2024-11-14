@@ -8,19 +8,18 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
-import me.knighthat.component.header.TabToolBar
 import me.knighthat.enums.HomeItemSize
 import me.knighthat.preference.Preference
 
 class ItemSize private constructor(
     val menuState: MenuState,
-    private val sizeState: MutableState<HomeItemSize>,
-): Button {
+    private val sizeState: MutableState<HomeItemSize>
+): Icon {
 
     companion object {
         @JvmStatic
         @Composable
-        fun init( key: Preference.Key<HomeItemSize> ): ItemSize =
+        fun init(key: Preference.Key<HomeItemSize>): ItemSize =
             ItemSize(
                 LocalMenuState.current,
                 Preference.remember(key)
@@ -32,6 +31,7 @@ class ItemSize private constructor(
             sizeState.value = value
             field = value
         }
+    override val iconId: Int = R.drawable.resize
 
     @Composable
     private fun Entry( size: HomeItemSize ) {
@@ -45,14 +45,10 @@ class ItemSize private constructor(
         )
     }
 
-    @Composable
-    override fun ToolBarButton() {
-        TabToolBar.Icon( R.drawable.resize ) {
-
-            menuState.display {
-                Menu {
-                    HomeItemSize.entries.forEach { Entry(it) }
-                }
+    override fun onShortClick() {
+        menuState.display {
+            Menu {
+                HomeItemSize.entries.forEach { Entry(it) }
             }
         }
     }
