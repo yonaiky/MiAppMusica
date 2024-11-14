@@ -778,4 +778,6 @@
     <string name="failed_to_remove_thumbnail">Miniatürü Silmək Olmadı</string>
     <string name="showsecondline">İkinci Cərgədə Tərcüməni Göstər</string>
     <string name="enter_the_value">Dəyər daxil et</string>
+    <string name="resume_playback_on_start">Başlanğıcda Səsləndirməyə Davam Et</string>
+    <string name="resume_automatically_when_app_opens">Tətbiq açıldıqda Səsləndirməni avtomatik davam etdir</string>
 </resources>
