@@ -93,6 +93,7 @@ import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
+import it.fast4x.rimusic.enums.NotificationButtons
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
@@ -108,6 +109,7 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.BitmapProvider
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
+import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandStartRadio
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleDownload
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleLike
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleRepeatMode
@@ -143,6 +145,8 @@ import it.fast4x.rimusic.utils.loudnessBaseGainKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.minimumSilenceDurationKey
+import it.fast4x.rimusic.utils.notificationPlayerFirstIconKey
+import it.fast4x.rimusic.utils.notificationPlayerSecondIconKey
 import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playNext
@@ -373,6 +377,7 @@ class PlayerServiceModern : MediaLibraryService(),
             toggleDownload = ::toggleDownload
             toggleRepeat = ::toggleRepeat
             toggleShuffle = ::toggleShuffle
+            startRadio = ::startRadio
             callPause = ::callActionPause
         }
 
@@ -545,6 +550,11 @@ class PlayerServiceModern : MediaLibraryService(),
     fun toggleShuffle() {
         player.toggleShuffleMode()
         updateNotification()
+    }
+
+    fun startRadio() {
+        binder.stopRadio()
+        binder.playRadio(NavigationEndpoint.Endpoint.Watch(videoId = binder.player.currentMediaItem?.mediaId))
     }
 
     fun callActionPause() {
@@ -1065,9 +1075,83 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     )
 
+    private fun buildCommandButtons(): MutableList<CommandButton> {
+        val notificationPlayerFirstIcon = preferences.getEnum(notificationPlayerFirstIconKey, NotificationButtons.Download)
+        val notificationPlayerSecondIcon = preferences.getEnum(notificationPlayerSecondIconKey, NotificationButtons.Favorites)
+
+        val commandButtonsList = mutableListOf<CommandButton>()
+        val firstCommandButton = NotificationButtons.entries.let { buttons ->
+            buttons
+                .filter { it == notificationPlayerFirstIcon }
+                .map {
+                    CommandButton.Builder()
+                        .setDisplayName(it.displayName)
+                        .setIconResId(
+                            it.getStateIcon(
+                                it,
+                                currentSong.value?.likedAt,
+                                currentSongStateDownload.value,
+                                player.repeatMode,
+                                player.shuffleModeEnabled
+                            )
+                        )
+                        .setSessionCommand(it.sessionCommand)
+                        .build()
+                }
+        }
+
+        val secondCommandButton =  NotificationButtons.entries.let { buttons ->
+            buttons
+                .filter { it == notificationPlayerSecondIcon }
+                .map {
+                    CommandButton.Builder()
+                        .setDisplayName(it.displayName)
+                        .setIconResId(
+                            it.getStateIcon(
+                                it,
+                                currentSong.value?.likedAt,
+                                currentSongStateDownload.value,
+                                player.repeatMode,
+                                player.shuffleModeEnabled
+                            )
+                        )
+                        .setSessionCommand(it.sessionCommand)
+                        .build()
+                }
+        }
+
+        val otherCommandButtons = NotificationButtons.entries.let { buttons ->
+            buttons
+                .filterNot { it == notificationPlayerFirstIcon || it == notificationPlayerSecondIcon }
+                .map {
+                    CommandButton.Builder()
+                        .setDisplayName(it.displayName)
+                        .setIconResId(
+                            it.getStateIcon(
+                                it,
+                                currentSong.value?.likedAt,
+                                currentSongStateDownload.value,
+                                player.repeatMode,
+                                player.shuffleModeEnabled
+                            )
+                        )
+                        .setSessionCommand(it.sessionCommand)
+                        .build()
+                }
+        }
+
+        commandButtonsList += firstCommandButton + secondCommandButton + otherCommandButtons
+
+        return commandButtonsList
+    }
+
     private fun updateNotification() {
         coroutineScope.launch(Dispatchers.Main) {
             mediaSession.setCustomLayout(
+
+                buildCommandButtons()
+
+                /*
                 listOf(
 
                     CommandButton.Builder()
@@ -1098,9 +1182,9 @@ class PlayerServiceModern : MediaLibraryService(),
                         .setDisplayName(
                             getString(
                                 when (player.repeatMode) {
-                                    REPEAT_MODE_OFF -> R.string.favorites
-                                    REPEAT_MODE_ONE -> R.string.favorites
-                                    REPEAT_MODE_ALL -> R.string.favorites
+                                    REPEAT_MODE_OFF -> R.string.repeat
+                                    REPEAT_MODE_ONE -> R.string.repeat
+                                    REPEAT_MODE_ALL -> R.string.repeat
                                     else -> throw IllegalStateException()
                                 }
                             )
@@ -1124,7 +1208,17 @@ class PlayerServiceModern : MediaLibraryService(),
                         .setSessionCommand(CommandToggleShuffle)
                         .build(),
 
+
+                    CommandButton.Builder()
+                        .setDisplayName(getString(R.string.start_radio))
+                        .setIconResId(R.drawable.radio)
+                        .setSessionCommand(CommandStartRadio)
+                        .build(),
+
+
+
                     )
+                 */
             )
         }
 

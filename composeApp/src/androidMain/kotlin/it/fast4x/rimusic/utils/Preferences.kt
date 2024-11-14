@@ -302,6 +302,11 @@ const val enablePictureInPictureKey = "enablePicturInPicture"
 const val enablePictureInPictureAutoKey = "enablePicturInPictureAuto"
 const val pipModuleKey = "pipModule"
 
+const val notificationPlayerFirstIconKey = "notificationPlayerFirstIcon"
+const val notificationPlayerSecondIconKey = "notificationPlayerSecondIcon"
+
+
+
 /*
 @PublishedApi
 internal val defaultJson = Json {

@@ -31,6 +31,7 @@ import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.NotificationButtons
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerInfoType
@@ -74,6 +75,8 @@ import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.miniQueueExpandedKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.noblurKey
+import it.fast4x.rimusic.utils.notificationPlayerFirstIconKey
+import it.fast4x.rimusic.utils.notificationPlayerSecondIconKey
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
@@ -487,6 +490,9 @@ fun AppearanceSettings(
     var actionExpanded by rememberPreference(actionExpandedKey, true)
     var restartService by rememberSaveable { mutableStateOf(false) }
     var showVinylThumbnailAnimation by rememberPreference(showVinylThumbnailAnimationKey, false)
+
+    var notificationPlayerFirstIcon by rememberPreference(notificationPlayerFirstIconKey, NotificationButtons.Download)
+    var notificationPlayerSecondIcon by rememberPreference(notificationPlayerSecondIconKey, NotificationButtons.Favorites)
 
     Column(
         modifier = Modifier
@@ -1625,48 +1631,40 @@ fun AppearanceSettings(
 
         }
 
-        /*
-        TODO add settings for buttons in the background player
+
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.background_player))
+        SettingsEntryGroupText(title = stringResource(R.string.notification_player))
 
-        if (searchInput.isBlank() || stringResource(R.string.show_favorite_button).contains(
+        if (searchInput.isBlank() || stringResource(R.string.notification_player).contains(
                 searchInput,
                 true
             )
         ) {
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_favorite_button),
-                text = stringResource(R.string.show_favorite_button_in_lock_screen_and_notification_area),
-                isChecked = showLikeButtonBackgroundPlayer,
-                onCheckedChange = {
-                    showLikeButtonBackgroundPlayer = it
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.notificationPlayerFirstIcon),
+                selectedValue = notificationPlayerFirstIcon,
+                onValueSelected = {
+                    notificationPlayerFirstIcon = it
                     restartService = true
-                }
+                },
+                valueText = {
+                    it.displayName
+                },
             )
-            RestartPlayerService(restartService, onRestart = { restartService = false } )
-        }
-        if (searchInput.isBlank() || stringResource(R.string.show_download_button).contains(
-                searchInput,
-                true
-            )
-        ) {
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_download_button),
-                text = stringResource(R.string.show_download_button_in_lock_screen_and_notification_area),
-                isChecked = showDownloadButtonBackgroundPlayer,
-                onCheckedChange = {
-                    showDownloadButtonBackgroundPlayer = it
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.notificationPlayerSecondIcon),
+                selectedValue = notificationPlayerSecondIcon,
+                onValueSelected = {
+                    notificationPlayerSecondIcon = it
                     restartService = true
-                }
+                },
+                valueText = {
+                    it.displayName
+                },
             )
-
-            RestartPlayerService(restartService, onRestart = { restartService = false } )
+            RestartPlayerService(restartService, onRestart = { restartService = false })
         }
 
-        //SettingsGroupSpacer()
-        //SettingsEntryGroupText(title = stringResource(R.string.text))
-        */
 
         if (searchInput.isBlank() || stringResource(R.string.show_song_cover).contains(
                 searchInput,
