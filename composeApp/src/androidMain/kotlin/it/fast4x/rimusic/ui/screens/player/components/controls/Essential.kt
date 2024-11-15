@@ -107,7 +107,7 @@ fun InfoAlbumAndArtistEssential(
     onCollapse: () -> Unit,
     disableScrollingText: Boolean = false
 ) {
-    val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var showthumbnail by rememberPreference(showthumbnailKey, true)

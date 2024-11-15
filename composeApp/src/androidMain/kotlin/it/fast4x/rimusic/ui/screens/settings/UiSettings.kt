@@ -396,9 +396,9 @@ fun DefaultUiSettings() {
     pauseListenHistory = false
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
     showTopActionsBar = true
-    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
     playerControlsType = PlayerControlsType.Modern
-    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
+    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Essential)
     playerInfoType = PlayerInfoType.Modern
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
     playerType = PlayerType.Essential
@@ -414,7 +414,7 @@ fun DefaultUiSettings() {
     thumbnailType = ThumbnailType.Modern
     var expandedlyrics by rememberPreference(expandedlyricsKey, true)
     expandedlyrics = true
-    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.FakeAudioBar)
     playerTimelineType = PlayerTimelineType.Default
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
@@ -440,9 +440,9 @@ fun DefaultUiSettings() {
     playerSwapControlsWithTimeline = false
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
-        PlayerPlayButtonType.Rectangular
+        PlayerPlayButtonType.Disabled
     )
-    playerPlayButtonType = PlayerPlayButtonType.Rectangular
+    playerPlayButtonType = PlayerPlayButtonType.Disabled
     var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
     buttonzoomout = false
     var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
@@ -670,8 +670,8 @@ fun UiSettings(
 
     /*  ViMusic Mode Settings  */
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
-    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
-    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
+    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Essential)
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
     var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
     var fadingedge by rememberPreference(fadingedgeKey, false)
@@ -679,7 +679,7 @@ fun UiSettings(
     var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
     var expandedlyrics by rememberPreference(expandedlyricsKey, true)
-    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.FakeAudioBar)
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Biggest
@@ -699,7 +699,7 @@ fun UiSettings(
     )
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
-        PlayerPlayButtonType.Rectangular
+        PlayerPlayButtonType.Disabled
     )
     var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
     var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)

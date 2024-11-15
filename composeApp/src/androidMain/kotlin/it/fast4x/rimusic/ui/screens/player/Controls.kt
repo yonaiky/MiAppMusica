@@ -138,7 +138,7 @@ fun Controls(
 
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.FakeAudioBar)
 
 
     val scope = rememberCoroutineScope()
@@ -211,7 +211,7 @@ fun Controls(
         mutableStateOf(false)
     }
      */
-    val playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
+    val playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Essential)
     var playerSwapControlsWithTimeline by rememberPreference(
         playerSwapControlsWithTimelineKey,
         false
@@ -221,8 +221,8 @@ fun Controls(
         transparentBackgroundPlayerActionBarKey,
         false
     )
-    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
-    var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Default)
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
+    var playerPlayButtonType by rememberPreference(playerPlayButtonTypeKey, PlayerPlayButtonType.Disabled)
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
     val expandedlandscape = (isLandscape && playerType == PlayerType.Modern) || (expandedplayer && !showthumbnail)

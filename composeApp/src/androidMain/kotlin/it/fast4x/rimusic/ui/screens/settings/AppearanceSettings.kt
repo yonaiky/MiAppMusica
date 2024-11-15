@@ -150,9 +150,9 @@ fun DefaultAppearanceSettings() {
     showlyricsthumbnail = false
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
-        PlayerPlayButtonType.Rectangular
+        PlayerPlayButtonType.Disabled
     )
-    playerPlayButtonType = PlayerPlayButtonType.Rectangular
+    playerPlayButtonType = PlayerPlayButtonType.Disabled
     var bottomgradient by rememberPreference(bottomgradientKey, false)
     bottomgradient = false
     var textoutline by rememberPreference(textoutlineKey, false)
@@ -178,8 +178,8 @@ fun DefaultAppearanceSettings() {
     showDownloadButtonBackgroundPlayer = true
     var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
     visualizerEnabled = false
-    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
-    playerTimelineType = PlayerTimelineType.Default
+    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.FakeAudioBar)
+    playerTimelineType = PlayerTimelineType.FakeAudioBar
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Biggest
@@ -258,9 +258,9 @@ fun DefaultAppearanceSettings() {
     playerBackgroundColors = PlayerBackgroundColors.BlurredCoverColor
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
     showTopActionsBar = true
-    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
     playerControlsType = PlayerControlsType.Modern
-    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
+    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Essential)
     playerInfoType = PlayerInfoType.Modern
     var transparentBackgroundActionBarPlayer by rememberPreference(
         transparentBackgroundPlayerActionBarKey,
@@ -339,7 +339,7 @@ fun AppearanceSettings(
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
-        PlayerPlayButtonType.Rectangular
+        PlayerPlayButtonType.Disabled
     )
     var bottomgradient by rememberPreference(bottomgradientKey, false)
     var textoutline by rememberPreference(textoutlineKey, false)
@@ -366,7 +366,7 @@ fun AppearanceSettings(
         PlayerVisualizerType.Disabled
     )
     */
-    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.FakeAudioBar)
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Biggest
@@ -445,8 +445,8 @@ fun AppearanceSettings(
     )
 
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
-    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
-    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
+    var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
+    var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Essential)
     var transparentBackgroundActionBarPlayer by rememberPreference(
         transparentBackgroundPlayerActionBarKey,
         false

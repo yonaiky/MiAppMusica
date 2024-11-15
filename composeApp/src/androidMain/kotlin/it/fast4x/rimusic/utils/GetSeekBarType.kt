@@ -64,7 +64,7 @@ fun GetSeekBar(
     ) {
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
-    val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Default)
+    val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.FakeAudioBar)
     var scrubbingPosition by remember(mediaId) {
         mutableStateOf<Long?>(null)
     }
