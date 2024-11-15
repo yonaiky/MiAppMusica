@@ -108,7 +108,6 @@ import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.OnDeviceOrganize
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.autoShuffleKey
 import it.fast4x.rimusic.utils.builtInPlaylistKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
@@ -156,6 +155,7 @@ import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.LocateComponent
+import me.knighthat.component.tab.toolbar.RandomSortComponent
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.SortComponent
@@ -208,7 +208,6 @@ fun HomeSongs(
     }
 
     var includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
-    var autoShuffle by rememberPreference(autoShuffleKey, false)
 
     val maxTopPlaylistItems by rememberPreference(
         MaxTopPlaylistItemsKey,
@@ -426,6 +425,8 @@ fun HomeSongs(
 
     val locator = LocateComponent.init( lazyListState ) { items }
 
+    val randomSorter = RandomSortComponent.init()
+
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
 
     var songsDevice by remember( songSort.sortBy, onDeviceSort.sortOrder ) {
@@ -529,7 +530,7 @@ fun HomeSongs(
                 songFlow.flowOn( dispatcher )
                         .map { it.filter( filterCondition ) }
                         .collect {
-                            items = if( autoShuffle ) it.shuffled() else it
+                            items = if( randomSorter.isActive ) it.shuffled() else it
                         }
             }
         }
@@ -713,13 +714,7 @@ fun HomeSongs(
                 shuffle.ToolBarButton()
 
                 if (builtInPlaylist == BuiltInPlaylist.Favorites)
-                    TabToolBar.Icon(
-                        iconId = R.drawable.random,
-                        tint = if (autoShuffle) colorPalette().text else colorPalette().textDisabled,
-                        onShortClick = { autoShuffle = !autoShuffle },
-                        // TODO: Add string to language pack
-                        onLongClick = { SmartMessage( "Random sorting", context = context) }
-                    )
+                    randomSorter.ToolBarButton()
 
 
                 TabToolBar.Icon( R.drawable.ellipsis_horizontal ) {
