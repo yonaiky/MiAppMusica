@@ -153,6 +153,7 @@ import me.knighthat.component.tab.toolbar.ConfirmationDialog
 import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
+import me.knighthat.component.tab.toolbar.HiddenSongsComponent
 import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.LocateComponent
 import me.knighthat.component.tab.toolbar.RandomSortComponent
@@ -202,10 +203,6 @@ fun HomeSongs(
     val downloadState = remember { mutableIntStateOf( Download.STATE_STOPPED ) }
 
     val context = LocalContext.current
-
-    var showHiddenSongs by remember {
-        mutableStateOf(0)
-    }
 
     var includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
 
@@ -427,6 +424,8 @@ fun HomeSongs(
 
     val randomSorter = RandomSortComponent.init()
 
+    val hiddenSongs = HiddenSongsComponent.init()
+
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
 
     var songsDevice by remember( songSort.sortBy, onDeviceSort.sortOrder ) {
@@ -464,9 +463,9 @@ fun HomeSongs(
 
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
-            LaunchedEffect( songSort.sortBy, songSort.sortOrder, showHiddenSongs, includeLocalSongs ) {
+            LaunchedEffect( songSort.sortBy, songSort.sortOrder, hiddenSongs.showHidden, includeLocalSongs ) {
                 //Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
-                Database.songs(songSort.sortBy, songSort.sortOrder, showHiddenSongs).collect { items = it }
+                Database.songs(songSort.sortBy, songSort.sortOrder, hiddenSongs.showHidden).collect { items = it }
 
             }
         }
@@ -696,20 +695,7 @@ fun HomeSongs(
                 deleteDownloadsDialog.ToolBarButton()
 
                 if (builtInPlaylist == BuiltInPlaylist.All)
-                    TabToolBar.Toggleable(
-                        onIconId = R.drawable.eye,
-                        offIconId = R.drawable.eye_off,
-                        toggleCondition = showHiddenSongs != 0,
-                        onShortClick = {
-                            showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
-                        },
-                        onLongClick = {
-                            SmartMessage(
-                                context.resources.getString(R.string.info_show_hide_hidden_songs),
-                                context = context
-                            )
-                        }
-                    )
+                    hiddenSongs.ToolBarButton()
 
                 shuffle.ToolBarButton()
 
