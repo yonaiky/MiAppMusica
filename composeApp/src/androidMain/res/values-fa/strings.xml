@@ -790,4 +790,6 @@
     <string name="notificationPlayerSecondIcon">Second button</string>
     <string name="notification_player">NOTIFICATION PLAYER</string>
     <string name="repeat">Repeat</string>
+    <string name="original_lyrics">Original Lyrics</string>
+    <string name="translated_lyrics">Translated Lyrics</string>
 </resources>
