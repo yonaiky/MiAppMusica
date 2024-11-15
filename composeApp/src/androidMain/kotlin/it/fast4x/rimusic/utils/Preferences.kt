@@ -26,7 +26,6 @@ const val thumbnailTapEnabledKey = "thumbnailTapEnabled"
 const val wavedPlayerTimelineKey = "wavedPlayerTimeline"
 const val languageAppKey = "languageApp"
 const val otherLanguageAppKey = "otherLanguageApp"
-const val romanizationEnabeledKey = "romanizationEnabeled"
 const val indexNavigationTabKey = "indexNavigationTab"
 const val effectRotationKey = "effectRotation"
 const val playerThumbnailSizeKey = "playerThumbnailSize"
@@ -286,6 +285,7 @@ const val enableYouTubeLoginKey = "enableYoutubeLogin"
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 const val showSecondLineKey = "showSecondLine"
 const val VinylSizeKey = "VinylSize"
+const val romanizationKey = "romanization"
 
 
 @PublishedApi

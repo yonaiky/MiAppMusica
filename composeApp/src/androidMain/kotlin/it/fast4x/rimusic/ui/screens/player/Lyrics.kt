@@ -150,8 +150,9 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import it.fast4x.rimusic.enums.LyricsBackground
+import it.fast4x.rimusic.enums.Romanization
 import it.fast4x.rimusic.utils.lyricsAlignmentKey
-import it.fast4x.rimusic.utils.romanizationEnabeledKey
+import it.fast4x.rimusic.utils.romanizationKey
 import it.fast4x.rimusic.utils.showSecondLineKey
 import me.bush.translator.Translation
 
@@ -235,7 +236,7 @@ fun Lyrics(
             mutableStateOf(false)
         }
 
-        var romanizationEnabeled by rememberPreference(romanizationEnabeledKey, false)
+        var romanization by rememberPreference(romanizationKey, Romanization.Off)
         var showSecondLine by rememberPreference(showSecondLineKey, false)
 
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
@@ -332,36 +333,54 @@ fun Lyrics(
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
 
         fun translateLyricsWithRomanization(output: MutableState<String>, textToTranslate: String, isSync: Boolean, destinationLanguage: Language = Language.AUTO) = @Composable{
-            LaunchedEffect(showSecondLine, romanizationEnabeled, textToTranslate, destinationLanguage){
+            LaunchedEffect(showSecondLine, romanization, textToTranslate, destinationLanguage){
                 var destLanguage = destinationLanguage
                 val result = withContext(Dispatchers.IO) {
                     try {
-                        var translation: Translation?
-                        var translation2: Translation?
+
+                        /** used to find the source language of the text and detect CHINESE_TRADITIONAL*/
+                        val helperTranslation = translator.translate(
+                            textToTranslate,
+                            Language.CHINESE_TRADITIONAL,
+                            Language.AUTO
+                        )
                         if(destinationLanguage == Language.AUTO){
-                            translation = translator.translate(
-                                textToTranslate,
-                                Language.ENGLISH,
-                                Language.AUTO
-                            )
-                            destLanguage = translation.sourceLanguage
+                            destLanguage = if(helperTranslation.translatedText == textToTranslate){
+                                Language.CHINESE_TRADITIONAL
+                            } else {
+                                helperTranslation.sourceLanguage
+                            }
                         }
-                        translation = translator.translate(
+                        val mainTranslation = translator.translate(
                             textToTranslate,
                             destLanguage,
                             Language.AUTO
                         )
-                        translation2 = translator.translate(
-                            textToTranslate,
-                            translation.sourceLanguage,
-                            translation.sourceLanguage
-                        )
-                        val outputText = if(romanizationEnabeled){
-                            if (showSecondLine && isSync && textToTranslate != "" && translation.sourceLanguage != translation.targetLanguage) {(translation2.pronunciation ?: translation2.sourceText) + "\\n[${translation.translatedText}]"} else translation.pronunciation ?: translation.translatedText
-                        }else{
-                            if (showSecondLine && isSync && textToTranslate != "" && translation.sourceLanguage != translation.targetLanguage) {textToTranslate + "\\n[${translation.translatedText}]"} else translation.translatedText
+                        val outputText = if (textToTranslate == "") {
+                            ""
+                       }
+                        else if (!showSecondLine || (mainTranslation.sourceText == mainTranslation.translatedText)){
+                            if (romanization == Romanization.Off) {
+                                if (translateEnabled) mainTranslation.translatedText else textToTranslate
+                            }
+                            else if (romanization == Romanization.Original) if (helperTranslation.sourceText == helperTranslation.translatedText) helperTranslation.sourcePronunciation else mainTranslation.sourcePronunciation ?: mainTranslation.sourceText
+                            else if (romanization == Romanization.Translated) mainTranslation.translatedPronunciation ?: mainTranslation.translatedText
+                            else if (helperTranslation.sourceText == helperTranslation.translatedText) helperTranslation.sourcePronunciation else mainTranslation.sourcePronunciation ?: mainTranslation.sourceText
+                        } else {
+                            if (romanization == Romanization.Off) {
+                                textToTranslate + "\\n[${mainTranslation.translatedText}]"
+                            } else if (romanization == Romanization.Original) {
+                                if (helperTranslation.sourceText == helperTranslation.translatedText){
+                                    helperTranslation.sourcePronunciation
+                                } else {mainTranslation.sourcePronunciation ?: mainTranslation.sourceText} + "\\n[${mainTranslation.translatedText}]"
+                            } else if (romanization == Romanization.Translated) {
+                                textToTranslate + "\\n[${mainTranslation.translatedPronunciation ?: mainTranslation.translatedText}]"
+                            } else
+                                if (helperTranslation.sourceText == helperTranslation.translatedText){
+                                    helperTranslation.sourcePronunciation
+                                } else {mainTranslation.sourcePronunciation ?: mainTranslation.sourceText} + "\\n[${mainTranslation.translatedPronunciation ?: mainTranslation.translatedText}]"
                         }
-                        outputText.replace("\\r","\r").replace("\\n","\n")
+                        outputText?.replace("\\r","\r")?.replace("\\n","\n")
                     } catch (e: Exception) {
                         if(isSync){
                             Timber.e("Lyrics sync translation ${e.stackTraceToString()}")
@@ -744,18 +763,12 @@ fun Lyrics(
                         ) { index, sentence ->
                             var translatedText by remember { mutableStateOf("") }
                             val trimmedSentence = sentence.second.trim()
-                            if (translateEnabled) {
+                            if (showSecondLine || translateEnabled || romanization != Romanization.Off) {
                                 val mutState = remember { mutableStateOf("") }
                                 translateLyricsWithRomanization(mutState, trimmedSentence, true, languageDestination)()
                                 translatedText = mutState.value
                             } else {
-                                if (romanizationEnabeled) {
-                                    val mutState = remember { mutableStateOf("") }
-                                    translateLyricsWithRomanization(mutState, trimmedSentence, true)()
-                                    translatedText = mutState.value
-                                } else {
                                     translatedText = trimmedSentence
-                                }
                             }
 
                             //Rainbow Shimmer
@@ -1354,18 +1367,12 @@ fun Lyrics(
                     }
                 } else {
                     var translatedText by remember { mutableStateOf("") }
-                    if (translateEnabled) {
+                    if (showSecondLine || translateEnabled || romanization != Romanization.Off) {
                         val mutState = remember { mutableStateOf("") }
                         translateLyricsWithRomanization(mutState, text, false, languageDestination)()
                         translatedText = mutState.value
                     } else {
-                        if(romanizationEnabeled) {
-                            val mutState = remember { mutableStateOf("") }
-                            translateLyricsWithRomanization(mutState, text, false)()
-                            translatedText = mutState.value
-                        } else {
-                            translatedText = text
-                        }
+                        translatedText = text
                     }
 
                     Column(
@@ -2093,12 +2100,56 @@ fun Lyrics(
                                         )
 
                                         MenuEntry(
-                                            icon = if (romanizationEnabeled) R.drawable.checkmark else R.drawable.close,
-                                            text = stringResource(R.string.toggle_romanization),
+                                            icon = if (romanization == Romanization.Original || romanization == Romanization.Translated || romanization == Romanization.Both) R.drawable.checkmark else R.drawable.text,
                                             enabled = true,
+                                            text = stringResource(R.string.toggle_romanization),
                                             onClick = {
-                                                menuState.hide()
-                                                romanizationEnabeled = !romanizationEnabeled
+                                                menuState.display {
+                                                    Menu {
+                                                        MenuEntry(
+                                                            icon = if (romanization == Romanization.Off) R.drawable.checkmark else R.drawable.text,
+                                                            text = stringResource(R.string.turn_off),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                romanization =
+                                                                    Romanization.Off
+                                                            }
+                                                        )
+                                                        MenuEntry(
+                                                            icon = if (romanization == Romanization.Original || (romanization == Romanization.Both && !showSecondLine)) R.drawable.checkmark else R.drawable.text,
+                                                            text = stringResource(R.string.original_lyrics),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                romanization =
+                                                                    Romanization.Original
+                                                            }
+                                                        )
+                                                        MenuEntry(
+                                                            icon = if (romanization == Romanization.Translated) R.drawable.checkmark else R.drawable.text,
+                                                            text = stringResource(R.string.translated_lyrics),
+                                                            secondaryText = "",
+                                                            onClick = {
+                                                                menuState.hide()
+                                                                romanization =
+                                                                    Romanization.Translated
+                                                            }
+                                                        )
+                                                        if (showSecondLine) {
+                                                            MenuEntry(
+                                                                icon = if (romanization == Romanization.Both) R.drawable.checkmark else R.drawable.text,
+                                                                text = stringResource(R.string.both),
+                                                                secondaryText = "",
+                                                                onClick = {
+                                                                    menuState.hide()
+                                                                    romanization =
+                                                                        Romanization.Both
+                                                                }
+                                                            )
+                                                        }
+                                                    }
+                                                }
                                             }
                                         )
                                         MenuEntry(
