@@ -771,7 +771,7 @@
     <string name="player_auto_load_songs_in_queue">Charger automatiquement les titres dans la file d\'attente</string>
     <string name="player_auto_load_songs_in_queue_description">Ajoute des titres quand la file d\'attente est sur le point de se terminer</string>
     <string name="show_vinyl_thumbnail_animation">Afficher l\'animation Vinyl comme miniature</string>
-    <string name="toggle_romanization">Activer/désactiver la romanisation</string>
+    <string name="toggle_romanization">Romanization</string>
     <string name="edit_thumbnail">Éditer la miniature</string>
     <string name="thumbnail_not_selected">Miniature non sélectionnée</string>
     <string name="reset_thumbnail">Réinitialiser la miniature</string>
@@ -782,4 +782,6 @@
     <string name="enter_the_value">Entrez la valeur</string>
     <string name="resume_playback_on_start">Resume Playback On Start</string>
     <string name="resume_automatically_when_app_opens">Resume Playback automatically when the app is opened</string>
+    <string name="original_lyrics">Original Lyrics</string>
+    <string name="translated_lyrics">Translated Lyrics</string>
 </resources>
