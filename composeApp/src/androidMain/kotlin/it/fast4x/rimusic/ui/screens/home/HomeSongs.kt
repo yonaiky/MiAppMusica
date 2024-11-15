@@ -93,7 +93,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
-import it.fast4x.rimusic.ui.components.themed.PeriodMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -156,6 +155,7 @@ import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.HiddenSongsComponent
 import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.LocateComponent
+import me.knighthat.component.tab.toolbar.PeriodSelectorComponent
 import me.knighthat.component.tab.toolbar.RandomSortComponent
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
@@ -426,6 +426,8 @@ fun HomeSongs(
 
     val hiddenSongs = HiddenSongsComponent.init()
 
+    val topPlaylists = PeriodSelectorComponent.init()
+
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
 
     var songsDevice by remember( songSort.sortBy, onDeviceSort.sortOrder ) {
@@ -471,7 +473,7 @@ fun HomeSongs(
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
 
-            LaunchedEffect( Unit, builtInPlaylist, songSort.sortBy, songSort.sortOrder, topPlaylistPeriod, binder ) {
+            LaunchedEffect( Unit, builtInPlaylist, songSort.sortBy, songSort.sortOrder, topPlaylists.period, binder ) {
 
                 var songFlow: Flow<List<SongEntity>> = flowOf()
                 var dispatcher = Dispatchers.Default
@@ -506,12 +508,12 @@ fun HomeSongs(
                     BuiltInPlaylist.Top -> {
 
                         songFlow =
-                            if (topPlaylistPeriod.duration == Duration.INFINITE)
+                            if (topPlaylists.period.duration == Duration.INFINITE)
                                 Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
                             else
                                 Database.trendingSongEntity(
                                     limit = maxTopPlaylistItems.number.toInt(),
-                                    period = topPlaylistPeriod.duration.inWholeMilliseconds
+                                    period = topPlaylists.period.duration.inWholeMilliseconds
                                 )
 
                         filterCondition = { songs ->
@@ -665,18 +667,7 @@ fun HomeSongs(
             ) {
 
                 when( builtInPlaylist ) {
-                    BuiltInPlaylist.Top -> {
-                        TabToolBar.Icon(iconId = R.drawable.stat) {
-                            menuState.display {
-                                PeriodMenu(
-                                    onDismiss = {
-                                        topPlaylistPeriod = it
-                                        menuState.hide()
-                                    }
-                                )
-                            }
-                        }
-                    }
+                    BuiltInPlaylist.Top -> topPlaylists.ToolBarButton()
                     BuiltInPlaylist.OnDevice -> {
                         if( showFolders )
                             deviceFolderSort.ToolBarButton()
