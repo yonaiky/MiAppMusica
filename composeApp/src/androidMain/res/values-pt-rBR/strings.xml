@@ -769,7 +769,7 @@
     <string name="player_auto_load_songs_in_queue">Carregar músicas automaticamente na fila</string>
     <string name="player_auto_load_songs_in_queue_description">Adicionar músicas quando a fila está prestes a terminar</string>
     <string name="show_vinyl_thumbnail_animation">Mostrar animação de Vinil como capa</string>
-    <string name="toggle_romanization">Toggle Romanization</string>
+    <string name="toggle_romanization">Romanization</string>
     <string name="edit_thumbnail">Editar miniatura</string>
     <string name="thumbnail_not_selected">Miniatura não selecionada</string>
     <string name="reset_thumbnail">Resetar miniatura</string>
@@ -790,4 +790,6 @@
     <string name="notificationPlayerSecondIcon">Second button</string>
     <string name="notification_player">NOTIFICATION PLAYER</string>
     <string name="repeat">Repeat</string>
+    <string name="original_lyrics">Original Lyrics</string>
+    <string name="translated_lyrics">Translated Lyrics</string>
 </resources>

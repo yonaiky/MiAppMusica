@@ -769,7 +769,7 @@
     <string name="player_auto_load_songs_in_queue">Auto load songs in queue</string>
     <string name="player_auto_load_songs_in_queue_description">Adds songs when the queue is about to end</string>
     <string name="show_vinyl_thumbnail_animation">Zeige Vinyl-Animation als Thumbnail</string>
-    <string name="toggle_romanization">Toggle Romanization</string>
+    <string name="toggle_romanization">Romanization</string>
     <string name="edit_thumbnail">Thumbnail bearbeiten</string>
     <string name="thumbnail_not_selected">Kein Thumbnail ausgewählt</string>
     <string name="reset_thumbnail">Thumbnail zurücksetzen</string>
@@ -790,4 +790,6 @@
     <string name="notificationPlayerSecondIcon">Second button</string>
     <string name="notification_player">NOTIFICATION PLAYER</string>
     <string name="repeat">Repeat</string>
+    <string name="original_lyrics">Original Lyrics</string>
+    <string name="translated_lyrics">Translated Lyrics</string>
 </resources>

@@ -769,7 +769,7 @@
     <string name="player_auto_load_songs_in_queue">Автоматичне завантаження пісень у чергу</string>
     <string name="player_auto_load_songs_in_queue_description">Додає треки, коли черга добігає кінця</string>
     <string name="show_vinyl_thumbnail_animation">Показати анімацію вінілу у вигляді мініатюри</string>
-    <string name="toggle_romanization">Перемкнути романізацію</string>
+    <string name="toggle_romanization">Romanization</string>
     <string name="edit_thumbnail">Редагувати мініатюру</string>
     <string name="thumbnail_not_selected">Мініатюра не обрана</string>
     <string name="reset_thumbnail">Скидання мініатюри</string>
@@ -790,4 +790,6 @@
     <string name="notificationPlayerSecondIcon">Second button</string>
     <string name="notification_player">NOTIFICATION PLAYER</string>
     <string name="repeat">Repeat</string>
+    <string name="original_lyrics">Original Lyrics</string>
+    <string name="translated_lyrics">Translated Lyrics</string>
 </resources>
