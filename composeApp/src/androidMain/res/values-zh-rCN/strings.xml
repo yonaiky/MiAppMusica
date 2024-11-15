@@ -769,7 +769,7 @@
     <string name="player_auto_load_songs_in_queue">在队列中自动加载歌曲</string>
     <string name="player_auto_load_songs_in_queue_description">当播放队列即将结束时添加歌曲</string>
     <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>
-    <string name="toggle_romanization">Toggle Romanization</string>
+    <string name="toggle_romanization">Romanization</string>
     <string name="edit_thumbnail">编辑缩略图</string>
     <string name="thumbnail_not_selected">未选定缩略图</string>
     <string name="reset_thumbnail">重置缩略图</string>
@@ -780,4 +780,6 @@
     <string name="enter_the_value">Enter The Value</string>
     <string name="resume_playback_on_start">Resume Playback On Start</string>
     <string name="resume_automatically_when_app_opens">Resume Playback automatically when the app is opened</string>
+    <string name="original_lyrics">Original Lyrics</string>
+    <string name="translated_lyrics">Translated Lyrics</string>
 </resources>
