@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.service.modern
 
 import android.annotation.SuppressLint
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -17,32 +16,24 @@ import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
-import android.net.ConnectivityManager
-import android.os.Build
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.OptIn
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.content.getSystemService
 import androidx.core.text.isDigitsOnly
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
 import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
-import androidx.media3.common.Player.REPEAT_MODE_ALL
-import androidx.media3.common.Player.REPEAT_MODE_OFF
-import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Player.STATE_IDLE
 import androidx.media3.common.Timeline
 import androidx.media3.common.audio.SonicAudioProcessor
@@ -74,10 +65,11 @@ import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaController
 import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaNotification
 import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaStyleNotificationHelper
 import androidx.media3.session.SessionToken
-import androidx.media3.session.legacy.MediaDescriptionCompat
-import androidx.media3.session.legacy.MediaSessionCompat
+import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
@@ -87,7 +79,6 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
@@ -109,11 +100,6 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.BitmapProvider
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
-import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandStartRadio
-import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleDownload
-import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleLike
-import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleRepeatMode
-import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleShuffle
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
@@ -138,6 +124,7 @@ import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isAtLeastAndroid81
 import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
@@ -172,7 +159,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -187,6 +173,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.appContext
 import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream
@@ -195,7 +182,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
-import kotlin.time.Duration.Companion.seconds
 import android.os.Binder as AndroidBinder
 
 const val LOCAL_KEY_PREFIX = "local:"
@@ -259,10 +245,13 @@ class PlayerServiceModern : MediaLibraryService(),
     private var notificationManager: NotificationManager? = null
     private val playerVerticalWidget = PlayerVerticalWidget()
     private val playerHorizontalWidget = PlayerHorizontalWidget()
+//    private var nBuilder: NotificationCompat.Builder =
+//            NotificationCompat.Builder(this@PlayerServiceModern, NotificationChannelId)
 
     @kotlin.OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
+
         setMediaNotificationProvider(
             DefaultMediaNotificationProvider(
                 this,
@@ -270,10 +259,35 @@ class PlayerServiceModern : MediaLibraryService(),
                 NotificationChannelId,
                 R.string.player
             )
-            .apply {
-                setSmallIcon(R.drawable.app_icon)
-            }
+                .apply {
+                    setSmallIcon(R.drawable.app_icon)
+                }
         )
+
+        /*
+        setMediaNotificationProvider(object : MediaNotification.Provider{
+            override fun createNotification(
+                mediaSession: MediaSession,// this is the session we pass to style
+                customLayout: ImmutableList<CommandButton>,
+                actionFactory: MediaNotification.ActionFactory,
+                onNotificationChangedCallback: MediaNotification.Provider.Callback
+            ): MediaNotification {
+                createCustomNotification(mediaSession)
+                // notification should be created before you return here
+                return MediaNotification(NotificationId,nBuilder.build())
+            }
+
+            override fun handleCustomCommand(
+                session: MediaSession,
+                action: String,
+                extras: Bundle
+            ): Boolean {
+                return false
+            }
+        })
+        */
+
+
 
         runCatching {
             bitmapProvider = BitmapProvider(
@@ -1075,6 +1089,25 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     )
 
+/*
+    fun  createCustomNotification(session: MediaSession) {
+
+        nBuilder
+//            NotificationCompat.Builder(this@PlayerServiceModern, NotificationChannelId)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setSmallIcon(R.drawable.app_icon)
+            .setContentTitle("your Content title")
+            .setContentText("your content text")
+            .setLargeIcon(bitmapProvider.bitmap)
+            .addAction(R.drawable.play_skip_back, "Previous", Action.previous.pendingIntent) // #0
+            .addAction(R.drawable.pause, "Pause", Action.pause.pendingIntent) // #1
+            .addAction(R.drawable.play_skip_forward, "Next", Action.next.pendingIntent) // #2
+            .setStyle(MediaStyleNotificationHelper.MediaStyle(session)
+                .setShowActionsInCompactView(0,1,2))
+    }
+    */
+
+
     private fun buildCommandButtons(): MutableList<CommandButton> {
         val notificationPlayerFirstIcon = preferences.getEnum(notificationPlayerFirstIconKey, NotificationButtons.Download)
         val notificationPlayerSecondIcon = preferences.getEnum(notificationPlayerSecondIconKey, NotificationButtons.Favorites)
@@ -1147,6 +1180,11 @@ class PlayerServiceModern : MediaLibraryService(),
 
     private fun updateNotification() {
         coroutineScope.launch(Dispatchers.Main) {
+
+//            nBuilder.setContentTitle("text")
+//            nBuilder.setContentText("subtext")
+//            notificationManager?.notify(NotificationId,nBuilder.build())
+
             mediaSession.setCustomLayout(
 
                 buildCommandButtons()
@@ -1590,6 +1628,30 @@ class PlayerServiceModern : MediaLibraryService(),
             }.onFailure {
                 Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (PlayerServiceModern) ${it.stackTraceToString()}")
             }
+        }
+    }
+
+    @JvmInline
+    private value class Action(val value: String) {
+        //context(Context)
+        val pendingIntent: PendingIntent
+            get() = PendingIntent.getBroadcast(
+                appContext(),
+                100,
+                Intent(value).setPackage(appContext().packageName),
+                PendingIntent.FLAG_UPDATE_CURRENT.or(if (isAtLeastAndroid6) PendingIntent.FLAG_IMMUTABLE else 0)
+            )
+
+        companion object {
+
+            val pause = Action("it.fast4x.rimusic.pause")
+            val play = Action("it.fast4x.rimusic.play")
+            val next = Action("it.fast4x.rimusic.next")
+            val previous = Action("it.fast4x.rimusic.previous")
+            val like = Action("it.fast4x.rimusic.like")
+            val download = Action("it.fast4x.rimusic.download")
+            val playradio = Action("it.fast4x.rimusic.playradio")
+            val shuffle = Action("it.fast4x.rimusic.shuffle")
         }
     }
 

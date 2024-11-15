@@ -21,7 +21,6 @@ import android.os.Looper
 import android.view.WindowManager
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -310,7 +309,6 @@ class MainActivity :
     @ExperimentalMaterialApi
     @ExperimentalTextApi
     @UnstableApi
-    @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
