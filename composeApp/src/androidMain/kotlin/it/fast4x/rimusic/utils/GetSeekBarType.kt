@@ -79,7 +79,6 @@ fun GetSeekBar(
     LaunchedEffect(mediaId) {
         if (compositionLaunched) animatedPosition.animateTo(0f)
     }
-    //var showthumbnail by rememberPreference(showthumbnailKey, true)
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     LaunchedEffect(position) {
         if (!isSeeking && !animatedPosition.isRunning)

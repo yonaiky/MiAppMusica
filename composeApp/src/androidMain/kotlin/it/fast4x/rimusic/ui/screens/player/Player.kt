@@ -318,7 +318,7 @@ fun Player(
 
     val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
-    val defaultStrength = 5f
+    val defaultStrength = 25f
     val defaultDarkenFactor = 0.2f
     val defaultOffset = 0f
     val defaultSpacing = 0f
@@ -526,7 +526,7 @@ fun Player(
 
     var isDownloaded by rememberSaveable { mutableStateOf(false) }
     isDownloaded = isDownloadedSong(mediaItem.mediaId)
-    var showthumbnail by rememberPreference(showthumbnailKey, false)
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
 
     val showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)

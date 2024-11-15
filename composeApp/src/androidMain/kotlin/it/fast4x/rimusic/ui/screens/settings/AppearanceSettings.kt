@@ -140,8 +140,8 @@ fun DefaultAppearanceSettings() {
         true
     )
     isShowingThumbnailInLockscreen = true
-    var showthumbnail by rememberPreference(showthumbnailKey, false)
-    showthumbnail = false
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    showthumbnail = true
     var transparentbar by rememberPreference(transparentbarKey, true)
     transparentbar = true
     var blackgradient by rememberPreference(blackgradientKey, false)
@@ -333,7 +333,7 @@ fun AppearanceSettings(
         true
     )
 
-    var showthumbnail by rememberPreference(showthumbnailKey, false)
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
     var transparentbar by rememberPreference(transparentbarKey, true)
     var blackgradient by rememberPreference(blackgradientKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)

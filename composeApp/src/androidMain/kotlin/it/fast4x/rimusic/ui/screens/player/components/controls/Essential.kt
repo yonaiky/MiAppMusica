@@ -110,7 +110,7 @@ fun InfoAlbumAndArtistEssential(
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Modern)
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
-    var showthumbnail by rememberPreference(showthumbnailKey, false)
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
     var textoutline by rememberPreference(textoutlineKey, false)

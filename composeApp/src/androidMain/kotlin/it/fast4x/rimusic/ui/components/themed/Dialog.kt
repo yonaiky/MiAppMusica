@@ -1170,7 +1170,7 @@ fun BlurParamsDialog(
     scaleValue: (Float) -> Unit,
     darkenFactorValue: (Float) -> Unit
 ) {
-    val defaultStrength = 5f
+    val defaultStrength = 25f
     //val defaultStrength2 = 30f
     val defaultDarkenFactor = 0.2f
     var blurStrength  by rememberPreference(blurStrengthKey, defaultStrength)
@@ -1692,7 +1692,7 @@ fun PlaybackParamsDialog(
     //val defaultVolume = 0.5f //binder?.player?.volume ?: 1f
     //val defaultDeviceVolume = getDeviceVolume(context)
     val defaultDuration = 0f
-    val defaultStrength = 5f
+    val defaultStrength = 25f
     var playbackSpeed  by rememberPreference(playbackSpeedKey,   defaultSpeed)
     var playbackPitch  by rememberPreference(playbackPitchKey,   defaultPitch)
     var playbackVolume  by rememberPreference(playbackVolumeKey, 0.5f)

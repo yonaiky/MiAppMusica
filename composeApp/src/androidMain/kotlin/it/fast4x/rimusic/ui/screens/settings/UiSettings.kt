@@ -516,8 +516,8 @@ fun DefaultUiSettings() {
     playerEnableLyricsPopupMessage = true
     var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
     visualizerEnabled = false
-    var showthumbnail by rememberPreference(showthumbnailKey, false)
-    showthumbnail = false
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
+    showthumbnail = true
 }
 
 @ExperimentalAnimationApi
@@ -745,7 +745,7 @@ fun UiSettings(
         true
     )
     var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
-    var showthumbnail by rememberPreference(showthumbnailKey, false)
+    var showthumbnail by rememberPreference(showthumbnailKey, true)
     /*  ViMusic Mode Settings  */
 
     var loudnessBaseGain by rememberPreference(loudnessBaseGainKey, 5.00f)
