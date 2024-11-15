@@ -1369,7 +1369,7 @@ fun Lyrics(
                     var translatedText by remember { mutableStateOf("") }
                     if (showSecondLine || translateEnabled || romanization != Romanization.Off) {
                         val mutState = remember { mutableStateOf("") }
-                        translateLyricsWithRomanization(mutState, text, false)()
+                        translateLyricsWithRomanization(mutState, text, false, languageDestination)()
                         translatedText = mutState.value
                     } else {
                         translatedText = text
