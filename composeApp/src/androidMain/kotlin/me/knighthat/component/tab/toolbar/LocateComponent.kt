@@ -45,7 +45,7 @@ class LocateComponent private constructor(
         }
     override var isActive: Boolean = songs().isNotEmpty() && binder?.player?.currentMediaItem != null
     override val iconId: Int = R.drawable.locate
-    override val textId: Int = R.string.info_find_the_song_that_is_playing
+    override val messageId: Int = R.string.info_find_the_song_that_is_playing
 
     override fun onShortClick() {
         binder?.player

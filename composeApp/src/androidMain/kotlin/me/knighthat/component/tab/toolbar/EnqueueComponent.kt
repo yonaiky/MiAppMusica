@@ -37,7 +37,7 @@ class EnqueueComponent private constructor(
             styleState.value = value
             field = value
         }
-    override val title: String
+    override val menuIconTitle: String
         @Composable
         get() = stringResource(R.string.enqueue)
     override val iconId: Int = R.drawable.enqueue

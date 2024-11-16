@@ -24,7 +24,7 @@ class SyncComponent private constructor(
             field = value
         }
     override val iconId: Int = R.drawable.sync
-    override val textId: Int = R.string.autosync
+    override val messageId: Int = R.string.autosync
 
     override fun onShortClick() { isActive = !isActive }
 }

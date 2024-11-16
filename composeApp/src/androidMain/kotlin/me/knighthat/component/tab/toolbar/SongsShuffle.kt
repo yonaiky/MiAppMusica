@@ -35,7 +35,7 @@ class SongsShuffle private constructor(
     }
 
     override val iconId: Int = R.drawable.shuffle
-    override val textId: Int = R.string.shuffle
+    override val messageId: Int = R.string.shuffle
 
     override fun onShortClick() {
         CoroutineScope( dispatcher ).launch {

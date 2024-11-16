@@ -15,7 +15,7 @@ class ImportComponent private constructor(
             ImportComponent( onClick )
     }
 
-    override val title: String
+    override val menuIconTitle: String
         @Composable
         get() = stringResource( R.string.import_playlist )
     override val iconId: Int = R.drawable.resource_import

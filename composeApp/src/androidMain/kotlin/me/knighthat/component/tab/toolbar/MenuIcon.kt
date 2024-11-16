@@ -26,12 +26,12 @@ import it.fast4x.rimusic.ui.components.themed.MenuEntry
 interface MenuIcon: Icon {
 
     @get:Composable
-    val title: String
+    val menuIconTitle: String
 
     @Composable
     fun GridTextComponent() {
         Text(
-            text = title,
+            text = menuIconTitle,
             overflow = TextOverflow.Ellipsis,
             color = color,
             style = MaterialTheme.typography.labelLarge,
@@ -81,7 +81,7 @@ interface MenuIcon: Icon {
     fun ListMenuItem() {
         MenuEntry(
             icon,
-            title,
+            menuIconTitle,
             ::onShortClick,
         )
     }

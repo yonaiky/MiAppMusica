@@ -37,7 +37,7 @@ class PlayNextComponent private constructor(
             styleState.value = value
             field = value
         }
-    override val title: String
+    override val menuIconTitle: String
         @Composable
         get() = stringResource( R.string.play_next )
     override val iconId: Int = R.drawable.play_skip_forward

@@ -7,7 +7,7 @@ import me.knighthat.appContext
 interface Descriptive: Clickable {
 
     @get:StringRes
-    val textId: Int
+    val messageId: Int
 
     /**
      * What happens when user holds this icon for a while.
@@ -16,7 +16,7 @@ interface Descriptive: Clickable {
      */
     override fun onLongClick() {
         SmartMessage(
-            appContext().resources.getString( textId ),
+            appContext().resources.getString( messageId ),
             context = appContext()
         )
     }
