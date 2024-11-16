@@ -21,7 +21,7 @@ class ExportComponent private constructor(
             exportState.value = value
             field = value
         }
-    override val title: String
+    override val menuIconTitle: String
         @Composable
         get() = stringResource( R.string.export_playlist )
     override val iconId: Int = R.drawable.export

@@ -27,7 +27,7 @@ class ToggleSelectComponent <T> private constructor(
             selectState.value = value
             field = value
         }
-    override val title: String
+    override val menuIconTitle: String
         @Composable
         get() = "${stringResource( R.string.item_select )}/${stringResource( R.string.item_deselect )}"
     override val iconId: Int = R.drawable.checked

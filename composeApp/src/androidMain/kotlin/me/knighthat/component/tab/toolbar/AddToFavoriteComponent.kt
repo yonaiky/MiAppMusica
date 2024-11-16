@@ -19,7 +19,7 @@ class AddToFavoriteComponent private constructor(
         fun init( items: () -> List<MediaItem> ) = AddToFavoriteComponent( items )
     }
 
-    override val title: String
+    override val menuIconTitle: String
         @Composable
         get() = stringResource( R.string.add_to_favorites )
     override val iconId: Int = R.drawable.heart

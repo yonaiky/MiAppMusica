@@ -72,7 +72,7 @@ class AddToPlaylistComponent private constructor(
         )
     }
 
-    override val title: String
+    override val menuIconTitle: String
         @Composable
         get() = stringResource( R.string.add_to_playlist )
     override val iconId: Int = R.drawable.add_in_playlist

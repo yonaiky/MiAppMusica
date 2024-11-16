@@ -33,7 +33,7 @@ class HiddenSongsComponent private constructor(
         }
     override val iconIdOff: Int = R.drawable.eye_off
     override val iconId: Int = R.drawable.eye
-    override val textId: Int = R.string.info_show_hide_hidden_songs
+    override val messageId: Int = R.string.info_show_hide_hidden_songs
 
     override fun onShortClick() { isVisible = !isVisible }
 }

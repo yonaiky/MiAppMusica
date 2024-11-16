@@ -24,7 +24,7 @@ class RandomSortComponent private constructor(
             field = value
         }
     override val iconId: Int = R.drawable.random
-    override val textId: Int = R.string.random_sorting
+    override val messageId: Int = R.string.random_sorting
 
     override fun onShortClick() { isActive = !isActive }
 }
