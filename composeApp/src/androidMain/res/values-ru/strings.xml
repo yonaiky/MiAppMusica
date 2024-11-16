@@ -778,8 +778,8 @@
     <string name="no_thumbnail_present">Миниатюра отсутствует</string>
     <string name="removed_thumbnail">Миниатюра удалена</string>
     <string name="failed_to_remove_thumbnail">Не удалось удалить миниатюру</string>
-    <string name="settings_enable_pip">Enable Picture in Picture</string>
-    <string name="settings_enable_pip_auto">Enable Automatic Picture in Picture</string>
+    <string name="settings_enable_pip">Включить \"Картинка в картинке\"</string>
+    <string name="settings_enable_pip_auto">Включить автоматически \"Картинка в картинке\"</string>
     <string name="pipmodule_cover">Cover</string>
     <string name="settings_pip_module">Pip module</string>
     <string name="menu_go_to_picture_in_picture">PIP</string>
