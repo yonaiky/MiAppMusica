@@ -781,15 +781,15 @@
     <string name="pipmodule_cover">Cild</string>
     <string name="settings_pip_module">Pip keçidi</string>
     <string name="menu_go_to_picture_in_picture">PIP</string>
-    <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">From Android 12 pip can be automatically enabled</string>
+    <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Android 12-dən pip birbaşa aktivləşdirilə bilər</string>
     <string name="showsecondline">İkinci Cərgədə Tərcüməni Göstər</string>
     <string name="enter_the_value">Dəyər daxil et</string>
     <string name="resume_playback_on_start">Başlanğıcda Səsləndirməyə Davam Et</string>
     <string name="resume_automatically_when_app_opens">Tətbiq açıldıqda Səsləndirməni avtomatik davam etdir</string>
-    <string name="notificationPlayerFirstIcon">First button</string>
-    <string name="notificationPlayerSecondIcon">Second button</string>
-    <string name="notification_player">NOTIFICATION PLAYER</string>
-    <string name="repeat">Repeat</string>
+    <string name="notificationPlayerFirstIcon">Birinci düymə</string>
+    <string name="notificationPlayerSecondIcon">İkinci düymə</string>
+    <string name="notification_player">BİLDİRİŞ SƏSLƏNDİRİCİSİ</string>
+    <string name="repeat">Təkrarla</string>
     <string name="original_lyrics">Əsil Lirika</string>
     <string name="translated_lyrics">Tərcümə Edilən Lirika</string>
 </resources>
