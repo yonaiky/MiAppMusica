@@ -9,6 +9,11 @@ interface Descriptive: Clickable {
     @get:StringRes
     val textId: Int
 
+    /**
+     * What happens when user holds this icon for a while.
+     *
+     * By default, this will send out message
+     */
     override fun onLongClick() {
         SmartMessage(
             appContext().resources.getString( textId ),
