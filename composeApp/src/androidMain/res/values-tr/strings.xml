@@ -784,12 +784,12 @@
     <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Android 12\'den itibaren rir otomatik etkinleştirilebilir</string>
     <string name="showsecondline">İkinci Satırda Çeviriyi Göster</string>
     <string name="enter_the_value">Değer Giriniz</string>
-    <string name="resume_playback_on_start">Resume Playback On Start</string>
-    <string name="resume_automatically_when_app_opens">Resume Playback automatically when the app is opened</string>
-    <string name="notificationPlayerFirstIcon">First button</string>
-    <string name="notificationPlayerSecondIcon">Second button</string>
-    <string name="notification_player">NOTIFICATION PLAYER</string>
-    <string name="repeat">Repeat</string>
-    <string name="original_lyrics">Original Lyrics</string>
-    <string name="translated_lyrics">Translated Lyrics</string>
+    <string name="resume_playback_on_start">Başlangıçta Oynatmayı Devam Ettir</string>
+    <string name="resume_automatically_when_app_opens">Uygulama açıldığında oynatmayı otomatik olarak devam ettir</string>
+    <string name="notificationPlayerFirstIcon">İlk düğme</string>
+    <string name="notificationPlayerSecondIcon">İkinci düğme</string>
+    <string name="notification_player">BİLDİRİM OYNATICISI</string>
+    <string name="repeat">Tekrarla</string>
+    <string name="original_lyrics">Orijinal Şarkı Sözleri</string>
+    <string name="translated_lyrics">Çevrilmiş Şarkı Sözleri</string>
 </resources>
