@@ -1499,30 +1499,6 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     }
 
-    @JvmInline
-    private value class Action(val value: String) {
-        //context(Context)
-        val pendingIntent: PendingIntent
-            get() = PendingIntent.getBroadcast(
-                appContext(),
-                100,
-                Intent(value).setPackage(appContext().packageName),
-                PendingIntent.FLAG_UPDATE_CURRENT.or(if (isAtLeastAndroid6) PendingIntent.FLAG_IMMUTABLE else 0)
-            )
-
-        companion object {
-
-            val pause = Action("it.fast4x.rimusic.pause")
-            val play = Action("it.fast4x.rimusic.play")
-            val next = Action("it.fast4x.rimusic.next")
-            val previous = Action("it.fast4x.rimusic.previous")
-            val like = Action("it.fast4x.rimusic.like")
-            val download = Action("it.fast4x.rimusic.download")
-            val playradio = Action("it.fast4x.rimusic.playradio")
-            val shuffle = Action("it.fast4x.rimusic.shuffle")
-        }
-    }
-
     companion object {
         const val NotificationId = 1001
         const val NotificationChannelId = "default_channel_id"
