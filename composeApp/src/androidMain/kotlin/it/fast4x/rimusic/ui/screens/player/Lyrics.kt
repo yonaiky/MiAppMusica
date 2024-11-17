@@ -243,8 +243,6 @@ fun Lyrics(
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
 
-        val pip = isInPip()
-
         if (showLanguagesList) {
             translateEnabled = false
             menuState.display {
