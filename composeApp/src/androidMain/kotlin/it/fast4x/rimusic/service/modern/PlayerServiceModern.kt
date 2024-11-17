@@ -259,35 +259,10 @@ class PlayerServiceModern : MediaLibraryService(),
                 NotificationChannelId,
                 R.string.player
             )
-                .apply {
-                    setSmallIcon(R.drawable.app_icon)
-                }
+            .apply {
+                setSmallIcon(R.drawable.app_icon)
+            }
         )
-
-        /*
-        setMediaNotificationProvider(object : MediaNotification.Provider{
-            override fun createNotification(
-                mediaSession: MediaSession,// this is the session we pass to style
-                customLayout: ImmutableList<CommandButton>,
-                actionFactory: MediaNotification.ActionFactory,
-                onNotificationChangedCallback: MediaNotification.Provider.Callback
-            ): MediaNotification {
-                createCustomNotification(mediaSession)
-                // notification should be created before you return here
-                return MediaNotification(NotificationId,nBuilder.build())
-            }
-
-            override fun handleCustomCommand(
-                session: MediaSession,
-                action: String,
-                extras: Bundle
-            ): Boolean {
-                return false
-            }
-        })
-        */
-
-
 
         runCatching {
             bitmapProvider = BitmapProvider(
@@ -474,18 +449,6 @@ class PlayerServiceModern : MediaLibraryService(),
                 maybeSavePlayerQueue()
             }, 0, 30, TimeUnit.SECONDS)
 
-            /*
-            coroutineScope.launch(Dispatchers.Main) {
-                while (isActive) {
-                    delay(30.seconds)
-                    //withContext(Dispatchers.Main) {
-                    println("PlayerServiceModern onCreate savePersistentQueue")
-                        maybeSavePlayerQueue()
-                    //}
-                }
-            }
-
-             */
         }
 
 
@@ -1089,24 +1052,6 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     )
 
-/*
-    fun  createCustomNotification(session: MediaSession) {
-
-        nBuilder
-//            NotificationCompat.Builder(this@PlayerServiceModern, NotificationChannelId)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setSmallIcon(R.drawable.app_icon)
-            .setContentTitle("your Content title")
-            .setContentText("your content text")
-            .setLargeIcon(bitmapProvider.bitmap)
-            .addAction(R.drawable.play_skip_back, "Previous", Action.previous.pendingIntent) // #0
-            .addAction(R.drawable.pause, "Pause", Action.pause.pendingIntent) // #1
-            .addAction(R.drawable.play_skip_forward, "Next", Action.next.pendingIntent) // #2
-            .setStyle(MediaStyleNotificationHelper.MediaStyle(session)
-                .setShowActionsInCompactView(0,1,2))
-    }
-    */
-
 
     private fun buildCommandButtons(): MutableList<CommandButton> {
         val notificationPlayerFirstIcon = preferences.getEnum(notificationPlayerFirstIconKey, NotificationButtons.Download)
@@ -1180,84 +1125,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
     private fun updateNotification() {
         coroutineScope.launch(Dispatchers.Main) {
-
-//            nBuilder.setContentTitle("text")
-//            nBuilder.setContentText("subtext")
-//            notificationManager?.notify(NotificationId,nBuilder.build())
-
-            mediaSession.setCustomLayout(
-
-                buildCommandButtons()
-
-                /*
-                listOf(
-
-                    CommandButton.Builder()
-                        .setDisplayName(getString(R.string.download))
-                        .setIconResId(
-                            when (currentSongStateDownload.value) {
-                                Download.STATE_COMPLETED -> R.drawable.downloaded
-                                Download.STATE_DOWNLOADING, Download.STATE_QUEUED -> R.drawable.download_progress
-                                else -> R.drawable.download
-                            }
-                        )
-                        .setSessionCommand(CommandToggleDownload)
-                        .build(),
-
-                    CommandButton.Builder()
-                        .setDisplayName(getString(R.string.favorites))
-                        .setIconResId(
-                            when (currentSong.value?.likedAt) {
-                                -1L -> R.drawable.heart_dislike
-                                null -> R.drawable.heart_outline
-                                else -> R.drawable.heart
-                            }
-                        )
-                        .setSessionCommand(CommandToggleLike)
-                        .build(),
-
-                    CommandButton.Builder()
-                        .setDisplayName(
-                            getString(
-                                when (player.repeatMode) {
-                                    REPEAT_MODE_OFF -> R.string.repeat
-                                    REPEAT_MODE_ONE -> R.string.repeat
-                                    REPEAT_MODE_ALL -> R.string.repeat
-                                    else -> throw IllegalStateException()
-                                }
-                            )
-                        )
-                        .setIconResId(
-                            when (player.repeatMode) {
-                                REPEAT_MODE_OFF -> R.drawable.repeat
-                                REPEAT_MODE_ONE -> R.drawable.repeatone
-                                REPEAT_MODE_ALL -> R.drawable.infinite
-                                else -> throw IllegalStateException()
-                            }
-                        )
-                        .setSessionCommand(CommandToggleRepeatMode)
-                        .setEnabled(true)
-                        .build(),
-
-
-                    CommandButton.Builder()
-                        .setDisplayName(getString(R.string.shuffle))
-                        .setIconResId(if (player.shuffleModeEnabled) R.drawable.shuffle_filled else R.drawable.shuffle)
-                        .setSessionCommand(CommandToggleShuffle)
-                        .build(),
-
-
-                    CommandButton.Builder()
-                        .setDisplayName(getString(R.string.start_radio))
-                        .setIconResId(R.drawable.radio)
-                        .setSessionCommand(CommandStartRadio)
-                        .build(),
-
-
-
-                    )
-                 */
-            )
+            mediaSession.setCustomLayout( buildCommandButtons() )
         }
 
     }
