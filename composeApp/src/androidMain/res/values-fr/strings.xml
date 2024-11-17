@@ -778,7 +778,7 @@
     <string name="no_thumbnail_present">Aucune miniature présente</string>
     <string name="removed_thumbnail">Supprimer la miniature</string>
     <string name="failed_to_remove_thumbnail">Échec de la suppression de la miniature</string>
-    <string name="settings_enable_pip">Activer l\'image dans l\'image</string>
+    <string name="settings_enable_pip">Activer Picture in Picture</string>
     <string name="settings_enable_pip_auto">Activer Picture in Picture automatiquement</string>
     <string name="pipmodule_cover">Pochette</string>
     <string name="settings_pip_module">Module Pip</string>
@@ -792,6 +792,6 @@
     <string name="notificationPlayerSecondIcon">Deuxième bouton</string>
     <string name="notification_player">LECTEUR DE NOTIFICATION</string>
     <string name="repeat">Répéter</string>
-    <string name="original_lyrics">Paroles Originales</string>
-    <string name="translated_lyrics">Paroles Traduites</string>
+    <string name="original_lyrics">Paroles originales</string>
+    <string name="translated_lyrics">Paroles traduites</string>
 </resources>
