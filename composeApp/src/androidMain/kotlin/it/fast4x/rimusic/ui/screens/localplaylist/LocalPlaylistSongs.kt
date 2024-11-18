@@ -49,6 +49,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -134,7 +135,6 @@ import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
-import it.fast4x.rimusic.utils.playlistSongSortByKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
@@ -144,7 +144,6 @@ import it.fast4x.rimusic.utils.resetFormatContentLength
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
-import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
@@ -155,12 +154,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
-import me.knighthat.component.tab.toolbar.ConfirmationDialog
-import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
+import me.knighthat.component.IDialog
+import me.knighthat.component.tab.ExportSongsToCSVDialog
+import me.knighthat.component.tab.toolbar.ConfirmDialog
+import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
+import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
-import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
-import me.knighthat.component.tab.toolbar.InputDialog
 import me.knighthat.component.tab.toolbar.LocateComponent
+import me.knighthat.component.tab.toolbar.MenuIcon
 import me.knighthat.component.tab.toolbar.PlaylistSongsSortComponent
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
@@ -200,7 +201,6 @@ fun LocalPlaylistSongs(
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     val pipedSession = getPipedSession()
     var isRecommendationEnabled by rememberPreference(isRecommendationEnabledKey, false)
-    var downloadState = remember { mutableIntStateOf( Download.STATE_STOPPED ) }
     var selectItems by remember { mutableStateOf( false ) }
     // Playlist non-vital
     val playlistName = remember { mutableStateOf( "" ) }
@@ -226,17 +226,6 @@ fun LocalPlaylistSongs(
         }
     }
 
-    // Sort states
-    val sortByState = rememberPreference( playlistSongSortByKey, PlaylistSongSortBy.Title )
-    val sortOrderState = rememberPreference( songSortOrderKey, SortOrder.Descending )
-    // Dialog states
-    val renamingToggleState = rememberSaveable { mutableStateOf( false ) }
-    val exportingToggleState = rememberSaveable { mutableStateOf( false ) }
-    val deletingToggleState = rememberSaveable { mutableStateOf( false ) }
-    val renumberingToggleState = rememberSaveable { mutableStateOf( false ) }
-    val downloadAllToggleState = rememberSaveable { mutableStateOf( false ) }
-    val deleteDownloadsToggleState = rememberSaveable { mutableStateOf( false ) }
-
     val search = SearchComponent.init()
 
     val sort = PlaylistSongsSortComponent.init()
@@ -244,159 +233,133 @@ fun LocalPlaylistSongs(
     val shuffle = SongsShuffle.init {
         flowOf( playlistSongs.map( SongEntity::song ) )
     }
-    val renameDialog = remember {
-        object: InputDialog {
-            override val context = context
-            override val toggleState = renamingToggleState
-            override val iconId = -1            // Unused
-            override val titleId = R.string.enter_the_playlist_name
-            override val messageId = -1         // Unused
-            override val valueState = playlistName
+    val renameDialog = object: IDialog, Descriptive, MenuIcon {
+        override val messageId: Int = R.string.rename
+        override val iconId: Int = R.drawable.title_edit
+        override val dialogTitle: String
+            @Composable
+            get() = stringResource( R.string.enter_the_playlist_name )
+        override val menuIconTitle: String
+            @Composable
+            get() = stringResource( messageId )
 
-            override fun onSet(newValue: String) {
-                val isPipedPlaylist =
-                    playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
-                            && isPipedEnabled
-                            && pipedSession.token.isNotEmpty()
-                val prefix = if( isPipedPlaylist ) PIPED_PREFIX else ""
-
-                query {
-                    playlistPreview?.playlist?.copy(name = "$prefix$newValue")?.let(Database::update)
-                }
-
-                if (isPipedPlaylist)
-                    renamePipedPlaylist(
-                        context = context,
-                        coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession(),
-                        id = UUID.fromString(playlistPreview?.playlist?.browseId),
-                        name = "$PIPED_PREFIX$newValue"
-                    )
-                onDismiss()
+        override var value: String = playlistName.value
+            set(value) {
+                playlistName.value = value
+                field = value
             }
-        }
-    }
-    // START - Export playlist
-    val exportLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("text/csv")
-    ) { uri ->
-        ExportSongsToCSVDialog.toFile(
-            uri ?: return@rememberLauncherForActivityResult,
-            context,
-            playlistPreview?.playlist?.browseId ?: "",
-            playlistName.value,
-            listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
-        )
-    }
-    // END - Export playlist
-    val exportDialog = remember {
-        object: ExportSongsToCSVDialog {
-            override val context = context
-            override val toggleState = exportingToggleState
-            override val valueState = playlistName
+        override var isActive: Boolean by rememberSaveable { mutableStateOf( false ) }
 
-            override fun onSet( newValue: String ) {
-                exportLauncher.launch( ExportSongsToCSVDialog.fileName( newValue ) )
+        override fun onShortClick() = super.onShortClick()
+
+        override fun onSet(newValue: String) {
+            val isPipedPlaylist =
+                playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
+                        && isPipedEnabled
+                        && pipedSession.token.isNotEmpty()
+            val prefix = if( isPipedPlaylist ) PIPED_PREFIX else ""
+
+            query {
+                playlistPreview?.playlist?.copy(name = "$prefix$newValue")?.let(Database::update)
             }
-        }
-    }
-    val deleteDialog = remember {
-        object: ConfirmationDialog {
-            override val context = context
-            override val toggleState = deletingToggleState
-            override val iconId = -1            // Unused
-            override val titleId = R.string.delete_playlist
-            override val messageId = -1         // Unused
 
-            override fun onConfirm() {
-                query {
-                    playlistPreview?.playlist?.let(Database::delete)
-                }
-
-                if (
-                    playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
-                    && isPipedEnabled
-                    && pipedSession.token.isNotEmpty()
+            if ( isPipedPlaylist )
+                renamePipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
+                    pipedSession = pipedSession.toApiSession(),
+                    id = UUID.fromString(playlistPreview?.playlist?.browseId),
+                    name = "$PIPED_PREFIX$newValue"
                 )
-                    deletePipedPlaylist(
-                        context = context,
-                        coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession(),
-                        id = UUID.fromString(playlistPreview?.playlist?.browseId)
-                    )
-
-                onDelete()
-                onDismiss()
-            }
+            onDismiss()
         }
     }
-    val renumberDialog = remember {
-        object: ConfirmationDialog {
-            override val context = context
-            override val toggleState = renumberingToggleState
-            override val iconId = -1
-            override val titleId = R.string.do_you_really_want_to_renumbering_positions_in_this_playlist
-            override val messageId = -1
+    val exportDialog = ExportSongsToCSVDialog.init( playlistName ) {
+        listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
+    }
+    val deleteDialog = object: ConfirmDialog, Descriptive, MenuIcon {
+        override val messageId: Int = R.string.delete
+        override val iconId: Int = R.drawable.close
+        override val dialogTitle: String
+            @Composable
+            get() = stringResource( R.string.delete_playlist )
+        override val menuIconTitle: String
+            @Composable
+            get() = stringResource( messageId )
 
-            override fun onConfirm() {
-                query {
-                    val shuffled = playlistSongs.shuffled()
+        override var isActive: Boolean by rememberSaveable { mutableStateOf( false ) }
 
-                    shuffled.forEachIndexed { index, song ->
-                        playlistPreview?.playlist?.let {
-                            Database.updateSongPosition(it.id, song.song.id, index)
-                        }
+        override fun onShortClick() = super.onShortClick()
+
+        override fun onConfirm() {
+            transaction {
+                playlistPreview?.playlist?.let(Database::delete)
+            }
+
+            if (
+                playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
+                && isPipedEnabled
+                && pipedSession.token.isNotEmpty()
+            )
+                deletePipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
+                    pipedSession = pipedSession.toApiSession(),
+                    id = UUID.fromString(playlistPreview?.playlist?.browseId)
+                )
+
+            onDelete()
+            onDismiss()
+        }
+    }
+    val renumberDialog = object: ConfirmDialog, Descriptive, MenuIcon {
+        override val messageId: Int = R.string.renumber_songs_positions
+        override val iconId: Int = R.drawable.position
+        override val dialogTitle: String
+            @Composable
+            get() = stringResource( R.string.do_you_really_want_to_renumbering_positions_in_this_playlist )
+        override val menuIconTitle: String
+            @Composable
+            get() = stringResource( messageId )
+
+        override var isActive: Boolean by rememberSaveable { mutableStateOf( false ) }
+
+        override fun onShortClick() = super.onShortClick()
+
+        override fun onConfirm() {
+            transaction {
+                val pId = playlistPreview?.playlist?.id ?: return@transaction
+
+                playlistSongs.map( SongEntity::song )
+                    .forEachIndexed { index, song ->
+                        Database.updateSongPosition( pId, song.id, index )
                     }
+            }
+
+            onDismiss()
+        }
+    }
+    val downloadAllDialog = DownloadAllDialog.init {
+        listMediaItems.ifEmpty {
+            playlistSongs.map {
+                transaction {
+                    Database.insert(
+                        Song(
+                            id = it.asMediaItem.mediaId,
+                            title = it.asMediaItem.mediaMetadata.title.toString(),
+                            artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
+                            thumbnailUrl = it.song.thumbnailUrl,
+                            durationText = null
+                        )
+                    )
                 }
 
-                onDismiss()
+                it.asMediaItem
             }
         }
     }
-    val downloadAllDialog = remember {
-        object: DownloadAllDialog {
-            override val context = context
-            override val binder = binder
-            override val toggleState = downloadAllToggleState
-            override val downloadState = downloadState
-
-            override fun listToProcess(): List<MediaItem> =
-                if( listMediaItems.isNotEmpty() )
-                    listMediaItems
-                else if( playlistSongs.isNotEmpty() ) {
-                    playlistSongs.map {
-                        query {
-                            Database.insert(
-                                Song(
-                                    id = it.asMediaItem.mediaId,
-                                    title = it.asMediaItem.mediaMetadata.title.toString(),
-                                    artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                                    thumbnailUrl = it.song.thumbnailUrl,
-                                    durationText = null
-                                )
-                            )
-                        }
-
-                        it.asMediaItem
-                    }
-                } else listOf()
-        }
-    }
-    val deleteDownloadsDialog = remember {
-        object: DeleteDownloadsDialog {
-            override val context = context
-            override val binder = binder
-            override val toggleState = deleteDownloadsToggleState
-            override val downloadState = downloadState
-
-            override fun listToProcess(): List<MediaItem> =
-                if( listMediaItems.isNotEmpty() )
-                    listMediaItems
-                else if( playlistSongs.isNotEmpty() )
-                    playlistSongs.map( SongEntity::asMediaItem )
-                else
-                    emptyList()
-        }
+    val deleteDownloadsDialog = DelAllDownloadedDialog.init {
+        listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
     }
     val editThumbnailLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
@@ -858,11 +821,8 @@ fun LocalPlaylistSongs(
                                             },
                                             onRename = {
                                                 if (playlistNotMonthlyType || playlistNotPipedType)
-                                                    renameDialog.toggleState.value = true
+                                                    renameDialog.onShortClick()
                                                 else
-                                                /*
-                                                SmartToast(context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist))
-                                                 */
                                                     SmartMessage(
                                                         context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist),
                                                         context = context
@@ -959,7 +919,7 @@ fun LocalPlaylistSongs(
                                             },
                                             onRenumberPositions = {
                                                 if (playlistNotMonthlyType)
-                                                    renumberDialog.toggleState.value = true
+                                                    renumberDialog.onShortClick()
                                                 else
                                                 /*
                                                 SmartToast(context.resources.getString(R.string.info_cannot_renumbering_a_monthly_playlist))
@@ -969,16 +929,7 @@ fun LocalPlaylistSongs(
                                                         context = context
                                                     )
                                             },
-                                            onDelete = {
-                                                deleteDialog.toggleState.value = true
-                                                /*
-                                            if (playlistNotMonthlyType)
-                                                isDeleting = true
-                                            else
-                                                SmartToast(context.resources.getString(R.string.info_cannot_delete_a_monthly_playlist))
-
-                                             */
-                                            },
+                                            onDelete = deleteDialog::onShortClick,
                                             onEditThumbnail = {
                                                 openEditThumbnailPicker()
                                             },
@@ -996,9 +947,7 @@ fun LocalPlaylistSongs(
                                                     }"
                                                 )
                                             },
-                                            onExport = {
-                                                exportDialog.toggleState.value = true
-                                            },
+                                            onExport = exportDialog::onShortClick,
                                             onGoToPlaylist = {
                                                 navController.navigate("${NavRoutes.localPlaylist.name}/$it")
                                             },
@@ -1083,7 +1032,7 @@ fun LocalPlaylistSongs(
 
 
                         val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                        downloadState.intValue = getDownloadState(song.asMediaItem.mediaId)
+                        downloadAllDialog.state = getDownloadState( song.asMediaItem.mediaId )
                         val isDownloaded =
                             if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
                         val checkedState = rememberSaveable { mutableStateOf(false) }
@@ -1172,7 +1121,7 @@ fun LocalPlaylistSongs(
                                     //if (isDownloaded) listDownloadedMedia.dropWhile { it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
                                     //Log.d("mediaItem", "manageDownload click isDownloaded ${isDownloaded} listDownloadedMedia ${listDownloadedMedia.distinct().size}")
                                 },
-                                downloadState = downloadState.intValue,
+                                downloadState = downloadAllDialog.state,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 trailingContent = {

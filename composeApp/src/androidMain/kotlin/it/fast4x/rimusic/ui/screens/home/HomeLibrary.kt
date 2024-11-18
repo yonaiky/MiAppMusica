@@ -1,8 +1,6 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -40,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
@@ -52,9 +49,8 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
-import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -76,10 +72,12 @@ import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import me.knighthat.colorPalette
+import me.knighthat.component.IDialog
+import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.TabHeader
-import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
-import me.knighthat.component.tab.toolbar.InputDialog
+import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.ItemSize
+import me.knighthat.component.tab.toolbar.MenuIcon
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.SortComponent
@@ -100,8 +98,6 @@ fun HomeLibrary(
     onSettingsClick: () -> Unit
 ) {
     // Essentials
-    val menuState = LocalMenuState.current
-    val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
@@ -136,15 +132,29 @@ fun HomeLibrary(
             PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
         }
     }
-    val newPlaylistDialog = object: InputDialog {
-        override val context = context
-        override val toggleState = newPlaylistToggleState
-        override val iconId = R.drawable.add_in_playlist
-        override val titleId: Int = R.string.enter_the_playlist_name
+    //<editor-fold desc="New playlist dialog">
+    val newPlaylistDialog = object: IDialog, Descriptive, MenuIcon {
+
         override val messageId: Int = R.string.create_new_playlist
+        override val iconId: Int = R.drawable.add_in_playlist
+        override val dialogTitle: String
+            @Composable
+            get() = stringResource( R.string.enter_the_playlist_name )
+        override val menuIconTitle: String
+            @Composable
+            get() = stringResource( messageId )
+
+        override var isActive: Boolean = newPlaylistToggleState.value
+            set(value) {
+                newPlaylistToggleState.value = value
+                field = value
+            }
+        // TODO: Add a random name generator
+        override var value: String = ""
+
+        override fun onShortClick() = super.onShortClick()
 
         override fun onSet(newValue: String) {
-
             if ( isPipedEnabled && pipedSession.token.isNotEmpty() )
                 createPipedPlaylist(
                     context = context,
@@ -153,48 +163,37 @@ fun HomeLibrary(
                     name = newValue
                 )
             else
-                query {
+                transaction {
                     Database.insert( Playlist( name = newValue ) )
                 }
 
             onDismiss()
         }
+
     }
-    // START - Import playlist
-    val importLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        ImportSongsFromCSV.openFile(
-            uri ?: return@rememberLauncherForActivityResult,
-            context,
-            beforeTransaction = { _, row ->
+    //</editor-fold>
+    val importPlaylistDialog = ImportSongsFromCSV.init(
+        beforeTransaction = { _, row ->
+            plistId = row["PlaylistName"]?.let {
+                Database.playlistExistByName( it )
+            } ?: 0L
+
+            if (plistId == 0L)
                 plistId = row["PlaylistName"]?.let {
-                    Database.playlistExistByName( it )
-                } ?: 0L
-
-                if (plistId == 0L)
-                    plistId = row["PlaylistName"]?.let {
-                        Database.insert( Playlist( plistId, it, row["PlaylistBrowseId"] ) )
-                    }!!
-            },
-            afterTransaction = { index, song ->
-                Database.insert(song)
-                Database.insert(
-                    SongPlaylistMap(
-                        songId = song.id,
-                        playlistId = plistId,
-                        position = index
-                    )
+                    Database.insert( Playlist( plistId, it, row["PlaylistBrowseId"] ) )
+                }!!
+        },
+        afterTransaction = { index, song ->
+            Database.insert(song)
+            Database.insert(
+                SongPlaylistMap(
+                    songId = song.id,
+                    playlistId = plistId,
+                    position = index
                 )
-            }
-        )
-    }
-    // END - Import playlist
-    val importPlaylistDialog = object: ImportSongsFromCSV {
-        override val context = context
-
-        override fun onShortClick() = importLauncher.launch( arrayOf("text/csv", "text/comma-separated-values") )
-    }
+            )
+        }
+    )
     val sync = SyncComponent.init()
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {

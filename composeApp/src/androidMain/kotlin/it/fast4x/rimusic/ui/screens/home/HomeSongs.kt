@@ -73,7 +73,6 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueSelection
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
-import it.fast4x.rimusic.enums.TopPlaylistPeriod
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
@@ -137,7 +136,6 @@ import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
-import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -147,13 +145,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
+import me.knighthat.component.tab.DelSongDialog
+import me.knighthat.component.tab.ExportSongsToCSVDialog
+import me.knighthat.component.tab.HideSongDialog
+import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.TabHeader
-import me.knighthat.component.tab.toolbar.ConfirmationDialog
-import me.knighthat.component.tab.toolbar.DeleteDownloadsDialog
+import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
-import me.knighthat.component.tab.toolbar.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.HiddenSongsComponent
-import me.knighthat.component.tab.toolbar.ImportSongsFromCSV
 import me.knighthat.component.tab.toolbar.LocateComponent
 import me.knighthat.component.tab.toolbar.PeriodSelectorComponent
 import me.knighthat.component.tab.toolbar.RandomSortComponent
@@ -200,8 +199,6 @@ fun HomeSongs(
         BuiltInPlaylist.Favorites
     )
 
-    val downloadState = remember { mutableIntStateOf( Download.STATE_STOPPED ) }
-
     val context = LocalContext.current
 
     var includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
@@ -210,7 +207,6 @@ fun HomeSongs(
         MaxTopPlaylistItemsKey,
         MaxTopPlaylistItems.`10`
     )
-    var topPlaylistPeriod by rememberPreference(topPlaylistPeriodKey, TopPlaylistPeriod.PastWeek)
 
     /************ OnDeviceDev */
     val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
@@ -239,7 +235,7 @@ fun HomeSongs(
 
     // Non-vital
     val playlistNameState = remember { mutableStateOf( "" ) }
-    var selectItems by remember { mutableStateOf( false ) }
+    var selectItems by rememberSaveable { mutableStateOf( false ) }
 
     // Update playlistNameState's value based on current builtInPlaylist
     LaunchedEffect( builtInPlaylist ) {
@@ -256,10 +252,6 @@ fun HomeSongs(
 
     // Dialog states
     val exportToggleState = rememberSaveable { mutableStateOf( false ) }
-    val downloadAllToggleState = rememberSaveable { mutableStateOf( false ) }
-    val deleteDownloadsToggleState = rememberSaveable { mutableStateOf( false ) }
-    val deleteSongToggleState = rememberSaveable { mutableStateOf( false ) }
-    val hideSongToggleState = rememberSaveable { mutableStateOf( false ) }
 
     val search = SearchComponent.init()
 
@@ -284,141 +276,23 @@ fun HomeSongs(
 
         flowOf(items.map(SongEntity::song))
     }
-    // START - Import songs
-    val importLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        ImportSongsFromCSV.openFile(
-            uri ?: return@rememberLauncherForActivityResult,
-            context,
-            afterTransaction = { _, song ->
-                Database.upsert( song )
-                Database.like( song.id, System.currentTimeMillis() )
-            }
-        )
-    }
-    // END - Import songs
-    val import = object: ImportSongsFromCSV {
-        override val context = context
-
-        override fun onShortClick() = importLauncher.launch(arrayOf("text/csv", "text/comma-separated-values"))
-    }
-    // START - Export songs
-    val exportLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("text/csv")
-    ) { uri ->
-        ExportSongsToCSVDialog.toFile(
-            uri ?: return@rememberLauncherForActivityResult,
-            context,
-            "",
-            playlistNameState.value,
-            listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
-        )
-    }
-    // END - Export songs
-    val exportDialog = object: ExportSongsToCSVDialog {
-        override val context = context
-        override val toggleState = exportToggleState
-        override val valueState = playlistNameState
-
-        override fun onSet(newValue: String) {
-            exportLauncher.launch( ExportSongsToCSVDialog.fileName( newValue ) )
+    val import = ImportSongsFromCSV.init(
+        afterTransaction = { _, song ->
+            Database.upsert( song )
+            Database.like( song.id, System.currentTimeMillis() )
         }
+    )
+    val exportDialog = ExportSongsToCSVDialog.init( playlistNameState ) {
+        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
     }
-    val downloadAllDialog = object: DownloadAllDialog {
-        override val context = context
-        override val binder = binder
-        override val toggleState = downloadAllToggleState
-        override val downloadState = downloadState
-
-        override fun listToProcess(): List<MediaItem> =
-            if( listMediaItems.isNotEmpty() )
-                listMediaItems
-            else if( items.isNotEmpty() )
-                items.map( SongEntity::asMediaItem )
-            else
-                listOf()
+    val downloadAllDialog = DownloadAllDialog.init {
+        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
     }
-    val deleteDownloadsDialog = object: DeleteDownloadsDialog {
-        override val context = context
-        override val binder = binder
-        override val toggleState = deleteDownloadsToggleState
-        override val downloadState = downloadState
-
-        override fun listToProcess(): List<MediaItem> =
-            if( listMediaItems.isNotEmpty() )
-                listMediaItems
-            else if( items.isNotEmpty() )
-                items.map( SongEntity::asMediaItem )
-            else
-                emptyList()
+    val deleteDownloadsDialog = DelAllDownloadedDialog.init {
+        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
     }
-    val deleteSongDialog = object: ConfirmationDialog {
-        override val context = context
-        override val toggleState = deleteSongToggleState
-        override val iconId = -1
-        override val titleId = R.string.delete_song
-        override val messageId = -1
-
-        var song: Optional<SongEntity> = Optional.empty()
-
-        override fun onDismiss() {
-            // Always override current value with empty Optional
-            // to prevent unwanted outcomes
-            song = Optional.empty()
-            super.onDismiss()
-        }
-
-        override fun onConfirm() {
-            song.ifPresent {
-                query {
-                    menuState.hide()
-                    binder?.cache?.removeResource(it.song.id)
-                    binder?.downloadCache?.removeResource(it.song.id)
-                    Database.delete(it.song)
-                    Database.deleteSongFromPlaylists(it.song.id)
-                    Database.deleteFormat(it.song.id)
-                }
-                SmartMessage(context.resources.getString(R.string.deleted), context = context)
-            }
-
-            onDismiss()
-        }
-    }
-    val hideSongDialog = object: ConfirmationDialog {
-        override val context = context
-        override val toggleState = hideSongToggleState
-        override val iconId = -1
-        override val titleId = R.string.hidesong
-        override val messageId = -1
-
-        var song: Optional<SongEntity> = Optional.empty()
-
-        override fun onDismiss() {
-            // Always override current value with empty Optional
-            // to prevent unwanted outcomes
-            song = Optional.empty()
-            super.onDismiss()
-        }
-
-        override fun onConfirm() {
-            song.ifPresent {
-                query {
-                    menuState.hide()
-                    binder?.cache?.removeResource(it.song.id)
-                    binder?.downloadCache?.removeResource(it.song.id)
-                    Database.resetFormatContentLength(it.song.id)
-                    Database.deleteFormat(it.song.id)
-                    Database.incrementTotalPlayTimeMs(
-                        it.song.id,
-                        -it.song.totalPlayTimeMs
-                    )
-                }
-            }
-
-            onDismiss()
-        }
-    }
+    val deleteSongDialog =  DelSongDialog.init()
+    val hideSongDialog = HideSongDialog.init()
 
     val locator = LocateComponent.init( lazyListState ) { items }
 
@@ -1034,7 +908,7 @@ fun HomeSongs(
                             }
                         ) {
                             val isLocal by remember { derivedStateOf { song.song.asMediaItem.isLocal } }
-                            downloadState.intValue = getDownloadState(song.song.asMediaItem.mediaId)
+                            downloadAllDialog.state = getDownloadState(song.song.asMediaItem.mediaId)
                             val isDownloaded =
                                 if (!isLocal) isDownloadedSong(song.song.asMediaItem.mediaId) else true
                             val checkedState = rememberSaveable { mutableStateOf(false) }
@@ -1052,7 +926,7 @@ fun HomeSongs(
                                             downloadState = isDownloaded
                                         )
                                 },
-                                downloadState = downloadState.intValue,
+                                downloadState = downloadAllDialog.state,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 onThumbnailContent = {
@@ -1129,11 +1003,11 @@ fun HomeSongs(
                                                     onDismiss = menuState::hide,
                                                     onHideFromDatabase = {
                                                         hideSongDialog.song = Optional.of( song )
-                                                        hideSongToggleState.value = true
+                                                        hideSongDialog.onShortClick()
                                                     },
                                                     onDeleteFromDatabase = {
                                                         deleteSongDialog.song = Optional.of( song )
-                                                        deleteSongToggleState.value = true
+                                                        deleteSongDialog.onShortClick()
                                                     },
                                                     disableScrollingText = disableScrollingText
                                                 )
