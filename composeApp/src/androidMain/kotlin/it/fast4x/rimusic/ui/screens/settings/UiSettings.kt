@@ -1246,7 +1246,7 @@ fun UiSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
-        if (searchInput.isBlank() || stringResource(R.string.settings_enable_pip).contains(searchInput,true)) {
+        if (search.input.isBlank() || stringResource(R.string.settings_enable_pip).contains(search.input,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.settings_enable_pip),
                 text = "",
