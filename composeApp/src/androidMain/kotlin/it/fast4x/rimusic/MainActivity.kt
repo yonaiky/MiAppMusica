@@ -563,7 +563,7 @@ class MainActivity :
                         playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
                         playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
 
-                if (!isDynamicPalette && !isCoverColor) return
+                if (!isDynamicPalette) return
 
                 val colorPaletteMode = preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
                 coroutineScope.launch(Dispatchers.Main) {

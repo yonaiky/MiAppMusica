@@ -213,6 +213,7 @@ import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.extensions.pip.rememberPipHandler
 import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimation
@@ -262,6 +263,7 @@ import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.pinchToToggle
 import it.fast4x.rimusic.utils.PinchDirection
+import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.showVinylThumbnailAnimationKey
@@ -732,15 +734,12 @@ fun Player(
         val isSystemDarkMode = isSystemInDarkTheme()
         LaunchedEffect(mediaItem.mediaId) {
             try {
-                /*
                 val bitmap = getBitmapFromUrl(
                     context,
                     binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
                 )
-                 */
-                val bitmap = binder.bitmap
 
-                dynamicColorPalette = dynamicColorPaletteOf(
+                val dynamicColorPalette = dynamicColorPaletteOf(
                     bitmap,
                     isSystemDarkMode
                 ) ?: color

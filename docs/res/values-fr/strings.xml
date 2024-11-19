@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="opensource_multilingual_application">Une application open-source et multilingue pour Android qui permet de diffuser de la musique depuis YouTube Music</string>
+    <string name="opensource_multilingual_application">Une application Android open source et multilingue pour diffuser de la musique depuis YouTube Music</string>
     <string name="your_library">Votre bibliothèque.</string>
     <string name="organized_in_one_place">Tout organisé en un seul endroit, titres favoris, titres téléchargés, titres écoutés et toutes vos playlists.</string>
     <string name="beautiful_player">Un lecteur magnifique.</string>
@@ -13,6 +13,6 @@
     <string name="download_rimusic_now">Télécharger RiMusic maintenant</string>
     <string name="repository">Code source</string>
     <string name="releases">Versions</string>
-    <string name="issue_tracker">Suivis des problèmes</string>
+    <string name="issue_tracker">Suivi des problèmes</string>
     <string name="custom_version">Version personnalisée</string>
 </resources>
