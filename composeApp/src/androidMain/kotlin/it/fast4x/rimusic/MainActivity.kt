@@ -128,6 +128,7 @@ import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.FontType
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.Languages
+import it.fast4x.rimusic.enums.LogType
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PipModule
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
@@ -158,6 +159,7 @@ import it.fast4x.rimusic.ui.styling.typographyOf
 import it.fast4x.rimusic.utils.InitDownloader
 import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
+import it.fast4x.rimusic.utils.TextCopyToClipboard
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.asMediaItem
@@ -205,6 +207,7 @@ import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.isVideo
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
+import it.fast4x.rimusic.utils.loadAppLog
 import it.fast4x.rimusic.utils.loadedDataKey
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
@@ -234,6 +237,7 @@ import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.ytCookieKey
 import it.fast4x.rimusic.utils.ytVisitorDataKey
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -253,6 +257,7 @@ import java.net.Proxy
 import java.util.Locale
 import java.util.Objects
 import kotlin.math.sqrt
+import kotlin.system.exitProcess
 
 @UnstableApi
 class MainActivity :
@@ -440,8 +445,18 @@ class MainActivity :
             //if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
         }
 
-
         setContent {
+
+            // Valid to get log when app crash
+            if(intent.action == action_copy_crash_log) {
+                loadAppLog(this@MainActivity, type = LogType.Default).let {
+                    if (it != null) TextCopyToClipboard(it)
+                }
+                LaunchedEffect(Unit) {
+                    delay(5000)
+                    exitProcess(0)
+                }
+            }
 
             if (preferences.getEnum(
                     checkUpdateStateKey,
@@ -931,6 +946,7 @@ class MainActivity :
                 }
 
 
+
                 /*
                 isInPip(
                     onChange = {
@@ -1360,6 +1376,7 @@ class MainActivity :
         const val action_songs = "it.fast4x.rimusic.action.songs"
         const val action_albums = "it.fast4x.rimusic.action.albums"
         const val action_library = "it.fast4x.rimusic.action.library"
+        const val action_copy_crash_log = "it.fast4x.rimusic.action.copy_crash_log"
     }
 
 
