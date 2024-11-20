@@ -646,6 +646,7 @@ fun HomeSongs(
                     this.add( search )
                     this.add( locator )
                     this.add( downloadAllDialog )
+                    this.add( deleteDownloadsDialog )
                     this.add( deleteSongDialog )
                     if (builtInPlaylist == BuiltInPlaylist.All)
                         this.add( hiddenSongs )
