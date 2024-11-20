@@ -4,11 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.R
 
 class HiddenSongsComponent private constructor(
     private val showHiddenState: MutableState<Int>
-): ToggleableIcon, Descriptive {
+): ToggleableIcon, Descriptive, MenuIcon {
 
     companion object {
         @JvmStatic
@@ -34,6 +35,9 @@ class HiddenSongsComponent private constructor(
     override val iconIdOff: Int = R.drawable.eye_off
     override val iconId: Int = R.drawable.eye
     override val messageId: Int = R.string.info_show_hide_hidden_songs
+    override val menuIconTitle: String
+        @Composable
+        get() = stringResource( messageId )
 
     override fun onShortClick() { isVisible = !isVisible }
 }
