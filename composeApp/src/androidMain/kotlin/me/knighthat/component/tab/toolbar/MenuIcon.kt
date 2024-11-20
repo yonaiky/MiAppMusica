@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.components.themed.GridMenuItemHeight
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import me.knighthat.component.header.TabToolBar
 
 interface MenuIcon: Icon {
 
@@ -47,7 +48,7 @@ interface MenuIcon: Icon {
             painter = icon,
             contentDescription = null,
             tint = color,
-            modifier = Modifier.size( 20.dp )
+            modifier = Modifier.size( TabToolBar.TOOLBAR_ICON_SIZE )
         )
     }
 
