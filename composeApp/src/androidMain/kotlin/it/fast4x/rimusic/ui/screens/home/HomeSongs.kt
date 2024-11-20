@@ -153,6 +153,7 @@ import me.knighthat.component.ItemSelector
 import me.knighthat.component.PlayNext
 import me.knighthat.component.PlaylistsMenu
 import me.knighthat.component.header.TabToolBar
+import me.knighthat.component.screen.PeriodSelector
 import me.knighthat.component.screen.hiddenSongs
 import me.knighthat.component.screen.randomSort
 import me.knighthat.component.tab.DelSongDialog
@@ -165,7 +166,6 @@ import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.DynamicColor
 import me.knighthat.component.tab.toolbar.LocateComponent
-import me.knighthat.component.tab.toolbar.PeriodSelectorComponent
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.SortComponent
@@ -310,7 +310,7 @@ fun HomeSongs(
 
     val hiddenSongs = hiddenSongs()
 
-    val topPlaylists = PeriodSelectorComponent.init()
+    val topPlaylists = PeriodSelector.init()
 
     //<editor-fold desc="Menu">
     val itemSelector = ItemSelector {
