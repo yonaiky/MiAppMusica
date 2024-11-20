@@ -43,19 +43,10 @@ interface MenuIcon: Icon {
     }
 
     @Composable
-    fun BoxScope.GridIconComponent() {
-        Icon(
-            painter = icon,
-            contentDescription = null,
-            tint = color,
-            modifier = Modifier.size( TabToolBar.TOOLBAR_ICON_SIZE )
-        )
-    }
+    fun BoxScope.GridIconComponent() = ToolBarButton()
 
     @Composable
     fun GridMenuItem() {
-        val isEnabled = if( this is ToggleableIcon ) isVisible else isEnabled
-
         Column(
             modifier = modifier
                 .clip(ShapeDefaults.Large)
