@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
@@ -71,7 +72,7 @@ object TabToolBar {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding( HORIZONTAL_PADDING, VERTICAL_PADDING )
+                .padding(HORIZONTAL_PADDING, VERTICAL_PADDING)
         ) {
 
             buttons.take(
@@ -89,6 +90,52 @@ object TabToolBar {
 
     @Composable
     fun Buttons( vararg buttons: Button ) = Buttons( listOf( *buttons ) )
+
+    @Composable
+    fun Icon(
+        icon: Painter,
+        tint: Color = colorPalette().text,
+        size: Dp = TOOLBAR_ICON_SIZE,
+        enabled: Boolean = true,
+        modifier: Modifier = Modifier,
+        onClick: () -> Unit = {}
+    ) {
+        IconButton(
+            onClick = onClick,
+            enabled = enabled
+        ) {
+            androidx.compose.material3.Icon(
+                painter = icon,
+                null,
+                modifier.size( size )
+                        .padding( horizontal = 4.dp ),
+                tint
+            )
+        }
+    }
+
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    fun Icon(
+        icon: Painter,
+        tint: Color = colorPalette().text,
+        size: Dp = TOOLBAR_ICON_SIZE,
+        enabled: Boolean = true,
+        modifier: Modifier = Modifier,
+        onClick: () -> Unit = {},
+        onLongClick: () -> Unit = {}
+    ) {
+        Icon(
+            icon,
+            tint,
+            size,
+            enabled,
+            modifier.combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
+        )
+    }
 
     @Composable
     fun Icon(
