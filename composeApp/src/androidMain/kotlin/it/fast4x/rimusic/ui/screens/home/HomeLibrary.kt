@@ -71,6 +71,7 @@ import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import me.knighthat.colorPalette
 import me.knighthat.component.IDialog
 import me.knighthat.component.header.TabToolBar
+import me.knighthat.component.screen.playlistSync
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Descriptive
@@ -79,7 +80,6 @@ import me.knighthat.component.tab.toolbar.MenuIcon
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.SortComponent
-import me.knighthat.component.tab.toolbar.SyncComponent
 import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
 
 
@@ -192,7 +192,7 @@ fun HomeLibrary(
             )
         }
     )
-    val sync = SyncComponent.init()
+    val sync = playlistSync()
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.playlistPreviews( sort.sortBy, sort.sortOrder ).collect { items = it }

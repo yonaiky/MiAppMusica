@@ -153,6 +153,8 @@ import me.knighthat.component.ItemSelector
 import me.knighthat.component.PlayNext
 import me.knighthat.component.PlaylistsMenu
 import me.knighthat.component.header.TabToolBar
+import me.knighthat.component.screen.hiddenSongs
+import me.knighthat.component.screen.randomSort
 import me.knighthat.component.tab.DelSongDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HideSongDialog
@@ -161,10 +163,9 @@ import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
-import me.knighthat.component.tab.toolbar.HiddenSongsComponent
+import me.knighthat.component.tab.toolbar.DynamicColor
 import me.knighthat.component.tab.toolbar.LocateComponent
 import me.knighthat.component.tab.toolbar.PeriodSelectorComponent
-import me.knighthat.component.tab.toolbar.RandomSortComponent
 import me.knighthat.component.tab.toolbar.SearchComponent
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.component.tab.toolbar.SortComponent
@@ -305,9 +306,9 @@ fun HomeSongs(
 
     val locator = LocateComponent.init( lazyListState ) { items }
 
-    val randomSorter = RandomSortComponent.init()
+    val randomSorter = randomSort()
 
-    val hiddenSongs = HiddenSongsComponent.init()
+    val hiddenSongs = hiddenSongs()
 
     val topPlaylists = PeriodSelectorComponent.init()
 
@@ -434,10 +435,14 @@ fun HomeSongs(
 
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
-            LaunchedEffect( songSort.sortBy, songSort.sortOrder, hiddenSongs.showHidden, includeLocalSongs ) {
-                //Database.songs(sortBy, sortOrder, showHiddenSongs).collect { items = it }
-                Database.songs(songSort.sortBy, songSort.sortOrder, hiddenSongs.showHidden).collect { items = it }
+            LaunchedEffect( songSort.sortBy, songSort.sortOrder, hiddenSongs.isFirstIcon, includeLocalSongs ) {
 
+                /*
+                    [isFirstIcon] represents whether hidden songs (songs with totalPlaytime = -1)
+                    is shown or not. When `true`, hidden is set to '-1', otherwise, `0` is assigned
+                 */
+                val showHidden = if( hiddenSongs.isFirstIcon ) -1 else 0
+                Database.songs(songSort.sortBy, songSort.sortOrder, showHidden).collect { items = it }
             }
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
@@ -500,7 +505,9 @@ fun HomeSongs(
                 songFlow.flowOn( dispatcher )
                         .map { it.filter( filterCondition ) }
                         .collect {
-                            items = if( randomSorter.isActive ) it.shuffled() else it
+                            // [isFirstColor] represents whether the feature is enabled or not
+                            val isShuffleEnabled = (randomSorter as DynamicColor).isFirstColor
+                            items = if( isShuffleEnabled ) it.shuffled() else it
                         }
             }
         }
