@@ -18,7 +18,9 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.WindowManager
 import android.window.OnBackInvokedDispatcher
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -300,6 +302,9 @@ class MainActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MonetCompat.enablePaletteCompat()
+
+        //enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.Black.toArgb()))
+        //enableEdgeToEdge()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
