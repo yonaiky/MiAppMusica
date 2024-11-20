@@ -92,7 +92,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
-import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.FolderItem
@@ -143,13 +142,23 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import me.knighthat.appContext
 import me.knighthat.colorPalette
+import me.knighthat.component.AddToFavorite
+import me.knighthat.component.Enqueue
+import me.knighthat.component.Export
+import me.knighthat.component.Import
+import me.knighthat.component.ItemSelector
+import me.knighthat.component.PlayNext
+import me.knighthat.component.PlaylistsMenu
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.DelSongDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HideSongDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.HiddenSongsComponent
@@ -301,6 +310,92 @@ fun HomeSongs(
     val hiddenSongs = HiddenSongsComponent.init()
 
     val topPlaylists = PeriodSelectorComponent.init()
+
+    //<editor-fold desc="Menu">
+    val itemSelector = ItemSelector {
+        selectItems = !selectItems
+        if ( !selectItems ) {
+            listMediaItems.clear()
+        }
+    }
+    val playNext = PlayNext {
+        if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
+            items = filteredSongs
+
+        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
+            .let {
+                binder?.player?.addNext( it, appContext() )
+
+                if( listMediaItems.isNotEmpty() ) {
+                    listMediaItems.clear()
+                    selectItems = false
+                }
+            }
+    }
+    val enqueue = Enqueue {
+        if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
+            items = filteredSongs
+
+        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
+            .let {
+                binder?.player?.enqueue( it, appContext() )
+
+                if( listMediaItems.isNotEmpty() ) {
+                    listMediaItems.clear()
+                    selectItems = false
+                }
+            }
+    }
+    val addToFavorite = AddToFavorite {
+        transaction {
+            listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
+                .forEach {
+                    Database.like( it.mediaId, System.currentTimeMillis() )
+                }
+        }
+    }
+    var position by remember { mutableIntStateOf( 0 ) }
+
+    val addToPlaylist = PlaylistsMenu.init( navController ) {
+        if (builtInPlaylist == BuiltInPlaylist.OnDevice)
+            items = filteredSongs
+
+        position = it.songCount.minus(1)
+        if (position > 0) position++ else position = 0
+
+        CoroutineScope(Dispatchers.IO).launch {
+             /*
+                 Suspend this block until all songs are
+                 inserted into database before going to
+                 SmartMessage
+             */
+            runBlocking {
+                try {
+                    listMediaItems.ifEmpty { items.map(SongEntity::asMediaItem) }
+                                  .forEachIndexed { index, mediaItem ->
+                                      Database.insert(mediaItem)
+                                      Database.insert(
+                                          SongPlaylistMap(
+                                              songId = mediaItem.mediaId,
+                                              playlistId = it.playlist.id,
+                                              position = position + index
+                                          )
+                                      )
+                                  }
+                } catch ( e: Throwable ) {
+                    Timber.e("Failed addToPlaylist in HomeSongsModern ${e.stackTraceToString()}")
+                    println("Failed addToPlaylist in HomeSongsModern ${e.stackTraceToString()}")
+                }
+            }
+        }
+        SmartMessage(
+            context.resources.getString(R.string.done),
+            type = PopupType.Success, context = context
+        )
+    }
+    val exportMenuItem = Export { exportToggleState.value = true }
+    val importMenuItem = Import( import::onShortClick )
+    //</editor-fold>
 
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
 
@@ -494,10 +589,6 @@ fun HomeSongs(
                         || it.albumTitle?.contains( search.input, true ) ?: false
             }
 
-    var position by remember {
-        mutableIntStateOf(0)
-    }
-
     val queueLimit by remember { mutableStateOf(QueueSelection.END_OF_QUEUE_WINDOWED) }
 
     exportDialog.Render()
@@ -531,143 +622,38 @@ fun HomeSongs(
             }
 
             // Sticky tab's tool bar
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(vertical = 4.dp)
-                    .fillMaxWidth()
-            ) {
-
-                when( builtInPlaylist ) {
-                    BuiltInPlaylist.Top -> topPlaylists.ToolBarButton()
-                    BuiltInPlaylist.OnDevice -> {
-                        if( showFolders )
-                            deviceFolderSort.ToolBarButton()
-                        else
-                            onDeviceSort.ToolBarButton()
-                    }
-                    else -> songSort.ToolBarButton()
+            TabToolBar.Buttons(
+                mutableListOf<Button>().apply {
+                    this.add(
+                        when( builtInPlaylist ) {
+                            BuiltInPlaylist.Top -> topPlaylists
+                            BuiltInPlaylist.OnDevice -> {
+                                if( showFolders )
+                                    deviceFolderSort
+                                else
+                                    onDeviceSort
+                            }
+                            else -> songSort
+                        }
+                    )
+                    this.add( search )
+                    this.add( locator )
+                    this.add( downloadAllDialog )
+                    this.add( deleteSongDialog )
+                    if (builtInPlaylist == BuiltInPlaylist.All)
+                        this.add( hiddenSongs )
+                    this.add( shuffle )
+                    if (builtInPlaylist == BuiltInPlaylist.Favorites)
+                        this.add( randomSorter )
+                    this.add( itemSelector )
+                    this.add( playNext )
+                    this.add( enqueue )
+                    this.add( addToFavorite )
+                    this.add( addToPlaylist )
+                    this.add( exportMenuItem )
+                    this.add( importMenuItem )
                 }
-
-                search.ToolBarButton()
-
-                locator.ToolBarButton()
-
-                downloadAllDialog.ToolBarButton()
-
-                deleteDownloadsDialog.ToolBarButton()
-
-                if (builtInPlaylist == BuiltInPlaylist.All)
-                    hiddenSongs.ToolBarButton()
-
-                shuffle.ToolBarButton()
-
-                if (builtInPlaylist == BuiltInPlaylist.Favorites)
-                    randomSorter.ToolBarButton()
-
-
-                TabToolBar.Icon( R.drawable.ellipsis_horizontal ) {
-                    menuState.display {
-                        PlaylistsItemMenu(
-                            navController = navController,
-                            modifier = Modifier.fillMaxHeight(0.4f),
-                            onDismiss = menuState::hide,
-                            onSelectUnselect = {
-                                selectItems = !selectItems
-                                if (!selectItems) {
-                                    listMediaItems.clear()
-                                }
-                            },
-                            onPlayNext = {
-                                if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
-                                    filteredSongs
-                                if (listMediaItems.isEmpty()) {
-                                    binder?.player?.addNext(
-                                        items.map(SongEntity::asMediaItem),
-                                        context
-                                    )
-                                } else {
-                                    binder?.player?.addNext(listMediaItems, context)
-                                    listMediaItems.clear()
-                                    selectItems = false
-                                }
-                            },
-                            onEnqueue = {
-                                if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
-                                    filteredSongs
-                                if (listMediaItems.isEmpty()) {
-                                    binder?.player?.enqueue(
-                                        items.map(SongEntity::asMediaItem),
-                                        context
-                                    )
-                                } else {
-                                    binder?.player?.enqueue(listMediaItems, context)
-                                    listMediaItems.clear()
-                                    selectItems = false
-                                }
-                            },
-                            onAddToPreferites = {
-                                if (listMediaItems.isNotEmpty()) {
-                                    listMediaItems.map {
-                                        transaction {
-                                            Database.like(
-                                                it.mediaId,
-                                                System.currentTimeMillis()
-                                            )
-                                        }
-                                    }
-                                } else {
-                                    items.map {
-                                        transaction {
-                                            Database.like(
-                                                it.asMediaItem.mediaId,
-                                                System.currentTimeMillis()
-                                            )
-                                        }
-                                    }
-                                }
-                            },
-                            onAddToPlaylist = { playlistPreview ->
-                                if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
-                                    filteredSongs
-                                position =
-                                    playlistPreview.songCount.minus(1) ?: 0
-                                if (position > 0) position++ else position = 0
-
-                                items.forEachIndexed { index, song ->
-                                    runCatching {
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            Database.insert(song.song.asMediaItem)
-                                            Database.insert(
-                                                SongPlaylistMap(
-                                                    songId = song.song.asMediaItem.mediaId,
-                                                    playlistId = playlistPreview.playlist.id,
-                                                    position = position + index
-                                                )
-                                            )
-                                        }
-                                    }.onFailure {
-                                        Timber.e("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
-                                        println("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
-                                    }
-                                }
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.done),
-                                        type = PopupType.Success, context = context
-                                    )
-                                }
-                            },
-                            onExport = { exportToggleState.value = true },
-                            onImportFavorites = { import.onShortClick() },
-                            disableScrollingText = disableScrollingText
-                        )
-                    }
-                }
-            }
-
+            )
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,

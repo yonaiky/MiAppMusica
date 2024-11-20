@@ -5,15 +5,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -26,13 +23,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
@@ -64,6 +59,7 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import me.knighthat.colorPalette
+import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.ItemSize
 import me.knighthat.component.tab.toolbar.Randomizer
@@ -142,24 +138,7 @@ fun HomeAlbums(
             }
 
             // Sticky tab's tool bar
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(vertical = 4.dp)
-                    .fillMaxWidth()
-            ) {
-                sort.ToolBarButton()
-
-                search.ToolBarButton()
-
-                randomizer.ToolBarButton()
-
-                shuffle.ToolBarButton()
-
-                itemSize.ToolBarButton()
-            }
+            TabToolBar.Buttons( sort, search, randomizer, shuffle, itemSize )
 
             // Sticky search bar
             search.SearchBar( this )

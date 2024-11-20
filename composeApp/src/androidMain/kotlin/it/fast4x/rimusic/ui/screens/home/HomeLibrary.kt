@@ -5,10 +5,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -73,6 +70,7 @@ import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import me.knighthat.colorPalette
 import me.knighthat.component.IDialog
+import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Descriptive
@@ -253,28 +251,7 @@ fun HomeLibrary(
             }
 
             // Sticky tab's tool bar
-            Row(
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(vertical = 4.dp)
-                    .fillMaxWidth()
-            ) {
-                sort.ToolBarButton()
-
-                sync.ToolBarButton()
-
-                search.ToolBarButton()
-
-                shuffle.ToolBarButton()
-
-                newPlaylistDialog.ToolBarButton()
-
-                importPlaylistDialog.ToolBarButton()
-
-                itemSize.ToolBarButton()
-            }
+            TabToolBar.Buttons( sort, sync, search, shuffle, newPlaylistDialog, importPlaylistDialog, itemSize )
 
             // Sticky search bar
             search.SearchBar( this )
