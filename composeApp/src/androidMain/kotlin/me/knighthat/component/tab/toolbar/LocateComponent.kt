@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -21,7 +22,7 @@ class LocateComponent private constructor(
     private val scrollableState: ScrollableState,
     private val positionState: MutableState<Int>,
     private val songs: () -> List<SongEntity>
-): StateConditional, Descriptive {
+): MenuIcon, DynamicColor, Descriptive {
 
     companion object {
         @JvmStatic
@@ -43,9 +44,12 @@ class LocateComponent private constructor(
             positionState.value = value
             field = value
         }
-    override var isActive: Boolean = songs().isNotEmpty() && binder?.player?.currentMediaItem != null
+    override var isFirstColor: Boolean = songs().isNotEmpty() && binder?.player?.currentMediaItem != null
     override val iconId: Int = R.drawable.locate
     override val messageId: Int = R.string.info_find_the_song_that_is_playing
+    override val menuIconTitle: String
+        @Composable
+        get() = stringResource( messageId )
 
     override fun onShortClick() {
         binder?.player
