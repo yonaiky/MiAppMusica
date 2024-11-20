@@ -61,11 +61,11 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import me.knighthat.colorPalette
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.tab.TabHeader
-import me.knighthat.component.tab.toolbar.ItemSize
+import me.knighthat.component.tab.ItemSize
 import me.knighthat.component.tab.toolbar.Randomizer
-import me.knighthat.component.tab.toolbar.SearchComponent
+import me.knighthat.component.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.toolbar.SortComponent
+import me.knighthat.component.tab.Sort
 import me.knighthat.preference.Preference.HOME_ALBUM_ITEM_SIZE
 import me.knighthat.thumbnailShape
 
@@ -93,9 +93,9 @@ fun HomeAlbums(
 
     var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
 
-    val search = SearchComponent.init()
+    val search = Search.init()
 
-    val sort = SortComponent.init(
+    val sort = Sort.init(
         albumSortOrderKey,
         AlbumSortBy.entries,
         rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)

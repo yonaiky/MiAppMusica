@@ -131,7 +131,7 @@ import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import me.knighthat.colorPalette
-import me.knighthat.component.tab.toolbar.SearchComponent
+import me.knighthat.component.Search
 
 @Composable
 fun DefaultAppearanceSettings() {
@@ -414,7 +414,7 @@ fun AppearanceSettings(
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
 
-    val search = SearchComponent.init()
+    val search = Search.init()
 
     var thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,

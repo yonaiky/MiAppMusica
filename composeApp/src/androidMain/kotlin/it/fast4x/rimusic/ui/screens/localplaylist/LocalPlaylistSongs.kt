@@ -155,15 +155,15 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.component.IDialog
+import me.knighthat.component.screen.PlaylistSongsSort
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.toolbar.ConfirmDialog
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
-import me.knighthat.component.tab.toolbar.LocateComponent
+import me.knighthat.component.tab.LocateComponent
 import me.knighthat.component.tab.toolbar.MenuIcon
-import me.knighthat.component.tab.toolbar.PlaylistSongsSortComponent
-import me.knighthat.component.tab.toolbar.SearchComponent
+import me.knighthat.component.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -226,9 +226,9 @@ fun LocalPlaylistSongs(
         }
     }
 
-    val search = SearchComponent.init()
+    val search = Search.init()
 
-    val sort = PlaylistSongsSortComponent.init()
+    val sort = PlaylistSongsSort.init()
 
     val shuffle = SongsShuffle.init {
         flowOf( playlistSongs.map( SongEntity::song ) )
@@ -977,7 +977,6 @@ fun LocalPlaylistSongs(
                     ) {
 
                         sort.ToolBarButton()
-                        sort.SortTitle()
 
                         Row(
                             horizontalArrangement = Arrangement.End,

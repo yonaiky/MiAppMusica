@@ -165,10 +165,10 @@ import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.DynamicColor
-import me.knighthat.component.tab.toolbar.LocateComponent
-import me.knighthat.component.tab.toolbar.SearchComponent
+import me.knighthat.component.tab.LocateComponent
+import me.knighthat.component.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.toolbar.SortComponent
+import me.knighthat.component.tab.Sort
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import timber.log.Timber
@@ -263,19 +263,19 @@ fun HomeSongs(
     // Dialog states
     val exportToggleState = rememberSaveable { mutableStateOf( false ) }
 
-    val search = SearchComponent.init()
+    val search = Search.init()
 
-    val songSort = SortComponent.init(
+    val songSort = Sort.init(
         songSortOrderKey,
         SongSortBy.entries,
         rememberPreference(songSortByKey, SongSortBy.DateAdded)
     )
-    val onDeviceSort = SortComponent.init(
+    val onDeviceSort = Sort.init(
         songSortOrderKey,
         OnDeviceSongSortBy.entries,
         rememberPreference(onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded)
     )
-    val deviceFolderSort = SortComponent.init(
+    val deviceFolderSort = Sort.init(
         songSortOrderKey,
         OnDeviceFolderSortBy.entries,
         rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)

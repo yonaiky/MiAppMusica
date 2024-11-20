@@ -1,6 +1,5 @@
-package me.knighthat.component.tab.toolbar
+package me.knighthat.component
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -46,24 +45,31 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import me.knighthat.colorPalette
+import me.knighthat.component.tab.toolbar.Descriptive
+import me.knighthat.component.tab.toolbar.MenuIcon
 import me.knighthat.typography
 
-class SearchComponent private constructor(
+class Search private constructor(
+    private val inputState: MutableState<String>,
     private val visibleState: MutableState<Boolean>,
     private val focusState: MutableState<Boolean>,
-    private val inputState: MutableState<String>
-): Icon {
+): MenuIcon, Descriptive {
 
     companion object {
         @JvmStatic
         @Composable
-        fun init(): SearchComponent =
-            SearchComponent(
-                rememberSaveable { mutableStateOf(false) },
-                rememberSaveable { mutableStateOf(false) },
-                rememberSaveable { mutableStateOf("") }
-            )
+        fun init() = Search(
+            remember { mutableStateOf( "" ) },
+            rememberSaveable { mutableStateOf( false ) },
+            rememberSaveable { mutableStateOf( false ) }
+        )
     }
+
+    override val iconId: Int = R.drawable.search_circle
+    override val messageId: Int = R.string.search
+    override val menuIconTitle: String
+        @Composable
+        get() = stringResource( messageId )
 
     var isVisible: Boolean = visibleState.value
         set(value) {
@@ -80,33 +86,30 @@ class SearchComponent private constructor(
             inputState.value = value
             field = value
         }
-    override val iconId: Int
-        @DrawableRes
-        get() = R.drawable.search_circle
 
     @Composable
-    private fun ColumnScope.DecorationBox( innerTextField: @Composable () -> Unit ) {
+    private fun ColumnScope.DecorationBox(innerTextField: @Composable () -> Unit ) {
         Box(
             contentAlignment = Alignment.CenterStart,
             modifier = Modifier.weight(1f)
-                               .padding(horizontal = 10.dp)
+                .padding(horizontal = 10.dp)
         ) {
             IconButton(
                 onClick = {},
                 icon = R.drawable.search,
                 color = colorPalette().favoritesIcon,
                 modifier = Modifier.align( Alignment.CenterStart )
-                                   .size(16.dp)
+                    .size(16.dp)
             )
         }
         Box(
             contentAlignment = Alignment.CenterStart,
             modifier = Modifier.weight(1f)
-                               .padding(horizontal = 30.dp)
+                .padding(horizontal = 30.dp)
         ) {
             // Search hint
             androidx.compose.animation.AnimatedVisibility(
-                visible = inputState.value.isBlank(),
+                visible = input.isBlank(),
                 enter = fadeIn(tween(100)),
                 exit = fadeOut(tween(100)),
             ) {
@@ -115,11 +118,11 @@ class SearchComponent private constructor(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = typography().xs
-                                        .semiBold
-                                        .secondary
-                                        .copy(
-                                            color = colorPalette().textDisabled
-                                        )
+                        .semiBold
+                        .secondary
+                        .copy(
+                            color = colorPalette().textDisabled
+                        )
                 )
             }
 
@@ -137,7 +140,7 @@ class SearchComponent private constructor(
     }
 
     @Composable
-    fun SearchBar( colScope: ColumnScope ) {
+    fun SearchBar( columnScope: ColumnScope ) {
         var showSearchBar by visibleState
         var isFocused by focusState
         var input by inputState
@@ -152,7 +155,7 @@ class SearchComponent private constructor(
         AnimatedVisibility(
             visible = showSearchBar,
             modifier = Modifier.padding(all = 10.dp)
-                               .fillMaxWidth()
+                .fillMaxWidth()
         ) {
             // Auto focus on search bar when it's visible
             val focusManager = LocalFocusManager.current
@@ -195,14 +198,14 @@ class SearchComponent private constructor(
                     keyboardController?.hide()
                 }),
                 cursorBrush = SolidColor(colorPalette().text),
-                decorationBox = { colScope.DecorationBox( it ) },
+                decorationBox = { columnScope.DecorationBox( it ) },
                 modifier = Modifier.height( 30.dp )
-                                   .fillMaxWidth()
-                                   .focusRequester(focusRequester)
-                                   .background(
-                                       colorPalette().background4,
-                                       thumbnailRoundness.shape()
-                                   )
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+                    .background(
+                        colorPalette().background4,
+                        thumbnailRoundness.shape()
+                    )
             )
         }
     }

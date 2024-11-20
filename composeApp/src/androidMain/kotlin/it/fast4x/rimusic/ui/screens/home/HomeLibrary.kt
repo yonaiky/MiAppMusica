@@ -75,11 +75,11 @@ import me.knighthat.component.screen.playlistSync
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Descriptive
-import me.knighthat.component.tab.toolbar.ItemSize
+import me.knighthat.component.tab.ItemSize
 import me.knighthat.component.tab.toolbar.MenuIcon
-import me.knighthat.component.tab.toolbar.SearchComponent
+import me.knighthat.component.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.toolbar.SortComponent
+import me.knighthat.component.tab.Sort
 import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
 
 
@@ -112,9 +112,9 @@ fun HomeLibrary(
     // Dialog states
     val newPlaylistToggleState = remember { mutableStateOf( false ) }
 
-    val search = SearchComponent.init()
+    val search = Search.init()
 
-    val sort = SortComponent.init(
+    val sort = Sort.init(
         playlistSortOrderKey,
         PlaylistSortBy.entries,
         rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)

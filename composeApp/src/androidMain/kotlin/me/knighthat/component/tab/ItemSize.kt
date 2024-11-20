@@ -1,4 +1,4 @@
-package me.knighthat.component.tab.toolbar
+package me.knighthat.component.tab
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -8,13 +8,15 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import me.knighthat.component.tab.toolbar.Descriptive
+import me.knighthat.component.tab.toolbar.MenuIcon
 import me.knighthat.enums.HomeItemSize
 import me.knighthat.preference.Preference
 
 class ItemSize private constructor(
     val menuState: MenuState,
     private val sizeState: MutableState<HomeItemSize>
-): MenuIcon {
+): MenuIcon, Descriptive {
 
     companion object {
         @JvmStatic
@@ -27,6 +29,7 @@ class ItemSize private constructor(
     }
 
     override val iconId: Int = R.drawable.resize
+    override val messageId: Int = R.string.size
     override val menuIconTitle: String
         @Composable
         get() = stringResource( R.string.size )

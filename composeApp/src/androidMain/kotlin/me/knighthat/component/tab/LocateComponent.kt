@@ -1,4 +1,4 @@
-package me.knighthat.component.tab.toolbar
+package me.knighthat.component.tab
 
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.lazy.LazyListState
@@ -15,6 +15,9 @@ import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.utils.asMediaItem
 import kotlinx.coroutines.runBlocking
+import me.knighthat.component.tab.toolbar.Descriptive
+import me.knighthat.component.tab.toolbar.DynamicColor
+import me.knighthat.component.tab.toolbar.MenuIcon
 
 @UnstableApi
 class LocateComponent private constructor(
