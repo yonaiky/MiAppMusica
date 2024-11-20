@@ -1,6 +1,7 @@
 package me.knighthat.component.tab.toolbar
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -19,7 +20,7 @@ class SongsShuffle private constructor(
     private val binder: PlayerServiceModern.Binder?,
     private val dispatcher: CoroutineContext,
     private val songs: () -> Flow<List<Song>?>
-): Icon, Descriptive {
+): MenuIcon, Descriptive {
 
     companion object {
         @JvmStatic
@@ -36,6 +37,9 @@ class SongsShuffle private constructor(
 
     override val iconId: Int = R.drawable.shuffle
     override val messageId: Int = R.string.shuffle
+    override val menuIconTitle: String
+        @Composable
+        get() = stringResource( messageId )
 
     override fun onShortClick() {
         CoroutineScope( dispatcher ).launch {

@@ -14,7 +14,7 @@ import me.knighthat.preference.Preference
 class ItemSize private constructor(
     val menuState: MenuState,
     private val sizeState: MutableState<HomeItemSize>
-): Icon {
+): MenuIcon {
 
     companion object {
         @JvmStatic
@@ -26,12 +26,16 @@ class ItemSize private constructor(
             )
     }
 
+    override val iconId: Int = R.drawable.resize
+    override val menuIconTitle: String
+        @Composable
+        get() = stringResource( R.string.size )
+
     var size: HomeItemSize = sizeState.value
         set(value) {
             sizeState.value = value
             field = value
         }
-    override val iconId: Int = R.drawable.resize
 
     @Composable
     private fun Entry( size: HomeItemSize ) {
