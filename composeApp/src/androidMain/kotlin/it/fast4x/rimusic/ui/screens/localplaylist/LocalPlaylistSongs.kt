@@ -244,7 +244,7 @@ fun LocalPlaylistSongs(
     val sort = PlaylistSongsSort.init()
 
     val shuffle = SongsShuffle.init {
-        flowOf( playlistSongs.map( SongEntity::song ) )
+        flowOf( playlistSongs.map( SongEntity::asMediaItem ) )
     }
     val renameDialog = object: IDialog, Descriptive, MenuIcon {
         override val messageId: Int = R.string.rename
@@ -546,8 +546,7 @@ fun LocalPlaylistSongs(
     }
     val resetThumbnail = ResetThumbnail { resetThumbnail() }
 
-
-    val locator = LocateComponent.init( lazyListState ) { playlistSongs }
+    val locator = LocateComponent.init( lazyListState ) { playlistSongs.map( SongEntity::asMediaItem ) }
 
     LaunchedEffect( sort.sortOrder, sort.sortBy ) {
         Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder ).filterNotNull()

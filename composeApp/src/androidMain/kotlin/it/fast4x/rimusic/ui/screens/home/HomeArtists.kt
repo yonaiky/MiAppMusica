@@ -32,6 +32,7 @@ import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -39,17 +40,19 @@ import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.artistSortByKey
 import it.fast4x.rimusic.utils.artistSortOrderKey
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import kotlinx.coroutines.flow.map
 import me.knighthat.colorPalette
-import me.knighthat.component.header.TabToolBar
-import me.knighthat.component.tab.TabHeader
-import me.knighthat.component.tab.ItemSize
-import me.knighthat.component.tab.toolbar.Randomizer
 import me.knighthat.component.Search
-import me.knighthat.component.tab.toolbar.SongsShuffle
+import me.knighthat.component.header.TabToolBar
+import me.knighthat.component.tab.ItemSize
 import me.knighthat.component.tab.Sort
+import me.knighthat.component.tab.TabHeader
+import me.knighthat.component.tab.toolbar.Randomizer
+import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.preference.Preference.HOME_ARTIST_ITEM_SIZE
 
 @ExperimentalMaterial3Api
@@ -89,8 +92,9 @@ fun HomeArtists(
         override fun onClick(index: Int) = onArtistClick(itemsOnDisplay[index])
 
     }
-    val shuffle = SongsShuffle.init( songs = Database::songsInAllFollowedArtists )
-
+    val shuffle = SongsShuffle.init {
+        Database.songsInAllFollowedArtists().map{ it.map( Song::asMediaItem ) }
+    }
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.artists( sort.sortBy, sort.sortOrder ).collect { items = it }
     }

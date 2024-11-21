@@ -2,37 +2,29 @@ package me.knighthat.component.tab.toolbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
-import it.fast4x.rimusic.utils.PlayShuffledSongs
+import it.fast4x.rimusic.utils.playShuffledSongs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import me.knighthat.appContext
-import kotlin.coroutines.CoroutineContext
 
 @UnstableApi
 class SongsShuffle private constructor(
     private val binder: PlayerServiceModern.Binder?,
-    private val dispatcher: CoroutineContext,
-    private val songs: () -> Flow<List<Song>?>
+    private val songs: () -> Flow<List<MediaItem>>
 ): MenuIcon, Descriptive {
 
     companion object {
         @JvmStatic
         @Composable
-        fun init(
-            dispatcher: CoroutineContext = Dispatchers.IO,
-            songs: () -> Flow<List<Song>?>
-        ) = SongsShuffle(
-                LocalPlayerServiceBinder.current,
-                dispatcher,
-                songs
-            )
+        fun init( songs: () -> Flow<List<MediaItem>> ) =
+            SongsShuffle( LocalPlayerServiceBinder.current, songs )
     }
 
     override val iconId: Int = R.drawable.shuffle
@@ -42,9 +34,9 @@ class SongsShuffle private constructor(
         get() = stringResource( messageId )
 
     override fun onShortClick() {
-        CoroutineScope( dispatcher ).launch {
+        CoroutineScope( Dispatchers.IO ).launch {
             songs().collect {
-                PlayShuffledSongs( it, appContext(), binder )
+                playShuffledSongs( it, appContext(), binder )
             }
         }
     }

@@ -8,13 +8,17 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.asMediaItem
 import kotlinx.coroutines.runBlocking
+import me.knighthat.appContext
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.DynamicColor
 import me.knighthat.component.tab.toolbar.MenuIcon
@@ -24,7 +28,7 @@ class LocateComponent private constructor(
     private val binder: PlayerServiceModern.Binder?,
     private val scrollableState: ScrollableState,
     private val positionState: MutableState<Int>,
-    private val songs: () -> List<SongEntity>
+    private val songs: () -> List<MediaItem>
 ): MenuIcon, DynamicColor, Descriptive {
 
     companion object {
@@ -32,7 +36,7 @@ class LocateComponent private constructor(
         @Composable
         fun init(
             scrollableState: ScrollableState,
-            songs: () -> List<SongEntity>
+            songs: () -> List<MediaItem>
         ) =
             LocateComponent(
                 LocalPlayerServiceBinder.current,
@@ -58,14 +62,23 @@ class LocateComponent private constructor(
         binder?.player
               ?.currentMediaItem
               ?.let { mediaItem ->
-                  position = songs().map { it.song.asMediaItem }
-                                    .indexOf( mediaItem )
+                  songs().indexOf( mediaItem ).let {
+                      if( it == -1 )      // Playing song isn't inside [songs()]
+                          SmartMessage(
+                              // TODO Add this string to strings.xml
+                              message = "Couldn't find playing song on current list",
+                              context = appContext(),
+                              type = PopupType.Warning
+                          )
+                      else
+                          runBlocking {
+                              if( scrollableState is LazyListState )
+                                  scrollableState.scrollToItem( it )
+                              else if( scrollableState is LazyGridState )
+                                  scrollableState.scrollToItem( it )
 
-                  runBlocking {
-                      if( scrollableState is LazyListState )
-                          scrollableState.scrollToItem( position )
-                      else if( scrollableState is LazyGridState )
-                          scrollableState.scrollToItem( position )
+                              position = it
+                          }
                   }
               }
     }
