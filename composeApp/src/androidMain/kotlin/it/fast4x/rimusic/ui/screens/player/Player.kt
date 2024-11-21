@@ -739,7 +739,7 @@ fun Player(
                     binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
                 )
 
-                val dynamicColorPalette = dynamicColorPaletteOf(
+                dynamicColorPalette = dynamicColorPaletteOf(
                     bitmap,
                     isSystemDarkMode
                 ) ?: color
