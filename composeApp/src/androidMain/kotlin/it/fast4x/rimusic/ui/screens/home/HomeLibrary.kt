@@ -70,16 +70,16 @@ import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import me.knighthat.colorPalette
 import me.knighthat.component.IDialog
+import me.knighthat.component.Search
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.screen.playlistSync
 import me.knighthat.component.tab.ImportSongsFromCSV
+import me.knighthat.component.tab.ItemSize
+import me.knighthat.component.tab.Sort
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Descriptive
-import me.knighthat.component.tab.ItemSize
 import me.knighthat.component.tab.toolbar.MenuIcon
-import me.knighthat.component.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.Sort
 import me.knighthat.preference.Preference.HOME_LIBRARY_ITEM_SIZE
 
 
@@ -108,6 +108,8 @@ fun HomeLibrary(
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var items by persistList<PlaylistPreview>("home/playlists")
+
+    var itemsOnDisplay by persistList<PlaylistPreview>("home/playlists/on_display")
 
     // Dialog states
     val newPlaylistToggleState = remember { mutableStateOf( false ) }
@@ -197,11 +199,11 @@ fun HomeLibrary(
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.playlistPreviews( sort.sortBy, sort.sortOrder ).collect { items = it }
     }
-
-    if ( search.input.isNotBlank() )
-        items = items.filter {
+    LaunchedEffect( items, search.input ) {
+        itemsOnDisplay = items.filter {
             it.playlist.name.contains( search.input, true )
         }
+    }
 
     // START: Additional playlists
     val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
@@ -285,7 +287,7 @@ fun HomeLibrary(
                     it.playlist.name.startsWith( listPrefix, true )
                 }
                 items(
-                    items = items.filter( condition ),
+                    items = itemsOnDisplay.filter( condition ),
                     key = { it.playlist.id }
                 ) { preview ->
                     PlaylistItem(

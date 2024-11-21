@@ -23,8 +23,17 @@ import me.knighthat.component.tab.toolbar.DynamicColor
 import me.knighthat.component.tab.toolbar.Menu
 import me.knighthat.component.tab.toolbar.MenuIcon
 
-@Composable
-fun hiddenSongs(): DualIcon = object: MenuIcon, DualIcon, Descriptive {
+class HiddenSongs private constructor(
+    private val showHiddenState: MutableState<Boolean>
+): MenuIcon, DualIcon, Descriptive {
+
+    companion object {
+        @JvmStatic
+        @Composable
+        fun init() = HiddenSongs(
+            rememberSaveable { mutableStateOf( false ) }
+        )
+    }
 
     override val iconId: Int = R.drawable.eye
     override val secondIconId: Int = R.drawable.eye_off
@@ -33,7 +42,13 @@ fun hiddenSongs(): DualIcon = object: MenuIcon, DualIcon, Descriptive {
         @Composable
         get() = stringResource( messageId )
 
-    override var isFirstIcon: Boolean by rememberSaveable { mutableStateOf( false ) }
+    override var isFirstIcon: Boolean = showHiddenState.value
+        set(value) {
+            showHiddenState.value = value
+            field = value
+        }
+
+    fun isShown() = if( isFirstIcon ) -1 else 0
 
     override fun onShortClick() { isFirstIcon = !isFirstIcon }
 }

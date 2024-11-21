@@ -152,8 +152,8 @@ import me.knighthat.component.PlayNext
 import me.knighthat.component.PlaylistsMenu
 import me.knighthat.component.Search
 import me.knighthat.component.header.TabToolBar
+import me.knighthat.component.screen.HiddenSongs
 import me.knighthat.component.screen.PeriodSelector
-import me.knighthat.component.screen.hiddenSongs
 import me.knighthat.component.screen.randomSort
 import me.knighthat.component.tab.DelSongDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
@@ -258,9 +258,6 @@ fun HomeSongs(
             }
     }
 
-    // Dialog states
-    val exportToggleState = rememberSaveable { mutableStateOf( false ) }
-
     val search = Search.init()
 
     val songSort = Sort.init(
@@ -306,7 +303,7 @@ fun HomeSongs(
 
     val randomSorter = randomSort()
 
-    val hiddenSongs = hiddenSongs()
+    val hiddenSongs = HiddenSongs.init()
 
     val topPlaylists = PeriodSelector.init()
 
@@ -431,14 +428,9 @@ fun HomeSongs(
 
     when (builtInPlaylist) {
         BuiltInPlaylist.All -> {
-            LaunchedEffect( songSort.sortBy, songSort.sortOrder, hiddenSongs.isFirstIcon, includeLocalSongs ) {
+            LaunchedEffect( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
 
-                /*
-                    [isFirstIcon] represents whether hidden songs (songs with totalPlaytime = -1)
-                    is shown or not. When `true`, hidden is set to '-1', otherwise, `0` is assigned
-                 */
-                val showHidden = if( hiddenSongs.isFirstIcon ) -1 else 0
-                Database.songs(songSort.sortBy, songSort.sortOrder, showHidden).collect { items = it }
+                Database.songs(songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown()).collect { items = it }
             }
         }
         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
