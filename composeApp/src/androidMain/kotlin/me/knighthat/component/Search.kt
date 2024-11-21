@@ -59,7 +59,7 @@ class Search private constructor(
         @JvmStatic
         @Composable
         fun init() = Search(
-            remember { mutableStateOf( "" ) },
+            rememberSaveable { mutableStateOf( "" ) },
             rememberSaveable { mutableStateOf( false ) },
             rememberSaveable { mutableStateOf( false ) }
         )
