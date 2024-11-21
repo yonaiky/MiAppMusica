@@ -54,6 +54,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.Lifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
@@ -326,6 +327,9 @@ fun LocalPlaylistSongs(
 
             onDelete()
             onDismiss()
+
+            if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
+                navController.popBackStack()
         }
     }
     val renumberDialog = object: ConfirmDialog, Descriptive, MenuIcon {
