@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.screens.home
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -25,11 +24,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,10 +38,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
@@ -53,7 +51,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
@@ -137,7 +134,7 @@ import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -165,7 +162,6 @@ import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
-import me.knighthat.component.tab.toolbar.DynamicColor
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -176,12 +172,12 @@ import kotlin.math.min
 import kotlin.time.Duration
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@ExperimentalTextApi
-@SuppressLint("SuspiciousIndentation")
-@ExperimentalFoundationApi
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
+@OptIn(
+    ExperimentalAnimationApi::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalTextApi::class
+)
 @UnstableApi
 @Composable
 fun HomeSongs(
@@ -196,11 +192,14 @@ fun HomeSongs(
     val thumbnailSizePx = thumbnailSizeDp.px
     val lazyListState = rememberLazyListState()
 
+    var items by persistList<SongEntity>( "home/songs" )
+    var itemsOnDisplay by persistList<SongEntity>( "home/songs/on_display" )
+    val selectedItems = remember { mutableListOf<SongEntity>() }
+
+    fun getMediaItems() = selectedItems.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
+
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-
-    var items by persistList<SongEntity>("home/songs")
-    var listMediaItems = remember { mutableListOf<MediaItem>() }
 
     var builtInPlaylist by rememberPreference(
         builtInPlaylistKey,
@@ -220,9 +219,7 @@ fun HomeSongs(
     val permission = if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
     else Manifest.permission.READ_EXTERNAL_STORAGE
 
-    var relaunchPermission by remember {
-        mutableStateOf(false)
-    }
+    var relaunchPermission by remember { mutableStateOf(false) }
 
     var hasPermission by remember(isCompositionLaunched()) {
         mutableStateOf(context.applicationContext.hasPermission(permission))
@@ -235,15 +232,18 @@ fun HomeSongs(
     val backButtonFolder = Folder(stringResource(R.string.back))
     val showFolders by rememberPreference(showFoldersOnDeviceKey, true)
 
-    var songs: List<SongEntity> = emptyList()
     var folders: List<Folder> = emptyList()
 
-    var filteredSongs = songs
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     // Non-vital
     val playlistNameState = remember { mutableStateOf( "" ) }
-    var selectItems by rememberSaveable { mutableStateOf( false ) }
+    // This state should be reset when user changes tab
+    var selectItems by remember { mutableStateOf( false ) }
+
+    LaunchedEffect( selectItems ) {
+        if( !selectItems ) selectedItems.clear()
+    }
 
     // Update playlistNameState's value based on current builtInPlaylist
     LaunchedEffect( builtInPlaylist ) {
@@ -275,31 +275,20 @@ fun HomeSongs(
         OnDeviceFolderSortBy.entries,
         rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
     )
-    val shuffle = SongsShuffle.init {
-        if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
-            items = filteredSongs
-
-        flowOf(items.map(SongEntity::song))
-    }
+    val shuffle = SongsShuffle.init{ flowOf( getMediaItems() ) }
     val import = ImportSongsFromCSV.init(
         afterTransaction = { _, song ->
             Database.upsert( song )
             Database.like( song.id, System.currentTimeMillis() )
         }
     )
-    val exportDialog = ExportSongsToCSVDialog.init( playlistNameState ) {
-        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
-    }
-    val downloadAllDialog = DownloadAllDialog.init {
-        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
-    }
-    val deleteDownloadsDialog = DelAllDownloadedDialog.init {
-        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
-    }
+    val exportDialog = ExportSongsToCSVDialog.init( playlistNameState, ::getMediaItems )
+    val downloadAllDialog = DownloadAllDialog.init( ::getMediaItems )
+    val deleteDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
     val deleteSongDialog =  DelSongDialog.init()
     val hideSongDialog = HideSongDialog.init()
 
-    val locator = LocateComponent.init( lazyListState ) { items }
+    val locator = LocateComponent.init( lazyListState, ::getMediaItems )
 
     val randomSorter = randomSort()
 
@@ -308,53 +297,33 @@ fun HomeSongs(
     val topPlaylists = PeriodSelector.init()
 
     //<editor-fold desc="Menu">
-    val itemSelector = ItemSelector {
-        selectItems = !selectItems
-        if ( !selectItems ) {
-            listMediaItems.clear()
+    val itemSelector = ItemSelector { selectItems = !selectItems }
+    val playNext = PlayNext {
+        getMediaItems().let {
+            binder?.player?.addNext( it, appContext() )
+
+            // Turn of selector clears the selected list
+            selectItems = false
         }
     }
-    val playNext = PlayNext {
-        if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
-            items = filteredSongs
-
-        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
-            .let {
-                binder?.player?.addNext( it, appContext() )
-
-                if( listMediaItems.isNotEmpty() ) {
-                    listMediaItems.clear()
-                    selectItems = false
-                }
-            }
-    }
     val enqueue = Enqueue {
-        if ( builtInPlaylist == BuiltInPlaylist.OnDevice )
-            items = filteredSongs
+        getMediaItems().let {
+            binder?.player?.enqueue( it, appContext() )
 
-        listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
-            .let {
-                binder?.player?.enqueue( it, appContext() )
-
-                if( listMediaItems.isNotEmpty() ) {
-                    listMediaItems.clear()
-                    selectItems = false
-                }
-            }
+            // Turn of selector clears the selected list
+            selectItems = false
+        }
     }
     val addToFavorite = AddToFavorite {
         transaction {
-            listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
-                .forEach {
-                    Database.like( it.mediaId, System.currentTimeMillis() )
-                }
+            getMediaItems().forEach {
+                Database.like( it.mediaId, System.currentTimeMillis() )
+            }
         }
     }
     var position by remember { mutableIntStateOf( 0 ) }
 
     val addToPlaylist = PlaylistsMenu.init( navController ) {
-        if (builtInPlaylist == BuiltInPlaylist.OnDevice)
-            items = filteredSongs
 
         position = it.songCount.minus(1)
         if (position > 0) position++ else position = 0
@@ -367,17 +336,16 @@ fun HomeSongs(
              */
             runBlocking {
                 try {
-                    listMediaItems.ifEmpty { items.map(SongEntity::asMediaItem) }
-                                  .forEachIndexed { index, mediaItem ->
-                                      Database.insert(mediaItem)
-                                      Database.insert(
-                                          SongPlaylistMap(
-                                              songId = mediaItem.mediaId,
-                                              playlistId = it.playlist.id,
-                                              position = position + index
-                                          )
-                                      )
-                                  }
+                    getMediaItems().forEachIndexed { index, mediaItem ->
+                        Database.insert(mediaItem)
+                        Database.insert(
+                            SongPlaylistMap(
+                                songId = mediaItem.mediaId,
+                                playlistId = it.playlist.id,
+                                position = position + index
+                            )
+                        )
+                    }
                 } catch ( e: Throwable ) {
                     Timber.e("Failed addToPlaylist in HomeSongsModern ${e.stackTraceToString()}")
                     println("Failed addToPlaylist in HomeSongsModern ${e.stackTraceToString()}")
@@ -392,10 +360,6 @@ fun HomeSongs(
     //</editor-fold>
 
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
-
-    var songsDevice by remember( songSort.sortBy, onDeviceSort.sortOrder ) {
-        mutableStateOf<List<OnDeviceSong>>(emptyList())
-    }
 
     var filteredFolders = folders
     var currentFolder: Folder? = null;
@@ -426,163 +390,135 @@ fun HomeSongs(
     val excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     val hapticFeedback = LocalHapticFeedback.current
 
-    when (builtInPlaylist) {
+    // This phrase loads all songs across types into [itemsOffShelve]
+    // No filtration applied to this stage, only sort
+    when( builtInPlaylist ) {
+        BuiltInPlaylist.OnDevice -> {
+
+            var songsDevice by remember {
+                mutableStateOf(emptyList<OnDeviceSong>())
+            }
+
+            LaunchedEffect( onDeviceSort.sortBy, onDeviceSort.sortOrder, hasPermission, context ) {
+                if( !hasPermission ) return@LaunchedEffect
+
+                context.musicFilesAsFlow( onDeviceSort.sortBy, onDeviceSort.sortOrder, context )
+                    .collect {
+                        songsDevice = it.distinctBy( OnDeviceSong::id )
+                    }
+            }
+
+            if (showFolders) {
+                with( OnDeviceOrganize ) {
+                    val organized = organizeSongsIntoFolders( songsDevice )
+                    currentFolder = getFolderByPath( organized, currentFolderPath )
+
+                    items = sortSongs(
+                        deviceFolderSort.sortOrder,
+                        deviceFolderSort.sortBy,
+                        currentFolder?.songs
+                                            ?.map( OnDeviceSong::toSongEntity )
+                                            ?: emptyList()
+                    )
+
+                    folders = currentFolder?.subFolders?.toList() ?: emptyList()
+                    filteredFolders = folders
+                }
+            } else
+                items = songsDevice.map( OnDeviceSong::toSongEntity )
+        }
+
         BuiltInPlaylist.All -> {
             LaunchedEffect( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
-
-                Database.songs(songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown()).collect { items = it }
+                Database.songs(songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown())
+                        .flowOn( Dispatchers.IO )
+                        .distinctUntilChanged()
+                        .collect{ items = it }
             }
         }
-        BuiltInPlaylist.Downloaded, BuiltInPlaylist.Favorites, BuiltInPlaylist.Offline, BuiltInPlaylist.Top -> {
 
-            LaunchedEffect( Unit, builtInPlaylist, songSort.sortBy, songSort.sortOrder, topPlaylists.period, binder ) {
-
-                var songFlow: Flow<List<SongEntity>> = flowOf()
-                var dispatcher = Dispatchers.Default
-                var filterCondition: (SongEntity) -> Boolean = { true }
-
+        else -> {
+            LaunchedEffect( songSort.sortBy, songSort.sortOrder ) {
                 when( builtInPlaylist ) {
-                    BuiltInPlaylist.Favorites -> {
-
-                        songFlow = Database.songsFavorites(songSort.sortBy, songSort.sortOrder)
-                        filterCondition = { true }
-                    }
-                    BuiltInPlaylist.Offline -> {
-
-                        songFlow = Database.songsOffline( songSort.sortBy, songSort.sortOrder )
-                        dispatcher = Dispatchers.IO
-                        filterCondition = { song ->
-                            song.contentLength?.let {
-                                binder?.cache?.isCached(song.song.id, 0, song.contentLength)
-                            } ?: false
-                        }
-                    }
-                    BuiltInPlaylist.Downloaded -> {
-
-                        val downloads = MyDownloadHelper.downloads.value
-
-                        songFlow = Database.listAllSongsAsFlow()
-                        dispatcher = Dispatchers.IO
-                        filterCondition = { song ->
-                            downloads[song.song.id]?.state == Download.STATE_COMPLETED
+                    BuiltInPlaylist.Favorites -> Database.songsFavorites( songSort.sortBy, songSort.sortOrder )
+                    BuiltInPlaylist.Offline -> Database.songsOffline( songSort.sortBy, songSort.sortOrder )
+                    BuiltInPlaylist.Downloaded -> Database.listAllSongsAsFlow().map { list ->
+                        when ( songSort.sortBy ) {
+                            SongSortBy.Title -> list.sortedBy { it.song.title }
+                            SongSortBy.PlayTime -> list.sortedBy { it.song.totalPlayTimeMs }
+                            SongSortBy.Duration -> list.sortedBy { it.song.durationText }
+                            SongSortBy.Artist -> list.sortedBy { it.song.artistsText }
+                            SongSortBy.DateLiked -> list.sortedBy { it.song.likedAt }
+                            SongSortBy.AlbumName -> list.sortedBy { it.albumTitle }
+                            else -> list
+                        }.run {
+                            if( songSort.sortOrder == SortOrder.Descending )
+                                reversed()
+                            else
+                                this
                         }
                     }
                     BuiltInPlaylist.Top -> {
-
-                        songFlow =
-                            if (topPlaylists.period.duration == Duration.INFINITE)
-                                Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
-                            else
-                                Database.trendingSongEntity(
-                                    limit = maxTopPlaylistItems.number.toInt(),
-                                    period = topPlaylists.period.duration.inWholeMilliseconds
-                                )
-
-                        filterCondition = { songs ->
-                            if (excludeSongWithDurationLimit == DurationInMinutes.Disabled)
-                                true
-                            else
-                                songs.song.durationText?.let {
-                                    durationTextToMillis(it)
-                                }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
-                        }
+                        if (topPlaylists.period.duration == Duration.INFINITE)
+                            Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
+                        else
+                            Database.trendingSongEntity(
+                                limit = maxTopPlaylistItems.number.toInt(),
+                                period = topPlaylists.period.duration.inWholeMilliseconds
+                            )
                     }
-                    else -> {}
-                }
-
-                songFlow.flowOn( dispatcher )
-                        .map { it.filter( filterCondition ) }
-                        .collect {
-                            // [isFirstColor] represents whether the feature is enabled or not
-                            val isShuffleEnabled = (randomSorter as DynamicColor).isFirstColor
-                            items = if( isShuffleEnabled ) it.shuffled() else it
-                        }
-            }
-        }
-        BuiltInPlaylist.OnDevice -> {
-            items = emptyList()
-            LaunchedEffect( onDeviceSort.sortBy, onDeviceSort.sortOrder ) {
-                if (hasPermission)
-                    context.musicFilesAsFlow( onDeviceSort.sortBy, onDeviceSort.sortOrder, context )
-                        .collect { songsDevice = it.distinctBy { song -> song.id } }
+                    else -> flowOf()
+                }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { items = it }
             }
         }
     }
+    // This phrase will filter out songs depends on search inputs, and natural filter
+    // parameters, such as get downloaded songs when [BuiltInPlaylist.Offline] is set.
+    LaunchedEffect( builtInPlaylist, items, search.input ) {
+        val naturalFilter: (SongEntity) -> Boolean =
+            when( builtInPlaylist ) {
+                BuiltInPlaylist.All -> { song ->
+                    !includeLocalSongs || !song.song.id.startsWith(LOCAL_KEY_PREFIX)
+                }
 
-    //println("mediaItem SongEntity: ${items.size} filter ${filter} $items")
+                BuiltInPlaylist.Offline -> { song ->
+                    song.contentLength?.let {
+                        binder?.cache?.isCached(song.song.id, 0, song.contentLength)
+                    } ?: false
+                }
 
-    /********** OnDeviceDev */
-    if (builtInPlaylist == BuiltInPlaylist.OnDevice) {
-        if (showFolders) {
-            val organized = OnDeviceOrganize.organizeSongsIntoFolders(songsDevice)
-            currentFolder = OnDeviceOrganize.getFolderByPath(organized, currentFolderPath)
-            songs = OnDeviceOrganize.sortSongs(
-                deviceFolderSort.sortOrder,
-                deviceFolderSort.sortBy,
-                currentFolder?.songs?.map { it.toSongEntity() } ?: emptyList())
-            filteredSongs = songs
-            folders = currentFolder?.subFolders?.toList() ?: emptyList()
-            filteredFolders = folders
-        } else {
-            songs = songsDevice.map { it.toSongEntity() }
-            filteredSongs = songs
+                BuiltInPlaylist.Downloaded -> { song ->
+                    val downloads = MyDownloadHelper.downloads.value
+                    downloads[song.song.id]?.state == Download.STATE_COMPLETED
+                }
+
+                BuiltInPlaylist.Top -> { songs ->
+                    if (excludeSongWithDurationLimit == DurationInMinutes.Disabled)
+                        true
+                    else
+                        songs.song.durationText?.let {
+                            durationTextToMillis(it)
+                        }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
+                }
+
+                else -> { _ -> true }
+            }
+
+        itemsOnDisplay = items.filter( naturalFilter ).filter {
+            val containsTitle = it.song.title.contains( search.input, true )
+            val containsArtist = it.song.artistsText?.contains( search.input, true ) ?: false
+            val containsAlbum = it.albumTitle?.contains( search.input, true ) ?: false
+            val isExplicit = parentalControlEnabled && it.song.title.startsWith(EXPLICIT_PREFIX)
+
+            containsTitle || containsArtist || containsAlbum || isExplicit
         }
     }
-    /********** */
-
-    if (!includeLocalSongs && builtInPlaylist == BuiltInPlaylist.All)
-        items = items
-            .filter {
-                !it.song.id.startsWith(LOCAL_KEY_PREFIX)
-            }
-
-    if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
-        when ( songSort.sortOrder ) {
-            SortOrder.Ascending -> {
-                when ( songSort.sortBy ) {
-                    SongSortBy.Title -> items = items.sortedBy { it.song.title }
-                    SongSortBy.PlayTime -> items = items.sortedBy { it.song.totalPlayTimeMs }
-                    SongSortBy.Duration -> items = items.sortedBy { it.song.durationText }
-                    SongSortBy.Artist -> items = items.sortedBy { it.song.artistsText }
-                    SongSortBy.DatePlayed -> {}
-                    SongSortBy.DateLiked -> items = items.sortedBy { it.song.likedAt }
-                    SongSortBy.DateAdded -> {}
-                    SongSortBy.AlbumName -> items = items.sortedBy { it.albumTitle }
-                }
-            }
-            SortOrder.Descending -> {
-                when ( songSort.sortBy ) {
-                    SongSortBy.Title -> items = items.sortedByDescending { it.song.title }
-                    SongSortBy.PlayTime -> items = items.sortedByDescending { it.song.totalPlayTimeMs }
-                    SongSortBy.Duration -> items = items.sortedByDescending { it.song.durationText }
-                    SongSortBy.Artist -> items = items.sortedByDescending { it.song.artistsText }
-                    SongSortBy.DatePlayed -> {}
-                    SongSortBy.DateLiked -> items = items.sortedByDescending { it.song.likedAt }
-                    SongSortBy.DateAdded -> {}
-                    SongSortBy.AlbumName -> items = items.sortedByDescending { it.albumTitle }
-                }
-            }
+    // Filter folder on the side
+    LaunchedEffect( builtInPlaylist, folders, search.input ) {
+        filteredFolders = folders.filter {
+            builtInPlaylist == BuiltInPlaylist.OnDevice && it.name.contains( search.input, true )
         }
-
     }
-
-    if( search.input.isNotBlank() )
-        if( builtInPlaylist == BuiltInPlaylist.OnDevice ) {
-            filteredSongs = songs.filter {
-                it.song.title.contains( search.input, true )
-                        || it.song.artistsText?.contains( search.input, true ) ?: false
-                        || it.albumTitle?.contains( search.input, true ) ?: false
-            }
-
-            filteredFolders = folders.filter {
-                it.name.contains( search.input, true )
-            }
-        } else
-            items = items.filter {
-                it.song.title.contains( search.input, true )
-                        || it.song.artistsText?.contains( search.input, true ) ?: false
-                        || it.albumTitle?.contains( search.input, true ) ?: false
-            }
 
     val queueLimit by remember { mutableStateOf(QueueSelection.END_OF_QUEUE_WINDOWED) }
 
@@ -608,12 +544,7 @@ fun HomeSongs(
         Column( Modifier.fillMaxSize() ) {
             // Sticky tab's title
             TabHeader( R.string.songs ) {
-                val size =
-                    if( builtInPlaylist == BuiltInPlaylist.OnDevice )
-                        filteredSongs.size
-                    else
-                        items.size
-                HeaderInfo( size.toString(), R.drawable.musical_notes )
+                HeaderInfo( items.size.toString(), R.drawable.musical_notes )
             }
 
             // Sticky tab's tool bar
@@ -676,227 +607,133 @@ fun HomeSongs(
                 state = lazyListState,
                 contentPadding = PaddingValues( start = 8.dp, bottom = Dimensions.bottomSpacer )
             ) {
-                if (builtInPlaylist == BuiltInPlaylist.OnDevice) {
-                    if (!hasPermission) {
-                        item(
-                            key = "OnDeviceSongsPermission"
-                        ) {
-                            LaunchedEffect(Unit, relaunchPermission) { launcher.launch(permission) }
+                if( builtInPlaylist == BuiltInPlaylist.OnDevice && !hasPermission ) {
+                    item( "OnDeviceSongsPermission" ) {
+                        LaunchedEffect(Unit, relaunchPermission) { launcher.launch(permission) }
 
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.spacedBy(
-                                    2.dp,
-                                    Alignment.CenterVertically
-                                ),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                BasicText(
-                                    text = stringResource(R.string.media_permission_required_please_grant),
-                                    modifier = Modifier.fillMaxWidth(0.75f),
-                                    style = typography().xs.semiBold
-                                )
-                                /*
-                            Spacer(modifier = Modifier.height(12.dp))
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(
+                                2.dp,
+                                Alignment.CenterVertically
+                            ),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            BasicText(
+                                text = stringResource(R.string.media_permission_required_please_grant),
+                                modifier = Modifier.fillMaxWidth( 0.75f ),
+                                style = typography().xs.semiBold
+                            )
+                            Spacer(modifier = Modifier.height(20.dp))
                             SecondaryTextButton(
-                                text = stringResource(R.string.grant_permission),
+                                text = stringResource(R.string.open_permission_settings),
                                 onClick = {
-                                    relaunchPermission = !relaunchPermission
+                                    context.startActivity(
+                                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                            data = Uri.fromParts("package", context.packageName, null)
+                                        }
+                                    )
                                 }
                             )
-                             */
-                                Spacer(modifier = Modifier.height(20.dp))
-                                SecondaryTextButton(
-                                    text = stringResource(R.string.open_permission_settings),
-                                    onClick = {
-                                        context.startActivity(
-                                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                                setData(
-                                                    Uri.fromParts(
-                                                        "package",
-                                                        context.packageName,
-                                                        null
-                                                    )
-                                                )
-                                            }
-                                        )
-                                    }
-                                )
-
-                            }
 
                         }
-                    } else {
-                        if (showFolders) {
-                            if (currentFolderPath != "/") {
+                    }
+                    return@LazyColumn       // Return early to prevent other components from loading
+                }
 
-                                item {
-                                    BackHandler(onBack = {
-                                        currentFolderPath = currentFolderPath.removeSuffix("/").substringBeforeLast("/") + "/"
-                                    })
-                                }
-
-                                itemsIndexed(items = listOf(backButtonFolder)) { index, folderItem ->
-                                    FolderItem(
-                                        folder = folderItem,
-                                        thumbnailSizeDp = thumbnailSizeDp,
-                                        icon = R.drawable.chevron_back,
-                                        modifier = Modifier
-                                            .combinedClickable(
-                                                onClick = {
-                                                    currentFolderPath = currentFolderPath.removeSuffix("/").substringBeforeLast("/") + "/"
-                                                }
-                                            ),
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
-                            }
-                            if (currentFolder != null) {
-                                itemsIndexed(
-                                    items = filteredFolders.distinctBy { it.fullPath },
-                                    key = { _, folder -> folder.fullPath },
-                                    contentType = { _, folder -> folder }
-                                ) { index, folder ->
-                                    FolderItem(
-                                        folder = folder,
-                                        thumbnailSizeDp = thumbnailSizeDp,
-                                        modifier = Modifier
-                                            .combinedClickable(
-                                                onLongClick = {
-                                                    menuState.display {
-                                                        FolderItemMenu(
-                                                            folder = folder,
-                                                            onDismiss = menuState::hide,
-                                                            onEnqueue = {
-                                                                val allSongs = folder.getAllSongs()
-                                                                    .map { it.toSong().asMediaItem }
-                                                                binder?.player?.enqueue(allSongs, context)
-                                                            },
-                                                            thumbnailSizeDp = thumbnailSizeDp,
-                                                            disableScrollingText = disableScrollingText
-                                                        )
-                                                    };
-                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                                },
-                                                onClick = {
-                                                    currentFolderPath += folder.name + "/"
-                                                    search.onItemSelected()
-                                                }
-                                            ),
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
-                            } else {
-                                item {
-                                    BasicText(
-                                        text = stringResource(R.string.folder_was_not_found),
-                                        style = typography().xs.semiBold
-                                    )
-                                }
-                            }
-                        }
-
-                        itemsIndexed(
-                            items = filteredSongs.distinctBy { it.song.id },
-                            //key = { index, _ -> Random.nextLong().toString() },
-                            //contentType = { _, song -> song },
-                            //) { index, song ->
-                            key = { _, song -> song.song.id }
-                        ) { index, song ->
-                            SwipeablePlaylistItem(
-                                mediaItem = song.asMediaItem,
-                                onSwipeToRight = {
-                                    binder?.player?.addNext(song.asMediaItem)
-                                }
+                if( builtInPlaylist == BuiltInPlaylist.OnDevice && showFolders ) {
+                    if (currentFolder == null) {
+                        item {
+                            Box(
+                                Modifier.fillMaxWidth()
+                                        .align( Alignment.CenterHorizontally )
                             ) {
-                                SongItem(
-                                    song = song.song,
-                                    onDownloadClick = {
-                                        // not necessary
-                                    },
-                                    downloadState = Download.STATE_COMPLETED,
-                                    thumbnailSizeDp = thumbnailSizeDp,
-                                    thumbnailSizePx = thumbnailSizePx,
-                                    onThumbnailContent = { NowPlayingShow(song.asMediaItem.mediaId) },
-                                    trailingContent = {
-                                        val checkedState = rememberSaveable { mutableStateOf(false) }
-                                        if (selectItems)
-                                            androidx.compose.material3.Checkbox(
-                                                checked = checkedState.value,
-                                                onCheckedChange = {
-                                                    checkedState.value = it
-                                                    if (it) listMediaItems.add(song.asMediaItem) else
-                                                        listMediaItems.remove(song.asMediaItem)
-                                                },
-                                                colors = androidx.compose.material3.CheckboxDefaults.colors(
-                                                    checkedColor = colorPalette().accent,
-                                                    uncheckedColor = colorPalette().text
-                                                ),
-                                                modifier = Modifier
-                                                    .scale(0.7f)
-                                            )
-                                        else checkedState.value = false
-                                    },
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onLongClick = {
-                                                menuState.display {
-                                                    InHistoryMediaItemMenu(
-                                                        navController = navController,
-                                                        song = song.song,
-                                                        onDismiss = menuState::hide,
-                                                        disableScrollingText = disableScrollingText
-                                                    )
-                                                }
-                                                hapticFeedback.performHapticFeedback(
-                                                    HapticFeedbackType.LongPress
-                                                )
-                                            },
-                                            onClick = {
-                                                search.onItemSelected()
-
-                                                if (!selectItems) {
-                                                    binder?.stopRadio()
-                                                    binder?.player?.forcePlayAtIndex(
-                                                        filteredSongs.map(SongEntity::asMediaItem),
-                                                        index
-                                                    )
-                                                }
-                                            }
-                                        )
-                                        .animateItem(
-                                            fadeInSpec = null,
-                                            fadeOutSpec = null
-                                        ),
-                                    disableScrollingText = disableScrollingText
+                                BasicText(
+                                    text = stringResource(R.string.folder_was_not_found),
+                                    style = typography().xs.semiBold
                                 )
                             }
                         }
+                        return@LazyColumn   // Return early to prevent other components from loading
+                    }
+
+                    // Renders back button
+                    item {
+                        if (currentFolderPath == "/") return@item
+
+                        fun back() {
+                            currentFolderPath = currentFolderPath.removeSuffix("/").substringBeforeLast("/") + "/"
+                        }
+
+                        FolderItem(
+                            folder = backButtonFolder,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            icon = R.drawable.chevron_back,
+                            modifier = Modifier
+                                .combinedClickable( onClick = ::back ),
+                            disableScrollingText = disableScrollingText
+                        )
+
+                        BackHandler( onBack = ::back )
+                    }
+
+                    // Renders folders
+                    items(
+                        items = filteredFolders.distinctBy( Folder::fullPath ),
+                        key = Folder::fullPath
+                    ) {folder ->
+
+                        FolderItem(
+                            folder = folder,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onLongClick = {
+                                        menuState.display {
+                                            FolderItemMenu(
+                                                folder = folder,
+                                                onDismiss = menuState::hide,
+                                                onEnqueue = {
+                                                    val allSongs = folder.getAllSongs()
+                                                        .map { it.toSong().asMediaItem }
+                                                    binder?.player?.enqueue(allSongs, context)
+                                                },
+                                                thumbnailSizeDp = thumbnailSizeDp,
+                                                disableScrollingText = disableScrollingText
+                                            )
+                                        };
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    },
+                                    onClick = {
+                                        currentFolderPath += folder.name + "/"
+                                        search.onItemSelected()
+                                    }
+                                ),
+                            disableScrollingText = disableScrollingText
+                        )
                     }
                 }
 
-                if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
-                    itemsIndexed(
-                        items = if (parentalControlEnabled)
-                            items.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) }.distinctBy { it.song.id }
-                        else items.distinctBy { it.song.id },
-                        key = { _, song -> song.song.id },
-                    ) { index, song ->
+                itemsIndexed(
+                    items = itemsOnDisplay,
+                    key = { _, song -> song.song.id }
+                ) {index, song ->
+                    val mediaItem = song.asMediaItem
 
-                        SwipeablePlaylistItem(
-                            mediaItem = song.song.asMediaItem,
-                            onSwipeToRight = {
-                                binder?.player?.addNext(song.song.asMediaItem)
-                            }
-                        ) {
-                            val isLocal by remember { derivedStateOf { song.song.asMediaItem.isLocal } }
-                            downloadAllDialog.state = getDownloadState(song.song.asMediaItem.mediaId)
-                            val isDownloaded =
-                                if (!isLocal) isDownloadedSong(song.song.asMediaItem.mediaId) else true
-                            val checkedState = rememberSaveable { mutableStateOf(false) }
-                            SongItem(
-                                song = song.song,
-                                onDownloadClick = {
+                    SwipeablePlaylistItem(
+                        mediaItem = mediaItem,
+                        onSwipeToRight = { binder?.player?.addNext( mediaItem ) }
+                    ) {
+                        downloadAllDialog.state = getDownloadState( mediaItem.mediaId )
+
+                        val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
+                        val isDownloaded = isLocal || isDownloadedSong( mediaItem.mediaId )
+
+                        SongItem(
+                            song = song.song,
+                            onDownloadClick = {
+                                // Only allow action(s) on songs other than [BuiltInPlaylist.OnDevice]
+                                if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
                                     binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
                                     query {
                                         Database.resetFormatContentLength(song.song.asMediaItem.mediaId)
@@ -907,171 +744,173 @@ fun HomeSongs(
                                             mediaItem = song.song.asMediaItem,
                                             downloadState = isDownloaded
                                         )
-                                },
-                                downloadState = downloadAllDialog.state,
-                                thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                onThumbnailContent = {
-                                    if ( songSort.sortBy == SongSortBy.PlayTime ) {
-                                        BasicText(
-                                            text = song.song.formattedTotalPlayTime,
-                                            style = typography().xxs.semiBold.center.color(colorPalette().onOverlay),
-                                            maxLines = 2,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(
-                                                    brush = Brush.verticalGradient(
-                                                        colors = listOf(
-                                                            Color.Transparent,
-                                                            colorPalette().overlay
-                                                        )
-                                                    ),
-                                                    shape = thumbnailShape()
-                                                )
-                                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                                                .align(Alignment.BottomCenter)
-                                        )
+                                }
+                            },
+                            downloadState = Download.STATE_COMPLETED,
+                            thumbnailSizeDp = thumbnailSizeDp,
+                            thumbnailSizePx = thumbnailSizePx,
+                            onThumbnailContent = {
+                                if ( songSort.sortBy == SongSortBy.PlayTime || builtInPlaylist == BuiltInPlaylist.Top ) {
+                                    var text = song.song.formattedTotalPlayTime
+                                    var typography = typography().xxs
+                                    var alignment = Alignment.BottomCenter
+
+                                    if( builtInPlaylist == BuiltInPlaylist.Top ) {
+                                        text = (index + 1).toString()
+                                        typography = typography().m
+                                        alignment = Alignment.Center
                                     }
 
-                                    NowPlayingShow(song.song.asMediaItem.mediaId)
+                                    BasicText(
+                                        text = text,
+                                        style = typography.semiBold.center.color(colorPalette().onOverlay),
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                            .align(alignment)
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        colorPalette().overlay
+                                                    )
+                                                ),
+                                                shape = thumbnailShape()
+                                            )
+                                    )
+                                }
 
-                                    if (builtInPlaylist == BuiltInPlaylist.Top)
-                                        BasicText(
-                                            text = (index + 1).toString(),
-                                            style = typography().m.semiBold.center.color(colorPalette().onOverlay),
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(
-                                                    brush = Brush.verticalGradient(
-                                                        colors = listOf(
-                                                            Color.Transparent,
-                                                            colorPalette().overlay
-                                                        )
-                                                    ),
-                                                    shape = thumbnailShape()
-                                                )
-                                                .padding(horizontal = 8.dp, vertical = 4.dp)
-                                                .align(Alignment.Center)
-                                        )
-                                },
-                                trailingContent = {
-                                    if (selectItems)
-                                        Checkbox(
-                                            checked = checkedState.value,
-                                            onCheckedChange = {
-                                                checkedState.value = it
-                                                if (it) listMediaItems.add(song.song.asMediaItem) else
-                                                    listMediaItems.remove(song.song.asMediaItem)
-                                            },
-                                            colors = CheckboxDefaults.colors(
-                                                checkedColor = colorPalette().accent,
-                                                uncheckedColor = colorPalette().text
-                                            ),
-                                            modifier = Modifier
-                                                .scale(0.7f)
-                                        )
-                                    else checkedState.value = false
-                                },
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                InHistoryMediaItemMenu(
-                                                    navController = navController,
-                                                    song = song.song,
-                                                    onDismiss = menuState::hide,
-                                                    onHideFromDatabase = {
-                                                        hideSongDialog.song = Optional.of( song )
-                                                        hideSongDialog.onShortClick()
-                                                    },
-                                                    onDeleteFromDatabase = {
-                                                        deleteSongDialog.song = Optional.of( song )
-                                                        deleteSongDialog.onShortClick()
-                                                    },
-                                                    disableScrollingText = disableScrollingText
-                                                )
-                                            }
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                NowPlayingShow(song.asMediaItem.mediaId)
+                            },
+                            trailingContent = {
+                                // It must watch for [selectedItems.size] for changes
+                                // Otherwise, state will stay the same
+                                val checkedState = remember( selectedItems.size ) {
+                                    mutableStateOf( song in selectedItems )
+                                }
+
+                                if( selectItems )
+                                    Checkbox(
+                                        checked = checkedState.value,
+                                        onCheckedChange = {
+                                            checkedState.value = it
+                                            if ( it )
+                                                selectedItems.add( song )
+                                            else
+                                                selectedItems.remove( song )
                                         },
-                                        onClick = {
-                                            search.isVisible = false
-                                            search.input = ""
-
-                                            val maxSongs = maxSongsInQueue.number.toInt()
-                                            val itemsRange: IntRange
-                                            val playIndex: Int
-                                            if (items.size < maxSongsInQueue.number) {
-                                                itemsRange = items.indices
-                                                playIndex = index
-                                            } else {
-                                                when (queueLimit) {
-                                                    QueueSelection.START_OF_QUEUE -> {
-                                                        // tries to guarantee maxSongs many songs
-                                                        // window starting from index with maxSongs songs (if possible)
-                                                        itemsRange = index..<min(
-                                                            index + maxSongs,
-                                                            items.size
-                                                        )
-
-                                                        // index is located at the first position
-                                                        playIndex = 0
-                                                    }
-
-                                                    QueueSelection.CENTERED -> {
-                                                        // tries to guarantee >= maxSongs/2 many songs
-                                                        // window with +- maxSongs/2 songs (if possible) around index
-                                                        val minIndex = max(0, index - maxSongs / 2)
-                                                        val maxIndex =
-                                                            min(index + maxSongs / 2, items.size)
-                                                        itemsRange = minIndex..<maxIndex
-
-                                                        // index is located at "center"
-                                                        playIndex = index - minIndex
-                                                    }
-
-                                                    QueueSelection.END_OF_QUEUE -> {
-                                                        // tries to guarantee maxSongs many songs
-                                                        // window with maxSongs songs (if possible) ending at index
-                                                        val minIndex = max(0, index - maxSongs + 1)
-                                                        val maxIndex = min(index, items.size)
-                                                        itemsRange = minIndex..maxIndex
-
-                                                        // index is located at end
-                                                        playIndex = index - minIndex
-                                                    }
-
-                                                    QueueSelection.END_OF_QUEUE_WINDOWED -> {
-                                                        // tries to guarantee maxSongs many songs,
-                                                        // similar to original implementation in it's valid range
-                                                        // window with maxSongs songs (if possible) before index
-                                                        val minIndex = max(0, index - maxSongs + 1)
-                                                        val maxIndex =
-                                                            min(minIndex + maxSongs, items.size)
-                                                        itemsRange = minIndex..<maxIndex
-
-                                                        // index is located at "end"
-                                                        playIndex = index - minIndex
-                                                    }
+                                        colors = CheckboxDefaults.colors(
+                                            checkedColor = colorPalette().accent,
+                                            uncheckedColor = colorPalette().text
+                                        ),
+                                        modifier = Modifier.scale( 0.7f )
+                                    )
+                            },
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onLongClick = {
+                                        val hideAction =
+                                            if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
+                                                {
+                                                    hideSongDialog.song = Optional.of(song)
+                                                    hideSongDialog.onShortClick()
                                                 }
-                                            }
-                                            val itemsLimited = items.slice(itemsRange)
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayAtIndex(
-                                                itemsLimited.map(SongEntity::asMediaItem),
-                                                playIndex
+                                            } else null
+                                        val deleteFromDatabase =
+                                            if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
+                                                {
+                                                    deleteSongDialog.song = Optional.of(song)
+                                                    deleteSongDialog.onShortClick()
+                                                }
+                                            } else null
+
+                                        menuState.display {
+                                            InHistoryMediaItemMenu(
+                                                navController = navController,
+                                                song = song.song,
+                                                onDismiss = menuState::hide,
+                                                onHideFromDatabase = hideAction,
+                                                onDeleteFromDatabase = deleteFromDatabase,
+                                                disableScrollingText = disableScrollingText
                                             )
                                         }
-                                    )
-                                    .animateItemPlacement(),
-                                disableScrollingText = disableScrollingText
-                            )
-                        }
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    },
+                                    onClick = {
+                                        search.onItemSelected()
+
+                                        val maxSongs = maxSongsInQueue.number.toInt()
+                                        val itemsRange: IntRange
+                                        val playIndex: Int
+                                        if (itemsOnDisplay.size < maxSongsInQueue.number) {
+                                            itemsRange = itemsOnDisplay.indices
+                                            playIndex = index
+                                        } else {
+                                            when (queueLimit) {
+                                                QueueSelection.START_OF_QUEUE -> {
+                                                    // tries to guarantee maxSongs many songs
+                                                    // window starting from index with maxSongs songs (if possible)
+                                                    itemsRange = index..<min(
+                                                        index + maxSongs,
+                                                        itemsOnDisplay.size
+                                                    )
+
+                                                    // index is located at the first position
+                                                    playIndex = 0
+                                                }
+
+                                                QueueSelection.CENTERED -> {
+                                                    // tries to guarantee >= maxSongs/2 many songs
+                                                    // window with +- maxSongs/2 songs (if possible) around index
+                                                    val minIndex = max(0, index - maxSongs / 2)
+                                                    val maxIndex =
+                                                        min(index + maxSongs / 2, itemsOnDisplay.size)
+                                                    itemsRange = minIndex..<maxIndex
+
+                                                    // index is located at "center"
+                                                    playIndex = index - minIndex
+                                                }
+
+                                                QueueSelection.END_OF_QUEUE -> {
+                                                    // tries to guarantee maxSongs many songs
+                                                    // window with maxSongs songs (if possible) ending at index
+                                                    val minIndex = max(0, index - maxSongs + 1)
+                                                    val maxIndex = min(index, itemsOnDisplay.size)
+                                                    itemsRange = minIndex..maxIndex
+
+                                                    // index is located at end
+                                                    playIndex = index - minIndex
+                                                }
+
+                                                QueueSelection.END_OF_QUEUE_WINDOWED -> {
+                                                    // tries to guarantee maxSongs many songs,
+                                                    // similar to original implementation in it's valid range
+                                                    // window with maxSongs songs (if possible) before index
+                                                    val minIndex = max(0, index - maxSongs + 1)
+                                                    val maxIndex =
+                                                        min(minIndex + maxSongs, itemsOnDisplay.size)
+                                                    itemsRange = minIndex..<maxIndex
+
+                                                    // index is located at "end"
+                                                    playIndex = index - minIndex
+                                                }
+                                            }
+                                        }
+                                        val itemsLimited = itemsOnDisplay.slice(itemsRange)
+                                        binder?.stopRadio()
+                                        binder?.player?.forcePlayAtIndex(
+                                            itemsLimited.map(SongEntity::asMediaItem),
+                                            playIndex
+                                        )
+                                    }
+                                )
+                                .animateItem( fadeInSpec = null, fadeOutSpec = null ),
+                            disableScrollingText = disableScrollingText
+                        )
                     }
                 }
-
             }
         }
 
