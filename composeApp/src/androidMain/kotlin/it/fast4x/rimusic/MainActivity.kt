@@ -874,8 +874,7 @@ class MainActivity :
             }
 
 
-            val colorPaletteMode =
-                preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.PitchBlack)
+            val colorPaletteMode = preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
             if (colorPaletteMode == ColorPaletteMode.PitchBlack)
                 appearance = appearance.copy(
                     colorPalette = appearance.colorPalette.applyPitchBlack,
