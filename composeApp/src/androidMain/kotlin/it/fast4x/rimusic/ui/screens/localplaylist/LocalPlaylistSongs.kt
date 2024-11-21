@@ -78,7 +78,6 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.PopupType
@@ -102,7 +101,6 @@ import it.fast4x.rimusic.ui.components.themed.IconInfo
 import it.fast4x.rimusic.ui.components.themed.InPlaylistMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.Playlist
-import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -146,7 +144,6 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -158,7 +155,6 @@ import me.knighthat.appContext
 import me.knighthat.colorPalette
 import me.knighthat.component.AddToFavorite
 import me.knighthat.component.Enqueue
-import me.knighthat.component.Export
 import me.knighthat.component.IDialog
 import me.knighthat.component.ItemSelector
 import me.knighthat.component.ListenOnYouTube
@@ -528,7 +524,6 @@ fun LocalPlaylistSongs(
         binder?.player?.pause()
         uriHandler.openUri( "https://youtube.com/playlist?list=$browseId" )
     }
-    val exportMenuItem = Export( exportDialog::onShortClick )
 
     fun openEditThumbnailPicker() {
         editThumbnailLauncher.launch("image/*")
@@ -814,7 +809,7 @@ fun LocalPlaylistSongs(
                             this.add( renameDialog )
                             this.add( renumberDialog )
                             this.add( deleteDialog )
-                            this.add( exportMenuItem )
+                            this.add( exportDialog )
                             this.add( thumbnailPicker )
                             this.add( resetThumbnail )
                         }

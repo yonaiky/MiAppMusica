@@ -147,11 +147,10 @@ import me.knighthat.appContext
 import me.knighthat.colorPalette
 import me.knighthat.component.AddToFavorite
 import me.knighthat.component.Enqueue
-import me.knighthat.component.Export
-import me.knighthat.component.Import
 import me.knighthat.component.ItemSelector
 import me.knighthat.component.PlayNext
 import me.knighthat.component.PlaylistsMenu
+import me.knighthat.component.Search
 import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.screen.PeriodSelector
 import me.knighthat.component.screen.hiddenSongs
@@ -160,15 +159,14 @@ import me.knighthat.component.tab.DelSongDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HideSongDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
+import me.knighthat.component.tab.LocateComponent
+import me.knighthat.component.tab.Sort
 import me.knighthat.component.tab.TabHeader
 import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.DynamicColor
-import me.knighthat.component.tab.LocateComponent
-import me.knighthat.component.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.component.tab.Sort
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
 import timber.log.Timber
@@ -394,8 +392,6 @@ fun HomeSongs(
             type = PopupType.Success, context = context
         )
     }
-    val exportMenuItem = Export { exportToggleState.value = true }
-    val importMenuItem = Import( import::onShortClick )
     //</editor-fold>
 
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
@@ -658,8 +654,8 @@ fun HomeSongs(
                     this.add( enqueue )
                     this.add( addToFavorite )
                     this.add( addToPlaylist )
-                    this.add( exportMenuItem )
-                    this.add( importMenuItem )
+                    this.add( exportDialog )
+                    this.add( import )
                 }
             )
 
