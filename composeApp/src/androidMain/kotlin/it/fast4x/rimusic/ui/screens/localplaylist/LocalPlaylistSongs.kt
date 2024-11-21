@@ -82,7 +82,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.RecommendationsNumber
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.PlaylistPreview
@@ -155,15 +154,17 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
 import me.knighthat.component.IDialog
+import me.knighthat.component.Search
 import me.knighthat.component.screen.PlaylistSongsSort
+import me.knighthat.component.screen.PositionLock
+import me.knighthat.component.screen.pin
 import me.knighthat.component.tab.ExportSongsToCSVDialog
+import me.knighthat.component.tab.LocateComponent
 import me.knighthat.component.tab.toolbar.ConfirmDialog
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
-import me.knighthat.component.tab.LocateComponent
 import me.knighthat.component.tab.toolbar.MenuIcon
-import me.knighthat.component.Search
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -374,6 +375,8 @@ fun LocalPlaylistSongs(
             SmartMessage(context.resources.getString(R.string.thumbnail_not_selected), context = context)
         }
     }
+    val positionLock = PositionLock.init( sort.sortOrder )
+
     fun openEditThumbnailPicker() {
         editThumbnailLauncher.launch("image/*")
     }
@@ -697,66 +700,10 @@ fun LocalPlaylistSongs(
                     ) {
 
                         if (playlistNotMonthlyType)
-                            HeaderIconButton(
-                                icon = R.drawable.pin,
-                                enabled = playlistSongs.isNotEmpty(),
-                                color = if (playlistPreview?.playlist?.name?.startsWith(
-                                        PINNED_PREFIX,
-                                        0,
-                                        true
-                                    ) == true
-                                )
-                                    colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            query {
-                                                if (playlistPreview?.playlist?.name?.startsWith(
-                                                        PINNED_PREFIX,
-                                                        0,
-                                                        true
-                                                    ) == true
-                                                )
-                                                    Database.unPinPlaylist(playlistId) else
-                                                    Database.pinPlaylist(playlistId)
-                                            }
-                                        },
-                                        onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_pin_unpin_playlist),
-                                                context = context
-                                            )
-                                        }
-                                    )
-                            )
+                            pin( playlistPreview, playlistId ).ToolBarButton()
 
-                        if (sort.sortBy == PlaylistSongSortBy.Position && sort.sortOrder == SortOrder.Ascending)
-                            HeaderIconButton(
-                                icon = if (isReorderDisabled) R.drawable.locked else R.drawable.unlocked,
-                                enabled = playlistSongs.isNotEmpty() == true,
-                                color = if (playlistSongs.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            if (sort.sortBy == PlaylistSongSortBy.Position && sort.sortOrder == SortOrder.Ascending) {
-                                                isReorderDisabled = !isReorderDisabled
-                                            } else {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.info_reorder_is_possible_only_in_ascending_sort),
-                                                    type = PopupType.Warning, context = context
-                                                )
-                                            }
-                                        },
-                                        onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_lock_unlock_reorder_songs),
-                                                context = context
-                                            )
-                                        }
-                                    )
-                            )
+                        if ( sort.sortBy == PlaylistSongSortBy.Position )
+                            positionLock.ToolBarButton()
 
                         downloadAllDialog.ToolBarButton()
                         deleteDownloadsDialog.ToolBarButton()
@@ -1037,7 +984,7 @@ fun LocalPlaylistSongs(
                         val checkedState = rememberSaveable { mutableStateOf(false) }
                         val positionInPlaylist: Int = index
 
-                        if (!isReorderDisabled && sort.sortBy == PlaylistSongSortBy.Position && sort.sortOrder == SortOrder.Ascending) {
+                        if ( !positionLock.isLocked() ) {
                             Box(
                                 modifier = Modifier
                                     .size(24.dp)

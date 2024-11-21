@@ -72,10 +72,19 @@ fun pin(
     }
 }
 
-@Composable
-fun positionLock(
-    sortOrder: SortOrder
-): MenuIcon = object: MenuIcon, DualIcon, DynamicColor, Descriptive {
+class PositionLock private constructor(
+    private val iconState: MutableState<Boolean>,
+    private val colorState: MutableState<Boolean>
+): MenuIcon, DualIcon, DynamicColor, Descriptive {
+
+    companion object {
+        @JvmStatic
+        @Composable
+        fun init( sortOrder: SortOrder ) = PositionLock(
+            rememberPreference( reorderInQueueEnabledKey, true ),
+            rememberSaveable( sortOrder ) { mutableStateOf( sortOrder == SortOrder.Ascending ) }
+        )
+    }
 
     override val secondIconId: Int = R.drawable.unlocked
     override val iconId: Int = R.drawable.locked
@@ -84,11 +93,18 @@ fun positionLock(
         @Composable
         get() = stringResource( messageId )
 
-    /**
-     * If [isFirstIcon] equals `true` then user CANNOT change songs' positions
-     */
-    override var isFirstIcon: Boolean by rememberPreference( reorderInQueueEnabledKey, true )
-    override var isFirstColor: Boolean = rememberSaveable( sortOrder ) { sortOrder == SortOrder.Ascending }
+    override var isFirstIcon: Boolean = iconState.value
+        set(value) {
+            iconState.value = value
+            field = value
+        }
+    override var isFirstColor: Boolean = colorState.value
+        set(value) {
+            colorState.value = value
+            field = value
+        }
+
+    fun isLocked(): Boolean = isFirstIcon
 
     override fun onShortClick() {
         if( !isFirstColor )
