@@ -466,6 +466,8 @@ fun Player(
     val actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
     var expandedplayer by rememberPreference(expandedplayerKey, false)
 
+    var updateBrush by remember { mutableStateOf(false) }
+
     if (expandedlyrics && !isLandscape) {
         if ((isShowingLyrics && !showlyricsthumbnail) || (isShowingVisualizer && !showvisthumbnail)) expandedplayer = true
         else expandedplayer = false
@@ -477,6 +479,7 @@ fun Player(
             albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
             artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
         }
+        updateBrush = true
     }
 
 
@@ -518,6 +521,7 @@ fun Player(
     }
     LaunchedEffect(mediaItem.mediaId) {
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
+        updateBrush = true
     }
 
 
@@ -723,16 +727,17 @@ fun Player(
                 playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
 
 
-    if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
-        playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
-        playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
-    ) {
+
         //val context = LocalContext.current
         //println("Player before getting dynamic color ${dynamicColorPalette}")
         println("Player url mediaitem ${mediaItem.mediaMetadata.artworkUri}")
         println("Player url binder ${binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri}")
         val isSystemDarkMode = isSystemInDarkTheme()
-        LaunchedEffect(mediaItem.mediaId) {
+        LaunchedEffect(mediaItem.mediaId, updateBrush) {
+            if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
+                playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
+                playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient || updateBrush
+            ) {
             try {
                 val bitmap = getBitmapFromUrl(
                     context,
