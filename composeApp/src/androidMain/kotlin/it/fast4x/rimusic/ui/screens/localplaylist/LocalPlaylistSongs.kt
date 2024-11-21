@@ -295,7 +295,7 @@ fun LocalPlaylistSongs(
     }
     val deleteDialog = object: ConfirmDialog, Descriptive, MenuIcon {
         override val messageId: Int = R.string.delete
-        override val iconId: Int = R.drawable.close
+        override val iconId: Int = R.drawable.trash
         override val dialogTitle: String
             @Composable
             get() = stringResource( R.string.delete_playlist )

@@ -40,7 +40,7 @@ open class DelSongDialog protected constructor(
 
     var song: Optional<SongEntity> = Optional.empty()
     override val messageId: Int = R.string.delete
-    override val iconId: Int = R.drawable.close
+    override val iconId: Int = R.drawable.trash
     override var isActive: Boolean = activeState.value
         set(value) {
             activeState.value = value
