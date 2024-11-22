@@ -1290,6 +1290,7 @@ class PlayerServiceModern : MediaLibraryService(),
     private fun maybeSavePlayerQueue() {
         println("PlayerServiceModern onCreate savePersistentQueue")
         if (!isPersistentQueueEnabled) return
+        println("PlayerServiceModern onCreate savePersistentQueue is enabled")
         /*
         if (player.playbackState == Player.STATE_IDLE) {
             Log.d("mediaItem", "QueuePersistentEnabled playbackstate idle return")
@@ -1312,12 +1313,15 @@ class PlayerServiceModern : MediaLibraryService(),
                     position = if (index == mediaItemIndex) mediaItemPosition else null
                 )
             }.let { queuedMediaItems ->
+                if (queuedMediaItems.isEmpty()) return@let
                 withContext(Dispatchers.IO) {
                     transaction {
-                        Database.clearQueue()
-                        Database.insert(queuedMediaItems)
+                        Database.clearQueue().apply {
+                            Database.insert(queuedMediaItems)
+                        }
                     }
                 }
+                Timber.d("PlayerServiceModern QueuePersistentEnabled Saved queue")
             }
 
         }
