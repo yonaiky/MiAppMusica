@@ -234,6 +234,7 @@ fun GetSeekBar(
                 waveInteraction = {
                     scrubbingPosition = (it.value * duration.toFloat()).toLong()
                     binder.player.seekTo(scrubbingPosition!!)
+                    scrubbingPosition = null
                 },
                 modifier = Modifier
                     .height(40.dp)
