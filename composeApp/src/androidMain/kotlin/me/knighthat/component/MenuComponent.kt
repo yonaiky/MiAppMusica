@@ -6,10 +6,15 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.media3.common.MediaItem
+import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import me.knighthat.appContext
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.MenuIcon
@@ -86,9 +91,9 @@ fun Enqueue(
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun AddToFavorite(
-    onClick: () -> Unit
-): MenuIcon = object : MenuIcon, Descriptive {
+fun LikeSongs(
+    mediaItems: () -> List<MediaItem>
+): MenuIcon = object: MenuIcon, Descriptive{
 
     val menuState: MenuState = LocalMenuState.current
     override val iconId: Int = R.drawable.heart
@@ -98,7 +103,18 @@ fun AddToFavorite(
         get() = stringResource( messageId )
 
     override fun onShortClick() {
-        onClick()
+        transaction {
+            mediaItems().forEach {
+                Database.like( it.mediaId, System.currentTimeMillis() )
+            }
+
+            runBlocking( Dispatchers.Main ) {
+                SmartMessage(
+                    message = appContext().resources.getString( R.string.done ),
+                    context = appContext()
+                )
+            }
+        }
         menuState.hide()
     }
 }

@@ -79,7 +79,6 @@ import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -142,9 +141,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.knighthat.appContext
 import me.knighthat.colorPalette
-import me.knighthat.component.AddToFavorite
 import me.knighthat.component.Enqueue
 import me.knighthat.component.ItemSelector
+import me.knighthat.component.LikeSongs
 import me.knighthat.component.PlayNext
 import me.knighthat.component.PlaylistsMenu
 import me.knighthat.component.Search
@@ -314,13 +313,8 @@ fun HomeSongs(
             itemSelector.isActive = false
         }
     }
-    val addToFavorite = AddToFavorite {
-        transaction {
-            getMediaItems().forEach {
-                Database.like( it.mediaId, System.currentTimeMillis() )
-            }
-        }
-    }
+
+    val addToFavorite = LikeSongs( ::getMediaItems )
     var position by remember { mutableIntStateOf( 0 ) }
 
     val addToPlaylist = PlaylistsMenu.init( navController ) {

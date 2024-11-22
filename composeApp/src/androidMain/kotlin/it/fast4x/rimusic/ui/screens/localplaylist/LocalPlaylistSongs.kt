@@ -152,10 +152,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.appContext
 import me.knighthat.colorPalette
-import me.knighthat.component.AddToFavorite
 import me.knighthat.component.Enqueue
 import me.knighthat.component.IDialog
 import me.knighthat.component.ItemSelector
+import me.knighthat.component.LikeSongs
 import me.knighthat.component.ListenOnYouTube
 import me.knighthat.component.PlayNext
 import me.knighthat.component.PlaylistsMenu
@@ -415,13 +415,8 @@ fun LocalPlaylistSongs(
                 itemSelector.isActive = false
             }
     }
-    val addToFavorite = AddToFavorite {
-        transaction {
-            listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
-                .forEach {
-                    Database.like( it.mediaId, System.currentTimeMillis() )
-                }
-        }
+    val addToFavorite = LikeSongs {
+        listMediaItems.ifEmpty { playlistSongs.map(SongEntity::asMediaItem) }
     }
 
     var position by remember { mutableIntStateOf(0) }
