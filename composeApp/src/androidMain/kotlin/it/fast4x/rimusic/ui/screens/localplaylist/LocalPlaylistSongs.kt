@@ -137,7 +137,6 @@ import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.renamePipedPlaylist
-import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.resetFormatContentLength
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import it.fast4x.rimusic.utils.semiBold
@@ -214,7 +213,6 @@ fun LocalPlaylistSongs(
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     val pipedSession = getPipedSession()
     var isRecommendationEnabled by rememberPreference(isRecommendationEnabledKey, false)
-    var selectItems by remember { mutableStateOf( false ) }
     // Playlist non-vital
     val playlistName = remember { mutableStateOf( "" ) }
     var listMediaItems = remember { mutableListOf<MediaItem>() }
@@ -393,21 +391,19 @@ fun LocalPlaylistSongs(
     val pin = pin( playlistPreview, playlistId )
     val positionLock = PositionLock.init( sort.sortOrder )
 
-    val itemSelector = ItemSelector {
-        selectItems = !selectItems
-        if ( !selectItems ) {
-            listMediaItems.clear()
-        }
+    val itemSelector = ItemSelector.init()
+    LaunchedEffect( itemSelector.isActive ) {
+        // Clears selectedItems when check boxes are disabled
+        if( !itemSelector.isActive ) listMediaItems.clear()
     }
+
     val playNext = PlayNext {
         listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
             .let {
                 binder?.player?.addNext( it, appContext() )
 
-                if( listMediaItems.isNotEmpty() ) {
-                    listMediaItems.clear()
-                    selectItems = false
-                }
+                // Turn of selector clears the selected list
+                itemSelector.isActive = false
             }
     }
     val enqueue = Enqueue {
@@ -415,10 +411,8 @@ fun LocalPlaylistSongs(
             .let {
                 binder?.player?.enqueue( it, context )
 
-                if( listMediaItems.isNotEmpty() ) {
-                    listMediaItems.clear()
-                    selectItems = false
-                }
+                // Turn of selector clears the selected list
+                itemSelector.isActive = false
             }
     }
     val addToFavorite = AddToFavorite {
@@ -462,8 +456,8 @@ fun LocalPlaylistSongs(
                     }
             } catch( _: Exception ) {
             } finally {
-                listMediaItems.clear()
-                selectItems = false
+                // Turn of selector clears the selected list
+                itemSelector.isActive = false
             }
         }
     }
@@ -627,8 +621,6 @@ fun LocalPlaylistSongs(
     renumberDialog.Render()
     downloadAllDialog.Render()
     deleteDownloadsDialog.Render()
-
-    var isReorderDisabled by rememberPreference(reorderInQueueEnabledKey, defaultValue = true)
 
     val playlistThumbnailSizeDp = Dimensions.thumbnails.playlist
     val playlistThumbnailSizePx = playlistThumbnailSizeDp.px
@@ -977,7 +969,7 @@ fun LocalPlaylistSongs(
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 trailingContent = {
-                                    if (selectItems)
+                                    if ( itemSelector.isActive )
                                         Checkbox(
                                             checked = checkedState.value,
                                             onCheckedChange = {
@@ -1062,7 +1054,7 @@ fun LocalPlaylistSongs(
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         },
                                         onClick = {
-                                            if (!selectItems) {
+                                            if ( !itemSelector.isActive ) {
 
                                                 search.onItemSelected()
 

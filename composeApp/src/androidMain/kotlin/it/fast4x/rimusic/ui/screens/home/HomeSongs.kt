@@ -194,6 +194,7 @@ fun HomeSongs(
 
     var items by persistList<SongEntity>( "home/songs" )
     var itemsOnDisplay by persistList<SongEntity>( "home/songs/on_display" )
+    // List should be cleared when tab changed
     val selectedItems = remember { mutableListOf<SongEntity>() }
 
     fun getMediaItems() = selectedItems.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
@@ -238,12 +239,6 @@ fun HomeSongs(
 
     // Non-vital
     val playlistNameState = remember { mutableStateOf( "" ) }
-    // This state should be reset when user changes tab
-    var selectItems by remember { mutableStateOf( false ) }
-
-    LaunchedEffect( selectItems ) {
-        if( !selectItems ) selectedItems.clear()
-    }
 
     // Update playlistNameState's value based on current builtInPlaylist
     LaunchedEffect( builtInPlaylist ) {
@@ -297,13 +292,18 @@ fun HomeSongs(
     val topPlaylists = PeriodSelector.init()
 
     //<editor-fold desc="Menu">
-    val itemSelector = ItemSelector { selectItems = !selectItems }
+    val itemSelector = ItemSelector.init()
+    LaunchedEffect( itemSelector.isActive ) {
+        // Clears itemsOnDisplay when check boxes are disabled
+        if( !itemSelector.isActive ) selectedItems.clear()
+    }
+
     val playNext = PlayNext {
         getMediaItems().let {
             binder?.player?.addNext( it, appContext() )
 
             // Turn of selector clears the selected list
-            selectItems = false
+            itemSelector.isActive = false
         }
     }
     val enqueue = Enqueue {
@@ -311,7 +311,7 @@ fun HomeSongs(
             binder?.player?.enqueue( it, appContext() )
 
             // Turn of selector clears the selected list
-            selectItems = false
+            itemSelector.isActive = false
         }
     }
     val addToFavorite = AddToFavorite {
@@ -791,7 +791,7 @@ fun HomeSongs(
                                     mutableStateOf( song in selectedItems )
                                 }
 
-                                if( selectItems )
+                                if( itemSelector.isActive )
                                     Checkbox(
                                         checked = checkedState.value,
                                         onCheckedChange = {
