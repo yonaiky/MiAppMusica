@@ -1305,6 +1305,7 @@ class PlayerServiceModern : MediaLibraryService(),
             val mediaItemIndex = player.currentMediaItemIndex
             val mediaItemPosition = player.currentPosition
 
+            if (mediaItems.isEmpty()) return@launch
 
 
             mediaItems.mapIndexed { index, mediaItem ->
