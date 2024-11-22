@@ -2777,28 +2777,6 @@ fun Player(
         }
 
         CustomModalBottomSheet(
-            showSheet = showFullLyrics,
-            onDismissRequest = { showFullLyrics = false },
-            containerColor = colorPalette().background2,
-            contentColor = colorPalette().background2,
-            modifier = Modifier.fillMaxWidth(),
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-            dragHandle = {
-                Surface(
-                    modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette().background0,
-                    shape = thumbnailShape()
-                ) {}
-            },
-            shape = thumbnailRoundness.shape()
-        ) {
-            FullLyricsSheetModern(
-                onMaximize = { showFullLyrics = false },
-                onRefresh = {}
-            )
-        }
-
-        CustomModalBottomSheet(
             showSheet = showSearchEntity,
             onDismissRequest = { showSearchEntity = false },
             containerColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
