@@ -32,11 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -49,7 +47,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -85,7 +82,6 @@ import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
@@ -136,7 +132,6 @@ import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
-import it.fast4x.rimusic.utils.renamePipedPlaylist
 import it.fast4x.rimusic.utils.resetFormatContentLength
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import it.fast4x.rimusic.utils.semiBold
@@ -145,16 +140,14 @@ import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.appContext
 import me.knighthat.colorPalette
-import me.knighthat.component.DeleteDialog
 import me.knighthat.component.Enqueue
-import me.knighthat.component.IDialog
 import me.knighthat.component.ItemSelector
 import me.knighthat.component.LikeSongs
 import me.knighthat.component.ListenOnYouTube
@@ -168,15 +161,15 @@ import me.knighthat.component.header.TabToolBar
 import me.knighthat.component.screen.DeletePlaylist
 import me.knighthat.component.screen.PlaylistSongsSort
 import me.knighthat.component.screen.PositionLock
+import me.knighthat.component.screen.RenameDialog
+import me.knighthat.component.screen.Reposition
 import me.knighthat.component.screen.pin
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.LocateComponent
 import me.knighthat.component.tab.toolbar.Button
-import me.knighthat.component.tab.toolbar.ConfirmDialog
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
-import me.knighthat.component.tab.toolbar.Descriptive
+import me.knighthat.component.tab.toolbar.Dialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
-import me.knighthat.component.tab.toolbar.MenuIcon
 import me.knighthat.component.tab.toolbar.SongsShuffle
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
@@ -206,8 +199,13 @@ fun LocalPlaylistSongs(
     val lazyListState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
 
-    var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
+    var items by persistList<SongEntity>("localPlaylist/$playlistId/itemsOffShelve")
+    var itemsOnDisplay by persistList<SongEntity>("localPlaylist/$playlistId/songs/on_display")
+    // List should be cleared when tab changed
+    val selectedItems = remember { mutableListOf<SongEntity>() }
+
+    fun getMediaItems() = selectedItems.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
 
     // Non-vital
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
@@ -217,79 +215,15 @@ fun LocalPlaylistSongs(
     var isRecommendationEnabled by rememberPreference(isRecommendationEnabledKey, false)
     // Playlist non-vital
     val playlistName = remember { mutableStateOf( "" ) }
-    var listMediaItems = remember { mutableListOf<MediaItem>() }
     val thumbnailUrl = remember { mutableStateOf("") }
-
-    LaunchedEffect( playlistPreview?.playlist?.name ) {
-        playlistName.value =
-            playlistPreview?.playlist
-                ?.name
-                ?.let { name ->
-                    if( name.startsWith( MONTHLY_PREFIX, true ) )
-                        getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
-                    else
-                        name.substringAfter( PINNED_PREFIX )
-                            .substringAfter( PIPED_PREFIX )
-                } ?: "Unknown"
-
-        val thumbnailName = "thumbnail/playlist_${playlistId}"
-        val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
-        if (presentThumbnailUrl != null) {
-            thumbnailUrl.value = presentThumbnailUrl
-        }
-    }
 
     val search = Search.init()
 
     val sort = PlaylistSongsSort.init()
 
-    val shuffle = SongsShuffle.init {
-        flowOf( playlistSongs.map( SongEntity::asMediaItem ) )
-    }
-    val renameDialog = object: IDialog, Descriptive, MenuIcon {
-        override val messageId: Int = R.string.rename
-        override val iconId: Int = R.drawable.title_edit
-        override val dialogTitle: String
-            @Composable
-            get() = stringResource( R.string.enter_the_playlist_name )
-        override val menuIconTitle: String
-            @Composable
-            get() = stringResource( messageId )
-
-        override var value: String = playlistName.value
-            set(value) {
-                playlistName.value = value
-                field = value
-            }
-        override var isActive: Boolean by rememberSaveable { mutableStateOf( false ) }
-
-        override fun onShortClick() = super.onShortClick()
-
-        override fun onSet(newValue: String) {
-            val isPipedPlaylist =
-                playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
-                        && isPipedEnabled
-                        && pipedSession.token.isNotEmpty()
-            val prefix = if( isPipedPlaylist ) PIPED_PREFIX else ""
-
-            query {
-                playlistPreview?.playlist?.copy(name = "$prefix$newValue")?.let(Database::update)
-            }
-
-            if ( isPipedPlaylist )
-                renamePipedPlaylist(
-                    context = context,
-                    coroutineScope = coroutineScope,
-                    pipedSession = pipedSession.toApiSession(),
-                    id = UUID.fromString(playlistPreview?.playlist?.browseId),
-                    name = "$PIPED_PREFIX$newValue"
-                )
-            onDismiss()
-        }
-    }
-    val exportDialog = ExportSongsToCSVDialog.init( playlistName ) {
-        listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
-    }
+    val shuffle = SongsShuffle.init { flowOf( getMediaItems() ) }
+    val renameDialog = RenameDialog.init( pipedSession, coroutineScope, { isPipedEnabled }, playlistName, { playlistPreview } )
+    val exportDialog = ExportSongsToCSVDialog.init( playlistName, ::getMediaItems )
     val deleteDialog = DeletePlaylist {
         transaction {
             playlistPreview?.playlist?.let(Database::delete)
@@ -312,55 +246,12 @@ fun LocalPlaylistSongs(
         if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
             navController.popBackStack()
     }
-    val renumberDialog = object: ConfirmDialog, Descriptive, MenuIcon {
-        override val messageId: Int = R.string.renumber_songs_positions
-        override val iconId: Int = R.drawable.position
-        override val dialogTitle: String
-            @Composable
-            get() = stringResource( R.string.do_you_really_want_to_renumbering_positions_in_this_playlist )
-        override val menuIconTitle: String
-            @Composable
-            get() = stringResource( messageId )
-
-        override var isActive: Boolean by rememberSaveable { mutableStateOf( false ) }
-
-        override fun onShortClick() = super.onShortClick()
-
-        override fun onConfirm() {
-            transaction {
-                val pId = playlistPreview?.playlist?.id ?: return@transaction
-
-                playlistSongs.map( SongEntity::song )
-                    .forEachIndexed { index, song ->
-                        Database.updateSongPosition( pId, song.id, index )
-                    }
-            }
-
-            onDismiss()
-        }
-    }
-    val downloadAllDialog = DownloadAllDialog.init {
-        listMediaItems.ifEmpty {
-            playlistSongs.map {
-                transaction {
-                    Database.insert(
-                        Song(
-                            id = it.asMediaItem.mediaId,
-                            title = it.asMediaItem.mediaMetadata.title.toString(),
-                            artistsText = it.asMediaItem.mediaMetadata.artist.toString(),
-                            thumbnailUrl = it.song.thumbnailUrl,
-                            durationText = null
-                        )
-                    )
-                }
-
-                it.asMediaItem
-            }
-        }
-    }
-    val deleteDownloadsDialog = DelAllDownloadedDialog.init {
-        listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
-    }
+    val renumberDialog = Reposition(
+        { playlistPreview?.playlist?.id },
+        { items.map(SongEntity::song) }
+    )
+    val downloadAllDialog = DownloadAllDialog.init( ::getMediaItems )
+    val deleteDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
     val editThumbnailLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
@@ -380,32 +271,22 @@ fun LocalPlaylistSongs(
     val itemSelector = ItemSelector.init()
     LaunchedEffect( itemSelector.isActive ) {
         // Clears selectedItems when check boxes are disabled
-        if( !itemSelector.isActive ) listMediaItems.clear()
+        if( !itemSelector.isActive ) selectedItems.clear()
     }
 
     val playNext = PlayNext {
-        listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
-            .let {
-                binder?.player?.addNext( it, appContext() )
+        binder?.player?.addNext( getMediaItems(), appContext() )
 
-                // Turn of selector clears the selected list
-                itemSelector.isActive = false
-            }
+        // Turn of selector clears the selected list
+        itemSelector.isActive = false
     }
     val enqueue = Enqueue {
-        listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
-            .let {
-                binder?.player?.enqueue( it, context )
+        binder?.player?.enqueue( getMediaItems(), context )
 
-                // Turn of selector clears the selected list
-                itemSelector.isActive = false
-            }
+        // Turn of selector clears the selected list
+        itemSelector.isActive = false
     }
-    val addToFavorite = LikeSongs {
-        listMediaItems.ifEmpty { playlistSongs.map(SongEntity::asMediaItem) }
-    }
-
-    var position by remember { mutableIntStateOf(0) }
+    val addToFavorite = LikeSongs( ::getMediaItems )
 
     val addToPlaylist = PlaylistsMenu.init(
         navController,
@@ -419,10 +300,10 @@ fun LocalPlaylistSongs(
                     coroutineScope = coroutineScope,
                     pipedSession = pipedSession.toApiSession(),
                     id = UUID.fromString(it.playlist.browseId),
-                    videos = listMediaItems.map( MediaItem::mediaId )
+                    videos = getMediaItems().map( MediaItem::mediaId )
                 )
 
-            listMediaItems.ifEmpty { playlistSongs.map(SongEntity::asMediaItem) }
+            getMediaItems()
         },
         { throwable, preview ->
             Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on LocalPlaylistSongs" )
@@ -512,24 +393,48 @@ fun LocalPlaylistSongs(
     }
     val resetThumbnail = ResetThumbnail { resetThumbnail() }
 
-    val locator = LocateComponent.init( lazyListState ) { playlistSongs.map( SongEntity::asMediaItem ) }
+    val locator = LocateComponent.init( lazyListState, ::getMediaItems )
 
     LaunchedEffect( sort.sortOrder, sort.sortBy ) {
-        Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder ).filterNotNull()
-            .collect { playlistSongs = if (parentalControlEnabled)
-                it.filter { !it.song.title.startsWith(EXPLICIT_PREFIX) } else it }
+        Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder )
+                .flowOn( Dispatchers.IO )
+                .distinctUntilChanged()
+                .collect { items = it }
     }
+    LaunchedEffect( items, search.input, parentalControlEnabled ) {
+        items.filter {
+            if( parentalControlEnabled )
+                !it.song.title.startsWith(EXPLICIT_PREFIX)
+            else
+                true
+        }.filter {
+            val containsName = it.song.title.contains(search.input, true)
+            val containsArtist = it.song.artistsText?.contains(search.input, true) ?: false
+            val containsAlbum = it.albumTitle?.contains(search.input, true) ?: false
 
-
-    if ( search.input.isNotBlank() )
-        playlistSongs = playlistSongs.filter { songItem ->
-            songItem.song.title.contains(search.input, true)
-                    || songItem.song.artistsText?.contains(search.input, true) ?: false
-                    || songItem.albumTitle?.contains(search.input, true) ?: false
-        }
-
+            containsName || containsArtist || containsAlbum
+        }.let { itemsOnDisplay = it }
+    }
     LaunchedEffect(Unit) {
-        Database.singlePlaylistPreview(playlistId).collect { playlistPreview = it }
+        Database.singlePlaylistPreview( playlistId )
+                .flowOn( Dispatchers.IO )
+                .distinctUntilChanged()
+                .collect { playlistPreview = it }
+
+        val thumbnailName = "thumbnail/playlist_${playlistId}"
+        val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
+        if (presentThumbnailUrl != null) {
+            thumbnailUrl.value = presentThumbnailUrl
+        }
+    }
+    LaunchedEffect( playlistPreview?.playlist?.name ) {
+        renameDialog.playlistName = playlistPreview?.playlist?.name?.let { name ->
+            if( name.startsWith( MONTHLY_PREFIX, true ) )
+                getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
+            else
+                name.substringAfter( PINNED_PREFIX )
+                    .substringAfter( PIPED_PREFIX )
+        } ?: "Unknown"
     }
 
     //**** SMART RECOMMENDATION
@@ -556,18 +461,10 @@ fun LocalPlaylistSongs(
         }
         if (relatedSongsRecommendationResult != null) {
             for (index in 0..recommendationsNumber.number) {
-                positionsRecommendationList.add((0..playlistSongs.size).random())
+                positionsRecommendationList.add((0..items.size).random())
             }
         }
     }
-
-    var totalPlayTimes = 0L
-    playlistSongs.forEach {
-        totalPlayTimes += it.song.durationText?.let { it1 ->
-            durationTextToMillis(it1)
-        }?.toLong() ?: 0
-    }
-
 
     val thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
@@ -577,7 +474,7 @@ fun LocalPlaylistSongs(
 
     val reorderingState = rememberReorderingState(
         lazyListState = lazyListState,
-        key = playlistSongs,
+        key = items,
         onDragEnd = { fromIndex, toIndex ->
             //Log.d("mediaItem","reoder playlist $playlistId, from $fromIndex, to $toIndex")
             query {
@@ -590,7 +487,7 @@ fun LocalPlaylistSongs(
     renameDialog.Render()
     exportDialog.Render()
     deleteDialog.Render()
-    renumberDialog.Render()
+    (renumberDialog as Dialog).Render()
     downloadAllDialog.Render()
     deleteDownloadsDialog.Render()
 
@@ -602,14 +499,8 @@ fun LocalPlaylistSongs(
 
     val rippleIndication = ripple(bounded = false)
 
-    var scrollToNowPlaying by remember {
-        mutableStateOf(false)
-    }
     var nowPlayingItem by remember {
         mutableStateOf(-1)
-    }
-    var plistId by remember {
-        mutableStateOf(0L)
     }
 
     val playlistNotMonthlyType =
@@ -702,12 +593,14 @@ fun LocalPlaylistSongs(
                         ) {
                             Spacer(modifier = Modifier.height(10.dp))
                             IconInfo(
-                                title = playlistSongs.size.toString(),
+                                title = items.size.toString(),
                                 icon = painterResource(R.drawable.musical_notes)
                             )
                             Spacer(modifier = Modifier.height(5.dp))
+
+                            val totalDuration = items.sumOf { durationTextToMillis(it.song.durationText ?: "0:0") }
                             IconInfo(
-                                title = formatAsTime(totalPlayTimes),
+                                title = formatAsTime( totalDuration ),
                                 icon = painterResource(R.drawable.time)
                             )
                             if (isRecommendationEnabled) {
@@ -807,7 +700,7 @@ fun LocalPlaylistSongs(
                 }
 
                 itemsIndexed(
-                    items = playlistSongs ?: emptyList(),
+                    items = itemsOnDisplay,
                     key = { _, song -> song.song.id },
                     contentType = { _, song -> song },
                 ) { index, song ->
@@ -851,7 +744,6 @@ fun LocalPlaylistSongs(
                         downloadAllDialog.state = getDownloadState( song.asMediaItem.mediaId )
                         val isDownloaded =
                             if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
-                        val checkedState = rememberSaveable { mutableStateOf(false) }
                         val positionInPlaylist: Int = index
 
                         if ( !positionLock.isLocked() ) {
@@ -922,9 +814,6 @@ fun LocalPlaylistSongs(
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(song.asMediaItem.mediaId)
 
-                                    //query {
-                                    //    Database.resetFormatContentLength(song.asMediaItem.mediaId)
-                                    //}
                                     resetFormatContentLength(song.asMediaItem.mediaId)
 
                                     if (!isLocal) {
@@ -934,27 +823,32 @@ fun LocalPlaylistSongs(
                                             downloadState = isDownloaded
                                         )
                                     }
-                                    //if (isDownloaded) listDownloadedMedia.dropWhile { it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
-                                    //Log.d("mediaItem", "manageDownload click isDownloaded ${isDownloaded} listDownloadedMedia ${listDownloadedMedia.distinct().size}")
                                 },
                                 downloadState = downloadAllDialog.state,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 trailingContent = {
+                                    // It must watch for [selectedItems.size] for changes
+                                    // Otherwise, state will stay the same
+                                    val checkedState = remember( selectedItems.size ) {
+                                        mutableStateOf( song in selectedItems )
+                                    }
+
                                     if ( itemSelector.isActive )
                                         Checkbox(
                                             checked = checkedState.value,
                                             onCheckedChange = {
                                                 checkedState.value = it
-                                                if (it) listMediaItems.add(song.asMediaItem) else
-                                                    listMediaItems.remove(song.asMediaItem)
+                                                if ( it )
+                                                    selectedItems.add( song )
+                                                else
+                                                    selectedItems.remove( song )
                                             },
                                             colors = CheckboxDefaults.colors(
                                                 checkedColor = colorPalette().accent,
                                                 uncheckedColor = colorPalette().text
                                             ),
-                                            modifier = Modifier
-                                                .scale(0.7f)
+                                            modifier = Modifier.scale(0.7f)
                                         )
                                     else checkedState.value = false
                                 },
@@ -983,29 +877,6 @@ fun LocalPlaylistSongs(
                                         )
                                     }
 
-                                    /*
-                                if (sortBy == PlaylistSongSortBy.Position)
-                                    BasicText(
-                                        text = (index + 1).toString(),
-                                        style = typography().m.semiBold.center.color(colorPalette().onOverlay),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(
-                                                brush = Brush.verticalGradient(
-                                                    colors = listOf(
-                                                        Color.Transparent,
-                                                        colorPalette().overlay
-                                                    )
-                                                ),
-                                                shape = thumbnailShape
-                                            )
-                                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                                            .align(Alignment.Center)
-                                    )
-                                 */
-
                                     if (nowPlayingItem > -1)
                                         NowPlayingShow(song.asMediaItem.mediaId)
                                 },
@@ -1026,30 +897,21 @@ fun LocalPlaylistSongs(
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         },
                                         onClick = {
-                                            if ( !itemSelector.isActive ) {
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlayAtIndex(
+                                                itemsOnDisplay.map( SongEntity::asMediaItem ),
+                                                index
+                                            )
 
-                                                search.onItemSelected()
+                                            /*
+                                                Due to the small size of checkboxes,
+                                                we shouldn't disable [itemSelector]
+                                             */
 
-                                                playlistSongs
-                                                    .map(SongEntity::asMediaItem)
-                                                    .let { mediaItems ->
-                                                        binder?.stopRadio()
-                                                        binder?.player?.forcePlayAtIndex(
-                                                            mediaItems,
-                                                            index
-                                                        )
-                                                    }
-                                            } else checkedState.value = !checkedState.value
+                                            search.onItemSelected()
                                         }
                                     )
                                     .animateItemPlacement(reorderingState)
-                                    /*
-                                    .draggedItem(
-                                        reorderingState = reorderingState,
-                                        index = index
-                                    )
-
- */
                                     .background(color = colorPalette().background0)
                                     .zIndex(2f),
                                 disableScrollingText = disableScrollingText
@@ -1076,12 +938,11 @@ fun LocalPlaylistSongs(
                     iconId = R.drawable.shuffle,
                     visible = !reorderingState.isDragging,
                     onClick = {
-                        playlistSongs.let { songs ->
+                        getMediaItems().let { songs ->
                             if (songs.isNotEmpty()) {
                                 binder?.stopRadio()
-                                binder?.player?.forcePlayFromBeginning(
-                                    songs.shuffled().map(SongEntity::asMediaItem)
-                                )
+                                binder?.player
+                                      ?.forcePlayFromBeginning( songs.shuffled() )
                             }
                         }
                     }

@@ -14,11 +14,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PINNED_PREFIX
+import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.SortOrder
+import it.fast4x.rimusic.models.PipedSession
 import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
@@ -28,17 +31,23 @@ import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.playlistSongSortByKey
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.renamePipedPlaylist
 import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.songSortOrderKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 import me.knighthat.appContext
 import me.knighthat.component.DeleteDialog
+import me.knighthat.component.IDialog
+import me.knighthat.component.tab.Sort
+import me.knighthat.component.tab.toolbar.ConfirmDialog
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.DualIcon
 import me.knighthat.component.tab.toolbar.DynamicColor
 import me.knighthat.component.tab.toolbar.MenuIcon
-import me.knighthat.component.tab.Sort
 import me.knighthat.typography
+import java.util.UUID
 
 
 @Composable
@@ -205,4 +214,126 @@ fun DeletePlaylist(
         get() = stringResource( R.string.delete_playlist )
 
     override fun onConfirm() = onEvent()
+}
+
+@SuppressLint("ComposableNaming")
+@Composable
+fun Reposition(
+    playlistId: () -> Long?,
+    songs: () -> List<Song>
+): MenuIcon = object: ConfirmDialog, MenuIcon, Descriptive {
+
+    val menuState: MenuState = LocalMenuState.current
+    override val messageId: Int = R.string.renumber_songs_positions
+    override val iconId: Int = R.drawable.position
+    override val dialogTitle: String
+        @Composable
+        get() = stringResource( R.string.do_you_really_want_to_renumbering_positions_in_this_playlist )
+    override val menuIconTitle: String
+        @Composable
+        get() = stringResource( messageId )
+
+    override var isActive: Boolean by rememberSaveable { mutableStateOf( false ) }
+
+    override fun onShortClick() = super.onShortClick()
+
+    override fun onConfirm() {
+        val pId = playlistId() ?: return
+
+        transaction {
+            runBlocking {
+                songs().shuffled()
+            }.forEachIndexed { index, song ->
+                Database.updateSongPosition( pId, song.id, index )
+            }
+        }
+
+        onDismiss()
+        menuState.hide()
+    }
+}
+
+class RenameDialog private constructor(
+    private val menuState: MenuState,
+    private val playlistNameState: MutableState<String>,
+    private val activeState: MutableState<Boolean>,
+    private val pipedSession: PipedSession,
+    private val coroutineScope: CoroutineScope,
+    private val isPipedEnabled: () -> Boolean,
+    private val playlistPreview: () -> PlaylistPreview?
+): IDialog, Descriptive, MenuIcon {
+
+    companion object {
+        @JvmStatic
+        @Composable
+        fun init(
+            pipedSession: PipedSession,
+            coroutineScope: CoroutineScope,
+            isPipedEnabled: () -> Boolean,
+            playlistNameState: MutableState<String>,
+            playlistPreview: () -> PlaylistPreview?
+        ) = RenameDialog(
+            LocalMenuState.current,
+            playlistNameState,
+            rememberSaveable { mutableStateOf( false ) },
+            pipedSession,
+            coroutineScope,
+            isPipedEnabled,
+            playlistPreview
+        )
+    }
+
+    override val messageId: Int = R.string.rename
+    override val iconId: Int = R.drawable.title_edit
+    override val dialogTitle: String
+        @Composable
+        get() = stringResource( R.string.enter_the_playlist_name )
+    override val menuIconTitle: String
+        @Composable
+        get() = stringResource( messageId )
+
+    var playlistName: String = playlistNameState.value
+        set(value) {
+            playlistNameState.value = value
+            field = value
+        }
+    override var isActive: Boolean = activeState.value
+        set(value) {
+            activeState.value = value
+            field = value
+        }
+    override var value: String = playlistNameState.value
+        set(value) {
+            playlistName = value
+            field = value
+        }
+
+    override fun onShortClick() = super.onShortClick()
+
+    override fun onSet( newValue: String ) {
+        val playlist = playlistPreview()?.playlist ?: return
+
+        val isPipedPlaylist =
+            playlist.name.startsWith(PIPED_PREFIX)
+                    && isPipedEnabled()
+                    && pipedSession.token.isNotEmpty()
+        val prefix = if( isPipedPlaylist ) PIPED_PREFIX else ""
+
+        transaction {
+            playlist.copy( name = "$prefix$newValue" )
+                .let( Database::update )
+        }
+
+        if ( isPipedPlaylist )
+            renamePipedPlaylist(
+                context = appContext(),
+                coroutineScope = coroutineScope,
+                pipedSession = pipedSession.toApiSession(),
+                id = UUID.fromString( playlist.browseId ),
+                name = "$PIPED_PREFIX$newValue"
+            )
+
+        onDismiss()
+        menuState.hide()
+    }
 }
