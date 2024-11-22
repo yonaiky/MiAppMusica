@@ -1287,6 +1287,16 @@ class PlayerServiceModern : MediaLibraryService(),
         )
     }
 
+    override fun onPositionDiscontinuity(
+        oldPosition: Player.PositionInfo,
+        newPosition: Player.PositionInfo,
+        reason: Int
+    ) {
+        Timber.d("PlayerServiceModern onPositionDiscontinuity oldPosition ${oldPosition.mediaItemIndex} newPosition ${newPosition.mediaItemIndex} reason $reason")
+        println("PlayerServiceModern onPositionDiscontinuity oldPosition ${oldPosition.mediaItemIndex} newPosition ${newPosition.mediaItemIndex} reason $reason")
+        super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+    }
+
     private fun maybeSavePlayerQueue() {
         println("PlayerServiceModern onCreate savePersistentQueue")
         if (!isPersistentQueueEnabled) return
