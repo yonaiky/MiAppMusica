@@ -152,6 +152,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.appContext
 import me.knighthat.colorPalette
+import me.knighthat.component.DeleteDialog
 import me.knighthat.component.Enqueue
 import me.knighthat.component.IDialog
 import me.knighthat.component.ItemSelector
@@ -164,6 +165,7 @@ import me.knighthat.component.Search
 import me.knighthat.component.Synchronize
 import me.knighthat.component.ThumbnailPicker
 import me.knighthat.component.header.TabToolBar
+import me.knighthat.component.screen.DeletePlaylist
 import me.knighthat.component.screen.PlaylistSongsSort
 import me.knighthat.component.screen.PositionLock
 import me.knighthat.component.screen.pin
@@ -288,43 +290,27 @@ fun LocalPlaylistSongs(
     val exportDialog = ExportSongsToCSVDialog.init( playlistName ) {
         listMediaItems.ifEmpty { playlistSongs.map( SongEntity::asMediaItem ) }
     }
-    val deleteDialog = object: ConfirmDialog, Descriptive, MenuIcon {
-        override val messageId: Int = R.string.delete
-        override val iconId: Int = R.drawable.trash
-        override val dialogTitle: String
-            @Composable
-            get() = stringResource( R.string.delete_playlist )
-        override val menuIconTitle: String
-            @Composable
-            get() = stringResource( messageId )
-
-        override var isActive: Boolean by rememberSaveable { mutableStateOf( false ) }
-
-        override fun onShortClick() = super.onShortClick()
-
-        override fun onConfirm() {
-            transaction {
-                playlistPreview?.playlist?.let(Database::delete)
-            }
-
-            if (
-                playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
-                && isPipedEnabled
-                && pipedSession.token.isNotEmpty()
-            )
-                deletePipedPlaylist(
-                    context = context,
-                    coroutineScope = coroutineScope,
-                    pipedSession = pipedSession.toApiSession(),
-                    id = UUID.fromString(playlistPreview?.playlist?.browseId)
-                )
-
-            onDelete()
-            onDismiss()
-
-            if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
-                navController.popBackStack()
+    val deleteDialog = DeletePlaylist {
+        transaction {
+            playlistPreview?.playlist?.let(Database::delete)
         }
+
+        if (
+            playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
+            && isPipedEnabled
+            && pipedSession.token.isNotEmpty()
+        )
+            deletePipedPlaylist(
+                context = context,
+                coroutineScope = coroutineScope,
+                pipedSession = pipedSession.toApiSession(),
+                id = UUID.fromString(playlistPreview?.playlist?.browseId)
+            )
+
+        onDismiss()
+
+        if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
+            navController.popBackStack()
     }
     val renumberDialog = object: ConfirmDialog, Descriptive, MenuIcon {
         override val messageId: Int = R.string.renumber_songs_positions

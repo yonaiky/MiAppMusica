@@ -1,5 +1,6 @@
 package me.knighthat.component.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.songSortOrderKey
 import me.knighthat.appContext
+import me.knighthat.component.DeleteDialog
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.DualIcon
 import me.knighthat.component.tab.toolbar.DynamicColor
@@ -188,4 +190,19 @@ class PlaylistSongsSort private constructor(
     }
 
     override fun onLongClick() { /* Does nothing */ }
+}
+
+@SuppressLint("ComposableNaming")
+@Composable
+fun DeletePlaylist(
+    activeState: MutableState<Boolean> = rememberSaveable { mutableStateOf( false ) },
+    menuState: MenuState = LocalMenuState.current,
+    onEvent: DeleteDialog.() -> Unit
+): DeleteDialog = object : DeleteDialog( activeState, menuState ) {
+
+    override val dialogTitle: String
+        @Composable
+        get() = stringResource( R.string.delete_playlist )
+
+    override fun onConfirm() = onEvent()
 }

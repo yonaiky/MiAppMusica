@@ -16,18 +16,18 @@ import it.fast4x.rimusic.ui.components.MenuState
 
 @UnstableApi
 class HideSongDialog private constructor(
+    private val binder: PlayerServiceModern.Binder?,
     activeState: MutableState<Boolean>,
-    menuState: MenuState,
-    binder: PlayerServiceModern.Binder?
-): DelSongDialog(activeState, menuState, binder) {
+    menuState: MenuState
+): DelSongDialog(binder, activeState, menuState) {
 
     companion object {
         @JvmStatic
         @Composable
         fun init() = HideSongDialog(
+            LocalPlayerServiceBinder.current,
             rememberSaveable { mutableStateOf( false ) },
-            LocalMenuState.current,
-            LocalPlayerServiceBinder.current
+            LocalMenuState.current
         )
     }
 

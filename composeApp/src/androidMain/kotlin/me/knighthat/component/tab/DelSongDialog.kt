@@ -16,6 +16,7 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import me.knighthat.appContext
+import me.knighthat.component.DeleteDialog
 import me.knighthat.component.tab.toolbar.ConfirmDialog
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.MenuIcon
@@ -23,37 +24,26 @@ import java.util.Optional
 
 @UnstableApi
 open class DelSongDialog protected constructor(
-    protected val activeState: MutableState<Boolean>,
-    protected val menuState: MenuState,
-    protected val binder: PlayerServiceModern.Binder?
-): ConfirmDialog, Descriptive, MenuIcon {
+    private val binder: PlayerServiceModern.Binder?,
+    activeState: MutableState<Boolean>,
+    menuState: MenuState,
+): DeleteDialog( activeState, menuState ) {
 
     companion object {
         @JvmStatic
         @Composable
         fun init() = DelSongDialog(
+            LocalPlayerServiceBinder.current,
             rememberSaveable { mutableStateOf( false ) },
-            LocalMenuState.current,
-            LocalPlayerServiceBinder.current
+            LocalMenuState.current
         )
     }
 
-    var song: Optional<SongEntity> = Optional.empty()
-    override val messageId: Int = R.string.delete
-    override val iconId: Int = R.drawable.trash
-    override var isActive: Boolean = activeState.value
-        set(value) {
-            activeState.value = value
-            field = value
-        }
     override val dialogTitle: String
         @Composable
         get() = stringResource( R.string.delete_song )
-    override val menuIconTitle: String
-        @Composable
-        get() = stringResource( messageId )
 
-    override fun onShortClick() = super.onShortClick()
+    var song: Optional<SongEntity> = Optional.empty()
 
     override fun onDismiss() {
         // Always override current value with empty Optional
