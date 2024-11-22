@@ -420,42 +420,33 @@ fun LocalPlaylistSongs(
     }
 
     var position by remember { mutableIntStateOf(0) }
-    val addToPlaylist = PlaylistsMenu.init( navController ) { playlistPreview ->
-        position = playlistPreview.songCount.minus( 1 )
-        if (position > 0) position++ else position = 0
 
-        if( playlistPreview.playlist.name.startsWith(PIPED_PREFIX)
-            && isPipedEnabled
-            && pipedSession.token.isNotEmpty()
-        )
-            addToPipedPlaylist(
-                context = context,
-                coroutineScope = coroutineScope,
-                pipedSession = pipedSession.toApiSession(),
-                id = UUID.fromString(playlistPreview.playlist.browseId),
-                videos = listMediaItems.map( MediaItem::mediaId )
+    val addToPlaylist = PlaylistsMenu.init(
+        navController,
+        {
+            if( it.playlist.name.startsWith(PIPED_PREFIX)
+                && isPipedEnabled
+                && pipedSession.token.isNotEmpty()
             )
+                addToPipedPlaylist(
+                    context = context,
+                    coroutineScope = coroutineScope,
+                    pipedSession = pipedSession.toApiSession(),
+                    id = UUID.fromString(it.playlist.browseId),
+                    videos = listMediaItems.map( MediaItem::mediaId )
+                )
 
-        transaction {
-            try {
-                listMediaItems.ifEmpty { playlistSongs.map(SongEntity::asMediaItem) }
-                    .forEachIndexed { index, mediaItem ->
-                        Database.insert(mediaItem)
-                        Database.insert(
-                            SongPlaylistMap(
-                                songId = mediaItem.mediaId,
-                                playlistId = playlistPreview.playlist.id,
-                                position = position + index
-                            )
-                        )
-                    }
-            } catch( _: Exception ) {
-            } finally {
-                // Turn of selector clears the selected list
-                itemSelector.isActive = false
-            }
+            listMediaItems.ifEmpty { playlistSongs.map(SongEntity::asMediaItem) }
+        },
+        { throwable, preview ->
+            Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on LocalPlaylistSongs" )
+            throwable.printStackTrace()
+        },
+        {
+            // Turn of selector clears the selected list
+            itemSelector.isActive = false
         }
-    }
+    )
 
     fun sync() {
         playlistPreview?.let { playlistPreview ->

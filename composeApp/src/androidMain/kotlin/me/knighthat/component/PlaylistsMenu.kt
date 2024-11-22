@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
@@ -26,9 +27,11 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
@@ -36,12 +39,15 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import me.knighthat.appContext
 import me.knighthat.colorPalette
 import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.Descriptive
@@ -51,9 +57,11 @@ import me.knighthat.typography
 
 class PlaylistsMenu private constructor(
     private val navController: NavController,
-    private val onEvent: (PlaylistPreview) -> Unit,
+    private val mediaItems: (PlaylistPreview) -> List<MediaItem>,
+    private val onFailure: (Throwable, PlaylistPreview) -> Unit,
+    private val finalAction: (PlaylistPreview) -> Unit,
     override val menuState: MenuState,
-    override val styleState: MutableState<MenuStyle>,
+    override val styleState: MutableState<MenuStyle>
 ): MenuIcon, Descriptive, Menu {
 
     companion object {
@@ -61,10 +69,14 @@ class PlaylistsMenu private constructor(
         @Composable
         fun init(
             navController: NavController,
-            onEvent: (PlaylistPreview) -> Unit
+            mediaItems: (PlaylistPreview) -> List<MediaItem>,
+            onFailure: (Throwable, PlaylistPreview) -> Unit,
+            finalAction: (PlaylistPreview) -> Unit
         ) = PlaylistsMenu(
             navController,
-            onEvent,
+            mediaItems,
+            onFailure,
+            finalAction,
             LocalMenuState.current,
             rememberPreference( menuStyleKey, MenuStyle.List )
         )
@@ -76,6 +88,42 @@ class PlaylistsMenu private constructor(
         @Composable
         get() = stringResource( messageId )
 
+    private fun onAdd( preview: PlaylistPreview ) {
+        val startPos = preview.songCount
+
+        transaction {
+            /*
+                Suspend this block until all songs are
+                inserted into database before going to
+                SmartMessage
+            */
+            runBlocking( Dispatchers.IO ) {
+                try {
+                    mediaItems( preview ).forEachIndexed { index, mediaItem ->
+                        Database.insert(mediaItem)
+                        Database.insert(
+                            SongPlaylistMap(
+                                songId = mediaItem.mediaId,
+                                playlistId = preview.playlist.id,
+                                position = startPos + index
+                            )
+                        )
+                    }
+                } catch ( e: Throwable ) {
+                    onFailure( e, preview )
+                } finally {
+                    finalAction( preview )
+                }
+            }
+            runBlocking( Dispatchers.Main ) {
+                SmartMessage(
+                    appContext().resources.getString(R.string.done),
+                    type = PopupType.Success, context = appContext()
+                )
+            }
+        }
+    }
+
     @Composable
     private fun PlaylistCard( playlistPreview: PlaylistPreview ) {
         val playlist = playlistPreview.playlist
@@ -86,9 +134,7 @@ class PlaylistsMenu private constructor(
             text = playlist.name.substringAfter( PINNED_PREFIX ),
             secondaryText = "$songsCount ${stringResource( R.string.songs )}",
             onClick = {
-                onEvent(
-                    PlaylistPreview( playlist, songsCount )
-                )
+                onAdd( playlistPreview )
                 menuState.hide()
             },
             trailingContent = {
@@ -145,7 +191,7 @@ class PlaylistsMenu private constructor(
             override fun onSet( newValue: String ) {
                 transaction {
                     val playlistId = Database.insert( Playlist(name = newValue) )
-                    onEvent(
+                    onAdd(
                         PlaylistPreview(
                             Playlist(playlistId, newValue),
                             0

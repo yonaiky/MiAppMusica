@@ -35,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -66,7 +65,6 @@ import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueSelection
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
@@ -74,7 +72,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.SongEntity
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -89,7 +86,6 @@ import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
@@ -131,14 +127,11 @@ import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import me.knighthat.appContext
 import me.knighthat.colorPalette
 import me.knighthat.component.Enqueue
@@ -315,42 +308,19 @@ fun HomeSongs(
     }
 
     val addToFavorite = LikeSongs( ::getMediaItems )
-    var position by remember { mutableIntStateOf( 0 ) }
 
-    val addToPlaylist = PlaylistsMenu.init( navController ) {
-
-        position = it.songCount.minus(1)
-        if (position > 0) position++ else position = 0
-
-        CoroutineScope(Dispatchers.IO).launch {
-             /*
-                 Suspend this block until all songs are
-                 inserted into database before going to
-                 SmartMessage
-             */
-            runBlocking {
-                try {
-                    getMediaItems().forEachIndexed { index, mediaItem ->
-                        Database.insert(mediaItem)
-                        Database.insert(
-                            SongPlaylistMap(
-                                songId = mediaItem.mediaId,
-                                playlistId = it.playlist.id,
-                                position = position + index
-                            )
-                        )
-                    }
-                } catch ( e: Throwable ) {
-                    Timber.e("Failed addToPlaylist in HomeSongsModern ${e.stackTraceToString()}")
-                    println("Failed addToPlaylist in HomeSongsModern ${e.stackTraceToString()}")
-                }
-            }
+    val addToPlaylist = PlaylistsMenu.init(
+        navController,
+        { getMediaItems() },
+        { throwable, preview ->
+            Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on HomeSongs" )
+            throwable.printStackTrace()
+        },
+        {
+            // Turn of selector clears the selected list
+            itemSelector.isActive = false
         }
-        SmartMessage(
-            context.resources.getString(R.string.done),
-            type = PopupType.Success, context = context
-        )
-    }
+    )
     //</editor-fold>
 
     val defaultFolder by rememberPreference(defaultFolderKey, "/")
@@ -639,8 +609,9 @@ fun HomeSongs(
                     if (currentFolder == null) {
                         item {
                             Box(
-                                Modifier.fillMaxWidth()
-                                        .align( Alignment.CenterHorizontally )
+                                Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally)
                             ) {
                                 BasicText(
                                     text = stringResource(R.string.folder_was_not_found),
@@ -860,7 +831,10 @@ fun HomeSongs(
                                                     // window with +- maxSongs/2 songs (if possible) around index
                                                     val minIndex = max(0, index - maxSongs / 2)
                                                     val maxIndex =
-                                                        min(index + maxSongs / 2, itemsOnDisplay.size)
+                                                        min(
+                                                            index + maxSongs / 2,
+                                                            itemsOnDisplay.size
+                                                        )
                                                     itemsRange = minIndex..<maxIndex
 
                                                     // index is located at "center"
@@ -884,7 +858,10 @@ fun HomeSongs(
                                                     // window with maxSongs songs (if possible) before index
                                                     val minIndex = max(0, index - maxSongs + 1)
                                                     val maxIndex =
-                                                        min(minIndex + maxSongs, itemsOnDisplay.size)
+                                                        min(
+                                                            minIndex + maxSongs,
+                                                            itemsOnDisplay.size
+                                                        )
                                                     itemsRange = minIndex..<maxIndex
 
                                                     // index is located at "end"
@@ -900,7 +877,7 @@ fun HomeSongs(
                                         )
                                     }
                                 )
-                                .animateItem( fadeInSpec = null, fadeOutSpec = null ),
+                                .animateItem(fadeInSpec = null, fadeOutSpec = null),
                             disableScrollingText = disableScrollingText
                         )
                     }
