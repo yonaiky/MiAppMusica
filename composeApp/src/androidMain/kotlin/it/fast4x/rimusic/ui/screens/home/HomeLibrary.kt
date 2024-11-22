@@ -203,9 +203,14 @@ fun HomeLibrary(
         Database.playlistPreviews( sort.sortBy, sort.sortOrder ).collect { items = it }
     }
     LaunchedEffect( items, search.input ) {
+        val scrollIndex = lazyGridState.firstVisibleItemIndex
+        val scrollOffset = lazyGridState.firstVisibleItemScrollOffset
+
         itemsOnDisplay = items.filter {
             it.playlist.name.contains( search.input, true )
         }
+
+        lazyGridState.scrollToItem( scrollIndex, scrollOffset )
     }
 
     // START: Additional playlists

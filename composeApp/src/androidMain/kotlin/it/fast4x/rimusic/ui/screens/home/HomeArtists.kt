@@ -99,9 +99,14 @@ fun HomeArtists(
         Database.artists( sort.sortBy, sort.sortOrder ).collect { items = it }
     }
     LaunchedEffect( items, search.input ) {
+        val scrollIndex = lazyGridState.firstVisibleItemIndex
+        val scrollOffset = lazyGridState.firstVisibleItemScrollOffset
+
         itemsOnDisplay = items.filter {
             it.name?.contains( search.input, true ) ?: false
         }
+
+        lazyGridState.scrollToItem( scrollIndex, scrollOffset )
     }
 
     Box (

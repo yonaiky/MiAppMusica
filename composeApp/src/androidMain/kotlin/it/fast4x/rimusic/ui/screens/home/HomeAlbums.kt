@@ -116,11 +116,16 @@ fun HomeAlbums(
         Database.albums( sort.sortBy, sort.sortOrder ).collect { items = it }
     }
     LaunchedEffect( items, search.input ) {
+        val scrollIndex = lazyGridState.firstVisibleItemIndex
+        val scrollOffset = lazyGridState.firstVisibleItemScrollOffset
+
         itemsOnDisplay = items.filter {
             it.title?.contains( search.input, true) ?: false
                     || it.year?.contains( search.input, true) ?: false
                     || it.authorsText?.contains( search.input, true) ?: false
         }
+
+        lazyGridState.scrollToItem( scrollIndex, scrollOffset )
     }
 
     Box(
