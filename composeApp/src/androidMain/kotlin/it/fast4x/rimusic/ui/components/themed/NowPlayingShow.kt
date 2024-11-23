@@ -41,15 +41,7 @@ fun NowPlayingShow (
                 modifier = Modifier
                     .height(20.dp)
             )
-            /*
-            Image(
-                painter = painterResource(R.drawable.musical_notes),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(colorPalette.onOverlay),
-                modifier = Modifier
-                    .size(40.dp)
-            )
-             */
+
         }
     }
 
