@@ -1182,7 +1182,49 @@ fun BuiltInPlaylistSongs(
                         val isDownloaded =
                             if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
                         val checkedState = rememberSaveable { mutableStateOf(false) }
-                        SongItem(
+                Modifier
+                    .combinedClickable(
+                        onLongClick = {
+                            menuState.display {
+                                when (builtInPlaylist) {
+                                    BuiltInPlaylist.Favorites,
+                                    BuiltInPlaylist.Downloaded,
+                                    BuiltInPlaylist.Top -> NonQueuedMediaItemMenuLibrary(
+                                        navController = navController,
+                                        mediaItem = song.asMediaItem,
+                                        onDismiss = menuState::hide,
+                                        disableScrollingText = disableScrollingText
+                                    )
+
+                                    BuiltInPlaylist.Offline -> InHistoryMediaItemMenu(
+                                        navController = navController,
+                                        song = song,
+                                        onDismiss = menuState::hide,
+                                        disableScrollingText = disableScrollingText
+                                    )
+
+                                    BuiltInPlaylist.OnDevice, BuiltInPlaylist.All -> {}
+                                }
+                            }
+                        },
+                        onClick = {
+                            if (!selectItems) {
+                                searching = false
+                                filter = null
+                                val itemsLimited =
+                                    if (songs.size > maxSongsInQueue.number) songs.take(
+                                        maxSongsInQueue.number.toInt()
+                                    ) else songs
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayAtIndex(
+                                    itemsLimited.map(Song::asMediaItem),
+                                    index
+                                )
+                            } else checkedState.value = !checkedState.value
+                        }
+                    )
+                    .background(color = colorPalette().background0)
+                SongItem(
                             song = song,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
@@ -1268,49 +1310,7 @@ fun BuiltInPlaylistSongs(
                                     )
                                 else checkedState.value = false
                             },
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            when (builtInPlaylist) {
-                                                BuiltInPlaylist.Favorites,
-                                                BuiltInPlaylist.Downloaded,
-                                                BuiltInPlaylist.Top -> NonQueuedMediaItemMenuLibrary(
-                                                    navController = navController,
-                                                    mediaItem = song.asMediaItem,
-                                                    onDismiss = menuState::hide,
-                                                    disableScrollingText = disableScrollingText
-                                                )
-
-                                                BuiltInPlaylist.Offline -> InHistoryMediaItemMenu(
-                                                    navController = navController,
-                                                    song = song,
-                                                    onDismiss = menuState::hide,
-                                                    disableScrollingText = disableScrollingText
-                                                )
-
-                                                BuiltInPlaylist.OnDevice, BuiltInPlaylist.All -> {}
-                                            }
-                                        }
-                                    },
-                                    onClick = {
-                                        if (!selectItems) {
-                                            searching = false
-                                            filter = null
-                                            val itemsLimited =
-                                                if (songs.size > maxSongsInQueue.number) songs.take(
-                                                    maxSongsInQueue.number.toInt()
-                                                ) else songs
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayAtIndex(
-                                                itemsLimited.map(Song::asMediaItem),
-                                                index
-                                            )
-                                        } else checkedState.value = !checkedState.value
-                                    }
-                                )
-                                .background(color = colorPalette().background0)
-                                .animateItemPlacement(),
+                            modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
                             disableScrollingText = disableScrollingText
                         )
                     /*

@@ -47,6 +47,7 @@ import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.MessageType
 import it.fast4x.rimusic.enums.MiniPlayerType
+import it.fast4x.rimusic.enums.MusicAnimationType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.PauseBetweenSongs
@@ -146,6 +147,7 @@ import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.navigationBarTypeKey
+import it.fast4x.rimusic.utils.nowPlayingIndicatorKey
 import it.fast4x.rimusic.utils.pauseBetweenSongsKey
 import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
@@ -639,6 +641,7 @@ fun UiSettings(
     var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
+    var nowPlayingIndicator by rememberPreference(nowPlayingIndicatorKey, MusicAnimationType.Bubbles)
     var discoverIsEnabled by rememberPreference(discoverKey, false)
     var isPauseOnVolumeZeroEnabled by rememberPreference(isPauseOnVolumeZeroEnabledKey, false)
 
@@ -1057,6 +1060,16 @@ fun UiSettings(
                 isChecked = playlistindicator,
                 onCheckedChange = {
                     playlistindicator = it
+                }
+            )
+
+        if (search.input.isBlank() || stringResource(R.string.now_playing_indicator).contains(search.input,true))
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.now_playing_indicator),
+                selectedValue = nowPlayingIndicator,
+                onValueSelected = { nowPlayingIndicator = it },
+                valueText = {
+                    it.textName
                 }
             )
 

@@ -29,6 +29,8 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.enums.MusicAnimationType
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.mediaItems
+import it.fast4x.rimusic.utils.nowPlayingIndicatorKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.shouldBePlaying
 import kotlinx.coroutines.launch
 
@@ -39,7 +41,6 @@ fun MusicAnimation(
     modifier: Modifier = Modifier,
     barWidth: Dp = 4.dp,
     cornerRadius: Dp = 16.dp,
-    type: MusicAnimationType = MusicAnimationType.Bubbles,
     show: Boolean = true
 ) {
     if (!show) return
@@ -53,6 +54,8 @@ fun MusicAnimation(
             }
         }
     }
+
+    val nowPlayingIndicator by rememberPreference(nowPlayingIndicatorKey, MusicAnimationType.Bubbles)
 
     val animatablesWithSteps = remember {
         listOf(
@@ -167,7 +170,7 @@ fun MusicAnimation(
                     .fillMaxHeight()
                     .width(barWidth)
             ) {
-                when (type) {
+                when (nowPlayingIndicator) {
                     MusicAnimationType.Bubbles -> drawCircle(
                         color = color,
                         radius = animatable.value * (size.height/2)
@@ -181,7 +184,7 @@ fun MusicAnimation(
                     MusicAnimationType.CrazyBars, MusicAnimationType.CrazyPoints -> drawLine(
                         color = color,
                         start = Offset(x = 0f, y = animatable.value * (size.height/2)),
-                        end = Offset(x = animatable.value * (size.height/2), y = if (type == MusicAnimationType.CrazyBars) size.height else animatable.value * (size.height/2)),
+                        end = Offset(x = animatable.value * (size.height/2), y = if (nowPlayingIndicator == MusicAnimationType.CrazyBars) size.height else animatable.value * (size.height/2)),
                         strokeWidth = size.width
                     )
                 }
