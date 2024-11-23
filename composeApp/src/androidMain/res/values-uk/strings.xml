@@ -792,6 +792,6 @@
     <string name="repeat">Повторити</string>
     <string name="original_lyrics">Оригінальний текст</string>
     <string name="translated_lyrics">Переклад тексту</string>
-    <string name="press_once_again_to_exit">Press once again to exit</string>
-    <string name="random_sorting">Random sorting</string>
+    <string name="press_once_again_to_exit">Натисніть ще раз, щоб вийти</string>
+    <string name="random_sorting">Випадкове сортування</string>
 </resources>
