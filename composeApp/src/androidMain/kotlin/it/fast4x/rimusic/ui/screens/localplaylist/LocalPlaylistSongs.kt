@@ -95,7 +95,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.IconInfo
 import it.fast4x.rimusic.ui.components.themed.InPlaylistMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.Playlist
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItem
@@ -877,8 +877,8 @@ fun LocalPlaylistSongs(
                                         )
                                     }
 
-                                    if (nowPlayingItem > -1)
-                                        NowPlayingShow(song.asMediaItem.mediaId)
+
+                                        NowPlayingSongIndicator(song.asMediaItem.mediaId)
                                 },
                                 modifier = Modifier
                                     .combinedClickable(

@@ -20,7 +20,7 @@ import me.knighthat.thumbnailShape
 
 @OptIn(UnstableApi::class)
 @Composable
-fun NowPlayingShow (
+fun NowPlayingSongIndicator (
     mediaId: String
 ) {
     val player = LocalPlayerServiceBinder.current?.player

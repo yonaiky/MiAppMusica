@@ -99,7 +99,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.IconInfo
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -906,8 +906,7 @@ fun DeviceListSongs(
                     thumbnailSizeDp = thumbnailSizeDp,
                     thumbnailSizePx = thumbnailSize,
                     onThumbnailContent = {
-                        if (nowPlayingItem > -1)
-                            NowPlayingShow(song.asMediaItem.mediaId)
+                            NowPlayingSongIndicator(song.asMediaItem.mediaId)
                     },
                     trailingContent = {
                         val checkedState = rememberSaveable { mutableStateOf(false) }

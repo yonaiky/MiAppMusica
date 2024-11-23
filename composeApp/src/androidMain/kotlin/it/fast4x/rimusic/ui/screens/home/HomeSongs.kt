@@ -84,7 +84,7 @@ import it.fast4x.rimusic.ui.components.themed.FolderItemMenu
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
@@ -747,7 +747,7 @@ fun HomeSongs(
                                     )
                                 }
 
-                                NowPlayingShow(song.asMediaItem.mediaId)
+                                NowPlayingSongIndicator(song.asMediaItem.mediaId)
                             },
                             trailingContent = {
                                 // It must watch for [selectedItems.size] for changes

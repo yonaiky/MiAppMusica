@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.components
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +9,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -16,19 +20,39 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.Timeline
+import androidx.media3.common.util.UnstableApi
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.enums.MusicAnimationType
+import it.fast4x.rimusic.utils.DisposableListener
+import it.fast4x.rimusic.utils.mediaItems
+import it.fast4x.rimusic.utils.shouldBePlaying
 import kotlinx.coroutines.launch
 
+@OptIn(UnstableApi::class)
 @Composable
 fun MusicAnimation(
     color: Color,
     modifier: Modifier = Modifier,
     barWidth: Dp = 4.dp,
     cornerRadius: Dp = 16.dp,
-    type: MusicAnimationType = MusicAnimationType.Bars,
+    type: MusicAnimationType = MusicAnimationType.Bubbles,
     show: Boolean = true
 ) {
     if (!show) return
+
+    val binder = LocalPlayerServiceBinder.current
+    var isPlayRunning by remember { mutableStateOf(binder?.player?.isPlaying) }
+    binder?.player?.DisposableListener {
+        object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                isPlayRunning = isPlaying
+            }
+        }
+    }
 
     val animatablesWithSteps = remember {
         listOf(
@@ -119,16 +143,17 @@ fun MusicAnimation(
         )
     }
 
-    LaunchedEffect(Unit) {
-        animatablesWithSteps.forEach { (animatable, steps) ->
-            launch {
-                while (true) {
-                    steps.forEach { step ->
-                        animatable.animateTo(step)
+    LaunchedEffect(Unit, isPlayRunning) {
+        if (isPlayRunning == true)
+            animatablesWithSteps.forEach { (animatable, steps) ->
+                launch {
+                    while (true) {
+                        steps.forEach { step ->
+                            animatable.animateTo(step)
+                        }
                     }
                 }
             }
-        }
     }
 
     Row(

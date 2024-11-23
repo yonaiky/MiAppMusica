@@ -106,6 +106,7 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.QueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -117,6 +118,7 @@ import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.getDownloadState
@@ -594,21 +596,22 @@ fun QueueModern(
                                                     )
                                                     .size(Dimensions.thumbnails.song)
                                             ) {
-                                                if (shouldBePlaying) {
-                                                    MusicAnimation(
-                                                        color = colorPalette().onOverlay,
-                                                        modifier = Modifier
-                                                            .height(24.dp)
-                                                    )
-                                                } else {
-                                                    Image(
-                                                        painter = painterResource(R.drawable.play),
-                                                        contentDescription = null,
-                                                        colorFilter = ColorFilter.tint(colorPalette().onOverlay),
-                                                        modifier = Modifier
-                                                            .size(24.dp)
-                                                    )
-                                                }
+                                                NowPlayingSongIndicator(window.mediaItem.mediaId)
+//                                                if (shouldBePlaying) {
+//                                                    MusicAnimation(
+//                                                        color = colorPalette().onOverlay,
+//                                                        modifier = Modifier
+//                                                            .height(24.dp)
+//                                                    )
+//                                                } else {
+//                                                    Image(
+//                                                        painter = painterResource(R.drawable.play),
+//                                                        contentDescription = null,
+//                                                        colorFilter = ColorFilter.tint(colorPalette().onOverlay),
+//                                                        modifier = Modifier
+//                                                            .size(24.dp)
+//                                                    )
+//                                                }
                                             }
                                         }
                                     },

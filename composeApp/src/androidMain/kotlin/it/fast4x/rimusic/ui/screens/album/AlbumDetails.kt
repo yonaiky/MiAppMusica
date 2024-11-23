@@ -92,7 +92,7 @@ import it.fast4x.rimusic.ui.components.themed.ItemsList
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.NowPlayingShow
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -950,8 +950,8 @@ fun AlbumDetails(
                                         .align(Alignment.Center)
                                 )
 
-                                if (nowPlayingItem > -1)
-                                    NowPlayingShow(song.asMediaItem.mediaId)
+
+                                    NowPlayingSongIndicator(song.asMediaItem.mediaId)
                             },
                             modifier = Modifier
                                 .combinedClickable(
