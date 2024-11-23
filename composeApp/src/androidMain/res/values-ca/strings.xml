@@ -794,4 +794,9 @@
     <string name="translated_lyrics">Lletres traduïdes</string>
     <string name="press_once_again_to_exit">Press once again to exit</string>
     <string name="random_sorting">Random sorting</string>
+    <string name="music_animations_bars">Bars</string>
+    <string name="music_animations_crazy_bars">Crazy Bars</string>
+    <string name="music_animations_crazy_points">Crazy Points</string>
+    <string name="music_animations_bubbles">Bubbles</string>
+    <string name="now_playing_indicator">Now Playing Indicator</string>
 </resources>

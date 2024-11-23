@@ -56,6 +56,7 @@ fun MusicAnimation(
     }
 
     val nowPlayingIndicator by rememberPreference(nowPlayingIndicatorKey, MusicAnimationType.Bubbles)
+    if (nowPlayingIndicator == MusicAnimationType.Disabled) return
 
     val animatablesWithSteps = remember {
         listOf(
@@ -187,6 +188,7 @@ fun MusicAnimation(
                         end = Offset(x = animatable.value * (size.height/2), y = if (nowPlayingIndicator == MusicAnimationType.CrazyBars) size.height else animatable.value * (size.height/2)),
                         strokeWidth = size.width
                     )
+                    else -> {}
                 }
 
 
