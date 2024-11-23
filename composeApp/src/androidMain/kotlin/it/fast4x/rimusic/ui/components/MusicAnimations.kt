@@ -25,8 +25,11 @@ fun MusicAnimation(
     modifier: Modifier = Modifier,
     barWidth: Dp = 4.dp,
     cornerRadius: Dp = 16.dp,
-    type: MusicAnimationType = MusicAnimationType.Bars
+    type: MusicAnimationType = MusicAnimationType.Bars,
+    show: Boolean = true
 ) {
+    if (!show) return
+
     val animatablesWithSteps = remember {
         listOf(
             Animatable(0f) to listOf(
