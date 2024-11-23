@@ -514,15 +514,13 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onTaskRemoved(rootIntent: Intent?) {
         isclosebackgroundPlayerEnabled = preferences.getBoolean(closebackgroundPlayerKey, false)
         if (isclosebackgroundPlayerEnabled) {
-            //if (!player.shouldBePlaying) {
             broadCastPendingIntent<NotificationDismissReceiver>().send()
-            //}
             this.stopService(this.intent<MyDownloadService>())
             this.stopService(this.intent<PlayerServiceModern>())
-            //stopSelf()
+            stopSelf()
             onDestroy()
         }
-        super.onTaskRemoved(rootIntent)
+        //super.onTaskRemoved(rootIntent)
     }
 
     @UnstableApi
@@ -705,7 +703,7 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onPlaybackStateChanged(playbackState: Int) {
         if (playbackState == STATE_IDLE) {
             player.shuffleModeEnabled = false
-            player.clearMediaItems()
+            //player.clearMediaItems()
         }
     }
 
