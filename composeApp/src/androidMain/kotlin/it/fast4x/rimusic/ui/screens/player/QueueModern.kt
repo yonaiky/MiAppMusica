@@ -99,7 +99,7 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.MusicBars
+import it.fast4x.rimusic.ui.components.MusicAnimation
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -595,7 +595,7 @@ fun QueueModern(
                                                     .size(Dimensions.thumbnails.song)
                                             ) {
                                                 if (shouldBePlaying) {
-                                                    MusicBars(
+                                                    MusicAnimation(
                                                         color = colorPalette().onOverlay,
                                                         modifier = Modifier
                                                             .height(24.dp)

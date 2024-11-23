@@ -16,14 +16,16 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import it.fast4x.rimusic.enums.MusicAnimationType
 import kotlinx.coroutines.launch
 
 @Composable
-fun MusicBars(
+fun MusicAnimation(
     color: Color,
     modifier: Modifier = Modifier,
     barWidth: Dp = 4.dp,
-    cornerRadius: Dp = 16.dp
+    cornerRadius: Dp = 16.dp,
+    type: MusicAnimationType = MusicAnimationType.Bars
 ) {
     val animatablesWithSteps = remember {
         listOf(
@@ -137,12 +139,26 @@ fun MusicBars(
                     .fillMaxHeight()
                     .width(barWidth)
             ) {
-                drawRoundRect(
-                    color = color,
-                    topLeft = Offset(x = 0f, y = size.height * (1 - animatable.value)),
-                    size = size.copy(height = animatable.value * size.height),
-                    cornerRadius = CornerRadius(cornerRadius.toPx())
-                )
+                when (type) {
+                    MusicAnimationType.Bubbles -> drawCircle(
+                        color = color,
+                        radius = animatable.value * (size.height/2)
+                    )
+                    MusicAnimationType.Bars -> drawRoundRect(
+                        color = color,
+                        topLeft = Offset(x = 0f, y = size.height * (1 - animatable.value)),
+                        size = size.copy(height = animatable.value * size.height),
+                        cornerRadius = CornerRadius(cornerRadius.toPx())
+                    )
+                    MusicAnimationType.CrazyBars, MusicAnimationType.CrazyPoints -> drawLine(
+                        color = color,
+                        start = Offset(x = 0f, y = animatable.value * (size.height/2)),
+                        end = Offset(x = animatable.value * (size.height/2), y = if (type == MusicAnimationType.CrazyBars) size.height else animatable.value * (size.height/2)),
+                        strokeWidth = size.width
+                    )
+                }
+
+
             }
         }
     }
