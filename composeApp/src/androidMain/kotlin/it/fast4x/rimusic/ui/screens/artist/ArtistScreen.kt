@@ -57,6 +57,7 @@ import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
@@ -470,6 +471,9 @@ fun ArtistScreen(
                                                     mediaItem = song.asMediaItem,
                                                     downloadState = isDownloaded
                                                 )
+                                            },
+                                            thumbnailContent = {
+                                                NowPlayingSongIndicator(song.asMediaItem.mediaId)
                                             },
                                             downloadState = downloadState,
                                             thumbnailSizeDp = thumbnailSizeDp,

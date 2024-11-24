@@ -72,6 +72,7 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
@@ -352,6 +353,9 @@ fun OnlineSearch(
                                 song = mediaItem,
                                 thumbnailSizePx = songThumbnailSizePx,
                                 thumbnailSizeDp = songThumbnailSizeDp,
+                                onThumbnailContent = {
+                                    NowPlayingSongIndicator(mediaItem.mediaId)
+                                },
                                 onDownloadClick = {},
                                 downloadState = downloadState,
                                 modifier = Modifier

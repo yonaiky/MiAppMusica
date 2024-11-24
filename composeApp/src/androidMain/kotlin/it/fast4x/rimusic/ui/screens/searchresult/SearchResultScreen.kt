@@ -48,6 +48,7 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
@@ -226,6 +227,9 @@ fun SearchResultScreen(
                                                     mediaItem = song.asMediaItem,
                                                     downloadState = isDownloaded
                                                 )
+                                            },
+                                            thumbnailContent = {
+                                                NowPlayingSongIndicator(song.asMediaItem.mediaId)
                                             },
                                             downloadState = downloadState,
                                             thumbnailSizePx = thumbnailSizePx,
