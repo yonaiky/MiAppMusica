@@ -18,6 +18,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.WindowManager
 import android.window.OnBackInvokedDispatcher
+import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -246,7 +247,7 @@ import kotlin.system.exitProcess
 @UnstableApi
 class MainActivity :
     //MonetCompatActivity(),
-    AppCompatActivity(),
+    ComponentActivity(),
     MonetColorsChangedListener
     //,PersistMapOwner
 {
