@@ -794,8 +794,8 @@
     <string name="repeat">Повторить</string>
     <string name="original_lyrics">Оригинальный текст</string>
     <string name="translated_lyrics">Перевод текста</string>
-    <string name="press_once_again_to_exit">Press once again to exit</string>
-    <string name="random_sorting">Random sorting</string>
+    <string name="press_once_again_to_exit">Нажмите еще раз, чтобы выйти</string>
+    <string name="random_sorting">Случайная сортировка</string>
     <string name="music_animations_bars">Bars</string>
     <string name="music_animations_crazy_bars">Crazy Bars</string>
     <string name="music_animations_crazy_points">Crazy Points</string>

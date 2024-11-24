@@ -4,12 +4,15 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -40,8 +43,11 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadService
+import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -49,7 +55,6 @@ import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
@@ -69,9 +74,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.colorPalette
+import me.knighthat.extra.shimmerEffect
 import me.knighthat.thumbnailShape
 import me.knighthat.typography
-
 
 
 @UnstableApi
@@ -672,6 +677,79 @@ fun SongItemPlaceholder(
         ItemInfoContainer {
             TextPlaceholder()
             TextPlaceholder()
+        }
+    }
+}
+
+/**
+ * New component is more resemble to the final
+ * SongItem that's currently being used.
+ */
+@Composable
+fun SongItemPlaceholder( thumbnailSizeDp: Dp ) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy( 12.dp ),
+        modifier = Modifier.fillMaxWidth()
+                           .padding(
+                               vertical = 8.dp,
+                               horizontal = 16.dp
+                           )
+    ) {
+        Box(
+            Modifier.size( thumbnailSizeDp )
+                    .clip( RoundedCornerShape(12.dp) )
+                    .shimmerEffect()
+        )
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth( .7f )
+            ) {
+                BasicText(
+                    text = "",
+                    style = typography().xs.semiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight( 1f ).shimmerEffect()
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box( Modifier.weight( 1f ).fillMaxWidth() ) {
+                    BasicText(
+                        text = "",
+                        style = typography().xs.semiBold.secondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.fillMaxWidth( .3f ).shimmerEffect()
+                    )
+                }
+
+                BasicText(
+                    text = "0:00",
+                    style = typography().xxs.secondary.medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding( top = 4.dp )
+                )
+
+                Spacer(modifier = Modifier.padding( horizontal = 4.dp ))
+
+                IconButton(
+                    onClick = {},
+                    icon = DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED.icon,
+                    color = colorPalette().textDisabled,
+                    modifier = Modifier.size( 20.dp ),
+                    enabled = false
+                )
+            }
         }
     }
 }

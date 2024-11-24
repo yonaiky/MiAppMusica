@@ -14,8 +14,8 @@
     <string name="remove_from_playlist">Supprimer de la liste de lecture</string>
     <string name="hide">Cacher</string>
     <string name="hide_from_quick_picks">Cacher de la \"Sélections rapides\"</string>
-    <string name="related_albums">Albums associés</string>
-    <string name="similar_artists">Artistes similaires</string>
+    <string name="related_albums">Albums Associés</string>
+    <string name="similar_artists">Artistes Similaires</string>
     <string name="playlists_you_might_like">Listes de lecture que vous pourriez aimer</string>
     <string name="an_error_has_occurred">Une erreur est survenue</string>
     <string name="albums">Albums</string>
@@ -53,12 +53,12 @@
     <string name="clear">Effacer</string>
     <string name="error">Une erreur est survenue</string>
     <string name="online">En ligne</string>
-    <string name="no_results_found">Aucun résultat trouvé.\nVeuillez essayer une autre recherche ou une autre catégorie</string>
+    <string name="no_results_found">Aucun résultat trouvé. Veuillez essayer une autre recherche ou une autre catégorie.</string>
     <string name="videos">Vidéos</string>
     <string name="featured">En vedette</string>
     <string name="view_the_source_code">Afficher le code source</string>
     <string name="report_an_issue">Signaler un problème</string>
-    <string name="you_will_be_redirected_to_github">Vous allez être redirigé vers GitHub</string>
+    <string name="you_will_be_redirected_to_github">Vous allez être redirigé vers GitHub.</string>
     <string name="request_a_feature_or_suggest_an_idea">Demander une fonctionnalité ou nous suggérer une idée</string>
     <string name="theme">Thème</string>
     <string name="theme_mode">Thème Système</string>
@@ -71,7 +71,7 @@
     <string name="show_song_cover">Afficher la pochette d\'album</string>
     <string name="use_song_cover_on_lockscreen">Afficher la pochette d\'album sur le fond d\'écran de l\'écran de verrouillage</string>
     <string name="cache">Cache</string>
-    <string name="cache_cleared">Lorsque le cache manque d\'espace, les ressources en cache les moins récemment consultées seront effacées</string>
+    <string name="cache_cleared">Lorsque le cache manque d\'espace, les ressources en cache les moins récemment consultées seront effacées.</string>
     <string name="image_cache">CACHE D\'IMAGE</string>
     <string name="max_size">Taille max</string>
     <string name="database">Base de données</string>
@@ -794,8 +794,8 @@
     <string name="repeat">Répéter</string>
     <string name="original_lyrics">Paroles originales</string>
     <string name="translated_lyrics">Paroles traduites</string>
-    <string name="press_once_again_to_exit">Press once again to exit</string>
-    <string name="random_sorting">Random sorting</string>
+    <string name="press_once_again_to_exit">Appuyer à nouveau pour quitter</string>
+    <string name="random_sorting">Tri aléatoire</string>
     <string name="music_animations_bars">Bars</string>
     <string name="music_animations_crazy_bars">Crazy Bars</string>
     <string name="music_animations_crazy_points">Crazy Points</string>
