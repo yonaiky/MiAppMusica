@@ -496,7 +496,7 @@ fun HomeSongs(
         Column( Modifier.fillMaxSize() ) {
             // Sticky tab's title
             TabHeader( R.string.songs ) {
-                HeaderInfo( items.size.toString(), R.drawable.musical_notes )
+                HeaderInfo( itemsOnDisplay.size.toString(), R.drawable.musical_notes )
             }
 
             // Sticky tab's tool bar
