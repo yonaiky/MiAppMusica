@@ -356,86 +356,74 @@ fun HomeSongs(
 
     // This phrase loads all songs across types into [itemsOffShelve]
     // No filtration applied to this stage, only sort
-    when( builtInPlaylist ) {
-        BuiltInPlaylist.OnDevice -> {
+    LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
+        if( builtInPlaylist == BuiltInPlaylist.OnDevice ) return@LaunchedEffect
 
-            var songsDevice by remember {
-                mutableStateOf(emptyList<OnDeviceSong>())
-            }
-
-            LaunchedEffect( onDeviceSort.sortBy, onDeviceSort.sortOrder, hasPermission, context ) {
-                if( !hasPermission ) return@LaunchedEffect
-
-                context.musicFilesAsFlow( onDeviceSort.sortBy, onDeviceSort.sortOrder, context )
-                    .collect {
-                        songsDevice = it.distinctBy( OnDeviceSong::id )
-                    }
-            }
-
-            if (showFolders) {
-                with( OnDeviceOrganize ) {
-                    val organized = organizeSongsIntoFolders( songsDevice )
-                    currentFolder = getFolderByPath( organized, currentFolderPath )
-
-                    items = sortSongs(
-                        deviceFolderSort.sortOrder,
-                        deviceFolderSort.sortBy,
-                        currentFolder?.songs
-                                            ?.map( OnDeviceSong::toSongEntity )
-                                            ?: emptyList()
-                    )
-
-                    folders = currentFolder?.subFolders?.toList() ?: emptyList()
-                    filteredFolders = folders
+        when( builtInPlaylist ) {
+            BuiltInPlaylist.All -> Database.songs( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() )
+            BuiltInPlaylist.Favorites -> Database.songsFavorites( songSort.sortBy, songSort.sortOrder )
+            BuiltInPlaylist.Offline -> Database.songsOffline( songSort.sortBy, songSort.sortOrder )
+            BuiltInPlaylist.Downloaded -> Database.listAllSongsAsFlow().map { list ->
+                when ( songSort.sortBy ) {
+                    SongSortBy.Title -> list.sortedBy { it.song.title }
+                    SongSortBy.PlayTime -> list.sortedBy { it.song.totalPlayTimeMs }
+                    SongSortBy.Duration -> list.sortedBy { it.song.durationText }
+                    SongSortBy.Artist -> list.sortedBy { it.song.artistsText }
+                    SongSortBy.DateLiked -> list.sortedBy { it.song.likedAt }
+                    SongSortBy.AlbumName -> list.sortedBy { it.albumTitle }
+                    else -> list
+                }.run {
+                    if( songSort.sortOrder == SortOrder.Descending )
+                        reversed()
+                    else
+                        this
                 }
-            } else
-                items = songsDevice.map( OnDeviceSong::toSongEntity )
-        }
-
-        BuiltInPlaylist.All -> {
-            LaunchedEffect( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
-                Database.songs(songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown())
-                        .flowOn( Dispatchers.IO )
-                        .distinctUntilChanged()
-                        .collect{ items = it }
             }
-        }
-
-        else -> {
-            LaunchedEffect( songSort.sortBy, songSort.sortOrder ) {
-                when( builtInPlaylist ) {
-                    BuiltInPlaylist.Favorites -> Database.songsFavorites( songSort.sortBy, songSort.sortOrder )
-                    BuiltInPlaylist.Offline -> Database.songsOffline( songSort.sortBy, songSort.sortOrder )
-                    BuiltInPlaylist.Downloaded -> Database.listAllSongsAsFlow().map { list ->
-                        when ( songSort.sortBy ) {
-                            SongSortBy.Title -> list.sortedBy { it.song.title }
-                            SongSortBy.PlayTime -> list.sortedBy { it.song.totalPlayTimeMs }
-                            SongSortBy.Duration -> list.sortedBy { it.song.durationText }
-                            SongSortBy.Artist -> list.sortedBy { it.song.artistsText }
-                            SongSortBy.DateLiked -> list.sortedBy { it.song.likedAt }
-                            SongSortBy.AlbumName -> list.sortedBy { it.albumTitle }
-                            else -> list
-                        }.run {
-                            if( songSort.sortOrder == SortOrder.Descending )
-                                reversed()
-                            else
-                                this
-                        }
-                    }
-                    BuiltInPlaylist.Top -> {
-                        if (topPlaylists.period.duration == Duration.INFINITE)
-                            Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
-                        else
-                            Database.trendingSongEntity(
-                                limit = maxTopPlaylistItems.number.toInt(),
-                                period = topPlaylists.period.duration.inWholeMilliseconds
-                            )
-                    }
-                    else -> flowOf()
-                }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { items = it }
+            BuiltInPlaylist.Top -> {
+                if (topPlaylists.period.duration == Duration.INFINITE)
+                    Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
+                else
+                    Database.trendingSongEntity(
+                        limit = maxTopPlaylistItems.number.toInt(),
+                        period = topPlaylists.period.duration.inWholeMilliseconds
+                    )
             }
-        }
+            BuiltInPlaylist.OnDevice -> flowOf()
+
+        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { items = it }
     }
+
+    var songsDevice by remember {
+        mutableStateOf(emptyList<OnDeviceSong>())
+    }
+    LaunchedEffect( builtInPlaylist, onDeviceSort.sortBy, onDeviceSort.sortOrder, hasPermission ) {
+        if( builtInPlaylist != BuiltInPlaylist.OnDevice ) return@LaunchedEffect
+
+        // [context] remains unchanged (because of **val**) during the lifecycle of this Composable
+        context.musicFilesAsFlow( onDeviceSort.sortBy, onDeviceSort.sortOrder, context )
+               .collect {
+                   songsDevice = it.distinctBy( OnDeviceSong::id )
+               }
+    }
+    if( builtInPlaylist == BuiltInPlaylist.OnDevice )
+        if (showFolders) {
+            with( OnDeviceOrganize ) {
+                val organized = organizeSongsIntoFolders( songsDevice )
+                currentFolder = getFolderByPath( organized, currentFolderPath )
+
+                items = sortSongs(
+                    deviceFolderSort.sortOrder,
+                    deviceFolderSort.sortBy,
+                    currentFolder?.songs
+                        ?.map( OnDeviceSong::toSongEntity )
+                        ?: emptyList()
+                )
+
+                folders = currentFolder?.subFolders?.toList() ?: emptyList()
+                filteredFolders = folders
+            }
+        } else
+            items = songsDevice.map( OnDeviceSong::toSongEntity )
     // This phrase will filter out songs depends on search inputs, and natural filter
     // parameters, such as get downloaded songs when [BuiltInPlaylist.Offline] is set.
     LaunchedEffect( builtInPlaylist, items, search.input ) {
