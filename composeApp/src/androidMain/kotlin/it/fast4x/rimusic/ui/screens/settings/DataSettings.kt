@@ -415,10 +415,8 @@ fun DataSettings() {
         }
 
         binder?.cache?.let { cache ->
-            val diskCacheSize by remember {
-                derivedStateOf {
+            val diskCacheSize = remember(cache) {
                     cache.cacheSpace
-                }
             }
 
 
@@ -499,10 +497,8 @@ fun DataSettings() {
         }
 
         binder?.downloadCache?.let { downloadCache ->
-            val diskDownloadCacheSize by remember {
-                derivedStateOf {
+            val diskDownloadCacheSize = remember(downloadCache) {
                     downloadCache.cacheSpace
-                }
             }
 
             EnumValueSelectorSettingsEntry(
