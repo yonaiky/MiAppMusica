@@ -764,7 +764,7 @@
     <string name="center">Zentrieren</string>
     <string name="lyricsalignment">Songtext-Ausrichtung</string>
     <string name="lang_azerbaijani">Aserbaidschanisch (Azərbaycanca)</string>
-    <string name="translators">Übersetzer*innen</string>
+    <string name="translators">Übersetzer</string>
     <string name="lang_tamil">Tamil (தமிழ்)</string>
     <string name="player_auto_load_songs_in_queue">Titel der Warteschlange automatisch laden</string>
     <string name="player_auto_load_songs_in_queue_description">Fügt Lieder hinzu, wenn sich die Warteschlange dem Ende nähert</string>
@@ -792,8 +792,8 @@
     <string name="repeat">Wiederholen</string>
     <string name="original_lyrics">Originaler Songtext</string>
     <string name="translated_lyrics">Übersetzter Songtext</string>
-    <string name="press_once_again_to_exit">Press once again to exit</string>
-    <string name="random_sorting">Random sorting</string>
+    <string name="press_once_again_to_exit">Zum Beenden erneut drücken</string>
+    <string name="random_sorting">Zufällige Sortierung</string>
     <string name="music_animations_bars">Bars</string>
     <string name="music_animations_crazy_bars">Crazy Bars</string>
     <string name="music_animations_crazy_points">Crazy Points</string>
