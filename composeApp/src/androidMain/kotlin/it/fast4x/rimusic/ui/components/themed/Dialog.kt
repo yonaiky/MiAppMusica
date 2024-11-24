@@ -826,7 +826,7 @@ inline fun InputTextDialog(
                                 .scale(0.7f)
                         )
                         BasicText(
-                            text = "Custom value",
+                            text = stringResource(R.string.set_custom_value),
                             style = typography().xs.medium,
                             maxLines = 2,
                             modifier = Modifier

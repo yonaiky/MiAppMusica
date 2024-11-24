@@ -293,10 +293,10 @@ fun OtherSettings() {
         //if (!isLoggedIn) isYouTubeLoginEnabled = false // disable if not logged in
 
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = "YOUTUBE MUSIC")
+        SettingsEntryGroupText(title = stringResource(R.string.title_youtube_music))
 
         SwitchSettingEntry(
-            title = "Enable YouTube Music Login",
+            title = stringResource(R.string.enable_youtube_music_login),
             text = "",
             isChecked = isYouTubeLoginEnabled,
             onCheckedChange = {
