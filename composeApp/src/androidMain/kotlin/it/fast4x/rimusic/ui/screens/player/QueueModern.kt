@@ -125,6 +125,7 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.queueLoopTypeKey
@@ -678,9 +679,9 @@ fun QueueModern(
                                                 } else checkedState.value = !checkedState.value
                                             }
                                         )
-                                        .localAnimateItemPlacement(reorderingState)
                                         .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background0),
-                                    disableScrollingText = disableScrollingText
+                                    disableScrollingText = disableScrollingText,
+                                    isNowPlaying = binder?.player?.isNowPlaying(window.mediaItem.mediaId) ?: false
                                 )
                             }
                         }

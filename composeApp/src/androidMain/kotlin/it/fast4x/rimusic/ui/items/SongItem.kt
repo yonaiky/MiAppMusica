@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +38,7 @@ import coil.compose.AsyncImage
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadService
@@ -49,6 +51,8 @@ import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.conditional
@@ -80,7 +84,8 @@ fun SongItem(
     onDownloadClick: () -> Unit,
     downloadState: Int,
     thumbnailContent: (@Composable BoxScope.() -> Unit)? = null,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isNowPlaying: Boolean = false
 ) {
     SongItem(
         thumbnailUrl = song.thumbnail?.size(thumbnailSizePx),
@@ -95,7 +100,8 @@ fun SongItem(
         downloadState = downloadState,
         mediaItem = song.asMediaItem,
         onThumbnailContent = thumbnailContent,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isNowPlaying = isNowPlaying
     )
 }
 
@@ -111,7 +117,8 @@ fun SongItem(
     onDownloadClick: () -> Unit,
     downloadState: Int,
     isRecommended: Boolean = false,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isNowPlaying: Boolean = false
 ) {
     SongItem(
         thumbnailUrl = song.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx)?.toString(),
@@ -128,7 +135,8 @@ fun SongItem(
         downloadState = downloadState,
         isRecommended = isRecommended,
         mediaItem = song,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isNowPlaying = isNowPlaying
     )
 }
 
@@ -143,7 +151,8 @@ fun SongItem(
     trailingContent: (@Composable () -> Unit)? = null,
     onDownloadClick: () -> Unit,
     downloadState: Int,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isNowPlaying: Boolean = false
 ) {
     SongItem(
         thumbnailUrl = song.thumbnailUrl?.thumbnail(thumbnailSizePx),
@@ -159,7 +168,8 @@ fun SongItem(
         },
         downloadState = downloadState,
         mediaItem = song.asMediaItem,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isNowPlaying = isNowPlaying
     )
 }
 
@@ -175,7 +185,8 @@ fun SongItem(
     downloadState: Int,
     isRecommended: Boolean = false,
     mediaItem: MediaItem,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isNowPlaying: Boolean = false
 ) {
     SongItem(
         thumbnailSizeDp = thumbnailSizeDp,
@@ -197,7 +208,8 @@ fun SongItem(
         downloadState = downloadState,
         isRecommended = isRecommended,
         mediaItem = mediaItem,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isNowPlaying = isNowPlaying
     )
 }
 
@@ -302,7 +314,8 @@ fun SongItem(
     downloadState: Int,
     isRecommended: Boolean = false,
     mediaItem: MediaItem,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isNowPlaying: Boolean = false
 ) {
 
     var downloadedStateMedia by remember { mutableStateOf(DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) }
@@ -327,11 +340,18 @@ fun SongItem(
 
 
     val context = LocalContext.current
+    val colorPalette = LocalAppearance.current.colorPalette
 
     ItemContainer(
         alternative = false,
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier
+            .padding(end = 8.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .conditional(isNowPlaying){
+                background(colorPalette.favoritesOverlay)
+            }
+
     ) {
         Box(
             modifier = Modifier

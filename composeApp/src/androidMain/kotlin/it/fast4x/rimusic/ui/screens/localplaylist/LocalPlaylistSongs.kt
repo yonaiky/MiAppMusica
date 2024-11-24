@@ -125,6 +125,7 @@ import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
@@ -720,11 +721,14 @@ fun LocalPlaylistSongs(
                                 trailingContent = {},
                                 onThumbnailContent = {},
                                 modifier = Modifier
-                                    .clickable {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlay(it)
-                                    },
-                                disableScrollingText = disableScrollingText
+                                    .combinedClickable (
+                                        onClick = {
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlay(it)
+                                        }
+                                    ),
+                                disableScrollingText = disableScrollingText,
+                                isNowPlaying = binder?.player?.isNowPlaying(it.mediaId) ?: false
                             )
                         }
                     }
@@ -911,10 +915,10 @@ fun LocalPlaylistSongs(
                                             search.onItemSelected()
                                         }
                                     )
-                                    .localAnimateItemPlacement(reorderingState)
                                     .background(color = colorPalette().background0)
                                     .zIndex(2f),
-                                disableScrollingText = disableScrollingText
+                                disableScrollingText = disableScrollingText,
+                                isNowPlaying = binder?.player?.isNowPlaying(song.song.id) ?: false
                             )
                         }
                     }

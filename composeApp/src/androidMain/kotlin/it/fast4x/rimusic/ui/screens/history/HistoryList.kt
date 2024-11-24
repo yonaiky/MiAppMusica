@@ -57,6 +57,7 @@ import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -292,7 +293,8 @@ fun HistoryList(
                                     )
                                     .background(color = colorPalette().background0)
                                     .animateItem(),
-                                disableScrollingText = disableScrollingText
+                                disableScrollingText = disableScrollingText,
+                                isNowPlaying = binder?.player?.isNowPlaying(event.song.id) ?: false
                             )
                         /*
                         },

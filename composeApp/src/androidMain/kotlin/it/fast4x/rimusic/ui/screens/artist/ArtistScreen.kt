@@ -78,6 +78,7 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -540,7 +541,8 @@ fun ArtistScreen(
 
                                                     }
                                                 ),
-                                            disableScrollingText = disableScrollingText
+                                            disableScrollingText = disableScrollingText,
+                                            isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false
                                         )
                                     }
                                 },

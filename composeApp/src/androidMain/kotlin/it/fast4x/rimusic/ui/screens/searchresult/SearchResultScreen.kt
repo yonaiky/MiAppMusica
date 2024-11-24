@@ -69,6 +69,7 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playVideo
@@ -250,7 +251,8 @@ fun SearchResultScreen(
                                                         localBinder?.setupRadio(song.info?.endpoint)
                                                     }
                                                 ),
-                                            disableScrollingText = disableScrollingText
+                                            disableScrollingText = disableScrollingText,
+                                            isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false
                                         )
                                     }
                                 },

@@ -125,6 +125,7 @@ import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid11
 import it.fast4x.rimusic.utils.isCompositionLaunched
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
 import it.fast4x.rimusic.utils.onDeviceSongSortByKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -955,7 +956,8 @@ fun DeviceListSongs(
                             }
                         )
                         .animateItem(),
-                    disableScrollingText = disableScrollingText
+                    disableScrollingText = disableScrollingText,
+                    isNowPlaying = binder?.player?.isNowPlaying(song.song.id) ?: false
                 )
             }
         }

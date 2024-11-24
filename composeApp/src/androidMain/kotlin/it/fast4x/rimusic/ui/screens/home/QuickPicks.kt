@@ -108,6 +108,7 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.loadedDataKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -578,7 +579,8 @@ fun QuickPicks(
                                             fadeOutSpec = null
                                         )
                                         .width(itemInHorizontalGridWidth),
-                                    disableScrollingText = disableScrollingText
+                                    disableScrollingText = disableScrollingText,
+                                    isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
                                 )
                             }
                         }
@@ -659,7 +661,8 @@ fun QuickPicks(
                                                 )
                                             }
                                         ),
-                                    disableScrollingText = disableScrollingText
+                                    disableScrollingText = disableScrollingText,
+                                    isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false
                                 )
                             }
                         }
@@ -1002,7 +1005,8 @@ fun QuickPicks(
                                                         binder?.player?.addMediaItems(songs.map { it.asMediaItem })
                                                     })
                                                     .width(itemWidth),
-                                                disableScrollingText = disableScrollingText
+                                                disableScrollingText = disableScrollingText,
+                                                isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false
                                             )
                                         }
                                     }

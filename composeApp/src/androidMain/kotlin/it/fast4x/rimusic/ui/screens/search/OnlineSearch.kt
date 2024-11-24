@@ -82,6 +82,7 @@ import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.preferences
@@ -370,7 +371,8 @@ fun OnlineSearch(
                                             binder?.player?.forcePlay(mediaItem)
                                         }
                                     ),
-                                disableScrollingText = disableScrollingText
+                                disableScrollingText = disableScrollingText,
+                                isNowPlaying = binder?.player?.isNowPlaying(mediaItem.mediaId) ?: false
                             )
                         }
                     }

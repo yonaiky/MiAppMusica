@@ -131,6 +131,7 @@ import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
@@ -1170,7 +1171,8 @@ fun BuiltInPlaylistSongs(
                                     binder?.stopRadio()
                                     binder?.player?.forcePlay(it)
                                 },
-                            disableScrollingText = disableScrollingText
+                            disableScrollingText = disableScrollingText,
+                            isNowPlaying = binder?.player?.isNowPlaying(it.mediaId) ?: false
                         )
                     }
                 }
@@ -1311,7 +1313,8 @@ fun BuiltInPlaylistSongs(
                                 else checkedState.value = false
                             },
                             modifier = Modifier.animateItem(),
-                            disableScrollingText = disableScrollingText
+                            disableScrollingText = disableScrollingText,
+                            isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
                         )
                     /*
                     },

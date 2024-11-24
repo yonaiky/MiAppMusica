@@ -8,13 +8,4 @@ import androidx.compose.ui.Modifier
 context(LazyItemScope)
 @ExperimentalFoundationApi
 fun Modifier.localAnimateItemPlacement(reorderingState: ReorderingState) =
-    if (reorderingState.draggingIndex == -1) Modifier.animateItem(
-        fadeInSpec = spring(
-            stiffness = 200f,
-            dampingRatio = 0.5f
-        ),
-        fadeOutSpec = spring(
-            stiffness = 200f,
-            dampingRatio = 0.5f
-        )
-    ) else this
+    if (reorderingState.draggingIndex == -1) Modifier.animateItem() else this
