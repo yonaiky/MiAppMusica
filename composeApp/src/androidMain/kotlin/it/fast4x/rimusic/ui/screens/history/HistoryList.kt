@@ -218,7 +218,24 @@ fun HistoryList(
                             val isDownloaded =
                                 if (!isLocal) isDownloadedSong(event.song.asMediaItem.mediaId) else true
                             val checkedState = rememberSaveable { mutableStateOf(false) }
-                            SongItem(
+                    Modifier
+                        .combinedClickable(
+                            onLongClick = {
+                                menuState.display {
+                                    NonQueuedMediaItemMenuLibrary(
+                                        navController = navController,
+                                        mediaItem = event.song.asMediaItem,
+                                        onDismiss = menuState::hide,
+                                        disableScrollingText = disableScrollingText
+                                    )
+                                }
+                            },
+                            onClick = {
+                                binder?.player?.forcePlay(event.song.asMediaItem)
+                            }
+                        )
+                        .background(color = colorPalette().background0)
+                    SongItem(
                                 song = event.song,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(event.song.asMediaItem.mediaId)
@@ -274,7 +291,7 @@ fun HistoryList(
                                         }
                                     )
                                     .background(color = colorPalette().background0)
-                                    .animateItemPlacement(),
+                                    .animateItem(),
                                 disableScrollingText = disableScrollingText
                             )
                         /*

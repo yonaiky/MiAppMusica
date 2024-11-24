@@ -166,7 +166,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.Today) })
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }
@@ -182,7 +182,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneWeek) })
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }
@@ -198,7 +198,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneMonth) })
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }
@@ -214,7 +214,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.ThreeMonths) })
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }
@@ -230,7 +230,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.SixMonths) })
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }
@@ -246,7 +246,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneYear) })
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }
@@ -262,7 +262,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.All) })
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }

@@ -954,7 +954,7 @@ fun DeviceListSongs(
                                 }
                             }
                         )
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }

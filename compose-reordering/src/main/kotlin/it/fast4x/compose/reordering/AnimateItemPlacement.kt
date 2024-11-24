@@ -1,10 +1,20 @@
 package it.fast4x.compose.reordering
 
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.ui.Modifier
 
 context(LazyItemScope)
 @ExperimentalFoundationApi
-fun Modifier.animateItemPlacement(reorderingState: ReorderingState) =
-    if (reorderingState.draggingIndex == -1) animateItemPlacement() else this
+fun Modifier.localAnimateItemPlacement(reorderingState: ReorderingState) =
+    if (reorderingState.draggingIndex == -1) Modifier.animateItem(
+        fadeInSpec = spring(
+            stiffness = 200f,
+            dampingRatio = 0.5f
+        ),
+        fadeOutSpec = spring(
+            stiffness = 200f,
+            dampingRatio = 0.5f
+        )
+    ) else this

@@ -1310,7 +1310,7 @@ fun BuiltInPlaylistSongs(
                                     )
                                 else checkedState.value = false
                             },
-                            modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                            modifier = Modifier.animateItem(),
                             disableScrollingText = disableScrollingText
                         )
                     /*

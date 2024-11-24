@@ -295,7 +295,7 @@ fun LocalSongSearch(
                                 )
                             }
                         )
-                        .animateItemPlacement(),
+                        .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
             }

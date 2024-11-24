@@ -877,7 +877,7 @@ fun HomeSongs(
                                         )
                                     }
                                 )
-                                .animateItem(fadeInSpec = null, fadeOutSpec = null),
+                                .animateItem(),
                             disableScrollingText = disableScrollingText
                         )
                     }

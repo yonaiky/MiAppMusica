@@ -59,8 +59,8 @@ import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
-import it.fast4x.compose.reordering.animateItemPlacement
 import it.fast4x.compose.reordering.draggedItem
+import it.fast4x.compose.reordering.localAnimateItemPlacement
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
 import it.fast4x.innertube.Innertube
@@ -911,7 +911,7 @@ fun LocalPlaylistSongs(
                                             search.onItemSelected()
                                         }
                                     )
-                                    .animateItemPlacement(reorderingState)
+                                    .localAnimateItemPlacement(reorderingState)
                                     .background(color = colorPalette().background0)
                                     .zIndex(2f),
                                 disableScrollingText = disableScrollingText
