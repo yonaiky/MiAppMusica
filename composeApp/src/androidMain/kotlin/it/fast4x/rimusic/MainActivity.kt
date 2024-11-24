@@ -541,7 +541,7 @@ class MainActivity :
                         )
                     }
 
-                    setSystemBarAppearance(colorPalette.isDark)
+                    //setSystemBarAppearance(colorPalette.isDark)
 
                     mutableStateOf(
                         Appearance(
@@ -593,9 +593,9 @@ class MainActivity :
                         println("Mainactivity onmediaItemTransition palette dominantSwatch: ${palette.dominantSwatch}")
 
                         dynamicColorPaletteOf(bitmap, isDark)?.let {
-                            withContext(Dispatchers.Main) {
-                                setSystemBarAppearance(it.isDark)
-                            }
+//                            withContext(Dispatchers.Main) {
+//                                setSystemBarAppearance(it.isDark)
+//                            }
                             appearance = appearance.copy(
                                 colorPalette = if (!isPicthBlack) it else it.copy(
                                     background0 = Color.Black,
@@ -747,7 +747,7 @@ class MainActivity :
                                             setDynamicPalette(it)
                                         else {
                                             val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
-                                            setSystemBarAppearance(colorPalette.isDark)
+                                            //setSystemBarAppearance(colorPalette.isDark)
                                             appearance = appearance.copy(
                                                 colorPalette = if (!isPicthBlack) colorPalette else colorPalette.copy(
                                                         background0 = Color.Black,
@@ -778,7 +778,7 @@ class MainActivity :
                                         colorPalette = customColorPalette(colorPalette, this@MainActivity, isSystemInDarkTheme)
                                     }
 
-                                    setSystemBarAppearance(colorPalette.isDark)
+                                    //setSystemBarAppearance(colorPalette.isDark)
                                     val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
                                     appearance = appearance.copy(
                                         colorPalette = if (!isPicthBlack) colorPalette else colorPalette.copy(
@@ -1343,6 +1343,7 @@ class MainActivity :
 
     }
 
+    /*
     private fun setSystemBarAppearance(isDark: Boolean) {
         with(WindowCompat.getInsetsController(window, window.decorView.rootView)) {
             isAppearanceLightStatusBars = !isDark
@@ -1359,6 +1360,7 @@ class MainActivity :
                 (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
         }
     }
+    */
 
     companion object {
         const val action_search = "it.fast4x.rimusic.action.search"
