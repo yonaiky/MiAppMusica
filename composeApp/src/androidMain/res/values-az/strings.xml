@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">sinxronlaşan lirikalar</string>
     <string name="provided_by">Tərəfindən təmin edilib</string>
     <string name="delete_playback_events">%1$s səsləndirmə fəaliyyətin sil</string>
-    <string name="existing_data_will_be_overwritten">Mövcud məlumat üzərinə yazılacaq.%1$s məlumat bazasını bərpa etdikdən sonra özü avtomatik bağlanacaq.</string>
+    <string name="existing_data_will_be_overwritten">Mövcud məlumat üzərinə yazılacaq. %1$s məlumat bazasını bərpa etdikdən sonra özü avtomatik bağlanacaq.</string>
     <string name="folder_cache">QALIQ QOVLUĞU</string>
     <string name="cache_reset_by_clicking_button">Aşağıdakı düyməyə klikləyənə kimi diqqət et, qalıq qovluq yeri standarta sıfırlanacaq</string>
     <string name="cache_location_folder">Qovluq yeri</string>
@@ -794,13 +794,13 @@
     <string name="translated_lyrics">Tərcümə Edilən Lirika</string>
     <string name="press_once_again_to_exit">Çıxmaq üçün təkrar toxun</string>
     <string name="random_sorting">Təsadüfi çeşidləmə</string>
-    <string name="music_animations_bars">Bars</string>
-    <string name="music_animations_crazy_bars">Crazy Bars</string>
-    <string name="music_animations_crazy_points">Crazy Points</string>
-    <string name="music_animations_bubbles">Bubbles</string>
-    <string name="now_playing_indicator">Now Playing Indicator</string>
-    <string name="good_morning">Good Morning</string>
-    <string name="good_afternoon">Good Afternoon</string>
-    <string name="good_evening">Good Evening</string>
-    <string name="good_night">Good Night</string>
+    <string name="music_animations_bars">Cizgilər</string>
+    <string name="music_animations_crazy_bars">Coşqun Cizgilər</string>
+    <string name="music_animations_crazy_points">Coşqun Nöqtələr</string>
+    <string name="music_animations_bubbles">Qabarcıqlar</string>
+    <string name="now_playing_indicator">İndi Səslənir Göstəricisi</string>
+    <string name="good_morning">Sabahınız Xeyir</string>
+    <string name="good_afternoon">Günortanız Xeyir</string>
+    <string name="good_evening">Axşamınız Xeyir</string>
+    <string name="good_night">Gecəniz Xeyrə</string>
 </resources>
