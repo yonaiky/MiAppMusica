@@ -98,6 +98,7 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.WelcomeMessage
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.bold
@@ -375,13 +376,6 @@ fun QuickPicks(
                     .background(colorPalette().background0)
                     .fillMaxHeight()
                     .verticalScroll(scrollState)
-                /*
-                .padding(
-                    windowInsets
-                        .only(WindowInsetsSides.Vertical)
-                        .asPaddingValues()
-                )
-                 */
             ) {
 
                 /*   Load data from url or from saved preference   */
@@ -426,6 +420,8 @@ fun QuickPicks(
                         modifier = Modifier,
                         onClick = onSearchClick
                     )
+
+                WelcomeMessage()
 
                 if (showTips) {
                     Title2Actions(
