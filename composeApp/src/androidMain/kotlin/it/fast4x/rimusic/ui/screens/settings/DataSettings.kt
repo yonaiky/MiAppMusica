@@ -45,8 +45,6 @@ import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.internal
-import it.fast4x.rimusic.path
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
@@ -149,7 +147,7 @@ fun DataSettings() {
 
                 context.applicationContext.contentResolver.openOutputStream(uri)
                     ?.use { outputStream ->
-                        FileInputStream(Database.internal.path).use { inputStream ->
+                        FileInputStream( Database.path() ).use { inputStream ->
                             inputStream.copyTo(outputStream)
                         }
                     }
@@ -164,11 +162,11 @@ fun DataSettings() {
 
             query {
                 Database.checkpoint()
-                Database.internal.close()
+                Database.close()
 
                 context.applicationContext.contentResolver.openInputStream(uri)
                     ?.use { inputStream ->
-                        FileOutputStream(Database.internal.path).use { outputStream ->
+                        FileOutputStream( Database.path() ).use { outputStream ->
                             inputStream.copyTo(outputStream)
                         }
                     }

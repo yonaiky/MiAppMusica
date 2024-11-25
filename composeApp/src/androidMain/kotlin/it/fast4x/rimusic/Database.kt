@@ -66,6 +66,9 @@ import me.knighthat.appContext
 interface Database {
     companion object : Database by DatabaseInitializer.Instance.database
 
+    private val _internal: RoomDatabase
+        get() = DatabaseInitializer.Instance
+
     @Transaction
     @Query("SELECT * FROM Format WHERE songId = :songId ORDER BY bitrate DESC LIMIT 1")
     fun getBestFormat(songId: String): Flow<Format?>
@@ -1479,6 +1482,10 @@ interface Database {
     fun checkpoint() {
         raw(SimpleSQLiteQuery("PRAGMA wal_checkpoint(FULL)"))
     }
+
+    fun path() = _internal.openHelper.writableDatabase.path
+
+    fun close() = _internal.close()
 }
 
 @androidx.room.Database(
@@ -1741,10 +1748,6 @@ object Converters {
     }
 }
 
-@Suppress("UnusedReceiverParameter")
-val Database.internal: RoomDatabase
-    get() = DatabaseInitializer.Instance
-
 fun query(block: () -> Unit) = DatabaseInitializer.Instance.queryExecutor.execute(block)
 
 fun transaction(block: () -> Unit) = with(DatabaseInitializer.Instance) {
@@ -1752,6 +1755,3 @@ fun transaction(block: () -> Unit) = with(DatabaseInitializer.Instance) {
         runInTransaction(block)
     }
 }
-
-val RoomDatabase.path: String?
-    get() = openHelper.writableDatabase.path
