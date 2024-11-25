@@ -31,6 +31,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
@@ -80,6 +81,7 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
@@ -247,6 +249,25 @@ class PlayerServiceModern : MediaLibraryService(),
 //    private var nBuilder: NotificationCompat.Builder =
 //            NotificationCompat.Builder(this@PlayerServiceModern, NotificationChannelId)
 
+
+    @UnstableApi
+    class CustomMediaNotificationProvider(context: Context) : DefaultMediaNotificationProvider(context) {
+        override fun getNotificationContentTitle(metadata: MediaMetadata): CharSequence? {
+            val customMetadata = MediaMetadata.Builder()
+                .setTitle(cleanPrefix(metadata.title?.toString() ?: ""))
+                .build()
+            return super.getNotificationContentTitle(customMetadata)
+        }
+
+//        override fun getNotificationContentText(metadata: MediaMetadata): CharSequence? {
+//            val customMetadata = MediaMetadata.Builder()
+//                .setArtist(cleanPrefix(metadata.artist?.toString() ?: ""))
+//                .build()
+//            return super.getNotificationContentText(customMetadata)
+//        }
+    }
+
+
     @kotlin.OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
@@ -259,17 +280,18 @@ class PlayerServiceModern : MediaLibraryService(),
             PackageManager.DONT_KILL_APP
         )
 
-        setMediaNotificationProvider(
-            DefaultMediaNotificationProvider(
-                this,
-                { NotificationId },
-                NotificationChannelId,
-                R.string.player
-            )
-            .apply {
-                setSmallIcon(R.drawable.app_icon)
-            }
-        )
+        setMediaNotificationProvider(CustomMediaNotificationProvider(this))
+//        setMediaNotificationProvider(
+//            DefaultMediaNotificationProvider(
+//                this,
+//                { NotificationId },
+//                NotificationChannelId,
+//                R.string.player
+//            )
+//            .apply {
+//                setSmallIcon(R.drawable.app_icon)
+//            }
+//        )
 
         runCatching {
             bitmapProvider = BitmapProvider(
@@ -544,7 +566,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
             mediaSession.release()
             cache.release()
-            downloadCache.release()
+            //downloadCache.release()
             MyDownloadHelper.getDownloadManager(this).removeListener(downloadListener)
 
             loudnessEnhancer?.release()
