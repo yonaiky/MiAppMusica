@@ -714,7 +714,7 @@ fun HomeSongs(
 
                         val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
                         val isDownloaded = isLocal || isDownloadedSong( mediaItem.mediaId )
-
+                        var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = song.song,
                             onDownloadClick = {
@@ -816,7 +816,10 @@ fun HomeSongs(
                                             InHistoryMediaItemMenu(
                                                 navController = navController,
                                                 song = song.song,
-                                                onDismiss = menuState::hide,
+                                                onDismiss = {
+                                                    forceRecompose = true
+                                                    menuState.hide()
+                                                },
                                                 onHideFromDatabase = hideAction,
                                                 onDeleteFromDatabase = deleteFromDatabase,
                                                 disableScrollingText = disableScrollingText
@@ -900,7 +903,8 @@ fun HomeSongs(
                                 )
                                 .animateItem(),
                             disableScrollingText = disableScrollingText,
-                            isNowPlaying = binder?.player?.isNowPlaying(song.song.id) ?: false
+                            isNowPlaying = binder?.player?.isNowPlaying(song.song.id) ?: false,
+                            forceRecompose = forceRecompose
                         )
                     }
                 }

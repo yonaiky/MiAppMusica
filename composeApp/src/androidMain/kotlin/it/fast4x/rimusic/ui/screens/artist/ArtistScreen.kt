@@ -458,6 +458,7 @@ fun ArtistScreen(
                                         listMediaItems.add(song.asMediaItem)
                                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                                         val isDownloaded = isDownloadedSong(song.asMediaItem.mediaId)
+                                        var forceRecompose by remember { mutableStateOf(false) }
                                         SongItem(
                                             song = song,
                                             onDownloadClick = {
@@ -484,7 +485,10 @@ fun ArtistScreen(
                                                         menuState.display {
                                                             NonQueuedMediaItemMenu(
                                                                 navController = navController,
-                                                                onDismiss = menuState::hide,
+                                                                onDismiss = {
+                                                                    forceRecompose = true
+                                                                    menuState.hide()
+                                                                },
                                                                 mediaItem = song.asMediaItem,
                                                                 disableScrollingText = disableScrollingText
                                                             )
@@ -546,7 +550,8 @@ fun ArtistScreen(
                                                     }
                                                 ),
                                             disableScrollingText = disableScrollingText,
-                                            isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false
+                                            isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false,
+                                            forceRecompose = forceRecompose
                                         )
                                     }
                                 },

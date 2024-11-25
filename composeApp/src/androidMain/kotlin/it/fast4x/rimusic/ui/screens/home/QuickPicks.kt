@@ -501,7 +501,7 @@ fun QuickPicks(
                                 downloadState = getDownloadState(song.asMediaItem.mediaId)
                                 val isDownloaded =
                                     if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
-
+                                var forceRecompose by remember { mutableStateOf(false) }
                                 SongItem(
                                     song = song,
                                     onDownloadClick = {
@@ -536,7 +536,10 @@ fun QuickPicks(
                                                 menuState.display {
                                                     NonQueuedMediaItemMenu(
                                                         navController = navController,
-                                                        onDismiss = menuState::hide,
+                                                        onDismiss = {
+                                                            forceRecompose = true
+                                                            menuState.hide()
+                                                        },
                                                         mediaItem = song.asMediaItem,
                                                         onRemoveFromQuickPicks = {
                                                             query {
@@ -579,7 +582,8 @@ fun QuickPicks(
                                         )
                                         .width(itemInHorizontalGridWidth),
                                     disableScrollingText = disableScrollingText,
-                                    isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
+                                    isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false,
+                                    forceRecompose = forceRecompose
                                 )
                             }
                         }
@@ -599,7 +603,7 @@ fun QuickPicks(
                                 downloadState = getDownloadState(song.asMediaItem.mediaId)
                                 val isDownloaded =
                                     if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
-
+                                var forceRecompose by remember { mutableStateOf(false) }
                                 SongItem(
                                     song = song,
                                     onDownloadClick = {
@@ -629,7 +633,10 @@ fun QuickPicks(
                                                 menuState.display {
                                                     NonQueuedMediaItemMenu(
                                                         navController = navController,
-                                                        onDismiss = menuState::hide,
+                                                        onDismiss = {
+                                                            forceRecompose = true
+                                                            menuState.hide()
+                                                        },
                                                         mediaItem = song.asMediaItem,
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
@@ -661,7 +668,8 @@ fun QuickPicks(
                                             }
                                         ),
                                     disableScrollingText = disableScrollingText,
-                                    isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false
+                                    isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false,
+                                    forceRecompose = forceRecompose
                                 )
                             }
                         }

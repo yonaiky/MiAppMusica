@@ -214,28 +214,13 @@ fun HistoryList(
 
                     //BehindMotionSwipe(
                     //    content = {
-                            val isLocal by remember { derivedStateOf { event.song.asMediaItem.isLocal } }
-                            downloadState = getDownloadState(event.song.asMediaItem.mediaId)
-                            val isDownloaded =
-                                if (!isLocal) isDownloadedSong(event.song.asMediaItem.mediaId) else true
-                            val checkedState = rememberSaveable { mutableStateOf(false) }
-                    Modifier
-                        .combinedClickable(
-                            onLongClick = {
-                                menuState.display {
-                                    NonQueuedMediaItemMenuLibrary(
-                                        navController = navController,
-                                        mediaItem = event.song.asMediaItem,
-                                        onDismiss = menuState::hide,
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
-                            },
-                            onClick = {
-                                binder?.player?.forcePlay(event.song.asMediaItem)
-                            }
-                        )
-                        .background(color = colorPalette().background0)
+                    val isLocal by remember { derivedStateOf { event.song.asMediaItem.isLocal } }
+                    downloadState = getDownloadState(event.song.asMediaItem.mediaId)
+                    val isDownloaded =
+                        if (!isLocal) isDownloadedSong(event.song.asMediaItem.mediaId) else true
+                    val checkedState = rememberSaveable { mutableStateOf(false) }
+                    var forceRecompose by remember { mutableStateOf(false) }
+
                     SongItem(
                                 song = event.song,
                                 onDownloadClick = {
@@ -282,7 +267,10 @@ fun HistoryList(
                                                 NonQueuedMediaItemMenuLibrary(
                                                     navController = navController,
                                                     mediaItem = event.song.asMediaItem,
-                                                    onDismiss = menuState::hide,
+                                                    onDismiss = {
+                                                        forceRecompose = true
+                                                        menuState.hide()
+                                                    },
                                                     disableScrollingText = disableScrollingText
                                                 )
                                             }
@@ -294,7 +282,8 @@ fun HistoryList(
                                     .background(color = colorPalette().background0)
                                     .animateItem(),
                                 disableScrollingText = disableScrollingText,
-                                isNowPlaying = binder?.player?.isNowPlaying(event.song.id) ?: false
+                                isNowPlaying = binder?.player?.isNowPlaying(event.song.id) ?: false,
+                                forceRecompose = forceRecompose
                             )
                         /*
                         },

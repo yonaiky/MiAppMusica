@@ -125,7 +125,8 @@ fun SongItem(
     downloadState: Int,
     isRecommended: Boolean = false,
     disableScrollingText: Boolean,
-    isNowPlaying: Boolean = false
+    isNowPlaying: Boolean = false,
+    forceRecompose: Boolean = false
 ) {
     SongItem(
         thumbnailUrl = song.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx)?.toString(),
@@ -143,7 +144,8 @@ fun SongItem(
         isRecommended = isRecommended,
         mediaItem = song,
         disableScrollingText = disableScrollingText,
-        isNowPlaying = isNowPlaying
+        isNowPlaying = isNowPlaying,
+        forceRecompose = forceRecompose
     )
 }
 
@@ -159,7 +161,8 @@ fun SongItem(
     onDownloadClick: () -> Unit,
     downloadState: Int,
     disableScrollingText: Boolean,
-    isNowPlaying: Boolean = false
+    isNowPlaying: Boolean = false,
+    forceRecompose: Boolean = false
 ) {
     SongItem(
         thumbnailUrl = song.thumbnailUrl?.thumbnail(thumbnailSizePx),
@@ -176,7 +179,8 @@ fun SongItem(
         downloadState = downloadState,
         mediaItem = song.asMediaItem,
         disableScrollingText = disableScrollingText,
-        isNowPlaying = isNowPlaying
+        isNowPlaying = isNowPlaying,
+        forceRecompose = forceRecompose
     )
 }
 
