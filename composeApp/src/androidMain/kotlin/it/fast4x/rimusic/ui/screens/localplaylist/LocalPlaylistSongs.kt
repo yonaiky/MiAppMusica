@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,7 +59,6 @@ import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.compose.reordering.draggedItem
-import it.fast4x.compose.reordering.localAnimateItemPlacement
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
 import it.fast4x.innertube.Innertube
@@ -409,7 +407,9 @@ fun LocalPlaylistSongs(
             else
                 true
         }.filter {
-            val containsName = it.song.title.contains(search.input, true)
+            // Without cleaning, user can search explicit songs with "e:"
+            // I kinda want this to be a feature, but it seems unnecessary
+            val containsName = it.song.cleanTitle().contains(search.input, true)
             val containsArtist = it.song.artistsText?.contains(search.input, true) ?: false
             val containsAlbum = it.albumTitle?.contains(search.input, true) ?: false
 
