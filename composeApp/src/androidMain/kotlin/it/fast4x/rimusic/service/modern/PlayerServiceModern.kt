@@ -522,13 +522,12 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onTaskRemoved(rootIntent: Intent?) {
         isclosebackgroundPlayerEnabled = preferences.getBoolean(closebackgroundPlayerKey, false)
         if (isclosebackgroundPlayerEnabled) {
-            broadCastPendingIntent<NotificationDismissReceiver>().send()
+            onDestroy()
+            //broadCastPendingIntent<NotificationDismissReceiver>().send()
             this.stopService(this.intent<MyDownloadService>())
             this.stopService(this.intent<PlayerServiceModern>())
-            stopSelf()
-            onDestroy()
+            notificationManager?.cancelAll()
         }
-        //super.onTaskRemoved(rootIntent)
     }
 
     @UnstableApi
@@ -1510,20 +1509,20 @@ class PlayerServiceModern : MediaLibraryService(),
 
 
 
-    class NotificationDismissReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            kotlin.runCatching {
-                context.stopService(context.intent<MyDownloadService>())
-            }.onFailure {
-                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (MyDownloadService) ${it.stackTraceToString()}")
-            }
-            kotlin.runCatching {
-                context.stopService(context.intent<PlayerServiceModern>())
-            }.onFailure {
-                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (PlayerServiceModern) ${it.stackTraceToString()}")
-            }
-        }
-    }
+//    class NotificationDismissReceiver : BroadcastReceiver() {
+//        override fun onReceive(context: Context, intent: Intent) {
+//            kotlin.runCatching {
+//                context.stopService(context.intent<MyDownloadService>())
+//            }.onFailure {
+//                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (MyDownloadService) ${it.stackTraceToString()}")
+//            }
+//            kotlin.runCatching {
+//                context.stopService(context.intent<PlayerServiceModern>())
+//            }.onFailure {
+//                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (PlayerServiceModern) ${it.stackTraceToString()}")
+//            }
+//        }
+//    }
 
     companion object {
         const val NotificationId = 1001
