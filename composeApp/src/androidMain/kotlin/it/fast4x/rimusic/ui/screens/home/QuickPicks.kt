@@ -181,7 +181,7 @@ fun QuickPicks(
 
     var chartsPageResult by persist<Result<Innertube.ChartsPage?>>("home/chartsPage")
     var chartsPageInit by persist<Innertube.ChartsPage>("home/chartsPage")
-    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
+//    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
 
     var preferitesArtists by persistList<Artist>("home/artists")
 
@@ -223,6 +223,12 @@ fun QuickPicks(
     var loadedData by rememberPreference(loadedDataKey, false)
 
     suspend fun loadData() {
+
+        //Used to refresh chart when country change
+        if (showCharts)
+            chartsPageResult =
+                Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
+
         if (loadedData) return
 
         runCatching {
@@ -266,11 +272,6 @@ fun QuickPicks(
             if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres) {
                 discoverPageResult = Innertube.discoverPage()
             }
-
-
-            if (showCharts)
-                chartsPageResult =
-                    Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
@@ -401,13 +402,15 @@ fun QuickPicks(
                     discoverPagePreference = discoverPageInit
                 }
 
-                if (chartsPagePreference != null && loadedData) {
-                    chartsPageResult = Result.success(chartsPagePreference)
-                    chartsPageInit = chartsPageResult?.getOrNull()
-                } else {
-                    chartsPageInit = chartsPageResult?.getOrNull()
-                    chartsPagePreference = chartsPageInit
-                }
+                // Not saved/cached to preference
+                chartsPageInit = chartsPageResult?.getOrNull()
+//                if (chartsPagePreference != null && loadedData) {
+//                    chartsPageResult = Result.success(chartsPagePreference)
+//                    chartsPageInit = chartsPageResult?.getOrNull()
+//                } else {
+//                    chartsPageInit = chartsPageResult?.getOrNull()
+//                    chartsPagePreference = chartsPageInit
+//                }
                 /*   Load data from url or from saved preference   */
 
 
