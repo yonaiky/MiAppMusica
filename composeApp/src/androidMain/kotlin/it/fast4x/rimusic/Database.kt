@@ -1476,6 +1476,50 @@ interface Database {
     @Delete
     fun delete(song: Song)
 
+    /**
+     * Commit statements in BULK. If anything goes wrong during the transaction,
+     * other statements will be cancelled and reversed to preserve database's integrity.
+     * [Read more](https://sqlite.org/lang_transaction.html)
+     *
+     * [asyncTransaction] runs all statements on non-blocking
+     * thread to prevent UI from going unresponsive.
+     *
+     * ## Best use cases:
+     * - Commit multiple write statements that require data integrity
+     * - Processes that take longer time to complete
+     *
+     * > Do NOT use this to retrieve data from the database.
+     * > Use [asyncQuery] to retrieve records.
+     *
+     * @param block of statements to write to database
+     */
+    fun asyncTransaction( block: Database.() -> Unit ) =
+        _internal.transactionExecutor.execute {
+            this.block()
+        }
+
+
+    /**
+     * Access and retrieve records from database.
+     *
+     * [asyncQuery] runs all statements asynchronously to
+     * prevent blocking UI thread from going unresponsive.
+     *
+     * ## Best use cases:
+     * - Background data retrieval
+     * - Non-immediate UI component update (i.e. count number of songs)
+     *
+     * > Do NOT use this method to write data to database
+     * > because it offers no fail-safe during write.
+     * > Use [asyncTransaction] to modify database.
+     *
+     * @param block of statements to retrieve data from database
+     */
+    fun asyncQuery( block: Database.() -> Unit ) =
+        _internal.queryExecutor.execute {
+            this.block()
+        }
+
     @RawQuery
     fun raw(supportSQLiteQuery: SupportSQLiteQuery): Int
 
