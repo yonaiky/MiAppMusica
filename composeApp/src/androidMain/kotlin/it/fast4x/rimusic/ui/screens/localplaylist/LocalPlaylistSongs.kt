@@ -701,7 +701,7 @@ fun LocalPlaylistSongs(
                 }
 
                 itemsIndexed(
-                    items = itemsOnDisplay,
+                    items = itemsOnDisplay.filter { it.song.id.isNotBlank() },
                     key = { _, song -> song.song.id },
                     contentType = { _, song -> song },
                 ) { index, song ->
