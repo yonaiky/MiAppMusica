@@ -90,7 +90,8 @@ fun SongItem(
     downloadState: Int,
     thumbnailContent: (@Composable BoxScope.() -> Unit)? = null,
     disableScrollingText: Boolean,
-    isNowPlaying: Boolean = false
+    isNowPlaying: Boolean = false,
+    forceRecompose: Boolean = false
 ) {
     SongItem(
         thumbnailUrl = song.thumbnail?.size(thumbnailSizePx),
@@ -106,7 +107,8 @@ fun SongItem(
         mediaItem = song.asMediaItem,
         onThumbnailContent = thumbnailContent,
         disableScrollingText = disableScrollingText,
-        isNowPlaying = isNowPlaying
+        isNowPlaying = isNowPlaying,
+        forceRecompose = forceRecompose
     )
 }
 
@@ -191,7 +193,8 @@ fun SongItem(
     isRecommended: Boolean = false,
     mediaItem: MediaItem,
     disableScrollingText: Boolean,
-    isNowPlaying: Boolean = false
+    isNowPlaying: Boolean = false,
+    forceRecompose: Boolean = false
 ) {
     SongItem(
         thumbnailSizeDp = thumbnailSizeDp,
@@ -214,7 +217,8 @@ fun SongItem(
         isRecommended = isRecommended,
         mediaItem = mediaItem,
         disableScrollingText = disableScrollingText,
-        isNowPlaying = isNowPlaying
+        isNowPlaying = isNowPlaying,
+        forceRecompose = forceRecompose
     )
 }
 
@@ -320,7 +324,8 @@ fun SongItem(
     isRecommended: Boolean = false,
     mediaItem: MediaItem,
     disableScrollingText: Boolean,
-    isNowPlaying: Boolean = false
+    isNowPlaying: Boolean = false,
+    forceRecompose: Boolean = false
 ) {
 
     var downloadedStateMedia by remember { mutableStateOf(DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) }
@@ -337,7 +342,7 @@ fun SongItem(
         mutableIntStateOf(0)
     }
     if (playlistindicator)
-        LaunchedEffect(Unit, mediaItem.mediaId) {
+        LaunchedEffect(Unit, mediaItem.mediaId, forceRecompose) {
             withContext(Dispatchers.IO) {
                 songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
             }
