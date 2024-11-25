@@ -216,7 +216,7 @@ class PlayerServiceModern : MediaLibraryService(),
     private lateinit var downloadListener: DownloadManager.Listener
 
     var loudnessEnhancer: LoudnessEnhancer? = null
-    private val binder = Binder()
+    private var binder = Binder()
     private var showLikeButton = true
     private var showDownloadButton = true
 
@@ -523,10 +523,8 @@ class PlayerServiceModern : MediaLibraryService(),
         isclosebackgroundPlayerEnabled = preferences.getBoolean(closebackgroundPlayerKey, false)
         if (isclosebackgroundPlayerEnabled) {
             onDestroy()
+            // not necessary
             //broadCastPendingIntent<NotificationDismissReceiver>().send()
-            this.stopService(this.intent<MyDownloadService>())
-            this.stopService(this.intent<PlayerServiceModern>())
-            notificationManager?.cancelAll()
         }
     }
 
@@ -537,18 +535,30 @@ class PlayerServiceModern : MediaLibraryService(),
 
             preferences.unregisterOnSharedPreferenceChangeListener(this)
 
+            stopService(intent<MyDownloadService>())
+            stopService(intent<PlayerServiceModern>())
+
             player.removeListener(this)
             player.stop()
             player.release()
 
             mediaSession.release()
             cache.release()
-            //downloadCache.release()
-            loudnessEnhancer?.release()
-            audioVolumeObserver.unregister()
+            downloadCache.release()
             MyDownloadHelper.getDownloadManager(this).removeListener(downloadListener)
 
+            loudnessEnhancer?.release()
+            audioVolumeObserver.unregister()
+
+            timerJob?.cancel()
+            timerJob = null
+
+            notificationManager?.cancel(NotificationId)
+            notificationManager?.cancelAll()
+            notificationManager = null
+
             coroutineScope.cancel()
+
         }.onFailure {
             Timber.e("Failed onDestroy in PlayerService ${it.stackTraceToString()}")
         }
