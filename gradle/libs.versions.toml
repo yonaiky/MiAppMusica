@@ -20,7 +20,7 @@ ktor = "3.0.1"
 brotli = "0.1.2"
 palette = "1.0.0"
 desugaring = "2.1.3"
-#appcompat = "1.7.0"
+appcompat = "1.7.0"
 #core = "1.0.1"
 #core-ktx = "1.13.1" # NO UPDATE TO 1.15 DROP THEME IN RES\STYLES ANDROID 11+
 media = "1.7.0"
@@ -84,8 +84,8 @@ ktor-serialization-json = {group = "io.ktor", name = "ktor-serialization-kotlinx
 brotli = {group = "org.brotli", name = "dec", version.ref = "brotli"}
 palette = {group = "androidx.palette", name = "palette", version.ref = "palette"}
 desugaring = {group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugaring"}
-#appcompat = {group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat"}
-#appcompat-resources = {group = "androidx.appcompat", name = "appcompat-resources", version.ref = "appcompat"}
+appcompat = {group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat"}
+appcompat-resources = {group = "androidx.appcompat", name = "appcompat-resources", version.ref = "appcompat"}
 #core-splashscreen = {group = "androidx.core", name = "core-splashscreen", version.ref = "core"}
 #core-ktx = {group = "androidx.core", name = "core-ktx", version.ref = "core-ktx"}
 media = {group = "androidx.media", name = "media", version.ref = "media"}

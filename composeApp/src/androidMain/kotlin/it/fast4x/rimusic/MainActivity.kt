@@ -250,7 +250,7 @@ import kotlin.system.exitProcess
 @UnstableApi
 class MainActivity :
     //MonetCompatActivity(),
-    ComponentActivity(),
+    AppCompatActivity(),
     MonetColorsChangedListener
     //,PersistMapOwner
 {
