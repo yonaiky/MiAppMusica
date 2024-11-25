@@ -38,7 +38,6 @@ import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.content.getSystemService
-import androidx.core.net.toUri
 import androidx.core.text.isDigitsOnly
 import androidx.media.VolumeProviderCompat
 import androidx.media3.common.AudioAttributes
@@ -51,12 +50,8 @@ import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
-import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
-import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.Cache
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -80,24 +75,24 @@ import androidx.media3.extractor.mp4.FragmentedMp4Extractor
 import androidx.media3.extractor.text.DefaultSubtitleParserFactory
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
-import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.bodies.SearchBody
-import it.fast4x.innertube.requests.player
 import it.fast4x.innertube.requests.searchPage
-import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import it.fast4x.rimusic.extensions.discord.sendDiscordPresence
 import it.fast4x.rimusic.models.Event
-import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.PersistentQueue
 import it.fast4x.rimusic.models.PersistentSong
 import it.fast4x.rimusic.models.QueuedMediaItem
@@ -105,7 +100,6 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
 import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
@@ -114,12 +108,8 @@ import it.fast4x.rimusic.utils.TimerJob
 import it.fast4x.rimusic.utils.YouTubeRadio
 import it.fast4x.rimusic.utils.activityPendingIntent
 import it.fast4x.rimusic.utils.asSong
-import it.fast4x.rimusic.utils.broadCastPendingIntent
-import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.enums.AudioQualityFormat
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.discoverKey
@@ -129,8 +119,6 @@ import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
-import it.fast4x.rimusic.utils.forceSeekToNext
-import it.fast4x.rimusic.utils.forceSeekToPrevious
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
@@ -193,17 +181,10 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import me.knighthat.appContext
-import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.net.ConnectException
-import java.net.InetSocketAddress
-import java.net.Proxy
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
-import java.time.Duration
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
@@ -1982,9 +1963,7 @@ class PlayerService : InvincibleService(),
                     val songs = it.process()
 
                     songs.forEach {
-                        transaction {
-                            Database.insert(it)
-                        }
+                        Database.asyncTransaction { insert(it) }
                     }
 
                     if (justAdd) {
@@ -2029,8 +2008,8 @@ class PlayerService : InvincibleService(),
         @FlowPreview
         fun toggleLike() = mediaItemState.value?.let { mediaItem ->
             //mediaItemToggleLike(mediaItem)
-            transaction {
-                Database.like(
+            Database.asyncTransaction {
+                like(
                     mediaItem.mediaId,
                     if (isLikedState.value) null else System.currentTimeMillis()
                 )

@@ -84,7 +84,6 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -267,19 +266,19 @@ fun PlaylistSongList(
             placeholder = "https://........",
             setValue = { text ->
                 query {
-                    transaction {
-                        val playlistId = Database.insert(Playlist(name = text, browseId = browseId))
+                    Database.asyncTransaction {
+                        val playlistId = insert(Playlist(name = text, browseId = browseId))
 
                         playlistPage?.songsPage?.items
                             ?.map(Innertube.SongItem::asMediaItem)
-                            ?.onEach(Database::insert)
+                            ?.onEach( ::insert )
                             ?.mapIndexed { index, mediaItem ->
                                 SongPlaylistMap(
                                     songId = mediaItem.mediaId,
                                     playlistId = playlistId,
                                     position = index
                                 )
-                            }?.let(Database::insertSongPlaylistMaps)
+                            }?.let( ::insertSongPlaylistMaps )
                     }
                 }
                 SmartMessage(context.resources.getString(R.string.done), PopupType.Success, context = context)

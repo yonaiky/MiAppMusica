@@ -68,7 +68,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.query
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -351,10 +350,9 @@ fun ArtistOverview(
                             val bookmarkedAt =
                                 if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
                             //CoroutineScope(Dispatchers.IO).launch {
-                                transaction {
-                                    artist
-                                        ?.copy(bookmarkedAt = bookmarkedAt)
-                                        ?.let(Database::update)
+                            Database.asyncTransaction {
+                                    artist?.copy(bookmarkedAt = bookmarkedAt)
+                                          ?.let( ::update )
                                 }
                             //}
                         },

@@ -1793,9 +1793,3 @@ object Converters {
 }
 
 fun query(block: () -> Unit) = DatabaseInitializer.Instance.queryExecutor.execute(block)
-
-fun transaction(block: () -> Unit) = with(DatabaseInitializer.Instance) {
-    transactionExecutor.execute {
-        runInTransaction(block)
-    }
-}

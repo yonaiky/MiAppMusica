@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,7 +59,6 @@ import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.compose.reordering.draggedItem
-import it.fast4x.compose.reordering.localAnimateItemPlacement
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
 import it.fast4x.innertube.Innertube
@@ -86,7 +84,6 @@ import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -226,8 +223,8 @@ fun LocalPlaylistSongs(
     val renameDialog = RenameDialog.init( pipedSession, coroutineScope, { isPipedEnabled }, playlistName, { playlistPreview } )
     val exportDialog = ExportSongsToCSVDialog.init( playlistName, ::getMediaItems )
     val deleteDialog = DeletePlaylist {
-        transaction {
-            playlistPreview?.playlist?.let(Database::delete)
+        Database.asyncTransaction {
+            playlistPreview?.playlist?.let( ::delete )
         }
 
         if (
@@ -324,7 +321,7 @@ fun LocalPlaylistSongs(
                     true
                 )
             ) {
-                transaction {
+                Database.asyncTransaction {
                     runBlocking(Dispatchers.IO) {
                         withContext(Dispatchers.IO) {
                             Innertube.playlistPage(
@@ -777,9 +774,9 @@ fun LocalPlaylistSongs(
                         SwipeableQueueItem(
                             mediaItem = song.asMediaItem,
                             onSwipeToLeft = {
-                                transaction {
-                                    Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                                    Database.delete(
+                                Database.asyncTransaction {
+                                    move(playlistId, positionInPlaylist, Int.MAX_VALUE)
+                                    delete(
                                         SongPlaylistMap(
                                             song.song.id,
                                             playlistId,
