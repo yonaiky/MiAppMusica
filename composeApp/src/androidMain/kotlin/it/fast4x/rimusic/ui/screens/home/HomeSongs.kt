@@ -720,9 +720,7 @@ fun HomeSongs(
                                 // Only allow action(s) on songs other than [BuiltInPlaylist.OnDevice]
                                 if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
                                     binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
-                                    Database.asyncTransaction {
-                                        resetFormatContentLength(song.song.asMediaItem.mediaId)
-                                    }
+                                    Database.resetContentLength( song.asMediaItem.mediaId )
                                     if (!isLocal)
                                         manageDownload(
                                             context = context,

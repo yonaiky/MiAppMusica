@@ -327,9 +327,7 @@ fun AlbumDetails(
                     if (songs.isNotEmpty() == true)
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                            Database.asyncTransaction {
-                                resetFormatContentLength(it.asMediaItem.mediaId)
-                            }
+                            Database.resetContentLength( it.asMediaItem.mediaId )
                             manageDownload(
                                 context = context,
                                 mediaItem = it.asMediaItem,
@@ -340,9 +338,7 @@ fun AlbumDetails(
                     runCatching {
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
-                            Database.asyncTransaction {
-                                resetFormatContentLength(it.mediaId)
-                            }
+                            Database.resetContentLength( it.mediaId )
                             manageDownload(
                                 context = context,
                                 mediaItem = it,
@@ -370,9 +366,7 @@ fun AlbumDetails(
                     if (songs.isNotEmpty() == true)
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                            Database.asyncTransaction {
-                                resetFormatContentLength(it.asMediaItem.mediaId)
-                            }
+                            Database.resetContentLength( it.asMediaItem.mediaId )
                             manageDownload(
                                 context = context,
                                 mediaItem = it.asMediaItem,
@@ -383,9 +377,7 @@ fun AlbumDetails(
                     runCatching {
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
-                            Database.asyncTransaction {
-                                resetFormatContentLength(it.mediaId)
-                            }
+                            Database.resetContentLength( it.mediaId )
                             manageDownload(
                                 context = context,
                                 mediaItem = it,
@@ -913,9 +905,7 @@ fun AlbumDetails(
                             downloadState = downloadState,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                Database.asyncTransaction {
-                                    resetFormatContentLength(song.asMediaItem.mediaId)
-                                }
+                                Database.resetContentLength( song.asMediaItem.mediaId )
                                 if (!isLocal)
                                     manageDownload(
                                         context = context,

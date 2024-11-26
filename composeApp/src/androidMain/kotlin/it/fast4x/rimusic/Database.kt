@@ -1477,6 +1477,23 @@ interface Database {
     fun delete(song: Song)
 
     /**
+     * Reset [Format.contentLength] of provided song.
+     *
+     * This method is already wrapped by [Transaction] call,
+     * therefore, it's unnecessary to wrap it with a coroutine
+     * or other transaction call.
+     *
+     * To use it inside another [Transaction] wrapper, please
+     * refer to [resetFormatContentLength].
+     *
+     * @param songId id of song to have its [Format.contentLength] reset
+     */
+    @Transaction
+    fun resetContentLength( songId: String ) = asyncTransaction {
+        resetFormatContentLength( songId )
+    }
+
+    /**
      * Commit statements in BULK. If anything goes wrong during the transaction,
      * other statements will be cancelled and reversed to preserve database's integrity.
      * [Read more](https://sqlite.org/lang_transaction.html)

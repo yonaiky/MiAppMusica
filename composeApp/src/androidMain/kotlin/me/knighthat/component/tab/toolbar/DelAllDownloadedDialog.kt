@@ -55,9 +55,7 @@ class DelAllDownloadedDialog private constructor(
             if(binder == null) return
             binder.cache.removeResource(it.mediaId)
 
-            Database.asyncTransaction {
-                resetFormatContentLength(it.mediaId)
-            }
+            Database.resetContentLength( it.mediaId )
 
             if (!it.isLocal)
                 manageDownload(

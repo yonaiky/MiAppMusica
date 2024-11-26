@@ -239,9 +239,7 @@ fun HistoryList(
                                 song = event.song,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(event.song.asMediaItem.mediaId)
-                                    Database.asyncTransaction {
-                                        resetFormatContentLength(event.song.asMediaItem.mediaId)
-                                    }
+                                    Database.resetContentLength( event.song.asMediaItem.mediaId )
 
                                     if (!isLocal)
                                         manageDownload(

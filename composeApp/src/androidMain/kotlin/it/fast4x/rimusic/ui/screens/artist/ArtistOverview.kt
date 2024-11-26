@@ -385,9 +385,7 @@ fun ArtistOverview(
                                 if (youtubeArtistPage?.songs?.isNotEmpty() == true)
                                     youtubeArtistPage.songs?.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        Database.asyncTransaction {
-                                            resetFormatContentLength(it.asMediaItem.mediaId)
-                                        }
+                                        Database.resetContentLength( it.asMediaItem.mediaId )
                                         manageDownload(
                                             context = context,
                                             mediaItem = it.asMediaItem,
@@ -424,9 +422,7 @@ fun ArtistOverview(
                                 if (youtubeArtistPage?.songs?.isNotEmpty() == true)
                                     youtubeArtistPage.songs?.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        Database.asyncTransaction {
-                                            resetFormatContentLength(it.asMediaItem.mediaId)
-                                        }
+                                        Database.resetContentLength( it.asMediaItem.mediaId )
                                         manageDownload(
                                             context = context,
                                             mediaItem = it.asMediaItem,
@@ -538,9 +534,7 @@ fun ArtistOverview(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.asyncTransaction {
-                                            resetFormatContentLength(song.asMediaItem.mediaId)
-                                        }
+                                        Database.resetContentLength( song.asMediaItem.mediaId )
 
                                         manageDownload(
                                             context = context,

@@ -502,9 +502,7 @@ fun QuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.asyncTransaction {
-                                            resetFormatContentLength(song.asMediaItem.mediaId)
-                                        }
+                                        Database.resetContentLength( song.asMediaItem.mediaId )
 
                                         if (!isLocal)
                                             manageDownload(
@@ -542,11 +540,7 @@ fun QuickPicks(
 
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.asyncTransaction {
-                                                                resetFormatContentLength(
-                                                                    song.asMediaItem.mediaId
-                                                                )
-                                                            }
+                                                            Database.resetContentLength( song.asMediaItem.mediaId )
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,
@@ -600,9 +594,7 @@ fun QuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.asyncTransaction {
-                                            resetFormatContentLength(song.asMediaItem.mediaId)
-                                        }
+                                        Database.resetContentLength( song.asMediaItem.mediaId )
                                         if (!isLocal)
                                             manageDownload(
                                                 context = context,
@@ -629,11 +621,7 @@ fun QuickPicks(
                                                         mediaItem = song.asMediaItem,
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.asyncTransaction {
-                                                                resetFormatContentLength(
-                                                                    song.asMediaItem.mediaId
-                                                                )
-                                                            }
+                                                            Database.resetContentLength( song.asMediaItem.mediaId )
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,

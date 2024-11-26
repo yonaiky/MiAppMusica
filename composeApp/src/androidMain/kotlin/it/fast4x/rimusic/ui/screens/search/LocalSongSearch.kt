@@ -259,9 +259,7 @@ fun LocalSongSearch(
                     song = song,
                     onDownloadClick = {
                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                        Database.asyncTransaction {
-                            resetFormatContentLength(song.asMediaItem.mediaId)
-                        }
+                        Database.resetContentLength( song.asMediaItem.mediaId )
 
                         if (!isLocal)
                         manageDownload(
