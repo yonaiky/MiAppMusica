@@ -66,7 +66,6 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -401,8 +400,8 @@ fun MediaItemGridMenu (
                     ?.toString(),
                 onDownloadClick = {
                     binder?.cache?.removeResource(mediaItem.mediaId)
-                    query {
-                        Database.resetFormatContentLength(mediaItem.mediaId)
+                    Database.asyncTransaction {
+                        resetFormatContentLength(mediaItem.mediaId)
                     }
                     if (!isLocal)
                         manageDownload(
@@ -643,10 +642,9 @@ fun MediaItemGridMenu (
             placeholder = stringResource(R.string.title),
             setValue = {
                 if (it.isNotEmpty()) {
-                    query {
-                        Database.updateSongTitle(mediaItem.mediaId, it)
+                    Database.asyncTransaction {
+                        updateSongTitle(mediaItem.mediaId, it)
                     }
-                    //context.toast("Song Saved $it")
                 }
             },
             prefix = MODIFIED_PREFIX

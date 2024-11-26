@@ -67,7 +67,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.SearchQuery
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.Header
@@ -547,14 +546,14 @@ fun OnlineSearch(
                                 indication = rippleIndication,
                                 interactionSource = remember { MutableInteractionSource() },
                                 onClick = {
-                                    query {
-                                        Database.delete(searchQuery)
+                                    Database.asyncTransaction {
+                                        delete(searchQuery)
                                     }
                                 },
                                 onLongClick = {
-                                    query {
+                                    Database.asyncTransaction {
                                         history.forEach {
-                                            Database.delete(it)
+                                            delete(it)
                                         }
                                     }
                                     reloadHistory = !reloadHistory

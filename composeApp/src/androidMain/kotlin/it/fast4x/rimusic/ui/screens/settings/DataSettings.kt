@@ -45,7 +45,6 @@ import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
@@ -657,7 +656,7 @@ fun DataSettings() {
                 stringResource(R.string.history_is_empty)
             },
             isEnabled = queriesCount > 0,
-            onClick = { query(Database::clearQueries) }
+            onClick = { Database.asyncTransaction( Database::clearQueries ) }
         )
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)

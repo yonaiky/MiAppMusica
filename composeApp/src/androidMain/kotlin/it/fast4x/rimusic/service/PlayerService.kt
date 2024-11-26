@@ -821,8 +821,8 @@ class PlayerService : InvincibleService(),
         val totalPlayTimeMs = playbackStats.totalPlayTimeMs
 
         if (totalPlayTimeMs > 5000) {
-            query {
-                Database.incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
+            Database.asyncTransaction {
+                incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
             }
         }
 
@@ -831,9 +831,9 @@ class PlayerService : InvincibleService(),
             preferences.getEnum(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)
 
         if (totalPlayTimeMs > minTimeForEvent.ms) {
-            query {
+            Database.asyncTransaction {
                 try {
-                    Database.insert(
+                    insert(
                         Event(
                             songId = mediaItem.mediaId,
                             timestamp = System.currentTimeMillis(),
@@ -1085,9 +1085,9 @@ class PlayerService : InvincibleService(),
                 position = if (index == mediaItemIndex) mediaItemPosition else null
             )
         }.let { queuedMediaItems ->
-            query {
-                Database.clearQueue()
-                Database.insert(queuedMediaItems)
+            Database.asyncTransaction {
+                clearQueue()
+                insert(queuedMediaItems)
             }
         }
     }

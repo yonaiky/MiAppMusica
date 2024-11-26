@@ -79,7 +79,6 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
@@ -403,8 +402,8 @@ fun Podcast(
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true)
                                                 podcastPage?.listEpisode?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    query {
-                                                        Database.resetFormatContentLength(it.asMediaItem.mediaId)
+                                                    Database.asyncTransaction {
+                                                        resetFormatContentLength(it.asMediaItem.mediaId)
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -431,8 +430,8 @@ fun Podcast(
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true)
                                                 podcastPage?.listEpisode?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    query {
-                                                        Database.resetFormatContentLength(it.asMediaItem.mediaId)
+                                                    Database.asyncTransaction {
+                                                        resetFormatContentLength(it.asMediaItem.mediaId)
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -718,8 +717,8 @@ fun Podcast(
                             song = song.asMediaItem,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                query {
-                                    Database.resetFormatContentLength(song.asMediaItem.mediaId)
+                                Database.asyncTransaction {
+                                    resetFormatContentLength(song.asMediaItem.mediaId)
                                 }
 
                                 if (!isLocal)

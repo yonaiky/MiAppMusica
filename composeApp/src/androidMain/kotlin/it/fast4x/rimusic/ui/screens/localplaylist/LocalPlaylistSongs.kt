@@ -82,7 +82,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
@@ -475,8 +474,8 @@ fun LocalPlaylistSongs(
         key = items,
         onDragEnd = { fromIndex, toIndex ->
             //Log.d("mediaItem","reoder playlist $playlistId, from $fromIndex, to $toIndex")
-            query {
-                Database.move(playlistId, fromIndex, toIndex)
+            Database.asyncTransaction {
+                move(playlistId, fromIndex, toIndex)
             }
         },
         extraItemCount = 1

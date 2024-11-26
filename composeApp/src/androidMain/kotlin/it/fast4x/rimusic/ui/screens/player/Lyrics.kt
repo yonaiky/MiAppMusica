@@ -99,7 +99,6 @@ import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.Romanization
 import it.fast4x.rimusic.models.Lyrics
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.IconButton
@@ -556,9 +555,9 @@ fun Lyrics(
                 value = text ?: "",
                 placeholder = stringResource(R.string.enter_the_lyrics),
                 setValue = {
-                    query {
+                    Database.asyncTransaction {
                         ensureSongInserted()
-                        Database.upsert(
+                        upsert(
                             Lyrics(
                                 songId = mediaId,
                                 fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else it,
@@ -2309,8 +2308,8 @@ fun Lyrics(
                                             enabled = lyrics != null,
                                             onClick = {
                                                 menuState.hide()
-                                                query {
-                                                    Database.upsert(
+                                                Database.asyncTransaction {
+                                                    upsert(
                                                         Lyrics(
                                                             songId = mediaId,
                                                             fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else null,

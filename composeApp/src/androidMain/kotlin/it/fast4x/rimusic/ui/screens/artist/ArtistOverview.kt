@@ -67,7 +67,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -386,8 +385,8 @@ fun ArtistOverview(
                                 if (youtubeArtistPage?.songs?.isNotEmpty() == true)
                                     youtubeArtistPage.songs?.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        query {
-                                            Database.resetFormatContentLength(it.asMediaItem.mediaId)
+                                        Database.asyncTransaction {
+                                            resetFormatContentLength(it.asMediaItem.mediaId)
                                         }
                                         manageDownload(
                                             context = context,
@@ -425,8 +424,8 @@ fun ArtistOverview(
                                 if (youtubeArtistPage?.songs?.isNotEmpty() == true)
                                     youtubeArtistPage.songs?.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        query {
-                                            Database.resetFormatContentLength(it.asMediaItem.mediaId)
+                                        Database.asyncTransaction {
+                                            resetFormatContentLength(it.asMediaItem.mediaId)
                                         }
                                         manageDownload(
                                             context = context,
@@ -539,8 +538,8 @@ fun ArtistOverview(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        query {
-                                            Database.resetFormatContentLength(song.asMediaItem.mediaId)
+                                        Database.asyncTransaction {
+                                            resetFormatContentLength(song.asMediaItem.mediaId)
                                         }
 
                                         manageDownload(

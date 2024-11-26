@@ -75,7 +75,6 @@ import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
@@ -261,10 +260,9 @@ fun AlbumDetails(
             placeholder = stringResource(R.string.title),
             setValue = {
                 if (it.isNotEmpty()) {
-                    query {
-                        Database.updateAlbumTitle(browseId, it)
+                    Database.asyncTransaction {
+                        updateAlbumTitle(browseId, it)
                     }
-                    //context.toast("Album Saved $it")
                 }
             },
             prefix = MODIFIED_PREFIX
@@ -277,8 +275,8 @@ fun AlbumDetails(
             placeholder = stringResource(R.string.authors),
             setValue = {
                 if (it.isNotEmpty()) {
-                    query {
-                        Database.updateAlbumAuthors(browseId, it)
+                    Database.asyncTransaction {
+                        updateAlbumAuthors(browseId, it)
                     }
                     //context.toast("Album Saved $it")
                 }
@@ -294,8 +292,8 @@ fun AlbumDetails(
             placeholder = stringResource(R.string.cover),
             setValue = {
                 if (it.isNotEmpty()) {
-                    query {
-                        Database.updateAlbumCover(browseId, it)
+                    Database.asyncTransaction {
+                        updateAlbumCover(browseId, it)
                     }
                     //context.toast("Album Saved $it")
                 }
@@ -311,10 +309,9 @@ fun AlbumDetails(
             placeholder = stringResource(R.string.new_playlist),
             setValue = {
                 if (it.isNotEmpty()) {
-                    query {
-                        Database.insert(Playlist(name = it))
+                    Database.asyncTransaction {
+                        insert(Playlist(name = it))
                     }
-                    //context.toast("Song Saved $it")
                 }
             }
         )
@@ -330,8 +327,8 @@ fun AlbumDetails(
                     if (songs.isNotEmpty() == true)
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                            query {
-                                Database.resetFormatContentLength(it.asMediaItem.mediaId)
+                            Database.asyncTransaction {
+                                resetFormatContentLength(it.asMediaItem.mediaId)
                             }
                             manageDownload(
                                 context = context,
@@ -343,8 +340,8 @@ fun AlbumDetails(
                     runCatching {
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
-                            query {
-                                Database.resetFormatContentLength(it.mediaId)
+                            Database.asyncTransaction {
+                                resetFormatContentLength(it.mediaId)
                             }
                             manageDownload(
                                 context = context,
@@ -373,8 +370,8 @@ fun AlbumDetails(
                     if (songs.isNotEmpty() == true)
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                            query {
-                                Database.resetFormatContentLength(it.asMediaItem.mediaId)
+                            Database.asyncTransaction {
+                                resetFormatContentLength(it.asMediaItem.mediaId)
                             }
                             manageDownload(
                                 context = context,
@@ -386,8 +383,8 @@ fun AlbumDetails(
                     runCatching {
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
-                            query {
-                                Database.resetFormatContentLength(it.mediaId)
+                            Database.asyncTransaction {
+                                resetFormatContentLength(it.mediaId)
                             }
                             manageDownload(
                                 context = context,
@@ -628,10 +625,9 @@ fun AlbumDetails(
                                         val bookmarkedAt =
                                             if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
 
-                                        query {
-                                            album
-                                                ?.copy(bookmarkedAt = bookmarkedAt)
-                                                ?.let(Database::update)
+                                        Database.asyncTransaction {
+                                            album?.copy( bookmarkedAt = bookmarkedAt )
+                                                 ?.let( ::update )
                                         }
                                     },
                                     onLongClick = {
@@ -917,8 +913,8 @@ fun AlbumDetails(
                             downloadState = downloadState,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                query {
-                                    Database.resetFormatContentLength(song.asMediaItem.mediaId)
+                                Database.asyncTransaction {
+                                    resetFormatContentLength(song.asMediaItem.mediaId)
                                 }
                                 if (!isLocal)
                                     manageDownload(

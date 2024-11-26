@@ -211,7 +211,7 @@ fun HomeAlbums(
                             placeholder = stringResource( placeholderTextId ),
                             setValue = {
                                 if (it.isNotEmpty())
-                                    query { queryBlock( Database, album.id, it ) }
+                                    Database.asyncTransaction { queryBlock( this, album.id, it ) }
                             },
                             prefix = MODIFIED_PREFIX
                         )

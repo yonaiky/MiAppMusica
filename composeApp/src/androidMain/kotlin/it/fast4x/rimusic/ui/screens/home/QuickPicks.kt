@@ -79,7 +79,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -503,8 +502,8 @@ fun QuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        query {
-                                            Database.resetFormatContentLength(song.asMediaItem.mediaId)
+                                        Database.asyncTransaction {
+                                            resetFormatContentLength(song.asMediaItem.mediaId)
                                         }
 
                                         if (!isLocal)
@@ -536,15 +535,15 @@ fun QuickPicks(
                                                         onDismiss = menuState::hide,
                                                         mediaItem = song.asMediaItem,
                                                         onRemoveFromQuickPicks = {
-                                                            query {
-                                                                Database.clearEventsFor(song.id)
+                                                            Database.asyncTransaction {
+                                                                clearEventsFor(song.id)
                                                             }
                                                         },
 
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            query {
-                                                                Database.resetFormatContentLength(
+                                                            Database.asyncTransaction {
+                                                                resetFormatContentLength(
                                                                     song.asMediaItem.mediaId
                                                                 )
                                                             }
@@ -601,8 +600,8 @@ fun QuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        query {
-                                            Database.resetFormatContentLength(song.asMediaItem.mediaId)
+                                        Database.asyncTransaction {
+                                            resetFormatContentLength(song.asMediaItem.mediaId)
                                         }
                                         if (!isLocal)
                                             manageDownload(
@@ -630,8 +629,8 @@ fun QuickPicks(
                                                         mediaItem = song.asMediaItem,
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            query {
-                                                                Database.resetFormatContentLength(
+                                                            Database.asyncTransaction {
+                                                                resetFormatContentLength(
                                                                     song.asMediaItem.mediaId
                                                                 )
                                                             }

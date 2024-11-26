@@ -79,7 +79,6 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
@@ -247,11 +246,11 @@ fun NonQueuedMediaItemMenuLibrary(
             onDismiss = { isHiding = false },
             onConfirm = {
                 onDismiss()
-                query {
-                    if (binder != null) {
-                            binder.cache.removeResource(mediaItem.mediaId)
-                            binder.downloadCache.removeResource(mediaItem.mediaId)
-                            Database.resetTotalPlayTimeMs(mediaItem.mediaId)
+                if (binder != null) {
+                    binder.cache.removeResource(mediaItem.mediaId)
+                    binder.downloadCache.removeResource(mediaItem.mediaId)
+                    Database.asyncTransaction {
+                        resetTotalPlayTimeMs(mediaItem.mediaId)
                     }
                 }
             }
@@ -861,10 +860,9 @@ fun MediaItemMenu(
             placeholder = stringResource(R.string.title),
             setValue = {
                 if (it.isNotEmpty()) {
-                    query {
-                        Database.updateSongTitle(mediaItem.mediaId, it)
+                    Database.asyncTransaction {
+                        updateSongTitle(mediaItem.mediaId, it)
                     }
-                    //context.toast("Song Saved $it")
                 }
             },
             prefix = MODIFIED_PREFIX
@@ -878,10 +876,9 @@ fun MediaItemMenu(
             placeholder = stringResource(R.string.authors),
             setValue = {
                 if (it.isNotEmpty()) {
-                    query {
-                        Database.updateSongArtist(mediaItem.mediaId, it)
+                    Database.asyncTransaction {
+                        updateSongArtist(mediaItem.mediaId, it)
                     }
-                    //context.toast("Artist Changed $it")
                 }
             }
         )
@@ -1100,8 +1097,8 @@ fun MediaItemMenu(
                             ?.toString(),
                         onDownloadClick = {
                             binder?.cache?.removeResource(mediaItem.mediaId)
-                            query {
-                                Database.resetFormatContentLength(mediaItem.mediaId)
+                            Database.asyncTransaction {
+                                resetFormatContentLength(mediaItem.mediaId)
                             }
                             if (!isLocal)
                                 manageDownload(
@@ -1126,14 +1123,9 @@ fun MediaItemMenu(
                             color = colorPalette().favoritesIcon,
                             //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
                             onClick = {
-                                query {
-                                    if (Database.like(
-                                            mediaItem.mediaId,
-                                            //if (likedAt == null) System.currentTimeMillis() else null
-                                            setLikeState(likedAt)
-                                        ) == 0
-                                    ) {
-                                        Database.insert(mediaItem, Song::toggleLike)
+                                Database.asyncTransaction {
+                                    if ( like( mediaItem.mediaId, setLikeState(likedAt) ) == 0 ) {
+                                        insert(mediaItem, Song::toggleLike)
                                     }
                                 }
                             },

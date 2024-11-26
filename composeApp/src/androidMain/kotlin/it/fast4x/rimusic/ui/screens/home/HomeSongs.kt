@@ -72,7 +72,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.SongEntity
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
@@ -721,8 +720,8 @@ fun HomeSongs(
                                 // Only allow action(s) on songs other than [BuiltInPlaylist.OnDevice]
                                 if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
                                     binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
-                                    query {
-                                        Database.resetFormatContentLength(song.song.asMediaItem.mediaId)
+                                    Database.asyncTransaction {
+                                        resetFormatContentLength(song.song.asMediaItem.mediaId)
                                     }
                                     if (!isLocal)
                                         manageDownload(

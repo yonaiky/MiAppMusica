@@ -477,8 +477,8 @@ class PlayerServiceModern : MediaLibraryService(),
         val totalPlayTimeMs = playbackStats.totalPlayTimeMs
 
         if (totalPlayTimeMs > 5000) {
-            query {
-                Database.incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
+            Database.asyncTransaction {
+                incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
             }
         }
 
@@ -487,9 +487,9 @@ class PlayerServiceModern : MediaLibraryService(),
             preferences.getEnum(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)
 
         if (totalPlayTimeMs > minTimeForEvent.ms) {
-            query {
+            Database.asyncTransaction {
                 try {
-                    Database.insert(
+                    insert(
                         Event(
                             songId = mediaItem.mediaId,
                             timestamp = System.currentTimeMillis(),

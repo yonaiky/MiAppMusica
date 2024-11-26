@@ -134,7 +134,6 @@ import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.toUiMedia
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.BlurParamsDialog
@@ -991,8 +990,8 @@ fun Player(
                 },
                 onDoubleTap = {
                     val currentMediaItem = binder.player.currentMediaItem
-                    query {
-                        if (Database.like(
+                    Database.asyncTransaction {
+                        if (like(
                                 mediaItem.mediaId,
                                 if (likedAt == null) System.currentTimeMillis() else null
                             ) == 0
@@ -1000,7 +999,7 @@ fun Player(
                             currentMediaItem
                                 ?.takeIf { it.mediaId == mediaItem.mediaId }
                                 ?.let {
-                                    Database.insert(currentMediaItem, Song::toggleLike)
+                                    insert(currentMediaItem, Song::toggleLike)
                                 }
                         }
                     }
