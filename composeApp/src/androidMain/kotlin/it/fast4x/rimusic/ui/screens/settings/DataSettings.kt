@@ -68,7 +68,10 @@ import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.typography
 import java.io.FileInputStream
@@ -142,7 +145,12 @@ fun DataSettings() {
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/vnd.sqlite3")) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
 
-            query {
+            /*
+                WAL [Database#checkpoint] shouldn't be running inside a `query` or `transaction` block
+                because it requires all commits to be finalized and written to
+                base file.
+             */
+            CoroutineScope( Dispatchers.IO ).launch {
                 Database.checkpoint()
 
                 context.applicationContext.contentResolver.openOutputStream(uri)
@@ -160,7 +168,12 @@ fun DataSettings() {
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
 
-            query {
+            /*
+                WAL [Database#checkpoint] shouldn't be running inside a `query` or `transaction` block
+                because it requires all commits to be finalized and written to
+                base file.
+             */
+            CoroutineScope( Dispatchers.IO ).launch {
                 Database.checkpoint()
                 Database.close()
 
