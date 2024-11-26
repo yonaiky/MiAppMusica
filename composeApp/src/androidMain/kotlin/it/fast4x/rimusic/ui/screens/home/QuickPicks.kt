@@ -380,23 +380,27 @@ fun QuickPicks(
             ) {
 
                 /*   Load data from url or from saved preference   */
-                if (trendingPreference != null && loadedData) {
-                    trending = trendingPreference
+                if (trendingPreference != null) {
+                    if (loadedData) trending = trendingPreference
                 } else {
                     trendingPreference = trending
                 }
 
-                if (relatedPreference != null && loadedData) {
-                    relatedPageResult = Result.success(relatedPreference)
-                    relatedInit = relatedPageResult?.getOrNull()
+                if (relatedPreference != null) {
+                    if (loadedData) {
+                        relatedPageResult = Result.success(relatedPreference)
+                        relatedInit = relatedPageResult?.getOrNull()
+                    }
                 } else {
                     relatedInit = relatedPageResult?.getOrNull()
                     relatedPreference = relatedInit
                 }
 
-                if (discoverPagePreference != null && loadedData) {
-                    discoverPageResult = Result.success(discoverPagePreference)
-                    discoverPageInit = discoverPageResult?.getOrNull()
+                if (discoverPagePreference != null) {
+                    if (loadedData) {
+                        discoverPageResult = Result.success(discoverPagePreference)
+                        discoverPageInit = discoverPageResult?.getOrNull()
+                    }
                 } else {
                     discoverPageInit = discoverPageResult?.getOrNull()
                     discoverPagePreference = discoverPageInit
