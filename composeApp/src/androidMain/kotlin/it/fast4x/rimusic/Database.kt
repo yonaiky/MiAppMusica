@@ -1791,5 +1791,3 @@ object Converters {
         }
     }
 }
-
-fun query(block: () -> Unit) = DatabaseInitializer.Instance.queryExecutor.execute(block)

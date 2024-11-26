@@ -92,7 +92,6 @@ import it.fast4x.rimusic.models.PersistentSong
 import it.fast4x.rimusic.models.QueuedMediaItem
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.asMediaItem
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.BitmapProvider
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
@@ -1340,10 +1339,10 @@ class PlayerServiceModern : MediaLibraryService(),
     private fun maybeRestorePlayerQueue() {
         if (!isPersistentQueueEnabled) return
 
-        query {
-            val queuedSong = Database.queue()
+        Database.asyncQuery {
+            val queuedSong = queue()
 
-            if (queuedSong.isEmpty()) return@query
+            if (queuedSong.isEmpty()) return@asyncQuery
 
             val index = queuedSong.indexOfFirst { it.position != null }.coerceAtLeast(0)
 
@@ -1361,27 +1360,6 @@ class PlayerServiceModern : MediaLibraryService(),
                     queuedSong[index].position ?: C.TIME_UNSET
                 )
                 player.prepare()
-
-                /*
-                runCatching {
-                    ContextCompat.startForegroundService(
-                        this@PlayerServiceModern,
-                        intent<PlayerServiceModern>()
-                    )
-                    startForeground(
-                        NotificationId,
-                        Notification.Builder(this@PlayerServiceModern, NotificationChannelId)
-                            .setSmallIcon(R.drawable.app_icon)
-                            .setContentTitle("RiMusic")
-                            .setContentText("Loading...")
-                            .build()
-                    )
-                    updateNotification()
-                }.onFailure {
-                    Timber.e("PlayerServiceModern maybeRestorePlayerQueue startForegroundService ${it.stackTraceToString()}")
-                }
-                */
-
             }
         }
 

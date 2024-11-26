@@ -99,7 +99,6 @@ import it.fast4x.rimusic.models.QueuedMediaItem
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.asMediaItem
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
 import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
@@ -1098,10 +1097,10 @@ class PlayerService : InvincibleService(),
     private fun maybeRestorePlayerQueue() {
         if (!isPersistentQueueEnabled) return
 
-        query {
+        Database.asyncQuery {
             val queuedSong = Database.queue()
 
-            if (queuedSong.isEmpty()) return@query
+            if (queuedSong.isEmpty()) return@asyncQuery
 
             val index = queuedSong.indexOfFirst { it.position != null }.coerceAtLeast(0)
 

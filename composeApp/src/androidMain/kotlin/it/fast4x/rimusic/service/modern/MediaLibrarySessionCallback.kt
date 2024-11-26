@@ -33,7 +33,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_CACHED
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_DOWNLOADED
@@ -52,7 +51,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.guava.future
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject

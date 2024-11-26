@@ -40,7 +40,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -163,8 +162,8 @@ fun HomeAlbums(
                     key = Album::id
                 ) { album ->
                     var songs = remember { listOf<Song>() }
-                    query {
-                        songs = Database.albumSongsList(album.id)
+                    Database.asyncQuery {
+                        songs = albumSongsList(album.id)
                     }
 
                     var showDialogChangeAlbumTitle by remember {
