@@ -471,7 +471,9 @@ fun HomeSongs(
         itemsOnDisplay = withContext( Dispatchers.Default ) {
             items.filter( naturalFilter )
                  .filter {
-                     val containsTitle = it.song.title.contains(search.input, true)
+                     // Without cleaning, user can search explicit songs with "e:"
+                     // I kinda want this to be a feature, but it seems unnecessary
+                     val containsTitle = it.song.cleanTitle().contains(search.input, true)
                      val containsArtist = it.song.artistsText?.contains(search.input, true) ?: false
                      val containsAlbum = it.albumTitle?.contains(search.input, true) ?: false
                      val isExplicit = parentalControlEnabled && it.song.title.startsWith(EXPLICIT_PREFIX)
