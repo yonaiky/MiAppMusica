@@ -213,11 +213,9 @@ import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.QueueLoopType
-import it.fast4x.rimusic.extensions.pip.rememberPipHandler
-import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimation
-import it.fast4x.rimusic.ui.components.themed.VinylThumbnailCoverAnimationModern
+import it.fast4x.rimusic.enums.ThumbnailCoverType
+import it.fast4x.rimusic.ui.components.themed.RotateThumbnailCoverAnimationModern
 import it.fast4x.rimusic.utils.VerticalfadingEdge2
 import it.fast4x.rimusic.utils.VinylSizeKey
 import it.fast4x.rimusic.utils.actionExpandedKey
@@ -226,6 +224,7 @@ import kotlin.Float.Companion.POSITIVE_INFINITY
 import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.controlsExpandedKey
+import it.fast4x.rimusic.utils.coverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.doubleShadowDrop
@@ -258,15 +257,11 @@ import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.timelineExpandedKey
 import it.fast4x.rimusic.utils.titleExpandedKey
-import it.fast4x.rimusic.utils.verticalFadingEdge
 import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.isDownloadedSong
-import it.fast4x.rimusic.utils.pinchToToggle
-import it.fast4x.rimusic.utils.PinchDirection
-import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
-import it.fast4x.rimusic.utils.showVinylThumbnailAnimationKey
+import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.statsExpandedKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
 import me.knighthat.colorPalette
@@ -325,12 +320,12 @@ fun Player(
     val defaultOffset = 0f
     val defaultSpacing = 0f
     val defaultFade = 5f
-    val defaultVinylSize = 50f
+    val defaultImageCoverSize = 50f
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
     var thumbnailOffset  by rememberPreference(thumbnailOffsetKey, defaultOffset)
     var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
     var thumbnailFade  by rememberPreference(thumbnailFadeKey, defaultFade)
-    var vinylSize by rememberPreference(VinylSizeKey, defaultVinylSize)
+    var imageCoverSize by rememberPreference(VinylSizeKey, defaultImageCoverSize)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showBlurPlayerDialog by rememberSaveable {
         mutableStateOf(false)
@@ -364,7 +359,7 @@ fun Player(
             scaleValue = { thumbnailOffset = it },
             spacingValue = { thumbnailSpacing = it },
             fadeValue = { thumbnailFade = it },
-            vinylSizeValue = { vinylSize = it }
+            imageCoverSizeValue = { imageCoverSize = it }
         )
     }
 
@@ -870,7 +865,8 @@ fun Player(
     val timelineExpanded by rememberPreference(timelineExpandedKey, true)
     val controlsExpanded by rememberPreference(controlsExpandedKey, true)
 
-    val showVinylThumbnailAnimation by rememberPreference(showVinylThumbnailAnimationKey, false)
+    val showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
+    var coverThumbnailAnimation by rememberPreference(coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl)
 
 
     if (!isGradientBackgroundEnabled) {
@@ -1179,7 +1175,7 @@ fun Player(
                                     pagerSnapDistance = PagerSnapDistance.atMost(showsongs.number)
                                 )
                                 LaunchedEffect(binder.player.currentMediaItemIndex) {
-                                    pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                    pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
                                 }
                                 Row(
                                     modifier = Modifier
@@ -1197,7 +1193,7 @@ fun Player(
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 onClick = {
                                                     scope.launch {
-                                                        pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                                        pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
                                                     }
                                                 }
                                             ),
@@ -1777,14 +1773,15 @@ fun Player(
                              }
                          )
 
-                     if (showVinylThumbnailAnimation)
-                         VinylThumbnailCoverAnimationModern(
+                     if (showCoverThumbnailAnimation)
+                         RotateThumbnailCoverAnimationModern(
                              painter = coverPainter,
                              isSongPlaying = player.isPlaying,
                              modifier = coverModifier,
                              state = pagerState,
                              it = it,
-                             vinylSize = vinylSize
+                             imageCoverSize = imageCoverSize,
+                             type = coverThumbnailAnimation
                          )
                      else
                          Image(
@@ -2437,7 +2434,7 @@ fun Player(
                                          }
                                          .conditional(thumbnailType == ThumbnailType.Modern) {
                                              doubleShadowDrop(
-                                                 if (showVinylThumbnailAnimation) CircleShape else thumbnailRoundness.shape(),
+                                                 if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape(),
                                                  4.dp,
                                                  8.dp
                                              )
@@ -2465,14 +2462,15 @@ fun Player(
                                              }
                                          )
 
-                                     if (showVinylThumbnailAnimation)
-                                         VinylThumbnailCoverAnimationModern(
+                                     if (showCoverThumbnailAnimation)
+                                         RotateThumbnailCoverAnimationModern(
                                              painter = coverPainter,
                                              isSongPlaying = player.isPlaying,
                                              modifier = coverModifier,
                                              state = pagerState,
                                              it = it,
-                                             vinylSize = vinylSize
+                                             imageCoverSize = imageCoverSize,
+                                             type = coverThumbnailAnimation
                                          )
                                      else
                                          Image(

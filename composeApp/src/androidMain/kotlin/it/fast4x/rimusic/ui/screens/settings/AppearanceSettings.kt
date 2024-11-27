@@ -43,6 +43,7 @@ import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SongsNumber
+import it.fast4x.rimusic.enums.ThumbnailCoverType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -59,6 +60,7 @@ import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.controlsExpandedKey
+import it.fast4x.rimusic.utils.coverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
@@ -110,7 +112,7 @@ import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
-import it.fast4x.rimusic.utils.showVinylThumbnailAnimationKey
+import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showsongsKey
@@ -475,7 +477,8 @@ fun AppearanceSettings(
     var statsExpanded by rememberPreference(statsExpandedKey, true)
     var actionExpanded by rememberPreference(actionExpandedKey, true)
     var restartService by rememberSaveable { mutableStateOf(false) }
-    var showVinylThumbnailAnimation by rememberPreference(showVinylThumbnailAnimationKey, false)
+    var showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
+    var coverThumbnailAnimation by rememberPreference(coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl)
 
     var notificationPlayerFirstIcon by rememberPreference(notificationPlayerFirstIconKey, NotificationButtons.Download)
     var notificationPlayerSecondIcon by rememberPreference(notificationPlayerSecondIconKey, NotificationButtons.Favorites)
@@ -597,18 +600,30 @@ fun AppearanceSettings(
         AnimatedVisibility(visible = showthumbnail) {
             Column {
 
-                if (search.input.isBlank() || stringResource(R.string.show_vinyl_thumbnail_animation).contains(
+                if (search.input.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
                         search.input,
                         true
                     )
-                )
+                ) {
                     SwitchSettingEntry(
-                        title = stringResource(R.string.show_vinyl_thumbnail_animation),
+                        title = stringResource(R.string.show_cover_thumbnail_animation),
                         text = "",
-                        isChecked = showVinylThumbnailAnimation,
-                        onCheckedChange = { showVinylThumbnailAnimation = it },
+                        isChecked = showCoverThumbnailAnimation,
+                        onCheckedChange = { showCoverThumbnailAnimation = it },
                         Modifier.padding(start = 25.dp)
                     )
+                    AnimatedVisibility(visible = showCoverThumbnailAnimation) {
+                        Column {
+                            EnumValueSelectorSettingsEntry(
+                                title = stringResource(R.string.cover_thumbnail_animation_type),
+                                selectedValue = coverThumbnailAnimation,
+                                onValueSelected = { coverThumbnailAnimation = it },
+                                valueText = { it.textName },
+                                modifier = Modifier.padding(start = 25.dp)
+                            )
+                        }
+                    }
+                }
 
                 if (playerType == PlayerType.Modern) {
                     if (search.input.isBlank() || stringResource(R.string.fadingedge).contains(
