@@ -370,7 +370,7 @@
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Êtes-vous sûr de vouloir supprimer ce dossier de la liste noire ?</string>
     <string name="player_appearance">Apparence du lecteur</string>
     <string name="player_action_bar">BARRE D\'ACTION DU LECTEUR</string>
-    <string name="tab_data">Donnée</string>
+    <string name="tab_data">Données</string>
     <string name="image_cache_max_size">Taille maximale du cache des images</string>
     <string name="song_cache_max_size">Taille maximale du cache des titres</string>
     <string name="song_download_max_size">Taille maximale du téléchargement des titres</string>
@@ -796,13 +796,13 @@
     <string name="translated_lyrics">Paroles traduites</string>
     <string name="press_once_again_to_exit">Appuyer à nouveau pour quitter</string>
     <string name="random_sorting">Tri aléatoire</string>
-    <string name="music_animations_bars">Bars</string>
-    <string name="music_animations_crazy_bars">Crazy Bars</string>
-    <string name="music_animations_crazy_points">Crazy Points</string>
-    <string name="music_animations_bubbles">Bubbles</string>
-    <string name="now_playing_indicator">Now Playing Indicator</string>
-    <string name="good_morning">Good Morning</string>
-    <string name="good_afternoon">Good Afternoon</string>
-    <string name="good_evening">Good Evening</string>
-    <string name="good_night">Good Night</string>
+    <string name="music_animations_bars">Barres</string>
+    <string name="music_animations_crazy_bars">Barres Folles</string>
+    <string name="music_animations_crazy_points">Points Fous</string>
+    <string name="music_animations_bubbles">Bulles</string>
+    <string name="now_playing_indicator">Indicateur de lecture en cours</string>
+    <string name="good_morning">Bonjour</string>
+    <string name="good_afternoon">Bonjour</string>
+    <string name="good_evening">Bonsoir</string>
+    <string name="good_night">Bonsoir</string>
 </resources>
