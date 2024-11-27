@@ -935,12 +935,13 @@ interface Database {
     fun songsInAllMonthlyPlaylists(): Flow<List<Song>>
 
     @Query("""
-        SELECT S.*, Album.title as albumTitle 
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY S.artistsText COLLATE NOCASE
     """)
     fun sortSongsFromPlaylistByArtist( id: Long ): Flow<List<SongEntity>>
@@ -953,12 +954,13 @@ interface Database {
      * this sorting more accurate
      */
     @Query("""
-        SELECT S.*, Album.title as albumTitle 
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY 
             CASE
                 WHEN S.title LIKE "$EXPLICIT_PREFIX%" THEN SUBSTR(S.title, LENGTH('$EXPLICIT_PREFIX') + 1)
@@ -969,101 +971,110 @@ interface Database {
     fun sortSongsFromPlaylistByTitle( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT S.*, Album.title as albumTitle 
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY SP.position
     """)
     fun sortSongsPlaylistByPosition( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT S.*, Album.title as albumTitle 
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY S.totalPlayTimeMs
     """)
     fun sortSongsFromPlaylistByPlaytime( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT S.*, Album.title as albumTitle 
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN Event E ON E.songId=S.id 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY E.timestamp
     """)
     fun sortSongsFromPlaylistByDatePlayed( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT S.*, A.title as albumTitle 
+        SELECT DISTINCT S.*, A.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN songalbummap SA ON SA.songId=SP.songId 
         LEFT JOIN Album A ON A.Id=SA.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY CAST(A.year AS INTEGER)
     """)
     fun sortSongsFromPlaylistByYear( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT S.*, Album.title as albumTitle 
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY S.durationText
     """)
     fun sortSongsFromPlaylistByDuration( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT S.*, A.title as albumTitle 
+        SELECT DISTINCT S.*, A.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN songalbummap SA ON SA.songId=SP.songId 
         LEFT JOIN Album A ON A.Id=SA.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY S.artistsText COLLATE NOCASE, A.title COLLATE NOCASE
     """)
     fun sortSongsFromPlaylistByArtistAndAlbum( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT S.*, A.title as albumTitle 
+        SELECT DISTINCT S.*, A.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN songalbummap SA ON SA.songId=SP.songId 
         LEFT JOIN Album A ON A.Id=SA.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY A.title COLLATE NOCASE
     """)
     fun sortSongsFromPlaylistByAlbum( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT S.*, Album.title as albumTitle 
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY S.ROWID
     """)
     fun sortSongsFromPlaylistByRowId( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT S.*, Album.title as albumTitle 
+        SELECT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id=SP.songId 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        WHERE SP.playlistId=:id 
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
         ORDER BY S.LikedAt COLLATE NOCASE
     """)
     fun sortSongsFromPlaylistByLikedAt( id: Long ): Flow<List<SongEntity>>
