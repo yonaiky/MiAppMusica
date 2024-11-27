@@ -292,7 +292,7 @@
     <string name="disable_if_you_do_not_want_to_see">Deshabilítalo si no quieres ver</string>
     <string name="lang_hebrew">Hebreo</string>
     <string name="customize_album">Personalizar álbum</string>
-    <string name="update_title">Actualizar título</string>
+    <string name="update_title">Modificar título</string>
     <string name="update_authors">Modificar autores</string>
     <string name="update_cover">Modificar portada</string>
     <string name="title">Título</string>
@@ -327,7 +327,7 @@
     <string name="actions_you_can_do">Acciones que puedes hacer:</string>
     <string name="open_the_github_releases_web_page_and_download_latest_version">Abre la página web de Github y descarga la última versión</string>
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Descarga la última versión desde GitHub, encontrarás el archivo en el área de notificaciones y podrás instalarlo al pulsar sobre él</string>
-    <string name="f_droid_users_can_wait_for_the_update_info">Los usuarios de \"F-Droid\" pueden esperar a la actualización en \"F-Droid\", usualmente llega en unas horas con el repositorio de \"IzzyOnDroid\" y unos cuantos días en el repositorio de F-Droid.org.</string>
+    <string name="f_droid_users_can_wait_for_the_update_info">Los usuarios de F-Droid pueden esperar la actualización desde F-Droid, que suele llegar en unas horas con el repositorio de IzzyOnDroid, y en unos días con el repositorio de F-Droid.</string>
     <string name="check_update">Buscar actualizaciones</string>
     <string name="enable_check_for_update">Habilitar búsqueda de actualizaciones</string>
     <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">Mientras esté activa, se comprobará si existen actualizaciones y se notificará al iniciar la aplicación.</string>
@@ -376,7 +376,7 @@
     <string name="song_download_max_size">Tamaño máximo de descarga de canciones</string>
     <string name="save_to_backup">Guardar en respaldo</string>
     <string name="restore_from_backup">Restaurar desde respaldo</string>
-    <string name="tab_miscellaneous">Misceláneo</string>
+    <string name="tab_miscellaneous">Varios</string>
     <string name="swipe_to_action">Desliza para ejecutar acciones</string>
     <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activa el menú de acciones deslizando la canción hacia la izquierda o derecha</string>
     <string name="smart_recommendations">RECOMENDACIONES INTELIGENTES</string>
@@ -542,7 +542,7 @@
     <string name="bg_colors_fluid_gradient_background_from_theme">Fondo degradado dinámico del tema</string>
     <string name="bg_colors_fluid_gradient_background_from_cover">Fondo degradado dinámico de la carátula</string>
     <string name="show_background_in_lyrics">Mostrar color de fondo en letras</string>
-    <string name="bg_colors_blurred_cover_background">Fondo de portada difuminado</string>
+    <string name="bg_colors_blurred_cover_background">Fondo de portada desenfocado</string>
     <string name="lang_estonian">Estonio</string>
     <string name="pcontrols_modern">Moderno</string>
     <string name="pcontrols_essential">Esencial</string>
@@ -652,8 +652,8 @@
     <string name="tapqueue">Toca para abrir la lista</string>
     <string name="past_day">Último día</string>
     <string name="past_week">Semana pasada</string>
-    <string name="past_month">Último mes</string>
-    <string name="past_year">Último año</string>
+    <string name="past_month">Mes pasado</string>
+    <string name="past_year">Año pasado</string>
     <string name="all_time">Todo el tiempo</string>
     <string name="header_view_top_of">Ver el %s superior de …</string>
     <string name="podcast_episodes">Episodios</string>
@@ -666,7 +666,7 @@
     <string name="discover">Descubrir</string>
     <string name="discoverinfo">Elimina de la cola, canciones que te gustan y de la lista de reproducción</string>
     <string name="controls_header_customize">Personalizar</string>
-    <string name="controls_title_blur_effect">Efecto Blur</string>
+    <string name="controls_title_blur_effect">Efecto desenfoque</string>
     <string name="controls_title_medley_duration">Duración del popurrí</string>
     <string name="controls_title_playback_speed">Velocidad de reproducción</string>
     <string name="controls_title_playback_pitch">Tono de reproducción</string>
@@ -675,10 +675,10 @@
     <string name="lang_malayalam">Malayo</string>
     <string name="searches_suggestions">Sugerencias</string>
     <string name="searches_saved_searches">Búsquedas guardadas</string>
-    <string name="event_volumekeys">Cambiar la canción con las teclas de volumen</string>
-    <string name="event_volumekeysinfo">Volumen arriba, siguiente y volumen abajo, canción anterior</string>
+    <string name="event_volumekeys">Cambiar canción con las teclas de volumen</string>
+    <string name="event_volumekeysinfo">Subir volumen es siguiente canción, y bajar volumen es anterior canción</string>
     <string name="paste">Pegar</string>
-    <string name="searches_no_suggestions">Ninguna sugerencia</string>
+    <string name="searches_no_suggestions">No hay sugerencias</string>
     <string name="action_bar_show_discover_button">Mostrar botón descubrir</string>
     <string name="playertype">Tipo de reproductor</string>
     <string name="noblur">No desenfocar cuando la letra está deshabilitada</string>
@@ -686,9 +686,9 @@
     <string name="carousel">Vista de carrusel</string>
     <string name="carouselsize">Tamaño de miniatura en modo expandido</string>
     <string name="addednext">Añadido al siguiente</string>
-    <string name="info_paused_with_volume_zero">Pausado con el volumen cero</string>
+    <string name="info_paused_with_volume_zero">Pausado con volumen cero</string>
     <string name="effect_fade_audio">Atenuar audio</string>
-    <string name="effect_fade_audio_description">Disminuir volumen al pausar o iniciar canción</string>
+    <string name="effect_fade_audio_description">Disminuye el volumen al pausar o iniciar canción</string>
     <string name="autosync">Sincronización automática de listas de reproducción</string>
     <string name="message_type">Escribe el mensaje</string>
     <string name="message_type_modern">Moderno</string>
@@ -697,7 +697,7 @@
     <string name="discover_has_been_applied_to_radio">Descubrir ha sido aplicado a la radio, canciones eliminadas: %s</string>
     <string name="songs_number_to_show">Número de canciones a mostrar</string>
     <string name="discover_has_been_applied_to_queue">Descubrir ha sido aplicado a la cola, canciones eliminadas: %s</string>
-    <string name="player_pause_on_volume_zero">Pausado con el volumen cero</string>
+    <string name="player_pause_on_volume_zero">Pausar con volumen cero</string>
     <string name="info_pauses_player_when_volume_zero">Pausa el reproductor cuando el volumen alcanza 0 y se reanuda cuando el volumen es mayor que 0</string>
     <string name="quality">Calidad</string>
     <string name="value_must_be_ip_address">El valor debe ser una dirección IP</string>
@@ -705,7 +705,7 @@
     <string name="pinfo_show_icons">Mostrar información con iconos</string>
     <string name="format_ms">%1$s ms</string>
     <string name="minimum_silence_length">Duración mínima del silencio</string>
-    <string name="minimum_silence_length_description">El tiempo mínimo que el audio debe estar en silencio para ser omitido</string>
+    <string name="minimum_silence_length_description">El tiempo mínimo que el audio debe estar en silencio para ser saltado</string>
     <string name="minimum_silence_length_warning">¡Es necesario reiniciar el reproductor para que los cambios surtan efecto!</string>
     <string name="restart_service">Reiniciar servicio</string>
     <string name="player_pause_listen_history">Pausar historial de escucha</string>
@@ -729,9 +729,9 @@
     <string name="social_github">GitHub</string>
     <string name="update">Actualización</string>
     <string name="update_song">¿Seguro que quieres volver a cargar esta canción? El tiempo de reproducción y la caché se eliminarán. Esta acción es irreversible.</string>
-    <string name="player_pause_listen_history_info">No guardar los eventos de reproducción utilizados para estadísticas, historial y sugerencias en selecciones rápidas</string>
-    <string name="vertical_widget">Widget Vertical</string>
-    <string name="horizontal_widget">Widget Horizontal</string>
+    <string name="player_pause_listen_history_info">No guarda los eventos de reproducción utilizados para estadísticas, historial y sugerencias en selecciones rápidas</string>
+    <string name="vertical_widget">Widget vertical</string>
+    <string name="horizontal_widget">Widget horizontal</string>
     <string name="social_reddit">Reddit</string>
     <string name="social_reddit_info">Únete a la comunidad de Reddit</string>
     <string name="sleep_timer_ended">El temporizador de apagado ha finalizado</string>
@@ -747,7 +747,7 @@
     <string name="settings_loudness_base_gain">Ganancia base de volumen</string>
     <string name="settings_target_gain_loudness_info">Ganancia objetivo para la normalización de volumen</string>
     <string name="error_media_cannot_be_played">El contenido no se puede reproducir</string>
-    <string name="full_screen_lyrics_components">Componentes de letras de pantalla completa</string>
+    <string name="full_screen_lyrics_components">Componentes de letra a pantalla completa</string>
     <string name="titleartist">Título y artistas</string>
     <string name="miniqueue">Mini cola</string>
     <string name="controls">Controles</string>
@@ -779,7 +779,7 @@
     <string name="settings_enable_pip">Habilitar imagen en imagen</string>
     <string name="settings_enable_pip_auto">Habilitar imagen en imagen automático</string>
     <string name="pipmodule_cover">Portada</string>
-    <string name="settings_pip_module">Módulo pip</string>
+    <string name="settings_pip_module">Módulo PIP</string>
     <string name="menu_go_to_picture_in_picture">PIP</string>
     <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">A partir de Android 12 pip puede habilitarse automáticamente</string>
     <string name="showsecondline">Mostrar traducción en la segunda línea</string>
@@ -798,7 +798,7 @@
     <string name="music_animations_crazy_bars">Barras locas</string>
     <string name="music_animations_crazy_points">Puntos locos</string>
     <string name="music_animations_bubbles">Burbujas</string>
-    <string name="now_playing_indicator">Ahora reproduciendo indicador</string>
+    <string name="now_playing_indicator">Indicador de reproduciendo ahora</string>
     <string name="good_morning">Buenos días</string>
     <string name="good_afternoon">Buenas tardes</string>
     <string name="good_evening">Buenas noches</string>
