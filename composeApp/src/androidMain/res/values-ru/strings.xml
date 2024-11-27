@@ -799,10 +799,10 @@
     <string name="music_animations_bars">Bars</string>
     <string name="music_animations_crazy_bars">Crazy Bars</string>
     <string name="music_animations_crazy_points">Crazy Points</string>
-    <string name="music_animations_bubbles">Bubbles</string>
-    <string name="now_playing_indicator">Now Playing Indicator</string>
-    <string name="good_morning">Good Morning</string>
-    <string name="good_afternoon">Good Afternoon</string>
-    <string name="good_evening">Good Evening</string>
-    <string name="good_night">Good Night</string>
+    <string name="music_animations_bubbles">Всплывающие чаты</string>
+    <string name="now_playing_indicator">Индикатор воспроизведения</string>
+    <string name="good_morning">Доброе утро</string>
+    <string name="good_afternoon">Добрый день</string>
+    <string name="good_evening">Добрый вечер</string>
+    <string name="good_night">Доброй ночи</string>
 </resources>
