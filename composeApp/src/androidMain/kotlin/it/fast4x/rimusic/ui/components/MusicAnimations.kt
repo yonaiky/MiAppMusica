@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.components
 
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -160,39 +161,42 @@ fun MusicAnimation(
             }
     }
 
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.Bottom,
-        modifier = modifier
-    ) {
-        animatablesWithSteps.forEach { (animatable) ->
-            Canvas(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(barWidth)
-            ) {
-                when (nowPlayingIndicator) {
-                    MusicAnimationType.Bubbles -> drawCircle(
-                        color = color,
-                        radius = animatable.value * (size.height/2)
-                    )
-                    MusicAnimationType.Bars -> drawRoundRect(
-                        color = color,
-                        topLeft = Offset(x = 0f, y = size.height * (1 - animatable.value)),
-                        size = size.copy(height = animatable.value * size.height),
-                        cornerRadius = CornerRadius(cornerRadius.toPx())
-                    )
-                    MusicAnimationType.CrazyBars, MusicAnimationType.CrazyPoints -> drawLine(
-                        color = color,
-                        start = Offset(x = 0f, y = animatable.value * (size.height/2)),
-                        end = Offset(x = animatable.value * (size.height/2), y = if (nowPlayingIndicator == MusicAnimationType.CrazyBars) size.height else animatable.value * (size.height/2)),
-                        strokeWidth = size.width
-                    )
-                    else -> {}
+    AnimatedVisibility(isPlayRunning == true) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.Bottom,
+            modifier = modifier
+        ) {
+            animatablesWithSteps.forEach { (animatable) ->
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(barWidth)
+                ) {
+                    when (nowPlayingIndicator) {
+                        MusicAnimationType.Bubbles -> drawCircle(
+                            color = color,
+                            radius = animatable.value * (size.height/2)
+                        )
+                        MusicAnimationType.Bars -> drawRoundRect(
+                            color = color,
+                            topLeft = Offset(x = 0f, y = size.height * (1 - animatable.value)),
+                            size = size.copy(height = animatable.value * size.height),
+                            cornerRadius = CornerRadius(cornerRadius.toPx())
+                        )
+                        MusicAnimationType.CrazyBars, MusicAnimationType.CrazyPoints -> drawLine(
+                            color = color,
+                            start = Offset(x = 0f, y = animatable.value * (size.height/2)),
+                            end = Offset(x = animatable.value * (size.height/2), y = if (nowPlayingIndicator == MusicAnimationType.CrazyBars) size.height else animatable.value * (size.height/2)),
+                            strokeWidth = size.width
+                        )
+                        else -> {}
+                    }
+
+
                 }
-
-
             }
         }
     }
+
 }
