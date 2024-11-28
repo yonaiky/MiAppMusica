@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.ui.screens.settings
 
 import android.os.Build
+import android.text.TextUtils
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -10,7 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -23,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
@@ -132,6 +138,7 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
+import it.fast4x.rimusic.utils.jumpPreviousKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import it.fast4x.rimusic.utils.languageAppKey
 import it.fast4x.rimusic.utils.languageDestinationName
@@ -172,6 +179,7 @@ import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
+import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shakeEventEnabledKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
@@ -215,6 +223,7 @@ import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 import me.knighthat.colorPalette
 import me.knighthat.component.Search
+import me.knighthat.typography
 
 @Composable
 fun DefaultUiSettings() {
@@ -742,6 +751,7 @@ fun UiSettings(
     var enablePictureInPicture by rememberPreference(enablePictureInPictureKey, false)
     var enablePictureInPictureAuto by rememberPreference(enablePictureInPictureAutoKey, false)
     var pipModule by rememberPreference(pipModuleKey, PipModule.Cover)
+    var jumpPrevious by rememberPreference(jumpPreviousKey,"3")
 
     Column(
         modifier = Modifier
@@ -871,6 +881,35 @@ fun UiSettings(
                 }
             )
             RestartPlayerService(restartService, onRestart = { restartService = false } )
+        }
+
+        if (search.input.isBlank() || stringResource(R.string.jump_previous).contains(search.input,true)) {
+            BasicText(
+                text = stringResource(R.string.jump_previous),
+                style = typography().xs.semiBold.copy(color = colorPalette().text),
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .padding(all = 16.dp)
+            )
+            BasicText(
+                text = stringResource(R.string.jump_previous_blank),
+                style = typography().xxs.semiBold.copy(color = colorPalette().textDisabled),
+                modifier = Modifier
+                    .padding(start = 32.dp)
+            )
+            TextField(
+                value = jumpPrevious,
+                onValueChange = {
+                    if (TextUtils.isDigitsOnly(it))
+                    jumpPrevious = it
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                colors = TextFieldDefaults.textFieldColors(textColor = colorPalette().text, unfocusedIndicatorColor = colorPalette().text),
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .padding(all = 16.dp)
+            )
         }
 
         if (search.input.isBlank() || stringResource(R.string.min_listening_time).contains(search.input,true)) {

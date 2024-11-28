@@ -78,7 +78,9 @@ import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getUnlikedIcon
+import it.fast4x.rimusic.utils.jumpPreviousKey
 import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.queueLoopTypeKey
@@ -346,6 +348,8 @@ fun ControlsEssential(
 
     var queueLoopType by rememberPreference(queueLoopTypeKey, defaultValue = QueueLoopType.Default)
     val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
+    var jumpPrevious by rememberPreference(jumpPreviousKey,"3")
+
     Box {
         IconButton(
             color = colorPalette().favoritesIcon,
@@ -394,7 +398,11 @@ fun ControlsEssential(
                 indication = ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
-                    binder.player.seekToPrevious()
+                    if (jumpPrevious == "") jumpPrevious = "0"
+                    if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
+                        binder.player.seekTo(0)
+                    }
+                    else binder.player.playPrevious()
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
                 onLongClick = {

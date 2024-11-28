@@ -73,6 +73,7 @@ import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getUnlikedIcon
+import it.fast4x.rimusic.utils.jumpPreviousKey
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
@@ -371,6 +372,7 @@ fun ControlsModern(
 ) {
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
+    var jumpPrevious by rememberPreference(jumpPreviousKey, "3")
 
   if (playerPlayButtonType != PlayerPlayButtonType.Disabled) {
       CustomElevatedButton(
@@ -384,8 +386,11 @@ fun ControlsModern(
                   indication = ripple(bounded = true),
                   interactionSource = remember { MutableInteractionSource() },
                   onClick = {
-                      //binder.player.forceSeekToPrevious()
-                      binder.player.playPrevious()
+                      if (jumpPrevious == "") jumpPrevious = "0"
+                      if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
+                          binder.player.seekTo(0)
+                      }
+                      else binder.player.playPrevious()
                       if (effectRotationEnabled) isRotated = !isRotated
                   },
                   onLongClick = {
@@ -617,8 +622,11 @@ fun ControlsModern(
                           interactionSource = null,
                           indication = null,
                           onClick = {
-                              //binder.player.forceSeekToPrevious()
-                              binder.player.playPrevious()
+                              if (jumpPrevious == "") jumpPrevious = "0"
+                              if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
+                                  binder.player.seekTo(0)
+                              }
+                              else binder.player.playPrevious()
                               if (effectRotationEnabled) isRotated = !isRotated
                           },
                           onLongClick = {
