@@ -1080,18 +1080,18 @@ fun AppearanceSettings(
                     isChecked = bottomgradient,
                     onCheckedChange = { bottomgradient = it }
                 )
-        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-           if (search.input.isBlank() || stringResource(R.string.textoutline).contains(
-                search.input,
-                true
-                )
-           )
-               SwitchSettingEntry(
-                   title = stringResource(R.string.textoutline),
-                   text = "",
-                   isChecked = textoutline,
-                   onCheckedChange = { textoutline = it }
-               )
+        if (search.input.isBlank() || stringResource(R.string.textoutline).contains(
+              search.input,
+              true
+              )
+         )
+             SwitchSettingEntry(
+                 title = stringResource(R.string.textoutline),
+                 text = "",
+                 isChecked = textoutline,
+                 onCheckedChange = { textoutline = it }
+             )
+
        if (search.input.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(
                 search.input,
                 true

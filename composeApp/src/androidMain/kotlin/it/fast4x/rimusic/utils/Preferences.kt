@@ -305,6 +305,7 @@ const val pipModuleKey = "pipModule"
 
 const val notificationPlayerFirstIconKey = "notificationPlayerFirstIcon"
 const val notificationPlayerSecondIconKey = "notificationPlayerSecondIcon"
+const val jumpPreviousKey = "jumpPrevious"
 
 
 
