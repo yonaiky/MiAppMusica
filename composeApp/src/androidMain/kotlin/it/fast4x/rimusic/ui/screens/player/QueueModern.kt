@@ -84,7 +84,6 @@ import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.reordering.draggedItem
-import it.fast4x.compose.reordering.localAnimateItemPlacement
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
 import it.fast4x.rimusic.Database
@@ -97,9 +96,7 @@ import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.MusicAnimation
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -114,11 +111,9 @@ import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
-import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.getDownloadState
@@ -965,9 +960,9 @@ fun QueueModern(
                                         //Log.d("mediaItem", "next initial pos ${position}")
                                         if (listMediaItems.isEmpty()) {
                                             windows.forEachIndexed { index, song ->
-                                                transaction {
-                                                    Database.insert(song.mediaItem)
-                                                    Database.insert(
+                                                Database.asyncTransaction {
+                                                    insert(song.mediaItem)
+                                                    insert(
                                                         SongPlaylistMap(
                                                             songId = song.mediaItem.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
@@ -980,9 +975,9 @@ fun QueueModern(
                                         } else {
                                             listMediaItems.forEachIndexed { index, song ->
                                                 //Log.d("mediaItemMaxPos", position.toString())
-                                                transaction {
-                                                    Database.insert(song)
-                                                    Database.insert(
+                                                Database.asyncTransaction {
+                                                    insert(song)
+                                                    insert(
                                                         SongPlaylistMap(
                                                             songId = song.mediaId,
                                                             playlistId = playlistPreview.playlist.id,

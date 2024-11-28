@@ -80,10 +80,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -174,15 +177,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.absoluteValue
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
@@ -998,8 +995,8 @@ fun Player(
                 },
                 onDoubleTap = {
                     val currentMediaItem = binder.player.currentMediaItem
-                    query {
-                        if (Database.like(
+                    Database.asyncTransaction {
+                        if (like(
                                 mediaItem.mediaId,
                                 if (likedAt == null) System.currentTimeMillis() else null
                             ) == 0
@@ -1007,7 +1004,7 @@ fun Player(
                             currentMediaItem
                                 ?.takeIf { it.mediaId == mediaItem.mediaId }
                                 ?.let {
-                                    Database.insert(currentMediaItem, Song::toggleLike)
+                                    insert(currentMediaItem, Song::toggleLike)
                                 }
                         }
                     }
@@ -1454,8 +1451,8 @@ fun Player(
                                             navController = navController,
                                             onDismiss = {
                                                 menuState.hide()
-                                                transaction {
-                                                    songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
+                                                Database.asyncTransaction {
+                                                    songPlaylist = songUsedInPlaylists(mediaItem.mediaId)
                                                 }
                                             },
                                             mediaItem = mediaItem,

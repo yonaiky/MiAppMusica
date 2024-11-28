@@ -41,7 +41,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.DateAgo
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -225,9 +224,7 @@ fun HistoryList(
                                 song = event.song,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(event.song.asMediaItem.mediaId)
-                                    query {
-                                        Database.resetFormatContentLength(event.song.asMediaItem.mediaId)
-                                    }
+                                    Database.resetContentLength( event.song.asMediaItem.mediaId )
 
                                     if (!isLocal)
                                         manageDownload(

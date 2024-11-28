@@ -63,7 +63,6 @@ import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -341,9 +340,7 @@ fun StatisticsPage(
                             song = songs.get(it).asMediaItem,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
-                                query {
-                                    Database.resetFormatContentLength(songs.get(it).asMediaItem.mediaId)
-                                }
+                                Database.resetContentLength( songs[it].asMediaItem.mediaId )
                                 manageDownload(
                                     context = context,
                                     mediaItem = songs.get(it).asMediaItem,

@@ -82,9 +82,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -131,7 +129,6 @@ import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
-import it.fast4x.rimusic.utils.resetFormatContentLength
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
@@ -224,8 +221,8 @@ fun LocalPlaylistSongs(
     val renameDialog = RenameDialog.init( pipedSession, coroutineScope, { isPipedEnabled }, playlistName, { playlistPreview } )
     val exportDialog = ExportSongsToCSVDialog.init( playlistName, ::getMediaItems )
     val deleteDialog = DeletePlaylist {
-        transaction {
-            playlistPreview?.playlist?.let(Database::delete)
+        Database.asyncTransaction {
+            playlistPreview?.playlist?.let( ::delete )
         }
 
         if (
@@ -322,7 +319,7 @@ fun LocalPlaylistSongs(
                     true
                 )
             ) {
-                transaction {
+                Database.asyncTransaction {
                     runBlocking(Dispatchers.IO) {
                         withContext(Dispatchers.IO) {
                             Innertube.playlistPage(
@@ -478,8 +475,8 @@ fun LocalPlaylistSongs(
         key = items,
         onDragEnd = { fromIndex, toIndex ->
             //Log.d("mediaItem","reoder playlist $playlistId, from $fromIndex, to $toIndex")
-            query {
-                Database.move(playlistId, fromIndex, toIndex)
+            Database.asyncTransaction {
+                move(playlistId, fromIndex, toIndex)
             }
         },
         extraItemCount = 1
@@ -777,9 +774,9 @@ fun LocalPlaylistSongs(
                         SwipeableQueueItem(
                             mediaItem = song.asMediaItem,
                             onSwipeToLeft = {
-                                transaction {
-                                    Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                                    Database.delete(
+                                Database.asyncTransaction {
+                                    move(playlistId, positionInPlaylist, Int.MAX_VALUE)
+                                    delete(
                                         SongPlaylistMap(
                                             song.song.id,
                                             playlistId,
@@ -817,8 +814,7 @@ fun LocalPlaylistSongs(
                                 song = song.song,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(song.asMediaItem.mediaId)
-
-                                    resetFormatContentLength(song.asMediaItem.mediaId)
+                                    Database.resetContentLength( song.asMediaItem.mediaId )
 
                                     if (!isLocal) {
                                         manageDownload(

@@ -41,9 +41,7 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -219,9 +217,7 @@ fun SearchResultScreen(
                                             song = song,
                                             onDownloadClick = {
                                                 localBinder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                query {
-                                                    Database.resetFormatContentLength(song.asMediaItem.mediaId)
-                                                }
+                                                Database.resetContentLength( song.asMediaItem.mediaId )
 
                                                 manageDownload(
                                                     context = context,

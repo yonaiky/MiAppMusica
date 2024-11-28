@@ -17,7 +17,6 @@ import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.LoudnessEnhancer
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.OptIn
@@ -67,11 +66,8 @@ import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaController
 import androidx.media3.session.MediaLibraryService
-import androidx.media3.session.MediaNotification
 import androidx.media3.session.MediaSession
-import androidx.media3.session.MediaStyleNotificationHelper
 import androidx.media3.session.SessionToken
-import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
@@ -99,11 +95,9 @@ import it.fast4x.rimusic.models.PersistentSong
 import it.fast4x.rimusic.models.QueuedMediaItem
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.asMediaItem
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.BitmapProvider
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
 import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
@@ -127,7 +121,6 @@ import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
-import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isAtLeastAndroid81
 import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
@@ -514,8 +507,8 @@ class PlayerServiceModern : MediaLibraryService(),
         val totalPlayTimeMs = playbackStats.totalPlayTimeMs
 
         if (totalPlayTimeMs > 5000) {
-            query {
-                Database.incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
+            Database.asyncTransaction {
+                incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
             }
         }
 
@@ -524,9 +517,9 @@ class PlayerServiceModern : MediaLibraryService(),
             preferences.getEnum(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)
 
         if (totalPlayTimeMs > minTimeForEvent.ms) {
-            query {
+            Database.asyncTransaction {
                 try {
-                    Database.insert(
+                    insert(
                         Event(
                             songId = mediaItem.mediaId,
                             timestamp = System.currentTimeMillis(),
@@ -1053,9 +1046,9 @@ class PlayerServiceModern : MediaLibraryService(),
 
     @kotlin.OptIn(FlowPreview::class)
     fun toggleLike() {
-        transaction {
+        Database.asyncTransaction {
             currentSong.value?.let {
-                Database.like(
+                like(
                     it.id,
                     setLikeState(it.likedAt)
                 )
@@ -1176,9 +1169,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     else it.process().filter { song -> song.mediaMetadata.artist == filterArtist }
 
                     songs.forEach {
-                        transaction {
-                            Database.insert(it)
-                        }
+                        Database.asyncTransaction { insert(it) }
                     }
 
                     if (justAdd) {
@@ -1363,13 +1354,12 @@ class PlayerServiceModern : MediaLibraryService(),
                 )
             }.let { queuedMediaItems ->
                 if (queuedMediaItems.isEmpty()) return@let
-                withContext(Dispatchers.IO) {
-                    transaction {
-                        Database.clearQueue().apply {
-                            Database.insert(queuedMediaItems)
-                        }
-                    }
+
+                Database.asyncTransaction {
+                    clearQueue()
+                    insert( queuedMediaItems )
                 }
+
                 Timber.d("PlayerServiceModern QueuePersistentEnabled Saved queue")
             }
 
@@ -1390,10 +1380,10 @@ class PlayerServiceModern : MediaLibraryService(),
     private fun maybeRestorePlayerQueue() {
         if (!isPersistentQueueEnabled) return
 
-        query {
-            val queuedSong = Database.queue()
+        Database.asyncQuery {
+            val queuedSong = queue()
 
-            if (queuedSong.isEmpty()) return@query
+            if (queuedSong.isEmpty()) return@asyncQuery
 
             val index = queuedSong.indexOfFirst { it.position != null }.coerceAtLeast(0)
 
@@ -1411,27 +1401,6 @@ class PlayerServiceModern : MediaLibraryService(),
                     queuedSong[index].position ?: C.TIME_UNSET
                 )
                 player.prepare()
-
-                /*
-                runCatching {
-                    ContextCompat.startForegroundService(
-                        this@PlayerServiceModern,
-                        intent<PlayerServiceModern>()
-                    )
-                    startForeground(
-                        NotificationId,
-                        Notification.Builder(this@PlayerServiceModern, NotificationChannelId)
-                            .setSmallIcon(R.drawable.app_icon)
-                            .setContentTitle("RiMusic")
-                            .setContentText("Loading...")
-                            .build()
-                    )
-                    updateNotification()
-                }.onFailure {
-                    Timber.e("PlayerServiceModern maybeRestorePlayerQueue startForegroundService ${it.stackTraceToString()}")
-                }
-                */
-
             }
         }
 

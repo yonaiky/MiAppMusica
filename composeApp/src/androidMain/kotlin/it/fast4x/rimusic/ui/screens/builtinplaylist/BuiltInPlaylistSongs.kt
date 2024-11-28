@@ -93,7 +93,6 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -137,7 +136,6 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.resetFormatContentLength
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
@@ -728,12 +726,7 @@ fun BuiltInPlaylistSongs(
                                 if (songs.isNotEmpty() == true)
                                     songs.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        resetFormatContentLength(it.asMediaItem.mediaId)
-                                        /*
-                                        query {
-                                            Database.resetFormatContentLength(it.asMediaItem.mediaId)
-                                        }
-                                         */
+                                        Database.resetContentLength( it.asMediaItem.mediaId )
                                         manageDownload(
                                             context = context,
                                             mediaItem = it.asMediaItem,
@@ -771,12 +764,7 @@ fun BuiltInPlaylistSongs(
                                     if (songs.isNotEmpty() == true)
                                         songs.forEach {
                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                            resetFormatContentLength(it.asMediaItem.mediaId)
-                                            /*
-                                            query {
-                                                Database.resetFormatContentLength(it.asMediaItem.mediaId)
-                                            }
-                                             */
+                                            Database.resetContentLength( it.asMediaItem.mediaId )
                                             manageDownload(
                                                 context = context,
                                                 mediaItem = it.asMediaItem,
@@ -946,9 +934,9 @@ fun BuiltInPlaylistSongs(
                                         //Log.d("mediaItem", "next initial pos ${position}")
                                         if (listMediaItems.isEmpty()) {
                                             songs.forEachIndexed { index, song ->
-                                                transaction {
-                                                    Database.insert(song.asMediaItem)
-                                                    Database.insert(
+                                                Database.asyncTransaction {
+                                                    insert(song.asMediaItem)
+                                                    insert(
                                                         SongPlaylistMap(
                                                             songId = song.asMediaItem.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
@@ -961,9 +949,9 @@ fun BuiltInPlaylistSongs(
                                         } else {
                                             listMediaItems.forEachIndexed { index, song ->
                                                 //Log.d("mediaItemMaxPos", position.toString())
-                                                transaction {
-                                                    Database.insert(song)
-                                                    Database.insert(
+                                                Database.asyncTransaction {
+                                                    insert(song)
+                                                    insert(
                                                         SongPlaylistMap(
                                                             songId = song.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
@@ -1230,13 +1218,7 @@ fun BuiltInPlaylistSongs(
                             song = song,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                resetFormatContentLength(song.asMediaItem.mediaId)
-                                /*
-                                query {
-                                    Database.resetFormatContentLength(song.asMediaItem.mediaId)
-                                }
-
-                                 */
+                                Database.resetContentLength( song.asMediaItem.mediaId )
 
                                 if (!isLocal)
                                     manageDownload(

@@ -810,4 +810,6 @@
     <string name="enable_youtube_music_login">Enable YouTube Music Login</string>
     <string name="show_cover_thumbnail_animation">Show cover thumbnail animation</string>
     <string name="cover_thumbnail_animation_type">Cover animation type</string>
+    <string name="jump_previous">Əvvəlki Düymə Cari Mahnını Sonrakı Saniyələr Ötürüldükdən Sonra Təkrar Başladacaq</string>
+    <string name="jump_previous_blank">Əvvəlki Mahnını Kəsintisiz Oynatmaq üçün Əvvəlki Düyməyə Boş və ya 0 qoyun</string>
 </resources>

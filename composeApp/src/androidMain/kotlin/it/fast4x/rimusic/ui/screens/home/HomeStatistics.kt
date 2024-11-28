@@ -40,7 +40,6 @@ import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
@@ -76,8 +75,8 @@ fun HomeStatistics(
             value = "",
             placeholder = stringResource(R.string.enter_the_playlist_name),
             setValue = { text ->
-                query {
-                    Database.insert(Playlist(name = text))
+                Database.asyncTransaction {
+                    insert(Playlist(name = text))
                 }
             }
         )
