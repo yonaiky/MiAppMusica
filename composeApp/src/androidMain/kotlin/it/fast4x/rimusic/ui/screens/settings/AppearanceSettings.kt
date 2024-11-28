@@ -65,6 +65,7 @@ import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
+import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
@@ -339,6 +340,7 @@ fun AppearanceSettings(
     var transparentbar by rememberPreference(transparentbarKey, true)
     var blackgradient by rememberPreference(blackgradientKey, false)
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
+    var expandedplayer by rememberPreference(expandedplayerKey, false)
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
         PlayerPlayButtonType.Disabled
@@ -1510,7 +1512,7 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerMenu = it }
             )
 
-        if (!showlyricsthumbnail && (expandedplayertoggle || expandedlyrics)) {
+        if (!showlyricsthumbnail && (expandedplayertoggle || expandedplayer || expandedlyrics)) {
             SettingsGroupSpacer()
             SettingsEntryGroupText(title = stringResource(R.string.full_screen_lyrics_components))
 
