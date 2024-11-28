@@ -160,7 +160,7 @@ fun VinylThumbnailCoverAnimationModern(
         Animatable(currentRotation)
     }
 
-    LaunchedEffect(isSongPlaying) {
+    LaunchedEffect(isSongPlaying, state.settledPage) {
         if (isSongPlaying && it == state.settledPage) {
             rotation.animateTo(
                 targetValue = currentRotation + 360f,
