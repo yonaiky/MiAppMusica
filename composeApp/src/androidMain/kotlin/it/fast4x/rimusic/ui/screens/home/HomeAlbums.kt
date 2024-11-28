@@ -40,8 +40,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.query
-import it.fast4x.rimusic.transaction
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -164,8 +162,8 @@ fun HomeAlbums(
                     key = Album::id
                 ) { album ->
                     var songs = remember { listOf<Song>() }
-                    query {
-                        songs = Database.albumSongsList(album.id)
+                    Database.asyncQuery {
+                        songs = albumSongsList(album.id)
                     }
 
                     var showDialogChangeAlbumTitle by remember {
@@ -212,7 +210,7 @@ fun HomeAlbums(
                             placeholder = stringResource( placeholderTextId ),
                             setValue = {
                                 if (it.isNotEmpty())
-                                    query { queryBlock( Database, album.id, it ) }
+                                    Database.asyncTransaction { queryBlock( this, album.id, it ) }
                             },
                             prefix = MODIFIED_PREFIX
                         )
@@ -268,9 +266,9 @@ fun HomeAlbums(
                                                 //Log.d("mediaItem", "next initial pos ${position}")
                                                 //if (listMediaItems.isEmpty()) {
                                                 songs.forEachIndexed { index, song ->
-                                                    transaction {
-                                                        Database.insert(song.asMediaItem)
-                                                        Database.insert(
+                                                    Database.asyncTransaction {
+                                                        insert(song.asMediaItem)
+                                                        insert(
                                                             SongPlaylistMap(
                                                                 songId = song.asMediaItem.mediaId,
                                                                 playlistId = playlistPreview.playlist.id,

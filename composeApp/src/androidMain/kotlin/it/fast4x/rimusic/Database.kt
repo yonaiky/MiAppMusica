@@ -67,6 +67,9 @@ import me.knighthat.appContext
 interface Database {
     companion object : Database by DatabaseInitializer.Instance.database
 
+    private val _internal: RoomDatabase
+        get() = DatabaseInitializer.Instance
+
     @Transaction
     @Query("SELECT * FROM Format WHERE songId = :songId ORDER BY bitrate DESC LIMIT 1")
     fun getBestFormat(songId: String): Flow<Format?>
@@ -1421,12 +1424,77 @@ interface Database {
     @Delete
     fun delete(song: Song)
 
+    /**
+     * Reset [Format.contentLength] of provided song.
+     *
+     * This method is already wrapped by [Transaction] call,
+     * therefore, it's unnecessary to wrap it with a coroutine
+     * or other transaction call.
+     *
+     * To use it inside another [Transaction] wrapper, please
+     * refer to [resetFormatContentLength].
+     *
+     * @param songId id of song to have its [Format.contentLength] reset
+     */
+    @Transaction
+    fun resetContentLength( songId: String ) = asyncTransaction {
+        resetFormatContentLength( songId )
+    }
+
+    /**
+     * Commit statements in BULK. If anything goes wrong during the transaction,
+     * other statements will be cancelled and reversed to preserve database's integrity.
+     * [Read more](https://sqlite.org/lang_transaction.html)
+     *
+     * [asyncTransaction] runs all statements on non-blocking
+     * thread to prevent UI from going unresponsive.
+     *
+     * ## Best use cases:
+     * - Commit multiple write statements that require data integrity
+     * - Processes that take longer time to complete
+     *
+     * > Do NOT use this to retrieve data from the database.
+     * > Use [asyncQuery] to retrieve records.
+     *
+     * @param block of statements to write to database
+     */
+    fun asyncTransaction( block: Database.() -> Unit ) =
+        _internal.transactionExecutor.execute {
+            this.block()
+        }
+
+
+    /**
+     * Access and retrieve records from database.
+     *
+     * [asyncQuery] runs all statements asynchronously to
+     * prevent blocking UI thread from going unresponsive.
+     *
+     * ## Best use cases:
+     * - Background data retrieval
+     * - Non-immediate UI component update (i.e. count number of songs)
+     *
+     * > Do NOT use this method to write data to database
+     * > because it offers no fail-safe during write.
+     * > Use [asyncTransaction] to modify database.
+     *
+     * @param block of statements to retrieve data from database
+     */
+    fun asyncQuery( block: Database.() -> Unit ) =
+        _internal.queryExecutor.execute {
+            this.block()
+        }
+
     @RawQuery
     fun raw(supportSQLiteQuery: SupportSQLiteQuery): Int
 
     fun checkpoint() {
         raw(SimpleSQLiteQuery("PRAGMA wal_checkpoint(FULL)"))
     }
+
+    fun path() = _internal.openHelper.writableDatabase.path
+
+    fun close() = _internal.close()
 }
 
 @androidx.room.Database(
@@ -1688,18 +1756,3 @@ object Converters {
         }
     }
 }
-
-@Suppress("UnusedReceiverParameter")
-val Database.internal: RoomDatabase
-    get() = DatabaseInitializer.Instance
-
-fun query(block: () -> Unit) = DatabaseInitializer.Instance.queryExecutor.execute(block)
-
-fun transaction(block: () -> Unit) = with(DatabaseInitializer.Instance) {
-    transactionExecutor.execute {
-        runInTransaction(block)
-    }
-}
-
-val RoomDatabase.path: String?
-    get() = openHelper.writableDatabase.path

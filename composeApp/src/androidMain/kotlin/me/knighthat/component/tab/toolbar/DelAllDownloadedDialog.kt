@@ -10,7 +10,6 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.query
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.utils.manageDownload
@@ -56,9 +55,7 @@ class DelAllDownloadedDialog private constructor(
             if(binder == null) return
             binder.cache.removeResource(it.mediaId)
 
-            query {
-                Database.resetFormatContentLength(it.mediaId)
-            }
+            Database.resetContentLength( it.mediaId )
 
             if (!it.isLocal)
                 manageDownload(
