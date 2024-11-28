@@ -755,9 +755,10 @@ class PlayerServiceModern : MediaLibraryService(),
                 sendCloseEqualizerIntent()
             }
         }
-        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
-            currentMediaItem.value = player.currentMediaItem
-        }
+
+//        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
+//            currentMediaItem.value = player.currentMediaItem
+//        }
     }
 
     private fun maybeRecoverPlaybackError() {
