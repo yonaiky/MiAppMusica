@@ -7,6 +7,8 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.SQLException
@@ -390,6 +392,7 @@ class PlayerServiceModern : MediaLibraryService(),
             toggleShuffle = ::toggleShuffle
             startRadio = ::startRadio
             callPause = ::callActionPause
+            actionSearch = ::actionSearch
         }
 
         // Build the media library session
@@ -1314,6 +1317,13 @@ class PlayerServiceModern : MediaLibraryService(),
                 putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
             }
         )
+    }
+
+    private fun actionSearch() {
+        startActivity(Intent(applicationContext, MainActivity::class.java)
+            .setAction("it.fast4x.rimusic.action.search")
+            .setFlags(FLAG_ACTIVITY_NEW_TASK + FLAG_ACTIVITY_CLEAR_TASK))
+        println("PlayerServiceModern actionSearch")
     }
 
     override fun onPositionDiscontinuity(
