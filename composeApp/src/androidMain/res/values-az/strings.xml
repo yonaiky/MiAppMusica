@@ -803,4 +803,6 @@
     <string name="good_afternoon">Günortanız Xeyir</string>
     <string name="good_evening">Axşamınız Xeyir</string>
     <string name="good_night">Gecəniz Xeyrə</string>
+    <string name="jump_previous">Əvvəlki Düymə Cari Mahnını Sonrakı Saniyələr Ötürüldükdən Sonra Təkrar Başladacaq</string>
+    <string name="jump_previous_blank">Əvvəlki Mahnını Kəsintisiz Oynatmaq üçün Əvvəlki Düyməyə Boş və ya 0 qoyun</string>
 </resources>
