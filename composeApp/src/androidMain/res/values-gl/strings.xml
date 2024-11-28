@@ -803,4 +803,6 @@
     <string name="good_afternoon">Boas tardes</string>
     <string name="good_evening">Boas noites</string>
     <string name="good_night">Boa noite</string>
+    <string name="jump_previous">Previous Button Will Restart the Current Song After the Following Seconds Have Passed</string>
+    <string name="jump_previous_blank">Leave it Blank or 0 for Previous Button to Always Play the Previous Song</string>
 </resources>
