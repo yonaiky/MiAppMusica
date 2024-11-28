@@ -88,11 +88,13 @@ class Search private constructor(
         }
 
     @Composable
-    private fun ColumnScope.DecorationBox(innerTextField: @Composable () -> Unit ) {
+    private fun ColumnScope.DecorationBox(
+        innerTextField: @Composable () -> Unit,
+        onBackClick: () -> Unit
+    ) {
         Box(
             contentAlignment = Alignment.CenterStart,
-            modifier = Modifier.weight(1f)
-                .padding(horizontal = 10.dp)
+            modifier = Modifier.padding( horizontal = 10.dp )
         ) {
             IconButton(
                 onClick = {},
@@ -128,6 +130,18 @@ class Search private constructor(
 
             // Actual text from user
             innerTextField()
+        }
+        Box(
+            contentAlignment = Alignment.CenterEnd,
+            modifier = Modifier.padding( start = 30.dp, end = 15.dp )
+        ) {
+            IconButton(
+                onClick = onBackClick,
+                icon = R.drawable.backspace_outline,
+                color = colorPalette().text.copy( alpha = .8f ), // A little dimmer to prevent eye-candy
+                modifier = Modifier.align( Alignment.CenterEnd )
+                                   .size( 16.dp )
+            )
         }
     }
 
@@ -198,7 +212,14 @@ class Search private constructor(
                     keyboardController?.hide()
                 }),
                 cursorBrush = SolidColor(colorPalette().text),
-                decorationBox = { columnScope.DecorationBox( it ) },
+                decorationBox = {
+                    columnScope.DecorationBox( it ) {
+                        searchInput = searchInput.copy( text = "" )
+                        input = ""
+
+                        isFocused = true
+                    }
+                },
                 modifier = Modifier.height( 30.dp )
                     .fillMaxWidth()
                     .focusRequester(focusRequester)
