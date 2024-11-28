@@ -36,7 +36,7 @@ import it.fast4x.rimusic.utils.VinylSizeKey
 import it.fast4x.rimusic.utils.rememberPreference
 
 @Composable
-fun VinylThumnbailCover(
+fun VinylThumbnailCover(
     modifier: Modifier = Modifier,
     rotationDegrees: Float = 0f,
     painter: Painter
@@ -136,7 +136,7 @@ fun VinylThumbnailCoverAnimation(
         }
     }
 
-    VinylThumnbailCover(
+    VinylThumbnailCover(
         painter = painter,
         rotationDegrees = rotation.value,
         modifier = modifier
@@ -186,7 +186,7 @@ fun VinylThumbnailCoverAnimationModern(
         }
     }
 
-    VinylThumnbailCover(
+    VinylThumbnailCover(
         painter = painter,
         rotationDegrees = rotation.value,
         modifier = modifier
