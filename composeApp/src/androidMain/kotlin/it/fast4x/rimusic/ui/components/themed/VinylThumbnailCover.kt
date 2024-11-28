@@ -172,7 +172,7 @@ fun VinylThumbnailCoverAnimationModern(
                 currentRotation = value
             }
         } else {
-            if (currentRotation > 0f) {
+            if (currentRotation > 0f && it == state.settledPage) {
                 rotation.animateTo(
                     targetValue = currentRotation + 50,
                     animationSpec = tween(
