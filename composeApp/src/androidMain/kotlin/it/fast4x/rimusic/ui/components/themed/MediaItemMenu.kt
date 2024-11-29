@@ -130,28 +130,6 @@ fun InHistoryMediaItemMenu(
     modifier: Modifier = Modifier,
     disableScrollingText: Boolean
 ) {
-    //val binder = LocalPlayerServiceBinder.current
-
-    /*
-    var isHiding by remember {
-        mutableStateOf(false)
-    }
-
-    if (isHiding) {
-        ConfirmationDialog(
-            text = stringResource(R.string.update_song),
-            onDismiss = { isHiding = false },
-            onConfirm = {
-                onDismiss()
-                query {
-                    // Not sure we can to this here
-                    binder?.cache?.removeResource(song.id)
-                    Database.incrementTotalPlayTimeMs(song.id, -song.totalPlayTimeMs)
-                }
-            }
-        )
-    }
-     */
 
     NonQueuedMediaItemMenu(
         navController = navController,

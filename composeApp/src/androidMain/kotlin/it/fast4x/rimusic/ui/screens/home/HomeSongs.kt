@@ -147,6 +147,7 @@ import me.knighthat.component.screen.HiddenSongs
 import me.knighthat.component.screen.PeriodSelector
 import me.knighthat.component.screen.randomSort
 import me.knighthat.component.tab.DelSongDialog
+import me.knighthat.component.tab.DeleteHiddenSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HideSongDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
@@ -278,6 +279,7 @@ fun HomeSongs(
     val deleteDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
     val deleteSongDialog =  DelSongDialog.init()
     val hideSongDialog = HideSongDialog.init()
+    val deleteHiddenSongs = DeleteHiddenSongsDialog.init()
 
     val locator = LocateComponent.init( lazyListState, ::getMediaItems )
 
@@ -506,6 +508,7 @@ fun HomeSongs(
     deleteDownloadsDialog.Render()
     deleteSongDialog.Render()
     hideSongDialog.Render()
+    deleteHiddenSongs.Render()
 
     Box(
         modifier = Modifier
@@ -558,6 +561,7 @@ fun HomeSongs(
                     this.add( addToPlaylist )
                     this.add( exportDialog )
                     this.add( import )
+                    this.add( deleteHiddenSongs )
                 }
             )
 
