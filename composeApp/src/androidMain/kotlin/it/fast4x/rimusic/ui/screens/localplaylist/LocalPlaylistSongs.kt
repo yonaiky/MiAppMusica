@@ -415,6 +415,15 @@ fun LocalPlaylistSongs(
 
             containsName || containsArtist || containsAlbum
         }.let { itemsOnDisplay = it }
+
+        /*
+            [LazyListState] will try to keep the visible song at the top
+            after search input has changed. This creates a weird effect
+            that fools user to believe search results haven't change.
+
+            To prevent it, always scroll the list to the top
+         */
+        lazyListState.scrollToItem( 0 )
     }
     LaunchedEffect(Unit) {
         Database.singlePlaylistPreview( playlistId )
