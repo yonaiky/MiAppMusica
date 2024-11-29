@@ -93,16 +93,13 @@ fun ThreeColumnsApp() {
         if (videoId.isEmpty()) return@LaunchedEffect
 
         Innertube.player(
-            body = PlayerBody(videoId = videoId),
-            pipedSession = getPipedSession().toApiSession()
+            body = PlayerBody(videoId = videoId)
         )
-            ?.onSuccess {
+            .onSuccess {
                 formatAudio.value =
                     it.streamingData?.adaptiveFormats?.filter { type -> type.isAudio }
-                        ?.maxByOrNull {
-                            it.bitrate?.times(
-                                (if (it.mimeType.startsWith("audio/webm")) 100 else 1)
-                            ) ?: -1
+                        ?.findLast {
+                            it.mimeType.startsWith("audio/webm")
                         }
             }
         println("videoId  ${videoId} formatAudio url inside ${formatAudio.value?.url}")
