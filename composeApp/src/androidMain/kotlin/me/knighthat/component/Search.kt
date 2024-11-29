@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -180,15 +181,22 @@ class Search private constructor(
                 }
             }
 
+            /**
+             * [TextFieldValue] gives control over cursor.
+             *
+             * This prevents the cursor from being placed
+             * at the beginning of search term.
+             */
+            var searchTerm by remember { mutableStateOf(
+                TextFieldValue( input, TextRange( input.length ) )
+            )}
             BasicTextField(
-                /**
-                 * [TextFieldValue] gives control over cursor.
-                 *
-                 * This prevents the cursor from being placed
-                 * at the beginning of search term.
-                 */
-                value = TextFieldValue( input, TextRange( input.length ) ),
+                value = searchTerm,
                 onValueChange = {
+                    searchTerm = it.copy(
+                        text = it.text,
+                        selection = it.selection
+                    )
                     input = it.text
                 },
                 textStyle = typography().xs.semiBold,
@@ -203,6 +211,7 @@ class Search private constructor(
                 cursorBrush = SolidColor(colorPalette().text),
                 decorationBox = {
                     columnScope.DecorationBox( it ) {
+                        searchTerm = TextFieldValue( "" )
                         input = ""
 
                         // Regain focus in case keyboard is hidden
