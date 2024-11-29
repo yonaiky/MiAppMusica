@@ -6,13 +6,15 @@ import it.fast4x.rimusic.R
 
 enum class ArtistsType {
     Favorites,
-    All;
+    Library;
+    //All;
 
     val textName: String
         @Composable
         get() = when( this ) {
             Favorites -> stringResource(R.string.favorites)
-            All -> stringResource(R.string.all)
+            Library -> stringResource(R.string.library)
+            //All -> stringResource(R.string.all)
         }
 
 }
