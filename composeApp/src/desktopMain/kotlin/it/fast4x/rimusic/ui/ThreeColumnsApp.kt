@@ -94,13 +94,10 @@ fun ThreeColumnsApp() {
 
         Innertube.player(
             body = PlayerBody(videoId = videoId)
-        )
-            .onSuccess {
+        ).onSuccess {
+                println("videoId  ${videoId} adaptiveFormats ${it.streamingData?.adaptiveFormats}")
                 formatAudio.value =
-                    it.streamingData?.adaptiveFormats?.filter { type -> type.isAudio }
-                        ?.findLast {
-                            it.mimeType.startsWith("audio/webm")
-                        }
+                    it.streamingData?.autoMaxQualityFormat
             }
         println("videoId  ${videoId} formatAudio url inside ${formatAudio.value?.url}")
 
@@ -200,6 +197,7 @@ fun ThreeColumnsApp() {
             onSongClick = {
                 //it's just in db, no need to insert
                 videoId = it.id
+                println("ThreeColumnsApp onSongClick videoId $videoId")
             },
             onAlbumClick = {
                 albumId = it.id
@@ -299,6 +297,7 @@ fun ThreeColumnsApp() {
                                 coroutineScope.launch {
                                     db.upsert(it)
                                 }
+                                println("ThreeColumnsApp onSongClick videoId $videoId")
                             },
                             onAlbumClick = {
                                 albumId = it
