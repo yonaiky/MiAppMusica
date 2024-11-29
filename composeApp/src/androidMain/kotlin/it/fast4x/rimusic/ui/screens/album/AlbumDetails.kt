@@ -900,6 +900,7 @@ fun AlbumDetails(
                         val isDownloaded =
                             if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
                         val checkedState = rememberSaveable { mutableStateOf(false) }
+                        var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             mediaItem = song.asMediaItem,
                             downloadState = downloadState,
@@ -945,7 +946,10 @@ fun AlbumDetails(
                                         menuState.display {
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
-                                                onDismiss = menuState::hide,
+                                                onDismiss = {
+                                                    forceRecompose = true
+                                                    menuState.hide()
+                                                },
                                                 mediaItem = song.asMediaItem,
                                                 disableScrollingText = disableScrollingText
                                             )
@@ -984,7 +988,8 @@ fun AlbumDetails(
                             },
                             //mediaId = song.asMediaItem.mediaId
                             disableScrollingText = disableScrollingText,
-                            isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
+                            isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false,
+                            forceRecompose = forceRecompose
                         )
                     }
                 }

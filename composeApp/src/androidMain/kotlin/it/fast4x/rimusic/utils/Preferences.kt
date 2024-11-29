@@ -283,7 +283,9 @@ const val controlsExpandedKey = "controlsExpanded"
 const val miniQueueExpandedKey = "miniQueueExpanded"
 const val statsExpandedKey = "statsExpanded"
 const val actionExpandedKey = "actionExpanded"
-const val showVinylThumbnailAnimationKey = "showVinylThumbnailAnimation"
+//const val showVinylThumbnailAnimationKey = "showVinylThumbnailAnimation"
+const val showCoverThumbnailAnimationKey = "showCoverThumbnailAnimation"
+const val coverThumbnailAnimationKey = "coverThumbnailAnimation"
 
 const val restartActivityKey = "restartActivity"
 const val enableYouTubeLoginKey = "enableYoutubeLogin"
@@ -306,6 +308,9 @@ const val pipModuleKey = "pipModule"
 const val notificationPlayerFirstIconKey = "notificationPlayerFirstIcon"
 const val notificationPlayerSecondIconKey = "notificationPlayerSecondIcon"
 const val jumpPreviousKey = "jumpPrevious"
+
+const val artistTypeKey = "artistType"
+const val albumTypeKey = "albumType"
 
 
 

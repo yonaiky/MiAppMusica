@@ -412,6 +412,15 @@ fun LocalPlaylistSongs(
 
             containsName || containsArtist || containsAlbum
         }.let { itemsOnDisplay = it }
+
+        /*
+            [LazyListState] will try to keep the visible song at the top
+            after search input has changed. This creates a weird effect
+            that fools user to believe search results haven't change.
+
+            To prevent it, always scroll the list to the top
+         */
+        lazyListState.scrollToItem( 0 )
     }
     LaunchedEffect(Unit) {
         Database.singlePlaylistPreview( playlistId )
@@ -698,7 +707,7 @@ fun LocalPlaylistSongs(
                 }
 
                 itemsIndexed(
-                    items = itemsOnDisplay,
+                    items = itemsOnDisplay.filter { it.song.id.isNotBlank() },
                     key = { _, song -> song.song.id },
                     contentType = { _, song -> song },
                 ) { index, song ->
@@ -775,15 +784,9 @@ fun LocalPlaylistSongs(
                             mediaItem = song.asMediaItem,
                             onSwipeToLeft = {
                                 Database.asyncTransaction {
-                                    move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                                    delete(
-                                        SongPlaylistMap(
-                                            song.song.id,
-                                            playlistId,
-                                            Int.MAX_VALUE
-                                        )
-                                    )
+                                    deleteSongFromPlaylist(song.song.id, playlistId)
                                 }
+
 
                                 if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                                     Timber.d("MediaItemMenu LocalPlaylistSongs onSwipeToLeft browseId ${playlistPreview!!.playlist.browseId}")

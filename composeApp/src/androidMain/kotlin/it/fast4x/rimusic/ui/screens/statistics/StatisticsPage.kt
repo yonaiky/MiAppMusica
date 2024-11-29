@@ -335,6 +335,7 @@ fun StatisticsPage(
 
                         downloadState = getDownloadState(songs.get(it).asMediaItem.mediaId)
                         val isDownloaded = isDownloadedSong(songs.get(it).asMediaItem.mediaId)
+                        var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = songs.get(it).asMediaItem,
                             onDownloadClick = {
@@ -367,7 +368,10 @@ fun StatisticsPage(
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
                                                 mediaItem = songs.get(it).asMediaItem,
-                                                onDismiss = menuState::hide,
+                                                onDismiss = {
+                                                    forceRecompose = true
+                                                    menuState.hide()
+                                                },
                                                 disableScrollingText = disableScrollingText
                                             )
                                         }
@@ -382,7 +386,8 @@ fun StatisticsPage(
                                 )
                                 .fillMaxWidth(),
                             disableScrollingText = disableScrollingText,
-                            isNowPlaying = binder?.player?.isNowPlaying(songs.get(it).id) ?: false
+                            isNowPlaying = binder?.player?.isNowPlaying(songs.get(it).id) ?: false,
+                            forceRecompose = forceRecompose
                         )
                     }
                 }

@@ -199,9 +199,9 @@
                 android:value="true" />
         </service>
 
-        <receiver
+        <!-- <receiver
             android:name=".service.modern.PlayerServiceModern$NotificationDismissReceiver"
-            android:exported="false" />
+            android:exported="false" /> -->
 
         <meta-data android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc"/>

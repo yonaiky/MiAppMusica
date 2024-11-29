@@ -7,7 +7,10 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.database.SQLException
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -29,6 +32,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
@@ -75,6 +79,7 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
@@ -208,7 +213,7 @@ class PlayerServiceModern : MediaLibraryService(),
     private lateinit var downloadListener: DownloadManager.Listener
 
     var loudnessEnhancer: LoudnessEnhancer? = null
-    private val binder = Binder()
+    private var binder = Binder()
     private var showLikeButton = true
     private var showDownloadButton = true
 
@@ -239,21 +244,49 @@ class PlayerServiceModern : MediaLibraryService(),
 //    private var nBuilder: NotificationCompat.Builder =
 //            NotificationCompat.Builder(this@PlayerServiceModern, NotificationChannelId)
 
+
+    @UnstableApi
+    class CustomMediaNotificationProvider(context: Context) : DefaultMediaNotificationProvider(context) {
+        override fun getNotificationContentTitle(metadata: MediaMetadata): CharSequence? {
+            val customMetadata = MediaMetadata.Builder()
+                .setTitle(cleanPrefix(metadata.title?.toString() ?: ""))
+                .build()
+            return super.getNotificationContentTitle(customMetadata)
+        }
+
+//        override fun getNotificationContentText(metadata: MediaMetadata): CharSequence? {
+//            val customMetadata = MediaMetadata.Builder()
+//                .setArtist(cleanPrefix(metadata.artist?.toString() ?: ""))
+//                .build()
+//            return super.getNotificationContentText(customMetadata)
+//        }
+    }
+
+
     @kotlin.OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
 
-        setMediaNotificationProvider(
-            DefaultMediaNotificationProvider(
-                this,
-                { NotificationId },
-                NotificationChannelId,
-                R.string.player
-            )
-            .apply {
-                setSmallIcon(R.drawable.app_icon)
-            }
+        // Enable Android Auto if disabled
+        val component = ComponentName(this, PlayerServiceModern::class.java)
+        packageManager.setComponentEnabledSetting(
+            component,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
         )
+
+        setMediaNotificationProvider(CustomMediaNotificationProvider(this))
+//        setMediaNotificationProvider(
+//            DefaultMediaNotificationProvider(
+//                this,
+//                { NotificationId },
+//                NotificationChannelId,
+//                R.string.player
+//            )
+//            .apply {
+//                setSmallIcon(R.drawable.app_icon)
+//            }
+//        )
 
         runCatching {
             bitmapProvider = BitmapProvider(
@@ -359,6 +392,7 @@ class PlayerServiceModern : MediaLibraryService(),
             toggleShuffle = ::toggleShuffle
             startRadio = ::startRadio
             callPause = ::callActionPause
+            actionSearch = ::actionSearch
         }
 
         // Build the media library session
@@ -506,13 +540,10 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onTaskRemoved(rootIntent: Intent?) {
         isclosebackgroundPlayerEnabled = preferences.getBoolean(closebackgroundPlayerKey, false)
         if (isclosebackgroundPlayerEnabled) {
-            broadCastPendingIntent<NotificationDismissReceiver>().send()
-            this.stopService(this.intent<MyDownloadService>())
-            this.stopService(this.intent<PlayerServiceModern>())
-            stopSelf()
             onDestroy()
+            // not necessary
+            //broadCastPendingIntent<NotificationDismissReceiver>().send()
         }
-        //super.onTaskRemoved(rootIntent)
     }
 
     @UnstableApi
@@ -522,6 +553,9 @@ class PlayerServiceModern : MediaLibraryService(),
 
             preferences.unregisterOnSharedPreferenceChangeListener(this)
 
+            stopService(intent<MyDownloadService>())
+            stopService(intent<PlayerServiceModern>())
+
             player.removeListener(this)
             player.stop()
             player.release()
@@ -529,11 +563,20 @@ class PlayerServiceModern : MediaLibraryService(),
             mediaSession.release()
             cache.release()
             //downloadCache.release()
-            loudnessEnhancer?.release()
-            audioVolumeObserver.unregister()
             MyDownloadHelper.getDownloadManager(this).removeListener(downloadListener)
 
+            loudnessEnhancer?.release()
+            audioVolumeObserver.unregister()
+
+            timerJob?.cancel()
+            timerJob = null
+
+            notificationManager?.cancel(NotificationId)
+            notificationManager?.cancelAll()
+            notificationManager = null
+
             coroutineScope.cancel()
+
         }.onFailure {
             Timber.e("Failed onDestroy in PlayerService ${it.stackTraceToString()}")
         }
@@ -708,9 +751,10 @@ class PlayerServiceModern : MediaLibraryService(),
                 sendCloseEqualizerIntent()
             }
         }
-        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
-            currentMediaItem.value = player.currentMediaItem
-        }
+
+//        if (events.containsAny(EVENT_TIMELINE_CHANGED, EVENT_POSITION_DISCONTINUITY)) {
+//            currentMediaItem.value = player.currentMediaItem
+//        }
     }
 
     private fun maybeRecoverPlaybackError() {
@@ -1275,6 +1319,13 @@ class PlayerServiceModern : MediaLibraryService(),
         )
     }
 
+    private fun actionSearch() {
+        startActivity(Intent(applicationContext, MainActivity::class.java)
+            .setAction(MainActivity.action_search)
+            .setFlags(FLAG_ACTIVITY_NEW_TASK + FLAG_ACTIVITY_CLEAR_TASK))
+        println("PlayerServiceModern actionSearch")
+    }
+
     override fun onPositionDiscontinuity(
         oldPosition: Player.PositionInfo,
         newPosition: Player.PositionInfo,
@@ -1470,20 +1521,20 @@ class PlayerServiceModern : MediaLibraryService(),
 
 
 
-    class NotificationDismissReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            kotlin.runCatching {
-                context.stopService(context.intent<MyDownloadService>())
-            }.onFailure {
-                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (MyDownloadService) ${it.stackTraceToString()}")
-            }
-            kotlin.runCatching {
-                context.stopService(context.intent<PlayerServiceModern>())
-            }.onFailure {
-                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (PlayerServiceModern) ${it.stackTraceToString()}")
-            }
-        }
-    }
+//    class NotificationDismissReceiver : BroadcastReceiver() {
+//        override fun onReceive(context: Context, intent: Intent) {
+//            kotlin.runCatching {
+//                context.stopService(context.intent<MyDownloadService>())
+//            }.onFailure {
+//                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (MyDownloadService) ${it.stackTraceToString()}")
+//            }
+//            kotlin.runCatching {
+//                context.stopService(context.intent<PlayerServiceModern>())
+//            }.onFailure {
+//                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (PlayerServiceModern) ${it.stackTraceToString()}")
+//            }
+//        }
+//    }
 
     companion object {
         const val NotificationId = 1001

@@ -130,28 +130,6 @@ fun InHistoryMediaItemMenu(
     modifier: Modifier = Modifier,
     disableScrollingText: Boolean
 ) {
-    //val binder = LocalPlayerServiceBinder.current
-
-    /*
-    var isHiding by remember {
-        mutableStateOf(false)
-    }
-
-    if (isHiding) {
-        ConfirmationDialog(
-            text = stringResource(R.string.update_song),
-            onDismiss = { isHiding = false },
-            onConfirm = {
-                onDismiss()
-                query {
-                    // Not sure we can to this here
-                    binder?.cache?.removeResource(song.id)
-                    Database.incrementTotalPlayTimeMs(song.id, -song.totalPlayTimeMs)
-                }
-            }
-        )
-    }
-     */
 
     NonQueuedMediaItemMenu(
         navController = navController,
@@ -194,8 +172,7 @@ fun InPlaylistMediaItemMenu(
         onDismiss = onDismiss,
         onRemoveFromPlaylist = {
             Database.asyncTransaction {
-                move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
+                deleteSongFromPlaylist(song.id, playlistId)
             }
 
             if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {

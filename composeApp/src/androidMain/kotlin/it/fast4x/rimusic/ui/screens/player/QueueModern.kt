@@ -516,6 +516,7 @@ fun QueueModern(
                         downloadState = getDownloadState(window.mediaItem.mediaId)
                         val isDownloaded =
                             if (!isLocal) isDownloadedSong(window.mediaItem.mediaId) else true
+                        var forceRecompose by remember { mutableStateOf(false) }
 
                         Box(
                             modifier = Modifier
@@ -643,7 +644,10 @@ fun QueueModern(
                                                         navController = navController,
                                                         mediaItem = window.mediaItem,
                                                         indexInQueue = if (isPlayingThisMediaItem) null else window.firstPeriodIndex,
-                                                        onDismiss = menuState::hide,
+                                                        onDismiss = {
+                                                            forceRecompose = true
+                                                            menuState.hide()
+                                                        },
                                                         onDownload = {
                                                             manageDownload(
                                                                 context = context,
@@ -676,7 +680,8 @@ fun QueueModern(
                                         )
                                         .background(color = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background0),
                                     disableScrollingText = disableScrollingText,
-                                    isNowPlaying = binder?.player?.isNowPlaying(window.mediaItem.mediaId) ?: false
+                                    isNowPlaying = binder.player.isNowPlaying(window.mediaItem.mediaId) ?: false,
+                                    forceRecompose = forceRecompose
                                 )
                             }
                         }

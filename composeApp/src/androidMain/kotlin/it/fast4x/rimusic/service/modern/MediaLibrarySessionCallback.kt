@@ -68,6 +68,7 @@ class MediaLibrarySessionCallback @Inject constructor(
     var toggleShuffle: () -> Unit = {}
     var startRadio: () -> Unit = {}
     var callPause: () -> Unit = {}
+    var actionSearch: () -> Unit = {}
     var searchedSongs: List<Song> = emptyList()
 
     override fun onConnect(
@@ -82,6 +83,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                 .add(MediaSessionConstants.CommandToggleShuffle)
                 .add(MediaSessionConstants.CommandToggleRepeatMode)
                 .add(MediaSessionConstants.CommandStartRadio)
+                .add(MediaSessionConstants.CommandSearch)
                 .build(),
             connectionResult.availablePlayerCommands
         )
@@ -143,6 +145,7 @@ class MediaLibrarySessionCallback @Inject constructor(
             MediaSessionConstants.ACTION_TOGGLE_SHUFFLE -> toggleShuffle()
             MediaSessionConstants.ACTION_TOGGLE_REPEAT_MODE -> toggleRepeat()
             MediaSessionConstants.ACTION_START_RADIO -> startRadio()
+            MediaSessionConstants.ACTION_SEARCH -> actionSearch()
         }
         return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
     }
@@ -581,9 +584,11 @@ object MediaSessionConstants {
     const val ACTION_TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE"
     const val ACTION_TOGGLE_REPEAT_MODE = "TOGGLE_REPEAT_MODE"
     const val ACTION_START_RADIO = "START_RADIO"
+    const val ACTION_SEARCH = "ACTION_SEARCH"
     val CommandToggleDownload = SessionCommand(ACTION_TOGGLE_DOWNLOAD, Bundle.EMPTY)
     val CommandToggleLike = SessionCommand(ACTION_TOGGLE_LIKE, Bundle.EMPTY)
     val CommandToggleShuffle = SessionCommand(ACTION_TOGGLE_SHUFFLE, Bundle.EMPTY)
     val CommandToggleRepeatMode = SessionCommand(ACTION_TOGGLE_REPEAT_MODE, Bundle.EMPTY)
     val CommandStartRadio = SessionCommand(ACTION_START_RADIO, Bundle.EMPTY)
+    val CommandSearch = SessionCommand(ACTION_SEARCH, Bundle.EMPTY)
 }

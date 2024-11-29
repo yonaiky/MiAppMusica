@@ -709,6 +709,7 @@ fun Podcast(
                         val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                         downloadState = getDownloadState(song.asMediaItem.mediaId)
                         val isDownloaded = if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
+                        var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = song.asMediaItem,
                             onDownloadClick = {
@@ -731,7 +732,10 @@ fun Podcast(
                                         menuState.display {
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
-                                                onDismiss = menuState::hide,
+                                                onDismiss = {
+                                                    forceRecompose = true
+                                                    menuState.hide()
+                                                },
                                                 mediaItem = song.asMediaItem,
                                                 disableScrollingText = disableScrollingText
                                             )
@@ -749,7 +753,8 @@ fun Podcast(
                                     }
                                 ),
                             disableScrollingText = disableScrollingText,
-                            isNowPlaying = binder?.player?.isNowPlaying(song.videoId) ?: false
+                            isNowPlaying = binder?.player?.isNowPlaying(song.videoId) ?: false,
+                            forceRecompose = forceRecompose
                         )
                     }
                 }

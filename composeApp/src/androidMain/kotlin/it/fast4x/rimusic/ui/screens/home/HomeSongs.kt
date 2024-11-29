@@ -147,6 +147,7 @@ import me.knighthat.component.screen.HiddenSongs
 import me.knighthat.component.screen.PeriodSelector
 import me.knighthat.component.screen.randomSort
 import me.knighthat.component.tab.DelSongDialog
+import me.knighthat.component.tab.DeleteHiddenSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HideSongDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
@@ -278,6 +279,7 @@ fun HomeSongs(
     val deleteDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
     val deleteSongDialog =  DelSongDialog.init()
     val hideSongDialog = HideSongDialog.init()
+    val deleteHiddenSongs = DeleteHiddenSongsDialog.init()
 
     val locator = LocateComponent.init( lazyListState, ::getMediaItems )
 
@@ -481,6 +483,15 @@ fun HomeSongs(
                  }
         }
 
+        /*
+            [LazyListState] will try to keep the visible song at the top
+            after search input has changed. This creates a weird effect
+            that fools user to believe search results haven't change.
+
+            To prevent it, always scroll the list to the top
+         */
+        lazyListState.scrollToItem( 0 )
+
         isLoading = false
     }
     // Filter folder on the side
@@ -497,6 +508,7 @@ fun HomeSongs(
     deleteDownloadsDialog.Render()
     deleteSongDialog.Render()
     hideSongDialog.Render()
+    deleteHiddenSongs.Render()
 
     Box(
         modifier = Modifier
@@ -549,6 +561,7 @@ fun HomeSongs(
                     this.add( addToPlaylist )
                     this.add( exportDialog )
                     this.add( import )
+                    this.add( deleteHiddenSongs )
                 }
             )
 
@@ -715,7 +728,7 @@ fun HomeSongs(
 
                         val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
                         val isDownloaded = isLocal || isDownloadedSong( mediaItem.mediaId )
-
+                        var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = song.song,
                             onDownloadClick = {
@@ -815,7 +828,10 @@ fun HomeSongs(
                                             InHistoryMediaItemMenu(
                                                 navController = navController,
                                                 song = song.song,
-                                                onDismiss = menuState::hide,
+                                                onDismiss = {
+                                                    forceRecompose = true
+                                                    menuState.hide()
+                                                },
                                                 onHideFromDatabase = hideAction,
                                                 onDeleteFromDatabase = deleteFromDatabase,
                                                 disableScrollingText = disableScrollingText
@@ -899,7 +915,8 @@ fun HomeSongs(
                                 )
                                 .animateItem(),
                             disableScrollingText = disableScrollingText,
-                            isNowPlaying = binder?.player?.isNowPlaying(song.song.id) ?: false
+                            isNowPlaying = binder?.player?.isNowPlaying(song.song.id) ?: false,
+                            forceRecompose = forceRecompose
                         )
                     }
                 }

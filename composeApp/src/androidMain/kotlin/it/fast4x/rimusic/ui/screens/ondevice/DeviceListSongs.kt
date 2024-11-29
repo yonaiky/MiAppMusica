@@ -897,6 +897,8 @@ fun DeviceListSongs(
                 key = { index, _ -> Random.nextLong().toString() },
                 contentType = { _, song -> song },
             ) { index, song ->
+
+                var forceRecompose by remember { mutableStateOf(false) }
                 SongItem(
                     song = song.song,
                     onDownloadClick = {
@@ -936,7 +938,10 @@ fun DeviceListSongs(
                                         DeviceLists.LocalSongs -> InHistoryMediaItemMenu(
                                             navController = navController,
                                             song = song.song,
-                                            onDismiss = menuState::hide,
+                                            onDismiss = {
+                                                forceRecompose = true
+                                                menuState.hide()
+                                            },
                                             disableScrollingText = disableScrollingText
                                         )
                                     }
@@ -956,7 +961,8 @@ fun DeviceListSongs(
                         )
                         .animateItem(),
                     disableScrollingText = disableScrollingText,
-                    isNowPlaying = binder?.player?.isNowPlaying(song.song.id) ?: false
+                    isNowPlaying = binder?.player?.isNowPlaying(song.song.id) ?: false,
+                    forceRecompose = forceRecompose
                 )
             }
         }
