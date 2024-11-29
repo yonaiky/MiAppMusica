@@ -193,10 +193,6 @@ fun InPlaylistMediaItemMenu(
         mediaItem = song.asMediaItem,
         onDismiss = onDismiss,
         onRemoveFromPlaylist = {
-//            Database.asyncTransaction {
-//                move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-//                delete(SongPlaylistMap(song.id, playlistId, Int.MAX_VALUE))
-//            }
             Database.asyncTransaction {
                 deleteSongFromPlaylist(song.id, playlistId)
             }
