@@ -1321,7 +1321,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
     private fun actionSearch() {
         startActivity(Intent(applicationContext, MainActivity::class.java)
-            .setAction("it.fast4x.rimusic.action.search")
+            .setAction(MainActivity.action_search)
             .setFlags(FLAG_ACTIVITY_NEW_TASK + FLAG_ACTIVITY_CLEAR_TASK))
         println("PlayerServiceModern actionSearch")
     }
