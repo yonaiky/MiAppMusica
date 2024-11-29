@@ -155,10 +155,6 @@ class Search private constructor(
 
     @Composable
     fun SearchBar( columnScope: ColumnScope ) {
-        var showSearchBar by visibleState
-        var isFocused by focusState
-        var input by inputState
-
         val thumbnailRoundness by rememberPreference(
             thumbnailRoundnessKey,
             ThumbnailRoundness.Heavy
@@ -167,15 +163,15 @@ class Search private constructor(
         val focusRequester = remember { FocusRequester() }
 
         AnimatedVisibility(
-            visible = showSearchBar,
+            visible = isVisible,
             modifier = Modifier.padding(all = 10.dp)
                 .fillMaxWidth()
         ) {
             // Auto focus on search bar when it's visible
             val focusManager = LocalFocusManager.current
             val keyboardController = LocalSoftwareKeyboardController.current
-            LaunchedEffect( showSearchBar, isFocused ) {
-                if( !showSearchBar ) return@LaunchedEffect
+            LaunchedEffect( isVisible, isFocused ) {
+                if( !isVisible ) return@LaunchedEffect
 
                 if( isFocused )
                     focusRequester.requestFocus()
@@ -207,7 +203,7 @@ class Search private constructor(
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions( imeAction = ImeAction.Done ),
                 keyboardActions = KeyboardActions(onDone = {
-                    showSearchBar = input.isNotBlank()
+                    isVisible = input.isNotBlank()
                     isFocused = false
                     keyboardController?.hide()
                 }),
