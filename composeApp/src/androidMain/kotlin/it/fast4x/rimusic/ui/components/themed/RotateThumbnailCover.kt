@@ -170,7 +170,7 @@ fun RotateThumbnailCoverAnimationModern(
     }
 
     LaunchedEffect(isSongPlaying) {
-        if (isSongPlaying && it == state.settledPage) {
+        if (isSongPlaying) {
             rotation.animateTo(
                 targetValue = currentRotation + 360f,
                 animationSpec = infiniteRepeatable(
