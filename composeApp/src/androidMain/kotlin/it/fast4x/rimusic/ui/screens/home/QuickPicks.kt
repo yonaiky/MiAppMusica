@@ -274,8 +274,11 @@ fun QuickPicks(
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
+            println("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
             loadedData = false
         }.onSuccess {
+            Timber.d("Success loadData in QuickPicsModern")
+            println("Success loadData in QuickPicsModern")
             loadedData = true
         }
     }
@@ -329,8 +332,6 @@ fun QuickPicks(
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
-    //val showActionsBar by rememberPreference(showActionsBarKey, true)
-
     val downloadedSongs = remember {
         MyDownloadHelper.downloads.value.filter {
             it.value.state == Download.STATE_COMPLETED
@@ -381,9 +382,8 @@ fun QuickPicks(
                 /*   Load data from url or from saved preference   */
                 if (trendingPreference != null) {
                     if (loadedData) trending = trendingPreference
-                } else {
-                    trendingPreference = trending
-                }
+                     else trendingPreference = trending
+                } else trendingPreference = trending
 
                 if (relatedPreference != null) {
                     if (loadedData) {
@@ -550,7 +550,7 @@ fun QuickPicks(
 
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                                            Database.resetContentLength(song.asMediaItem.mediaId)
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,
@@ -635,7 +635,7 @@ fun QuickPicks(
                                                         mediaItem = song.asMediaItem,
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                                            Database.resetContentLength(song.asMediaItem.mediaId)
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,
