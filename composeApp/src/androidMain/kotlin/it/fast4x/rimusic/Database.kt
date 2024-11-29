@@ -1368,6 +1368,9 @@ interface Database {
     @Query("DELETE FROM SongPlaylistMap WHERE songId = :id")
     fun deleteSongFromPlaylists(id: String)
 
+    @Query("DELETE FROM SongPlaylistMap WHERE songId = :id and playlistId = :playlistId")
+    fun deleteSongFromPlaylist(id: String, playlistId: Long)
+
     @Query("DELETE FROM SongAlbumMap WHERE albumId = :id")
     fun clearAlbum(id: String)
 

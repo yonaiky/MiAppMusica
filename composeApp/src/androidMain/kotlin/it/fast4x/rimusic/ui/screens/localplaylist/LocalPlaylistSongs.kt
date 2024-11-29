@@ -784,15 +784,9 @@ fun LocalPlaylistSongs(
                             mediaItem = song.asMediaItem,
                             onSwipeToLeft = {
                                 Database.asyncTransaction {
-                                    move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                                    delete(
-                                        SongPlaylistMap(
-                                            song.song.id,
-                                            playlistId,
-                                            Int.MAX_VALUE
-                                        )
-                                    )
+                                    deleteSongFromPlaylist(song.song.id, playlistId)
                                 }
+
 
                                 if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                                     Timber.d("MediaItemMenu LocalPlaylistSongs onSwipeToLeft browseId ${playlistPreview!!.playlist.browseId}")
