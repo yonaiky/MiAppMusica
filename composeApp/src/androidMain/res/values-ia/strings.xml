@@ -53,7 +53,7 @@
     <string name="clear">Rader</string>
     <string name="error">Ocurreva un error.</string>
     <string name="online">In linea</string>
-    <string name="no_results_found">No results found. Please try a different query or category</string>
+    <string name="no_results_found">Necun resultato trovate. Tenta un consulta o categoria differente</string>
     <string name="videos">Videos</string>
     <string name="featured">Eminente</string>
     <string name="view_the_source_code">Vider le codice fonte</string>
@@ -146,9 +146,9 @@
     <string name="restarting_rimusic_is_required">Le reinitio es requirite</string>
     <string name="small">Small</string>
     <string name="medium">Medium</string>
-    <string name="big">Big</string>
-    <string name="none">None</string>
-    <string name="light">Light</string>
+    <string name="big">Grande</string>
+    <string name="none">Necuno</string>
+    <string name="light">Legier</string>
     <string name="heavy">Heavy</string>
     <string name="player_rotating_buttons">Rotating buttons</string>
     <string name="player_enable_rotation_buttons">Enable rotation of buttons when clicked</string>
@@ -229,7 +229,7 @@
     <string name="user_interface">Interfacie de usator</string>
     <string name="ui_tab">IU</string>
     <string name="system_language">Lingua del systema</string>
-    <string name="biggest">Biggest</string>
+    <string name="biggest">Plus grande</string>
     <string name="set_custom_cache">Definir cache personalisate</string>
     <string name="enter_value_in_mb">Insere le valor in MB</string>
     <string name="value_cannot_be_empty">Le valor non pote esser vacue</string>
@@ -794,7 +794,7 @@
     <string name="translated_lyrics">Translated Lyrics</string>
     <string name="press_once_again_to_exit">Press once again to exit</string>
     <string name="random_sorting">Random sorting</string>
-    <string name="music_animations_bars">Bars</string>
+    <string name="music_animations_bars">Barras</string>
     <string name="music_animations_crazy_bars">Crazy Bars</string>
     <string name="music_animations_crazy_points">Crazy Points</string>
     <string name="music_animations_bubbles">Bubbles</string>
