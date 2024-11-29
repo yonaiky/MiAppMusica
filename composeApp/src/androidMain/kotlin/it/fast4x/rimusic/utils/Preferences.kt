@@ -309,6 +309,9 @@ const val notificationPlayerFirstIconKey = "notificationPlayerFirstIcon"
 const val notificationPlayerSecondIconKey = "notificationPlayerSecondIcon"
 const val jumpPreviousKey = "jumpPrevious"
 
+const val artistTypeKey = "artistType"
+const val albumTypeKey = "albumType"
+
 
 
 /*
