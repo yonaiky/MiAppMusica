@@ -190,9 +190,9 @@
     <string name="_default">Predefinite</string>
     <string name="dynamic">Dynamic</string>
     <string name="discovery">Discoperir</string>
-    <string name="mood">Mood</string>
+    <string name="mood">Humor</string>
     <string name="new_albums">Nove albumes</string>
-    <string name="moods_and_genres">Moods and genres</string>
+    <string name="moods_and_genres">Humores e generos</string>
     <string name="search_queries">" search queries"</string>
     <string name="not_find_battery_optimization_settings">Couldn\'t find battery optimization settings, please whitelist manually</string>
     <string name="search">Cercar</string>
@@ -213,7 +213,7 @@
     <string name="vt_one_side">One side</string>
     <string name="vt_double_side">Double side</string>
     <string name="vt_double_side_circular">Double side circular</string>
-    <string name="vt_full">Full</string>
+    <string name="vt_full">Plen</string>
     <string name="new_albums_of_your_artists">Nove albumes de tu artistas</string>
     <string name="timeline">Chronologia</string>
     <string name="song_cache_by_player">SONG CACHE (by Player)</string>
@@ -252,9 +252,9 @@
     <string name="esperanto">Esperanto</string>
     <string name="close_app_with_back_button">Clauder le application con le button Retro</string>
     <string name="when_you_use_the_back_button_from_the_home_page">Quando tu usa le button Retro ab le pagina de initio</string>
-    <string name="audio_quality_format_high">High</string>
-    <string name="audio_quality_format_medium">Medium</string>
-    <string name="audio_quality_format_low">Low</string>
+    <string name="audio_quality_format_high">Alte</string>
+    <string name="audio_quality_format_medium">Medie</string>
+    <string name="audio_quality_format_low">Basse</string>
     <string name="audio_quality_format_unknown">Incognite</string>
     <string name="do_you_really_want_to_delete_download">Desira tu vermente deler le discarga?</string>
     <string name="enqueue_all">Adder toto al cauda</string>
@@ -418,7 +418,7 @@
     <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
     <string name="lang_danish">Danish</string>
     <string name="lang_serbian_latin">Serbian Latin</string>
-    <string name="item_deselect">Deselect</string>
+    <string name="item_deselect">Disselectionar</string>
     <string name="show_next_songs_in_player">Monstrar le mini cauda in le reproductor</string>
     <string name="show_remaining_song_time">Monstra le tempore remanente del canto</string>
     <string name="full_screen">Schermo plen</string>
