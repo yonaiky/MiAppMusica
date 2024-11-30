@@ -237,7 +237,7 @@ fun HistoryList(
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 thumbnailSizePx = thumbnailSizePx,
                                 onThumbnailContent = {
-                                        NowPlayingSongIndicator(event.song.asMediaItem.mediaId)
+                                        NowPlayingSongIndicator(event.song.asMediaItem.mediaId, binder?.player)
                                 },
                                 trailingContent = {
                                     if (selectItems)

@@ -1253,7 +1253,7 @@ fun BuiltInPlaylistSongs(
                                     )
                                 }
 
-                                    NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                                    NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
 
                                 if (builtInPlaylist == BuiltInPlaylist.Top)
                                     BasicText(

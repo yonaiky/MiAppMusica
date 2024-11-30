@@ -908,7 +908,7 @@ fun DeviceListSongs(
                     thumbnailSizeDp = thumbnailSizeDp,
                     thumbnailSizePx = thumbnailSize,
                     onThumbnailContent = {
-                            NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                            NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                     },
                     trailingContent = {
                         val checkedState = rememberSaveable { mutableStateOf(false) }

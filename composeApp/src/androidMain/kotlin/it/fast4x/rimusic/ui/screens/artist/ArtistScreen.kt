@@ -465,7 +465,7 @@ fun ArtistScreen(
                                                 )
                                             },
                                             thumbnailContent = {
-                                                NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                                                NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                                             },
                                             downloadState = downloadState,
                                             thumbnailSizeDp = thumbnailSizeDp,

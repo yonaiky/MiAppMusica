@@ -226,7 +226,7 @@ fun SearchResultScreen(
                                                 )
                                             },
                                             thumbnailContent = {
-                                                NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                                                NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                                             },
                                             downloadState = downloadState,
                                             thumbnailSizePx = thumbnailSizePx,

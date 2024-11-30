@@ -780,7 +780,7 @@ fun HomeSongs(
                                     )
                                 }
 
-                                NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                                NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                             },
                             trailingContent = {
                                 // It must watch for [selectedItems.size] for changes

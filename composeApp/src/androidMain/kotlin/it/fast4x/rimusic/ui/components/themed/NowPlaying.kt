@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import it.fast4x.rimusic.LocalPlayerServiceBinder
+import androidx.media3.exoplayer.ExoPlayer
 import it.fast4x.rimusic.ui.components.MusicAnimation
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.onOverlay
@@ -21,9 +21,11 @@ import me.knighthat.thumbnailShape
 @OptIn(UnstableApi::class)
 @Composable
 fun NowPlayingSongIndicator (
-    mediaId: String
+    mediaId: String,
+    player: ExoPlayer?
 ) {
-    val player = LocalPlayerServiceBinder.current?.player
+
+    if (player?.currentMediaItem?.mediaId != mediaId) return
 
     Box(
         contentAlignment = Alignment.Center,
@@ -34,15 +36,11 @@ fun NowPlayingSongIndicator (
             )
             .size(Dimensions.thumbnails.song)
     ) {
-
-        if (player?.currentMediaItem?.mediaId == mediaId) {
             MusicAnimation(
                 color = colorPalette().onOverlay,
                 modifier = Modifier
                     .height(20.dp)
             )
-
-        }
     }
 
 }

@@ -938,7 +938,7 @@ fun AlbumDetails(
                                 )
 
 
-                                    NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                                    NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                             },
                             modifier = Modifier
                                 .combinedClickable(
