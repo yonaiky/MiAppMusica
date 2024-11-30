@@ -778,8 +778,8 @@
     <string name="no_thumbnail_present">Миниатюра отсутствует</string>
     <string name="removed_thumbnail">Миниатюра удалена</string>
     <string name="failed_to_remove_thumbnail">Не удалось удалить миниатюру</string>
-    <string name="settings_enable_pip">Включить Картинка в картинке</string>
-    <string name="settings_enable_pip_auto">Включить автоматически Картинка в картинке</string>
+    <string name="settings_enable_pip">Включить \"Картинка в картинке\"</string>
+    <string name="settings_enable_pip_auto">Включить автоматически \"Картинка в картинке\"</string>
     <string name="pipmodule_cover">Обложка</string>
     <string name="settings_pip_module"> Модуль Pip</string>
     <string name="menu_go_to_picture_in_picture">PIP</string>
@@ -813,7 +813,7 @@
     <string name="show_cover_thumbnail_animation">Показывать анимацию миниатюр обложки</string>
     <string name="cover_thumbnail_animation_type">Тип анимации обложки</string>
     <string name="jump_previous">Кнопка \"Предыдущая\" перезапустит текущую песню по истечении следующих секунд</string>
-    <string name="jump_previous_blank">Оставьте поле пустым или 0 для кнопки Назад, чтобы всегда воспроизводить предыдущую песню</string>
+    <string name="jump_previous_blank">Оставьте поле пустым или 0 для кнопки \"Назад\", чтобы всегда воспроизводить предыдущую песню</string>
     <string name="delete_hidden_songs">Вы действительно хотите удалить все скрытые песни из базы данных? Это действие необратимо.</string>
     <string name="delete_hidden_songs_message">Удалить скрытые песни</string>
 </resources>
