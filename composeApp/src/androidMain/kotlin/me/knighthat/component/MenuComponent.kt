@@ -187,7 +187,7 @@ fun ResetThumbnail(
 
     val menuState: MenuState = LocalMenuState.current
     override val iconId: Int = R.drawable.image
-    override val messageId: Int = R.string.edit_thumbnail
+    override val messageId: Int = R.string.reset_thumbnail
     override val menuIconTitle: String
         @Composable
         get() = stringResource( messageId )

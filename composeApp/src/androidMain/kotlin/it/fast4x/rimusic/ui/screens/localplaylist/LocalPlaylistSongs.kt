@@ -427,12 +427,6 @@ fun LocalPlaylistSongs(
                 .flowOn( Dispatchers.IO )
                 .distinctUntilChanged()
                 .collect { playlistPreview = it }
-
-        val thumbnailName = "thumbnail/playlist_${playlistId}"
-        val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
-        if (presentThumbnailUrl != null) {
-            thumbnailUrl.value = presentThumbnailUrl
-        }
     }
     LaunchedEffect( playlistPreview?.playlist?.name ) {
         renameDialog.playlistName = playlistPreview?.playlist?.name?.let { name ->
@@ -442,6 +436,12 @@ fun LocalPlaylistSongs(
                 name.substringAfter( PINNED_PREFIX )
                     .substringAfter( PIPED_PREFIX )
         } ?: "Unknown"
+
+        val thumbnailName = "thumbnail/playlist_${playlistId}"
+        val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
+        if (presentThumbnailUrl != null) {
+            thumbnailUrl.value = presentThumbnailUrl
+        }
     }
 
     //**** SMART RECOMMENDATION
