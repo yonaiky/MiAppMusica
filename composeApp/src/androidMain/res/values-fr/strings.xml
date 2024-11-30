@@ -805,15 +805,15 @@
     <string name="good_afternoon">Bonjour</string>
     <string name="good_evening">Bonsoir</string>
     <string name="good_night">Bonsoir</string>
-    <string name="colored_bar">Colored bar</string>
-    <string name="about_developers_designers">Developers / Designers</string>
-    <string name="set_custom_value">Custom value</string>
+    <string name="colored_bar">Barre colorée</string>
+    <string name="about_developers_designers">Développeurs / Concepteurs</string>
+    <string name="set_custom_value">Valeur personnalisée</string>
     <string name="title_youtube_music">YOUTUBE MUSIC</string>
-    <string name="enable_youtube_music_login">Enable YouTube Music Login</string>
-    <string name="show_cover_thumbnail_animation">Show cover thumbnail animation</string>
-    <string name="cover_thumbnail_animation_type">Cover animation type</string>
-    <string name="jump_previous">Previous Button Will Restart the Current Song After the Following Seconds Have Passed</string>
-    <string name="jump_previous_blank">Leave it Blank or 0 for Previous Button to Always Play the Previous Song</string>
-    <string name="delete_hidden_songs">Do you really want to delete all hidden songs from database? This action is irreversible.</string>
-    <string name="delete_hidden_songs_message">Delete hidden songs</string>
+    <string name="enable_youtube_music_login">Activer la connexion à YouTube Music</string>
+    <string name="show_cover_thumbnail_animation">Afficher l\'animation de la vignette de couverture</string>
+    <string name="cover_thumbnail_animation_type">Type d\'animation de couverture</string>
+    <string name="jump_previous">Le bouton Précédent redémarrera le titre en cours une fois les secondes suivantes écoulées</string>
+    <string name="jump_previous_blank">Laissez-le vide ou 0 pour le bouton Précédent pour toujours lire le titre précédent</string>
+    <string name="delete_hidden_songs">Voulez-vous vraiment supprimer tous les titres cachés de la base de données ? Cette action est irréversible.</string>
+    <string name="delete_hidden_songs_message">Supprimer les titres cachés</string>
 </resources>
