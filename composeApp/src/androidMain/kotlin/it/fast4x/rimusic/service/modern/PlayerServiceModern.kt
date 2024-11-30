@@ -641,8 +641,15 @@ class PlayerServiceModern : MediaLibraryService(),
 
         loadFromRadio(reason)
 
-        updateNotification()
-
+        if(binder.player.currentMediaItem?.mediaMetadata?.artworkUri != null) {
+            bitmapProvider.load(binder.player.currentMediaItem?.mediaMetadata?.artworkUri, {
+                updateNotification()
+                updateWidgets()
+            })
+        } else {
+            updateNotification()
+            updateWidgets()
+        }
     }
 
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
@@ -682,8 +689,6 @@ class PlayerServiceModern : MediaLibraryService(),
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
         //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
         //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
-
-        updateWidgets()
 
 
         super.onIsPlayingChanged(isPlaying)
