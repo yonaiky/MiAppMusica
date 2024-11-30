@@ -144,12 +144,12 @@
     <string name="min_listening_time">Tempore minime de ascoltamento</string>
     <string name="player_thumbnail_size">Dimension del miniatura</string>
     <string name="restarting_rimusic_is_required">Le reinitio es requirite</string>
-    <string name="small">Small</string>
-    <string name="medium">Medium</string>
+    <string name="small">Parve</string>
+    <string name="medium">Medie</string>
     <string name="big">Grande</string>
     <string name="none">Necuno</string>
     <string name="light">Legier</string>
-    <string name="heavy">Heavy</string>
+    <string name="heavy">Grosse</string>
     <string name="player_rotating_buttons">Rotating buttons</string>
     <string name="player_enable_rotation_buttons">Enable rotation of buttons when clicked</string>
     <string name="statistics">Statisticas</string>
