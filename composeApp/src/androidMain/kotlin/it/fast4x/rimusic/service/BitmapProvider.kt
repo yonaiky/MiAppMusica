@@ -64,6 +64,7 @@ class BitmapProvider(
     }
 
     fun load(uri: Uri?, onDone: (Bitmap) -> Unit) {
+        Timber.d("BitmapProvider load method being called")
         if (lastUri == uri) return
 
         lastEnqueued?.dispose()

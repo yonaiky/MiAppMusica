@@ -679,11 +679,16 @@ class PlayerServiceModern : MediaLibraryService(),
                 fadeIn = true
             )
 
+        if(binder.player.currentMediaItem?.mediaMetadata?.artworkUri != null) {
+            bitmapProvider.load(binder.player.currentMediaItem?.mediaMetadata?.artworkUri, {
+                updateWidgets()
+            })
+        } else {
+            updateWidgets()
+        }
         //val totalPlayTimeMs = player.totalBufferedDuration.toString()
         //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
         //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
-
-        updateWidgets()
 
 
         super.onIsPlayingChanged(isPlaying)
