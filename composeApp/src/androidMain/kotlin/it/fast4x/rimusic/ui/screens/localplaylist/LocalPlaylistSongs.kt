@@ -506,9 +506,9 @@ fun LocalPlaylistSongs(
 
     val rippleIndication = ripple(bounded = false)
 
-    var nowPlayingItem by remember {
-        mutableStateOf(-1)
-    }
+//    var nowPlayingItem by remember {
+//        mutableStateOf(-1)
+//    }
 
     val playlistNotMonthlyType =
         playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX, 0, true) == false

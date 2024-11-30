@@ -186,6 +186,8 @@ fun HomeLibrary(
                 }!!
         },
         afterTransaction = { index, song ->
+            if (song.id.isBlank()) return@init
+
             Database.insert(song)
             Database.insert(
                 SongPlaylistMap(
