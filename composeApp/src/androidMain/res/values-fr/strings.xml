@@ -191,8 +191,8 @@
     <string name="dynamic">Dynamique</string>
     <string name="discovery">Découverte</string>
     <string name="mood">Humeur</string>
-    <string name="new_albums">Nouveaux albums</string>
-    <string name="moods_and_genres">Humeurs et genres</string>
+    <string name="new_albums">Nouveaux Albums</string>
+    <string name="moods_and_genres">Humeurs et Genres</string>
     <string name="search_queries">" requêtes de recherche"</string>
     <string name="not_find_battery_optimization_settings">Impossible de trouver les paramètres d\'optimisation de la batterie, veuillez les ajouter manuellement à la liste blanche</string>
     <string name="search">Rechercher</string>
@@ -482,7 +482,7 @@
     <string name="info_wait_it_may_take_a_few_minutes">Attendez, cela peut prendre quelques minutes...</string>
     <string name="album_and_alternative_versions">Album et versions alternatives</string>
     <string name="album_alternative_versions">Versions alternatives</string>
-    <string name="monthly_playlists">Playlists mensuelles</string>
+    <string name="monthly_playlists">Playlists Mensuelles</string>
     <string name="month_january_s">Janvier %s</string>
     <string name="month_february_s">Février %s</string>
     <string name="month_march_s">Mars %s</string>
@@ -713,7 +713,7 @@
     <string name="player_pause_listen_history">Suspendre l\'historique d\'écoute</string>
     <string name="queuetype">Type de file d’attente</string>
     <string name="chart_top_songs">Meilleurs titres</string>
-    <string name="chart_top_artists">Meilleurs artistes</string>
+    <string name="chart_top_artists">Meilleurs Artistes</string>
     <string name="lang_interlingua">Interlangue</string>
     <string name="error_no_internet">Pas de réseau</string>
     <string name="error_timeout">Délai de connexion expiré</string>
