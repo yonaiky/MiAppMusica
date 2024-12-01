@@ -490,11 +490,6 @@ class PlayerServiceModern : MediaLibraryService(),
 
     override fun onBind(intent: Intent?) = super.onBind(intent) ?: binder
 
-    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
-        println("PlayerServiceModern onPlaybackParametersChanged ${playbackParameters}")
-        super.onPlaybackParametersChanged(playbackParameters)
-    }
-
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession =
         mediaSession
 
