@@ -567,23 +567,9 @@ fun ArtistOverview(
                                                 )
                                             },
                                             onClick = {
-                                                /*
                                                 binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(
-                                                    listMediaItems.distinct(),
-                                                    index
-                                                )
-                                                 */
+                                                binder?.player?.forcePlay(song.asMediaItem)
 
-                                                /*
-                                                val mediaItem = song.asMediaItem
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlay(mediaItem)
-                                                binder?.setupRadio(
-                                                    NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId),
-                                                    //filterArtist = mediaItem.mediaMetadata.artist.toString()
-                                                )
-                                                 */
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     youtubeArtistPage
                                                         .songsEndpoint
@@ -602,8 +588,6 @@ fun ArtistOverview(
                                                         ?.map { it.asMediaItem }
                                                         ?.let {
                                                             withContext(Dispatchers.Main) {
-                                                                binder?.stopRadio()
-                                                                binder?.player?.forcePlay(song.asMediaItem)
                                                                 binder?.player?.addMediaItems(
                                                                     it.filterNot { it.mediaId == song.key }
                                                                 )
