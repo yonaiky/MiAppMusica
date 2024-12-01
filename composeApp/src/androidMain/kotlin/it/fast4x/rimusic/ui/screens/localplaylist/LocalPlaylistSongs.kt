@@ -134,6 +134,7 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
@@ -817,7 +818,9 @@ fun LocalPlaylistSongs(
                                 song = song.song,
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                    }
 
                                     if (!isLocal) {
                                         manageDownload(

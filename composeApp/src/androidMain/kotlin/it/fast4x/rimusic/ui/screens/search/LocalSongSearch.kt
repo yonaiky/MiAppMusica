@@ -63,7 +63,10 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.knighthat.colorPalette
 import me.knighthat.typography
 
@@ -259,7 +262,9 @@ fun LocalSongSearch(
                     song = song,
                     onDownloadClick = {
                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                        Database.resetContentLength( song.asMediaItem.mediaId )
+                        CoroutineScope(Dispatchers.IO).launch {
+                            Database.resetContentLength( song.asMediaItem.mediaId )
+                        }
 
                         if (!isLocal)
                         manageDownload(

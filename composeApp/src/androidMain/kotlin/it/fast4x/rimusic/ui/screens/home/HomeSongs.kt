@@ -128,11 +128,13 @@ import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.appContext
 import me.knighthat.colorPalette
@@ -735,7 +737,9 @@ fun HomeSongs(
                                 // Only allow action(s) on songs other than [BuiltInPlaylist.OnDevice]
                                 if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
                                     binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
-                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                    }
                                     if (!isLocal)
                                         manageDownload(
                                             context = context,

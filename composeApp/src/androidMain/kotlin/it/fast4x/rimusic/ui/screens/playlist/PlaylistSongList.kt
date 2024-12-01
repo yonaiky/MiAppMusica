@@ -456,7 +456,9 @@ fun PlaylistSongList(
                                             if (playlistPage?.songsPage?.items?.isNotEmpty() == true)
                                                 playlistPage?.songsPage?.items?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    Database.resetContentLength( it.asMediaItem.mediaId )
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                                    }
                                                     manageDownload(
                                                         context = context,
                                                         mediaItem = it.asMediaItem,
@@ -482,7 +484,9 @@ fun PlaylistSongList(
                                             if (playlistPage?.songsPage?.items?.isNotEmpty() == true)
                                                 playlistPage?.songsPage?.items?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    Database.resetContentLength( it.asMediaItem.mediaId )
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                                    }
                                                     manageDownload(
                                                         context = context,
                                                         mediaItem = it.asMediaItem,
@@ -757,7 +761,9 @@ fun PlaylistSongList(
                             song = song,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                }
 
                                 if (!isLocal)
                                     manageDownload(

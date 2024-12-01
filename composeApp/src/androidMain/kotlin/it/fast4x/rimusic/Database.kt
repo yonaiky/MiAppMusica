@@ -1508,19 +1508,24 @@ interface Database {
     @Query("SELECT contentLength FROM Format WHERE songId = :songId")
     fun formatContentLength(songId: String): Long
 
+    @Transaction
     @Query("UPDATE Format SET contentLength = 0 WHERE songId = :songId")
     fun resetFormatContentLength(songId: String)
 
+    @Transaction
     @Query("DELETE FROM Song WHERE totalPlayTimeMs = 0")
     fun deleteHiddenSongs()
     // USEFUL FOR MAINTENANCE
+    @Transaction
     @Query("DELETE FROM SongArtistMap WHERE songId NOT IN (SELECT DISTINCT id FROM Song)")
     fun cleanSongArtistMap()
+    @Transaction
     @Query("DELETE FROM SongPlaylistMap WHERE songId NOT IN (SELECT DISTINCT id FROM Song)")
     fun cleanSongPlaylistMap()
+    @Transaction
     @Query("DELETE FROM SongAlbumMap WHERE songId NOT IN (SELECT DISTINCT id FROM Song)")
     fun cleanSongAlbumMap()
-
+    @Transaction
     @Query("DELETE FROM Format WHERE songId = :songId")
     fun deleteFormat(songId: String)
 

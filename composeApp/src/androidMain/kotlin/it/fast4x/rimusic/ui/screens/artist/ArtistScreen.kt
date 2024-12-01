@@ -456,7 +456,9 @@ fun ArtistScreen(
                                             song = song,
                                             onDownloadClick = {
                                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                                }
 
                                                 manageDownload(
                                                     context = context,

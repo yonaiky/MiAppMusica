@@ -132,7 +132,9 @@ import it.fast4x.rimusic.utils.showRelatedAlbumsKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showSimilarArtistsKey
 import it.fast4x.rimusic.utils.showTipsKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -509,7 +511,10 @@ fun QuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                        }
+
 
                                         if (!isLocal)
                                             manageDownload(
@@ -550,7 +555,9 @@ fun QuickPicks(
 
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.resetContentLength(song.asMediaItem.mediaId)
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                                            }
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,
@@ -605,7 +612,9 @@ fun QuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                        }
                                         if (!isLocal)
                                             manageDownload(
                                                 context = context,
@@ -635,7 +644,9 @@ fun QuickPicks(
                                                         mediaItem = song.asMediaItem,
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.resetContentLength(song.asMediaItem.mediaId)
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                                            }
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,
