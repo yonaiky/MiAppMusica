@@ -71,6 +71,7 @@ import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -78,6 +79,7 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FolderItemMenu
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
@@ -85,6 +87,7 @@ import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -512,6 +515,34 @@ fun HomeSongs(
     hideSongDialog.Render()
     deleteHiddenSongs.Render()
 
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var songRif by remember { mutableStateOf(Song(
+        id = "",
+        title = "",
+        durationText = null,
+        thumbnailUrl = null
+    )) }
+    if (showDeleteDialog) {
+        ConfirmationDialog(
+            text = stringResource(R.string.delete_song),
+            onDismiss = { showDeleteDialog = false },
+            onConfirm = {
+                Database.asyncTransaction {
+                    deleteSongFromPlaylists(songRif.id)
+                    deleteFormat(songRif.id)
+                    delete(songRif)
+                }
+                SmartMessage(
+                    message = appContext().resources.getString(R.string.deleted),
+                    context = appContext()
+                )
+                menuState.hide()
+                showDeleteDialog = false
+            }
+
+        )
+    }
+
     Box(
         modifier = Modifier
             .background(colorPalette().background0)
@@ -550,7 +581,7 @@ fun HomeSongs(
                     this.add( locator )
                     this.add( downloadAllDialog )
                     this.add( deleteDownloadsDialog )
-                    this.add( deleteSongDialog )
+                    //this.add( deleteSongDialog )
                     if (builtInPlaylist == BuiltInPlaylist.All)
                         this.add( hiddenSongs )
                     this.add( shuffle )
@@ -820,13 +851,7 @@ fun HomeSongs(
                                                     hideSongDialog.onShortClick()
                                                 }
                                             } else null
-                                        val deleteFromDatabase =
-                                            if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
-                                                {
-                                                    deleteSongDialog.song = Optional.of(song)
-                                                    deleteSongDialog.onShortClick()
-                                                }
-                                            } else null
+
 
                                         menuState.display {
                                             InHistoryMediaItemMenu(
@@ -837,7 +862,10 @@ fun HomeSongs(
                                                     menuState.hide()
                                                 },
                                                 onHideFromDatabase = hideAction,
-                                                onDeleteFromDatabase = deleteFromDatabase,
+                                                onDeleteFromDatabase = {
+                                                    songRif = song.song
+                                                    showDeleteDialog = true
+                                                },
                                                 disableScrollingText = disableScrollingText
                                             )
                                         }
