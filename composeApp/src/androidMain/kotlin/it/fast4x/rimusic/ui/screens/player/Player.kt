@@ -381,12 +381,6 @@ fun Player(
     val statsExpanded by rememberPreference(statsExpandedKey, true)
     val actionExpanded by rememberPreference(actionExpandedKey, true)
 
-    // **** set speed and pitch from preferences *****
-//    val playbackSpeed  by rememberPreference(playbackSpeedKey,   1f)
-//    val playbackPitch  by rememberPreference(playbackPitchKey,   1f)
-//    binder.player.playbackParameters =
-//        PlaybackParameters(playbackSpeed, playbackPitch)
-    //************************************************
 
     binder.player.DisposableListener {
         object : Player.Listener {
