@@ -184,6 +184,7 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Timeline
 import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
@@ -256,6 +257,8 @@ import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
+import it.fast4x.rimusic.utils.playbackPitchKey
+import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.statsExpandedKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
@@ -377,6 +380,13 @@ fun Player(
     val miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
     val statsExpanded by rememberPreference(statsExpandedKey, true)
     val actionExpanded by rememberPreference(actionExpandedKey, true)
+
+    // **** set speed and pitch from preferences *****
+//    val playbackSpeed  by rememberPreference(playbackSpeedKey,   1f)
+//    val playbackPitch  by rememberPreference(playbackPitchKey,   1f)
+//    binder.player.playbackParameters =
+//        PlaybackParameters(playbackSpeed, playbackPitch)
+    //************************************************
 
     binder.player.DisposableListener {
         object : Player.Listener {

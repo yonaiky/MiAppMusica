@@ -35,6 +35,7 @@ import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Player.EVENT_POSITION_DISCONTINUITY
 import androidx.media3.common.Player.EVENT_TIMELINE_CHANGED
@@ -137,6 +138,8 @@ import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
+import it.fast4x.rimusic.utils.playbackPitchKey
+import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.putEnum
 import it.fast4x.rimusic.utils.queueLoopTypeKey
@@ -421,6 +424,11 @@ class PlayerServiceModern : MediaLibraryService(),
 
         player.repeatMode = preferences.getEnum(queueLoopTypeKey, QueueLoopType.Default).type
 
+        binder.player.playbackParameters = PlaybackParameters(
+            preferences.getFloat(playbackSpeedKey, 1f),
+            preferences.getFloat(playbackPitchKey, 1f)
+        )
+
         // Keep a connected controller so that notification works
         val sessionToken = SessionToken(this, ComponentName(this, PlayerServiceModern::class.java))
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
@@ -481,6 +489,11 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     override fun onBind(intent: Intent?) = super.onBind(intent) ?: binder
+
+    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+        println("PlayerServiceModern onPlaybackParametersChanged ${playbackParameters}")
+        super.onPlaybackParametersChanged(playbackParameters)
+    }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession =
         mediaSession
