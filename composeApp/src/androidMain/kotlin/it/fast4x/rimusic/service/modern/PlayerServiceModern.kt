@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.service.modern
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -544,6 +545,7 @@ class PlayerServiceModern : MediaLibraryService(),
             // not necessary
             //broadCastPendingIntent<NotificationDismissReceiver>().send()
         }
+        super.onTaskRemoved(rootIntent)
     }
 
     @UnstableApi
@@ -740,12 +742,12 @@ class PlayerServiceModern : MediaLibraryService(),
 
     }
 
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        if (playbackState == STATE_IDLE) {
-            player.shuffleModeEnabled = false
-            //player.clearMediaItems()
-        }
-    }
+//    override fun onPlaybackStateChanged(playbackState: Int) {
+//        if (playbackState == STATE_IDLE) {
+//            player.shuffleModeEnabled = false
+//            //player.clearMediaItems()
+//        }
+//    }
 
     override fun onEvents(player: Player, events: Player.Events) {
         if (events.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED, Player.EVENT_PLAY_WHEN_READY_CHANGED)) {
@@ -1345,14 +1347,6 @@ class PlayerServiceModern : MediaLibraryService(),
         println("PlayerServiceModern onCreate savePersistentQueue")
         if (!isPersistentQueueEnabled) return
         println("PlayerServiceModern onCreate savePersistentQueue is enabled")
-        /*
-        if (player.playbackState == Player.STATE_IDLE) {
-            Log.d("mediaItem", "QueuePersistentEnabled playbackstate idle return")
-            return
-        }
-         */
-        //Log.d("mediaItem", "QueuePersistentEnabled Save ${player.currentTimeline.mediaItems.size}")
-        //Log.d("mediaItem", "QueuePersistentEnabled Save initial")
 
         CoroutineScope(Dispatchers.Main).launch {
             val mediaItems = player.currentTimeline.mediaItems
