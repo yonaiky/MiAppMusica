@@ -358,7 +358,7 @@ fun HomeSongs(
     if (showDownloadedPlaylist) buttonsList +=
         BuiltInPlaylist.Downloaded to stringResource(R.string.downloaded)
     if (showMyTopPlaylist) buttonsList +=
-        BuiltInPlaylist.Top to String.format(stringResource(R.string.my_playlist_top),maxTopPlaylistItems.number)
+        BuiltInPlaylist.Top to stringResource(R.string.my_playlist_top,maxTopPlaylistItems.number)
     if (showOnDevicePlaylist) buttonsList +=
         BuiltInPlaylist.OnDevice to stringResource(R.string.on_device)
 
@@ -463,10 +463,22 @@ fun HomeSongs(
             BuiltInPlaylist.Top -> { songs ->
                 if (excludeSongWithDurationLimit == DurationInMinutes.Disabled)
                     true
-                else
-                    songs.song.durationText?.let {
-                        durationTextToMillis(it)
-                    }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
+                else {
+                    println("HomeSongs durationTextToMillis: ${songs.song.durationText?.let {
+                        durationTextToMillis(
+                            it
+                        )
+                    }}")
+
+                    try {
+                        songs.song.durationText?.let {
+                            durationTextToMillis(it)
+                        }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
+                    } catch (e: Exception) {
+                        false
+                    }
+
+                }
             }
 
             else -> { _ -> true }
