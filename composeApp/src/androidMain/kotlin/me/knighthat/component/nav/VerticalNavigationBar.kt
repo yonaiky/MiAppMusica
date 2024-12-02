@@ -243,21 +243,23 @@ class VerticalNavigationBar(
 
             // Only show search icon when UI is ViMusic and
             // setting is turned on
-            if( UiType.ViMusic.isCurrent() && showSearchIconInNav() ) {
+
+            if( UiType.ViMusic.isCurrent() ) {
                 val iconSize: Dp =
                     if( isLandscape )
                         Dimensions.navigationRailWidthLandscape
                     else
                         Dimensions.navigationRailWidth
                 //val iconHeight: Dp = Dimensions.halfheaderHeight
+                if ( showSearchIconInNav() )
+                    Box(
+                        contentAlignment = Alignment.TopCenter,
+                        modifier = Modifier.size(iconSize),
+                        content = {
+                            SearchButton().Draw()
+                        }
+                    )
 
-                Box(
-                    contentAlignment = Alignment.TopCenter,
-                    modifier = Modifier.size(iconSize),
-                    content = {
-                        SearchButton().Draw()
-                    }
-                )
                 Box(
                     contentAlignment = Alignment.TopCenter,
                     modifier = Modifier.size(iconSize),
