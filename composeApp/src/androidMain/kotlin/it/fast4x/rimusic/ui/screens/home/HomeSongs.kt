@@ -487,7 +487,8 @@ fun HomeSongs(
         // Don't set [isLoading] to true here, it'll make searching look weird
 
         itemsOnDisplay = withContext( Dispatchers.Default ) {
-            items.filter( naturalFilter )
+            items.distinctBy { it.song.id }
+                .filter( naturalFilter )
                  .filter {
                      // Without cleaning, user can search explicit songs with "e:"
                      // I kinda want this to be a feature, but it seems unnecessary
