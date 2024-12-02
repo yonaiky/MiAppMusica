@@ -346,7 +346,7 @@ fun SongItem(
         mutableIntStateOf(0)
     }
     if (playlistindicator)
-        LaunchedEffect(Unit, mediaItem.mediaId, forceRecompose) {
+        LaunchedEffect(Unit, forceRecompose) {
             withContext(Dispatchers.IO) {
                 songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
             }

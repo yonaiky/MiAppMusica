@@ -870,8 +870,8 @@ fun HomeSongs(
                                                 navController = navController,
                                                 song = song.song,
                                                 onDismiss = {
-                                                    forceRecompose = true
                                                     menuState.hide()
+                                                    forceRecompose = true
                                                 },
                                                 onHideFromDatabase = hideAction,
                                                 onDeleteFromDatabase = {
