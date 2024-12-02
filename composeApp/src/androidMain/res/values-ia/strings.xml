@@ -193,7 +193,7 @@
     <string name="mood">Humor</string>
     <string name="new_albums">Nove albumes</string>
     <string name="moods_and_genres">Humores e generos</string>
-    <string name="search_queries">" search queries"</string>
+    <string name="search_queries">" requestas de cerca"</string>
     <string name="not_find_battery_optimization_settings">Couldn\'t find battery optimization settings, please whitelist manually</string>
     <string name="search">Cercar</string>
     <string name="no">No</string>
@@ -758,7 +758,7 @@
     <string name="skip_media_on_error_message">The media %1$s went wrong</string>
     <string name="login_required_to_play_this_media">Login required to play this media</string>
     <string name="skip_media_on_notavailable_message">Previous media is not available, skipped to next</string>
-    <string name="search_results_for">Search results for:</string>
+    <string name="search_results_for">Requestas de cerca pro:</string>
     <string name="statsfornerds">Stats for Nerds</string>
     <string name="actionbar">Action Bar</string>
     <string name="center">Center</string>
