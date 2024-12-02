@@ -269,8 +269,8 @@ fun HistoryList(
                                                     navController = navController,
                                                     mediaItem = event.song.asMediaItem,
                                                     onDismiss = {
-                                                        forceRecompose = true
                                                         menuState.hide()
+                                                        forceRecompose = true
                                                     },
                                                     disableScrollingText = disableScrollingText
                                                 )

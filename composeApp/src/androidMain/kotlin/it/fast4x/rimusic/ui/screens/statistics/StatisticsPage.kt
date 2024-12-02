@@ -373,8 +373,8 @@ fun StatisticsPage(
                                                 navController = navController,
                                                 mediaItem = songs.get(it).asMediaItem,
                                                 onDismiss = {
-                                                    forceRecompose = true
                                                     menuState.hide()
+                                                    forceRecompose = true
                                                 },
                                                 disableScrollingText = disableScrollingText
                                             )

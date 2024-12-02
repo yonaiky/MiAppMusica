@@ -739,8 +739,8 @@ fun Podcast(
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
                                                 onDismiss = {
-                                                    forceRecompose = true
                                                     menuState.hide()
+                                                    forceRecompose = true
                                                 },
                                                 mediaItem = song.asMediaItem,
                                                 disableScrollingText = disableScrollingText

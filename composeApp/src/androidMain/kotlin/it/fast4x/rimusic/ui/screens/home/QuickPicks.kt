@@ -552,8 +552,8 @@ fun QuickPicks(
                                                     NonQueuedMediaItemMenu(
                                                         navController = navController,
                                                         onDismiss = {
-                                                            forceRecompose = true
                                                             menuState.hide()
+                                                            forceRecompose = true
                                                         },
                                                         mediaItem = song.asMediaItem,
                                                         onRemoveFromQuickPicks = {
@@ -647,8 +647,8 @@ fun QuickPicks(
                                                     NonQueuedMediaItemMenu(
                                                         navController = navController,
                                                         onDismiss = {
-                                                            forceRecompose = true
                                                             menuState.hide()
+                                                            forceRecompose = true
                                                         },
                                                         mediaItem = song.asMediaItem,
                                                         onDownload = {

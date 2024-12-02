@@ -939,8 +939,8 @@ fun DeviceListSongs(
                                             navController = navController,
                                             song = song.song,
                                             onDismiss = {
-                                                forceRecompose = true
                                                 menuState.hide()
+                                                forceRecompose = true
                                             },
                                             disableScrollingText = disableScrollingText
                                         )

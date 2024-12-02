@@ -645,8 +645,8 @@ fun QueueModern(
                                                         mediaItem = window.mediaItem,
                                                         indexInQueue = if (isPlayingThisMediaItem) null else window.firstPeriodIndex,
                                                         onDismiss = {
-                                                            forceRecompose = true
                                                             menuState.hide()
+                                                            forceRecompose = true
                                                         },
                                                         onDownload = {
                                                             manageDownload(
