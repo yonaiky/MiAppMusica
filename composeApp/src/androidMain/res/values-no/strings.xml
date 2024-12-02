@@ -213,7 +213,7 @@
     <string name="vt_one_side">Én side</string>
     <string name="vt_double_side">Dobbelsidig</string>
     <string name="vt_double_side_circular">Dobbelsidig sirkulær</string>
-    <string name="vt_full">Full</string>
+    <string name="vt_full">Fullstendig</string>
     <string name="new_albums_of_your_artists">Nye album av artistene dine</string>
     <string name="timeline">Tidslinje</string>
     <string name="song_cache_by_player">SANG BUFFER (av Spiller)</string>
@@ -297,7 +297,7 @@
     <string name="update_cover">Oppdater Cover</string>
     <string name="title">Tittel</string>
     <string name="authors">Forfattere</string>
-    <string name="cover">Cover</string>
+    <string name="cover">Omslag</string>
     <string name="lang_japanese">Japansk</string>
     <string name="paste_or_type_a_valid_url">Lim inn eller skriv en gyldig url</string>
     <string name="you_can_put_a_complete_link">Du kan legge en komplett lenke til en spilleliste, et album, en kanal eller en enkelt sang på YouTube eller YouTube Music</string>
@@ -684,7 +684,7 @@
     <string name="noblur">Ingen Blur når sangtekster er deaktivert</string>
     <string name="fadingedge">Falmende Kant</string>
     <string name="carousel">Karusellvisning</string>
-    <string name="carouselsize">Thumbnail Size in Expanded Mode</string>
+    <string name="carouselsize">Miniatyrbildestørrelse i utvidet modus</string>
     <string name="addednext">Lagt til i neste avspilling</string>
     <string name="info_paused_with_volume_zero">Pauset med volum av</string>
     <string name="effect_fade_audio">Tone ut lyd</string>
@@ -746,7 +746,7 @@
     <string name="create_new_playlist">Lag ny spilleliste</string>
     <string name="settings_loudness_base_gain">Grunnforsterkning for lydstyrke</string>
     <string name="settings_target_gain_loudness_info">Målforsterkning for lydstyrkenormalisering</string>
-    <string name="error_media_cannot_be_played">Media cannot be played</string>
+    <string name="error_media_cannot_be_played">Media kan ikke spilles</string>
     <string name="full_screen_lyrics_components">Full Screen Lyrics Components</string>
     <string name="titleartist">Title and Artists</string>
     <string name="miniqueue">Mini Queue</string>
