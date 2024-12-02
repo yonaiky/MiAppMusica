@@ -244,9 +244,9 @@
     <string name="square">Square</string>
     <string name="circular_ribbed">Circular ribbed</string>
     <string name="play_button">Button de reproduction</string>
-    <string name="portuguese_brazilian">Portuguese, Brazilian</string>
+    <string name="portuguese_brazilian">Portugese, Brasiliano</string>
     <string name="portuguese">Portugese</string>
-    <string name="indonesian">Indonesian</string>
+    <string name="indonesian">Indonesiano</string>
     <string name="odia">Odia</string>
     <string name="bashkir">Bashkir</string>
     <string name="esperanto">Esperanto</string>
@@ -265,8 +265,8 @@
     <string name="scrolling_text_is_used_for_long_texts">Scrolling text is used for long texts</string>
     <string name="audio_quality_format">Formato de qualitate de audio</string>
     <string name="persian">Persian</string>
-    <string name="hungarian">Hungarian</string>
-    <string name="korean">Korean</string>
+    <string name="hungarian">Hungaro</string>
+    <string name="korean">Coreano</string>
     <string name="background_player">"REPRODUCTOR IN SECUNDE PLANO "</string>
     <string name="show_favorite_button">Show Favorite button</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Show Favorite button in lock screen and notification area</string>
