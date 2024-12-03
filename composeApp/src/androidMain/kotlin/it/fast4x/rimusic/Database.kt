@@ -239,6 +239,7 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun songsOnDevice(): Flow<List<Song>>
 
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
     @RewriteQueriesToDropUnusedColumns
@@ -1091,11 +1092,13 @@ interface Database {
             " ORDER BY A.authorsText COLLATE NOCASE DESC")
     fun albumsWithSongsSavedByArtistDesc(): Flow<List<Album>>
 
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT *, (SELECT COUNT(*) FROM SongAlbumMap WHERE albumId = A.id) as songCount  FROM Album A" +
             " WHERE A.id in ( SELECT DISTINCT albumId FROM SongAlbumMap ) " +
             " ORDER BY songCount ASC")
     fun albumsWithSongsSavedBySongsCountAsc(): Flow<List<Album>>
 
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT *, (SELECT COUNT(*) FROM SongAlbumMap WHERE albumId = A.id) as songCount  FROM Album A" +
             " WHERE A.id in ( SELECT DISTINCT albumId FROM SongAlbumMap ) " +
             " ORDER BY songCount DESC")
@@ -1192,6 +1195,7 @@ interface Database {
     )
     fun playlistSongs(id: Long): Flow<List<Song>?>
 
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @RewriteQueriesToDropUnusedColumns
     @Transaction
     @Query(
@@ -1592,6 +1596,7 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun trending(limit: Int = 3): Flow<List<Song>>
 
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
     @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' GROUP BY songId ORDER BY SUM(playTime) DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
