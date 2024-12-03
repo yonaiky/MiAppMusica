@@ -662,8 +662,11 @@ fun ArtistOverview(
                                 },
                                 icon2 = R.drawable.dice,
                                 onClick2 = {
+                                    if (albums.isEmpty()) return@Title2Actions
                                     val albumId = albums.get(
-                                        Random(System.currentTimeMillis()).nextInt(0, albums.size-1)
+                                        if (albums.size > 1)
+                                            Random(System.currentTimeMillis()).nextInt(0, albums.size-1)
+                                        else 0
                                     ).key
                                     navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
                                 }
