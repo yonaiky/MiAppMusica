@@ -561,7 +561,7 @@ fun ArtistOverview(
                                                         mediaItem = song.asMediaItem,
                                                         disableScrollingText = disableScrollingText
                                                     )
-                                                };
+                                                }
                                                 hapticFeedback.performHapticFeedback(
                                                     HapticFeedbackType.LongPress
                                                 )

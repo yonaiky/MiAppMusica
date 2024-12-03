@@ -966,7 +966,7 @@ fun AlbumDetails(
                                                 mediaItem = song.asMediaItem,
                                                 disableScrollingText = disableScrollingText
                                             )
-                                        };
+                                        }
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     },
                                     onClick = {
