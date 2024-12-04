@@ -2457,7 +2457,16 @@ fun Player(
                                          RotateThumbnailCoverAnimationModern(
                                              painter = coverPainter,
                                              isSongPlaying = player.isPlaying,
-                                             modifier = coverModifier,
+                                             modifier = coverModifier
+                                                 .zIndex(
+                                                     if (it == pagerState.currentPage) 1f
+                                                     else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
+                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
+                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
+                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
+                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
+                                                     else 0.57f
+                                                 ),
                                              state = pagerState,
                                              it = it,
                                              imageCoverSize = imageCoverSize,
