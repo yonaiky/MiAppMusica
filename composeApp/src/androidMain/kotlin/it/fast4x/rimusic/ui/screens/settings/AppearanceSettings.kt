@@ -642,7 +642,7 @@ fun AppearanceSettings(
                         )
                 }
 
-                if (playerType == PlayerType.Modern && !isLandscape) {
+                if (playerType == PlayerType.Modern && !isLandscape && (expandedplayertoggle || expandedplayer)) {
                     if (search.input.isBlank() || stringResource(R.string.carousel).contains(
                             search.input,
                             true
