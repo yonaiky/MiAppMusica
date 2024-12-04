@@ -814,4 +814,7 @@
     <string name="jump_previous_blank">Əvvəlki Mahnını Kəsintisiz Oynatmaq üçün Əvvəlki Düyməyə Boş və ya 0 qoyun</string>
     <string name="delete_hidden_songs">Həqiqətən məlumat bazasından bütün gizli mahnıları silmək istəyirsiniz? Bu fəaliyyət geri dəyişmir.</string>
     <string name="delete_hidden_songs_message">Gizli mahnıları sil</string>
+    <string name="cover_type_vinyl">Vinyl</string>
+    <string name="cover_type_cd">CD</string>
+    <string name="cover_type_cd_with_cover">CD with Cover</string>
 </resources>

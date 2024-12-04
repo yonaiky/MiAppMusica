@@ -814,4 +814,7 @@
     <string name="jump_previous_blank">Önceki Butonunun Her Zaman Önceki Şarkıyı Oynatması İçin 0 Yazın Veya Boş Bırakın</string>
     <string name="delete_hidden_songs">Tüm gizli şarkıları veri tabanından gerçekten silmek istiyor musunuz? Bu işlem geri alınamaz.</string>
     <string name="delete_hidden_songs_message">Gizli şarkıları sil</string>
+    <string name="cover_type_vinyl">Vinyl</string>
+    <string name="cover_type_cd">CD</string>
+    <string name="cover_type_cd_with_cover">CD with Cover</string>
 </resources>

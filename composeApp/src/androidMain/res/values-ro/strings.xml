@@ -814,4 +814,7 @@
     <string name="jump_previous_blank">Lasă-l necompletat sau la 0 pentru ca butonul precedent să redea întotdeauna melodia anterioară</string>
     <string name="delete_hidden_songs">Chiar dorești să ștergi toate melodiile ascunse din baza de date? Această acțiune este ireversibilă.</string>
     <string name="delete_hidden_songs_message">Șterge melodiile ascunse</string>
+    <string name="cover_type_vinyl">Vinyl</string>
+    <string name="cover_type_cd">CD</string>
+    <string name="cover_type_cd_with_cover">CD with Cover</string>
 </resources>
