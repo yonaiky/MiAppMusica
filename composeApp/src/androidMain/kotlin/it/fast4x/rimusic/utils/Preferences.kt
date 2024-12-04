@@ -312,6 +312,9 @@ const val jumpPreviousKey = "jumpPrevious"
 const val artistTypeKey = "artistType"
 const val albumTypeKey = "albumType"
 
+const val enableWallpaperKey = "enableWallpaper"
+const val wallpaperTypeKey = "wallpaperType"
+
 
 
 /*

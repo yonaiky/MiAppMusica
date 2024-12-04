@@ -3,6 +3,9 @@ package it.fast4x.rimusic.service.modern
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.WallpaperManager
+import android.app.WallpaperManager.FLAG_LOCK
+import android.app.WallpaperManager.FLAG_SYSTEM
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -93,6 +96,7 @@ import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.NotificationButtons
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
+import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import it.fast4x.rimusic.extensions.discord.sendDiscordPresence
@@ -119,6 +123,7 @@ import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.collect
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.discoverKey
+import it.fast4x.rimusic.utils.enableWallpaperKey
 import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
@@ -129,6 +134,7 @@ import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.isAtLeastAndroid81
 import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
@@ -149,10 +155,10 @@ import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.putEnum
 import it.fast4x.rimusic.utils.queueLoopTypeKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.setLikeState
-import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.skipMediaOnErrorKey
@@ -162,6 +168,7 @@ import it.fast4x.rimusic.utils.timer
 import it.fast4x.rimusic.utils.toggleRepeatMode
 import it.fast4x.rimusic.utils.toggleShuffleMode
 import it.fast4x.rimusic.utils.volumeNormalizationKey
+import it.fast4x.rimusic.utils.wallpaperTypeKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -191,6 +198,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import android.os.Binder as AndroidBinder
+
 
 const val LOCAL_KEY_PREFIX = "local:"
 
@@ -1168,7 +1176,26 @@ class PlayerServiceModern : MediaLibraryService(),
         }
         //***********************
 
+        updateWallpaper()
+
         return MediaNotification(NotificationId, customNotify.build())
+    }
+
+    private fun updateWallpaper() {
+        val wallpaperEnabled = preferences.getBoolean(enableWallpaperKey, false)
+        val wallpaperType = preferences.getEnum(wallpaperTypeKey, WallpaperType.Lockscreen)
+        if (isAtLeastAndroid7 && wallpaperEnabled) {
+            coroutineScope.launch(Dispatchers.IO) {
+                val wpManager = WallpaperManager.getInstance(this@PlayerServiceModern)
+                wpManager.setBitmap(bitmapProvider.bitmap, null, true,
+                    when (wallpaperType) {
+                        WallpaperType.Both -> (FLAG_LOCK or FLAG_SYSTEM)
+                        WallpaperType.Lockscreen -> FLAG_LOCK
+                        WallpaperType.Home -> FLAG_SYSTEM
+                    }
+                )
+            }
+        }
     }
 
     private fun updateDefaultNotification() {
