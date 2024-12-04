@@ -1,28 +1,22 @@
 package it.fast4x.rimusic.enums
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
+import me.knighthat.enums.TextView
 
 enum class AlbumSwipeAction(
-    @field:DrawableRes override val iconId: Int
-): Drawable {
+    @field:DrawableRes override val iconId: Int,
+    @field:StringRes override val textId: Int,
+): Drawable, TextView {
 
-    NoAction( R.drawable.close ),
+    NoAction( R.drawable.close, R.string.none ),
 
-    PlayNext( R.drawable.play_skip_forward ),
+    PlayNext( R.drawable.play_skip_forward, R.string.play_next ),
 
-    Bookmark( R.drawable.bookmark_outline ),
+    Bookmark( R.drawable.bookmark_outline, R.string.bookmark ),
 
-    Enqueue( R.drawable.enqueue );
-
-    val displayName: String
-        get() = when (this) {
-            NoAction -> appContext().resources.getString(R.string.none)
-            PlayNext -> appContext().resources.getString(R.string.play_next)
-            Bookmark  -> appContext().resources.getString(R.string.bookmark)
-            Enqueue  -> appContext().resources.getString(R.string.enqueue)
-        }
+    Enqueue( R.drawable.enqueue, R.string.enqueue );
 
     fun getStateIcon(bookmarkedState: Long?): Int? {
         return when (this) {

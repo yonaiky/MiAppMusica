@@ -1,14 +1,14 @@
 package it.fast4x.rimusic.enums
 
-enum class WallpaperType {
+import androidx.compose.runtime.Composable
+import me.knighthat.enums.TextView
+
+enum class WallpaperType: TextView {
     Home,
     Lockscreen,
     Both;
 
-    val displayName: String
-    get() = when (this) {
-        Home -> "Home"
-        Lockscreen -> "Lockscreen"
-        Both -> "Both"
-    }
+    override val text: String
+        @Composable
+        get() = this.name
 }

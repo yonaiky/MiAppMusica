@@ -2,35 +2,27 @@ package it.fast4x.rimusic.enums
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
+import androidx.annotation.StringRes
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
+import me.knighthat.enums.TextView
 
 enum class QueueSwipeAction(
-    @field:DrawableRes override val iconId: Int
-): Drawable {
+    @field:DrawableRes override val iconId: Int,
+    @field:StringRes override val textId: Int,
+): Drawable, TextView {
 
-    NoAction( R.drawable.close ),
+    NoAction( R.drawable.close, R.string.none ),
 
-    PlayNext( R.drawable.play_skip_forward ),
+    PlayNext( R.drawable.play_skip_forward, R.string.play_next ),
 
-    Download( R.drawable.download ),
+    Download( R.drawable.download, R.string.download ),
 
-    Favourite( R.drawable.heart_outline ),
+    Favourite( R.drawable.heart_outline, R.string.favorites ),
 
-    RemoveFromQueue( R.drawable.trash ),
+    RemoveFromQueue( R.drawable.trash, R.string.remove_from_queue ),
 
-    Enqueue( R.drawable.enqueue );
-
-    val displayName: String
-        get() = when (this) {
-            NoAction -> appContext().resources.getString(R.string.none)
-            PlayNext -> appContext().resources.getString(R.string.play_next)
-            Download  -> appContext().resources.getString(R.string.download)
-            Favourite -> appContext().resources.getString(R.string.favorites)
-            RemoveFromQueue  -> appContext().resources.getString(R.string.remove_from_queue)
-            Enqueue -> appContext().resources.getString(R.string.enqueue)
-        }
+    Enqueue( R.drawable.enqueue, R.string.enqueue );
 
     @OptIn(UnstableApi::class)
     fun getStateIcon(likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int? {
