@@ -816,4 +816,6 @@
     <string name="jump_previous_blank">Laissez-le vide ou 0 pour le bouton Précédent pour toujours lire le titre précédent</string>
     <string name="delete_hidden_songs">Voulez-vous vraiment supprimer tous les titres cachés de la base de données ? Cette action est irréversible.</string>
     <string name="delete_hidden_songs_message">Supprimer les titres cachés</string>
+    <string name="thumbnail_cover_vinyl">Vinyl</string>
+    <string name="thumbnail_cover_cd">CD</string>
 </resources>

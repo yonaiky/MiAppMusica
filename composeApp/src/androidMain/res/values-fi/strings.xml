@@ -814,4 +814,6 @@
     <string name="jump_previous_blank">Jätä tyhjäksi tai aseta arvo 0, jos haluat, että edellinen painike toistaa aina edellisen kappaleen</string>
     <string name="delete_hidden_songs">Haluatko varmasti poistaa kaikki piilotetut kappaleet tietokannasta? Tämä toimenpide on peruuttamaton.</string>
     <string name="delete_hidden_songs_message">Poista piilotetut kappaleet</string>
+    <string name="thumbnail_cover_vinyl">Vinyl</string>
+    <string name="thumbnail_cover_cd">CD</string>
 </resources>
