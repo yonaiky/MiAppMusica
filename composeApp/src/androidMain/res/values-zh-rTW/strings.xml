@@ -814,4 +814,6 @@
     <string name="jump_previous_blank">Leave it Blank or 0 for Previous Button to Always Play the Previous Song</string>
     <string name="delete_hidden_songs">你確定要從資料庫中刪除所有隱藏的歌曲嗎? 此動作不可逆。</string>
     <string name="delete_hidden_songs_message">Delete hidden songs</string>
+    <string name="thumbnail_cover_vinyl">Vinyl</string>
+    <string name="thumbnail_cover_cd">CD</string>
 </resources>

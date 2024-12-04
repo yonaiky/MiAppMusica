@@ -816,4 +816,6 @@
     <string name="jump_previous_blank">Оставьте поле пустым или 0 для кнопки \"Назад\", чтобы всегда воспроизводить предыдущую песню</string>
     <string name="delete_hidden_songs">Вы действительно хотите удалить все скрытые песни из базы данных? Это действие необратимо.</string>
     <string name="delete_hidden_songs_message">Удалить скрытые песни</string>
+    <string name="thumbnail_cover_vinyl">Vinyl</string>
+    <string name="thumbnail_cover_cd">CD</string>
 </resources>

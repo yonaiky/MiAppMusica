@@ -814,4 +814,6 @@
     <string name="jump_previous_blank">La den være tom eller 0 for å få forrige knappen til å alltid spille forrige sang</string>
     <string name="delete_hidden_songs">Vil du virkelig slette alle skjulte sanger fra databasen? Denne handlingen er irreversibel.</string>
     <string name="delete_hidden_songs_message">Slett skjulte sanger</string>
+    <string name="thumbnail_cover_vinyl">Vinyl</string>
+    <string name="thumbnail_cover_cd">CD</string>
 </resources>

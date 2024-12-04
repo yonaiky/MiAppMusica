@@ -815,4 +815,6 @@ CC-BY-SA 3.0</string>
     <string name="jump_previous_blank">Leave it Blank or 0 for Previous Button to Always Play the Previous Song</string>
     <string name="delete_hidden_songs">Do you really want to delete all hidden songs from database? This action is irreversible.</string>
     <string name="delete_hidden_songs_message">Delete hidden songs</string>
+    <string name="thumbnail_cover_vinyl">Vinyl</string>
+    <string name="thumbnail_cover_cd">CD</string>
 </resources>
