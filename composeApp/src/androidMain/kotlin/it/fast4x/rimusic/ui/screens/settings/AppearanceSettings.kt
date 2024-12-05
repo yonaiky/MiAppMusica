@@ -607,32 +607,6 @@ fun AppearanceSettings(
         }
         AnimatedVisibility(visible = showthumbnail) {
             Column {
-
-                if (search.input.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
-                        search.input,
-                        true
-                    )
-                ) {
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.show_cover_thumbnail_animation),
-                        text = "",
-                        isChecked = showCoverThumbnailAnimation,
-                        onCheckedChange = { showCoverThumbnailAnimation = it },
-                        Modifier.padding(start = 25.dp)
-                    )
-                    AnimatedVisibility(visible = showCoverThumbnailAnimation) {
-                        Column {
-                            EnumValueSelectorSettingsEntry(
-                                title = stringResource(R.string.cover_thumbnail_animation_type),
-                                selectedValue = coverThumbnailAnimation,
-                                onValueSelected = { coverThumbnailAnimation = it },
-                                valueText = { it.textName },
-                                modifier = Modifier.padding(start = 25.dp)
-                            )
-                        }
-                    }
-                }
-
                 if (playerType == PlayerType.Modern) {
                     if (search.input.isBlank() || stringResource(R.string.fadingedge).contains(
                             search.input,
@@ -802,6 +776,31 @@ fun AppearanceSettings(
                     )
             }
         }
+
+        if (search.input.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
+                search.input,
+                true
+            )
+        ) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.show_cover_thumbnail_animation),
+                text = "",
+                isChecked = showCoverThumbnailAnimation,
+                onCheckedChange = { showCoverThumbnailAnimation = it }
+            )
+            AnimatedVisibility(visible = showCoverThumbnailAnimation) {
+                Column {
+                    EnumValueSelectorSettingsEntry(
+                        title = stringResource(R.string.cover_thumbnail_animation_type),
+                        selectedValue = coverThumbnailAnimation,
+                        onValueSelected = { coverThumbnailAnimation = it },
+                        valueText = { it.textName },
+                        modifier = Modifier.padding(start = 25.dp)
+                    )
+                }
+            }
+        }
+
         if (!showthumbnail) {
             if (search.input.isBlank() || stringResource(R.string.noblur).contains(
                     search.input,
