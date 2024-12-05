@@ -814,6 +814,6 @@
     <string name="jump_previous_blank">Déjalo en blanco o 0 para que el botón anterior siempre reproduzca la anterior canción</string>
     <string name="delete_hidden_songs">¿Seguro que quieres eliminar todas las canciones ocultas de la base de datos? Esta acción es irreversible.</string>
     <string name="delete_hidden_songs_message">Eliminar canciones ocultas</string>
-    <string name="thumbnail_cover_vinyl">Vinyl</string>
+    <string name="thumbnail_cover_vinyl">Vinilo</string>
     <string name="thumbnail_cover_cd">CD</string>
 </resources>
