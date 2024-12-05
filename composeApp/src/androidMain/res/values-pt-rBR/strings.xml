@@ -814,6 +814,6 @@
     <string name="jump_previous_blank">Deixe em branco ou em 0 para o botão de voltar a música sempre tocar a música anterior</string>
     <string name="delete_hidden_songs">Você realmente deseja excluir todas as músicas ocultas do banco de dados? Esta ação é irreversível.</string>
     <string name="delete_hidden_songs_message">Excluir músicas ocultas</string>
-    <string name="thumbnail_cover_vinyl">Vinyl</string>
+    <string name="thumbnail_cover_vinyl">Vinil</string>
     <string name="thumbnail_cover_cd">CD</string>
 </resources>
