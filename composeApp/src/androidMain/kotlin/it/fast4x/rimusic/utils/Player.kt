@@ -83,7 +83,7 @@ fun Player.playVideo(mediaItem: MediaItem) {
 }
 
 fun Player.playAtIndex(mediaItemIndex: Int) {
-    seekTo(mediaItemIndex, 0)
+    seekTo(mediaItemIndex, C.TIME_UNSET)
     prepare()
     playWhenReady = true
 }
