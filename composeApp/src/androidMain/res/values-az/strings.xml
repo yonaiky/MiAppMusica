@@ -815,5 +815,5 @@
     <string name="delete_hidden_songs">Həqiqətən məlumat bazasından bütün gizli mahnıları silmək istəyirsiniz? Bu fəaliyyət geri dəyişmir.</string>
     <string name="delete_hidden_songs_message">Gizli mahnıları sil</string>
     <string name="thumbnail_cover_vinyl">Vinyl</string>
-    <string name="thumbnail_cover_cd">CD</string>
+    <string name="thumbnail_cover_cd">Disk</string>
 </resources>
