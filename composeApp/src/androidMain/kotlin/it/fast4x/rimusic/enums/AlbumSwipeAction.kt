@@ -1,13 +1,20 @@
 package it.fast4x.rimusic.enums
 
+import androidx.annotation.DrawableRes
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 
-enum class AlbumSwipeAction {
-    NoAction,
-    PlayNext,
-    Bookmark,
-    Enqueue;
+enum class AlbumSwipeAction(
+    @field:DrawableRes override val iconId: Int
+): Drawable {
+
+    NoAction( R.drawable.close ),
+
+    PlayNext( R.drawable.play_skip_forward ),
+
+    Bookmark( R.drawable.bookmark_outline ),
+
+    Enqueue( R.drawable.enqueue );
 
     val displayName: String
         get() = when (this) {
@@ -17,23 +24,14 @@ enum class AlbumSwipeAction {
             Enqueue  -> appContext().resources.getString(R.string.enqueue)
         }
 
-    val icon: Int?
-        get() = when (this) {
+    fun getStateIcon(bookmarkedState: Long?): Int? {
+        return when (this) {
+            Bookmark -> when(bookmarkedState) {
+                null -> R.drawable.bookmark_outline
+                else -> R.drawable.bookmark
+            }
             NoAction -> null
-            PlayNext -> R.drawable.play_skip_forward
-            Bookmark -> R.drawable.bookmark_outline
-            Enqueue -> R.drawable.enqueue
-        }
-
-        fun getStateIcon(bookmarkedState: Long?): Int? {
-            return when (this) {
-                NoAction -> null
-                PlayNext -> R.drawable.play_skip_forward
-                Bookmark -> when(bookmarkedState) {
-                    null -> R.drawable.bookmark_outline
-                    else -> R.drawable.bookmark
-                }
-                Enqueue -> R.drawable.enqueue
+            else -> iconId
         }
     }
 }
