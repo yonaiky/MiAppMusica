@@ -56,6 +56,7 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.utils.asMediaItem
@@ -200,6 +201,8 @@ fun SongItem(
     isNowPlaying: Boolean = false,
     forceRecompose: Boolean = false
 ) {
+    val binder = LocalPlayerServiceBinder.current
+
     SongItem(
         thumbnailSizeDp = thumbnailSizeDp,
         thumbnailContent = {
@@ -213,6 +216,11 @@ fun SongItem(
             )
 
             onThumbnailContent?.invoke(this)
+
+            NowPlayingSongIndicator(
+                mediaId = mediaItem.mediaId,
+                player = binder?.player
+            )
         },
         modifier = modifier,
         trailingContent = trailingContent,

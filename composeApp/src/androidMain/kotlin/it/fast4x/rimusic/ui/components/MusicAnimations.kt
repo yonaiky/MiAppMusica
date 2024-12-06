@@ -45,7 +45,7 @@ fun MusicAnimation(
     cornerRadius: Dp = 8.dp,
     show: Boolean = true
 ) {
-    if (!show) return
+    //if (!show) return
 
     val binder = LocalPlayerServiceBinder.current
     var isPlayRunning by remember { mutableStateOf(binder?.player?.isPlaying) }
