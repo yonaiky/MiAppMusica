@@ -44,6 +44,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -191,6 +192,7 @@ import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
+import it.fast4x.rimusic.appRunningInBackground
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.QueueType
@@ -1177,9 +1179,8 @@ fun Player(
                                     snapPositionalThreshold = 0.15f,
                                     pagerSnapDistance = PagerSnapDistance.atMost(showsongs.number)
                                 )
-                                LaunchedEffect(binder.player.currentMediaItemIndex) {
-                                    pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
-                                }
+                                pagerStateQueue.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex + 1)
+
                                 Row(
                                     modifier = Modifier
                                         .padding(vertical = 7.5.dp)
@@ -1196,7 +1197,11 @@ fun Player(
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 onClick = {
                                                     scope.launch {
-                                                        pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
+                                                        if (!appRunningInBackground) {
+                                                            pagerState.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
+                                                        } else {
+                                                            pagerState.scrollToPage(binder.player.currentMediaItemIndex + 1)
+                                                        }
                                                     }
                                                 }
                                             ),
@@ -1709,10 +1714,7 @@ fun Player(
                      state = pagerState,
                      snapPositionalThreshold = 0.20f
                  )
-                 
-                 LaunchedEffect(binder.player.currentMediaItemIndex){
-                     pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                 }
+                 pagerState.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
 
                  LaunchedEffect(pagerState) {
                      var previousPage = pagerState.settledPage
@@ -1946,9 +1948,8 @@ fun Player(
                                  if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
                                      val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
                                      val pageSpacing = thumbnailSpacing.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp)
-                                     LaunchedEffect(binder.player.currentMediaItemIndex){
-                                         pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                                     }
+
+                                     pagerState.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
 
                                      LaunchedEffect(pagerState) {
                                          var previousPage = pagerState.settledPage
@@ -2154,9 +2155,7 @@ fun Player(
                         state = pagerState,
                         snapPositionalThreshold = 0.20f
                     )
-                    LaunchedEffect(binder.player.currentMediaItemIndex){
-                        pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                    }
+                   pagerState.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
 
                     LaunchedEffect(pagerState) {
                         var previousPage = pagerState.settledPage
@@ -2348,9 +2347,7 @@ fun Player(
                              if (playerType == PlayerType.Modern) {
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
 
-                                 LaunchedEffect(binder.player.currentMediaItemIndex) {
-                                     pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                                 }
+                                 pagerState.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
 
                                  LaunchedEffect(pagerState) {
                                      var previousPage = pagerState.settledPage
@@ -2819,6 +2816,21 @@ fun Player(
 
     }
 
+}
+
+@Composable
+@androidx.annotation.OptIn(UnstableApi::class)
+private fun PagerState.LaunchedEffectScrollToPage(
+    index: Int
+) {
+    val pagerState = this
+    LaunchedEffect(pagerState, index) {
+        if (!appRunningInBackground) {
+            pagerState.animateScrollToPage(index)
+        } else {
+            pagerState.scrollToPage(index)
+        }
+    }
 }
 
 
