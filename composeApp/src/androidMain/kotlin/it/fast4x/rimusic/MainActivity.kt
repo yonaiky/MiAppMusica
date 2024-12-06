@@ -282,7 +282,6 @@ class MainActivity :
     private var currentAcceleration = 0f
     private var lastAcceleration = 0f
     private var shakeCounter = 0
-    private var appRunningInBackground: Boolean = false
 
     private var _monet: MonetCompat? by mutableStateOf(null)
     private val monet get() = _monet ?: throw MonetActivityAccessException()
@@ -1471,6 +1470,8 @@ class MainActivity :
 
 
 }
+
+var appRunningInBackground: Boolean = false
 
 val LocalPlayerServiceBinder = staticCompositionLocalOf<PlayerServiceModern.Binder?> { null }
 
