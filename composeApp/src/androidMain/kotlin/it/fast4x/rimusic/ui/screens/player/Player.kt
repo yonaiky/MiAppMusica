@@ -2053,7 +2053,7 @@ fun Player(
                                                      )
 
                                              )
-                                             if (it == binder.player.currentMediaItemIndex) {
+                                             if (isDragged && it == binder.player.currentMediaItemIndex) {
                                                  Box(modifier = Modifier
                                                      .align(Alignment.Center)
                                                      .matchParentSize()
@@ -2494,7 +2494,7 @@ fun Player(
                                                  contentScale = ContentScale.Fit,
                                                  modifier = coverModifier
                                              )
-                                             if (expandedplayer && it == binder.player.currentMediaItemIndex) {
+                                             if (isDragged && expandedplayer && it == binder.player.currentMediaItemIndex) {
                                                  Box(modifier = Modifier
                                                      .align(Alignment.Center)
                                                      .matchParentSize()
