@@ -1,5 +1,6 @@
 package it.fast4x.rimusic
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.ComponentName
@@ -411,6 +412,7 @@ class MainActivity :
         content()
     }
 
+    @SuppressLint("UnusedBoxWithConstraintsScope")
     @OptIn(
         ExperimentalTextApi::class,
         ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
