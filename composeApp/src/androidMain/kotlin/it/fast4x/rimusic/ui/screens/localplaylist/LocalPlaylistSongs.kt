@@ -73,6 +73,7 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.PopupType
@@ -552,8 +553,7 @@ fun LocalPlaylistSongs(
                     ) {
 
                         HeaderWithIcon(
-                            //title = playlistPreview?.playlist?.name?.substringAfter(PINNED_PREFIX) ?: "Unknown",
-                            title = playlistName.value,
+                            title = cleanPrefix(playlistName.value),
                             iconId = R.drawable.playlist,
                             enabled = true,
                             showIcon = false,
