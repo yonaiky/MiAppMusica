@@ -818,4 +818,7 @@ CC-BY-SA 3.0</string>
     <string name="cover_type_vinyl">Vinyl</string>
     <string name="cover_type_cd">CD</string>
     <string name="cover_type_cd_with_cover">CD with Cover</string>
+    <string name="wallpaper">Wallpaper</string>
+    <string name="enable_wallpaper">Enable wallpaper</string>
+    <string name="set_cover_thumbnail_as_wallpaper">Set cover thumbnail as wallpaper</string>
 </resources>
