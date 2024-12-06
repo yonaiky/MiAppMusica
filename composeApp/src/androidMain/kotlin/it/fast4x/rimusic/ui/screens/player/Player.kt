@@ -2053,7 +2053,7 @@ fun Player(
                                                      )
 
                                              )
-                                             if (isDragged && it == binder.player.currentMediaItemIndex) {
+                                             if (it == binder.player.currentMediaItemIndex) {
                                                  Box(modifier = Modifier
                                                      .align(Alignment.Center)
                                                      .matchParentSize()
@@ -2061,7 +2061,9 @@ fun Player(
                                                      NowPlayingSongIndicator(
                                                          binder.player.getMediaItemAt(
                                                              binder.player.currentMediaItemIndex
-                                                         ).mediaId, binder.player
+                                                         ).mediaId,
+                                                         binder.player,
+                                                         Dimensions.thumbnails.album
                                                      )
                                                  }
                                              }
@@ -2492,7 +2494,7 @@ fun Player(
                                                  contentScale = ContentScale.Fit,
                                                  modifier = coverModifier
                                              )
-                                             if (isDragged && expandedplayer && it == binder.player.currentMediaItemIndex) {
+                                             if (expandedplayer && it == binder.player.currentMediaItemIndex) {
                                                  Box(modifier = Modifier
                                                      .align(Alignment.Center)
                                                      .matchParentSize()
@@ -2500,7 +2502,8 @@ fun Player(
                                                      NowPlayingSongIndicator(
                                                          binder.player.getMediaItemAt(
                                                              binder.player.currentMediaItemIndex
-                                                         ).mediaId, binder.player
+                                                         ).mediaId, binder.player,
+                                                         Dimensions.thumbnails.album
                                                      )
                                                  }
                                              }
