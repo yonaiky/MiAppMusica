@@ -123,8 +123,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 35
-        versionCode = 72
-        versionName = "0.6.62.2"
+        versionCode = 73
+        versionName = "0.6.63"
     }
 
     splits {
