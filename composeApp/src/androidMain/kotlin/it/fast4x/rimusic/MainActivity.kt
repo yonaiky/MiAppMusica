@@ -1066,7 +1066,7 @@ class MainActivity :
                             )
 
                             checkIfAppIsRunningInBackground()
-                            if (appRunningInBackground) showPlayer = false
+                            // if (appRunningInBackground) showPlayer = false
 
 
                             val thumbnailRoundness by rememberPreference(
