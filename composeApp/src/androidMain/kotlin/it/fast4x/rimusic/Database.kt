@@ -237,7 +237,7 @@ interface Database {
     fun songsEntityOnDevice(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -248,7 +248,7 @@ interface Database {
     fun sortFavoriteSongsByArtist(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -259,7 +259,7 @@ interface Database {
     fun sortFavoriteSongsByPlayTime(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -275,7 +275,7 @@ interface Database {
     fun sortFavoriteSongsByTitle(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -286,7 +286,7 @@ interface Database {
     fun sortFavoriteSongsByRowId(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -297,7 +297,7 @@ interface Database {
     fun sortFavoriteSongsByLikedAt(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -309,7 +309,7 @@ interface Database {
     fun sortFavoriteSongsByDatePlayed(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -320,7 +320,7 @@ interface Database {
     fun sortFavoriteSongsByDuration(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -372,7 +372,7 @@ interface Database {
     fun songCached(songId: String): Flow<SongWithContentLength?>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -384,7 +384,7 @@ interface Database {
     fun sortOfflineSongsByPlayTime(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -401,7 +401,7 @@ interface Database {
     fun sortOfflineSongsByTitle(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -413,7 +413,7 @@ interface Database {
     fun sortOfflineSongsByRowId(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -425,7 +425,7 @@ interface Database {
     fun sortOfflineSongsByLikedAt(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -437,7 +437,7 @@ interface Database {
     fun sortOfflineSongsByArtist(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -449,7 +449,7 @@ interface Database {
     fun sortOfflineSongsByDuration(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN Event E ON E.songId=Song.id 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
@@ -462,7 +462,7 @@ interface Database {
     fun sortOfflineSongsByDatePlayed(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -505,11 +505,8 @@ interface Database {
         SongSortBy.AlbumName -> sortOfflineSongsByAlbum()
     }.map( sortOrder::applyTo )
 
-    @Query("SELECT thumbnailUrl FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0  LIMIT 4")
-    fun offlineThumbnailUrls(): Flow<List<String?>>
-
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -522,7 +519,7 @@ interface Database {
     ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -540,7 +537,7 @@ interface Database {
     ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -553,7 +550,7 @@ interface Database {
     ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN Event E ON E.songId=Song.id 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
@@ -567,7 +564,7 @@ interface Database {
     ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -580,7 +577,7 @@ interface Database {
     ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -593,7 +590,7 @@ interface Database {
     ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -606,7 +603,7 @@ interface Database {
     ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -675,7 +672,7 @@ interface Database {
      * updated to reflect changes within the database - wrapped by [Flow]
      */
     @Query("""
-        SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -719,7 +716,8 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun songsWithAlbumByPlayTimeDesc(showHiddenSongs: Int = 0): Flow<List<SongEntity>>
 
-
+    @Query("SELECT thumbnailUrl FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0  LIMIT 4")
+    fun offlineThumbnailUrls(): Flow<List<String?>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE likedAt IS NOT NULL ORDER BY likedAt DESC")
