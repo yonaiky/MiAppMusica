@@ -638,7 +638,7 @@
     <string name="buttonzoomout">Animation de zoom arrière du bouton</string>
     <string name="thumbnailpause">Réduire la miniature quand c\'est en pause</string>
     <string name="upnext">Suivant</string>
-    <string name="showtwosongs">Nombre de chansons dans la Mini file d\'attente (1 à 9)</string>
+    <string name="showtwosongs">Nombre de titres dans la mini-file d\'attente (1 à 9)</string>
     <string name="showalbumcover">Afficher la pochette de l\'album</string>
     <string name="do_not_translate">Ne pas traduire</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Délai de mise en veille reporté à la fin du titre</string>
@@ -731,7 +731,7 @@
     <string name="social_github">GitHub</string>
     <string name="update">Mettre à jour</string>
     <string name="update_song">Voulez-vous vraiment recharger ce titre ? Son temps de lecture et son cache seront effacés. Cette action est irréversible.</string>
-    <string name="player_pause_listen_history_info">Cela ne sauvegarde pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans les sélections rapides</string>
+    <string name="player_pause_listen_history_info">Cela ne sauvegarde pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans la sélection rapide</string>
     <string name="vertical_widget">Widget vertical</string>
     <string name="horizontal_widget">Widget horizontal</string>
     <string name="social_reddit">Reddit</string>
@@ -770,7 +770,7 @@
     <string name="lang_tamil">Tamoul</string>
     <string name="player_auto_load_songs_in_queue">Charger automatiquement les titres dans la file d\'attente</string>
     <string name="player_auto_load_songs_in_queue_description">Ajoute des titres quand la file d\'attente est sur le point de se terminer</string>
-    <string name="show_vinyl_thumbnail_animation">Afficher l\'animation Vinyl comme miniature</string>
+    <string name="show_vinyl_thumbnail_animation">Afficher l\'animation Vinyle comme miniature</string>
     <string name="toggle_romanization">Activer / Désactiver la romanisation</string>
     <string name="edit_thumbnail">Éditer la miniature</string>
     <string name="thumbnail_not_selected">Miniature non sélectionnée</string>
@@ -818,7 +818,7 @@
     <string name="delete_hidden_songs_message">Supprimer les titres cachés</string>
     <string name="cover_type_vinyl">Vinyle</string>
     <string name="cover_type_cd">CD</string>
-    <string name="cover_type_cd_with_cover">CD avec Pochette</string>
+    <string name="cover_type_cd_with_cover">CD avec pochette</string>
     <string name="wallpaper">Fond d\'écran</string>
     <string name="enable_wallpaper">Activer le fond d\'écran</string>
     <string name="set_cover_thumbnail_as_wallpaper">Définir la miniature de pochette comme fond d\'écran</string>
