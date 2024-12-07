@@ -132,6 +132,7 @@ import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -391,7 +392,21 @@ fun HomeSongs(
             }
             BuiltInPlaylist.OnDevice -> flowOf()
 
-        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { items = it }
+        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect {
+             /*
+                 When [builtInPlaylist] goes from [BuiltInPlaylist.All] to [BuiltInPlaylist.Downloaded]
+                 or vice versa, the list refuses to update because new list and [items] contain
+                 the same items.
+                 To counter this, we need to manually clear the list and update it
+                 with a new one (with a little delay in between to prevent race condition)
+             */
+            if( it.containsAll( items ) ) {
+                items = emptyList()
+                delay( 100 )
+            }
+
+            items = it
+        }
     }
 
     var songsDevice by remember {
