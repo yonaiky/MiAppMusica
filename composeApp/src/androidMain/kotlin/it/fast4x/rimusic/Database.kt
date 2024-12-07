@@ -552,31 +552,6 @@ interface Database {
         @MagicConstant(intValues = [-1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
-    @Transaction
-    @Query(
-        """
-        SELECT * FROM Song
-        WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%'
-        ORDER BY totalPlayTimeMs DESC
-        LIMIT :limit
-        """
-    )
-    @RewriteQueriesToDropUnusedColumns
-    fun songsByPlayTimeWithLimitDesc(limit: Int = -1): Flow<List<Song>>
-
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Transaction
-    @Query(
-        """
-        SELECT * FROM Song
-        WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%'
-        ORDER BY totalPlayTimeMs DESC
-        LIMIT :limit
-        """
-    )
-    @RewriteQueriesToDropUnusedColumns
-    fun songsEntityByPlayTimeWithLimitDesc(limit: Int = -1): Flow<List<SongEntity>>
-
     @Query("""
         SELECT DISTINCT Song.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song 
@@ -710,6 +685,31 @@ interface Database {
     fun listAllSongs(
         @MagicConstant(intValues = [-1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
+
+    @Transaction
+    @Query(
+        """
+        SELECT * FROM Song
+        WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%'
+        ORDER BY totalPlayTimeMs DESC
+        LIMIT :limit
+        """
+    )
+    @RewriteQueriesToDropUnusedColumns
+    fun songsByPlayTimeWithLimitDesc(limit: Int = -1): Flow<List<Song>>
+
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Transaction
+    @Query(
+        """
+        SELECT * FROM Song
+        WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%'
+        ORDER BY totalPlayTimeMs DESC
+        LIMIT :limit
+        """
+    )
+    @RewriteQueriesToDropUnusedColumns
+    fun songsEntityByPlayTimeWithLimitDesc(limit: Int = -1): Flow<List<SongEntity>>
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
