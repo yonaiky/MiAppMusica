@@ -316,8 +316,8 @@ class MediaLibrarySessionCallback @Inject constructor(
                             ID_FAVORITES -> database.sortFavoriteSongsByRowId().map { list ->
                                 list.map { it.song }
                             }
-                            ID_CACHED -> database.songsOfflineByPlayTimeDesc().map { list ->
-                                list.map { it.song }
+                            ID_CACHED -> database.sortOfflineSongsByPlayTime().map { list ->
+                                list.reversed().map { it.song }
                             }
                             ID_TOP -> database.trending(
                                 context.preferences.getEnum(MaxTopPlaylistItemsKey,
@@ -435,7 +435,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val playlistId = path.getOrNull(1) ?: return@future defaultResult
                 val songs = when (playlistId) {
                     ID_FAVORITES -> database.sortFavoriteSongsByRowId().map{ it.reversed() }
-                    ID_CACHED -> database.songsOfflineByPlayTimeDesc()
+                    ID_CACHED -> database.sortOfflineSongsByPlayTime().map{ it.reversed() }
                     ID_TOP -> database.trendingSongEntity(
                         context.preferences.getEnum(MaxTopPlaylistItemsKey,
                             MaxTopPlaylistItems.`10`).number.toInt()
