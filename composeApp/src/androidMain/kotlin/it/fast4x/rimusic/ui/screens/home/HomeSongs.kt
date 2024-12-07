@@ -67,7 +67,6 @@ import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import it.fast4x.rimusic.enums.QueueSelection
 import it.fast4x.rimusic.enums.SongSortBy
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
@@ -133,10 +132,10 @@ import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.appContext
@@ -374,25 +373,14 @@ fun HomeSongs(
         isLoading = true
 
         when( builtInPlaylist ) {
-            BuiltInPlaylist.All -> Database.songs( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() )
-            BuiltInPlaylist.Favorites -> Database.songsFavorites( songSort.sortBy, songSort.sortOrder )
-            BuiltInPlaylist.Offline -> Database.songsOffline( songSort.sortBy, songSort.sortOrder )
-            BuiltInPlaylist.Downloaded -> Database.listAllSongsAsFlow().map { list ->
-                when ( songSort.sortBy ) {
-                    SongSortBy.Title -> list.sortedBy { it.song.title }
-                    SongSortBy.PlayTime -> list.sortedBy { it.song.totalPlayTimeMs }
-                    SongSortBy.Duration -> list.sortedBy { it.song.durationText }
-                    SongSortBy.Artist -> list.sortedBy { it.song.artistsText }
-                    SongSortBy.DateLiked -> list.sortedBy { it.song.likedAt }
-                    SongSortBy.AlbumName -> list.sortedBy { it.albumTitle }
-                    else -> list
-                }.run {
-                    if( songSort.sortOrder == SortOrder.Descending )
-                        reversed()
-                    else
-                        this
-                }
+            BuiltInPlaylist.All, BuiltInPlaylist.Downloaded -> {
+                // I personally think [hiddenSongs.isShown()] should be default regardless
+                val showHidden = if( builtInPlaylist == BuiltInPlaylist.All ) hiddenSongs.isShown() else 0
+
+                Database.listAllSongs( songSort.sortBy, songSort.sortOrder, showHidden )
             }
+            BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
+            BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Top -> {
                 if (topPlaylists.period.duration == Duration.INFINITE)
                     Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
@@ -404,7 +392,21 @@ fun HomeSongs(
             }
             BuiltInPlaylist.OnDevice -> flowOf()
 
-        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { items = it }
+        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect {
+             /*
+                 When [builtInPlaylist] goes from [BuiltInPlaylist.All] to [BuiltInPlaylist.Downloaded]
+                 or vice versa, the list refuses to update because new list and [items] contain
+                 the same items.
+                 To counter this, we need to manually clear the list and update it
+                 with a new one (with a little delay in between to prevent race condition)
+             */
+            if( it.containsAll( items ) ) {
+                items = emptyList()
+                delay( 100 )
+            }
+
+            items = it
+        }
     }
 
     var songsDevice by remember {

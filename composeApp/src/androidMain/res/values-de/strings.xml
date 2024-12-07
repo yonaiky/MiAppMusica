@@ -812,8 +812,8 @@
     <string name="cover_thumbnail_animation_type">Art der Miniaturansicht-Animation</string>
     <string name="jump_previous">Previous Button Will Restart the Current Song After the Following Seconds Have Passed</string>
     <string name="jump_previous_blank">Leave it Blank or 0 for Previous Button to Always Play the Previous Song</string>
-    <string name="delete_hidden_songs">Do you really want to delete all hidden songs from database? This action is irreversible.</string>
-    <string name="delete_hidden_songs_message">Delete hidden songs</string>
+    <string name="delete_hidden_songs">Sollen alle versteckten Titel aus der Datenbank entfernt werden? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="delete_hidden_songs_message">Versteckte Titel löschen</string>
     <string name="cover_type_vinyl">Vinyl</string>
     <string name="cover_type_cd">CD</string>
     <string name="cover_type_cd_with_cover">CD with Cover</string>
