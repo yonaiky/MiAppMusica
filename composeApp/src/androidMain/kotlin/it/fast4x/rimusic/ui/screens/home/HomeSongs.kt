@@ -379,7 +379,7 @@ fun HomeSongs(
 
                 Database.listAllSongs( songSort.sortBy, songSort.sortOrder, showHidden )
             }
-            BuiltInPlaylist.Favorites -> Database.songsFavorites( songSort.sortBy, songSort.sortOrder )
+            BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Offline -> Database.songsOffline( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Top -> {
                 if (topPlaylists.period.duration == Duration.INFINITE)

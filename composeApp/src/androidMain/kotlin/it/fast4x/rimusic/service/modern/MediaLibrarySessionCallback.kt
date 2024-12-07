@@ -313,7 +313,7 @@ class MediaLibrarySessionCallback @Inject constructor(
 
                         when (val playlistId =
                             parentId.removePrefix("${PlayerServiceModern.PLAYLIST}/")) {
-                            ID_FAVORITES -> database.songsFavoritesByRowIdAsc().map { list ->
+                            ID_FAVORITES -> database.sortFavoriteSongsByRowId().map { list ->
                                 list.map { it.song }
                             }
                             ID_CACHED -> database.songsOfflineByPlayTimeDesc().map { list ->
@@ -434,7 +434,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val songId = path.getOrNull(2) ?: return@future defaultResult
                 val playlistId = path.getOrNull(1) ?: return@future defaultResult
                 val songs = when (playlistId) {
-                    ID_FAVORITES -> database.songsFavoritesByRowIdDesc()
+                    ID_FAVORITES -> database.sortFavoriteSongsByRowId().map{ it.reversed() }
                     ID_CACHED -> database.songsOfflineByPlayTimeDesc()
                     ID_TOP -> database.trendingSongEntity(
                         context.preferences.getEnum(MaxTopPlaylistItemsKey,
