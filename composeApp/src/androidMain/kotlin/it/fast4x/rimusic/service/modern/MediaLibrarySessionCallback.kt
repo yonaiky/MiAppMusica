@@ -59,9 +59,10 @@ import javax.inject.Inject
 class MediaLibrarySessionCallback @Inject constructor(
     @ApplicationContext val context: Context,
     val database: Database,
-    val downloadHelper: MyDownloadHelper,
+    val downloadHelper: MyDownloadHelper
 ) : MediaLibrarySession.Callback {
     private val scope = CoroutineScope(Dispatchers.Main) + Job()
+    lateinit var binder: PlayerServiceModern.Binder
     var toggleLike: () -> Unit = {}
     var toggleDownload: () -> Unit = {}
     var toggleRepeat: () -> Unit = {}
@@ -239,8 +240,8 @@ class MediaLibrarySessionCallback @Inject constructor(
 
                 PlayerServiceModern.PLAYLIST -> {
                     val likedSongCount = database.likedSongsCount().first()
-                    val cachedSongCount = database.cachedSongsCount().first()
-                    val downloadedSongCount = downloadHelper.downloads.value.size
+                    val cachedSongCount = getCountCachedSongs().first()
+                    val downloadedSongCount = getCountDownloadedSongs().first()
                     val onDeviceSongCount = database.onDeviceSongsCount().first()
                     val playlists = database.playlistPreviewsByDateSongCountAsc().first()
                     listOf(
@@ -317,7 +318,10 @@ class MediaLibrarySessionCallback @Inject constructor(
                                 list.map { it.song }
                             }
                             ID_CACHED -> database.sortOfflineSongsByPlayTime().map { list ->
-                                list.reversed().map { it.song }
+                                list.filter { song ->
+                                    binder?.cache?.isCached(song.song.id, 0L, song.contentLength ?: 0L) ?: false
+                                }.reversed()
+                                .map { it.song }
                             }
                             ID_TOP -> database.trending(
                                 context.preferences.getEnum(MaxTopPlaylistItemsKey,
@@ -435,7 +439,11 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val playlistId = path.getOrNull(1) ?: return@future defaultResult
                 val songs = when (playlistId) {
                     ID_FAVORITES -> database.sortFavoriteSongsByRowId().map{ it.reversed() }
-                    ID_CACHED -> database.sortOfflineSongsByPlayTime().map{ it.reversed() }
+                    ID_CACHED -> database.sortOfflineSongsByPlayTime().map {
+                        it.filter { song ->
+                            binder?.cache?.isCached(song.song.id, 0L, song.contentLength ?: 0L) ?: false
+                        }.reversed()
+                    }
                     ID_TOP -> database.trendingSongEntity(
                         context.preferences.getEnum(MaxTopPlaylistItemsKey,
                             MaxTopPlaylistItems.`10`).number.toInt()
@@ -571,7 +579,21 @@ class MediaLibrarySessionCallback @Inject constructor(
                     .build()
             )
             .build()
+
+    private fun getCountCachedSongs() = database.sortOfflineSongsByPlayTime().map {
+        it.filter { song ->
+            binder.cache.isCached(song.song.id, 0L, song.contentLength ?: 0L)
+        }.size
+    }
+
+    private fun getCountDownloadedSongs() = downloadHelper.downloads.map {
+        it.filter {
+            it.value.state == Download.STATE_COMPLETED
+        }.size
+    }
 }
+
+
 
 object MediaSessionConstants {
     const val ID_FAVORITES = "FAVORITES"

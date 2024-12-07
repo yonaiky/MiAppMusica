@@ -277,21 +277,27 @@ class PlayerServiceModern : MediaLibraryService(),
         )
 
         // CUSTOM NOTIFICATION PROVIDER -> DEFAULT NOTIFICATION PROVIDER MODDED
-        //setMediaNotificationProvider(CustomMediaNotificationProvider(this))
+        setMediaNotificationProvider(CustomMediaNotificationProvider(this)
+            .apply {
+                setSmallIcon(R.drawable.app_icon)
+            }
+        )
+
 
         // CUSTOM NOTIFICATION PROVIDER -> CUSTOM NOTIFICATION PROVIDER WITH ACTIONS AND PENDING INTENT
-        setMediaNotificationProvider(object : MediaNotification.Provider{
-            override fun createNotification(
-                mediaSession: MediaSession,
-                customLayout: ImmutableList<CommandButton>,
-                actionFactory: MediaNotification.ActionFactory,
-                onNotificationChangedCallback: MediaNotification.Provider.Callback
-            ): MediaNotification {
-                return updateCustomNotification(mediaSession)
-            }
-
-            override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean { return false }
-        })
+        // ACTUALLY NOT STABLE
+//        setMediaNotificationProvider(object : MediaNotification.Provider{
+//            override fun createNotification(
+//                mediaSession: MediaSession,
+//                customLayout: ImmutableList<CommandButton>,
+//                actionFactory: MediaNotification.ActionFactory,
+//                onNotificationChangedCallback: MediaNotification.Provider.Callback
+//            ): MediaNotification {
+//                return updateCustomNotification(mediaSession)
+//            }
+//
+//            override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean { return false }
+//        })
 
         // DEFAULT NOTIFICATION PROVIDER
 //        setMediaNotificationProvider(
@@ -404,6 +410,7 @@ class PlayerServiceModern : MediaLibraryService(),
             }
 
         mediaLibrarySessionCallback.apply {
+            binder = this@PlayerServiceModern.binder
             toggleLike = ::toggleLike
             toggleDownload = ::toggleDownload
             toggleRepeat = ::toggleRepeat
