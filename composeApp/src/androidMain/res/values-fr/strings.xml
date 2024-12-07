@@ -235,7 +235,7 @@
     <string name="value_cannot_be_empty">La valeur ne peut pas être vide</string>
     <string name="value_must_be_greater_than">"La valeur doit être supérieure à "</string>
     <string name="custom">Personnalisé</string>
-    <string name="custom_cache_size">Taille du cache personnalisée</string>
+    <string name="custom_cache_size">Taille du cache personnalisé</string>
     <string name="listen_on">Écouter sur</string>
     <string name="error_local_music_not_found">Fichier de musique locale introuvable</string>
     <string name="bodied_bar">Très large</string>
@@ -251,7 +251,7 @@
     <string name="bashkir">Bachkir (Bashkir)</string>
     <string name="esperanto">Espéranto (Esperanto)</string>
     <string name="close_app_with_back_button">Fermer l\'application avec le bouton Retour</string>
-    <string name="when_you_use_the_back_button_from_the_home_page">Lorsque vous utilisez le bouton retour de la page d\'accueil</string>
+    <string name="when_you_use_the_back_button_from_the_home_page">Lorsque vous utilisez le bouton Retour de la page d\'accueil</string>
     <string name="audio_quality_format_high">Élevé</string>
     <string name="audio_quality_format_medium">Moyen</string>
     <string name="audio_quality_format_low">Bas</string>
@@ -378,8 +378,8 @@
     <string name="restore_from_backup">Restaurer depuis une sauvegarde</string>
     <string name="tab_miscellaneous">Divers</string>
     <string name="swipe_to_action">Action associée au balayage</string>
-    <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activez le menu d\'action en faisant glisser le titre vers la gauche ou la droite</string>
-    <string name="smart_recommendations">RECOMMENDATIONS INTELLIGENTE</string>
+    <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activer le menu d\'action en faisant glisser le titre vers la gauche ou la droite</string>
+    <string name="smart_recommendations">RECOMMANDATIONS INTELLIGENTES</string>
     <string name="player_collapsed_disable_swiping_down">Désactiver le glissement vers le bas</string>
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Éviter de fermer le lecteur et de nettoyer la file en glissant vers le bas pendant qu\'il est minimisé</string>
     <string name="sort_date_liked">Date de mise en favoris</string>
@@ -651,7 +651,7 @@
     <string name="twosongs">Deux Titres</string>
     <string name="info_debug_mode_enabled">Mode debug activé</string>
     <string name="info_debug_mode_is_enabled">Le mode débogage est activé, n\'oubliez pas de le désactiver dans les paramètres</string>
-    <string name="tapqueue">Appuyez pour ouvrir la file d\'attente</string>
+    <string name="tapqueue">Appuyer pour ouvrir la file d\'attente</string>
     <string name="past_day">Jour précédent</string>
     <string name="past_week">La semaine dernière</string>
     <string name="past_month">Le mois dernier</string>
