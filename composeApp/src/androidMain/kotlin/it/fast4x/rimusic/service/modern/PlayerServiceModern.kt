@@ -701,16 +701,6 @@ class PlayerServiceModern : MediaLibraryService(),
             }
         }
 
-
-//        if(mediaItem?.mediaMetadata?.artworkUri != null) {
-//            bitmapProvider.load(mediaItem.mediaMetadata.artworkUri, {
-//                updateDefaultNotification()
-//                updateWidgets()
-//            })
-//        } else {
-//            updateDefaultNotification()
-//            updateWidgets()
-//        }
     }
 
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
