@@ -67,7 +67,6 @@ import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import it.fast4x.rimusic.enums.QueueSelection
 import it.fast4x.rimusic.enums.SongSortBy
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
@@ -136,7 +135,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.appContext
@@ -374,25 +372,14 @@ fun HomeSongs(
         isLoading = true
 
         when( builtInPlaylist ) {
-            BuiltInPlaylist.All -> Database.songs( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() )
+            BuiltInPlaylist.All, BuiltInPlaylist.Downloaded -> {
+                // I personally think [hiddenSongs.isShown()] should be default regardless
+                val showHidden = if( builtInPlaylist == BuiltInPlaylist.All ) hiddenSongs.isShown() else 0
+
+                Database.listAllSongs( songSort.sortBy, songSort.sortOrder, showHidden )
+            }
             BuiltInPlaylist.Favorites -> Database.songsFavorites( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Offline -> Database.songsOffline( songSort.sortBy, songSort.sortOrder )
-            BuiltInPlaylist.Downloaded -> Database.listAllSongsAsFlow().map { list ->
-                when ( songSort.sortBy ) {
-                    SongSortBy.Title -> list.sortedBy { it.song.title }
-                    SongSortBy.PlayTime -> list.sortedBy { it.song.totalPlayTimeMs }
-                    SongSortBy.Duration -> list.sortedBy { it.song.durationText }
-                    SongSortBy.Artist -> list.sortedBy { it.song.artistsText }
-                    SongSortBy.DateLiked -> list.sortedBy { it.song.likedAt }
-                    SongSortBy.AlbumName -> list.sortedBy { it.albumTitle }
-                    else -> list
-                }.run {
-                    if( songSort.sortOrder == SortOrder.Descending )
-                        reversed()
-                    else
-                        this
-                }
-            }
             BuiltInPlaylist.Top -> {
                 if (topPlaylists.period.duration == Duration.INFINITE)
                     Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())

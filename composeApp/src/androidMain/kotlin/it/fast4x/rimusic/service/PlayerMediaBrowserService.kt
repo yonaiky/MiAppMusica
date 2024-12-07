@@ -157,8 +157,9 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     )
 
                     MediaId.songs -> Database
-                        .songsByPlayTimeDesc()
+                        .sortAllSongsByPlayTime( 0 )
                         .first()
+                        .reversed()
                         .take(500)
                         .also { lastSongs = it.map { it.song } }
                         .map { it.song.asBrowserMediaItem }

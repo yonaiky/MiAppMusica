@@ -213,7 +213,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                     )
                 )
 
-                PlayerServiceModern.SONG -> database.songsByRowIdAsc().first()
+                PlayerServiceModern.SONG -> database.sortAllSongsByRowId( 0 ).first()
                     .map { it.song.toMediaItem(parentId) }
 
                 PlayerServiceModern.ARTIST -> database.artistsByRowIdAsc().first().map { artist ->
