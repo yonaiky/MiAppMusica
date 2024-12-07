@@ -814,10 +814,10 @@
     <string name="jump_previous_blank">Jätä tyhjäksi tai aseta arvo 0, jos haluat, että edellinen painike toistaa aina edellisen kappaleen</string>
     <string name="delete_hidden_songs">Haluatko varmasti poistaa kaikki piilotetut kappaleet tietokannasta? Tämä toimenpide on peruuttamaton.</string>
     <string name="delete_hidden_songs_message">Poista piilotetut kappaleet</string>
-    <string name="cover_type_vinyl">Vinyl</string>
+    <string name="cover_type_vinyl">Vinyyli</string>
     <string name="cover_type_cd">CD</string>
-    <string name="cover_type_cd_with_cover">CD with Cover</string>
-    <string name="wallpaper">Wallpaper</string>
-    <string name="enable_wallpaper">Enable wallpaper</string>
-    <string name="set_cover_thumbnail_as_wallpaper">Set cover thumbnail as wallpaper</string>
+    <string name="cover_type_cd_with_cover">CD kansikuvalla</string>
+    <string name="wallpaper">Taustakuva</string>
+    <string name="enable_wallpaper">Käytä taustakuvaa</string>
+    <string name="set_cover_thumbnail_as_wallpaper">Aseta kansikuva taustakuvaksi</string>
 </resources>
