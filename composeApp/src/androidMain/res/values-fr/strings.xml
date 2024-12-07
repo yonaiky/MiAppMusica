@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">Paroles synchronisées</string>
     <string name="provided_by">Fournies par</string>
     <string name="delete_playback_events">Supprimer %1$s événements de la lecture</string>
-    <string name="existing_data_will_be_overwritten">Les données existantes seront écrasées,%1$s se fermera automatiquement après la restauration de la base de données.</string>
+    <string name="existing_data_will_be_overwritten">Les données existantes seront écrasées. %1$s se fermera automatiquement après la restauration de la base de données.</string>
     <string name="folder_cache">CACHE DU DOSSIERS</string>
     <string name="cache_reset_by_clicking_button">Attention en cliquant sur le bouton ci-dessous, le dossier d\'emplacement du cache sera réinitialisé au paramètre par défaut</string>
     <string name="cache_location_folder">Emplacement du dossier</string>
@@ -160,7 +160,7 @@
     <string name="_6_month">6 Mois</string>
     <string name="_1_year">1 an</string>
     <string name="all">Tout</string>
-    <string name="most_played_songs">Titres les plus écoutées</string>
+    <string name="most_played_songs">Titres les plus écoutés</string>
     <string name="most_listened_artists">Artistes les plus écoutés</string>
     <string name="most_albums_listened">Albums les plus écoutés</string>
     <string name="most_played_playlists">Playlists les plus écoutées</string>
