@@ -690,15 +690,27 @@ class PlayerServiceModern : MediaLibraryService(),
 
         loadFromRadio(reason)
 
-        if(binder.player.currentMediaItem?.mediaMetadata?.artworkUri != null) {
-            bitmapProvider.load(binder.player.currentMediaItem?.mediaMetadata?.artworkUri, {
-                updateDefaultNotification()
-                updateWidgets()
-            })
-        } else {
-            updateDefaultNotification()
-            updateWidgets()
+        with(bitmapProvider) {
+            when {
+                mediaItem == null -> load(null, {
+                    updateDefaultNotification()
+                    updateWidgets()})
+                mediaItem.mediaMetadata.artworkUri == lastUri -> bitmapProvider.load(lastUri, {
+                    updateDefaultNotification()
+                    updateWidgets()})
+            }
         }
+
+
+//        if(mediaItem?.mediaMetadata?.artworkUri != null) {
+//            bitmapProvider.load(mediaItem.mediaMetadata.artworkUri, {
+//                updateDefaultNotification()
+//                updateWidgets()
+//            })
+//        } else {
+//            updateDefaultNotification()
+//            updateWidgets()
+//        }
     }
 
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
@@ -1077,10 +1089,12 @@ class PlayerServiceModern : MediaLibraryService(),
 
         val mediaMetadata = player.mediaMetadata
 
+        bitmapProvider.load(mediaMetadata.artworkUri) {}
+
         val customNotify = if (isAtLeastAndroid8) {
-            NotificationCompat.Builder(applicationContext, NotificationChannelId)
+            NotificationCompat.Builder(this, NotificationChannelId)
         } else {
-            NotificationCompat.Builder(applicationContext)
+            NotificationCompat.Builder(this)
         }
             .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
             .setContentText(
