@@ -328,14 +328,14 @@ class MediaLibrarySessionCallback @Inject constructor(
                             }
                             ID_DOWNLOADED -> {
                                 val downloads = downloadHelper.downloads.value
-                                database.listAllSongsAsFlow()
-                                    .flowOn(Dispatchers.IO)
-                                    .map { list ->
-                                        list.map { it.song }
-                                            .filter {
-                                                downloads[it.id]?.state == Download.STATE_COMPLETED
-                                            }
-                                    }
+                                database.listAllSongs( -1 )
+                                        .flowOn( Dispatchers.IO )
+                                        .map { list ->
+                                            list.map { it.song }
+                                                .filter {
+                                                    downloads[it.id]?.state == Download.STATE_COMPLETED
+                                                }
+                                        }
                             }
 
                             else -> database.sortSongsFromPlaylistByRowId( playlistId.toLong() )
@@ -398,7 +398,7 @@ class MediaLibrarySessionCallback @Inject constructor(
 
             PlayerServiceModern.SONG -> {
                 val songId = path.getOrNull(1) ?: return@future defaultResult
-                val allSongs = database.listAllSongsAsFlow().first()
+                val allSongs = database.listAllSongs( -1 ).first()
                 MediaSession.MediaItemsWithStartPosition(
                     allSongs.map { it.song.toMediaItem() },
                     allSongs.indexOfFirst { it.song.id == songId }.takeIf { it != -1 } ?: 0,
@@ -443,18 +443,18 @@ class MediaLibrarySessionCallback @Inject constructor(
                     ID_ONDEVICE -> database.songsEntityOnDevice()
                     ID_DOWNLOADED -> {
                         val downloads = downloadHelper.downloads.value
-                        database.listAllSongsAsFlow()
-                            .flowOn(Dispatchers.IO)
-                            .map { songs ->
-                                songs.filter {
-                                    downloads[it.song.id]?.state == Download.STATE_COMPLETED
+                        database.listAllSongs( -1 )
+                                .flowOn( Dispatchers.IO )
+                                .map { songs ->
+                                    songs.filter {
+                                        downloads[it.song.id]?.state == Download.STATE_COMPLETED
+                                    }
                                 }
-                            }
-                            .map { songs ->
-                                songs.map { it to downloads[it.song.id] }
-                                    .sortedBy { it.second?.updateTimeMs ?: 0L }
-                                    .map { it.first }
-                            }
+                                .map { songs ->
+                                    songs.map { it to downloads[it.song.id] }
+                                        .sortedBy { it.second?.updateTimeMs ?: 0L }
+                                        .map { it.first }
+                                }
                     }
 
                     else -> database.sortSongsFromPlaylistByRowId( playlistId.toLong() )
