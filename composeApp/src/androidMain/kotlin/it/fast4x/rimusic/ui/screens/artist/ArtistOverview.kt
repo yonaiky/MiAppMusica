@@ -385,7 +385,9 @@ fun ArtistOverview(
                                 if (youtubeArtistPage?.songs?.isNotEmpty() == true)
                                     youtubeArtistPage.songs?.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            Database.resetContentLength( it.asMediaItem.mediaId )
+                                        }
                                         manageDownload(
                                             context = context,
                                             mediaItem = it.asMediaItem,
@@ -422,7 +424,9 @@ fun ArtistOverview(
                                 if (youtubeArtistPage?.songs?.isNotEmpty() == true)
                                     youtubeArtistPage.songs?.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            Database.resetContentLength( it.asMediaItem.mediaId )
+                                        }
                                         manageDownload(
                                             context = context,
                                             mediaItem = it.asMediaItem,
@@ -534,7 +538,9 @@ fun ArtistOverview(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                        }
 
                                         manageDownload(
                                             context = context,
@@ -555,29 +561,15 @@ fun ArtistOverview(
                                                         mediaItem = song.asMediaItem,
                                                         disableScrollingText = disableScrollingText
                                                     )
-                                                };
+                                                }
                                                 hapticFeedback.performHapticFeedback(
                                                     HapticFeedbackType.LongPress
                                                 )
                                             },
                                             onClick = {
-                                                /*
                                                 binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(
-                                                    listMediaItems.distinct(),
-                                                    index
-                                                )
-                                                 */
+                                                binder?.player?.forcePlay(song.asMediaItem)
 
-                                                /*
-                                                val mediaItem = song.asMediaItem
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlay(mediaItem)
-                                                binder?.setupRadio(
-                                                    NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId),
-                                                    //filterArtist = mediaItem.mediaMetadata.artist.toString()
-                                                )
-                                                 */
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     youtubeArtistPage
                                                         .songsEndpoint
@@ -596,8 +588,6 @@ fun ArtistOverview(
                                                         ?.map { it.asMediaItem }
                                                         ?.let {
                                                             withContext(Dispatchers.Main) {
-                                                                binder?.stopRadio()
-                                                                binder?.player?.forcePlay(song.asMediaItem)
                                                                 binder?.player?.addMediaItems(
                                                                     it.filterNot { it.mediaId == song.key }
                                                                 )
@@ -672,8 +662,11 @@ fun ArtistOverview(
                                 },
                                 icon2 = R.drawable.dice,
                                 onClick2 = {
+                                    if (albums.isEmpty()) return@Title2Actions
                                     val albumId = albums.get(
-                                        Random(System.currentTimeMillis()).nextInt(0, albums.size-1)
+                                        if (albums.size > 1)
+                                            Random(System.currentTimeMillis()).nextInt(0, albums.size-1)
+                                        else 0
                                     ).key
                                     navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
                                 }

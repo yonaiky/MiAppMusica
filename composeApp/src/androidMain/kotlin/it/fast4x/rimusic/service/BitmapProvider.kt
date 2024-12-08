@@ -64,7 +64,11 @@ class BitmapProvider(
     }
 
     fun load(uri: Uri?, onDone: (Bitmap) -> Unit) {
-        if (lastUri == uri) return
+        Timber.d("BitmapProvider load method being called")
+        if (lastUri == uri) {
+            listener?.invoke(lastBitmap)
+            return
+        }
 
         lastEnqueued?.dispose()
         lastUri = uri
@@ -82,12 +86,12 @@ class BitmapProvider(
                             Timber.e("Failed to load bitmap ${result.throwable.stackTraceToString()}")
                             lastBitmap = null
                             onDone(bitmap)
-                            listener?.invoke(lastBitmap)
+                            //listener?.invoke(lastBitmap)
                         },
                         onSuccess = { _, result ->
                             lastBitmap = (result.drawable as BitmapDrawable).bitmap
                             onDone(bitmap)
-                            listener?.invoke(lastBitmap)
+                            //listener?.invoke(lastBitmap)
                         }
                     )
 

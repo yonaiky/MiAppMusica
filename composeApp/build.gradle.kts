@@ -123,8 +123,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 35
-        versionCode = 70
-        versionName = "0.6.62"
+        versionCode = 74
+        versionName = "0.6.63.1"
     }
 
     splits {
@@ -188,9 +188,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+//    }
 
     androidResources {
         generateLocaleConfig = true

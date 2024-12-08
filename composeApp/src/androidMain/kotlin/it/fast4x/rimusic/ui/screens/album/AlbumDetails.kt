@@ -126,7 +126,9 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -327,7 +329,9 @@ fun AlbumDetails(
                     if (songs.isNotEmpty() == true)
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                            Database.resetContentLength( it.asMediaItem.mediaId )
+                            CoroutineScope(Dispatchers.IO).launch {
+                                Database.resetContentLength( it.asMediaItem.mediaId )
+                            }
                             manageDownload(
                                 context = context,
                                 mediaItem = it.asMediaItem,
@@ -338,7 +342,9 @@ fun AlbumDetails(
                     runCatching {
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
-                            Database.resetContentLength( it.mediaId )
+                            CoroutineScope(Dispatchers.IO).launch {
+                                Database.resetContentLength( it.mediaId )
+                            }
                             manageDownload(
                                 context = context,
                                 mediaItem = it,
@@ -366,7 +372,9 @@ fun AlbumDetails(
                     if (songs.isNotEmpty() == true)
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                            Database.resetContentLength( it.asMediaItem.mediaId )
+                            CoroutineScope(Dispatchers.IO).launch {
+                                Database.resetContentLength( it.asMediaItem.mediaId )
+                            }
                             manageDownload(
                                 context = context,
                                 mediaItem = it.asMediaItem,
@@ -377,7 +385,9 @@ fun AlbumDetails(
                     runCatching {
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
-                            Database.resetContentLength( it.mediaId )
+                            CoroutineScope(Dispatchers.IO).launch {
+                                Database.resetContentLength( it.mediaId )
+                            }
                             manageDownload(
                                 context = context,
                                 mediaItem = it,
@@ -906,7 +916,10 @@ fun AlbumDetails(
                             downloadState = downloadState,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                Database.asyncTransaction {
+                                    resetContentLength( song.asMediaItem.mediaId )
+                                }
+
                                 if (!isLocal)
                                     manageDownload(
                                         context = context,
@@ -938,7 +951,7 @@ fun AlbumDetails(
                                 )
 
 
-                                    NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                                    NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                             },
                             modifier = Modifier
                                 .combinedClickable(
@@ -947,13 +960,13 @@ fun AlbumDetails(
                                             NonQueuedMediaItemMenu(
                                                 navController = navController,
                                                 onDismiss = {
-                                                    forceRecompose = true
                                                     menuState.hide()
+                                                    forceRecompose = true
                                                 },
                                                 mediaItem = song.asMediaItem,
                                                 disableScrollingText = disableScrollingText
                                             )
-                                        };
+                                        }
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     },
                                     onClick = {

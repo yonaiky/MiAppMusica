@@ -456,7 +456,9 @@ fun ArtistScreen(
                                             song = song,
                                             onDownloadClick = {
                                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                                }
 
                                                 manageDownload(
                                                     context = context,
@@ -465,7 +467,7 @@ fun ArtistScreen(
                                                 )
                                             },
                                             thumbnailContent = {
-                                                NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                                                NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                                             },
                                             downloadState = downloadState,
                                             thumbnailSizeDp = thumbnailSizeDp,
@@ -477,8 +479,8 @@ fun ArtistScreen(
                                                             NonQueuedMediaItemMenu(
                                                                 navController = navController,
                                                                 onDismiss = {
-                                                                    forceRecompose = true
                                                                     menuState.hide()
+                                                                    forceRecompose = true
                                                                 },
                                                                 mediaItem = song.asMediaItem,
                                                                 disableScrollingText = disableScrollingText

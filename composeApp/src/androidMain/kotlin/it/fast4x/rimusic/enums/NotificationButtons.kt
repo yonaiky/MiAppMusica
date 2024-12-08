@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.enums
 
+import android.app.PendingIntent
 import android.graphics.drawable.Drawable
 import androidx.annotation.OptIn
 import androidx.appcompat.content.res.AppCompatResources
@@ -16,6 +17,7 @@ import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleDownl
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleLike
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleRepeatMode
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleShuffle
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import me.knighthat.appContext
 
 enum class NotificationButtons {
@@ -34,6 +36,17 @@ enum class NotificationButtons {
         Shuffle -> CommandToggleShuffle
         Radio -> CommandStartRadio
         Search -> CommandSearch
+    }
+
+    val pendingIntent: PendingIntent
+    @OptIn(UnstableApi::class)
+    get() = when (this) {
+        Download -> PlayerServiceModern.Action.download.pendingIntent
+        Favorites -> PlayerServiceModern.Action.like.pendingIntent
+        Repeat -> PlayerServiceModern.Action.repeat.pendingIntent
+        Shuffle -> PlayerServiceModern.Action.shuffle.pendingIntent
+        Radio -> PlayerServiceModern.Action.playradio.pendingIntent
+        Search -> PlayerServiceModern.Action.search.pendingIntent
     }
 
     val displayName: String

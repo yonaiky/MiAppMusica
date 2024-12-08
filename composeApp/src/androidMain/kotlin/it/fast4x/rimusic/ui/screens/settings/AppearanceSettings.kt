@@ -46,6 +46,7 @@ import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.ThumbnailCoverType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
+import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -64,12 +65,14 @@ import it.fast4x.rimusic.utils.coverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.enableWallpaperKey
 import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid13
+import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
 import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
@@ -133,6 +136,7 @@ import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
+import it.fast4x.rimusic.utils.wallpaperTypeKey
 import me.knighthat.colorPalette
 import me.knighthat.component.Search
 
@@ -484,6 +488,8 @@ fun AppearanceSettings(
 
     var notificationPlayerFirstIcon by rememberPreference(notificationPlayerFirstIconKey, NotificationButtons.Download)
     var notificationPlayerSecondIcon by rememberPreference(notificationPlayerSecondIconKey, NotificationButtons.Favorites)
+    var enableWallpaper by rememberPreference(enableWallpaperKey, false)
+    var wallpaperType by rememberPreference(wallpaperTypeKey, WallpaperType.Lockscreen)
 
     Column(
         modifier = Modifier
@@ -601,32 +607,6 @@ fun AppearanceSettings(
         }
         AnimatedVisibility(visible = showthumbnail) {
             Column {
-
-                if (search.input.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
-                        search.input,
-                        true
-                    )
-                ) {
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.show_cover_thumbnail_animation),
-                        text = "",
-                        isChecked = showCoverThumbnailAnimation,
-                        onCheckedChange = { showCoverThumbnailAnimation = it },
-                        Modifier.padding(start = 25.dp)
-                    )
-                    AnimatedVisibility(visible = showCoverThumbnailAnimation) {
-                        Column {
-                            EnumValueSelectorSettingsEntry(
-                                title = stringResource(R.string.cover_thumbnail_animation_type),
-                                selectedValue = coverThumbnailAnimation,
-                                onValueSelected = { coverThumbnailAnimation = it },
-                                valueText = { it.textName },
-                                modifier = Modifier.padding(start = 25.dp)
-                            )
-                        }
-                    }
-                }
-
                 if (playerType == PlayerType.Modern) {
                     if (search.input.isBlank() || stringResource(R.string.fadingedge).contains(
                             search.input,
@@ -642,7 +622,7 @@ fun AppearanceSettings(
                         )
                 }
 
-                if (playerType == PlayerType.Modern && !isLandscape) {
+                if (playerType == PlayerType.Modern && !isLandscape && (expandedplayertoggle || expandedplayer)) {
                     if (search.input.isBlank() || stringResource(R.string.carousel).contains(
                             search.input,
                             true
@@ -796,6 +776,31 @@ fun AppearanceSettings(
                     )
             }
         }
+
+        if (search.input.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
+                search.input,
+                true
+            )
+        ) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.show_cover_thumbnail_animation),
+                text = "",
+                isChecked = showCoverThumbnailAnimation,
+                onCheckedChange = { showCoverThumbnailAnimation = it }
+            )
+            AnimatedVisibility(visible = showCoverThumbnailAnimation) {
+                Column {
+                    EnumValueSelectorSettingsEntry(
+                        title = stringResource(R.string.cover_thumbnail_animation_type),
+                        selectedValue = coverThumbnailAnimation,
+                        onValueSelected = { coverThumbnailAnimation = it },
+                        valueText = { it.textName },
+                        modifier = Modifier.padding(start = 25.dp)
+                    )
+                }
+            }
+        }
+
         if (!showthumbnail) {
             if (search.input.isBlank() || stringResource(R.string.noblur).contains(
                     search.input,
@@ -1659,24 +1664,53 @@ fun AppearanceSettings(
         }
 
 
-        if (search.input.isBlank() || stringResource(R.string.show_song_cover).contains(
-                search.input,
-                true
+//        if (search.input.isBlank() || stringResource(R.string.show_song_cover).contains(
+//                search.input,
+//                true
+//            )
+//        )
+//            if (!isAtLeastAndroid13) {
+//                SettingsGroupSpacer()
+//
+//                SettingsEntryGroupText(title = stringResource(R.string.lockscreen))
+//
+//                SwitchSettingEntry(
+//                    title = stringResource(R.string.show_song_cover),
+//                    text = stringResource(R.string.use_song_cover_on_lockscreen),
+//                    isChecked = isShowingThumbnailInLockscreen,
+//                    onCheckedChange = { isShowingThumbnailInLockscreen = it }
+//                )
+//            }
+
+        if (isAtLeastAndroid7) {
+            SettingsGroupSpacer()
+            SettingsEntryGroupText(title = stringResource(R.string.wallpaper))
+            SwitchSettingEntry(
+                title = stringResource(R.string.enable_wallpaper),
+                text = "",
+                isChecked = enableWallpaper,
+                onCheckedChange = { enableWallpaper = it }
             )
-        )
-            if (!isAtLeastAndroid13) {
-                SettingsGroupSpacer()
-
-                SettingsEntryGroupText(title = stringResource(R.string.lockscreen))
-
-                SwitchSettingEntry(
-                    title = stringResource(R.string.show_song_cover),
-                    text = stringResource(R.string.use_song_cover_on_lockscreen),
-                    isChecked = isShowingThumbnailInLockscreen,
-                    onCheckedChange = { isShowingThumbnailInLockscreen = it }
-                )
+            AnimatedVisibility(visible = enableWallpaper) {
+                Column {
+                    EnumValueSelectorSettingsEntry(
+                        title = stringResource(R.string.set_cover_thumbnail_as_wallpaper),
+                        selectedValue = wallpaperType,
+                        onValueSelected = {
+                            wallpaperType = it
+                            restartService = true
+                        },
+                        valueText = {
+                            it.displayName
+                        },
+                        modifier = Modifier.padding(start = 25.dp)
+                    )
+                    RestartPlayerService(restartService, onRestart = { restartService = false })
+                }
             }
+        }
 
+        SettingsGroupSpacer()
         var resetToDefault by remember { mutableStateOf(false) }
         val context = LocalContext.current
         ButtonBarSettingEntry(

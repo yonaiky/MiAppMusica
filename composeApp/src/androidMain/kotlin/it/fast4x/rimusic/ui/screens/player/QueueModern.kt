@@ -593,7 +593,7 @@ fun QueueModern(
                                                     )
                                                     .size(Dimensions.thumbnails.song)
                                             ) {
-                                                NowPlayingSongIndicator(window.mediaItem.mediaId)
+                                                NowPlayingSongIndicator(window.mediaItem.mediaId, binder?.player)
 //                                                if (shouldBePlaying) {
 //                                                    MusicAnimation(
 //                                                        color = colorPalette().onOverlay,
@@ -645,8 +645,8 @@ fun QueueModern(
                                                         mediaItem = window.mediaItem,
                                                         indexInQueue = if (isPlayingThisMediaItem) null else window.firstPeriodIndex,
                                                         onDismiss = {
-                                                            forceRecompose = true
                                                             menuState.hide()
+                                                            forceRecompose = true
                                                         },
                                                         onDownload = {
                                                             manageDownload(

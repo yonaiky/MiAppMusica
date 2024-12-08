@@ -328,7 +328,7 @@ fun MiniPlayer(
                         .clip(thumbnailShape())
                         .size(48.dp)
                 )
-                NowPlayingSongIndicator(mediaItem.mediaId)
+                NowPlayingSongIndicator(mediaItem.mediaId, binder.player)
             }
 
             Column(

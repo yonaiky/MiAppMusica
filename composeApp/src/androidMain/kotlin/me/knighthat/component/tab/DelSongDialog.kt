@@ -49,14 +49,16 @@ open class DelSongDialog protected constructor(
     }
 
     override fun onConfirm() {
+        println("Deleting song ${song}")
         song.ifPresent {
+            println("Deleting song ${it.song.title}")
             Database.asyncTransaction {
                 menuState.hide()
                 binder?.cache?.removeResource(it.song.id)
                 binder?.downloadCache?.removeResource(it.song.id)
-                delete(it.song)
                 deleteSongFromPlaylists(it.song.id)
                 deleteFormat(it.song.id)
+                delete(it.song)
             }
             SmartMessage(
                 message = appContext().resources.getString(R.string.deleted),

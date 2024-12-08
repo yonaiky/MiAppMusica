@@ -67,10 +67,10 @@ import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import it.fast4x.rimusic.enums.QueueSelection
 import it.fast4x.rimusic.enums.SongSortBy
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.OnDeviceSong
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -78,6 +78,7 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FolderItemMenu
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
@@ -85,6 +86,7 @@ import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -128,11 +130,14 @@ import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.appContext
 import me.knighthat.colorPalette
@@ -353,7 +358,7 @@ fun HomeSongs(
     if (showDownloadedPlaylist) buttonsList +=
         BuiltInPlaylist.Downloaded to stringResource(R.string.downloaded)
     if (showMyTopPlaylist) buttonsList +=
-        BuiltInPlaylist.Top to String.format(stringResource(R.string.my_playlist_top),maxTopPlaylistItems.number)
+        BuiltInPlaylist.Top to stringResource(R.string.my_playlist_top,maxTopPlaylistItems.number)
     if (showOnDevicePlaylist) buttonsList +=
         BuiltInPlaylist.OnDevice to stringResource(R.string.on_device)
 
@@ -369,25 +374,19 @@ fun HomeSongs(
         isLoading = true
 
         when( builtInPlaylist ) {
-            BuiltInPlaylist.All -> Database.songs( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() )
-            BuiltInPlaylist.Favorites -> Database.songsFavorites( songSort.sortBy, songSort.sortOrder )
-            BuiltInPlaylist.Offline -> Database.songsOffline( songSort.sortBy, songSort.sortOrder )
-            BuiltInPlaylist.Downloaded -> Database.listAllSongsAsFlow().map { list ->
-                when ( songSort.sortBy ) {
-                    SongSortBy.Title -> list.sortedBy { it.song.title }
-                    SongSortBy.PlayTime -> list.sortedBy { it.song.totalPlayTimeMs }
-                    SongSortBy.Duration -> list.sortedBy { it.song.durationText }
-                    SongSortBy.Artist -> list.sortedBy { it.song.artistsText }
-                    SongSortBy.DateLiked -> list.sortedBy { it.song.likedAt }
-                    SongSortBy.AlbumName -> list.sortedBy { it.albumTitle }
-                    else -> list
-                }.run {
-                    if( songSort.sortOrder == SortOrder.Descending )
-                        reversed()
-                    else
-                        this
-                }
+            BuiltInPlaylist.All, BuiltInPlaylist.Downloaded -> {
+                // I personally think [hiddenSongs.isShown()] should be default regardless
+                val showHidden = if( builtInPlaylist == BuiltInPlaylist.All ) hiddenSongs.isShown() else 0
+
+                Database.listAllSongs( songSort.sortBy, songSort.sortOrder, showHidden )
             }
+            BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
+            BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
+                .map { songs ->
+                    songs.filter { song ->
+                        binder?.cache?.isCached(song.song.id, 0L, song.contentLength ?: 0L) ?: false
+                    }
+                }
             BuiltInPlaylist.Top -> {
                 if (topPlaylists.period.duration == Duration.INFINITE)
                     Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
@@ -399,7 +398,21 @@ fun HomeSongs(
             }
             BuiltInPlaylist.OnDevice -> flowOf()
 
-        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { items = it }
+        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect {
+             /*
+                 When [builtInPlaylist] goes from [BuiltInPlaylist.All] to [BuiltInPlaylist.Downloaded]
+                 or vice versa, the list refuses to update because new list and [items] contain
+                 the same items.
+                 To counter this, we need to manually clear the list and update it
+                 with a new one (with a little delay in between to prevent race condition)
+             */
+            if( it.containsAll( items ) ) {
+                items = emptyList()
+                delay( 100 )
+            }
+
+            items = it
+        }
     }
 
     var songsDevice by remember {
@@ -458,10 +471,22 @@ fun HomeSongs(
             BuiltInPlaylist.Top -> { songs ->
                 if (excludeSongWithDurationLimit == DurationInMinutes.Disabled)
                     true
-                else
-                    songs.song.durationText?.let {
-                        durationTextToMillis(it)
-                    }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
+                else {
+                    println("HomeSongs durationTextToMillis: ${songs.song.durationText?.let {
+                        durationTextToMillis(
+                            it
+                        )
+                    }}")
+
+                    try {
+                        songs.song.durationText?.let {
+                            durationTextToMillis(it)
+                        }!! < excludeSongWithDurationLimit.minutesInMilliSeconds
+                    } catch (e: Exception) {
+                        false
+                    }
+
+                }
             }
 
             else -> { _ -> true }
@@ -470,7 +495,8 @@ fun HomeSongs(
         // Don't set [isLoading] to true here, it'll make searching look weird
 
         itemsOnDisplay = withContext( Dispatchers.Default ) {
-            items.filter( naturalFilter )
+            items.distinctBy { it.song.id }
+                .filter( naturalFilter )
                  .filter {
                      // Without cleaning, user can search explicit songs with "e:"
                      // I kinda want this to be a feature, but it seems unnecessary
@@ -510,6 +536,34 @@ fun HomeSongs(
     hideSongDialog.Render()
     deleteHiddenSongs.Render()
 
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var songRif by remember { mutableStateOf(Song(
+        id = "",
+        title = "",
+        durationText = null,
+        thumbnailUrl = null
+    )) }
+    if (showDeleteDialog) {
+        ConfirmationDialog(
+            text = stringResource(R.string.delete_song),
+            onDismiss = { showDeleteDialog = false },
+            onConfirm = {
+                Database.asyncTransaction {
+                    deleteSongFromPlaylists(songRif.id)
+                    deleteFormat(songRif.id)
+                    delete(songRif)
+                }
+                SmartMessage(
+                    message = appContext().resources.getString(R.string.deleted),
+                    context = appContext()
+                )
+                menuState.hide()
+                showDeleteDialog = false
+            }
+
+        )
+    }
+
     Box(
         modifier = Modifier
             .background(colorPalette().background0)
@@ -548,7 +602,7 @@ fun HomeSongs(
                     this.add( locator )
                     this.add( downloadAllDialog )
                     this.add( deleteDownloadsDialog )
-                    this.add( deleteSongDialog )
+                    //this.add( deleteSongDialog )
                     if (builtInPlaylist == BuiltInPlaylist.All)
                         this.add( hiddenSongs )
                     this.add( shuffle )
@@ -735,7 +789,9 @@ fun HomeSongs(
                                 // Only allow action(s) on songs other than [BuiltInPlaylist.OnDevice]
                                 if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
                                     binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
-                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                    }
                                     if (!isLocal)
                                         manageDownload(
                                             context = context,
@@ -780,7 +836,7 @@ fun HomeSongs(
                                     )
                                 }
 
-                                NowPlayingSongIndicator(song.asMediaItem.mediaId)
+                                NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                             },
                             trailingContent = {
                                 // It must watch for [selectedItems.size] for changes
@@ -816,24 +872,21 @@ fun HomeSongs(
                                                     hideSongDialog.onShortClick()
                                                 }
                                             } else null
-                                        val deleteFromDatabase =
-                                            if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
-                                                {
-                                                    deleteSongDialog.song = Optional.of(song)
-                                                    deleteSongDialog.onShortClick()
-                                                }
-                                            } else null
+
 
                                         menuState.display {
                                             InHistoryMediaItemMenu(
                                                 navController = navController,
                                                 song = song.song,
                                                 onDismiss = {
-                                                    forceRecompose = true
                                                     menuState.hide()
+                                                    forceRecompose = true
                                                 },
                                                 onHideFromDatabase = hideAction,
-                                                onDeleteFromDatabase = deleteFromDatabase,
+                                                onDeleteFromDatabase = {
+                                                    songRif = song.song
+                                                    showDeleteDialog = true
+                                                },
                                                 disableScrollingText = disableScrollingText
                                             )
                                         }

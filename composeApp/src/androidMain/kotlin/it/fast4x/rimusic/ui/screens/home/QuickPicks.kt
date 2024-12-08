@@ -132,7 +132,9 @@ import it.fast4x.rimusic.utils.showRelatedAlbumsKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showSimilarArtistsKey
 import it.fast4x.rimusic.utils.showTipsKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -381,14 +383,22 @@ fun QuickPicks(
 
                 /*   Load data from url or from saved preference   */
                 if (trendingPreference != null) {
-                    if (loadedData) trending = trendingPreference
-                     else trendingPreference = trending
+                    when (loadedData) {
+                        true -> trending = trendingPreference
+                        else -> trendingPreference = trending
+                    }
                 } else trendingPreference = trending
 
                 if (relatedPreference != null) {
-                    if (loadedData) {
-                        relatedPageResult = Result.success(relatedPreference)
-                        relatedInit = relatedPageResult?.getOrNull()
+                    when (loadedData) {
+                        true -> {
+                            relatedPageResult = Result.success(relatedPreference)
+                            relatedInit = relatedPageResult?.getOrNull()
+                        }
+                        else -> {
+                            relatedInit = relatedPageResult?.getOrNull()
+                            relatedPreference = relatedInit
+                        }
                     }
                 } else {
                     relatedInit = relatedPageResult?.getOrNull()
@@ -396,9 +406,16 @@ fun QuickPicks(
                 }
 
                 if (discoverPagePreference != null) {
-                    if (loadedData) {
-                        discoverPageResult = Result.success(discoverPagePreference)
-                        discoverPageInit = discoverPageResult?.getOrNull()
+                    when (loadedData) {
+                        true -> {
+                            discoverPageResult = Result.success(discoverPagePreference)
+                            discoverPageInit = discoverPageResult?.getOrNull()
+                        }
+                        else -> {
+                            discoverPageInit = discoverPageResult?.getOrNull()
+                            discoverPagePreference = discoverPageInit
+                        }
+
                     }
                 } else {
                     discoverPageInit = discoverPageResult?.getOrNull()
@@ -407,13 +424,7 @@ fun QuickPicks(
 
                 // Not saved/cached to preference
                 chartsPageInit = chartsPageResult?.getOrNull()
-//                if (chartsPagePreference != null && loadedData) {
-//                    chartsPageResult = Result.success(chartsPagePreference)
-//                    chartsPageInit = chartsPageResult?.getOrNull()
-//                } else {
-//                    chartsPageInit = chartsPageResult?.getOrNull()
-//                    chartsPagePreference = chartsPageInit
-//                }
+
                 /*   Load data from url or from saved preference   */
 
 
@@ -509,7 +520,10 @@ fun QuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                        }
+
 
                                         if (!isLocal)
                                             manageDownload(
@@ -538,8 +552,8 @@ fun QuickPicks(
                                                     NonQueuedMediaItemMenu(
                                                         navController = navController,
                                                         onDismiss = {
-                                                            forceRecompose = true
                                                             menuState.hide()
+                                                            forceRecompose = true
                                                         },
                                                         mediaItem = song.asMediaItem,
                                                         onRemoveFromQuickPicks = {
@@ -550,7 +564,9 @@ fun QuickPicks(
 
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.resetContentLength(song.asMediaItem.mediaId)
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                                            }
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,
@@ -605,7 +621,9 @@ fun QuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                        }
                                         if (!isLocal)
                                             manageDownload(
                                                 context = context,
@@ -629,13 +647,15 @@ fun QuickPicks(
                                                     NonQueuedMediaItemMenu(
                                                         navController = navController,
                                                         onDismiss = {
-                                                            forceRecompose = true
                                                             menuState.hide()
+                                                            forceRecompose = true
                                                         },
                                                         mediaItem = song.asMediaItem,
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.resetContentLength(song.asMediaItem.mediaId)
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                                            }
                                                             manageDownload(
                                                                 context = context,
                                                                 mediaItem = song.asMediaItem,

@@ -353,7 +353,7 @@ fun OnlineSearch(
                                 thumbnailSizePx = songThumbnailSizePx,
                                 thumbnailSizeDp = songThumbnailSizeDp,
                                 onThumbnailContent = {
-                                    NowPlayingSongIndicator(mediaItem.mediaId)
+                                    NowPlayingSongIndicator(mediaItem.mediaId, binder?.player)
                                 },
                                 onDownloadClick = {},
                                 downloadState = downloadState,
