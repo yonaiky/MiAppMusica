@@ -621,7 +621,13 @@ class PlayerServiceModern : MediaLibraryService(),
             player.removeListener(this)
             player.stop()
             player.release()
-            unregisterReceiver(notificationActionReceiver)
+
+            try{
+                unregisterReceiver(notificationActionReceiver)
+            } catch (e: Exception){
+                Timber.e("PlayerServiceModern onDestroy unregisterReceiver notificationActionReceiver ${e.stackTraceToString()}")
+            }
+
 
             mediaSession.release()
             cache.release()
