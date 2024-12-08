@@ -199,8 +199,6 @@ fun HomeSongs(
 
     fun getMediaItems() = selectedItems.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
 
-    var isLoading by remember { mutableStateOf( false ) }
-
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
@@ -211,7 +209,7 @@ fun HomeSongs(
 
     val context = LocalContext.current
 
-    var includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
+    val includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
 
     val maxTopPlaylistItems by rememberPreference(
         MaxTopPlaylistItemsKey,
@@ -370,9 +368,6 @@ fun HomeSongs(
     LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
         if( builtInPlaylist == BuiltInPlaylist.OnDevice ) return@LaunchedEffect
 
-        // This variable will be set to false after filtration stage is completed
-        isLoading = true
-
         when( builtInPlaylist ) {
             BuiltInPlaylist.All, BuiltInPlaylist.Downloaded -> {
                 // I personally think [hiddenSongs.isShown()] should be default regardless
@@ -420,9 +415,6 @@ fun HomeSongs(
     }
     LaunchedEffect( builtInPlaylist, onDeviceSort.sortBy, onDeviceSort.sortOrder, hasPermission ) {
         if( builtInPlaylist != BuiltInPlaylist.OnDevice ) return@LaunchedEffect
-
-        // This variable will be set to false after filtration stage is completed
-        isLoading = true
 
         // [context] remains unchanged (because of **val**) during the lifecycle of this Composable
         context.musicFilesAsFlow( onDeviceSort.sortBy, onDeviceSort.sortOrder, context )
@@ -492,7 +484,6 @@ fun HomeSongs(
             else -> { _ -> true }
         }
     LaunchedEffect( items, search.input ) {
-        // Don't set [isLoading] to true here, it'll make searching look weird
 
         itemsOnDisplay = withContext( Dispatchers.Default ) {
             items.distinctBy { it.song.id }
@@ -508,18 +499,8 @@ fun HomeSongs(
                      containsTitle || containsArtist || containsAlbum || isExplicit
                  }
         }
-
-        /*
-            [LazyListState] will try to keep the visible song at the top
-            after search input has changed. This creates a weird effect
-            that fools user to believe search results haven't change.
-
-            To prevent it, always scroll the list to the top
-         */
-        lazyListState.scrollToItem( 0 )
-
-        isLoading = false
     }
+
     // Filter folder on the side
     LaunchedEffect( builtInPlaylist, folders, search.input ) {
         filteredFolders = folders.filter {
@@ -642,24 +623,8 @@ fun HomeSongs(
 
             LazyColumn(
                 state = lazyListState,
-                contentPadding = PaddingValues( start = 8.dp, bottom = Dimensions.bottomSpacer ),
-                userScrollEnabled = !isLoading // Effectively disable scroll (drag gesture) while loading
+                contentPadding = PaddingValues( start = 8.dp, bottom = Dimensions.bottomSpacer )
             ) {
-
-                /*
-                    On slower phones, having to load a large database will create a
-                    subtle feeling of the app is not responding. This component
-                    creates fake song card that notifies user that songs are loading.
-                 */
-                if( isLoading ) {
-                    items(
-                        count = 20,
-                        key = { it }
-                    ) { SongItemPlaceholder( thumbnailSizeDp ) }
-
-                    return@LazyColumn
-                }
-
                 if( builtInPlaylist == BuiltInPlaylist.OnDevice && !hasPermission ) {
                     item( "OnDeviceSongsPermission" ) {
                         LaunchedEffect(Unit, relaunchPermission) { launcher.launch(permission) }
