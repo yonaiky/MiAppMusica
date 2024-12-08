@@ -315,6 +315,8 @@ const val albumTypeKey = "albumType"
 const val enableWallpaperKey = "enableWallpaper"
 const val wallpaperTypeKey = "wallpaperType"
 
+const val notificationTypeKey = "notificationType"
+
 
 
 /*

@@ -94,6 +94,7 @@ import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.NotificationButtons
+import it.fast4x.rimusic.enums.NotificationType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.WallpaperType
@@ -145,6 +146,7 @@ import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.notificationPlayerFirstIconKey
 import it.fast4x.rimusic.utils.notificationPlayerSecondIconKey
+import it.fast4x.rimusic.utils.notificationTypeKey
 import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playNext
@@ -276,41 +278,46 @@ class PlayerServiceModern : MediaLibraryService(),
             PackageManager.DONT_KILL_APP
         )
 
-        // CUSTOM NOTIFICATION PROVIDER -> DEFAULT NOTIFICATION PROVIDER MODDED
-        setMediaNotificationProvider(CustomMediaNotificationProvider(this)
-            .apply {
-                setSmallIcon(R.drawable.app_icon)
+        val notificationType = preferences.getEnum(notificationTypeKey, NotificationType.Default)
+        when(notificationType){
+            NotificationType.Default -> {
+                // DEFAULT NOTIFICATION PROVIDER
+                //        setMediaNotificationProvider(
+                //            DefaultMediaNotificationProvider(
+                //                this,
+                //                { NotificationId },
+                //                NotificationChannelId,
+                //                R.string.player
+                //            )
+                //            .apply {
+                //                setSmallIcon(R.drawable.app_icon)
+                //            }
+                //        )
+
+                // DEFAULT NOTIFICATION PROVIDER MODDED
+                setMediaNotificationProvider(CustomMediaNotificationProvider(this)
+                    .apply {
+                        setSmallIcon(R.drawable.app_icon)
+                    }
+                )
             }
-        )
+            NotificationType.Advanced -> {
+                // CUSTOM NOTIFICATION PROVIDER -> CUSTOM NOTIFICATION PROVIDER WITH ACTIONS AND PENDING INTENT
+                // ACTUALLY NOT STABLE
+                setMediaNotificationProvider(object : MediaNotification.Provider{
+                    override fun createNotification(
+                        mediaSession: MediaSession,
+                        customLayout: ImmutableList<CommandButton>,
+                        actionFactory: MediaNotification.ActionFactory,
+                        onNotificationChangedCallback: MediaNotification.Provider.Callback
+                    ): MediaNotification {
+                        return updateCustomNotification(mediaSession)
+                    }
 
-
-        // CUSTOM NOTIFICATION PROVIDER -> CUSTOM NOTIFICATION PROVIDER WITH ACTIONS AND PENDING INTENT
-        // ACTUALLY NOT STABLE
-//        setMediaNotificationProvider(object : MediaNotification.Provider{
-//            override fun createNotification(
-//                mediaSession: MediaSession,
-//                customLayout: ImmutableList<CommandButton>,
-//                actionFactory: MediaNotification.ActionFactory,
-//                onNotificationChangedCallback: MediaNotification.Provider.Callback
-//            ): MediaNotification {
-//                return updateCustomNotification(mediaSession)
-//            }
-//
-//            override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean { return false }
-//        })
-
-        // DEFAULT NOTIFICATION PROVIDER
-//        setMediaNotificationProvider(
-//            DefaultMediaNotificationProvider(
-//                this,
-//                { NotificationId },
-//                NotificationChannelId,
-//                R.string.player
-//            )
-//            .apply {
-//                setSmallIcon(R.drawable.app_icon)
-//            }
-//        )
+                    override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean { return false }
+                })
+            }
+        }
 
         runCatching {
             bitmapProvider = BitmapProvider(
@@ -1095,12 +1102,12 @@ class PlayerServiceModern : MediaLibraryService(),
         }
             .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
             .setContentText(
-                if (mediaMetadata.albumTitle != null || mediaMetadata.artist != "")
+                if (mediaMetadata.albumTitle != null && mediaMetadata.artist != "")
                     "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
                 else mediaMetadata.artist
             )
             .setSubText(
-                if (mediaMetadata.albumTitle != null || mediaMetadata.artist != "")
+                if (mediaMetadata.albumTitle != null && mediaMetadata.artist != "")
                     "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
                 else mediaMetadata.artist
             )
