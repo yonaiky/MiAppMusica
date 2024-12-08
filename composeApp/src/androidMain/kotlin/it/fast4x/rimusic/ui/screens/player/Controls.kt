@@ -135,13 +135,8 @@ fun Controls(
         nextmediaItemtitle = binder.player.getMediaItemAt(nextmediaItemIndex).mediaMetadata.title.toString()
     */
 
-
-    var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-    var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.FakeAudioBar)
 
-
-    val scope = rememberCoroutineScope()
     val animatedPosition = remember { Animatable(position.toFloat()) }
     var isSeeking by remember { mutableStateOf(false) }
 

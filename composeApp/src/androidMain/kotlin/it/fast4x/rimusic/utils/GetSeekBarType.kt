@@ -228,7 +228,7 @@ fun GetSeekBar(
 
         if (playerTimelineType == PlayerTimelineType.FakeAudioBar)
             SeekBarAudioWaves(
-                progressPercentage = ProgressPercentage(position.toFloat() / duration.toFloat()),
+                progressPercentage = ProgressPercentage((position.toFloat() / duration.toFloat()).coerceIn(0f,1f)),
                 playedColor = colorPalette().accent,
                 notPlayedColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
                 waveInteraction = {
