@@ -851,6 +851,21 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.player))
 
+        if (search.input.isBlank() || stringResource(R.string.notification_type).contains(search.input,true)) {
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.notification_type),
+                selectedValue = notificationType,
+                onValueSelected = {
+                    notificationType = it
+                },
+                valueText = {
+                    it.textName
+                }
+            )
+            SettingsDescription(text = stringResource(R.string.notification_type_info))
+            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+        }
+
         if (search.input.isBlank() || stringResource(R.string.audio_quality_format).contains(search.input,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.audio_quality_format),
@@ -871,34 +886,6 @@ fun UiSettings(
 
             RestartPlayerService(restartService, onRestart = { restartService = false } )
 
-        }
-
-        if (search.input.isBlank() || stringResource(R.string.notification_type).contains(search.input,true)) {
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.notification_type),
-                selectedValue = notificationType,
-                onValueSelected = {
-                    notificationType = it
-                },
-                valueText = {
-                    it.textName
-                }
-            )
-            SettingsDescription(text = stringResource(R.string.notification_type_info))
-            ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
-        }
-
-        if (search.input.isBlank() || stringResource(R.string.player_pause_listen_history).contains(search.input,true)) {
-            SwitchSettingEntry(
-                title = stringResource(R.string.player_pause_listen_history),
-                text = stringResource(R.string.player_pause_listen_history_info),
-                isChecked = pauseListenHistory,
-                onCheckedChange = {
-                    pauseListenHistory = it
-                    restartService = true
-                }
-            )
-            RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
         if (search.input.isBlank() || stringResource(R.string.jump_previous).contains(search.input,true)) {
@@ -990,6 +977,19 @@ fun UiSettings(
                     }
                 }
             )
+
+        if (search.input.isBlank() || stringResource(R.string.player_pause_listen_history).contains(search.input,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.player_pause_listen_history),
+                text = stringResource(R.string.player_pause_listen_history_info),
+                isChecked = pauseListenHistory,
+                onCheckedChange = {
+                    pauseListenHistory = it
+                    restartService = true
+                }
+            )
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
+        }
 
         if (search.input.isBlank() || stringResource(R.string.player_pause_on_volume_zero).contains(search.input,true))
             SwitchSettingEntry(
