@@ -227,7 +227,7 @@ fun HistoryList(
                                 onDownloadClick = {
                                     binder?.cache?.removeResource(event.song.asMediaItem.mediaId)
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        Database.resetContentLength( event.song.asMediaItem.mediaId )
+                                        Database.deleteFormat( event.song.asMediaItem.mediaId )
                                     }
 
                                     if (!isLocal)

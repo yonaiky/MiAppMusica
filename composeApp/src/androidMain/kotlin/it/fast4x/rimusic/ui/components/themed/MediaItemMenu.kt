@@ -1077,7 +1077,7 @@ fun MediaItemMenu(
                         onDownloadClick = {
                             binder?.cache?.removeResource(mediaItem.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( mediaItem.mediaId )
+                                Database.deleteFormat( mediaItem.mediaId )
                             }
                             if (!isLocal)
                                 manageDownload(

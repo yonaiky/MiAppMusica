@@ -343,7 +343,7 @@ fun StatisticsPage(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    Database.resetContentLength( songs.get(it).asMediaItem.mediaId )
+                                    Database.deleteFormat( songs.get(it).asMediaItem.mediaId )
                                 }
                                 manageDownload(
                                     context = context,

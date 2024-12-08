@@ -263,7 +263,7 @@ fun LocalSongSearch(
                     onDownloadClick = {
                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                         CoroutineScope(Dispatchers.IO).launch {
-                            Database.resetContentLength( song.asMediaItem.mediaId )
+                            Database.deleteFormat( song.asMediaItem.mediaId )
                         }
 
                         if (!isLocal)

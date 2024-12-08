@@ -60,7 +60,7 @@ class DelAllDownloadedDialog private constructor(
             binder.cache.removeResource(it.mediaId)
 
             CoroutineScope(Dispatchers.IO).launch {
-                Database.resetContentLength( it.mediaId )
+                Database.deleteFormat( it.mediaId )
             }
 
             if (!it.isLocal)

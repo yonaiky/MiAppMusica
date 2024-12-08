@@ -751,11 +751,10 @@ fun HomeSongs(
                         SongItem(
                             song = song.song,
                             onDownloadClick = {
-                                // Only allow action(s) on songs other than [BuiltInPlaylist.OnDevice]
                                 if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
                                     binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                        Database.deleteFormat( song.asMediaItem.mediaId )
                                     }
                                     if (!isLocal)
                                         manageDownload(

@@ -330,7 +330,7 @@ fun AlbumDetails(
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( it.asMediaItem.mediaId )
+                                Database.deleteFormat( it.asMediaItem.mediaId )
                             }
                             manageDownload(
                                 context = context,
@@ -343,7 +343,7 @@ fun AlbumDetails(
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( it.mediaId )
+                                Database.deleteFormat( it.mediaId )
                             }
                             manageDownload(
                                 context = context,
@@ -373,7 +373,7 @@ fun AlbumDetails(
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( it.asMediaItem.mediaId )
+                                Database.deleteFormat( it.asMediaItem.mediaId )
                             }
                             manageDownload(
                                 context = context,
@@ -386,7 +386,7 @@ fun AlbumDetails(
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( it.mediaId )
+                                Database.deleteFormat( it.mediaId )
                             }
                             manageDownload(
                                 context = context,
@@ -917,7 +917,7 @@ fun AlbumDetails(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 Database.asyncTransaction {
-                                    resetContentLength( song.asMediaItem.mediaId )
+                                    deleteFormat( song.asMediaItem.mediaId )
                                 }
 
                                 if (!isLocal)

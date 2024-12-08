@@ -42,7 +42,7 @@ class HideSongDialog private constructor(
                 menuState.hide()
                 binder?.cache?.removeResource(it.song.id)
                 binder?.downloadCache?.removeResource(it.song.id)
-                resetFormatContentLength(it.song.id)
+                //resetFormatContentLength(it.song.id)
                 deleteFormat(it.song.id)
                 incrementTotalPlayTimeMs(
                     it.song.id,

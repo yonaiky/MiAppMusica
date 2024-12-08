@@ -457,7 +457,7 @@ fun PlaylistSongList(
                                                 playlistPage?.songsPage?.items?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                                        Database.deleteFormat( it.asMediaItem.mediaId )
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -485,7 +485,7 @@ fun PlaylistSongList(
                                                 playlistPage?.songsPage?.items?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                                        Database.deleteFormat( it.asMediaItem.mediaId )
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -762,7 +762,7 @@ fun PlaylistSongList(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                    Database.deleteFormat( song.asMediaItem.mediaId )
                                 }
 
                                 if (!isLocal)

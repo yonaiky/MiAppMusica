@@ -521,7 +521,7 @@ fun QuickPicks(
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                            Database.deleteFormat( song.asMediaItem.mediaId )
                                         }
 
 
@@ -565,7 +565,7 @@ fun QuickPicks(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                                                Database.deleteFormat( song.asMediaItem.mediaId )
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -622,7 +622,7 @@ fun QuickPicks(
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                            Database.deleteFormat( song.asMediaItem.mediaId )
                                         }
                                         if (!isLocal)
                                             manageDownload(
@@ -654,7 +654,7 @@ fun QuickPicks(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                                                Database.deleteFormat( song.asMediaItem.mediaId )
                                                             }
                                                             manageDownload(
                                                                 context = context,
