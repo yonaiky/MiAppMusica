@@ -316,7 +316,7 @@
     <string name="if_possible_allows_discovery_content_language">Si possible, il permet de recevoir du contenu de découverte dans votre propre langue.</string>
     <string name="set_to">Régler sur</string>
     <string name="end_of_song">fin du titre</string>
-    <string name="restore_completed">Restauration terminée!</string>
+    <string name="restore_completed">Restauration terminée !</string>
     <string name="click_to_close">Cliquer pour fermer</string>
     <string name="lang_dutch">Néerlandais (Nederlands)</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Voulez-vous vraiment renuméroter les positions dans cette playlist ?</string>
