@@ -168,7 +168,7 @@ fun QueueModern(
     //    .only(WindowInsetsSides.Bottom).asPaddingValues()
 
     val context = LocalContext.current
-    val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
+    val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
     var queueType by rememberPreference(queueTypeKey, QueueType.Essential)
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)

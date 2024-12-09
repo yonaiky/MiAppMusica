@@ -192,6 +192,7 @@ import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
+import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.appRunningInBackground
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.PlayerType
@@ -264,6 +265,7 @@ import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.playbackPitchKey
 import it.fast4x.rimusic.utils.playbackSpeedKey
+import it.fast4x.rimusic.utils.showButtonPlayerStartRadioKey
 import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.statsExpandedKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
@@ -535,7 +537,7 @@ fun Player(
     var showthumbnail by rememberPreference(showthumbnailKey, true)
 
     val showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
-    val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
+    val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
     val showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     val showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
     val showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
@@ -543,6 +545,7 @@ fun Player(
     val showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     val showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
+    val showButtonPlayerStartRadio by rememberPreference(showButtonPlayerStartRadioKey, false)
     val showButtonPlayerSystemEqualizer by rememberPreference(
         showButtonPlayerSystemEqualizerKey,
         false
@@ -1119,6 +1122,7 @@ fun Player(
                 !showButtonPlayerSystemEqualizer &&
                 !showButtonPlayerArrow &&
                 !showButtonPlayerMenu &&
+                !showButtonPlayerStartRadio &&
                 !expandedplayertoggle &&
                 !showButtonPlayerDiscover &&
                 !showButtonPlayerVideo) ||
@@ -1606,6 +1610,21 @@ fun Player(
                                     .size(20.dp),
                             )
                         }
+
+                        if (showButtonPlayerStartRadio)
+                            IconButton(
+                                icon = R.drawable.radio,
+                                color = colorPalette().accent,
+                                enabled = true,
+                                onClick = {
+                                    binder.stopRadio()
+                                    binder.playRadio(
+                                        NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
+                                    )
+                                },
+                                modifier = Modifier
+                                    .size(24.dp),
+                            )
 
                         if (showButtonPlayerArrow)
                             IconButton(

@@ -108,6 +108,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
 import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
+import it.fast4x.rimusic.utils.showButtonPlayerStartRadioKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
@@ -203,7 +204,7 @@ fun DefaultAppearanceSettings() {
     thumbnailTapEnabled = true
     var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     showButtonPlayerAddToPlaylist = true
-    var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
+    var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
     showButtonPlayerArrow = false
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     showButtonPlayerDownload = true
@@ -391,7 +392,7 @@ fun AppearanceSettings(
 
 
     var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
-    var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, false)
+    var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
     var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
@@ -399,6 +400,7 @@ fun AppearanceSettings(
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
+    var showButtonPlayerStartradio by rememberPreference(showButtonPlayerStartRadioKey, false)
     var showButtonPlayerSystemEqualizer by rememberPreference(
         showButtonPlayerSystemEqualizerKey,
         false
@@ -1503,6 +1505,18 @@ fun AppearanceSettings(
                 text = "",
                 isChecked = showButtonPlayerArrow,
                 onCheckedChange = { showButtonPlayerArrow = it }
+            )
+
+        if (search.input.isBlank() || stringResource(R.string.action_bar_show_start_radio_button).contains(
+                search.input,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.action_bar_show_start_radio_button),
+                text = "",
+                isChecked = showButtonPlayerStartradio,
+                onCheckedChange = { showButtonPlayerStartradio = it }
             )
 
         if (search.input.isBlank() || stringResource(R.string.action_bar_show_menu_button).contains(
