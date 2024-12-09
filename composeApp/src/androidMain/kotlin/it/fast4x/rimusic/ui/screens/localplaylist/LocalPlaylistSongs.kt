@@ -812,6 +812,20 @@ fun LocalPlaylistSongs(
                             onPlayNext = {
                                 binder?.player?.addNext(song.asMediaItem)
                             },
+                            onDownload = {
+                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                }
+
+                                if (!isLocal) {
+                                    manageDownload(
+                                        context = context,
+                                        mediaItem = song.asMediaItem,
+                                        downloadState = isDownloaded
+                                    )
+                                }
+                            },
                             modifier = Modifier.zIndex(2f)
                         ) {
                             SongItem(
