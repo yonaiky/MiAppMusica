@@ -1,11 +1,6 @@
 package it.fast4x.rimusic.enums
 
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NotificationButtons.Favorites
-import it.fast4x.rimusic.enums.NotificationButtons.Radio
-import it.fast4x.rimusic.enums.NotificationButtons.Repeat
-import it.fast4x.rimusic.enums.NotificationButtons.Search
-import it.fast4x.rimusic.enums.NotificationButtons.Shuffle
 import me.knighthat.appContext
 
 enum class QueueSwipeAction {

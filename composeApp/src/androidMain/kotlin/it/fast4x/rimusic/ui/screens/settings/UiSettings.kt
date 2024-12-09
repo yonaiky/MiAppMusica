@@ -1382,31 +1382,6 @@ fun UiSettings(
                  */
             )
 
-        if (search.input.isBlank() || stringResource(R.string.queue_left_swipe).contains(search.input,true))
-            EnumValueSelectorSettingsEntry<QueueSwipeAction>(
-                title = stringResource(R.string.queue_left_swipe),
-                selectedValue = queueSwipeLeftAction,
-                onValueSelected = {
-                    queueSwipeLeftAction = it
-                    restartService = true
-                },
-                valueText = {
-                    it.displayName
-                },
-            )
-        if (search.input.isBlank() || stringResource(R.string.queue_right_swipe).contains(search.input,true))
-            EnumValueSelectorSettingsEntry<QueueSwipeAction>(
-                title = stringResource(R.string.queue_right_swipe),
-                selectedValue = queueSwipeRightAction,
-                onValueSelected = {
-                    queueSwipeRightAction = it
-                    restartService = true
-                },
-                valueText = {
-                    it.displayName
-                },
-            )
-
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.user_interface))
 
@@ -1895,6 +1870,34 @@ fun UiSettings(
                 onCheckedChange = { isSwipeToActionEnabled = it }
             )
 
+            AnimatedVisibility(visible = isSwipeToActionEnabled) {
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    EnumValueSelectorSettingsEntry<QueueSwipeAction>(
+                        title = stringResource(R.string.queue_left_swipe),
+                        selectedValue = queueSwipeLeftAction,
+                        onValueSelected = {
+                            queueSwipeLeftAction = it
+                            restartService = true
+                        },
+                        valueText = {
+                            it.displayName
+                        },
+                    )
+                    EnumValueSelectorSettingsEntry<QueueSwipeAction>(
+                        title = stringResource(R.string.queue_right_swipe),
+                        selectedValue = queueSwipeRightAction,
+                        onValueSelected = {
+                            queueSwipeRightAction = it
+                            restartService = true
+                        },
+                        valueText = {
+                            it.displayName
+                        },
+                    )
+                }
+            }
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.songs).uppercase())

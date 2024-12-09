@@ -36,8 +36,6 @@ import it.fast4x.rimusic.utils.albumItemToggleBookmarked
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.preferences
-//import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.queueSwipeLeftActionKey
 import it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import kotlinx.coroutines.flow.distinctUntilChanged
