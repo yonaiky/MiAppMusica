@@ -94,7 +94,8 @@ import me.knighthat.Skeleton
 fun SearchResultScreen(
     navController: NavController,
     miniPlayer: @Composable () -> Unit = {},
-    query: String, onSearchAgain: () -> Unit
+    query: String,
+    onSearchAgain: () -> Unit
 ) {
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
@@ -112,7 +113,7 @@ fun SearchResultScreen(
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    PersistMapCleanup(tagPrefix = "searchResults/$query/")
+    //PersistMapCleanup(tagPrefix = "searchResults/$query/")
 
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit = {
                 Title(
@@ -254,6 +255,7 @@ fun SearchResultScreen(
                                                     onClick = {
                                                         localBinder?.stopRadio()
                                                         localBinder?.player?.forcePlay(song.asMediaItem)
+                                                        forceRecompose = true
                                                         localBinder?.setupRadio(song.info?.endpoint)
                                                     }
                                                 ),
