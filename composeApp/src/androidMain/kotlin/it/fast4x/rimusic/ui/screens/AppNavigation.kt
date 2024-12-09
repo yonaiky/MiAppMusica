@@ -220,6 +220,7 @@ fun AppNavigation(
                 QueueModern(
                     navController = navController,
                     onDismiss = {},
+                    onDiscoverClick = {}
                 )
             }
         }

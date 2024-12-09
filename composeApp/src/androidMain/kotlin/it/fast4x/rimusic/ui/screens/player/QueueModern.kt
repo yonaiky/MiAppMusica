@@ -153,7 +153,8 @@ import java.util.Date
 @Composable
 fun QueueModern(
     navController: NavController,
-    onDismiss: (QueueLoopType) -> Unit
+    onDismiss: (QueueLoopType) -> Unit,
+    onDiscoverClick: (Boolean) -> Unit,
 ) {
     //val uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     val windowInsets = WindowInsets.systemBars
@@ -843,7 +844,10 @@ fun QueueModern(
                                 .padding(horizontal = 4.dp)
                                 .size(24.dp)
                                 .combinedClickable(
-                                    onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                    onClick = {
+                                        discoverIsEnabled = !discoverIsEnabled
+                                        onDiscoverClick(discoverIsEnabled)
+                                    },
                                     onLongClick = {
                                         SmartMessage(
                                             context.resources.getString(R.string.discoverinfo),

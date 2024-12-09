@@ -865,7 +865,6 @@ fun Player(
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var discoverIsEnabled by rememberPreference(discoverKey, false)
-    val hapticFeedback = LocalHapticFeedback.current
     val titleExpanded by rememberPreference(titleExpandedKey, true)
     val timelineExpanded by rememberPreference(timelineExpandedKey, true)
     val controlsExpanded by rememberPreference(controlsExpandedKey, true)
@@ -2788,6 +2787,9 @@ fun Player(
                     queueLoopType = it
                     showQueue = false
                 },
+                onDiscoverClick = {
+                    discoverIsEnabled = it
+                }
             )
         }
 
