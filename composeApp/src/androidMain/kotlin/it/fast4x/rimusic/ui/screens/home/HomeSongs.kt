@@ -370,7 +370,6 @@ fun HomeSongs(
 
         when( builtInPlaylist ) {
             BuiltInPlaylist.All, BuiltInPlaylist.Downloaded -> {
-                // I personally think [hiddenSongs.isShown()] should be default regardless
                 val showHidden = if( builtInPlaylist == BuiltInPlaylist.All ) hiddenSongs.isShown() else 0
 
                 Database.listAllSongs( songSort.sortBy, songSort.sortOrder, showHidden )
@@ -379,7 +378,7 @@ fun HomeSongs(
             BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
                 .map { songs ->
                     songs.filter { song ->
-                        binder?.cache?.isCached(song.song.id, 0L, song.contentLength ?: 0L) ?: false
+                        song.contentLength?.let { binder?.cache?.isCached(song.song.id, 0L, it) } ?: false
                     }
                 }
             BuiltInPlaylist.Top -> {

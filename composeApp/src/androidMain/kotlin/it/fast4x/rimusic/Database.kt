@@ -375,7 +375,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL 
         ORDER BY totalPlayTimeMs
     """)
     fun sortOfflineSongsByPlayTime(): Flow<List<SongEntity>>
@@ -386,7 +386,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL 
         ORDER BY 
             CASE
                 WHEN Song.title LIKE "$EXPLICIT_PREFIX%" THEN SUBSTR(Song.title, LENGTH('$EXPLICIT_PREFIX') + 1)
@@ -402,7 +402,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE contentLength IS NOT NULL
+        WHERE Format.contentLength IS NOT NULL
         ORDER BY Song.ROWID
     """)
     fun sortOfflineSongsByRowId(): Flow<List<SongEntity>>
@@ -413,7 +413,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL 
         ORDER BY Song.likedAt
     """)
     fun sortOfflineSongsByLikedAt(): Flow<List<SongEntity>>
@@ -424,7 +424,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL 
         ORDER BY Song.artistsText
     """)
     fun sortOfflineSongsByArtist(): Flow<List<SongEntity>>
@@ -435,7 +435,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL 
         ORDER BY Song.durationText
     """)
     fun sortOfflineSongsByDuration(): Flow<List<SongEntity>>
@@ -447,7 +447,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL 
         ORDER BY E.timestamp
     """)
     fun sortOfflineSongsByDatePlayed(): Flow<List<SongEntity>>
@@ -458,7 +458,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL 
         ORDER BY Album.title COLLATE NOCASE
     """)
     fun sortOfflineSongsByAlbum(): Flow<List<SongEntity>>
