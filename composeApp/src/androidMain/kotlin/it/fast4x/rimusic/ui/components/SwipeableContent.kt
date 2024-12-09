@@ -118,8 +118,6 @@ fun SwipeableQueueItem(
     mediaItem: MediaItem,
     onPlayNext: (() -> Unit) = {},
     onDownload: (() -> Unit) = {},
-    onAddToPlaylist: (() -> Unit) = {},
-    onListenOn: (() -> Unit) = {},
     onRemoveFromQueue: (() -> Unit) = {},
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
@@ -131,8 +129,6 @@ fun SwipeableQueueItem(
         return when (actionName) {
             QueueSwipeAction.PlayNext -> onPlayNext
             QueueSwipeAction.Download -> onDownload
-            QueueSwipeAction.AddToPlaylist -> onAddToPlaylist
-            QueueSwipeAction.ListenOn -> onListenOn
             QueueSwipeAction.RemoveFromQueue -> onRemoveFromQueue
             else -> ({})
         }

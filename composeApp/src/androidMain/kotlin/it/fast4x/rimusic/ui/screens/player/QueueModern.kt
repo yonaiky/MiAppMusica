@@ -553,16 +553,25 @@ fun QueueModern(
 
                             SwipeableQueueItem(
                                 mediaItem = window.mediaItem,
-                                onRemoveFromQueue = {
-                                    player.removeMediaItem(currentItem.firstPeriodIndex)
-                                    SmartMessage("${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
-                                },
                                 onPlayNext = {
                                     binder.player.addNext(
                                         window.mediaItem,
                                         context
                                     )
-                                }
+                                },
+                                onDownload = {
+                                    binder.cache.removeResource(window.mediaItem.mediaId)
+                                    if (!isLocal)
+                                        manageDownload(
+                                            context = context,
+                                            mediaItem = window.mediaItem,
+                                            downloadState = isDownloaded
+                                        )
+                                },
+                                onRemoveFromQueue = {
+                                    player.removeMediaItem(currentItem.firstPeriodIndex)
+                                    SmartMessage("${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
+                                },
                             ) {
                                 SongItem(
                                     song = window.mediaItem,
