@@ -182,7 +182,9 @@ fun About() {
                     "ManuelCoimbra) \n" +
                     "Marinkas \n"+
                     "materialred \n"+
+                    "Mickael81 \n" +
                     "Mid_Vur_Shaan \n" +
+                    "MS-PC \n" +
                     "Muha Aliss \n"+
                     "Ndvok \n"+
                     "Nebula-Mechanica \n"+
