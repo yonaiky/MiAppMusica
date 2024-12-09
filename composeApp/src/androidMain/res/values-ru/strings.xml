@@ -816,10 +816,10 @@
     <string name="jump_previous_blank">Оставьте поле пустым или 0 для кнопки \"Назад\", чтобы всегда воспроизводить предыдущую песню</string>
     <string name="delete_hidden_songs">Вы действительно хотите удалить все скрытые песни из базы данных? Это действие необратимо.</string>
     <string name="delete_hidden_songs_message">Удалить скрытые песни</string>
-    <string name="cover_type_vinyl">Vinyl</string>
-    <string name="cover_type_cd">CD</string>
-    <string name="cover_type_cd_with_cover">CD with Cover</string>
-    <string name="wallpaper">Wallpaper</string>
-    <string name="enable_wallpaper">Enable wallpaper</string>
-    <string name="set_cover_thumbnail_as_wallpaper">Set cover thumbnail as wallpaper</string>
+    <string name="cover_type_vinyl">Винил</string>
+    <string name="cover_type_cd">Компакт-диск</string>
+    <string name="cover_type_cd_with_cover">Компакт-диск с обложкой</string>
+    <string name="wallpaper">Обои</string>
+    <string name="enable_wallpaper">Включить обои</string>
+    <string name="set_cover_thumbnail_as_wallpaper">Установить миниатюру обложки в качестве обоев</string>
 </resources>
