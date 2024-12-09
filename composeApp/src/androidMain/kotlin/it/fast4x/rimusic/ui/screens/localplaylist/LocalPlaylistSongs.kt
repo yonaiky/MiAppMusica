@@ -783,7 +783,7 @@ fun LocalPlaylistSongs(
 
                         SwipeableQueueItem(
                             mediaItem = song.asMediaItem,
-                            onSwipeToLeft = {
+                            onRemoveFromQueue = {
                                 Database.asyncTransaction {
                                     deleteSongFromPlaylist(song.song.id, playlistId)
                                 }
@@ -809,7 +809,7 @@ fun LocalPlaylistSongs(
                                 }
 
                             },
-                            onSwipeToRight = {
+                            onPlayNext = {
                                 binder?.player?.addNext(song.asMediaItem)
                             },
                             modifier = Modifier.zIndex(2f)

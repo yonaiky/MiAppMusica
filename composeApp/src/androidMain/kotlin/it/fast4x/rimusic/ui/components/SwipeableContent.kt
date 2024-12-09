@@ -111,8 +111,11 @@ fun SwipeableContent(
 @Composable
 fun SwipeableQueueItem(
     mediaItem: MediaItem,
-    onSwipeToLeft: () -> Unit,
-    onSwipeToRight: () -> Unit,
+    onPlayNext: (() -> Unit) = {},
+    onDownload: (() -> Unit) = {},
+    onAddToPlaylist: (() -> Unit) = {},
+    onListenOn: (() -> Unit) = {},
+    onRemoveFromQueue: (() -> Unit) = {},
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -120,8 +123,8 @@ fun SwipeableQueueItem(
     SwipeableContent(
         swipeToLeftIcon = R.drawable.trash,
         swipeToRightIcon = R.drawable.play_skip_forward,
-        onSwipeToLeft = onSwipeToLeft,
-        onSwipeToRight = onSwipeToRight,
+        onSwipeToLeft = onRemoveFromQueue,
+        onSwipeToRight = onPlayNext,
         modifier = modifier
     ) {
         content()

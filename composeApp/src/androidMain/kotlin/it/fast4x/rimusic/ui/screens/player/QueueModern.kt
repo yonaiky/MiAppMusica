@@ -553,11 +553,11 @@ fun QueueModern(
 
                             SwipeableQueueItem(
                                 mediaItem = window.mediaItem,
-                                onSwipeToLeft = {
+                                onRemoveFromQueue = {
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
                                     SmartMessage("${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
                                 },
-                                onSwipeToRight = {
+                                onPlayNext = {
                                     binder.player.addNext(
                                         window.mediaItem,
                                         context
