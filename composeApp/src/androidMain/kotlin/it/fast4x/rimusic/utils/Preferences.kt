@@ -542,6 +542,15 @@ inline fun <reified T : Enum<T>> rememberPreference(key: String, defaultValue: T
     }
 }
 
+fun clearPreference(context: Context, key: String): Unit {
+    try {
+        context.preferences.edit { remove(key) }
+    } catch (e: Exception) {
+        Timber.e("ClearPreference Error: ${e.stackTraceToString()}")
+    }
+}
+
+
 inline fun <T> mutableStatePreferenceOf(
     value: T,
     crossinline onStructuralInequality: (newValue: T) -> Unit
