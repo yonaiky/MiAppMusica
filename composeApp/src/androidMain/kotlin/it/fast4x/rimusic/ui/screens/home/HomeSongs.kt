@@ -60,6 +60,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
+import it.fast4x.rimusic.enums.CacheType
 import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
@@ -79,6 +80,7 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FolderItemMenu
@@ -239,7 +241,6 @@ fun HomeSongs(
 
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
-    // Non-vital
     val playlistNameState = remember { mutableStateOf( "" ) }
 
     // Update playlistNameState's value based on current builtInPlaylist
@@ -608,17 +609,25 @@ fun HomeSongs(
                     ButtonsRow(
                         chips = buttonsList,
                         currentValue = builtInPlaylist,
-                        onValueUpdate = { builtInPlaylist = it },
+                        onValueUpdate = {
+                            builtInPlaylist = it
+                        },
                         modifier = Modifier.padding(end = 12.dp)
                     )
-                    ProgressIndicator(
-                        progress = 3f,
-                        strokeCap = StrokeCap.Round,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp)
-                            .padding(start = 32.dp, end = 16.dp)
-                    )
+
+                    when (builtInPlaylist) {
+                        BuiltInPlaylist.Downloaded, BuiltInPlaylist.Offline -> {
+                            CacheSpaceIndicator(
+                                cacheType = when (builtInPlaylist) {
+                                    BuiltInPlaylist.Downloaded -> CacheType.DownloadedSongs
+                                    BuiltInPlaylist.Offline -> CacheType.CachedSongs
+                                    else -> CacheType.CachedSongs
+                                }
+                            )
+                        }
+                        else -> {}
+                    }
+
                 }
             }
 
