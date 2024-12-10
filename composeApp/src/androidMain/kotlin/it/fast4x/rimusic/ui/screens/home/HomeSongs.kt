@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -85,6 +86,7 @@ import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
+import it.fast4x.rimusic.ui.components.themed.ProgressIndicator
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.FolderItem
@@ -371,16 +373,10 @@ fun HomeSongs(
         when( builtInPlaylist ) {
             BuiltInPlaylist.All, BuiltInPlaylist.Downloaded -> {
                 val showHidden = if( builtInPlaylist == BuiltInPlaylist.All ) hiddenSongs.isShown() else 0
-
                 Database.listAllSongs( songSort.sortBy, songSort.sortOrder, showHidden )
             }
             BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
-                .map { songs ->
-                    songs.filter { song ->
-                        song.contentLength?.let { binder?.cache?.isCached(song.song.id, 0L, it) } ?: false
-                    }
-                }
             BuiltInPlaylist.Top -> {
                 if (topPlaylists.period.duration == Duration.INFINITE)
                     Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
@@ -608,12 +604,22 @@ fun HomeSongs(
                     .padding(bottom = 8.dp)
                     .fillMaxWidth()
             ) {
-                ButtonsRow(
-                    chips = buttonsList,
-                    currentValue = builtInPlaylist,
-                    onValueUpdate = { builtInPlaylist = it },
-                    modifier = Modifier.padding(end = 12.dp)
-                )
+                Column {
+                    ButtonsRow(
+                        chips = buttonsList,
+                        currentValue = builtInPlaylist,
+                        onValueUpdate = { builtInPlaylist = it },
+                        modifier = Modifier.padding(end = 12.dp)
+                    )
+                    ProgressIndicator(
+                        progress = 3f,
+                        strokeCap = StrokeCap.Round,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp)
+                            .padding(start = 32.dp, end = 16.dp)
+                    )
+                }
             }
 
 

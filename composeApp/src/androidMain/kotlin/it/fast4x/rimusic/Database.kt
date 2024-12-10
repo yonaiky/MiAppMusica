@@ -240,7 +240,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE likedAt IS NOT NULL 
+        WHERE Song.likedAt IS NOT NULL 
         ORDER BY artistsText
     """)
     fun sortFavoriteSongsByArtist(): Flow<List<SongEntity>>
@@ -251,7 +251,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE likedAt IS NOT NULL 
+        WHERE Song.likedAt IS NOT NULL 
         ORDER BY totalPlayTimeMs
     """)
     fun sortFavoriteSongsByPlayTime(): Flow<List<SongEntity>>
@@ -262,7 +262,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE likedAt IS NOT NULL 
+        WHERE Song.likedAt IS NOT NULL 
         ORDER BY 
             CASE
                 WHEN Song.title LIKE "$EXPLICIT_PREFIX%" THEN SUBSTR(Song.title, LENGTH('$EXPLICIT_PREFIX') + 1)
@@ -278,7 +278,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE likedAt IS NOT NULL 
+        WHERE Song.likedAt IS NOT NULL 
         ORDER BY Song.ROWID
     """)
     fun sortFavoriteSongsByRowId(): Flow<List<SongEntity>>
@@ -289,7 +289,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE likedAt IS NOT NULL 
+        WHERE Song.likedAt IS NOT NULL 
         ORDER BY likedAt
     """)
     fun sortFavoriteSongsByLikedAt(): Flow<List<SongEntity>>
@@ -301,7 +301,7 @@ interface Database {
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
         LEFT JOIN Event E ON E.songId = Song.id 
-        WHERE likedAt IS NOT NULL 
+        WHERE Song.likedAt IS NOT NULL 
         ORDER BY E.timestamp
     """)
     fun sortFavoriteSongsByDatePlayed(): Flow<List<SongEntity>>
@@ -312,7 +312,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE likedAt IS NOT NULL 
+        WHERE Song.likedAt IS NOT NULL 
         ORDER BY durationText
     """)
     fun sortFavoriteSongsByDuration(): Flow<List<SongEntity>>
@@ -323,7 +323,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.likedAt IS NOT NULL
+        WHERE Song.likedAt IS NOT NULL 
         ORDER BY Album.title
     """)
     fun sortFavoriteSongsByAlbum(): Flow<List<SongEntity>>
@@ -375,7 +375,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL AND Song.totalPlayTimeMs > 0
         ORDER BY totalPlayTimeMs
     """)
     fun sortOfflineSongsByPlayTime(): Flow<List<SongEntity>>
@@ -386,7 +386,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL AND Song.totalPlayTimeMs > 0
         ORDER BY 
             CASE
                 WHEN Song.title LIKE "$EXPLICIT_PREFIX%" THEN SUBSTR(Song.title, LENGTH('$EXPLICIT_PREFIX') + 1)
@@ -402,7 +402,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL
+        WHERE Format.contentLength IS NOT NULL AND Song.totalPlayTimeMs > 0
         ORDER BY Song.ROWID
     """)
     fun sortOfflineSongsByRowId(): Flow<List<SongEntity>>
@@ -413,7 +413,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL AND Song.totalPlayTimeMs > 0
         ORDER BY Song.likedAt
     """)
     fun sortOfflineSongsByLikedAt(): Flow<List<SongEntity>>
@@ -424,7 +424,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL AND Song.totalPlayTimeMs > 0
         ORDER BY Song.artistsText
     """)
     fun sortOfflineSongsByArtist(): Flow<List<SongEntity>>
@@ -435,7 +435,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL AND Song.totalPlayTimeMs > 0
         ORDER BY Song.durationText
     """)
     fun sortOfflineSongsByDuration(): Flow<List<SongEntity>>
@@ -447,7 +447,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL AND Song.totalPlayTimeMs > 0
         ORDER BY E.timestamp
     """)
     fun sortOfflineSongsByDatePlayed(): Flow<List<SongEntity>>
@@ -458,7 +458,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
+        WHERE Format.contentLength IS NOT NULL AND Song.totalPlayTimeMs > 0
         ORDER BY Album.title COLLATE NOCASE
     """)
     fun sortOfflineSongsByAlbum(): Flow<List<SongEntity>>
@@ -501,7 +501,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.totalPlayTimeMs > :showHidden 
+        WHERE Song.totalPlayTimeMs >= :showHidden 
         ORDER BY Song.ROWID
     """)
     fun sortAllSongsByRowId(
@@ -514,7 +514,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.totalPlayTimeMs > :showHidden 
+        WHERE Song.totalPlayTimeMs >= :showHidden 
         ORDER BY 
             CASE
                 WHEN Song.title LIKE "$EXPLICIT_PREFIX%" THEN SUBSTR(Song.title, LENGTH('$EXPLICIT_PREFIX') + 1)
@@ -532,7 +532,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.totalPlayTimeMs > :showHidden 
+        WHERE Song.totalPlayTimeMs >= :showHidden 
         ORDER BY Song.totalPlayTimeMs
     """)
     fun sortAllSongsByPlayTime(
@@ -546,7 +546,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.totalPlayTimeMs > :showHidden 
+        WHERE Song.totalPlayTimeMs >= :showHidden 
         ORDER BY E.timestamp
     """)
     fun sortAllSongsByDatePlayed(
@@ -559,7 +559,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.totalPlayTimeMs > :showHidden 
+        WHERE Song.totalPlayTimeMs >= :showHidden 
         ORDER BY Song.likedAt
     """)
     fun sortAllSongsByLikedAt(
@@ -572,7 +572,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.totalPlayTimeMs > :showHidden 
+        WHERE Song.totalPlayTimeMs >= :showHidden 
         ORDER BY Song.artistsText COLLATE NOCASE
     """)
     fun sortAllSongsByArtist(
@@ -585,7 +585,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.totalPlayTimeMs > :showHidden 
+        WHERE Song.totalPlayTimeMs >= :showHidden 
         ORDER BY Song.durationText
     """)
     fun sortAllSongsByDuration(
@@ -598,7 +598,7 @@ interface Database {
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.totalPlayTimeMs > :showHidden 
+        WHERE Song.totalPlayTimeMs >= :showHidden 
         ORDER BY Album.title COLLATE NOCASE
     """)
     fun sortAllSongsByAlbum(
