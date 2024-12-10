@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import coil.Coil
@@ -31,7 +32,8 @@ import it.fast4x.rimusic.utils.rememberPreference
 @Composable
 fun CacheSpaceIndicator(
     cacheType: CacheType = CacheType.Images,
-    circularIndicator: Boolean = false
+    circularIndicator: Boolean = false,
+    horizontalPadding: Dp = 12.dp,
 ) {
 
     val coilDiskCacheMaxSize by rememberPreference(
@@ -84,7 +86,7 @@ fun CacheSpaceIndicator(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp)
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = horizontalPadding)
         )
     else
         ProgressIndicatorCircular(
@@ -93,6 +95,6 @@ fun CacheSpaceIndicator(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 12.dp)
-                .padding(horizontal = 12.dp)
+                .padding(horizontal = horizontalPadding)
         )
 }

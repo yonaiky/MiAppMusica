@@ -893,14 +893,14 @@ fun UiSettings(
                 text = stringResource(R.string.jump_previous),
                 style = typography().xs.semiBold.copy(color = colorPalette().text),
                 modifier = Modifier
-                    .padding(start = 16.dp)
-                    .padding(all = 16.dp)
+                    .padding(start = 12.dp)
+                    //.padding(all = 12.dp)
             )
             BasicText(
                 text = stringResource(R.string.jump_previous_blank),
                 style = typography().xxs.semiBold.copy(color = colorPalette().textDisabled),
                 modifier = Modifier
-                    .padding(start = 32.dp)
+                    .padding(start = 12.dp)
             )
             TextField(
                 value = jumpPrevious,
@@ -912,8 +912,8 @@ fun UiSettings(
                 singleLine = true,
                 colors = TextFieldDefaults.textFieldColors(textColor = colorPalette().text, unfocusedIndicatorColor = colorPalette().text),
                 modifier = Modifier
-                    .padding(start = 16.dp)
-                    .padding(all = 16.dp)
+                    .padding(start = 12.dp)
+                    //.padding(all = 12.dp)
             )
         }
 
