@@ -1942,9 +1942,6 @@ fun Player(
                                 mediaMetadataProvider = mediaItem::mediaMetadata,
                                 durationProvider = player::getDuration,
                                 isLandscape = isLandscape,
-                                onMaximize = {
-                                    showFullLyrics = true
-                                },
                                 clickLyricsText = clickLyricsText,
                             )
                     }
@@ -2654,9 +2651,6 @@ fun Player(
                                 mediaMetadataProvider = mediaItem::mediaMetadata,
                                 durationProvider = player::getDuration,
                                 isLandscape = isLandscape,
-                                onMaximize = {
-                                    showFullLyrics = true
-                                },
                                 clickLyricsText = clickLyricsText,
                             )
                         if (!showvisthumbnail)

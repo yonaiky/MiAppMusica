@@ -79,7 +79,7 @@
 - **Japanese:** thanks to [maboroshin](https://crowdin.com/profile/maboroshin) and [Mid_Vur_Shaan](https://crowdin.com/profile/Mid_Vur_Shaan)
 - **Malayalam** thanks to [XDreamist](https://crowdin.com/profile/xdreamist)
 - **Korean:** thanks to [ZeroZero00](https://crowdin.com/profile/ZeroZero00) and [TsyQax](https://crowdin.com/profile/TsyQax)
-- **Norwegian:** thanks to [Xyrcon](https://crowdin.com/profile/xyrcon) and [xyrcon](https://crowdin.com/profile/xyrcon)
+- **Norwegian:** thanks to [Xyrcon](https://crowdin.com/profile/xyrcon)
 - **Odia:** thanks to [redpanda9348](https://crowdin.com/profile/redpanda9348) and [Get100percent](https://github.com/Get100percent)
 - **Persian:** thanks to [CUMOON](https://github.com/CUMOON)
 - **Polish:** thanks to [Krzysztof](https://crowdin.com/profile/scrummybingus) and [severitysingular](https://crowdin.com/profile/severitysingular) and [Zduniusz](https://crowdin.com/profile/zduniusz) and [AntoniNowak](https://crowdin.com/profile/AntoniNowak) and [roklc](https://github.com/roklc) and [Adam Kop](https://crowdin.com/profile/damianadam000)

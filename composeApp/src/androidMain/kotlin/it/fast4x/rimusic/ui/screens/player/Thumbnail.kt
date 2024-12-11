@@ -379,7 +379,6 @@ fun Thumbnail(
                         size = thumbnailSizeDp,
                         mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
                         durationProvider = player::getDuration,
-                        onMaximize = onMaximize,
                         isLandscape = isLandscape,
                         clickLyricsText = clickLyricsText,
                     )

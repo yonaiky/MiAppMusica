@@ -1,6 +1,7 @@
-package me.knighthat.ui.screens.settings.about
+package it.fast4x.rimusic.extensions.contributors.models
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -31,38 +31,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.google.gson.annotations.SerializedName
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import me.knighthat.colorPalette
 import me.knighthat.typography
 
-data class Developer(
-    val id: Int,
-    @SerializedName( "login" ) val username: String,
-    @SerializedName( "name" ) val displayName: String?,
-    @SerializedName( "html_url" )val url: String,
-    @SerializedName( "avatar_url") val avatar: String,
-    val contributions: Int?
+data class Translator(
+    val username: String,
+    val displayName: String?,
+    val languages: String,
+    val profileUrl: String?,
+    val avatarUrl: String?
 ) {
-    private val handle: String
-        get() = url.split( "/" ).last()
+    private val usernameByProfile: String
+        get() = profileUrl?.split( "/" )?.last().toString()
 
     @Composable
     fun Draw() {
         val uriHandler = LocalUriHandler.current
-        val avatarPainter = rememberAsyncImagePainter( this.avatar )
-        val borderColor =
-            if( id == 1484476 )
-                Color.hsl( 132f, .34f, .56f )
-            else
-                colorPalette().textSecondary
+        val avatarPainter = rememberAsyncImagePainter( this.avatarUrl )
+        val backgroundColor = Color.Transparent
+
 
         Card(
             modifier = Modifier
-                .padding(start = 50.dp, end = 20.dp, bottom = 10.dp)
-                .fillMaxWidth()
-                .border( 1.dp, borderColor, RoundedCornerShape( 12.dp ) ),
+                .padding(start = 12.dp, end = 20.dp, bottom = 10.dp)
+                .fillMaxWidth(),
             colors = CardColors(
                 containerColor = Color.Transparent,
                 contentColor = Color.Transparent,
@@ -73,10 +67,10 @@ data class Developer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp, horizontal = 15.dp),
+                    .padding(vertical = 5.dp, horizontal = 15.dp)
+                    .background(backgroundColor, RoundedCornerShape( 12.dp )),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Avatar
                 Image(
                     painter = avatarPainter,
                     contentDescription = null,
@@ -89,22 +83,20 @@ data class Developer(
 
                 Spacer(modifier = Modifier.width( 16.dp ) )
 
-                // Dev's info, sits to the right of avatar
-                Column( Modifier.fillMaxWidth() ) {
+                Column( Modifier.fillMaxWidth().padding(end = 10.dp) ) {
                     Text(
                         text = displayName ?: username,
                         style = TextStyle(
                             color = colorPalette().text,
-                            fontSize = typography().m.fontSize,
+                            fontSize = typography().xs.fontSize,
                             fontWeight = FontWeight.Bold
                         ),
                         textAlign = TextAlign.Start
                     )
 
                     Row( Modifier.fillMaxWidth() ) {
-                        // Handle
                         Text(
-                            text = "@$handle",
+                            text = if (profileUrl != null) "@${usernameByProfile}" else "@${username}",
                             style = TextStyle(
                                 color = colorPalette().textSecondary,
                                 fontSize = typography().xs.fontSize,
@@ -112,16 +104,17 @@ data class Developer(
                             ),
                             modifier = Modifier
                                 .wrapContentSize()
-                                .clickable { uriHandler.openUri(url) },
+                                .clickable {
+                                    if (profileUrl != null) {
+                                        uriHandler.openUri(profileUrl)
+                                    }
+                                },
                         )
 
-                        if( contributions == null )
-                            return@Column
-
                         val color = colorPalette().favoritesIcon.copy( alpha = .8f )
-                        // contributions aligned to the right of handle
+
                         Text(
-                            text = contributions.toString(),
+                            text = languages,
                             style = TextStyle(
                                 color = color,
                                 fontSize = typography().xs.fontSize,
@@ -132,9 +125,8 @@ data class Developer(
 
                         Spacer( Modifier.width(5.dp ) )
 
-                        // Pull request icon
                         Icon(
-                            painter = painterResource( R.drawable.git_pull_request_outline ),
+                            painter = painterResource( R.drawable.translate ),
                             contentDescription = null,
                             tint = color,
                             modifier = Modifier.size( typography().xs.fontSize.value.dp )

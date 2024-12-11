@@ -159,7 +159,6 @@ fun Lyrics(
     mediaId: String,
     isDisplayed: Boolean,
     onDismiss: () -> Unit,
-    onMaximize: () -> Unit,
     size: Dp,
     mediaMetadataProvider: () -> MediaMetadata,
     durationProvider: () -> Long,
@@ -1741,17 +1740,6 @@ fun Lyrics(
                             .size(30.dp)
                     )
 
-//                if (showlyricsthumbnail)
-//                    IconButton(
-//                        icon = R.drawable.minmax,
-//                        color = DefaultDarkColorPalette.text,
-//                        enabled = true,
-//                        onClick = onMaximize,
-//                        modifier = Modifier
-//                            .padding(all = 8.dp)
-//                            .align(Alignment.BottomStart)
-//                            .size(20.dp)
-//                    )
                 if (showlyricsthumbnail)
                     IconButton(
                         icon = R.drawable.text,
