@@ -700,6 +700,31 @@ fun AppearanceSettings(
                     }
                 }
 
+                if (search.input.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
+                        search.input,
+                        true
+                    )
+                ) {
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.show_cover_thumbnail_animation),
+                        text = "",
+                        isChecked = showCoverThumbnailAnimation,
+                        onCheckedChange = { showCoverThumbnailAnimation = it },
+                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                    )
+                    AnimatedVisibility(visible = showCoverThumbnailAnimation) {
+                        Column {
+                            EnumValueSelectorSettingsEntry(
+                                title = stringResource(R.string.cover_thumbnail_animation_type),
+                                selectedValue = coverThumbnailAnimation,
+                                onValueSelected = { coverThumbnailAnimation = it },
+                                valueText = { it.textName },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 50.dp else 25.dp)
+                            )
+                        }
+                    }
+                }
+
                 if (search.input.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
                         search.input,
                         true
@@ -774,30 +799,6 @@ fun AppearanceSettings(
                         },
                         modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
-            }
-        }
-
-        if (search.input.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
-                search.input,
-                true
-            )
-        ) {
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_cover_thumbnail_animation),
-                text = "",
-                isChecked = showCoverThumbnailAnimation,
-                onCheckedChange = { showCoverThumbnailAnimation = it }
-            )
-            AnimatedVisibility(visible = showCoverThumbnailAnimation) {
-                Column {
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.cover_thumbnail_animation_type),
-                        selectedValue = coverThumbnailAnimation,
-                        onValueSelected = { coverThumbnailAnimation = it },
-                        valueText = { it.textName },
-                        modifier = Modifier.padding(start = 25.dp)
-                    )
-                }
             }
         }
 
