@@ -145,7 +145,6 @@ fun About() {
 
         SettingsEntryGroupText(title = "${ countDevelopers() } " + "Developers / Designers")
         SettingsDescription(text = stringResource(R.string.in_alphabetical_order))
-        //DevBoard()
         ShowDevelopers()
 
         SettingsGroupSpacer(

@@ -31,17 +31,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.google.gson.annotations.SerializedName
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import me.knighthat.colorPalette
 import me.knighthat.typography
 
 data class Translator(
-    val username: String,
-    val displayName: String?,
-    val languages: String,
-    val profileUrl: String?,
-    val avatarUrl: String?
+    @SerializedName( "username" ) val username: String,
+    @SerializedName( "displayName" ) val displayName: String?,
+    @SerializedName( "languages" ) val languages: String,
+    @SerializedName( "profileUrl" ) val profileUrl: String?,
+    @SerializedName( "avatarUrl" ) val avatarUrl: String?
 ) {
     private val usernameByProfile: String
         get() = profileUrl?.split( "/" )?.last().toString()

@@ -403,19 +403,19 @@ fun LocalPlaylistSongs(
         items
             .distinctBy { it.song.id }
             .filter {
-            if( parentalControlEnabled )
-                !it.song.title.startsWith(EXPLICIT_PREFIX)
-            else
-                true
-        }.filter {
-            // Without cleaning, user can search explicit songs with "e:"
-            // I kinda want this to be a feature, but it seems unnecessary
-            val containsName = it.song.cleanTitle().contains(search.input, true)
-            val containsArtist = it.song.artistsText?.contains(search.input, true) ?: false
-            val containsAlbum = it.albumTitle?.contains(search.input, true) ?: false
+                if( parentalControlEnabled )
+                    !it.song.title.startsWith(EXPLICIT_PREFIX)
+                else
+                    true
+            }.filter {
+                // Without cleaning, user can search explicit songs with "e:"
+                // I kinda want this to be a feature, but it seems unnecessary
+                val containsName = it.song.cleanTitle().contains(search.input, true)
+                val containsArtist = it.song.artistsText?.contains(search.input, true) ?: false
+                val containsAlbum = it.albumTitle?.contains(search.input, true) ?: false
 
-            containsName || containsArtist || containsAlbum
-        }.let { itemsOnDisplay = it }
+                containsName || containsArtist || containsAlbum
+            }.let { itemsOnDisplay = it }
     }
     LaunchedEffect(Unit) {
         Database.singlePlaylistPreview( playlistId )
