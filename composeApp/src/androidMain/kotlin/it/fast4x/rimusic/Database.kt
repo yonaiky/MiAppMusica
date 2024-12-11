@@ -1415,7 +1415,7 @@ interface Database {
     fun sortSongsFromPlaylistByRowId( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT S.*, Album.title as albumTitle, Format.contentLength as contentLength
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
         INNER JOIN songplaylistmap SP ON S.id = SP.songId 
         LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 

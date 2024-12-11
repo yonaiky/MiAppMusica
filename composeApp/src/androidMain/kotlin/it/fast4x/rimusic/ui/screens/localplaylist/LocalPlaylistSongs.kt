@@ -400,7 +400,9 @@ fun LocalPlaylistSongs(
                 .collect { items = it }
     }
     LaunchedEffect( items, search.input, parentalControlEnabled ) {
-        items.filter {
+        items
+            .distinctBy { it.song.id }
+            .filter {
             if( parentalControlEnabled )
                 !it.song.title.startsWith(EXPLICIT_PREFIX)
             else
