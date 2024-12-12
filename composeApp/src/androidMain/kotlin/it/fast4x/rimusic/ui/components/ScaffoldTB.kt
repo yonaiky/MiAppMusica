@@ -49,8 +49,8 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.colorPalette
-import me.knighthat.component.header.AppHeader
-import me.knighthat.component.nav.HorizontalNavigationBar
+import it.fast4x.rimusic.extensions.extmodules.component.header.AppHeader
+import it.fast4x.rimusic.extensions.extmodules.component.nav.HorizontalNavigationBar
 
 
 @OptIn(ExperimentalMaterial3Api::class)

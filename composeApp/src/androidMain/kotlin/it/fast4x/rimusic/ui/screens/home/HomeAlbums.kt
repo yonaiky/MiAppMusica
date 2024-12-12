@@ -66,14 +66,14 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.flow.map
 import it.fast4x.rimusic.colorPalette
-import me.knighthat.component.Search
-import me.knighthat.component.header.TabToolBar
-import me.knighthat.component.tab.ItemSize
-import me.knighthat.component.tab.Sort
-import me.knighthat.component.tab.TabHeader
-import me.knighthat.component.tab.toolbar.Randomizer
-import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.preference.Preference.HOME_ALBUM_ITEM_SIZE
+import it.fast4x.rimusic.extensions.extmodules.component.Search
+import it.fast4x.rimusic.extensions.extmodules.component.header.TabToolBar
+import it.fast4x.rimusic.extensions.extmodules.component.tab.ItemSize
+import it.fast4x.rimusic.extensions.extmodules.component.tab.Sort
+import it.fast4x.rimusic.extensions.extmodules.component.tab.TabHeader
+import it.fast4x.rimusic.extensions.extmodules.component.tab.toolbar.Randomizer
+import it.fast4x.rimusic.extensions.extmodules.component.tab.toolbar.SongsShuffle
+import it.fast4x.rimusic.extensions.extmodules.preference.Preference.HOME_ALBUM_ITEM_SIZE
 import it.fast4x.rimusic.thumbnailShape
 
 @OptIn(ExperimentalMaterial3Api::class)

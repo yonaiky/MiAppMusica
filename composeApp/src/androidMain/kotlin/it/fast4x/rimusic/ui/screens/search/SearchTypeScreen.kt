@@ -34,7 +34,7 @@ import it.fast4x.rimusic.enums.SearchType
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.secondary
-import me.knighthat.Skeleton
+import it.fast4x.rimusic.extensions.extmodules.Skeleton
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 

@@ -84,7 +84,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
-import me.knighthat.component.header.AppHeader
+import it.fast4x.rimusic.extensions.extmodules.component.header.AppHeader
 
 
 @ExperimentalMaterialApi

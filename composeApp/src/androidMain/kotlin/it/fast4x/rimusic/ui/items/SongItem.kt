@@ -73,7 +73,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
-import me.knighthat.extra.shimmerEffect
+import it.fast4x.rimusic.extensions.extmodules.extra.shimmerEffect
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 
