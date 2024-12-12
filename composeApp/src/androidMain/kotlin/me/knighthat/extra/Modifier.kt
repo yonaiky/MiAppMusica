@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import it.fast4x.rimusic.ui.styling.shimmer
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 
 /**
  * A loading effect that goes from top left

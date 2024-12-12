@@ -157,7 +157,6 @@ import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.putEnum
 import it.fast4x.rimusic.utils.queueLoopTypeKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.setLikeState
@@ -190,7 +189,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream

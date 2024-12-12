@@ -47,8 +47,8 @@ import it.fast4x.rimusic.ui.components.SeekBarWaved
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 
 @OptIn(UnstableApi::class)
 @Composable

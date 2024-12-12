@@ -36,7 +36,7 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.songSortOrderKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 import me.knighthat.component.DeleteDialog
 import me.knighthat.component.IDialog
 import me.knighthat.component.tab.Sort
@@ -45,7 +45,7 @@ import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.DualIcon
 import me.knighthat.component.tab.toolbar.DynamicColor
 import me.knighthat.component.tab.toolbar.MenuIcon
-import me.knighthat.typography
+import it.fast4x.rimusic.typography
 import java.util.UUID
 
 

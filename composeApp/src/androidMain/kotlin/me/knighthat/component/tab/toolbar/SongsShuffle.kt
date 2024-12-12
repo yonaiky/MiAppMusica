@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 
 @UnstableApi
 class SongsShuffle private constructor(

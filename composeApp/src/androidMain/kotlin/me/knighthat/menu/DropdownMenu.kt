@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 
 class DropdownMenu(
     val expanded: Boolean,

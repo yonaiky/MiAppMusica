@@ -34,8 +34,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.gson.annotations.SerializedName
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 
 data class Developer(
     val id: Int,

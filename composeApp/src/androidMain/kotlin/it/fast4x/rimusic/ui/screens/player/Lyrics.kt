@@ -145,9 +145,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
-import me.knighthat.colorPalette
-import me.knighthat.thumbnailShape
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds

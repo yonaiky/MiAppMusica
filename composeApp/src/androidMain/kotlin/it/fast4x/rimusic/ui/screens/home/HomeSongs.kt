@@ -43,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -88,12 +87,10 @@ import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
-import it.fast4x.rimusic.ui.components.themed.ProgressIndicator
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.onOverlay
@@ -140,11 +137,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.appContext
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.Enqueue
 import me.knighthat.component.ItemSelector
 import me.knighthat.component.LikeSongs
@@ -167,8 +163,8 @@ import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.thumbnailShape
-import me.knighthat.typography
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import timber.log.Timber
 import java.util.Optional
 import kotlin.math.max

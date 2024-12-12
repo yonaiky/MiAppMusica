@@ -223,9 +223,9 @@ import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.Search
-import me.knighthat.typography
+import it.fast4x.rimusic.typography
 
 @Composable
 fun DefaultUiSettings() {

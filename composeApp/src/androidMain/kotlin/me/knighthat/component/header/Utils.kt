@@ -16,7 +16,7 @@ import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 
 @Composable
 internal fun HeaderIcon(

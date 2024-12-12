@@ -15,7 +15,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import me.knighthat.button.Button
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 
 @SuppressLint("ComposableNaming")
 abstract class AbstractNavigationBar(

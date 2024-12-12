@@ -13,12 +13,10 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.utils.asMediaItem
 import kotlinx.coroutines.runBlocking
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.DynamicColor
 import me.knighthat.component.tab.toolbar.MenuIcon

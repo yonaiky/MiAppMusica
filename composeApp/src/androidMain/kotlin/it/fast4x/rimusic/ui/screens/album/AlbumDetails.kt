@@ -132,8 +132,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -441,7 +441,8 @@ fun AlbumDetails(
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
-                .background(colorPalette()
+                .background(
+                    colorPalette()
 .background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
@@ -454,7 +455,8 @@ fun AlbumDetails(
                 //contentPadding = LocalPlayerAwareWindowInsets.current
                 //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette()
+                    .background(
+                        colorPalette()
 .background0)
                     .fillMaxSize()
             ) {
@@ -941,7 +943,8 @@ fun AlbumDetails(
                              */
                                 BasicText(
                                     text = "${index + 1}",
-                                    style = typography().s.semiBold.center.color(colorPalette()
+                                    style = typography().s.semiBold.center.color(
+                                        colorPalette()
 .textDisabled),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
@@ -1156,7 +1159,8 @@ fun AlbumDetails(
                         if (attributionsIndex != -1) {
                             BasicText(
                                 text = stringResource(R.string.from_wikipedia_cca),
-                                style = typography().xxs.color(colorPalette()
+                                style = typography().xxs.color(
+                                    colorPalette()
 .textDisabled).align(
                                     TextAlign.Start
                                 ),

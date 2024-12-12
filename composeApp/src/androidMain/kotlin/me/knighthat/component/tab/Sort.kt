@@ -33,7 +33,7 @@ import me.knighthat.component.tab.toolbar.Menu
 import me.knighthat.component.tab.toolbar.MenuIcon
 import me.knighthat.enums.Drawable
 import me.knighthat.enums.MenuTitle
-import me.knighthat.typography
+import it.fast4x.rimusic.typography
 import org.intellij.lang.annotations.MagicConstant
 import kotlin.enums.EnumEntries
 

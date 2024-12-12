@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.EllipsisMenuComponent
 
@@ -169,7 +169,7 @@ object TabToolBar {
         size: Dp = TOOLBAR_ICON_SIZE,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
-        onShortClick: () -> Unit ,
+        onShortClick: () -> Unit,
         onLongClick: () -> Unit
     ) {
         Icon(

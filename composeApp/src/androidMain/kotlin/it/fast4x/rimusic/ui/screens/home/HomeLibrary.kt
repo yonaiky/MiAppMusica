@@ -70,7 +70,7 @@ import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import kotlinx.coroutines.flow.map
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.IDialog
 import me.knighthat.component.Search
 import me.knighthat.component.header.TabToolBar

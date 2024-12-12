@@ -14,7 +14,7 @@ import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.MenuIcon
 

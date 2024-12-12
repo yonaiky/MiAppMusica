@@ -143,8 +143,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import me.knighthat.appContext
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.Enqueue
 import me.knighthat.component.ItemSelector
 import me.knighthat.component.LikeSongs
@@ -169,8 +169,8 @@ import me.knighthat.component.tab.toolbar.DelAllDownloadedDialog
 import me.knighthat.component.tab.toolbar.Dialog
 import me.knighthat.component.tab.toolbar.DownloadAllDialog
 import me.knighthat.component.tab.toolbar.SongsShuffle
-import me.knighthat.thumbnailShape
-import me.knighthat.typography
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import timber.log.Timber
 import java.util.UUID
 

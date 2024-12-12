@@ -71,7 +71,6 @@ import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.iconLikeTypeKey
-import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isShowingThumbnailInLockscreenKey
@@ -138,7 +137,7 @@ import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.wallpaperTypeKey
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.Search
 
 @Composable

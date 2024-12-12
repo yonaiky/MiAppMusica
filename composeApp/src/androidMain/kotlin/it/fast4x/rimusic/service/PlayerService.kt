@@ -179,7 +179,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream

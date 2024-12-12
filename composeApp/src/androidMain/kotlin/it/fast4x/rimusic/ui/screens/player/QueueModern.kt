@@ -138,9 +138,9 @@ import it.fast4x.rimusic.utils.smoothScrollToTop
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.launch
-import me.knighthat.colorPalette
-import me.knighthat.thumbnailShape
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import java.text.SimpleDateFormat
 import java.util.Date
 

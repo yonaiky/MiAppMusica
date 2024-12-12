@@ -16,7 +16,7 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 import me.knighthat.component.IDialog
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.MenuIcon

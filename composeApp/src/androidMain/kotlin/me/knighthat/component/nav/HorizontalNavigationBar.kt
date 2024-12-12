@@ -35,14 +35,11 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.showSearchTabKey
-import it.fast4x.rimusic.utils.showStatsInNavbarKey
 import me.knighthat.button.Button
 import me.knighthat.button.TextIconButton
-import me.knighthat.colorPalette
-import me.knighthat.showSearchIconInNav
-import me.knighthat.showStatsIconInNav
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.showSearchIconInNav
+import it.fast4x.rimusic.showStatsIconInNav
 
 // Shown when "Navigation bar position" is set to "top" or "bottom"
 class HorizontalNavigationBar(

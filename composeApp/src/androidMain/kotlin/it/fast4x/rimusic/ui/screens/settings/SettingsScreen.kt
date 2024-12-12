@@ -56,9 +56,9 @@ import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.Skeleton
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.IDialog
-import me.knighthat.typography
+import it.fast4x.rimusic.typography
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi

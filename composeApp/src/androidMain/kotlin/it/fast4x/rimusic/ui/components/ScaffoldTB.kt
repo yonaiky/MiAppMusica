@@ -48,7 +48,7 @@ import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.header.AppHeader
 import me.knighthat.component.nav.HorizontalNavigationBar
 

@@ -1,9 +1,9 @@
-package me.knighthat
+package it.fast4x.rimusic
 
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import it.fast4x.rimusic.Dependencies
+import androidx.compose.ui.platform.LocalContext
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
@@ -26,3 +26,9 @@ fun showSearchIconInNav() = rememberPreference( showSearchTabKey, false ).value
 fun showStatsIconInNav() = rememberPreference( showStatsInNavbarKey, false ).value
 
 fun appContext(): Context = Dependencies.application.applicationContext
+
+@Composable
+fun context(): Context = Dependencies.application
+
+@Composable
+fun binder() = LocalPlayerServiceBinder.current?.service

@@ -14,7 +14,7 @@ import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 import me.knighthat.component.DeleteDialog
 import java.util.Optional
 

@@ -56,8 +56,8 @@ import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 import kotlin.math.roundToInt
 
 @SuppressLint("LongLogTag")

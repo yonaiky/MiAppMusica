@@ -15,7 +15,7 @@ import it.fast4x.rimusic.extensions.pip.isPipSupported
 import it.fast4x.rimusic.extensions.pip.rememberPipHandler
 import it.fast4x.rimusic.utils.enablePictureInPictureKey
 import it.fast4x.rimusic.utils.rememberPreference
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.menu.DropdownMenu
 
 @Composable

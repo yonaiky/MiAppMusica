@@ -86,7 +86,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi

@@ -2,7 +2,7 @@ package me.knighthat.component.tab.toolbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 
 /**
  * The [DynamicColor] is a UI component designed to

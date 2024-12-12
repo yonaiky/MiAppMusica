@@ -46,13 +46,13 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import me.knighthat.appContext
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.colorPalette
 import me.knighthat.component.tab.toolbar.Button
 import me.knighthat.component.tab.toolbar.Descriptive
 import me.knighthat.component.tab.toolbar.Menu
 import me.knighthat.component.tab.toolbar.MenuIcon
-import me.knighthat.typography
+import it.fast4x.rimusic.typography
 
 class PlaylistsMenu private constructor(
     private val navController: NavController,
