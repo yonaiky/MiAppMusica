@@ -456,6 +456,7 @@ fun ArtistOverview(
                                 )
                         )
                     }
+
                     youtubeArtistPage?.radioEndpoint?.let { endpoint ->
                         HeaderIconButton(
                             icon = R.drawable.radio,
