@@ -293,22 +293,18 @@ fun StatsForNerds(
                     }
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                         BasicText(
-                            text = buildString {
-                                if (cachedBytes > downloadCachedBytes)
-                                    append(Formatter.formatShortFileSize(context, cachedBytes))
-                                else append(
-                                    Formatter.formatShortFileSize(
-                                        context,
-                                        downloadCachedBytes
-                                    )
+                            text = if (cachedBytes > downloadCachedBytes)
+                                Formatter.formatShortFileSize(context, cachedBytes)
+                            else Formatter.formatShortFileSize(
+                                    context,
+                                    downloadCachedBytes
                                 )
-
-                                format?.contentLength?.let {
+                            + format?.contentLength?.let {
                                     if (cachedBytes > downloadCachedBytes)
-                                        append(" (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)")
-                                    else append(" (${(downloadCachedBytes.toFloat() / it * 100).roundToInt()}%)")
+                                        " (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)"
+                                    else " (${(downloadCachedBytes.toFloat() / it * 100).roundToInt()}%)"
                                 }
-                            },
+                            ,
                             maxLines = 1,
                             style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
@@ -435,26 +431,22 @@ fun StatsForNerds(
                                   modifier = modifier.weight(1f)
                               ) {
                                   BasicText(
-                                      text = buildString {
-                                          if (cachedBytes > downloadCachedBytes)
-                                              append(
+                                      text =  if (cachedBytes > downloadCachedBytes)
                                                   stringResource(R.string.cached) + " : " + Formatter.formatShortFileSize(
                                                       context,
                                                       cachedBytes
                                                   )
-                                              )
-                                          else append(
-                                              stringResource(R.string.downloaded) + " : " + Formatter.formatShortFileSize(
+
+                                          else stringResource(R.string.downloaded) + " : " + Formatter.formatShortFileSize(
                                                   context,
                                                   downloadCachedBytes
                                               )
-                                          )
-                                          format?.contentLength?.let {
+                                          + format?.contentLength?.let {
                                               if (cachedBytes > downloadCachedBytes)
-                                                  append(" (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)")
-                                              else append(" (${(downloadCachedBytes.toFloat() / it * 100).roundToInt()}%)")
+                                                  " (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)"
+                                              else " (${(downloadCachedBytes.toFloat() / it * 100).roundToInt()}%)"
                                           }
-                                      },
+                                      ,
                                       maxLines = 1,
                                       style = typography().xs.medium.color(colorPalette().onOverlay)
                                   )

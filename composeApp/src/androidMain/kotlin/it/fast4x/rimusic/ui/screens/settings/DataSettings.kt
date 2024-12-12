@@ -362,16 +362,12 @@ fun DataSettings() {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.image_cache_max_size),
                 titleSecondary = when (coilDiskCacheMaxSize) {
-                    CoilDiskCacheMaxSize.Custom -> buildString {
-                            append(Formatter.formatShortFileSize(context, diskCacheSize))
-                            append("/${Formatter.formatShortFileSize(context, coilCustomDiskCache.toLong() * 1000 * 1000)}")
-                            append(" ${stringResource(R.string.used)}")
-                    }
-                    else -> buildString {
-                        append(Formatter.formatShortFileSize(context, diskCacheSize))
-                        append(" ${stringResource(R.string.used)}")
-                        append(" (${diskCacheSize * 100 / coilDiskCacheMaxSize.bytes}%)")
-                    }
+                    CoilDiskCacheMaxSize.Custom -> Formatter.formatShortFileSize(context, diskCacheSize) +
+                            "/${Formatter.formatShortFileSize(context, coilCustomDiskCache.toLong() * 1000 * 1000)}" +
+                            stringResource(R.string.used)
+                    else -> Formatter.formatShortFileSize(context, diskCacheSize) +
+                            stringResource(R.string.used) +
+                            " (${diskCacheSize * 100 / coilDiskCacheMaxSize.bytes}%)"
                 },
                 trailingContent = {
                     HeaderIconButton(
@@ -437,23 +433,17 @@ fun DataSettings() {
                     title = stringResource(R.string.song_cache_max_size),
                     titleSecondary = when (exoPlayerDiskCacheMaxSize) {
                         ExoPlayerDiskCacheMaxSize.Disabled -> ""
-                        ExoPlayerDiskCacheMaxSize.Custom -> buildString {
-                            append(Formatter.formatShortFileSize(context, diskCacheSize))
-                            append("/${Formatter.formatShortFileSize(context,
-                                exoPlayerCustomCache.toLong() * 1000 * 1000
-                            )}")
-                            append(" ${stringResource(R.string.used)}")
-                        }
-                        // stringResource(R.string.custom_cache_size) +" "+exoPlayerCustomCache+"MB"
-                        else -> buildString {
-                            append(Formatter.formatShortFileSize(context, diskCacheSize))
-                            append(" ${stringResource(R.string.used)}")
-                            when (val size = exoPlayerDiskCacheMaxSize) {
-                                ExoPlayerDiskCacheMaxSize.Unlimited -> {}
-                                ExoPlayerDiskCacheMaxSize.Custom -> {} // only needed because of UNLIMITED
-                                else -> append(" (${diskCacheSize * 100 / size.bytes}%)")
-                            }
-                        }
+                        ExoPlayerDiskCacheMaxSize.Custom -> Formatter.formatShortFileSize(context, diskCacheSize) +
+                                "/${Formatter.formatShortFileSize(context,
+                                    exoPlayerCustomCache.toLong() * 1000 * 1000
+                                )}" + " ${stringResource(R.string.used)}"
+                        else -> Formatter.formatShortFileSize(context, diskCacheSize) +
+                                " ${stringResource(R.string.used)}" +
+                                when (val size = exoPlayerDiskCacheMaxSize) {
+                                    ExoPlayerDiskCacheMaxSize.Unlimited -> {}
+                                    ExoPlayerDiskCacheMaxSize.Custom -> {} // only needed because of UNLIMITED
+                                    else -> " (${diskCacheSize * 100 / size.bytes}%)"
+                                }
                     },
                     trailingContent = {
                         HeaderIconButton(
@@ -519,14 +509,12 @@ fun DataSettings() {
                 title = stringResource(R.string.song_download_max_size),
                 titleSecondary = when (exoPlayerDiskDownloadCacheMaxSize) {
                     ExoPlayerDiskDownloadCacheMaxSize.Disabled -> ""
-                    else -> buildString {
-                        append(Formatter.formatShortFileSize(context, diskDownloadCacheSize))
-                        append(" ${stringResource(R.string.used)}")
-                        when (val size = exoPlayerDiskDownloadCacheMaxSize) {
-                            ExoPlayerDiskDownloadCacheMaxSize.Unlimited -> {}
-                            else -> append(" (${diskDownloadCacheSize * 100 / size.bytes}%)")
-                        }
-                    }
+                    else -> Formatter.formatShortFileSize(context, diskDownloadCacheSize) +
+                        " ${stringResource(R.string.used)}" +
+                            when (val size = exoPlayerDiskDownloadCacheMaxSize) {
+                                ExoPlayerDiskDownloadCacheMaxSize.Unlimited -> {}
+                                else -> " (${diskDownloadCacheSize * 100 / size.bytes}%)"
+                            }
                 },
                 trailingContent = {
                     HeaderIconButton(

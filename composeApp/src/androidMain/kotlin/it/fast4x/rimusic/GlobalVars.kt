@@ -25,10 +25,8 @@ fun showSearchIconInNav() = rememberPreference( showSearchTabKey, false ).value
 @Composable
 fun showStatsIconInNav() = rememberPreference( showStatsInNavbarKey, false ).value
 
-fun appContext(): Context = Dependencies.application.applicationContext
-
-@Composable
-fun context(): Context = Dependencies.application
-
 @Composable
 fun binder() = LocalPlayerServiceBinder.current?.service
+
+fun appContext(): Context = Dependencies.application.applicationContext
+fun context(): Context = Dependencies.application
