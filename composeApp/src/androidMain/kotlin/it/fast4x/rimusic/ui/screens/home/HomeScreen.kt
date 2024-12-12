@@ -40,7 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import it.fast4x.rimusic.extensions.extmodules.Skeleton
+import it.fast4x.rimusic.ui.components.Skeleton
 import kotlin.system.exitProcess
 
 

@@ -55,9 +55,9 @@ import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.extensions.extmodules.Skeleton
+import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.extensions.extmodules.component.IDialog
+import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.typography
 
 @ExperimentalMaterialApi

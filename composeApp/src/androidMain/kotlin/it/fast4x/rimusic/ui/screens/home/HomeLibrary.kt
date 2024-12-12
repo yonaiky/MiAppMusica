@@ -71,18 +71,18 @@ import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import kotlinx.coroutines.flow.map
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.extensions.extmodules.component.IDialog
-import it.fast4x.rimusic.extensions.extmodules.component.Search
-import it.fast4x.rimusic.extensions.extmodules.component.header.TabToolBar
-import it.fast4x.rimusic.extensions.extmodules.component.screen.playlistSync
-import it.fast4x.rimusic.extensions.extmodules.component.tab.ImportSongsFromCSV
-import it.fast4x.rimusic.extensions.extmodules.component.tab.ItemSize
-import it.fast4x.rimusic.extensions.extmodules.component.tab.Sort
-import it.fast4x.rimusic.extensions.extmodules.component.tab.TabHeader
-import it.fast4x.rimusic.extensions.extmodules.component.tab.toolbar.Descriptive
-import it.fast4x.rimusic.extensions.extmodules.component.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.extensions.extmodules.component.tab.toolbar.SongsShuffle
-import it.fast4x.rimusic.extensions.extmodules.preference.Preference.HOME_LIBRARY_ITEM_SIZE
+import it.fast4x.rimusic.ui.components.themed.IDialog
+import it.fast4x.rimusic.ui.components.themed.Search
+import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
+import it.fast4x.rimusic.utils.playlistSync
+import it.fast4x.rimusic.ui.components.tab.ImportSongsFromCSV
+import it.fast4x.rimusic.ui.components.tab.ItemSize
+import it.fast4x.rimusic.ui.components.tab.Sort
+import it.fast4x.rimusic.ui.components.tab.TabHeader
+import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
+import it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
 
 
 @ExperimentalMaterial3Api

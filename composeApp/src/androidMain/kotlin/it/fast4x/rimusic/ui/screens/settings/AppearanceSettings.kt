@@ -138,7 +138,7 @@ import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.wallpaperTypeKey
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.extensions.extmodules.component.Search
+import it.fast4x.rimusic.ui.components.themed.Search
 
 @Composable
 fun DefaultAppearanceSettings() {

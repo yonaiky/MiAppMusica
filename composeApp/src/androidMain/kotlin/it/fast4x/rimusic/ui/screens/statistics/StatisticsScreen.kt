@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.StatisticsType
-import it.fast4x.rimusic.extensions.extmodules.Skeleton
+import it.fast4x.rimusic.ui.components.Skeleton
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi

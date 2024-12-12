@@ -224,7 +224,7 @@ import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.extensions.extmodules.component.Search
+import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.typography
 
 @Composable

@@ -80,7 +80,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import it.fast4x.rimusic.extensions.extmodules.Skeleton
+import it.fast4x.rimusic.ui.components.Skeleton
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi

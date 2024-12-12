@@ -46,7 +46,7 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.extensions.extmodules.component.header.AppHeader
+import it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 
 @OptIn(KotlinCsvExperimental::class)
 @ExperimentalMaterialApi
