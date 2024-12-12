@@ -88,12 +88,15 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.setQueueLoopState
 import it.fast4x.rimusic.utils.showthumbnailKey
+import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.textoutlineKey
+import me.knighthat.appContext
 import me.knighthat.colorPalette
 import me.knighthat.typography
 
 
-@androidx.annotation.OptIn(UnstableApi::class)
+@UnstableApi
+@ExperimentalFoundationApi
 @Composable
 fun InfoAlbumAndArtistEssential(
     binder: PlayerServiceModern.Binder,
@@ -134,12 +137,20 @@ fun InfoAlbumAndArtistEssential(
 
 
             var modifierTitle = Modifier
-                .clickable {
-                    if (albumId != null) {
-                        navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
-                        onCollapse()
+                .combinedClickable (
+                    indication = ripple(bounded = true),
+                    interactionSource = remember { MutableInteractionSource() },
+                    onClick = {
+                        if (albumId != null) {
+                            navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                            onCollapse()
+                        }
+                    },
+                    onLongClick = {
+                        textCopyToClipboard(cleanPrefix(title ?: ""), context = appContext())
                     }
-                }
+                )
+
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
 
             Box(
@@ -266,14 +277,22 @@ fun InfoAlbumAndArtistEssential(
 
 
         var modifierArtist = Modifier
-            .clickable {
-                if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
-                    showSelectDialog = true
-                if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
-                    navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
-                    onCollapse()
+            .combinedClickable (
+                indication = ripple(bounded = true),
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = {
+                    if (artistIds?.isNotEmpty() == true && artistIds.size > 1)
+                        showSelectDialog = true
+                    if (artistIds?.isNotEmpty() == true && artistIds.size == 1) {
+                        navController.navigate(route = "${NavRoutes.artist.name}/${artistIds[0].id}")
+                        onCollapse()
+                    }
+                },
+                onLongClick = {
+                    textCopyToClipboard(artist ?: "", context = appContext())
                 }
-            }
+            )
+
         if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
 
         Box(
