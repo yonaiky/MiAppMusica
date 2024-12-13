@@ -151,7 +151,7 @@ import java.util.Date
 @ExperimentalAnimationApi
 @androidx.media3.common.util.UnstableApi
 @Composable
-fun QueueModern(
+fun Queue(
     navController: NavController,
     onDismiss: (QueueLoopType) -> Unit,
     onDiscoverClick: (Boolean) -> Unit,

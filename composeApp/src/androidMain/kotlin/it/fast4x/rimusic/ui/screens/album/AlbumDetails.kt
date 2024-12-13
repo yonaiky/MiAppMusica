@@ -442,8 +442,7 @@ fun AlbumDetails(
         Box(
             modifier = Modifier
                 .background(
-                    colorPalette()
-.background0)
+                    colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
@@ -456,8 +455,7 @@ fun AlbumDetails(
                 //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
                     .background(
-                        colorPalette()
-.background0)
+                        colorPalette().background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -505,32 +503,9 @@ fun AlbumDetails(
                                 //.padding(bottom = 20.dp)
                             )
 
-                            /*
-                            BasicText(
-                                text = albumPage?.year ?: "",
-                                style = typography().xs.medium,
-                                maxLines = 1,
-                                modifier = Modifier
-                                    //.padding(top = 10.dp)
-                                    .align(Alignment.BottomStart)
-                            )
-
-                            BasicText(
-                                text = songs.size.toString() + " "
-                                        + stringResource(R.string.songs)
-                                        + " - " + formatAsTime(totalPlayTimes),
-                                style = typography().xs.medium,
-                                maxLines = 1,
-                                modifier = Modifier
-                                    //.padding(top = 10.dp)
-                                    .align(Alignment.BottomEnd)
-                            )
-                             */
-
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette()
-.text,
+                                color = colorPalette().text,
                                 iconSize = 24.dp,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
