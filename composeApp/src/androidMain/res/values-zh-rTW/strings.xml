@@ -647,8 +647,8 @@
     <string name="hideprevnext">Hide Previous and Next Songs</string>
     <string name="onesong">One Song</string>
     <string name="twosongs">Two Songs</string>
-    <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
-    <string name="info_debug_mode_is_enabled">Debug mode is enabled, remember to disable it in settings</string>
+    <string name="info_debug_mode_enabled">啟用除錯模式</string>
+    <string name="info_debug_mode_is_enabled">除錯模式已啟用，記得在設定中停用</string>
     <string name="tapqueue">Tap to open Queue</string>
     <string name="past_day">過去一天</string>
     <string name="past_week">過去一週</string>
