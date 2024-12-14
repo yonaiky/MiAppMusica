@@ -1,3 +1,7 @@
+#-dontshrink
+-dontobfuscate
+#-dontoptimize
+
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
 -if @kotlinx.serialization.Serializable class **
