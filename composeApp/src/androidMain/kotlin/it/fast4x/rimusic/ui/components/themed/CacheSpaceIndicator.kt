@@ -71,11 +71,11 @@ fun CacheSpaceIndicator(
         progressValue.value =
         when (cacheType) {
             CacheType.Images -> imageDiskCacheSize?.toFloat()
-                ?.div(coilDiskCacheMaxSize.bytes.coerceAtLeast(1))!!
+                ?.div(coilDiskCacheMaxSize.bytes.coerceAtLeast(1)) ?: 0.0f
             CacheType.CachedSongs -> cachedSongsDiskCacheSize?.toFloat()
-                ?.div(exoPlayerDiskCacheMaxSize.bytes.coerceAtLeast(1))!!
+                ?.div(exoPlayerDiskCacheMaxSize.bytes.coerceAtLeast(1)) ?: 0.0f
             CacheType.DownloadedSongs -> downloadedSongsDiskCacheSize?.toFloat()
-                ?.div(exoPlayerDiskDownloadCacheMaxSize.bytes.coerceAtLeast(1))!!
+                ?.div(exoPlayerDiskDownloadCacheMaxSize.bytes.coerceAtLeast(1)) ?: 0.0f
         }
     }
 
