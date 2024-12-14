@@ -504,7 +504,7 @@ interface Database {
         ORDER BY Song.ROWID
     """)
     fun sortAllSongsByRowId(
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
     @Query("""
@@ -522,7 +522,7 @@ interface Database {
         COLLATE NOCASE
     """)
     fun sortAllSongsByTitle(
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
     @Query("""
@@ -535,7 +535,7 @@ interface Database {
         ORDER BY Song.totalPlayTimeMs
     """)
     fun sortAllSongsByPlayTime(
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
     @Query("""
@@ -549,7 +549,7 @@ interface Database {
         ORDER BY E.timestamp
     """)
     fun sortAllSongsByDatePlayed(
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
     @Query("""
@@ -562,7 +562,7 @@ interface Database {
         ORDER BY Song.likedAt
     """)
     fun sortAllSongsByLikedAt(
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
     @Query("""
@@ -575,7 +575,7 @@ interface Database {
         ORDER BY Song.artistsText COLLATE NOCASE
     """)
     fun sortAllSongsByArtist(
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
     @Query("""
@@ -588,7 +588,7 @@ interface Database {
         ORDER BY Song.durationText
     """)
     fun sortAllSongsByDuration(
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
     @Query("""
@@ -601,7 +601,7 @@ interface Database {
         ORDER BY Album.title COLLATE NOCASE
     """)
     fun sortAllSongsByAlbum(
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>>
 
     /**
@@ -632,7 +632,7 @@ interface Database {
     fun listAllSongs(
         sortBy: SongSortBy,
         sortOrder: SortOrder,
-        @MagicConstant(intValues = [-1, 0]) showHidden: Int
+        @MagicConstant(intValues = [1, 0]) showHidden: Int
     ): Flow<List<SongEntity>> = when( sortBy ) {
         // Due to the unknown amount of songs, letting SQLite handle
         // the sorting is a better idea
