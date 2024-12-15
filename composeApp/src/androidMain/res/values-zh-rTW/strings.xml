@@ -673,7 +673,7 @@
     <string name="controls_title_playback_volume">播放音量</string>
     <string name="controls_title_device_volume">Device volume</string>
     <string name="lang_malayalam">Malayalam</string>
-    <string name="searches_suggestions">Suggestions</string>
+    <string name="searches_suggestions">搜尋建議</string>
     <string name="searches_saved_searches">已儲存的的搜尋記錄</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
     <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
