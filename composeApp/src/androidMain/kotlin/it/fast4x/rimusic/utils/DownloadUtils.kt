@@ -24,8 +24,11 @@ import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.isLocal
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 @UnstableApi
 @Composable
@@ -76,13 +79,17 @@ fun manageDownload(
 
     if (mediaItem.isLocal) return
 
-    if (downloadState)
-        DownloadService.sendRemoveDownload(
-            context,
-            MyDownloadService::class.java,
-            mediaItem.mediaId,
-            false
-        )
+    if (downloadState) {
+        MyDownloadHelper.removeDownload(context = context, mediaItem = mediaItem)
+//        CoroutineScope(Dispatchers.IO).launch {
+//            DownloadService.sendRemoveDownload(
+//                context,
+//                MyDownloadService::class.java,
+//                mediaItem.mediaId,
+//                false
+//            )
+//        }
+    }
     else {
         if (isNetworkAvailable(context)) {
             MyDownloadHelper.scheduleDownload(context = context, mediaItem = mediaItem)

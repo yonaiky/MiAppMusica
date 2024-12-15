@@ -23,6 +23,7 @@ import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.download
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.preferences
+import it.fast4x.rimusic.utils.removeDownload
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -249,5 +250,15 @@ object MyDownloadHelper {
             }
         }
 
+    fun removeDownload(context: Context, mediaItem: MediaItem) {
+        coroutineScope.launch {
+            context.removeDownload<MyDownloadService>(mediaItem.mediaId).exceptionOrNull()?.let {
+                if (it is CancellationException) throw it
+
+                Timber.e(it.stackTraceToString())
+                println("MyDownloadHelper removeDownload exception ${it.stackTraceToString()}")
+            }
+        }
+    }
 
 }
