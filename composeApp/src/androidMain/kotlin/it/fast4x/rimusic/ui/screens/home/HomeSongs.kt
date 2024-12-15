@@ -368,9 +368,14 @@ fun HomeSongs(
         if( builtInPlaylist == BuiltInPlaylist.OnDevice ) return@LaunchedEffect
 
         when( builtInPlaylist ) {
-            BuiltInPlaylist.All, BuiltInPlaylist.Downloaded -> {
-                val showHidden = if( builtInPlaylist == BuiltInPlaylist.All ) hiddenSongs.isShown() else 0
-                Database.listAllSongs( songSort.sortBy, songSort.sortOrder, showHidden )
+            BuiltInPlaylist.All -> {
+                Database.listAllSongs( sortBy = songSort.sortBy, sortOrder = songSort.sortOrder, showHidden = hiddenSongs.isShown(), filterList = emptyList() )
+            }
+            BuiltInPlaylist.Downloaded -> {
+                val filterList = MyDownloadHelper.downloads.value.values.filter {
+                        it.state == Download.STATE_COMPLETED
+                    }.map { it.request.id }
+                Database.listAllSongs( sortBy = songSort.sortBy, sortOrder = songSort.sortOrder, showHidden = 0, filterList = filterList )
             }
             BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
@@ -449,8 +454,10 @@ fun HomeSongs(
             }
 
             BuiltInPlaylist.Downloaded -> { song ->
-                val downloads = MyDownloadHelper.downloads.value
-                downloads[song.song.id]?.state == Download.STATE_COMPLETED
+                // not necessary, songs are filtered from db
+//                val downloads = MyDownloadHelper.downloads.value
+//                downloads[song.song.id]?.state == Download.STATE_COMPLETED
+                true
             }
 
             BuiltInPlaylist.Top -> { songs ->
