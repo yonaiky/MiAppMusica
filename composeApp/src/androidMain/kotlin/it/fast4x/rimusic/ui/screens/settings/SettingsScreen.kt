@@ -88,8 +88,9 @@ fun SettingsScreen(
                     item(1, stringResource(R.string.player_appearance), R.drawable.color_palette)
                     item(2, stringResource(R.string.quick_picks), R.drawable.sparkles)
                     item(3, stringResource(R.string.tab_data), R.drawable.server)
-                    item(4, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
-                    item(5, stringResource(R.string.about), R.drawable.information)
+                    item(4, stringResource(R.string.tab_accounts), R.drawable.person)
+                    item(5, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
+                    item(6, stringResource(R.string.about), R.drawable.information)
 
                 }
             ) { currentTabIndex ->
@@ -99,8 +100,9 @@ fun SettingsScreen(
                         1 -> AppearanceSettings(navController = navController)
                         2 -> QuickPicsSettings()
                         3 -> DataSettings()
-                        4 -> OtherSettings()
-                        5 -> About()
+                        4 -> AccountsSettings()
+                        5 -> OtherSettings()
+                        6 -> About()
 
                     }
                 }
