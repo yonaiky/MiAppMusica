@@ -131,8 +131,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 import timber.log.Timber
 
 
@@ -457,7 +457,7 @@ fun PlaylistSongList(
                                                 playlistPage?.songsPage?.items?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                                        Database.deleteFormat( it.asMediaItem.mediaId )
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -485,7 +485,7 @@ fun PlaylistSongList(
                                                 playlistPage?.songsPage?.items?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                                        Database.deleteFormat( it.asMediaItem.mediaId )
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -776,7 +776,7 @@ fun PlaylistSongList(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                    Database.deleteFormat( song.asMediaItem.mediaId )
                                 }
 
                                 if (!isLocal)

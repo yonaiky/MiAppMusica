@@ -820,6 +820,11 @@
     <string name="wallpaper">Wallpaper</string>
     <string name="enable_wallpaper">Enable wallpaper</string>
     <string name="set_cover_thumbnail_as_wallpaper">Set cover thumbnail as wallpaper</string>
+    <string name="notification_type">Notification type</string>
+    <string name="notification_type_default">Default</string>
+    <string name="notification_type_advanced">Advanced</string>
+    <string name="notification_type_info">The way the player is handled in the notification area and lockscreen.</string>
+    <string name="action_bar_show_start_radio_button">Start radio button</string>
     <string name="queue_left_swipe">Queue Left Swipe</string>
     <string name="action_on_swipe_left_in_queue">Action performed when swiped left in queue</string>
     <string name="queue_right_swipe">Queue Right Swipe</string>

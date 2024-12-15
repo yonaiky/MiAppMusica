@@ -94,6 +94,7 @@ import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.NotificationButtons
+import it.fast4x.rimusic.enums.NotificationType
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.WallpaperType
@@ -145,6 +146,7 @@ import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import it.fast4x.rimusic.utils.notificationPlayerFirstIconKey
 import it.fast4x.rimusic.utils.notificationPlayerSecondIconKey
+import it.fast4x.rimusic.utils.notificationTypeKey
 import it.fast4x.rimusic.utils.pauseListenHistoryKey
 import it.fast4x.rimusic.utils.persistentQueueKey
 import it.fast4x.rimusic.utils.playNext
@@ -155,7 +157,6 @@ import it.fast4x.rimusic.utils.playbackSpeedKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.putEnum
 import it.fast4x.rimusic.utils.queueLoopTypeKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.setLikeState
@@ -188,7 +189,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream
@@ -276,41 +277,46 @@ class PlayerServiceModern : MediaLibraryService(),
             PackageManager.DONT_KILL_APP
         )
 
-        // CUSTOM NOTIFICATION PROVIDER -> DEFAULT NOTIFICATION PROVIDER MODDED
-        setMediaNotificationProvider(CustomMediaNotificationProvider(this)
-            .apply {
-                setSmallIcon(R.drawable.app_icon)
+        val notificationType = preferences.getEnum(notificationTypeKey, NotificationType.Default)
+        when(notificationType){
+            NotificationType.Default -> {
+                // DEFAULT NOTIFICATION PROVIDER
+                //        setMediaNotificationProvider(
+                //            DefaultMediaNotificationProvider(
+                //                this,
+                //                { NotificationId },
+                //                NotificationChannelId,
+                //                R.string.player
+                //            )
+                //            .apply {
+                //                setSmallIcon(R.drawable.app_icon)
+                //            }
+                //        )
+
+                // DEFAULT NOTIFICATION PROVIDER MODDED
+                setMediaNotificationProvider(CustomMediaNotificationProvider(this)
+                    .apply {
+                        setSmallIcon(R.drawable.app_icon)
+                    }
+                )
             }
-        )
+            NotificationType.Advanced -> {
+                // CUSTOM NOTIFICATION PROVIDER -> CUSTOM NOTIFICATION PROVIDER WITH ACTIONS AND PENDING INTENT
+                // ACTUALLY NOT STABLE
+                setMediaNotificationProvider(object : MediaNotification.Provider{
+                    override fun createNotification(
+                        mediaSession: MediaSession,
+                        customLayout: ImmutableList<CommandButton>,
+                        actionFactory: MediaNotification.ActionFactory,
+                        onNotificationChangedCallback: MediaNotification.Provider.Callback
+                    ): MediaNotification {
+                        return updateCustomNotification(mediaSession)
+                    }
 
-
-        // CUSTOM NOTIFICATION PROVIDER -> CUSTOM NOTIFICATION PROVIDER WITH ACTIONS AND PENDING INTENT
-        // ACTUALLY NOT STABLE
-//        setMediaNotificationProvider(object : MediaNotification.Provider{
-//            override fun createNotification(
-//                mediaSession: MediaSession,
-//                customLayout: ImmutableList<CommandButton>,
-//                actionFactory: MediaNotification.ActionFactory,
-//                onNotificationChangedCallback: MediaNotification.Provider.Callback
-//            ): MediaNotification {
-//                return updateCustomNotification(mediaSession)
-//            }
-//
-//            override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean { return false }
-//        })
-
-        // DEFAULT NOTIFICATION PROVIDER
-//        setMediaNotificationProvider(
-//            DefaultMediaNotificationProvider(
-//                this,
-//                { NotificationId },
-//                NotificationChannelId,
-//                R.string.player
-//            )
-//            .apply {
-//                setSmallIcon(R.drawable.app_icon)
-//            }
-//        )
+                    override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean { return false }
+                })
+            }
+        }
 
         runCatching {
             bitmapProvider = BitmapProvider(
@@ -335,7 +341,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val exoPlayerCustomCache = preferences.getInt(exoPlayerCustomCacheKey, 32) * 1000 * 1000L
 
         val cacheEvictor = when (val size =
-            preferences.getEnum(exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`32MB`)) {
+            preferences.getEnum(exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`2GB`)) {
             ExoPlayerDiskCacheMaxSize.Unlimited -> NoOpCacheEvictor()
             ExoPlayerDiskCacheMaxSize.Custom -> LeastRecentlyUsedCacheEvictor(exoPlayerCustomCache)
             else -> LeastRecentlyUsedCacheEvictor(size.bytes)
@@ -351,7 +357,7 @@ class PlayerServiceModern : MediaLibraryService(),
         var cacheDirName = "rimusic_cache"
 
         val cacheSize =
-            preferences.getEnum(exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`32MB`)
+            preferences.getEnum(exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`2GB`)
 
         if (cacheSize == ExoPlayerDiskCacheMaxSize.Disabled) cacheDirName = "rimusic_no_cache"
 
@@ -614,7 +620,13 @@ class PlayerServiceModern : MediaLibraryService(),
             player.removeListener(this)
             player.stop()
             player.release()
-            unregisterReceiver(notificationActionReceiver)
+
+            try{
+                unregisterReceiver(notificationActionReceiver)
+            } catch (e: Exception){
+                Timber.e("PlayerServiceModern onDestroy unregisterReceiver notificationActionReceiver ${e.stackTraceToString()}")
+            }
+
 
             mediaSession.release()
             cache.release()
@@ -1095,12 +1107,12 @@ class PlayerServiceModern : MediaLibraryService(),
         }
             .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
             .setContentText(
-                if (mediaMetadata.albumTitle != null || mediaMetadata.artist != "")
+                if (mediaMetadata.albumTitle != null && mediaMetadata.artist != "")
                     "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
                 else mediaMetadata.artist
             )
             .setSubText(
-                if (mediaMetadata.albumTitle != null || mediaMetadata.artist != "")
+                if (mediaMetadata.albumTitle != null && mediaMetadata.artist != "")
                     "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
                 else mediaMetadata.artist
             )

@@ -53,7 +53,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.queueSwipeLeftActionKey
 import it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import kotlinx.coroutines.flow.distinctUntilChanged
-import me.knighthat.colorPalette
+import it.fast4x.rimusic.colorPalette
 import timber.log.Timber
 
 @Composable

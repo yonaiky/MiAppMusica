@@ -814,10 +814,15 @@
     <string name="jump_previous_blank">Залишіть поле порожнім або 0 для кнопки \"Назад\", щоб завжди відтворювати попередню пісню</string>
     <string name="delete_hidden_songs">Ви дійсно хочете видалити всі приховані пісні з бази даних? Ця дія необоротна.</string>
     <string name="delete_hidden_songs_message">Видалити приховані пісні</string>
-    <string name="cover_type_vinyl">Vinyl</string>
-    <string name="cover_type_cd">CD</string>
-    <string name="cover_type_cd_with_cover">CD with Cover</string>
-    <string name="wallpaper">Wallpaper</string>
-    <string name="enable_wallpaper">Enable wallpaper</string>
-    <string name="set_cover_thumbnail_as_wallpaper">Set cover thumbnail as wallpaper</string>
+    <string name="cover_type_vinyl">Вініл</string>
+    <string name="cover_type_cd">Компакт-диск</string>
+    <string name="cover_type_cd_with_cover">Компакт-диск із обкладинкою</string>
+    <string name="wallpaper">Шпалери</string>
+    <string name="enable_wallpaper">Включити шпалери</string>
+    <string name="set_cover_thumbnail_as_wallpaper">Встановити мініатюру обкладинки як шпалери</string>
+    <string name="notification_type">Тип повідомлень</string>
+    <string name="notification_type_default">За замовчуванням</string>
+    <string name="notification_type_advanced">Розширені налаштування</string>
+    <string name="notification_type_info">Спосіб керування плеєром в області сповіщень та на екрані блокування.</string>
+    <string name="action_bar_show_start_radio_button">Запустити радіо</string>
 </resources>

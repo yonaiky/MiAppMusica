@@ -231,10 +231,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import me.knighthat.colorPalette
 import me.knighthat.invidious.Invidious
 import me.knighthat.piped.Piped
-import me.knighthat.thumbnailShape
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient

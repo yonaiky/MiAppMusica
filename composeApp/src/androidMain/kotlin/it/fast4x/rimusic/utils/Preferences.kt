@@ -114,6 +114,7 @@ const val showButtonPlayerSleepTimerKey = "showButtonPlayerSleepTimer"
 const val keepPlayerMinimizedKey = "keepPlayerMinimized"
 const val isSwipeToActionEnabledKey = "isSwipeToActionEnabled"
 const val showButtonPlayerMenuKey = "showButtonPlayerMenu"
+const val showButtonPlayerStartRadioKey = "showButtonPlayerStartRadio"
 const val showButtonPlayerSystemEqualizerKey = "showButtonPlayerSystemEqualizer"
 const val showButtonPlayerDiscoverKey = "showButtonPlayerDiscover"
 const val showButtonPlayerVideoKey = "showButtonPlayerVideo"
@@ -314,6 +315,8 @@ const val albumTypeKey = "albumType"
 
 const val enableWallpaperKey = "enableWallpaper"
 const val wallpaperTypeKey = "wallpaperType"
+
+const val notificationTypeKey = "notificationType"
 
 const val queueSwipeLeftActionKey = "queueSwipeLeftAction"
 const val queueSwipeRightActionKey = "queueSwipeRightAction"
@@ -544,6 +547,15 @@ inline fun <reified T : Enum<T>> rememberPreference(key: String, defaultValue: T
         }
     }
 }
+
+fun clearPreference(context: Context, key: String): Unit {
+    try {
+        context.preferences.edit { remove(key) }
+    } catch (e: Exception) {
+        Timber.e("ClearPreference Error: ${e.stackTraceToString()}")
+    }
+}
+
 
 inline fun <T> mutableStatePreferenceOf(
     value: T,

@@ -132,8 +132,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -330,7 +330,7 @@ fun AlbumDetails(
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( it.asMediaItem.mediaId )
+                                Database.deleteFormat( it.asMediaItem.mediaId )
                             }
                             manageDownload(
                                 context = context,
@@ -343,7 +343,7 @@ fun AlbumDetails(
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( it.mediaId )
+                                Database.deleteFormat( it.mediaId )
                             }
                             manageDownload(
                                 context = context,
@@ -373,7 +373,7 @@ fun AlbumDetails(
                         songs.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( it.asMediaItem.mediaId )
+                                Database.deleteFormat( it.asMediaItem.mediaId )
                             }
                             manageDownload(
                                 context = context,
@@ -386,7 +386,7 @@ fun AlbumDetails(
                         listMediaItems.forEach {
                             binder?.cache?.removeResource(it.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( it.mediaId )
+                                Database.deleteFormat( it.mediaId )
                             }
                             manageDownload(
                                 context = context,
@@ -441,8 +441,8 @@ fun AlbumDetails(
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
             modifier = Modifier
-                .background(colorPalette()
-.background0)
+                .background(
+                    colorPalette().background0)
                 //.fillMaxSize()
                 .fillMaxHeight()
                 //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
@@ -454,8 +454,8 @@ fun AlbumDetails(
                 //contentPadding = LocalPlayerAwareWindowInsets.current
                 //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
-                    .background(colorPalette()
-.background0)
+                    .background(
+                        colorPalette().background0)
                     .fillMaxSize()
             ) {
                 item(
@@ -503,32 +503,9 @@ fun AlbumDetails(
                                 //.padding(bottom = 20.dp)
                             )
 
-                            /*
-                            BasicText(
-                                text = albumPage?.year ?: "",
-                                style = typography().xs.medium,
-                                maxLines = 1,
-                                modifier = Modifier
-                                    //.padding(top = 10.dp)
-                                    .align(Alignment.BottomStart)
-                            )
-
-                            BasicText(
-                                text = songs.size.toString() + " "
-                                        + stringResource(R.string.songs)
-                                        + " - " + formatAsTime(totalPlayTimes),
-                                style = typography().xs.medium,
-                                maxLines = 1,
-                                modifier = Modifier
-                                    //.padding(top = 10.dp)
-                                    .align(Alignment.BottomEnd)
-                            )
-                             */
-
                             HeaderIconButton(
                                 icon = R.drawable.share_social,
-                                color = colorPalette()
-.text,
+                                color = colorPalette().text,
                                 iconSize = 24.dp,
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
@@ -930,7 +907,7 @@ fun AlbumDetails(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 Database.asyncTransaction {
-                                    resetContentLength( song.asMediaItem.mediaId )
+                                    deleteFormat( song.asMediaItem.mediaId )
                                 }
 
                                 if (!isLocal)
@@ -954,7 +931,8 @@ fun AlbumDetails(
                              */
                                 BasicText(
                                     text = "${index + 1}",
-                                    style = typography().s.semiBold.center.color(colorPalette()
+                                    style = typography().s.semiBold.center.color(
+                                        colorPalette()
 .textDisabled),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
@@ -1169,7 +1147,8 @@ fun AlbumDetails(
                         if (attributionsIndex != -1) {
                             BasicText(
                                 text = stringResource(R.string.from_wikipedia_cca),
-                                style = typography().xxs.color(colorPalette()
+                                style = typography().xxs.color(
+                                    colorPalette()
 .textDisabled).align(
                                     TextAlign.Start
                                 ),
