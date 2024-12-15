@@ -76,7 +76,7 @@ fun PlayerMenu(
             onDismiss = onDismiss,
             onStartRadio = {
                 binder.stopRadio()
-                binder.player.forcePlay(mediaItem)
+                binder.player.seamlessPlay(mediaItem)
                 binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
             },
             onGoToEqualizer = launchEqualizer,
@@ -105,7 +105,7 @@ fun PlayerMenu(
             mediaItem = mediaItem,
             onStartRadio = {
                 binder.stopRadio()
-                binder.player.forcePlay(mediaItem)
+                binder.player.seamlessPlay(mediaItem)
                 binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
             },
             onGoToEqualizer = launchEqualizer,
