@@ -203,15 +203,28 @@ fun SearchResultScreen(
                                     if (parentalControlEnabled && song.asSong.title.startsWith(EXPLICIT_PREFIX))
                                         return@ItemsPage
 
+                                    downloadState = getDownloadState(song.asMediaItem.mediaId)
+                                    val isDownloaded =
+                                        isDownloadedSong(song.asMediaItem.mediaId)
+
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,
-                                        onSwipeToRight = {
+                                        onPlayNext = {
                                             localBinder?.player?.addNext(song.asMediaItem)
+                                        },
+                                        onDownload = {
+                                            localBinder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                            }
+
+                                            manageDownload(
+                                                context = context,
+                                                mediaItem = song.asMediaItem,
+                                                downloadState = isDownloaded
+                                            )
                                         }
                                     ) {
-                                        downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                        val isDownloaded =
-                                            isDownloadedSong(song.asMediaItem.mediaId)
                                         var forceRecompose by remember { mutableStateOf(false) }
                                         SongItem(
                                             song = song,
@@ -506,7 +519,7 @@ fun SearchResultScreen(
                                 itemContent = { video ->
                                     SwipeablePlaylistItem(
                                         mediaItem = video.asMediaItem,
-                                        onSwipeToRight = {
+                                        onPlayNext = {
                                             localBinder?.player?.addNext(video.asMediaItem)
                                         }
                                     ) {

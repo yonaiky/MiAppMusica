@@ -6,16 +6,14 @@ import me.knighthat.appContext
 enum class AlbumSwipeAction {
     NoAction,
     PlayNext,
-    Download,
-    Favourite,
+    Bookmark,
     Enqueue;
 
     val displayName: String
         get() = when (this) {
             NoAction -> appContext().resources.getString(R.string.none)
             PlayNext -> appContext().resources.getString(R.string.play_next)
-            Download  -> appContext().resources.getString(R.string.download)
-            Favourite -> appContext().resources.getString(R.string.favorites)
+            Bookmark  -> appContext().resources.getString(R.string.bookmark)
             Enqueue  -> appContext().resources.getString(R.string.enqueue)
         }
 
@@ -23,8 +21,7 @@ enum class AlbumSwipeAction {
         get() = when (this) {
             NoAction -> R.drawable.alert
             PlayNext -> R.drawable.play_skip_forward
-            Download -> R.drawable.download
-            Favourite -> R.drawable.heart_outline
+            Bookmark -> R.drawable.bookmark_outline
             Enqueue -> R.drawable.enqueue
         }
 }

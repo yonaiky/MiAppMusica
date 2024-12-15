@@ -747,15 +747,29 @@ fun PlaylistSongList(
 
                 itemsIndexed(items = playlistPage?.songsPage?.items ?: emptyList()) { index, song ->
 
+                    val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
+                    downloadState = getDownloadState(song.asMediaItem.mediaId)
+                    val isDownloaded = if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
+
                     SwipeablePlaylistItem(
                         mediaItem = song.asMediaItem,
-                        onSwipeToRight = {
+                        onPlayNext = {
                             binder?.player?.addNext(song.asMediaItem)
+                        },
+                        onDownload = {
+                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                Database.resetContentLength( song.asMediaItem.mediaId )
+                            }
+
+                            if (!isLocal)
+                                manageDownload(
+                                    context = context,
+                                    mediaItem = song.asMediaItem,
+                                    downloadState = isDownloaded
+                                )
                         }
                     ) {
-                        val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                        downloadState = getDownloadState(song.asMediaItem.mediaId)
-                        val isDownloaded = if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
                         var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = song,

@@ -536,10 +536,10 @@ fun DefaultUiSettings() {
     var playlistSwipeRightAction by rememberPreference(playlistSwipeRightActionKey, PlaylistSwipeAction.PlayNext)
     playlistSwipeRightAction = PlaylistSwipeAction.PlayNext
 
-    var albumSwipeLeftAction by rememberPreference(albumSwipeLeftActionKey, AlbumSwipeAction.Favourite)
-    albumSwipeLeftAction = AlbumSwipeAction.Favourite
-    var albumSwipeRightAction by rememberPreference(albumSwipeRightActionKey, AlbumSwipeAction.PlayNext)
-    albumSwipeRightAction = AlbumSwipeAction.PlayNext
+    var albumSwipeLeftAction by rememberPreference(albumSwipeLeftActionKey, AlbumSwipeAction.PlayNext)
+    albumSwipeLeftAction = AlbumSwipeAction.PlayNext
+    var albumSwipeRightAction by rememberPreference(albumSwipeRightActionKey, AlbumSwipeAction.Bookmark)
+    albumSwipeRightAction = AlbumSwipeAction.Bookmark
 
     var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
     showButtonPlayerDiscover = false
@@ -701,11 +701,11 @@ fun UiSettings(
     )
     var albumSwipeLeftAction by rememberPreference(
         albumSwipeLeftActionKey,
-        AlbumSwipeAction.Favourite
+        AlbumSwipeAction.PlayNext
     )
     var albumSwipeRightAction by rememberPreference(
         albumSwipeRightActionKey,
-        AlbumSwipeAction.PlayNext
+        AlbumSwipeAction.Bookmark
     )
 
     var minimumSilenceDuration by rememberPreference(minimumSilenceDurationKey, 2_000_000L)

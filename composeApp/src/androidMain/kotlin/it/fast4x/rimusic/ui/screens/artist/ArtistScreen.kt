@@ -442,15 +442,28 @@ fun ArtistScreen(
                                 itemContent = { song ->
                                     if (parentalControlEnabled && song.explicit) return@ItemsPage
 
+                                    downloadState = getDownloadState(song.asMediaItem.mediaId)
+                                    val isDownloaded = isDownloadedSong(song.asMediaItem.mediaId)
+
                                     SwipeablePlaylistItem(
                                         mediaItem = song.asMediaItem,
-                                        onSwipeToRight = {
+                                        onPlayNext = {
                                             binder?.player?.addNext(song.asMediaItem)
+                                        },
+                                        onDownload = {
+                                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                Database.resetContentLength( song.asMediaItem.mediaId )
+                                            }
+
+                                            manageDownload(
+                                                context = context,
+                                                mediaItem = song.asMediaItem,
+                                                downloadState = isDownloaded
+                                            )
                                         }
                                     ) {
                                         listMediaItems.add(song.asMediaItem)
-                                        downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                        val isDownloaded = isDownloadedSong(song.asMediaItem.mediaId)
                                         var forceRecompose by remember { mutableStateOf(false) }
                                         SongItem(
                                             song = song,

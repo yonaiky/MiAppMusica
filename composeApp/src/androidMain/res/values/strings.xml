@@ -827,4 +827,5 @@
     <string name="playlist_right_swipe">Playlist Right Swipe</string>
     <string name="album_left_swipe">Album Left Swipe</string>
     <string name="album_right_swipe">Album Right Swipe</string>
+    <string name="bookmark">Bookmark</string>
 </resources>

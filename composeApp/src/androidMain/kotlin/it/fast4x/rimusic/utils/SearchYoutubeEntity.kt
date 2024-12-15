@@ -95,7 +95,7 @@ fun SearchYoutubeEntity (
                 itemContent = { video ->
                     SwipeablePlaylistItem(
                         mediaItem = video.asMediaItem,
-                        onSwipeToRight = {
+                        onPlayNext = {
                             binder?.player?.addNext(video.asMediaItem)
                         }
                     ) {
