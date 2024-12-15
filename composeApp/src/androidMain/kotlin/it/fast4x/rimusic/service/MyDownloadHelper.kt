@@ -16,6 +16,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.offline.DownloadRequest
+import androidx.media3.exoplayer.offline.DownloadService.sendAddDownload
 import androidx.media3.exoplayer.scheduler.Requirements
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
@@ -39,7 +40,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
+import java.util.Timer
 import java.util.concurrent.Executors
+import kotlin.concurrent.schedule
 
 @UnstableApi
 object MyDownloadHelper {
@@ -230,7 +233,6 @@ object MyDownloadHelper {
                         ?: Uri.parse("https://music.youtube.com/watch?v=${mediaItem.mediaId}")
                 )
                 .setCustomCacheKey(mediaItem.mediaId)
-                //.setData(mediaItem.mediaId.encodeToByteArray())
                 .setData("${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}".encodeToByteArray()) // Title in notification
                 .build()
 
@@ -251,6 +253,8 @@ object MyDownloadHelper {
         }
 
     fun removeDownload(context: Context, mediaItem: MediaItem) {
+        if (mediaItem.isLocal) return
+
         coroutineScope.launch {
             context.removeDownload<MyDownloadService>(mediaItem.mediaId).exceptionOrNull()?.let {
                 if (it is CancellationException) throw it
