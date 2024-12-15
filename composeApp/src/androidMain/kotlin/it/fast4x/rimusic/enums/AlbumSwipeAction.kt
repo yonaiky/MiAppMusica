@@ -17,9 +17,9 @@ enum class AlbumSwipeAction {
             Enqueue  -> appContext().resources.getString(R.string.enqueue)
         }
 
-    val icon: Int
+    val icon: Int?
         get() = when (this) {
-            NoAction -> R.drawable.alert
+            NoAction -> null
             PlayNext -> R.drawable.play_skip_forward
             Bookmark -> R.drawable.bookmark_outline
             Enqueue -> R.drawable.enqueue

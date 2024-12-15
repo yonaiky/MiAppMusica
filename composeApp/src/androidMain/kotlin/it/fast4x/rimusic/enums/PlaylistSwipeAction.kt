@@ -23,9 +23,9 @@ enum class PlaylistSwipeAction {
             Enqueue  -> appContext().resources.getString(R.string.enqueue)
         }
 
-    val icon: Int
+    val icon: Int?
         get() = when (this) {
-            NoAction -> R.drawable.alert
+            NoAction -> null
             PlayNext -> R.drawable.play_skip_forward
             Download -> R.drawable.download
             Favourite -> R.drawable.heart_outline
@@ -33,9 +33,9 @@ enum class PlaylistSwipeAction {
         }
 
         @OptIn(UnstableApi::class)
-        fun getStateIcon(action: PlaylistSwipeAction, likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int {
+        fun getStateIcon(action: PlaylistSwipeAction, likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int? {
                 return when (action) {
-                    NoAction -> R.drawable.alert
+                    NoAction -> null
                     PlayNext -> R.drawable.play_skip_forward
                     Download -> when (downloadedStateMedia) {
                         DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED -> when (downloadState) {

@@ -22,9 +22,9 @@ enum class QueueSwipeAction {
             RemoveFromQueue  -> appContext().resources.getString(R.string.remove_from_queue)
         }
 
-    val icon: Int
+    val icon: Int?
         get() = when (this) {
-            NoAction -> R.drawable.alert
+            NoAction -> null
             PlayNext -> R.drawable.play_skip_forward
             Download -> R.drawable.download
             Favourite -> R.drawable.heart_outline
@@ -32,9 +32,9 @@ enum class QueueSwipeAction {
         }
 
         @OptIn(UnstableApi::class)
-        fun getStateIcon(action: QueueSwipeAction, likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int {
+        fun getStateIcon(action: QueueSwipeAction, likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int? {
             return when (action) {
-                NoAction -> R.drawable.alert
+                NoAction -> null
                 PlayNext -> R.drawable.play_skip_forward
                 Download -> when (downloadedStateMedia) {
                     DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED -> when (downloadState) {

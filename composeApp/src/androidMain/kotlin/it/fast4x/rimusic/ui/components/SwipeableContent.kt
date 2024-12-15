@@ -58,8 +58,8 @@ import timber.log.Timber
 
 @Composable
 fun SwipeableContent(
-    swipeToLeftIcon: Int,
-    swipeToRightIcon: Int,
+    swipeToLeftIcon: Int? = null,
+    swipeToRightIcon: Int? = null,
     onSwipeToLeft: () -> Unit,
     onSwipeToRight: () -> Unit,
     modifier: Modifier = Modifier,
@@ -102,11 +102,11 @@ fun SwipeableContent(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val icon = when (dismissState.targetValue) {
-                        SwipeToDismissBoxValue.StartToEnd -> ImageVector.vectorResource(
+                        SwipeToDismissBoxValue.StartToEnd -> if (swipeToRightIcon == null) null else ImageVector.vectorResource(
                             swipeToRightIcon
                         )
 
-                        SwipeToDismissBoxValue.EndToStart -> ImageVector.vectorResource(
+                        SwipeToDismissBoxValue.EndToStart -> if (swipeToLeftIcon == null) null else ImageVector.vectorResource(
                             swipeToLeftIcon
                         )
 
