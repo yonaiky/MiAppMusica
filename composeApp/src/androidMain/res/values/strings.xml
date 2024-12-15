@@ -823,4 +823,8 @@
     <string name="queue_left_swipe">Queue Left Swipe</string>
     <string name="action_on_swipe_left_in_queue">Action performed when swiped left in queue</string>
     <string name="queue_right_swipe">Queue Right Swipe</string>
+    <string name="playlist_left_swipe">Playlist Left Swipe</string>
+    <string name="playlist_right_swipe">Playlist Right Swipe</string>
+    <string name="album_left_swipe">Album Left Swipe</string>
+    <string name="album_right_swipe">Album Right Swipe</string>
 </resources>

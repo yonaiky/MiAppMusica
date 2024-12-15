@@ -35,6 +35,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.enums.AlbumSwipeAction
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
@@ -67,6 +68,7 @@ import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
+import it.fast4x.rimusic.enums.PlaylistSwipeAction
 import it.fast4x.rimusic.enums.QueueSwipeAction
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.RecommendationsNumber
@@ -85,6 +87,8 @@ import it.fast4x.rimusic.utils.RestartActivity
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
+import it.fast4x.rimusic.utils.albumSwipeLeftActionKey
+import it.fast4x.rimusic.utils.albumSwipeRightActionKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
@@ -173,6 +177,8 @@ import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerTimelineSizeKey
 import it.fast4x.rimusic.utils.playerTimelineTypeKey
 import it.fast4x.rimusic.utils.playerTypeKey
+import it.fast4x.rimusic.utils.playlistSwipeLeftActionKey
+import it.fast4x.rimusic.utils.playlistSwipeRightActionKey
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.queueSwipeLeftActionKey
 import it.fast4x.rimusic.utils.queueSwipeRightActionKey
@@ -524,6 +530,17 @@ fun DefaultUiSettings() {
     queueSwipeLeftAction = QueueSwipeAction.RemoveFromQueue
     var queueSwipeRightAction by rememberPreference(queueSwipeRightActionKey, QueueSwipeAction.PlayNext)
     queueSwipeRightAction = QueueSwipeAction.PlayNext
+
+    var playlistSwipeLeftAction by rememberPreference(playlistSwipeLeftActionKey, PlaylistSwipeAction.Favourite)
+    playlistSwipeLeftAction = PlaylistSwipeAction.Favourite
+    var playlistSwipeRightAction by rememberPreference(playlistSwipeRightActionKey, PlaylistSwipeAction.PlayNext)
+    playlistSwipeRightAction = PlaylistSwipeAction.PlayNext
+
+    var albumSwipeLeftAction by rememberPreference(albumSwipeLeftActionKey, AlbumSwipeAction.Favourite)
+    albumSwipeLeftAction = AlbumSwipeAction.Favourite
+    var albumSwipeRightAction by rememberPreference(albumSwipeRightActionKey, AlbumSwipeAction.PlayNext)
+    albumSwipeRightAction = AlbumSwipeAction.PlayNext
+
     var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
     showButtonPlayerDiscover = false
     var playerEnableLyricsPopupMessage by rememberPreference(
@@ -673,6 +690,22 @@ fun UiSettings(
     var queueSwipeRightAction by rememberPreference(
         queueSwipeRightActionKey,
         QueueSwipeAction.PlayNext
+    )
+    var playlistSwipeLeftAction by rememberPreference(
+        playlistSwipeLeftActionKey,
+        PlaylistSwipeAction.Favourite
+    )
+    var playlistSwipeRightAction by rememberPreference(
+        playlistSwipeRightActionKey,
+        PlaylistSwipeAction.PlayNext
+    )
+    var albumSwipeLeftAction by rememberPreference(
+        albumSwipeLeftActionKey,
+        AlbumSwipeAction.Favourite
+    )
+    var albumSwipeRightAction by rememberPreference(
+        albumSwipeRightActionKey,
+        AlbumSwipeAction.PlayNext
     )
 
     var minimumSilenceDuration by rememberPreference(minimumSilenceDurationKey, 2_000_000L)
@@ -1879,7 +1912,6 @@ fun UiSettings(
                         selectedValue = queueSwipeLeftAction,
                         onValueSelected = {
                             queueSwipeLeftAction = it
-                            restartService = true
                         },
                         valueText = {
                             it.displayName
@@ -1890,7 +1922,46 @@ fun UiSettings(
                         selectedValue = queueSwipeRightAction,
                         onValueSelected = {
                             queueSwipeRightAction = it
-                            restartService = true
+                        },
+                        valueText = {
+                            it.displayName
+                        },
+                    )
+                    EnumValueSelectorSettingsEntry<PlaylistSwipeAction>(
+                        title = stringResource(R.string.playlist_left_swipe),
+                        selectedValue = playlistSwipeLeftAction,
+                        onValueSelected = {
+                            playlistSwipeLeftAction = it
+                        },
+                        valueText = {
+                            it.displayName
+                        },
+                    )
+                    EnumValueSelectorSettingsEntry<PlaylistSwipeAction>(
+                        title = stringResource(R.string.playlist_right_swipe),
+                        selectedValue = playlistSwipeRightAction,
+                        onValueSelected = {
+                            playlistSwipeRightAction = it
+                        },
+                        valueText = {
+                            it.displayName
+                        },
+                    )
+                    EnumValueSelectorSettingsEntry<AlbumSwipeAction>(
+                        title = stringResource(R.string.album_left_swipe),
+                        selectedValue = albumSwipeLeftAction,
+                        onValueSelected = {
+                            albumSwipeLeftAction = it
+                        },
+                        valueText = {
+                            it.displayName
+                        },
+                    )
+                    EnumValueSelectorSettingsEntry<AlbumSwipeAction>(
+                        title = stringResource(R.string.album_right_swipe),
+                        selectedValue = albumSwipeRightAction,
+                        onValueSelected = {
+                            albumSwipeRightAction = it
                         },
                         valueText = {
                             it.displayName
