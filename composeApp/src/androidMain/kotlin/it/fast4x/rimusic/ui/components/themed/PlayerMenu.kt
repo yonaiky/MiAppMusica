@@ -18,6 +18,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
+import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
@@ -75,7 +76,7 @@ fun PlayerMenu(
             onDismiss = onDismiss,
             onStartRadio = {
                 binder.stopRadio()
-                binder.player.seamlessPlay(mediaItem)
+                binder.player.forcePlay(mediaItem)
                 binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
             },
             onGoToEqualizer = launchEqualizer,
@@ -104,7 +105,7 @@ fun PlayerMenu(
             mediaItem = mediaItem,
             onStartRadio = {
                 binder.stopRadio()
-                binder.player.seamlessPlay(mediaItem)
+                binder.player.forcePlay(mediaItem)
                 binder.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId))
             },
             onGoToEqualizer = launchEqualizer,
