@@ -364,7 +364,7 @@ fun HomeSongs(
 
     // This phrase loads all songs across types into [itemsOffShelve]
     // No filtration applied to this stage, only sort
-    LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
+    LaunchedEffect( builtInPlaylist, topPlaylists.period.duration, songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
         if( builtInPlaylist == BuiltInPlaylist.OnDevice ) return@LaunchedEffect
 
         when( builtInPlaylist ) {
@@ -375,6 +375,7 @@ fun HomeSongs(
             BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Top -> {
+                println("HomeSongs: topPlaylists period: ${topPlaylists.period.duration}")
                 if (topPlaylists.period.duration == Duration.INFINITE)
                     Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.number.toInt())
                 else
