@@ -660,7 +660,7 @@
     <string name="podcasts">Podcasts</string>
     <string name="playlistindicator">Playlist Indicator</string>
     <string name="playlistindicatorinfo">Indicates if the song is already added to a Playlist</string>
-    <string name="deleted">Deleted</string>
+    <string name="deleted">已刪除</string>
     <string name="playlistindicatorinfo2">Song is Present in one of the Playlists</string>
     <string name="statsfornerdsplayer">Show Stats for Nerds in Player</string>
     <string name="discover">探索</string>
@@ -671,12 +671,12 @@
     <string name="controls_title_playback_speed">播放速度</string>
     <string name="controls_title_playback_pitch">Playback pitch</string>
     <string name="controls_title_playback_volume">播放音量</string>
-    <string name="controls_title_device_volume">Device volume</string>
+    <string name="controls_title_device_volume">裝置音量</string>
     <string name="lang_malayalam">馬拉雅拉姆語（മലയാളം）</string>
     <string name="searches_suggestions">搜尋建議</string>
     <string name="searches_saved_searches">已儲存的的搜尋記錄</string>
-    <string name="event_volumekeys">Change song with the volume keys</string>
-    <string name="event_volumekeysinfo">Volume UP next and volume DOWN previous song</string>
+    <string name="event_volumekeys">使用音量鍵來切換歌曲</string>
+    <string name="event_volumekeysinfo">按下音量調高鍵切換到下一首歌，按下音量調低鍵切換到上一首歌</string>
     <string name="paste">貼上</string>
     <string name="searches_no_suggestions">No suggestions</string>
     <string name="action_bar_show_discover_button">顯示探索按鈕</string>
@@ -790,9 +790,9 @@
     <string name="notificationPlayerSecondIcon">第二個按鈕</string>
     <string name="notification_player">NOTIFICATION PLAYER</string>
     <string name="repeat">重複</string>
-    <string name="original_lyrics">Original Lyrics</string>
-    <string name="translated_lyrics">Translated Lyrics</string>
-    <string name="press_once_again_to_exit">Press once again to exit</string>
+    <string name="original_lyrics">歌詞原文</string>
+    <string name="translated_lyrics">已翻譯的歌詞</string>
+    <string name="press_once_again_to_exit">再按一次以離開應用程式</string>
     <string name="random_sorting">隨機排序</string>
     <string name="music_animations_bars">Bars</string>
     <string name="music_animations_crazy_bars">Crazy Bars</string>
