@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.service.MyDownloadService
 import timber.log.Timber
+import java.util.Queue
 
 @Composable
 fun SwipeableContent(
@@ -141,9 +142,6 @@ fun SwipeableQueueItem(
 ) {
     val context = LocalContext.current
 
-    var likedAt by rememberSaveable {
-        mutableStateOf<Long?>(null)
-    }
     val downloadState = getDownloadState(mediaItem.mediaId)
     var downloadedStateMedia by remember { mutableStateOf(DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) }
     downloadedStateMedia = if (!mediaItem.isLocal) downloadedStateMedia(mediaItem.mediaId)
@@ -172,6 +170,31 @@ fun SwipeableQueueItem(
             onDownload()
         }
     }
+
+    var likedAt by rememberSaveable {
+        mutableStateOf<Long?>(null)
+    }
+    LaunchedEffect(mediaItem.mediaId) {
+        Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
+    }
+    val onFavourite: () -> Unit = {
+        mediaItemToggleLike(mediaItem)
+        val message: String
+        if( likedAt != null ) {
+            val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
+            val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
+
+            message = "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_favorites)}"
+        } else
+            message = context.resources.getString(R.string.added_to_favorites)
+
+        SmartMessage(
+            message,
+            durationLong = likedAt != null,
+            context = context
+        )
+    }
+
     val queueSwipeLeftAction by rememberPreference(queueSwipeLeftActionKey, QueueSwipeAction.RemoveFromQueue)
     val queueSwipeRightAction by rememberPreference(queueSwipeRightActionKey, QueueSwipeAction.PlayNext)
 
@@ -179,6 +202,7 @@ fun SwipeableQueueItem(
         return when (actionName) {
             QueueSwipeAction.PlayNext -> onPlayNext
             QueueSwipeAction.Download -> onDownloadButtonClick
+            QueueSwipeAction.Favourite -> onFavourite
             QueueSwipeAction.RemoveFromQueue -> onRemoveFromQueue
             else -> ({})
         }
