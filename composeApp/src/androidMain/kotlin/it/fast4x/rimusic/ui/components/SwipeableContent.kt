@@ -30,6 +30,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.offline.Download
+import androidx.media3.exoplayer.offline.DownloadService
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
@@ -54,6 +56,7 @@ import it.fast4x.rimusic.utils.queueSwipeLeftActionKey
 import it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.service.MyDownloadService
 import timber.log.Timber
 
 @Composable
@@ -136,19 +139,7 @@ fun SwipeableQueueItem(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    val queueSwipeLeftAction by rememberPreference(queueSwipeLeftActionKey, QueueSwipeAction.RemoveFromQueue)
-    val queueSwipeRightAction by rememberPreference(queueSwipeRightActionKey, QueueSwipeAction.PlayNext)
-
-    fun getActionCallback(actionName: QueueSwipeAction): () -> Unit {
-        return when (actionName) {
-            QueueSwipeAction.PlayNext -> onPlayNext
-            QueueSwipeAction.Download -> onDownload
-            QueueSwipeAction.RemoveFromQueue -> onRemoveFromQueue
-            else -> ({})
-        }
-    }
-    val swipeLeftCallback = getActionCallback(queueSwipeLeftAction)
-    val swipeRighCallback = getActionCallback(queueSwipeRightAction)
+    val context = LocalContext.current
 
     var likedAt by rememberSaveable {
         mutableStateOf<Long?>(null)
@@ -157,6 +148,43 @@ fun SwipeableQueueItem(
     var downloadedStateMedia by remember { mutableStateOf(DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) }
     downloadedStateMedia = if (!mediaItem.isLocal) downloadedStateMedia(mediaItem.mediaId)
     else DownloadedStateMedia.DOWNLOADED
+
+    val onDownloadButtonClick: () -> Unit = {
+        if (
+            (
+                    (downloadState == Download.STATE_DOWNLOADING
+                    || downloadState == Download.STATE_QUEUED
+                    || downloadState == Download.STATE_RESTARTING
+                    )  && downloadedStateMedia == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED
+            ) ||
+            (
+                    downloadedStateMedia == DownloadedStateMedia.DOWNLOADED
+                   || downloadedStateMedia == DownloadedStateMedia.CACHED_AND_DOWNLOADED
+            )
+        ) {
+            DownloadService.sendRemoveDownload(
+                context,
+                MyDownloadService::class.java,
+                mediaItem.mediaId,
+                false
+            )
+        } else {
+            onDownload()
+        }
+    }
+    val queueSwipeLeftAction by rememberPreference(queueSwipeLeftActionKey, QueueSwipeAction.RemoveFromQueue)
+    val queueSwipeRightAction by rememberPreference(queueSwipeRightActionKey, QueueSwipeAction.PlayNext)
+
+    fun getActionCallback(actionName: QueueSwipeAction): () -> Unit {
+        return when (actionName) {
+            QueueSwipeAction.PlayNext -> onPlayNext
+            QueueSwipeAction.Download -> onDownloadButtonClick
+            QueueSwipeAction.RemoveFromQueue -> onRemoveFromQueue
+            else -> ({})
+        }
+    }
+    val swipeLeftCallback = getActionCallback(queueSwipeLeftAction)
+    val swipeRighCallback = getActionCallback(queueSwipeRightAction)
 
     SwipeableContent(
         swipeToLeftIcon = queueSwipeLeftAction.getStateIcon(
