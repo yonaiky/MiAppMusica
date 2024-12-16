@@ -3,9 +3,7 @@ package it.fast4x.rimusic.enums
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NotificationButtons.Download
-import it.fast4x.rimusic.enums.NotificationButtons.Favorites
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 
 enum class PlaylistSwipeAction {
     NoAction,

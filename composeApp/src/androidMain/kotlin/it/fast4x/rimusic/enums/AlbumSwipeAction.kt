@@ -1,7 +1,7 @@
 package it.fast4x.rimusic.enums
 
 import it.fast4x.rimusic.R
-import me.knighthat.appContext
+import it.fast4x.rimusic.appContext
 
 enum class AlbumSwipeAction {
     NoAction,
