@@ -719,8 +719,8 @@
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
     <string name="info_check_update_now">立即檢查</string>
     <string name="info_no_update_available">沒有可用的更新</string>
-    <string name="lang_galician">加利西亞語（Galego）</string>
-    <string name="lang_norwegian">挪威語（Norsk）</string>
+    <string name="lang_galician">加利西亞語</string>
+    <string name="lang_norwegian">挪威文</string>
     <string name="translate_to">翻譯為 %s</string>
     <string name="translate_to_other_language">翻譯成其他語言</string>
     <string name="action_bar_show_video_button">顯示影片按鈕</string>
@@ -763,9 +763,9 @@
     <string name="actionbar">Action Bar</string>
     <string name="center">Center</string>
     <string name="lyricsalignment">Lyrics Alignment</string>
-    <string name="lang_azerbaijani">阿塞拜疆語（آذربایجان دیلی）</string>
+    <string name="lang_azerbaijani">阿塞拜疆語</string>
     <string name="translators">翻譯人員</string>
-    <string name="lang_tamil">泰米爾語（தமிழ்）</string>
+    <string name="lang_tamil">泰米爾語</string>
     <string name="player_auto_load_songs_in_queue">自動加入歌曲到播放佇列中</string>
     <string name="player_auto_load_songs_in_queue_description">當播放佇列即將結束時添加歌曲</string>
     <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>
