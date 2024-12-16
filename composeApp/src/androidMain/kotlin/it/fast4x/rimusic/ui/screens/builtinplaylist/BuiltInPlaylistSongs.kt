@@ -146,9 +146,9 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import me.knighthat.colorPalette
-import me.knighthat.thumbnailShape
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -730,7 +730,7 @@ fun BuiltInPlaylistSongs(
                                     songs.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            Database.resetContentLength( it.asMediaItem.mediaId )
+                                            Database.deleteFormat( it.asMediaItem.mediaId )
                                         }
                                         manageDownload(
                                             context = context,
@@ -770,7 +770,7 @@ fun BuiltInPlaylistSongs(
                                         songs.forEach {
                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                             CoroutineScope(Dispatchers.IO).launch {
-                                                Database.resetContentLength( it.asMediaItem.mediaId )
+                                                Database.deleteFormat( it.asMediaItem.mediaId )
                                             }
                                             manageDownload(
                                                 context = context,
@@ -1226,7 +1226,7 @@ fun BuiltInPlaylistSongs(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                    Database.deleteFormat( song.asMediaItem.mediaId )
                                 }
 
                                 if (!isLocal)

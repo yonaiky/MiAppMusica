@@ -814,6 +814,15 @@
     <string name="jump_previous_blank">Déjalo en blanco o 0 para que el botón anterior siempre reproduzca la anterior canción</string>
     <string name="delete_hidden_songs">¿Seguro que quieres eliminar todas las canciones ocultas de la base de datos? Esta acción es irreversible.</string>
     <string name="delete_hidden_songs_message">Eliminar canciones ocultas</string>
-    <string name="thumbnail_cover_vinyl">Vinilo</string>
-    <string name="thumbnail_cover_cd">CD</string>
+    <string name="cover_type_vinyl">Vinilo</string>
+    <string name="cover_type_cd">CD</string>
+    <string name="cover_type_cd_with_cover">CD con portada</string>
+    <string name="wallpaper">Fondo de pantalla</string>
+    <string name="enable_wallpaper">Habilitar fondo de pantalla</string>
+    <string name="set_cover_thumbnail_as_wallpaper">Establecer miniatura de la portada como fondo de pantalla</string>
+    <string name="notification_type">Tipo de notificación</string>
+    <string name="notification_type_default">Por defecto</string>
+    <string name="notification_type_advanced">Avanzado</string>
+    <string name="notification_type_info">La forma en que se maneja el reproductor en el área de notificaciones y en la pantalla de bloqueo.</string>
+    <string name="action_bar_show_start_radio_button">Botón de iniciar radio</string>
 </resources>

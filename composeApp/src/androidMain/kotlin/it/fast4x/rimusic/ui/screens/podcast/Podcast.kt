@@ -125,8 +125,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 import timber.log.Timber
 
 
@@ -403,7 +403,7 @@ fun Podcast(
                                                 podcastPage?.listEpisode?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                                        Database.deleteFormat( it.asMediaItem.mediaId )
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -431,7 +431,7 @@ fun Podcast(
                                                 podcastPage?.listEpisode?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        Database.resetContentLength( it.asMediaItem.mediaId )
+                                                        Database.deleteFormat( it.asMediaItem.mediaId )
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -719,7 +719,7 @@ fun Podcast(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    Database.resetContentLength( song.asMediaItem.mediaId )
+                                    Database.deleteFormat( song.asMediaItem.mediaId )
                                 }
 
                                 if (!isLocal)

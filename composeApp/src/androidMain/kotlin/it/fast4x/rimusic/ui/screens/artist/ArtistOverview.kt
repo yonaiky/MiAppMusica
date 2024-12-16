@@ -118,8 +118,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -386,7 +386,7 @@ fun ArtistOverview(
                                     youtubeArtistPage.songs?.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            Database.resetContentLength( it.asMediaItem.mediaId )
+                                            Database.deleteFormat( it.asMediaItem.mediaId )
                                         }
                                         manageDownload(
                                             context = context,
@@ -425,7 +425,7 @@ fun ArtistOverview(
                                     youtubeArtistPage.songs?.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            Database.resetContentLength( it.asMediaItem.mediaId )
+                                            Database.deleteFormat( it.asMediaItem.mediaId )
                                         }
                                         manageDownload(
                                             context = context,
@@ -456,6 +456,7 @@ fun ArtistOverview(
                                 )
                         )
                     }
+
                     youtubeArtistPage?.radioEndpoint?.let { endpoint ->
                         HeaderIconButton(
                             icon = R.drawable.radio,
@@ -539,7 +540,7 @@ fun ArtistOverview(
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            Database.resetContentLength( song.asMediaItem.mediaId )
+                                            Database.deleteFormat( song.asMediaItem.mediaId )
                                         }
 
                                         manageDownload(
@@ -561,7 +562,7 @@ fun ArtistOverview(
                                                         mediaItem = song.asMediaItem,
                                                         disableScrollingText = disableScrollingText
                                                     )
-                                                };
+                                                }
                                                 hapticFeedback.performHapticFeedback(
                                                     HapticFeedbackType.LongPress
                                                 )
@@ -662,8 +663,11 @@ fun ArtistOverview(
                                 },
                                 icon2 = R.drawable.dice,
                                 onClick2 = {
+                                    if (albums.isEmpty()) return@Title2Actions
                                     val albumId = albums.get(
-                                        Random(System.currentTimeMillis()).nextInt(0, albums.size-1)
+                                        if (albums.size > 1)
+                                            Random(System.currentTimeMillis()).nextInt(0, albums.size-1)
+                                        else 0
                                     ).key
                                     navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
                                 }

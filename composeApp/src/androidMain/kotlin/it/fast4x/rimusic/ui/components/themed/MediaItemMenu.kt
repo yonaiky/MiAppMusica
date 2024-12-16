@@ -112,8 +112,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.colorPalette
-import me.knighthat.typography
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.typography
 import timber.log.Timber
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
@@ -1077,7 +1077,7 @@ fun MediaItemMenu(
                         onDownloadClick = {
                             binder?.cache?.removeResource(mediaItem.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( mediaItem.mediaId )
+                                Database.deleteFormat( mediaItem.mediaId )
                             }
                             if (!isLocal)
                                 manageDownload(

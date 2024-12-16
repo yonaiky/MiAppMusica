@@ -814,6 +814,15 @@
     <string name="jump_previous_blank">La den være tom eller 0 for å få forrige knappen til å alltid spille forrige sang</string>
     <string name="delete_hidden_songs">Vil du virkelig slette alle skjulte sanger fra databasen? Denne handlingen er irreversibel.</string>
     <string name="delete_hidden_songs_message">Slett skjulte sanger</string>
-    <string name="thumbnail_cover_vinyl">Vinyl</string>
-    <string name="thumbnail_cover_cd">CD</string>
+    <string name="cover_type_vinyl">Vinyl</string>
+    <string name="cover_type_cd">CD</string>
+    <string name="cover_type_cd_with_cover">CD with Cover</string>
+    <string name="wallpaper">Wallpaper</string>
+    <string name="enable_wallpaper">Enable wallpaper</string>
+    <string name="set_cover_thumbnail_as_wallpaper">Set cover thumbnail as wallpaper</string>
+    <string name="notification_type">Notification type</string>
+    <string name="notification_type_default">Default</string>
+    <string name="notification_type_advanced">Advanced</string>
+    <string name="notification_type_info">The way the player is handled in the notification area and lockscreen.</string>
+    <string name="action_bar_show_start_radio_button">Start radio button</string>
 </resources>
