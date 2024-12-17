@@ -141,6 +141,7 @@ import kotlinx.coroutines.launch
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.enqueue
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -573,6 +574,12 @@ fun Queue(
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
                                     SmartMessage("${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
                                 },
+                                onEnqueue = {
+                                    binder.player.enqueue(
+                                        window.mediaItem,
+                                        context
+                                    )
+                                }
                             ) {
                                 SongItem(
                                     song = window.mediaItem,

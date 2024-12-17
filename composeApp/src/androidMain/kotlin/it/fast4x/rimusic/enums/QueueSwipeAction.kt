@@ -10,7 +10,8 @@ enum class QueueSwipeAction {
     PlayNext,
     Download,
     Favourite,
-    RemoveFromQueue;
+    RemoveFromQueue,
+    Enqueue;
 
     val displayName: String
         get() = when (this) {
@@ -19,6 +20,7 @@ enum class QueueSwipeAction {
             Download  -> appContext().resources.getString(R.string.download)
             Favourite -> appContext().resources.getString(R.string.favorites)
             RemoveFromQueue  -> appContext().resources.getString(R.string.remove_from_queue)
+            Enqueue -> appContext().resources.getString(R.string.enqueue)
         }
 
     val icon: Int?
@@ -28,6 +30,7 @@ enum class QueueSwipeAction {
             Download -> R.drawable.download
             Favourite -> R.drawable.heart_outline
             RemoveFromQueue -> R.drawable.trash
+            Enqueue -> R.drawable.enqueue
         }
 
         @OptIn(UnstableApi::class)
@@ -50,6 +53,7 @@ enum class QueueSwipeAction {
                     else -> R.drawable.heart
                 }
                 RemoveFromQueue -> R.drawable.trash
+                Enqueue -> R.drawable.enqueue
             }
         }
 }

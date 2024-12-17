@@ -818,6 +818,12 @@ fun LocalPlaylistSongs(
                                     )
                                 }
                             },
+                            onEnqueue = {
+                                binder?.player?.enqueue(
+                                    song.asMediaItem,
+                                    context
+                                )
+                            },
                             modifier = Modifier.zIndex(2f)
                         ) {
                             SongItem(

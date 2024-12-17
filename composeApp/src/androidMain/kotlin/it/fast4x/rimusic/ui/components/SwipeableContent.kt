@@ -137,6 +137,7 @@ fun SwipeableQueueItem(
     onPlayNext: (() -> Unit) = {},
     onDownload: (() -> Unit) = {},
     onRemoveFromQueue: (() -> Unit) = {},
+    onEnqueue: (() -> Unit) = {},
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -204,6 +205,7 @@ fun SwipeableQueueItem(
             QueueSwipeAction.Download -> onDownloadButtonClick
             QueueSwipeAction.Favourite -> onFavourite
             QueueSwipeAction.RemoveFromQueue -> onRemoveFromQueue
+            QueueSwipeAction.Enqueue -> onEnqueue
             else -> ({})
         }
     }
