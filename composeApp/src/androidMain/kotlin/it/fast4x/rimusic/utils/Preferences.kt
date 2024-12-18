@@ -319,6 +319,10 @@ const val wallpaperTypeKey = "wallpaperType"
 const val notificationTypeKey = "notificationType"
 const val topPaddingKey = "topPadding"
 
+const val autoDownloadSongKey = "autoDownloadSong"
+const val autoDownloadSongWhenLikedKey = "autoDownloadSongWhenLiked"
+const val autoDownloadSongWhenAlbumBookmarkedKey = "autoDownloadSongWhenAlbumBookmarked"
+
 
 /*
 @PublishedApi

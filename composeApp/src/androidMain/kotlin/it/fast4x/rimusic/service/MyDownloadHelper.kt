@@ -21,6 +21,9 @@ import androidx.media3.exoplayer.scheduler.Requirements
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.autoDownloadSongKey
+import it.fast4x.rimusic.utils.autoDownloadSongWhenAlbumBookmarkedKey
+import it.fast4x.rimusic.utils.autoDownloadSongWhenLikedKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.removeDownload
@@ -270,5 +273,46 @@ object MyDownloadHelper {
 //            }
         //}
     }
+
+    fun resumeDownloads(context: Context){
+        DownloadService.sendResumeDownloads(
+            context,
+            MyDownloadService::class.java,
+            false)
+    }
+
+    fun autoDownload(context: Context, mediaItem: MediaItem){
+        if (context.preferences.getBoolean(autoDownloadSongKey, false)) {
+            if (downloads.value
+                .filter { it.key == mediaItem.mediaId }
+                .map { it.value.state == Download.STATE_COMPLETED }
+                .firstOrNull() == false)
+                addDownload(context, mediaItem)
+        }
+    }
+
+    fun autoDownloadWhenLiked(context: Context, mediaItem: MediaItem){
+        if (context.preferences.getBoolean(autoDownloadSongWhenLikedKey, false)) {
+            if (downloads.value
+                .filter { it.key == mediaItem.mediaId }
+                .map { it.value.state == Download.STATE_COMPLETED }
+                .firstOrNull() == false)
+                autoDownload(context, mediaItem)
+        }
+    }
+
+    fun autoDownloadWhenAlbumBookmarked(context: Context, mediaItems: List<MediaItem>){
+        if (context.preferences.getBoolean(autoDownloadSongWhenAlbumBookmarkedKey, false)) {
+            mediaItems.forEach { mediaItem ->
+                if (downloads.value
+                        .filter { it.key == mediaItem.mediaId }
+                        .map { it.value.state == Download.STATE_COMPLETED }
+                        .firstOrNull() == false
+                )
+                    autoDownload(context, mediaItem)
+            }
+        }
+    }
+
 
 }

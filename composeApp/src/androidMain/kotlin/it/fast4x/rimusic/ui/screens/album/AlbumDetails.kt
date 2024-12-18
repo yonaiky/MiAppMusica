@@ -133,6 +133,7 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import timber.log.Timber
 
@@ -608,6 +609,8 @@ fun AlbumDetails(
                                             album?.copy( bookmarkedAt = bookmarkedAt )
                                                  ?.let( ::update )
                                         }
+                                        if (bookmarkedAt != null)
+                                            MyDownloadHelper.autoDownloadWhenAlbumBookmarked(context, songs.map { it.asMediaItem })
                                     },
                                     onLongClick = {
                                         SmartMessage(context.resources.getString(R.string.info_bookmark_album), context = context)

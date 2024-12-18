@@ -827,4 +827,7 @@
     <string name="action_bar_show_start_radio_button">Avvia pulsante radio</string>
     <string name="blankspace">Blank Space at Top</string>
     <string name="tab_accounts">Accounts</string>
+    <string name="settings_enable_autodownload_song">Enable auto download song</string>
+    <string name="settings_enable_autodownload_song_when_liked">Auto download song when liked</string>
+    <string name="settings_enable_autodownload_song_when_album_bookmarked">Auto download song when album bookmarked</string>
 </resources>

@@ -226,6 +226,9 @@ import it.fast4x.rimusic.utils.volumeNormalizationKey
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.autoDownloadSongKey
+import it.fast4x.rimusic.utils.autoDownloadSongWhenAlbumBookmarkedKey
+import it.fast4x.rimusic.utils.autoDownloadSongWhenLikedKey
 
 @Composable
 fun DefaultUiSettings() {
@@ -755,6 +758,9 @@ fun UiSettings(
     var pipModule by rememberPreference(pipModuleKey, PipModule.Cover)
     var jumpPrevious by rememberPreference(jumpPreviousKey,"3")
     var notificationType by rememberPreference(notificationTypeKey, NotificationType.Default)
+    var autoDownloadSong by rememberPreference(autoDownloadSongKey, false)
+    var autoDownloadSongWhenLiked by rememberPreference(autoDownloadSongWhenLikedKey, false)
+    var autoDownloadSongWhenAlbumBookmarked by rememberPreference(autoDownloadSongWhenAlbumBookmarkedKey, false)
 
     Column(
         modifier = Modifier
@@ -1357,6 +1363,40 @@ fun UiSettings(
                         }
                     )
                     RestartActivity(restartActivity, onRestart = { restartActivity = false })
+                }
+
+            }
+        }
+
+        if (search.input.isBlank() || stringResource(R.string.settings_enable_autodownload_song).contains(search.input,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.settings_enable_autodownload_song),
+                text = "",
+                isChecked = autoDownloadSong,
+                onCheckedChange = {
+                    autoDownloadSong = it
+                }
+            )
+            AnimatedVisibility(visible = autoDownloadSong) {
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.settings_enable_autodownload_song_when_liked),
+                        text = "",
+                        isChecked = autoDownloadSongWhenLiked,
+                        onCheckedChange = {
+                            autoDownloadSongWhenLiked = it
+                        }
+                    )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.settings_enable_autodownload_song_when_album_bookmarked),
+                        text = "",
+                        isChecked = autoDownloadSongWhenAlbumBookmarked,
+                        onCheckedChange = {
+                            autoDownloadSongWhenAlbumBookmarked = it
+                        }
+                    )
                 }
 
             }
