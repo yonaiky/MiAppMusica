@@ -81,18 +81,10 @@ fun manageDownload(
 
     if (downloadState) {
         MyDownloadHelper.removeDownload(context = context, mediaItem = mediaItem)
-//        CoroutineScope(Dispatchers.IO).launch {
-//            DownloadService.sendRemoveDownload(
-//                context,
-//                MyDownloadService::class.java,
-//                mediaItem.mediaId,
-//                false
-//            )
-//        }
     }
     else {
         if (isNetworkAvailable(context)) {
-            MyDownloadHelper.scheduleDownload(context = context, mediaItem = mediaItem)
+            MyDownloadHelper.addDownload(context = context, mediaItem = mediaItem)
         }
     }
 
