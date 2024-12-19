@@ -731,6 +731,30 @@ fun UiSettings(
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     /*  ViMusic Mode Settings  */
 
+    var queueSwipeLeftAction by rememberPreference(
+        queueSwipeLeftActionKey,
+        QueueSwipeAction.RemoveFromQueue
+    )
+    var queueSwipeRightAction by rememberPreference(
+        queueSwipeRightActionKey,
+        QueueSwipeAction.PlayNext
+    )
+    var playlistSwipeLeftAction by rememberPreference(
+        playlistSwipeLeftActionKey,
+        PlaylistSwipeAction.Favourite
+    )
+    var playlistSwipeRightAction by rememberPreference(
+        playlistSwipeRightActionKey,
+        PlaylistSwipeAction.PlayNext
+    )
+    var albumSwipeLeftAction by rememberPreference(
+        albumSwipeLeftActionKey,
+        AlbumSwipeAction.PlayNext
+    )
+    var albumSwipeRightAction by rememberPreference(
+        albumSwipeRightActionKey,
+        AlbumSwipeAction.Bookmark
+    )
 
     Column(
         modifier = Modifier
