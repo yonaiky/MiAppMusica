@@ -323,6 +323,12 @@ const val autoDownloadSongKey = "autoDownloadSong"
 const val autoDownloadSongWhenLikedKey = "autoDownloadSongWhenLiked"
 const val autoDownloadSongWhenAlbumBookmarkedKey = "autoDownloadSongWhenAlbumBookmarked"
 
+const val queueSwipeLeftActionKey = "queueSwipeLeftAction"
+const val queueSwipeRightActionKey = "queueSwipeRightAction"
+const val playlistSwipeLeftActionKey = "playlistSwipeLeftAction"
+const val playlistSwipeRightActionKey = "playlistSwipeRightAction"
+const val albumSwipeLeftActionKey = "albumSwipeLeftAction"
+const val albumSwipeRightActionKey = "albumSwipeRightAction"
 
 /*
 @PublishedApi
