@@ -34,6 +34,7 @@ import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 
 @ExperimentalAnimationApi
 @ExperimentalTextApi
@@ -50,6 +51,7 @@ fun SearchYoutubeEntity (
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val hapticFeedback = LocalHapticFeedback.current
+    val context = LocalContext.current
     //val context = LocalContext.current
     val thumbnailHeightDp = 72.dp
     val thumbnailWidthDp = 128.dp
@@ -97,6 +99,15 @@ fun SearchYoutubeEntity (
                         mediaItem = video.asMediaItem,
                         onPlayNext = {
                             binder?.player?.addNext(video.asMediaItem)
+                        },
+                        onDownload = {
+                            val message = context.resources.getString(R.string.downloading_videos_not_supported)
+
+                            SmartMessage(
+                                message,
+                                durationLong = false,
+                                context = context
+                            )
                         },
                         onEnqueue = {
                             binder?.player?.enqueue(video.asMediaItem)

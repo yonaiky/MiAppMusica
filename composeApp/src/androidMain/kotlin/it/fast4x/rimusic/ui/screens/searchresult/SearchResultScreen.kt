@@ -81,6 +81,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.ui.components.Skeleton
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -525,6 +526,15 @@ fun SearchResultScreen(
                                         mediaItem = video.asMediaItem,
                                         onPlayNext = {
                                             localBinder?.player?.addNext(video.asMediaItem)
+                                        },
+                                        onDownload = {
+                                            val message = context.resources.getString(R.string.downloading_videos_not_supported)
+
+                                            SmartMessage(
+                                                message,
+                                                durationLong = false,
+                                                context = context
+                                            )
                                         },
                                         onEnqueue = {
                                             localBinder?.player?.enqueue(video.asMediaItem)

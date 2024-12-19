@@ -833,4 +833,5 @@
     <string name="album_left_swipe">Album Left Swipe</string>
     <string name="album_right_swipe">Album Right Swipe</string>
     <string name="bookmark">Bookmark</string>
+    <string name="downloading_videos_not_supported">Downloading videos not supported</string>
 </resources>
