@@ -832,4 +832,5 @@
     <string name="settings_enable_autodownload_song">Enable auto download song</string>
     <string name="settings_enable_autodownload_song_when_liked">Auto download song when liked</string>
     <string name="settings_enable_autodownload_song_when_album_bookmarked">Auto download song when album bookmarked</string>
+    <string name="tab_general">General</string>
 </resources>
