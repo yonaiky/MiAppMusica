@@ -31,8 +31,8 @@ enum class PlaylistSwipeAction {
         }
 
         @OptIn(UnstableApi::class)
-        fun getStateIcon(action: PlaylistSwipeAction, likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int? {
-                return when (action) {
+        fun getStateIcon(likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int? {
+                return when (this) {
                     NoAction -> null
                     PlayNext -> R.drawable.play_skip_forward
                     Download -> when (downloadedStateMedia) {
