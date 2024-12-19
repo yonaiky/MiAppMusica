@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,10 +40,8 @@ import it.fast4x.rimusic.enums.PlaylistSwipeAction
 import it.fast4x.rimusic.enums.QueueSwipeAction
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.utils.albumItemToggleBookmarked
 import it.fast4x.rimusic.utils.albumSwipeLeftActionKey
 import it.fast4x.rimusic.utils.albumSwipeRightActionKey
-import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
@@ -57,8 +54,6 @@ import it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.service.MyDownloadService
-import timber.log.Timber
-import java.util.Queue
 
 @Composable
 fun SwipeableContent(
@@ -288,22 +283,21 @@ fun SwipeablePlaylistItem(
     val swipeLeftCallback = getActionCallback(playlistSwipeLeftAction)
     val swipeRighCallback = getActionCallback(playlistSwipeRightAction)
 
-    Timber.d("SwipeablePlaylistItem mediaItem: ${mediaItem.mediaId}, downloadState: $downloadState")
     SwipeableContent(
         swipeToLeftIcon =  playlistSwipeLeftAction.getStateIcon(
             playlistSwipeLeftAction,
             likedAt,
             downloadState,
             downloadedStateMedia
-        ), // if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+        ),
         swipeToRightIcon =  playlistSwipeRightAction.getStateIcon(
             playlistSwipeRightAction,
             likedAt,
             downloadState,
             downloadedStateMedia
-        ), // R.drawable.play_skip_forward,
-        onSwipeToLeft = swipeLeftCallback, // { updateLike = true },
-        onSwipeToRight = swipeRighCallback // onSwipeToRight
+        ),
+        onSwipeToLeft = swipeLeftCallback,
+        onSwipeToRight = swipeRighCallback
     ) {
         content()
     }
@@ -341,8 +335,8 @@ fun SwipeableAlbumItem(
     val swipeRighCallback = getActionCallback(albumSwipeRightAction)
 
     SwipeableContent(
-        swipeToLeftIcon =  albumSwipeLeftAction.getStateIcon(bookmarkedAt), // R.drawable.play_skip_forward,
-        swipeToRightIcon =  albumSwipeRightAction.getStateIcon(bookmarkedAt), // if (bookmarkedAt == null) R.drawable.bookmark_outline else R.drawable.bookmark,
+        swipeToLeftIcon =  albumSwipeLeftAction.getStateIcon(bookmarkedAt),
+        swipeToRightIcon =  albumSwipeRightAction.getStateIcon(bookmarkedAt),
         onSwipeToLeft = swipeLeftCallback,
         onSwipeToRight = swipeRighCallback
     ) {

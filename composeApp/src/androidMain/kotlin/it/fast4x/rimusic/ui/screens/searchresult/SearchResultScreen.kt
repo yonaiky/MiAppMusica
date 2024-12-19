@@ -82,7 +82,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.utils.playNext
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
