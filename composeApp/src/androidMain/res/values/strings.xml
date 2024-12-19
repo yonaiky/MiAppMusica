@@ -825,6 +825,7 @@
     <string name="notification_type_advanced">Advanced</string>
     <string name="notification_type_info">The way the player is handled in the notification area and lockscreen.</string>
     <string name="action_bar_show_start_radio_button">Start radio button</string>
+    <string name="blankspace">Blank Space at Top</string>
     <string name="queue_left_swipe">Queue Left Swipe</string>
     <string name="action_on_swipe_left_in_queue">Action performed when swiped left in queue</string>
     <string name="queue_right_swipe">Queue Right Swipe</string>
