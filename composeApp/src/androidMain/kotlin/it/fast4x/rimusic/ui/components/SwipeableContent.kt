@@ -209,13 +209,11 @@ fun SwipeableQueueItem(
 
     SwipeableContent(
         swipeToLeftIcon = queueSwipeLeftAction.getStateIcon(
-            queueSwipeLeftAction,
             likedAt,
             downloadState,
             downloadedStateMedia
         ),
         swipeToRightIcon = queueSwipeRightAction.getStateIcon(
-            queueSwipeRightAction,
             likedAt,
             downloadState,
             downloadedStateMedia
@@ -285,13 +283,11 @@ fun SwipeablePlaylistItem(
 
     SwipeableContent(
         swipeToLeftIcon =  playlistSwipeLeftAction.getStateIcon(
-            playlistSwipeLeftAction,
             likedAt,
             downloadState,
             downloadedStateMedia
         ),
         swipeToRightIcon =  playlistSwipeRightAction.getStateIcon(
-            playlistSwipeRightAction,
             likedAt,
             downloadState,
             downloadedStateMedia
