@@ -1608,8 +1608,7 @@ fun Player(
                                 color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
-                                    binder.stopRadio()
-                                    binder.playRadio(
+                                    binder.setupRadio(
                                         NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
                                     )
                                 },
