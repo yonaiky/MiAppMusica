@@ -612,9 +612,8 @@ fun AlbumDetails(
                                                 ?.copy(bookmarkedAt = bookmarkedAt)
                                                 ?.let(::update)
                                         }
-                                        println("AlbumDetails bookmarkedAt $bookmarkedAt")
+
                                         if (bookmarkedAt != null) {
-                                            println("AlbumDetails bookmarkedAt inside $bookmarkedAt")
                                             MyDownloadHelper.autoDownloadWhenAlbumBookmarked(
                                                 context,
                                                 songs.map { it.asMediaItem })

@@ -295,12 +295,9 @@ object MyDownloadHelper {
     }
 
     fun autoDownloadWhenAlbumBookmarked(context: Context, mediaItems: List<MediaItem>){
-        println("autoDownloadWhenAlbumBookmarked inside ${mediaItems.size}")
         if (context.preferences.getBoolean(autoDownloadSongWhenAlbumBookmarkedKey, false)) {
             mediaItems.forEach { mediaItem ->
-                println("autoDownloadWhenAlbumBookmarked forEach ${mediaItem.mediaId} ${downloads.value[mediaItem.mediaId]?.state}")
                 autoDownload(context, mediaItem)
-
             }
         }
     }
