@@ -314,37 +314,37 @@ fun SwipeablePlaylistItem(
 @Composable
 fun SwipeableAlbumItem(
     albumItem: Innertube.AlbumItem,
-    onSwipeToLeft: () -> Unit,
-    onSwipeToRight: () -> Unit,
+    onPlayNext: () -> Unit,
+    onEnqueue: () -> Unit,
+    onBookmark: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    val albumSwipeLeftAction by rememberPreference(albumSwipeLeftActionKey, AlbumSwipeAction.PlayNext)
-    val albumSwipeRightAction by rememberPreference(albumSwipeRightActionKey, AlbumSwipeAction.Bookmark)
-
-    val context = LocalContext.current
     var bookmarkedAt by rememberSaveable {
         mutableStateOf<Long?>(null)
     }
     LaunchedEffect(albumItem.key) {
         Database.albumBookmarkedAt(albumItem.key).distinctUntilChanged().collect { bookmarkedAt = it }
     }
-    var updateLike by rememberSaveable { mutableStateOf(false) }
-    LaunchedEffect(updateLike) {
-        if (updateLike) {
-            albumItemToggleBookmarked(albumItem)
-            updateLike = false
-            if (bookmarkedAt == null)
-                SmartMessage(context.resources.getString(R.string.added_to_favorites), context = context)
-            else
-                SmartMessage("\"" + albumItem.info?.name + " - " + albumItem.authors?.joinToString("") { it.name + "\" " + context.resources.getString(R.string.removed_from_favorites)}, context = context, durationLong = true)
+
+    val albumSwipeLeftAction by rememberPreference(albumSwipeLeftActionKey, AlbumSwipeAction.PlayNext)
+    val albumSwipeRightAction by rememberPreference(albumSwipeRightActionKey, AlbumSwipeAction.Bookmark)
+
+    fun getActionCallback(actionName: AlbumSwipeAction): () -> Unit {
+        return when (actionName) {
+            AlbumSwipeAction.PlayNext -> onPlayNext
+            AlbumSwipeAction.Bookmark -> onBookmark
+            AlbumSwipeAction.Enqueue -> onEnqueue
+            else -> ({})
         }
     }
+    val swipeLeftCallback = getActionCallback(albumSwipeLeftAction)
+    val swipeRighCallback = getActionCallback(albumSwipeRightAction)
 
     SwipeableContent(
-        swipeToLeftIcon =  albumSwipeLeftAction.icon, // R.drawable.play_skip_forward,
-        swipeToRightIcon =  albumSwipeRightAction.icon, // if (bookmarkedAt == null) R.drawable.bookmark_outline else R.drawable.bookmark,
-        onSwipeToLeft = onSwipeToLeft,
-        onSwipeToRight = onSwipeToRight
+        swipeToLeftIcon =  albumSwipeLeftAction.getStateIcon(bookmarkedAt), // R.drawable.play_skip_forward,
+        swipeToRightIcon =  albumSwipeRightAction.getStateIcon(bookmarkedAt), // if (bookmarkedAt == null) R.drawable.bookmark_outline else R.drawable.bookmark,
+        onSwipeToLeft = swipeLeftCallback,
+        onSwipeToRight = swipeRighCallback
     ) {
         content()
     }

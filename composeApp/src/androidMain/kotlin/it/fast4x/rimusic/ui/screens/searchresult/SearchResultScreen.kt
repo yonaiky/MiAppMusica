@@ -82,6 +82,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.utils.playNext
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -315,7 +316,57 @@ fun SearchResultScreen(
                                     var albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/${album.key}/albumPage")
                                     SwipeableAlbumItem(
                                         albumItem = album,
-                                        onSwipeToLeft = {
+                                        onPlayNext = {
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                Database
+                                                    .album(album.key)
+                                                    .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
+                                                    .collect {
+                                                        if (albumPage == null)
+                                                            withContext(Dispatchers.IO) {
+                                                                Innertube.albumPage(
+                                                                    BrowseBody(
+                                                                        browseId = album.key
+                                                                    )
+                                                                )
+                                                                    ?.onSuccess { currentAlbumPage ->
+                                                                        albumPage =
+                                                                            currentAlbumPage
+
+                                                                        println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
+
+                                                                        albumPage
+                                                                            ?.songsPage
+                                                                            ?.items
+                                                                            ?.map(
+                                                                                Innertube.SongItem::asMediaItem
+                                                                            )
+                                                                            ?.let { it1 ->
+                                                                                withContext(Dispatchers.Main) {
+                                                                                    binder?.player?.addNext(
+                                                                                        it1,
+                                                                                        context
+                                                                                    )
+                                                                                }
+                                                                            }
+                                                                        println("mediaItem success add in queue album songsPage ${albumPage
+                                                                            ?.songsPage
+                                                                            ?.items?.size}")
+
+                                                                    }
+                                                                    ?.onFailure {
+                                                                        println("mediaItem error searchResultScreen album ${it.stackTraceToString()}")
+                                                                    }
+
+                                                            }
+
+                                                        //}
+                                                    }
+
+                                            }
+
+                                        },
+                                        onEnqueue = {
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 Database
                                                     .album(album.key)
@@ -365,7 +416,7 @@ fun SearchResultScreen(
                                             }
 
                                         },
-                                        onSwipeToRight = {
+                                        onBookmark = {
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 Database
                                                     .album(album.key)
