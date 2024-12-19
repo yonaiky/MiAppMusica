@@ -319,6 +319,12 @@ const val wallpaperTypeKey = "wallpaperType"
 const val notificationTypeKey = "notificationType"
 const val topPaddingKey = "topPadding"
 
+const val queueSwipeLeftActionKey = "queueSwipeLeftAction"
+const val queueSwipeRightActionKey = "queueSwipeRightAction"
+const val playlistSwipeLeftActionKey = "playlistSwipeLeftAction"
+const val playlistSwipeRightActionKey = "playlistSwipeRightAction"
+const val albumSwipeLeftActionKey = "albumSwipeLeftAction"
+const val albumSwipeRightActionKey = "albumSwipeRightAction"
 
 /*
 @PublishedApi
