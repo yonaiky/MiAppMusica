@@ -1914,6 +1914,7 @@ fun UiSettings(
 
 
         if (search.input.isBlank() || stringResource(R.string.swipe_to_action).contains(search.input,true))
+        {
             SwitchSettingEntry(
                 title = stringResource(R.string.swipe_to_action),
                 text = stringResource(R.string.activate_the_action_menu_by_swiping_the_song_left_or_right),
@@ -1926,7 +1927,7 @@ fun UiSettings(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
                     EnumValueSelectorSettingsEntry<QueueSwipeAction>(
-                        title = stringResource(R.string.queue_left_swipe),
+                        title = stringResource(R.string.queue_and_local_playlists_left_swipe),
                         selectedValue = queueSwipeLeftAction,
                         onValueSelected = {
                             queueSwipeLeftAction = it
@@ -1936,7 +1937,7 @@ fun UiSettings(
                         },
                     )
                     EnumValueSelectorSettingsEntry<QueueSwipeAction>(
-                        title = stringResource(R.string.queue_right_swipe),
+                        title = stringResource(R.string.queue_and_local_playlists_right_swipe),
                         selectedValue = queueSwipeRightAction,
                         onValueSelected = {
                             queueSwipeRightAction = it
@@ -1987,6 +1988,7 @@ fun UiSettings(
                     )
                 }
             }
+        }
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.songs).uppercase())

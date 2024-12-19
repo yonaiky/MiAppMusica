@@ -826,8 +826,8 @@
     <string name="notification_type_info">The way the player is handled in the notification area and lockscreen.</string>
     <string name="action_bar_show_start_radio_button">Start radio button</string>
     <string name="blankspace">Blank Space at Top</string>
-    <string name="queue_left_swipe">Queue Left Swipe</string>
-    <string name="queue_right_swipe">Queue Right Swipe</string>
+    <string name="queue_and_local_playlists_left_swipe">Queue and Local Playlists Left Swipe</string>
+    <string name="queue_and_local_playlists_right_swipe">Queue and Local Playlists Right Swipe</string>
     <string name="playlist_left_swipe">Playlist Left Swipe</string>
     <string name="playlist_right_swipe">Playlist Right Swipe</string>
     <string name="album_left_swipe">Album Left Swipe</string>
