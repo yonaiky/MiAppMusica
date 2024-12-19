@@ -724,6 +724,9 @@ fun Podcast(
                                     mediaItem = song.asMediaItem,
                                     downloadState = isDownloaded
                                 )
+                        },
+                        onEnqueue = {
+                            binder?.player?.enqueue(song.asMediaItem)
                         }
                     ) {
                         var forceRecompose by remember { mutableStateOf(false) }

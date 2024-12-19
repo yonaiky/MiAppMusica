@@ -223,6 +223,9 @@ fun SearchResultScreen(
                                                 mediaItem = song.asMediaItem,
                                                 downloadState = isDownloaded
                                             )
+                                        },
+                                        onEnqueue = {
+                                            localBinder?.player?.enqueue(song.asMediaItem)
                                         }
                                     ) {
                                         var forceRecompose by remember { mutableStateOf(false) }
@@ -522,6 +525,9 @@ fun SearchResultScreen(
                                         mediaItem = video.asMediaItem,
                                         onPlayNext = {
                                             localBinder?.player?.addNext(video.asMediaItem)
+                                        },
+                                        onEnqueue = {
+                                            localBinder?.player?.enqueue(video.asMediaItem)
                                         }
                                     ) {
                                         VideoItem(

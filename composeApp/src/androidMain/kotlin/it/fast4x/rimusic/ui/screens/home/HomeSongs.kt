@@ -768,6 +768,9 @@ fun HomeSongs(
                                         downloadState = isDownloaded
                                     )
                             }
+                        },
+                        onEnqueue = {
+                            binder?.player?.enqueue(mediaItem)
                         }
                     ) {
                         downloadAllDialog.state = getDownloadState( mediaItem.mediaId )

@@ -544,6 +544,9 @@ fun ArtistOverview(
                                         mediaItem = song.asMediaItem,
                                         downloadState = isDownloaded
                                     )
+                                },
+                                onEnqueue = {
+                                    binder?.player?.enqueue(song.asMediaItem)
                                 }
                             ) {
                                 listMediaItems.add(song.asMediaItem)

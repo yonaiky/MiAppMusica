@@ -97,6 +97,9 @@ fun SearchYoutubeEntity (
                         mediaItem = video.asMediaItem,
                         onPlayNext = {
                             binder?.player?.addNext(video.asMediaItem)
+                        },
+                        onEnqueue = {
+                            binder?.player?.enqueue(video.asMediaItem)
                         }
                     ) {
                         VideoItem(

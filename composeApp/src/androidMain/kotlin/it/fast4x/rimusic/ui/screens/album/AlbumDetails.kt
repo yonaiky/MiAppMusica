@@ -897,6 +897,9 @@ fun AlbumDetails(
                                     mediaItem = song.asMediaItem,
                                     downloadState = isDownloaded
                                 )
+                        },
+                        onEnqueue = {
+                            binder?.player?.enqueue(song.asMediaItem)
                         }
                     ) {
                         val checkedState = rememberSaveable { mutableStateOf(false) }
