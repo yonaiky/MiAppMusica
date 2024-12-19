@@ -1115,6 +1115,7 @@ fun MediaItemMenu(
                                         insert(mediaItem, Song::toggleLike)
                                     }
                                 }
+                                MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                             },
                             modifier = Modifier
                                 .padding(all = 4.dp)

@@ -283,33 +283,24 @@ object MyDownloadHelper {
 
     fun autoDownload(context: Context, mediaItem: MediaItem){
         if (context.preferences.getBoolean(autoDownloadSongKey, false)) {
-            if (downloads.value
-                .filter { it.key == mediaItem.mediaId }
-                .map { it.value.state == Download.STATE_COMPLETED }
-                .firstOrNull() == false)
+            if (downloads.value[mediaItem.mediaId]?.state != Download.STATE_COMPLETED)
                 addDownload(context, mediaItem)
         }
     }
 
     fun autoDownloadWhenLiked(context: Context, mediaItem: MediaItem){
         if (context.preferences.getBoolean(autoDownloadSongWhenLikedKey, false)) {
-            if (downloads.value
-                .filter { it.key == mediaItem.mediaId }
-                .map { it.value.state == Download.STATE_COMPLETED }
-                .firstOrNull() == false)
                 autoDownload(context, mediaItem)
         }
     }
 
     fun autoDownloadWhenAlbumBookmarked(context: Context, mediaItems: List<MediaItem>){
+        println("autoDownloadWhenAlbumBookmarked inside ${mediaItems.size}")
         if (context.preferences.getBoolean(autoDownloadSongWhenAlbumBookmarkedKey, false)) {
             mediaItems.forEach { mediaItem ->
-                if (downloads.value
-                        .filter { it.key == mediaItem.mediaId }
-                        .map { it.value.state == Download.STATE_COMPLETED }
-                        .firstOrNull() == false
-                )
-                    autoDownload(context, mediaItem)
+                println("autoDownloadWhenAlbumBookmarked forEach ${mediaItem.mediaId} ${downloads.value[mediaItem.mediaId]?.state}")
+                autoDownload(context, mediaItem)
+
             }
         }
     }

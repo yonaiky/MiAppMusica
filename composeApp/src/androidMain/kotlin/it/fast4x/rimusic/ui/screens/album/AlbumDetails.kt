@@ -443,7 +443,8 @@ fun AlbumDetails(
         Box(
             modifier = Modifier
                 .background(
-                    colorPalette().background0)
+                    colorPalette().background0
+                )
                 //.fillMaxSize()
                 .fillMaxHeight()
                 //.fillMaxWidth(if (navigationBarPosition == NavigationBarPosition.Left) 1f else contentWidth)
@@ -456,7 +457,8 @@ fun AlbumDetails(
                 //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
                 modifier = Modifier
                     .background(
-                        colorPalette().background0)
+                        colorPalette().background0
+                    )
                     .fillMaxSize()
             ) {
                 item(
@@ -606,14 +608,23 @@ fun AlbumDetails(
                                             if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
 
                                         Database.asyncTransaction {
-                                            album?.copy( bookmarkedAt = bookmarkedAt )
-                                                 ?.let( ::update )
+                                            album
+                                                ?.copy(bookmarkedAt = bookmarkedAt)
+                                                ?.let(::update)
                                         }
-                                        if (bookmarkedAt != null)
-                                            MyDownloadHelper.autoDownloadWhenAlbumBookmarked(context, songs.map { it.asMediaItem })
+                                        println("AlbumDetails bookmarkedAt $bookmarkedAt")
+                                        if (bookmarkedAt != null) {
+                                            println("AlbumDetails bookmarkedAt inside $bookmarkedAt")
+                                            MyDownloadHelper.autoDownloadWhenAlbumBookmarked(
+                                                context,
+                                                songs.map { it.asMediaItem })
+                                        }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_bookmark_album), context = context)
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_bookmark_album),
+                                            context = context
+                                        )
                                     }
                                 ),
                             onClick = {}
@@ -630,7 +641,10 @@ fun AlbumDetails(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_download_all_songs),
+                                            context = context
+                                        )
                                     }
                                 )
                         )
@@ -647,7 +661,10 @@ fun AlbumDetails(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_remove_all_downloaded_songs),
+                                            context = context
+                                        )
                                     }
                                 )
                         )
@@ -695,7 +712,10 @@ fun AlbumDetails(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_shuffle),
+                                            context = context
+                                        )
                                     }
                                 )
                         )
@@ -717,7 +737,10 @@ fun AlbumDetails(
                                         binder?.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = songs.first().id))
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_start_radio), context = context)
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_start_radio),
+                                            context = context
+                                        )
                                     }
                                 )
                         )
@@ -739,7 +762,10 @@ fun AlbumDetails(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_find_the_song_that_is_playing),
+                                            context = context
+                                        )
                                     }
                                 ),
                             icon = R.drawable.locate,
@@ -1075,7 +1101,10 @@ fun AlbumDetails(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_translation), context = context)
+                                            SmartMessage(
+                                                context.resources.getString(R.string.info_translation),
+                                                context = context
+                                            )
                                         }
                                     )
                             )
