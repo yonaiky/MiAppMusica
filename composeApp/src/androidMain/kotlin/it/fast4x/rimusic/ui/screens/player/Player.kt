@@ -2471,6 +2471,11 @@ fun Player(
                     Spacer(
                         modifier = Modifier
                             .height(5.dp)
+                            .padding(
+                                windowInsets
+                                    .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            )
                     )
                 }
 
