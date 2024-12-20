@@ -834,4 +834,5 @@
     <string name="album_right_swipe">Album přejetím vpravo</string>
     <string name="bookmark">Záložka</string>
     <string name="downloading_videos_not_supported">Stahování videí není podporováno</string>
+    <string name="animatedgradient">Animated Gradient</string>
 </resources>
