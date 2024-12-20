@@ -30,7 +30,8 @@ suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false): Resu
         return@runCatching response
     }
 
-    val context = if (withLogin) Context.DefaultRestrictionBypass else Context.DefaultIOS
+    // Try again with android music client DefaultRestrictionBypass
+    val context = Context.DefaultRestrictionBypass
     val safePlayerResponse = client.post(player) {
         setBody(
             body.copy(
@@ -44,16 +45,17 @@ suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false): Resu
         mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")
     }.body<PlayerResponse>()
 
-    println("PlayerService DownloadHelper Innertube.player withLogin $withLogin safePlayerResponse $safePlayerResponse")
+    println("PlayerServiceModern DownloadHelper Innertube.player withLogin $withLogin safePlayerResponse $safePlayerResponse")
 
     if (safePlayerResponse.playabilityStatus?.status == "OK") {
         return@runCatching safePlayerResponse
     }
 
+
     response
 
 }.onFailure {
-    println("YoutubeLogin PlayerService NEW Innertube.player error ${it.stackTraceToString()}")
+    println("YoutubeLogin PlayerServiceModern NEW Innertube.player error ${it.stackTraceToString()}")
 }
 /*
 suspend fun Innertube.player(
