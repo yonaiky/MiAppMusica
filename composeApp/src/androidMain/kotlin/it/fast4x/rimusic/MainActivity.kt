@@ -351,14 +351,14 @@ class MainActivity :
         checkIfAppIsRunningInBackground()
 
         // Fetch Piped & Invidious instances
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                Piped.fetchInstances()
-                Invidious.fetchInstances()
-            } catch (e: Exception) {
-                Timber.e(e, "MainActivity Error fetching Piped & Invidious instances")
-            }
-        }
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            try {
+//                Piped.fetchInstances()
+//                Invidious.fetchInstances()
+//            } catch (e: Exception) {
+//                Timber.e(e, "MainActivity Error fetching Piped & Invidious instances")
+//            }
+//        }
     }
 
     private fun checkIfAppIsRunningInBackground() {
@@ -1374,7 +1374,7 @@ class MainActivity :
 
     override fun onResume() {
         super.onResume()
-        kotlin.runCatching {
+        runCatching {
             sensorManager?.registerListener(
                 sensorListener, sensorManager!!.getDefaultSensor(
                     Sensor.TYPE_ACCELEROMETER

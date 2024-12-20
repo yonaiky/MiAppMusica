@@ -10,6 +10,7 @@ import it.fast4x.innertube.models.YouTubeClient
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.utils.runCatchingNonCancellable
 import it.fast4x.invidious.Invidious
+import it.fast4x.piped.models.PipedResponse
 import it.fast4x.piped.models.Session
 
 suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false): Result<PlayerResponse> = runCatching {
@@ -51,8 +52,8 @@ suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false): Resu
         return@runCatching safePlayerResponse
     }
 
-
-    response
+    //response
+    safePlayerResponse
 
 }.onFailure {
     println("YoutubeLogin PlayerServiceModern NEW Innertube.player error ${it.stackTraceToString()}")
