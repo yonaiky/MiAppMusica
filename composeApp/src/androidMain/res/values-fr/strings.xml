@@ -841,5 +841,5 @@
     <string name="album_right_swipe">Balayage vers la droite de l\'album</string>
     <string name="bookmark">Signet</string>
     <string name="downloading_videos_not_supported">Le téléchargement de vidéos n\'est pas pris en charge</string>
-    <string name="animatedgradient">Animated Gradient</string>
+    <string name="animatedgradient">Dégradé Animé</string>
 </resources>
