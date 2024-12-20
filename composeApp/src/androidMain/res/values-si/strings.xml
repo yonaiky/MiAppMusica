@@ -840,4 +840,5 @@ CC-BY-SA 3.0</string>
     <string name="album_right_swipe">Album Right Swipe</string>
     <string name="bookmark">Bookmark</string>
     <string name="downloading_videos_not_supported">Downloading videos not supported</string>
+    <string name="animatedgradient">Animated Gradient</string>
 </resources>
