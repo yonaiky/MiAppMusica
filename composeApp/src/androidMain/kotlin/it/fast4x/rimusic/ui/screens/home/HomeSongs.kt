@@ -165,6 +165,7 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
+import okhttp3.internal.filterList
 import timber.log.Timber
 import java.util.Optional
 import kotlin.math.max
@@ -375,7 +376,8 @@ fun HomeSongs(
                 val filterList = MyDownloadHelper.downloads.value.values.filter {
                         it.state == Download.STATE_COMPLETED
                     }.map { it.request.id }
-                Database.listAllSongs( sortBy = songSort.sortBy, sortOrder = songSort.sortOrder, showHidden = 0, filterList = filterList )
+                println("HomeSongs: filterList: ${filterList.size} total downloads ${MyDownloadHelper.downloads.value.size}")
+                Database.listAllSongs( sortBy = songSort.sortBy, sortOrder = songSort.sortOrder, showHidden = hiddenSongs.isShown(), filterList = filterList )
             }
             BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
@@ -584,7 +586,7 @@ fun HomeSongs(
                     this.add( downloadAllDialog )
                     this.add( deleteDownloadsDialog )
                     //this.add( deleteSongDialog )
-                    if (builtInPlaylist == BuiltInPlaylist.All)
+                    if (builtInPlaylist == BuiltInPlaylist.All || builtInPlaylist == BuiltInPlaylist.Downloaded)
                         this.add( hiddenSongs )
                     this.add( shuffle )
                     if (builtInPlaylist == BuiltInPlaylist.Favorites)
