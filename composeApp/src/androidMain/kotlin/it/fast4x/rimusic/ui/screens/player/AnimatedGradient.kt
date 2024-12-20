@@ -1,11 +1,17 @@
 package it.fast4x.rimusic.ui.screens.player
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithCache
@@ -14,17 +20,39 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.core.graphics.ColorUtils.colorToHSL
+import androidx.media3.common.util.UnstableApi
+import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.rememberPreference
 import kotlin.math.sqrt
 
+@OptIn(UnstableApi::class)
 fun Modifier.animatedGradient(
     animating: Boolean,
-    C1: Color,
-    C2: Color,
-    C3: Color,
-    C4: Color,
+    D: Color,
+    V: Color,
+    LV: Color,
+    DV: Color,
+    M: Color,
+    LM: Color,
+    DM: Color
     ): Modifier = composed {
     val rotation = remember { Animatable(0f) }
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
+    var lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
+    var ratio = if (lightTheme) 1f else 0.3f
+
+    fun Color.darkenBy(): Color {
+        return copy(
+            red = red * ratio,
+            green = green * ratio,
+            blue = blue * ratio,
+            alpha = alpha
+        )
+    }
 
     LaunchedEffect(rotation, animating) {
         if (!animating) return@LaunchedEffect
@@ -48,21 +76,25 @@ fun Modifier.animatedGradient(
         )
 
         val brush1 = Brush.linearGradient(
-            0f to C1,
-            1f to C2,
+            0f to D.darkenBy(),
+            0.33f to LV.compositeOver(D).darkenBy(),
+            0.66f to V.compositeOver(D).darkenBy(),
+            1f to DV.compositeOver(D).darkenBy(),
             start = topLeft,
             end = Offset(rectSize * 0.7f, rectSize * 0.7f),
         )
 
         val brush2 = Brush.linearGradient(
-            0f to C3,
-            1f to C4,
+            0f to D.darkenBy(),
+            0.33f to LM.compositeOver(D).darkenBy(),
+            0.66f to M.compositeOver(D).darkenBy(),
+            1f to DM.compositeOver(D).darkenBy(),
             start = Offset(rectSize, 0f),
             end = Offset(0f, rectSize),
         )
 
         val maskBrush = Brush.linearGradient(
-            0f to Color.White,
+            0f to D.darkenBy(),
             1f to Color.Transparent,
             start = Offset(rectSize / 2f, 0f),
             end = Offset(rectSize / 2f, rectSize),
