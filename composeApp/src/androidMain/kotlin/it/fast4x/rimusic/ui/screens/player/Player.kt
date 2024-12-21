@@ -2539,7 +2539,10 @@ fun Player(
                                  VerticalPager(
                                      state = pagerState,
                                      pageSize = PageSize.Fixed( if (maxWidth < maxHeight) maxWidth else maxHeight),
-                                     contentPadding = PaddingValues(top = (maxHeight - (if (maxWidth < maxHeight) maxWidth else maxHeight))/2),
+                                     contentPadding = PaddingValues(
+                                         top = (maxHeight - (if (maxWidth < maxHeight) maxWidth else maxHeight))/2,
+                                         bottom = (maxHeight - (if (maxWidth < maxHeight) maxWidth else maxHeight))/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp
+                                     ),
                                      pageSpacing = if (expandedplayer) (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp)) else 10.dp,
                                      beyondViewportPageCount = 2,
                                      flingBehavior = fling,
