@@ -138,7 +138,9 @@ import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.wallpaperTypeKey
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.PlayerThumbnailSizeL
 import it.fast4x.rimusic.ui.components.themed.Search
+import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.topPaddingKey
 
 @Composable
@@ -379,6 +381,10 @@ fun AppearanceSettings(
     var playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Biggest
+    )
+    var playerThumbnailSizeL by rememberPreference(
+        playerThumbnailSizeLKey,
+        PlayerThumbnailSizeL.Biggest
     )
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
@@ -744,26 +750,49 @@ fun AppearanceSettings(
                     }
                 }
 
-                if (search.input.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
-                        search.input,
-                        true
+                if (isLandscape) {
+                    if (search.input.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                            search.input,
+                            true
+                        )
                     )
-                )
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.player_thumbnail_size),
-                        selectedValue = playerThumbnailSize,
-                        onValueSelected = { playerThumbnailSize = it },
-                        valueText = {
-                            when (it) {
-                                PlayerThumbnailSize.Small -> stringResource(R.string.small)
-                                PlayerThumbnailSize.Medium -> stringResource(R.string.medium)
-                                PlayerThumbnailSize.Big -> stringResource(R.string.big)
-                                PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
-                                PlayerThumbnailSize.Expanded -> stringResource(R.string.expanded)
-                            }
-                        },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        EnumValueSelectorSettingsEntry(
+                            title = stringResource(R.string.player_thumbnail_size),
+                            selectedValue = playerThumbnailSizeL,
+                            onValueSelected = { playerThumbnailSizeL = it },
+                            valueText = {
+                                when (it) {
+                                    PlayerThumbnailSizeL.Small -> stringResource(R.string.small)
+                                    PlayerThumbnailSizeL.Medium -> stringResource(R.string.medium)
+                                    PlayerThumbnailSizeL.Big -> stringResource(R.string.big)
+                                    PlayerThumbnailSizeL.Biggest -> stringResource(R.string.biggest)
+                                    PlayerThumbnailSizeL.Expanded -> stringResource(R.string.expanded)
+                                }
+                            },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                } else {
+                    if (search.input.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                            search.input,
+                            true
+                        )
                     )
+                        EnumValueSelectorSettingsEntry(
+                            title = stringResource(R.string.player_thumbnail_size),
+                            selectedValue = playerThumbnailSize,
+                            onValueSelected = { playerThumbnailSize = it },
+                            valueText = {
+                                when (it) {
+                                    PlayerThumbnailSize.Small -> stringResource(R.string.small)
+                                    PlayerThumbnailSize.Medium -> stringResource(R.string.medium)
+                                    PlayerThumbnailSize.Big -> stringResource(R.string.big)
+                                    PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
+                                    PlayerThumbnailSize.Expanded -> stringResource(R.string.expanded)
+                                }
+                            },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                }
                 if (search.input.isBlank() || stringResource(R.string.thumbnailtype).contains(
                         search.input,
                         true
