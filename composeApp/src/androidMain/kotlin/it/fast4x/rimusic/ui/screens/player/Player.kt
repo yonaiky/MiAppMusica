@@ -2009,7 +2009,7 @@ fun Player(
                                          state = pagerState,
                                          pageSize = PageSize.Fixed(thumbnailSizeDp),
                                          pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp),
-                                         contentPadding = PaddingValues(start = (maxWidth - maxHeight)/2),
+                                         contentPadding = PaddingValues(start = (maxWidth - maxHeight)/2, end = (maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp),
                                          beyondViewportPageCount = 3,
                                          flingBehavior = fling,
                                          modifier = Modifier
