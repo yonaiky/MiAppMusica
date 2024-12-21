@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import it.fast4x.rimusic.appContext
-import kotlinx.coroutines.CancellationException
+import kotlin.coroutines.cancellation.CancellationException
 
 @UnstableApi
 class SongsShuffle private constructor(
