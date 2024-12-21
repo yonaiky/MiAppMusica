@@ -841,5 +841,5 @@
     <string name="album_right_swipe">Альбом Свайп вправо</string>
     <string name="bookmark">Закладка</string>
     <string name="downloading_videos_not_supported">Загрузка видео не поддерживается</string>
-    <string name="animatedgradient">Animated Gradient</string>
+    <string name="animatedgradient">Анимация градиента</string>
 </resources>
