@@ -825,8 +825,8 @@
     <string name="notification_type_advanced">Avansat</string>
     <string name="notification_type_info">Modul în care playerul este tratat în zona de notificare și în ecranul de blocare.</string>
     <string name="action_bar_show_start_radio_button">Butonul de pornire radio</string>
-    <string name="blankspace">Spațiu gol în sus</string>
     <string name="tab_accounts">Accounts</string>
+    <string name="blankspace">Spațiu gol în sus</string>
     <string name="settings_enable_autodownload_song">Enable auto download song</string>
     <string name="settings_enable_autodownload_song_when_liked">Auto download song when liked</string>
     <string name="settings_enable_autodownload_song_when_album_bookmarked">Auto download song when album bookmarked</string>
