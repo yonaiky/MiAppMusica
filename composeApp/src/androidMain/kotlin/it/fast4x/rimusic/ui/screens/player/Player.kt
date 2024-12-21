@@ -270,6 +270,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.utils.seamlessPlay
+import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import it.fast4x.rimusic.utils.topPaddingKey
 
 
@@ -327,6 +328,7 @@ fun Player(
     val defaultImageCoverSize = 50f
     var blurStrength by rememberPreference(blurStrengthKey, defaultStrength)
     var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
+    var thumbnailSpacingL  by rememberPreference(thumbnailSpacingLKey, defaultSpacing)
     var thumbnailFade  by rememberPreference(thumbnailFadeKey, defaultFade)
     var imageCoverSize by rememberPreference(VinylSizeKey, defaultImageCoverSize)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
@@ -360,6 +362,7 @@ fun Player(
         ThumbnailOffsetDialog(
             onDismiss = { showThumbnailOffsetDialog = false},
             spacingValue = { thumbnailSpacing = it },
+            spacingValueL = { thumbnailSpacingL = it },
             fadeValue = { thumbnailFade = it },
             imageCoverSizeValue = { imageCoverSize = it }
         )
@@ -2003,7 +2006,7 @@ fun Player(
                                      HorizontalPager(
                                          state = pagerState,
                                          pageSize = PageSize.Fixed(thumbnailSizeDp),
-                                         pageSpacing = thumbnailSpacing.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp),
+                                         pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp),
                                          contentPadding = PaddingValues(start = (maxWidth - maxHeight)/2),
                                          beyondViewportPageCount = 3,
                                          flingBehavior = fling,
