@@ -269,6 +269,7 @@ import it.fast4x.rimusic.utils.thumbnailFadeKey
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import it.fast4x.rimusic.utils.topPaddingKey
@@ -292,6 +293,10 @@ fun Player(
 
     val playerThumbnailSize by rememberPreference(
         playerThumbnailSizeKey,
+        PlayerThumbnailSize.Biggest
+    )
+    var playerThumbnailSizeL by rememberPreference(
+        playerThumbnailSizeLKey,
         PlayerThumbnailSize.Biggest
     )
 
@@ -1095,10 +1100,7 @@ fun Player(
 
                         )
                     }
-                    .padding(
-                        vertical = playerThumbnailSize.size.dp,
-                        horizontal = playerThumbnailSize.size.dp
-                    )
+                    .padding(all = if (isLandscape) playerThumbnailSizeL.size.dp else playerThumbnailSize.size.dp)
                     .thumbnailpause(
                         shouldBePlaying = shouldBePlaying
                     )
@@ -2006,7 +2008,7 @@ fun Player(
                                      HorizontalPager(
                                          state = pagerState,
                                          pageSize = PageSize.Fixed(thumbnailSizeDp),
-                                         pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp),
+                                         pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp),
                                          contentPadding = PaddingValues(start = (maxWidth - maxHeight)/2),
                                          beyondViewportPageCount = 3,
                                          flingBehavior = fling,
@@ -2031,7 +2033,7 @@ fun Player(
 
                                          val coverModifier = Modifier
                                              .aspectRatio(1f)
-                                             .padding(all = playerThumbnailSize.size.dp)
+                                             .padding(all = playerThumbnailSizeL.size.dp)
                                              .graphicsLayer {
                                                  val pageOffSet =
                                                      ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
