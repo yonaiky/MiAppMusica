@@ -271,6 +271,7 @@ import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.seamlessPlay
+import it.fast4x.rimusic.utils.thumbnailFadeExKey
 import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import it.fast4x.rimusic.utils.topPaddingKey
 
@@ -335,6 +336,7 @@ fun Player(
     var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
     var thumbnailSpacingL  by rememberPreference(thumbnailSpacingLKey, defaultSpacing)
     var thumbnailFade  by rememberPreference(thumbnailFadeKey, defaultFade)
+    var thumbnailFadeEx  by rememberPreference(thumbnailFadeExKey, defaultFade)
     var imageCoverSize by rememberPreference(VinylSizeKey, defaultImageCoverSize)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showBlurPlayerDialog by rememberSaveable {
@@ -369,6 +371,7 @@ fun Player(
             spacingValue = { thumbnailSpacing = it },
             spacingValueL = { thumbnailSpacingL = it },
             fadeValue = { thumbnailFade = it },
+            fadeValueEx = { thumbnailFadeEx = it },
             imageCoverSizeValue = { imageCoverSize = it }
         )
     }
@@ -2559,7 +2562,7 @@ fun Player(
                                              )
                                          }*/
                                          .conditional(fadingedge) {
-                                             VerticalfadingEdge2(fade = thumbnailFade*0.05f,showTopActionsBar,topPadding,expandedplayer)
+                                             VerticalfadingEdge2(fade = (if (expandedplayer) thumbnailFadeEx else thumbnailFade)*0.05f,showTopActionsBar,topPadding,expandedplayer)
                                          }
                                  ){ it ->
 
