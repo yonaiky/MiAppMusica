@@ -784,7 +784,6 @@ fun Player(
 
             } catch (e: Exception) {
                 dynamicColorPalette = color
-                //dynamicPalette = defaultPalette
                 println("Player Error getting dynamic color ${e.printStackTrace()}")
             }
 
