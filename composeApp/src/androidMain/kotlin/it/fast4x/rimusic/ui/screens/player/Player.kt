@@ -271,6 +271,7 @@ import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.seamlessPlay
+import it.fast4x.rimusic.utils.thumbnailFadeExKey
 import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import it.fast4x.rimusic.utils.topPaddingKey
 
@@ -335,6 +336,7 @@ fun Player(
     var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
     var thumbnailSpacingL  by rememberPreference(thumbnailSpacingLKey, defaultSpacing)
     var thumbnailFade  by rememberPreference(thumbnailFadeKey, defaultFade)
+    var thumbnailFadeEx  by rememberPreference(thumbnailFadeExKey, defaultFade)
     var imageCoverSize by rememberPreference(VinylSizeKey, defaultImageCoverSize)
     var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showBlurPlayerDialog by rememberSaveable {
@@ -369,6 +371,7 @@ fun Player(
             spacingValue = { thumbnailSpacing = it },
             spacingValueL = { thumbnailSpacingL = it },
             fadeValue = { thumbnailFade = it },
+            fadeValueEx = { thumbnailFadeEx = it },
             imageCoverSizeValue = { imageCoverSize = it }
         )
     }
@@ -2009,7 +2012,7 @@ fun Player(
                                          state = pagerState,
                                          pageSize = PageSize.Fixed(thumbnailSizeDp),
                                          pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp),
-                                         contentPadding = PaddingValues(start = (maxWidth - maxHeight)/2),
+                                         contentPadding = PaddingValues(start = (maxWidth - maxHeight)/2, end = (maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp),
                                          beyondViewportPageCount = 3,
                                          flingBehavior = fling,
                                          modifier = Modifier
@@ -2539,7 +2542,10 @@ fun Player(
                                  VerticalPager(
                                      state = pagerState,
                                      pageSize = PageSize.Fixed( if (maxWidth < maxHeight) maxWidth else maxHeight),
-                                     contentPadding = PaddingValues(top = (maxHeight - (if (maxWidth < maxHeight) maxWidth else maxHeight))/2),
+                                     contentPadding = PaddingValues(
+                                         top = (maxHeight - (if (maxWidth < maxHeight) maxWidth else maxHeight))/2,
+                                         bottom = (maxHeight - (if (maxWidth < maxHeight) maxWidth else maxHeight))/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp
+                                     ),
                                      pageSpacing = if (expandedplayer) (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp)) else 10.dp,
                                      beyondViewportPageCount = 2,
                                      flingBehavior = fling,
@@ -2556,7 +2562,7 @@ fun Player(
                                              )
                                          }*/
                                          .conditional(fadingedge) {
-                                             VerticalfadingEdge2(fade = thumbnailFade*0.05f,showTopActionsBar,topPadding,expandedplayer)
+                                             VerticalfadingEdge2(fade = (if (expandedplayer) thumbnailFadeEx else thumbnailFade)*0.05f,showTopActionsBar,topPadding,expandedplayer)
                                          }
                                  ){ it ->
 
