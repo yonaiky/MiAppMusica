@@ -269,6 +269,7 @@ import it.fast4x.rimusic.utils.thumbnailFadeKey
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.topPaddingKey
 
 
@@ -1658,6 +1659,8 @@ fun Player(
                                 color = colorPalette().accent,
                                 enabled = true,
                                 onClick = {
+                                    binder.stopRadio()
+                                    binder.player.seamlessPlay(mediaItem)
                                     binder.setupRadio(
                                         NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
                                     )
