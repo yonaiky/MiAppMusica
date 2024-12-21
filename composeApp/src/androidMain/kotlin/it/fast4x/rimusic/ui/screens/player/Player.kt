@@ -2884,6 +2884,8 @@ fun Player(
 
                         )
                     } else {
+                                val index = if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else
+                                pagerState.currentPage
                                 Controls(
                                     navController = navController,
                                     onCollapse = onDismiss,
@@ -2894,8 +2896,8 @@ fun Player(
                                     isShowingLyrics = isShowingLyrics,
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
-                                    title = player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString(),
-                                    artist = player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
+                                    title = player.getMediaItemAt(index).mediaMetadata.title?.toString(),
+                                    artist = player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
                                     artistIds = artistsInfo,
                                     albumId = albumId,
                                     shouldBePlaying = shouldBePlaying,
