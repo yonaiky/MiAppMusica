@@ -2495,6 +2495,11 @@ fun Player(
                 if (topPadding && !showTopActionsBar) {
                     Spacer(
                         modifier = Modifier
+                            .padding(
+                                windowInsets
+                                    .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            )
                             .height(35.dp)
                     )
                 }
