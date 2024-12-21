@@ -1517,6 +1517,7 @@ fun BlurParamsDialog(
                         color = colorPalette().favoritesIcon,
                         modifier = Modifier
                             .size(24.dp)
+                            .rotate(90f)
                     )
 
                     SliderControl(
