@@ -267,7 +267,6 @@ import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.statsExpandedKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.PlayerThumbnailSizeL
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
@@ -298,7 +297,7 @@ fun Player(
     )
     var playerThumbnailSizeL by rememberPreference(
         playerThumbnailSizeLKey,
-        PlayerThumbnailSizeL.Biggest
+        PlayerThumbnailSize.Biggest
     )
 
     val disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
