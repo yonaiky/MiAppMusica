@@ -131,7 +131,7 @@ fun HomeScreen(
 
                         )
 
-                        1 -> HomeSongsRev(
+                        1 -> HomeSongs(
                             navController = navController,
                             onSearchClick = {
                                 //searchRoute("")

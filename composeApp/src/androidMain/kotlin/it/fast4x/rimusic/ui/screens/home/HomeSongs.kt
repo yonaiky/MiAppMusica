@@ -377,7 +377,7 @@ fun HomeSongs(
                         it.state == Download.STATE_COMPLETED
                     }.map { it.request.id }
                 println("HomeSongs: filterList: ${filterList.size} total downloads ${MyDownloadHelper.downloads.value.size}")
-                Database.listAllSongs( sortBy = songSort.sortBy, sortOrder = songSort.sortOrder, showHidden = hiddenSongs.isShown(), filterList = filterList )
+                Database.listAllSongs( sortBy = songSort.sortBy, sortOrder = songSort.sortOrder, showHidden = 1, filterList = filterList )
             }
             BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
             BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
@@ -586,7 +586,7 @@ fun HomeSongs(
                     this.add( downloadAllDialog )
                     this.add( deleteDownloadsDialog )
                     //this.add( deleteSongDialog )
-                    if (builtInPlaylist == BuiltInPlaylist.All || builtInPlaylist == BuiltInPlaylist.Downloaded)
+                    if (builtInPlaylist == BuiltInPlaylist.All )
                         this.add( hiddenSongs )
                     this.add( shuffle )
                     if (builtInPlaylist == BuiltInPlaylist.Favorites)
