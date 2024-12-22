@@ -34,6 +34,7 @@ const val otherLanguageAppKey = "otherLanguageApp"
 const val indexNavigationTabKey = "indexNavigationTab"
 const val effectRotationKey = "effectRotation"
 const val playerThumbnailSizeKey = "playerThumbnailSize"
+const val playerThumbnailSizeLKey = "playerThumbnailSizeL"
 const val playerTimelineSizeKey = "playerTimelineSize"
 const val colorPaletteNameKey = "colorPaletteName"
 const val colorPaletteModeKey = "colorPaletteMode"
@@ -251,9 +252,11 @@ const val noblurKey = "noblur"
 const val fadingedgeKey = "fadingedge"
 const val thumbnailOffsetKey = "thumbnailOffset"
 const val thumbnailFadeKey = "thumbnailFade"
+const val thumbnailFadeExKey = "thumbnailFadeEx"
 const val carouselKey = "carousel"
 const val carouselSizeKey = "carouselSize"
 const val thumbnailSpacingKey = "thumbnailSpacing"
+const val thumbnailSpacingLKey = "thumbnailSpacingL"
 const val autosyncKey = "autosync"
 const val queueTypeKey = "queueType"
 
@@ -317,8 +320,18 @@ const val enableWallpaperKey = "enableWallpaper"
 const val wallpaperTypeKey = "wallpaperType"
 
 const val notificationTypeKey = "notificationType"
+const val topPaddingKey = "topPadding"
 
+const val autoDownloadSongKey = "autoDownloadSong"
+const val autoDownloadSongWhenLikedKey = "autoDownloadSongWhenLiked"
+const val autoDownloadSongWhenAlbumBookmarkedKey = "autoDownloadSongWhenAlbumBookmarked"
 
+const val queueSwipeLeftActionKey = "queueSwipeLeftAction"
+const val queueSwipeRightActionKey = "queueSwipeRightAction"
+const val playlistSwipeLeftActionKey = "playlistSwipeLeftAction"
+const val playlistSwipeRightActionKey = "playlistSwipeRightAction"
+const val albumSwipeLeftActionKey = "albumSwipeLeftAction"
+const val albumSwipeRightActionKey = "albumSwipeRightAction"
 
 /*
 @PublishedApi

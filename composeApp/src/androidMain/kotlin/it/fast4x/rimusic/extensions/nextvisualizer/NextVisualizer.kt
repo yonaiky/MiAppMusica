@@ -238,9 +238,21 @@ fun getVisualizers(): List<Painter> {
     val ampR = 3f
     val yR = 0.2f
     val color = colorPalette().text.hashCode()
-    var bitmapCover by remember { mutableStateOf(ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!) }
+    var logoBitmapCover by remember { mutableStateOf(ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!) }
+    var bitmapCover by remember { mutableStateOf(logoBitmapCover) }
     val binder = LocalPlayerServiceBinder.current
     val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+            try {
+                bitmapCover = getBitmapFromUrl(
+                    context,
+                    binder?.player?.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+                        .resize(1200, 1200)
+                )
+            } catch (e: Exception) {
+                Timber.e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
+            }
+    }
     /*
     LaunchedEffect(Unit, binder?.player?.currentWindow?.mediaItem?.mediaId) {
         try {
@@ -265,6 +277,7 @@ fun getVisualizers(): List<Painter> {
                                 .resize(1200, 1200)
                         )
                     } catch (e: Exception) {
+                        bitmapCover = logoBitmapCover
                         Timber.e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
                     }
                 }

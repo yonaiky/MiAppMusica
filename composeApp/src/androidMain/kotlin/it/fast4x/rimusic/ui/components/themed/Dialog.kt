@@ -127,6 +127,8 @@ import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import kotlinx.coroutines.delay
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.thumbnailFadeExKey
+import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 
 @Composable
 fun TextFieldDialog(
@@ -1278,27 +1280,29 @@ fun BlurParamsDialog(
     @Composable
     fun ThumbnailOffsetDialog(
         onDismiss: () -> Unit,
-        scaleValue: (Float) -> Unit,
         spacingValue: (Float) -> Unit,
+        spacingValueL: (Float) -> Unit,
         fadeValue: (Float) -> Unit,
+        fadeValueEx: (Float) -> Unit,
         imageCoverSizeValue: (Float) -> Unit
     ) {
         val defaultFade = 5f
-        val defaultOffset = 10f
         val defaultSpacing = 0f
         val defaultImageCoverSize = 50f
-        var thumbnailOffset by rememberPreference(thumbnailOffsetKey, defaultOffset)
-        var thumbnailSpacing by rememberPreference(thumbnailSpacingKey, defaultOffset)
+        var thumbnailSpacing by rememberPreference(thumbnailSpacingKey, defaultSpacing)
+        var thumbnailSpacingL by rememberPreference(thumbnailSpacingLKey, defaultSpacing)
         var thumbnailFade by rememberPreference(thumbnailFadeKey, defaultFade)
+        var thumbnailFadeEx by rememberPreference(thumbnailFadeExKey, defaultFade)
         var fadingedge by rememberPreference(fadingedgeKey, false)
         var imageCoverSize by rememberPreference(VinylSizeKey, defaultImageCoverSize)
         val showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
         val expandedplayer by rememberPreference(expandedplayerKey, false)
         DefaultDialog(
             onDismiss = {
-                scaleValue(thumbnailOffset)
                 spacingValue(thumbnailSpacing)
+                spacingValueL(thumbnailSpacingL)
                 fadeValue(thumbnailFade)
+                fadeValueEx(thumbnailFadeEx)
                 imageCoverSizeValue(imageCoverSize)
                 onDismiss()
             }
@@ -1333,61 +1337,34 @@ fun BlurParamsDialog(
                 }
             }
 
-            if (expandedplayer || isLandscape) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    IconButton(
-                        onClick = {
-                            thumbnailOffset = defaultOffset
-                        },
-                        icon = R.drawable.up_right_arrow,
-                        color = colorPalette().favoritesIcon,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .rotate(if (isLandscape) 45f else 135f)
-                    )
-
-                    SliderControl(
-                        state = thumbnailOffset,
-                        onSlide = { thumbnailOffset = it },
-                        onSlideComplete = {},
-                        toDisplay = { "%.0f".format(it) },
-                        range = 0f..50f
-                    )
-                }
-            }
-
             if(fadingedge && !isLandscape) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    IconButton(
-                        onClick = {
-                            thumbnailFade = defaultFade
-                        },
-                        icon = R.drawable.droplet,
-                        color = colorPalette().favoritesIcon,
+                if (expandedplayer) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(24.dp)
-                    )
+                            .fillMaxWidth()
+                    ) {
+                        IconButton(
+                            onClick = {
+                                thumbnailFadeEx = defaultFade
+                            },
+                            icon = R.drawable.droplet,
+                            color = colorPalette().favoritesIcon,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
 
-                    SliderControl(
-                        state = thumbnailFade,
-                        onSlide = { thumbnailFade = it },
-                        onSlideComplete = {},
-                        toDisplay = { "%.0f".format(it) },
-                        steps = 10,
-                        range = 0f..10f
-                    )
+                        SliderControl(
+                            state = thumbnailFadeEx,
+                            onSlide = { thumbnailFadeEx = it },
+                            onSlideComplete = {},
+                            toDisplay = { "%.0f".format(it) },
+                            steps = 10,
+                            range = 0f..10f
+                        )
 
-                    /*
+                        /*
                 CustomSlider(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1444,9 +1421,36 @@ fun BlurParamsDialog(
                     }
                 )
                 */
+                    }
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        IconButton(
+                            onClick = {
+                                thumbnailFade = defaultFade
+                            },
+                            icon = R.drawable.droplet,
+                            color = colorPalette().favoritesIcon,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+
+                        SliderControl(
+                            state = thumbnailFade,
+                            onSlide = { thumbnailFade = it },
+                            onSlideComplete = {},
+                            toDisplay = { "%.0f".format(it) },
+                            steps = 10,
+                            range = 0f..10f
+                        )
+                    }
                 }
             }
-            if (expandedplayer || isLandscape) {
+            if (expandedplayer && !isLandscape) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -1528,6 +1532,33 @@ fun BlurParamsDialog(
                     }
                 )
                  */
+                }
+            }
+            if (isLandscape) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    IconButton(
+                        onClick = {
+                            thumbnailSpacingL = defaultSpacing
+                        },
+                        icon = R.drawable.burger,
+                        color = colorPalette().favoritesIcon,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .rotate(90f)
+                    )
+
+                    SliderControl(
+                        state = thumbnailSpacingL,
+                        onSlide = { thumbnailSpacingL = it },
+                        onSlideComplete = {},
+                        toDisplay = { "%.0f".format(it) },
+                        range = -50f..50f
+                    )
                 }
             }
         }

@@ -73,11 +73,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.asMediaItem
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.concurrent.CancellationException
 import kotlin.system.exitProcess
 
 @SuppressLint("SuspiciousIndentation")
@@ -300,6 +303,14 @@ fun DataSettings() {
             onConfirm = {
                 binder?.downloadCache?.keys?.forEach { song ->
                     binder.downloadCache.removeResource(song)
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        Database.song(song).collect {
+                            val mediaItem = it?.asMediaItem ?: throw CancellationException()
+                            MyDownloadHelper.removeDownload(context, mediaItem)
+                            throw CancellationException()
+                        }
+                    }
                 }
             }
         )
@@ -352,7 +363,7 @@ fun DataSettings() {
         SettingsDescription(text = stringResource(R.string.cache_cleared))
 
         Coil.imageLoader(context).diskCache?.let { diskCache ->
-            val diskCacheSize = remember(diskCache) {
+            val diskCacheSize = remember(diskCache.size, cleanCacheImages) {
                 diskCache.size
             }
 
@@ -424,7 +435,7 @@ fun DataSettings() {
         }
 
         binder?.cache?.let { cache ->
-            val diskCacheSize = remember(cache) {
+            val diskCacheSize = remember(cache.cacheSpace, cleanCacheOfflineSongs) {
                     cache.cacheSpace
             }
 
@@ -440,8 +451,8 @@ fun DataSettings() {
                         else -> Formatter.formatShortFileSize(context, diskCacheSize) +
                                 " ${stringResource(R.string.used)}" +
                                 when (val size = exoPlayerDiskCacheMaxSize) {
-                                    ExoPlayerDiskCacheMaxSize.Unlimited -> {}
-                                    ExoPlayerDiskCacheMaxSize.Custom -> {} // only needed because of UNLIMITED
+                                    ExoPlayerDiskCacheMaxSize.Unlimited -> ""
+                                    ExoPlayerDiskCacheMaxSize.Custom -> "" // only needed because of UNLIMITED
                                     else -> " (${diskCacheSize * 100 / size.bytes}%)"
                                 }
                     },
@@ -501,7 +512,7 @@ fun DataSettings() {
         }
 
         binder?.downloadCache?.let { downloadCache ->
-            val diskDownloadCacheSize = remember(downloadCache) {
+            val diskDownloadCacheSize = remember(downloadCache.cacheSpace, cleanDownloadCache) {
                     downloadCache.cacheSpace
             }
 
@@ -512,7 +523,7 @@ fun DataSettings() {
                     else -> Formatter.formatShortFileSize(context, diskDownloadCacheSize) +
                         " ${stringResource(R.string.used)}" +
                             when (val size = exoPlayerDiskDownloadCacheMaxSize) {
-                                ExoPlayerDiskDownloadCacheMaxSize.Unlimited -> {}
+                                ExoPlayerDiskDownloadCacheMaxSize.Unlimited -> ""
                                 else -> " (${diskDownloadCacheSize * 100 / size.bytes}%)"
                             }
                 },

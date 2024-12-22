@@ -66,7 +66,6 @@ import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.enableWallpaperKey
-import it.fast4x.rimusic.utils.expandedlyricsKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.fadingedgeKey
@@ -139,6 +138,8 @@ import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.wallpaperTypeKey
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.ui.components.themed.Search
+import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
+import it.fast4x.rimusic.utils.topPaddingKey
 
 @Composable
 fun DefaultAppearanceSettings() {
@@ -292,8 +293,6 @@ fun DefaultAppearanceSettings() {
     thumbnailType = ThumbnailType.Modern
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
     showvisthumbnail = false
-    var expandedlyrics by rememberPreference(expandedlyricsKey, true)
-    expandedlyrics = true
     var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
     buttonzoomout = false
     var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
@@ -379,6 +378,10 @@ fun AppearanceSettings(
         playerThumbnailSizeKey,
         PlayerThumbnailSize.Biggest
     )
+    var playerThumbnailSizeL by rememberPreference(
+        playerThumbnailSizeLKey,
+        PlayerThumbnailSize.Biggest
+    )
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
         PlayerTimelineSize.Biggest
@@ -458,7 +461,6 @@ fun AppearanceSettings(
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
-    var expandedlyrics by rememberPreference(expandedlyricsKey, true)
     var buttonzoomout by rememberPreference(buttonzoomoutKey, false)
     var thumbnailpause by rememberPreference(thumbnailpauseKey, false)
     var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
@@ -491,6 +493,7 @@ fun AppearanceSettings(
     var notificationPlayerSecondIcon by rememberPreference(notificationPlayerSecondIconKey, NotificationButtons.Favorites)
     var enableWallpaper by rememberPreference(enableWallpaperKey, false)
     var wallpaperType by rememberPreference(wallpaperTypeKey, WallpaperType.Lockscreen)
+    var topPadding by rememberPreference(topPaddingKey, true)
 
     Column(
         modifier = Modifier
@@ -542,19 +545,33 @@ fun AppearanceSettings(
             //keepPlayerMinimized = false
         }
 
-        if (showlyricsthumbnail) expandedlyrics = false
+        if (!isLandscape) {
+            if (search.input.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
+                    search.input,
+                    true
+                )
+            )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.show_player_top_actions_bar),
+                    text = "",
+                    isChecked = showTopActionsBar,
+                    onCheckedChange = { showTopActionsBar = it }
+                )
 
-        if (search.input.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
-                search.input,
-                true
-            )
-        )
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_player_top_actions_bar),
-                text = "",
-                isChecked = showTopActionsBar,
-                onCheckedChange = { showTopActionsBar = it }
-            )
+            if (!showTopActionsBar) {
+                if (search.input.isBlank() || stringResource(R.string.blankspace).contains(
+                        search.input,
+                        true
+                    )
+                )
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.blankspace),
+                        text = "",
+                        isChecked = topPadding,
+                        onCheckedChange = { topPadding = it }
+                    )
+            }
+        }
         if (search.input.isBlank() || stringResource(R.string.playertype).contains(
                 search.input,
                 true
@@ -726,26 +743,49 @@ fun AppearanceSettings(
                     }
                 }
 
-                if (search.input.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
-                        search.input,
-                        true
+                if (isLandscape) {
+                    if (search.input.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                            search.input,
+                            true
+                        )
                     )
-                )
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.player_thumbnail_size),
-                        selectedValue = playerThumbnailSize,
-                        onValueSelected = { playerThumbnailSize = it },
-                        valueText = {
-                            when (it) {
-                                PlayerThumbnailSize.Small -> stringResource(R.string.small)
-                                PlayerThumbnailSize.Medium -> stringResource(R.string.medium)
-                                PlayerThumbnailSize.Big -> stringResource(R.string.big)
-                                PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
-                                PlayerThumbnailSize.Expanded -> stringResource(R.string.expanded)
-                            }
-                        },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        EnumValueSelectorSettingsEntry(
+                            title = stringResource(R.string.player_thumbnail_size),
+                            selectedValue = playerThumbnailSizeL,
+                            onValueSelected = { playerThumbnailSizeL = it },
+                            valueText = {
+                                when (it) {
+                                    PlayerThumbnailSize.Small -> stringResource(R.string.small)
+                                    PlayerThumbnailSize.Medium -> stringResource(R.string.medium)
+                                    PlayerThumbnailSize.Big -> stringResource(R.string.big)
+                                    PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
+                                    PlayerThumbnailSize.Expanded -> stringResource(R.string.expanded)
+                                }
+                            },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                } else {
+                    if (search.input.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                            search.input,
+                            true
+                        )
                     )
+                        EnumValueSelectorSettingsEntry(
+                            title = stringResource(R.string.player_thumbnail_size),
+                            selectedValue = playerThumbnailSize,
+                            onValueSelected = { playerThumbnailSize = it },
+                            valueText = {
+                                when (it) {
+                                    PlayerThumbnailSize.Small -> stringResource(R.string.small)
+                                    PlayerThumbnailSize.Medium -> stringResource(R.string.medium)
+                                    PlayerThumbnailSize.Big -> stringResource(R.string.big)
+                                    PlayerThumbnailSize.Biggest -> stringResource(R.string.biggest)
+                                    PlayerThumbnailSize.Expanded -> stringResource(R.string.expanded)
+                                }
+                            },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                }
                 if (search.input.isBlank() || stringResource(R.string.thumbnailtype).contains(
                         search.input,
                         true
@@ -832,19 +872,6 @@ fun AppearanceSettings(
                     onCheckedChange = { statsfornerds = it }
                 )
         }
-
-        if (!showlyricsthumbnail && !isLandscape)
-            if (search.input.isBlank() || stringResource(R.string.expandedlyrics).contains(
-                    search.input,
-                    true
-                )
-            )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.expandedlyrics),
-                    text = stringResource(R.string.expandedlyricsinfo),
-                    isChecked = expandedlyrics,
-                    onCheckedChange = { expandedlyrics = it }
-                )
 
         if (search.input.isBlank() || stringResource(R.string.timelinesize).contains(
                 search.input,
@@ -1074,6 +1101,7 @@ fun AppearanceSettings(
                         PlayerBackgroundColors.FluidThemeColorGradient -> stringResource(R.string.bg_colors_fluid_gradient_background_from_theme)
                         PlayerBackgroundColors.FluidCoverColorGradient -> stringResource(R.string.bg_colors_fluid_gradient_background_from_cover)
                         PlayerBackgroundColors.BlurredCoverColor -> stringResource(R.string.bg_colors_blurred_cover_background)
+                        PlayerBackgroundColors.AnimatedGradient -> stringResource(R.string.animatedgradient)
                     }
                 },
             )
@@ -1456,7 +1484,7 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerLyrics = it }
             )
         if (!isLandscape || !showthumbnail) {
-            if (!showlyricsthumbnail and !expandedlyrics) {
+            if (!showlyricsthumbnail) {
                 if (search.input.isBlank() || stringResource(R.string.expandedplayer).contains(
                         search.input,
                         true
@@ -1531,7 +1559,7 @@ fun AppearanceSettings(
                 onCheckedChange = { showButtonPlayerMenu = it }
             )
 
-        if (!showlyricsthumbnail && (expandedplayertoggle || expandedplayer || expandedlyrics)) {
+        if (!showlyricsthumbnail) {
             SettingsGroupSpacer()
             SettingsEntryGroupText(title = stringResource(R.string.full_screen_lyrics_components))
 
