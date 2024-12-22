@@ -831,13 +831,13 @@
     <string name="settings_enable_autodownload_song_when_liked">Descarga automática da canción cando che guste</string>
     <string name="settings_enable_autodownload_song_when_album_bookmarked">Descarga automática da canción cando o álbum se marque como favorito</string>
     <string name="tab_general">Xeral</string>
-    <string name="queue_and_local_playlists_left_swipe">Queue and Local Playlists Left Swipe</string>
-    <string name="queue_and_local_playlists_right_swipe">Queue and Local Playlists Right Swipe</string>
-    <string name="playlist_left_swipe">Playlist Left Swipe</string>
-    <string name="playlist_right_swipe">Playlist Right Swipe</string>
-    <string name="album_left_swipe">Album Left Swipe</string>
-    <string name="album_right_swipe">Album Right Swipe</string>
-    <string name="bookmark">Bookmark</string>
-    <string name="downloading_videos_not_supported">Downloading videos not supported</string>
-    <string name="animatedgradient">Animated Gradient</string>
+    <string name="queue_and_local_playlists_left_swipe">Arrastrar á esquerda na cola e listas de reprodución locais</string>
+    <string name="queue_and_local_playlists_right_swipe">Arrastrar á dereita na cola e listas de reprodución locais</string>
+    <string name="playlist_left_swipe">Arrastrar á esquerda na lista de reprodución</string>
+    <string name="playlist_right_swipe">Arrastrar á dereita na lista de reprodución</string>
+    <string name="album_left_swipe">Arrastrar á esquerda no álbum</string>
+    <string name="album_right_swipe">Arrastrar á dereita no álbum</string>
+    <string name="bookmark">Marcador</string>
+    <string name="downloading_videos_not_supported">A descarga de vídeos non está soportada</string>
+    <string name="animatedgradient">Degradado animado</string>
 </resources>
