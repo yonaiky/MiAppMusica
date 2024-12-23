@@ -749,7 +749,7 @@ class PlayerService : InvincibleService(),
             try{
                 unregisterReceiver(notificationActionReceiver)
             } catch (e: Exception){
-                Timber.e("PlayerServiceModern onDestroy unregisterReceiver notificationActionReceiver ${e.stackTraceToString()}")
+                Timber.e("PlayerService onDestroy unregisterReceiver notificationActionReceiver ${e.stackTraceToString()}")
             }
 
             mediaSession.isActive = false
