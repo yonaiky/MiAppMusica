@@ -15,12 +15,12 @@ data class YouTubeClient(
         client = Context.Client(
             clientName = clientName,
             clientVersion = clientVersion,
-            //gl = locale.gl,
+            gl = locale.gl,
             hl = locale.hl,
             visitorData = visitorData,
-            referer = referer,
-            api_key = api_key,
-            userAgent = userAgent,
+            //referer = referer,
+            //api_key = api_key,
+            //userAgent = userAgent,
         )
     )
 
@@ -35,7 +35,7 @@ data class YouTubeClient(
             clientName = "ANDROID_MUSIC",
             clientVersion = "5.01",
             api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI",
-            userAgent = USER_AGENT_ANDROID
+            userAgent = USER_AGENT_ANDROID,
         )
 
         val ANDROID = YouTubeClient(

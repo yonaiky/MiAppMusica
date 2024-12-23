@@ -538,27 +538,27 @@ class MainActivity :
                     //gl = "US" // US IMPORTANT
                 )
                 //TODO Manage login
-//            if (preferences.getBoolean(enableYouTubeLoginKey, false)) {
-//                    var visitorData by rememberEncryptedPreference(
-//                        key = ytVisitorDataKey,
-//                        defaultValue = Innertube.DEFAULT_VISITOR_DATA
-//                    )
-//
-//                    if (visitorData.isEmpty()) runBlocking {
-//                        Innertube.visitorData().getOrNull()?.also {
-//                            visitorData = it
-//                        }
-//                    }
-//
-//                    YoutubePreferences.preference =
-//                        YoutubePreferenceItem(
-//                            cookie = encryptedPreferences.getString(ytCookieKey, ""),
-//                            visitordata = visitorData
-//                                .takeIf { it != "null" }
-//                                ?: Innertube.DEFAULT_VISITOR_DATA
-//
-//                        )
-//            }
+            if (preferences.getBoolean(enableYouTubeLoginKey, false)) {
+                    var visitorData by rememberEncryptedPreference(
+                        key = ytVisitorDataKey,
+                        defaultValue = Innertube.DEFAULT_VISITOR_DATA
+                    )
+
+                    if (visitorData.isEmpty()) runBlocking {
+                        Innertube.visitorData().getOrNull()?.also {
+                            visitorData = it
+                        }
+                    }
+
+                    YoutubePreferences.preference =
+                        YoutubePreferenceItem(
+                            cookie = encryptedPreferences.getString(ytCookieKey, ""),
+                            visitordata = visitorData
+                                .takeIf { it != "null" }
+                                ?: Innertube.DEFAULT_VISITOR_DATA
+
+                        )
+            }
 
 
 //            if (preferences.getBoolean(enableYouTubeLoginKey, false)

@@ -34,8 +34,8 @@ data class Context(
         val osName: String? = null,
         val osVersion: String? = null,
         val acceptHeader: String? = null,
-        val timeZone: String? = "UTC",
-        val utcOffsetMinutes: Int? = 0,
+        //val timeZone: String? = "UTC",
+        //val utcOffsetMinutes: Int? = 0,
         @Transient
         val api_key: String? = null
     )

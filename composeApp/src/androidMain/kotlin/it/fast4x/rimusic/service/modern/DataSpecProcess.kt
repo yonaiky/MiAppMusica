@@ -8,6 +8,7 @@ import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
+import it.fast4x.innertube.requests.newPlayer
 import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
@@ -162,9 +163,10 @@ suspend fun getInnerTubeFormatUrl(
     connectionMetered: Boolean,
 ): PlayerResponse.StreamingData.AdaptiveFormat? {
     //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from format $audioQualityFormat")
-    return Innertube.player(
+    return Innertube.newPlayer(
         body = PlayerBody(videoId = videoId),
-        withLogin = false, //TODO manage login appContext().preferences.getBoolean(enableYouTubeLoginKey, false),
+        //TODO manage login
+        withLogin = false //appContext().preferences.getBoolean(enableYouTubeLoginKey, false),
         //pipedSession = getPipedSession().toApiSession()
     ).fold(
         { playerResponse ->

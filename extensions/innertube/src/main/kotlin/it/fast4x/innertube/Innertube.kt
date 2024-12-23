@@ -4,11 +4,13 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.BrowserUserAgent
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.compression.brotli
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.headers
@@ -30,6 +32,8 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.Runs
 import it.fast4x.innertube.models.Thumbnail
 import it.fast4x.innertube.models.YouTubeClient
+import it.fast4x.innertube.models.YouTubeClient.Companion.IOS
+import it.fast4x.innertube.models.YouTubeClient.Companion.WEB_REMIX
 import it.fast4x.innertube.models.YouTubeLocale
 import it.fast4x.innertube.models.bodies.AccountMenuBody
 import it.fast4x.innertube.models.bodies.PlayerBody
@@ -43,6 +47,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
+import okhttp3.logging.HttpLoggingInterceptor
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.util.Locale
@@ -109,16 +114,31 @@ object Innertube {
             })
         }
 
+        install(HttpRequestRetry) {
+            exponentialDelay()
+            maxRetries = 2
+        }
+
         install(ContentEncoding) {
-            //brotli(1.0F)
+            brotli(1.0F)
             gzip(0.9F)
             deflate(0.8F)
         }
 
+        engine {
+            addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+            )
+        }
 
         defaultRequest {
+            accept(ContentType.Application.Json)
+            contentType(ContentType.Application.Json)
             url("https://music.youtube.com")
         }
+
     }
 
     var proxy: Proxy? = null
@@ -131,6 +151,8 @@ object Innertube {
     var locale = YouTubeLocale(
         gl = Locale.getDefault().country,
         hl = Locale.getDefault().toLanguageTag()
+        //gl = LocalePreferences.preference?.gl ?: "US",
+        //hl = LocalePreferences.preference?.hl ?: "en"
     )
     var visitorData: String = YoutubePreferences.preference?.visitordata.toString()
     var cookieMap = emptyMap<String, String>()
@@ -437,21 +459,87 @@ object Innertube {
                     println("YoutubeLogin Innertube ytClient cookie: $cookie")
                     println("YoutubeLogin Innertube ytClient SAPISID in cookie: ${"SAPISID" in cookieMap}")
                     println("YoutubeLogin Innertube ytClient cookieMap: $cookieMap")
-                    append("cookie", cookie)
-                    if ("SAPISID" !in cookieMap) return@let
+                    append("Cookie", cookie)
+                    if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
-                    println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
-                    append("Authorization", "SAPISIDHASH ${currentTime}_${sapisidHash}")
-
+                    if (client != WEB_REMIX) {
+                        val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
+                        println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
+                        append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
+                    } else {
+                        val sapisidHash = sha1("$currentTime ${cookieMap["__Secure-3PAPISID"]} https://music.youtube.com")
+                        println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
+                        append(
+                            "Authorization",
+                            "SAPISIDHASH ${currentTime}_$sapisidHash",
+                        )
+                    }
                 }
             }
+//            if (setLogin) {
+//                cookie?.let { cookie ->
+//                    cookieMap = parseCookieString(cookie)
+//                    println("YoutubeLogin Innertube ytClient cookie: $cookie")
+//                    println("YoutubeLogin Innertube ytClient SAPISID in cookie: ${"SAPISID" in cookieMap}")
+//                    println("YoutubeLogin Innertube ytClient cookieMap: $cookieMap")
+//                    append("cookie", cookie)
+//                    if ("SAPISID" !in cookieMap) return@let
+//                    val currentTime = System.currentTimeMillis() / 1000
+//                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
+//                    println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
+//                    append("Authorization", "SAPISIDHASH ${currentTime}_${sapisidHash}")
+//
+//                }
+//            }
         }
         userAgent(client.userAgent)
         parameter("key", client.api_key)
         parameter("prettyPrint", false)
     }
 
+    /*******************************************
+     * NEW CODE
+     */
 
+    suspend fun player(
+        ytClient: YouTubeClient,
+        videoId: String,
+        playlistId: String?,
+    ) = ytHttpClient.post(player) {
+        ytClient(ytClient, setLogin = true)
+        setBody(
+            PlayerBody(
+                context =
+                ytClient.toContext(locale, visitorData).let {
+                    if (ytClient == YouTubeClient.TVHTML5) {
+                        it.copy(
+                            thirdParty =
+                            Context.ThirdParty(
+                                embedUrl = "https://www.youtube.com/watch?v=$videoId",
+                            ),
+                        )
+                    } else {
+                        it
+                    }
+                },
+                videoId = videoId,
+                playlistId = playlistId,
+            ),
+        )
+    }
+
+    suspend fun noLogInPlayer(videoId: String) =
+        ytHttpClient.post(player) {
+            accept(ContentType.Application.Json)
+            contentType(ContentType.Application.Json)
+            header("Host", "music.youtube.com")
+            setBody(
+                PlayerBody(
+                    context = IOS.toContext(locale, visitorData),
+                    playlistId = null,
+                    videoId = videoId,
+                ),
+            )
+        }
 
 }

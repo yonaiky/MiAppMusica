@@ -157,7 +157,7 @@ fun AccountsSettings() {
 
         //TODO MANAGE LOGIN
         /****** YOUTUBE LOGIN ******/
-/*
+
         var isYouTubeLoginEnabled by rememberPreference(enableYouTubeLoginKey, false)
         var loginYouTube by remember { mutableStateOf(false) }
         var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = "")
@@ -269,8 +269,8 @@ fun AccountsSettings() {
                 }
             }
         }
-*/
-        /****** YOUTUBE LOGIN ******/
+
+    /****** YOUTUBE LOGIN ******/
 
     /****** PIPED ******/
 
