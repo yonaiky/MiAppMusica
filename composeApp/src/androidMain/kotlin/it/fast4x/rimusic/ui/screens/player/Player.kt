@@ -2006,7 +2006,7 @@ fun Player(
                                          state = pagerState,
                                          pageSize = PageSize.Fixed(thumbnailSizeDp),
                                          pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp),
-                                         contentPadding = PaddingValues(start = (maxWidth - maxHeight)/2, end = (maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp),
+                                         contentPadding = PaddingValues(start = ((maxWidth - maxHeight)/2).coerceAtLeast(0.dp), end = ((maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp).coerceAtLeast(0.dp)),
                                          beyondViewportPageCount = 3,
                                          flingBehavior = fling,
                                          modifier = Modifier
@@ -2830,7 +2830,7 @@ fun Player(
                 }
 
                 if (!showthumbnail || playerType == PlayerType.Modern) {
-                    if (!expandedplayer || !isShowingLyrics || statsExpanded) {
+                    if (!isShowingLyrics || statsExpanded) {
                         StatsForNerds(
                             mediaId = mediaItem.mediaId,
                             isDisplayed = statsfornerds,
