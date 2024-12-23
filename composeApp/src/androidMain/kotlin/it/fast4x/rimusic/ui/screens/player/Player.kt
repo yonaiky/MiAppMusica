@@ -736,9 +736,10 @@ fun Player(
     @Composable
     fun saturate(color : Int): Color {
         val colorHSL by remember { mutableStateOf(floatArrayOf(0f, 0f, 0f)) }
-        var lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
+        val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
         colorToHSL(color,colorHSL)
         colorHSL[1] = (colorHSL[1] + if (lightTheme) 0f else 0.35f).coerceIn(0f,1f)
+        colorHSL[2] = if (lightTheme) {colorHSL[2].coerceIn(0.5f,1f)} else colorHSL[2]
         return Color.hsl(colorHSL[0],colorHSL[1],colorHSL[2])
     }
 
