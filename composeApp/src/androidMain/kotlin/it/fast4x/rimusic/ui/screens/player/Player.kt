@@ -1249,9 +1249,9 @@ fun Player(
                                                 onClick = {
                                                     scope.launch {
                                                         if (!appRunningInBackground) {
-                                                            pagerState.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
+                                                            pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
                                                         } else {
-                                                            pagerState.scrollToPage(binder.player.currentMediaItemIndex + 1)
+                                                            pagerStateQueue.scrollToPage(binder.player.currentMediaItemIndex + 1)
                                                         }
                                                     }
                                                 }
