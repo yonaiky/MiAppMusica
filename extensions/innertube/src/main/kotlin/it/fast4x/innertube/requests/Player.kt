@@ -6,15 +6,10 @@ import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.PlayerResponse
-import it.fast4x.innertube.models.YouTubeClient
-import it.fast4x.innertube.models.YouTubeClient.Companion.ANDROID_MUSIC
-import it.fast4x.innertube.models.YouTubeClient.Companion.IOS
+import it.fast4x.innertube.clients.YouTubeClient
+import it.fast4x.innertube.clients.YouTubeClient.Companion.ANDROID_MUSIC
+import it.fast4x.innertube.clients.YouTubeClient.Companion.IOS
 import it.fast4x.innertube.models.bodies.PlayerBody
-import it.fast4x.innertube.utils.runCatchingNonCancellable
-import it.fast4x.invidious.Invidious
-import it.fast4x.piped.models.PipedResponse
-import it.fast4x.piped.models.Session
-import kotlin.random.Random
 
 suspend fun Innertube.newPlayer(body: PlayerBody, withLogin: Boolean = false): Result<PlayerResponse> = runCatching {
 

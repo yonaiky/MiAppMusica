@@ -1,5 +1,6 @@
-package it.fast4x.innertube.models
+package it.fast4x.innertube.clients
 
+import it.fast4x.innertube.models.Context
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,7 +1,6 @@
 package it.fast4x.innertube.models.bodies
 
 import it.fast4x.innertube.models.Context
-import it.fast4x.innertube.models.YouTubeContext
 import kotlinx.serialization.Serializable
 
 @Serializable

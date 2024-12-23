@@ -31,11 +31,12 @@ import it.fast4x.innertube.models.MusicNavigationButtonRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.Runs
 import it.fast4x.innertube.models.Thumbnail
-import it.fast4x.innertube.models.YouTubeClient
-import it.fast4x.innertube.models.YouTubeClient.Companion.IOS
-import it.fast4x.innertube.models.YouTubeClient.Companion.WEB_REMIX
-import it.fast4x.innertube.models.YouTubeLocale
+import it.fast4x.innertube.clients.YouTubeClient
+import it.fast4x.innertube.clients.YouTubeClient.Companion.IOS
+import it.fast4x.innertube.clients.YouTubeClient.Companion.WEB_REMIX
+import it.fast4x.innertube.clients.YouTubeLocale
 import it.fast4x.innertube.models.bodies.AccountMenuBody
+import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.YoutubePreferences
