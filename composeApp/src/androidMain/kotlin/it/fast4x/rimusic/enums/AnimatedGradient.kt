@@ -1,6 +1,8 @@
 package it.fast4x.rimusic.enums
 
 enum class AnimatedGradient {
+    FluidThemeColorGradient,
+    FluidCoverColorGradient,
     Linear,
     Mesh,
     MesmerizingLens,
