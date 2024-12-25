@@ -368,7 +368,7 @@
     <string name="add_folder">Ajouter un dossier</string>
     <string name="this_folder_already_exists">Ce dossier existe déjà.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Êtes-vous sûr de vouloir supprimer ce dossier de la liste noire ?</string>
-    <string name="player_appearance">Apparence du lecteur</string>
+    <string name="player_appearance">Apparence du Lecteur</string>
     <string name="player_action_bar">BARRE D\'ACTION DU LECTEUR</string>
     <string name="tab_data">Données</string>
     <string name="image_cache_max_size">Taille maximale du cache des images</string>
