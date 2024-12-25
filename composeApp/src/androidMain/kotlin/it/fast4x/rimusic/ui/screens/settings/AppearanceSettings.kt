@@ -137,7 +137,9 @@ import it.fast4x.rimusic.utils.transparentbarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.wallpaperTypeKey
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.AnimatedGradient
 import it.fast4x.rimusic.ui.components.themed.Search
+import it.fast4x.rimusic.utils.animatedGradientKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.topPaddingKey
 
@@ -494,6 +496,10 @@ fun AppearanceSettings(
     var enableWallpaper by rememberPreference(enableWallpaperKey, false)
     var wallpaperType by rememberPreference(wallpaperTypeKey, WallpaperType.Lockscreen)
     var topPadding by rememberPreference(topPaddingKey, true)
+    var animatedGradient by rememberPreference(
+        animatedGradientKey,
+        AnimatedGradient.Linear
+    )
 
     Column(
         modifier = Modifier
@@ -1105,6 +1111,38 @@ fun AppearanceSettings(
                     }
                 },
             )
+
+        AnimatedVisibility(visible = playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) {
+            if (search.input.isBlank() || stringResource(R.string.gradienttype).contains(
+                    search.input,
+                    true
+                )
+            )
+                EnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.gradienttype),
+                    selectedValue = animatedGradient,
+                    onValueSelected = {
+                        animatedGradient = it
+                    },
+                    valueText = {
+                        when (it) {
+                            AnimatedGradient.Linear -> stringResource(R.string.linear)
+                            AnimatedGradient.Mesh -> stringResource(R.string.mesh)
+                            AnimatedGradient.MesmerizingLens -> stringResource(R.string.mesmerizinglens)
+                            AnimatedGradient.GlossyGradients -> stringResource(R.string.glossygradient)
+                            AnimatedGradient.GradientFlow -> stringResource(R.string.gradientflow)
+                            AnimatedGradient.PurpleLiquid -> stringResource(R.string.purpleliquid)
+                            AnimatedGradient.Stage -> stringResource(R.string.stage)
+                            AnimatedGradient.InkFlow -> stringResource(R.string.inkflow)
+                            AnimatedGradient.GoldenMagma -> stringResource(R.string.goldenmagma)
+                            AnimatedGradient.OilFlow -> stringResource(R.string.oilflow)
+                            AnimatedGradient.IceReflection -> stringResource(R.string.icereflection)
+                            AnimatedGradient.BlackCherryCosmos -> stringResource(R.string.blackcherrycosmos)
+                        }
+                    },
+                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) 25.dp else 0.dp)
+                )
+        }
 
         if ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient))
             if (search.input.isBlank() || stringResource(R.string.blackgradient).contains(
