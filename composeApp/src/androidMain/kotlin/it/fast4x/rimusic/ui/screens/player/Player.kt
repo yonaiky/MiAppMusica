@@ -781,8 +781,6 @@ fun Player(
     val isGradientBackgroundEnabled =
         playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
-                playerBackgroundColors == PlayerBackgroundColors.FluidThemeColorGradient ||
-                playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient
 
 
@@ -795,7 +793,6 @@ fun Player(
         LaunchedEffect(mediaItem.mediaId, updateBrush) {
             if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
-                playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient || updateBrush
             ) {
             try {
@@ -1020,21 +1017,22 @@ fun Player(
         }
     } else {
         when (playerBackgroundColors) {
-            PlayerBackgroundColors.FluidThemeColorGradient,
-            PlayerBackgroundColors.FluidCoverColorGradient -> {
-                containerModifier = containerModifier
-                    .onSizeChanged {
-                        sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                    }
-                    .drawBehind {
-                        drawRect(brush = brushA)
-                        drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
-                        drawRect(brush = brushB, blendMode = BlendMode.DstAtop)
-                    }
-            }
 
             PlayerBackgroundColors.AnimatedGradient -> {
-                if (animatedGradient == AnimatedGradient.Mesh) {
+                if (animatedGradient == AnimatedGradient.FluidCoverColorGradient ||
+                    animatedGradient == AnimatedGradient.FluidThemeColorGradient) {
+                    containerModifier = containerModifier
+                            .onSizeChanged {
+                                sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                            }
+                            .drawBehind {
+                                drawRect(brush = brushA)
+                                drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
+                                drawRect(brush = brushB, blendMode = BlendMode.DstAtop)
+                            }
+                }
+
+                else if (animatedGradient == AnimatedGradient.Mesh) {
                     containerModifier = containerModifier
                         .onSizeChanged {
                             sizeShader = Size(it.width.toFloat(), it.height.toFloat())
