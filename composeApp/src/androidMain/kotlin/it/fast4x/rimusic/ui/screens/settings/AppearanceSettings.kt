@@ -1112,14 +1112,14 @@ fun AppearanceSettings(
                 },
             )
 
-        if (playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient){
-            if (search.input.isBlank() || stringResource(R.string.background_colors).contains(
+        AnimatedVisibility(visible = playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) {
+            if (search.input.isBlank() || stringResource(R.string.gradienttype).contains(
                     search.input,
                     true
                 )
             )
                 EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.background_colors),
+                    title = stringResource(R.string.gradienttype),
                     selectedValue = animatedGradient,
                     onValueSelected = {
                         animatedGradient = it
