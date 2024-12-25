@@ -87,6 +87,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -809,13 +810,13 @@ fun Player(
 
                 val palette = Palette.from(bitmap).generate()
 
-                dominant = palette.getDominantColor(0)
-                vibrant = palette.getVibrantColor(0)
-                lightVibrant = palette.getLightVibrantColor(0)
-                darkVibrant = palette.getDarkVibrantColor(0)
-                muted = palette.getMutedColor(0)
-                lightMuted = palette.getLightMutedColor(0)
-                darkMuted = palette.getDarkMutedColor(0)
+                dominant = palette.getDominantColor(dynamicColorPalette.accent.toArgb())
+                vibrant = palette.getVibrantColor(dynamicColorPalette.accent.toArgb())
+                lightVibrant = palette.getLightVibrantColor(dynamicColorPalette.accent.toArgb())
+                darkVibrant = palette.getDarkVibrantColor(dynamicColorPalette.accent.toArgb())
+                muted = palette.getMutedColor(dynamicColorPalette.accent.toArgb())
+                lightMuted = palette.getLightMutedColor(dynamicColorPalette.accent.toArgb())
+                darkMuted = palette.getDarkMutedColor(dynamicColorPalette.accent.toArgb())
 
             } catch (e: Exception) {
                 dynamicColorPalette = color
