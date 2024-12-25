@@ -841,9 +841,9 @@
     <string name="downloading_videos_not_supported">La descarga de vídeos no está soportada</string>
     <string name="animatedgradient">Degradado animado</string>
     <string name="linear">Degradado lineal</string>
-    <string name="mesh">Mesh Gradient</string>
+    <string name="mesh">Degradado de malla</string>
     <string name="mesmerizinglens">Mesmerizing Lens</string>
-    <string name="glossygradient">Glossy Gradient</string>
+    <string name="glossygradient">Degradado brillante</string>
     <string name="gradientflow">Flujo del degradado</string>
     <string name="purpleliquid">Purple Liquid</string>
     <string name="stage">Stage</string>
