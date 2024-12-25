@@ -760,7 +760,7 @@ fun Player(
     }
 
     var lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
-    var ratio = if (lightTheme) 1f else 0.3f
+    var ratio = if (lightTheme) 1f else 0.5f
 
     fun Color.darkenBy(): Color {
         return copy(
