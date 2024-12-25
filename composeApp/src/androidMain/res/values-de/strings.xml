@@ -835,9 +835,9 @@
     <string name="queue_and_local_playlists_right_swipe">Queue and Local Playlists Right Swipe</string>
     <string name="playlist_left_swipe">Playlist Left Swipe</string>
     <string name="playlist_right_swipe">Playlist Right Swipe</string>
-    <string name="album_left_swipe">Album Left Swipe</string>
-    <string name="album_right_swipe">Album Right Swipe</string>
+    <string name="album_left_swipe">Album links wischen</string>
+    <string name="album_right_swipe">Album rechts wischen</string>
     <string name="bookmark">Bookmark</string>
-    <string name="downloading_videos_not_supported">Downloading videos not supported</string>
-    <string name="animatedgradient">Animated Gradient</string>
+    <string name="downloading_videos_not_supported">Herunterladen von Videos nicht unterstützt</string>
+    <string name="animatedgradient">Animierter Verlauf</string>
 </resources>
