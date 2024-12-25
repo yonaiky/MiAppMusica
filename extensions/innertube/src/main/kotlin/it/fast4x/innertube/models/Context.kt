@@ -1,9 +1,20 @@
 package it.fast4x.innertube.models
 
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.headers
+import io.ktor.client.utils.EmptyContent.contentType
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.http.headers
 import io.ktor.http.parameters
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.Innertube.cookie
+import it.fast4x.innertube.Innertube.cookieMap
+import it.fast4x.innertube.clients.YouTubeClient.Companion.WEB_REMIX
+import it.fast4x.innertube.clients.YouTubeLocale
 import it.fast4x.innertube.utils.LocalePreferences
+import it.fast4x.innertube.utils.parseCookieString
+import it.fast4x.innertube.utils.sha1
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.text.SimpleDateFormat
@@ -16,6 +27,7 @@ data class Context(
     val client: Client,
     val thirdParty: ThirdParty? = null,
 ) {
+
     @Serializable
     data class Client(
         val clientName: String,
@@ -38,7 +50,17 @@ data class Context(
         //val utcOffsetMinutes: Int? = 0,
         @Transient
         val api_key: String? = null
-    )
+    ) {
+        fun toContext(locale: YouTubeLocale, visitorData: String) = Context(
+            client = Client(
+                clientName = clientName,
+                clientVersion = clientVersion,
+                gl = locale.gl,
+                hl = locale.hl,
+                visitorData = visitorData,
+            )
+        )
+    }
 
     @Serializable
     data class ThirdParty(
@@ -65,6 +87,8 @@ data class Context(
             client.api_key?.let { append("key", it) }
         }
     }
+
+
 
     companion object {
 
@@ -105,8 +129,8 @@ data class Context(
         val DefaultWebRemix = Context(
             client = Client(
                 clientName = "WEB_REMIX",
-                clientVersion = "1.20220606.03.00",
-                //clientVersion = "1.20230731.00.00",
+                //clientVersion = "1.20220606.03.00",
+                clientVersion = "1.20230731.00.00",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
                 hl = hl,
@@ -120,7 +144,8 @@ data class Context(
         val DefaultAndroid = Context(
             client = Client(
                 clientName = "ANDROID_MUSIC",
-                clientVersion = "6.33.52",
+                clientVersion = "7.31.51",
+                //clientVersion = "6.33.52",
                 //clientVersion = "5.28.1",
                 //clientVersion = "5.22.1",
                 androidSdkVersion = 30,

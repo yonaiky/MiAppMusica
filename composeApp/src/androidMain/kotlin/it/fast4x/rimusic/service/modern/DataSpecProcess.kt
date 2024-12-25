@@ -8,13 +8,11 @@ import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
-import it.fast4x.innertube.requests.newPlayer
 import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.service.LoginRequiredException
-import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.NoInternetException
 import it.fast4x.rimusic.service.TimeoutException
 import it.fast4x.rimusic.service.UnknownException
@@ -163,23 +161,36 @@ suspend fun getInnerTubeFormatUrl(
     connectionMetered: Boolean,
 ): PlayerResponse.StreamingData.AdaptiveFormat? {
     //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from format $audioQualityFormat")
-    return Innertube.newPlayer(
+    return Innertube.player(
         body = PlayerBody(videoId = videoId),
         //TODO manage login
-        withLogin = false //appContext().preferences.getBoolean(enableYouTubeLoginKey, false),
+        withLogin = appContext().preferences.getBoolean(enableYouTubeLoginKey, false),
         //pipedSession = getPipedSession().toApiSession()
     ).fold(
         { playerResponse ->
 
             when(playerResponse.playabilityStatus?.status) {
                 "OK" -> {
-                    when (audioQualityFormat) {
-                        AudioQualityFormat.Auto -> if (!connectionMetered) playerResponse.streamingData?.autoMaxQualityFormat
-                        else playerResponse.streamingData?.lowestQualityFormat
-                        AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
-                        AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
-                        AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
-                    }.let {
+//                    when (audioQualityFormat) {
+//                        AudioQualityFormat.Auto -> if (!connectionMetered) playerResponse.streamingData?.autoMaxQualityFormat
+//                        else playerResponse.streamingData?.lowestQualityFormat
+//                        AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
+//                        AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
+//                        AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
+//                    }
+                    playerResponse.streamingData?.adaptiveFormats
+                        ?.filter { it.isAudio }
+                        ?.maxByOrNull {
+                            (it.bitrate?.times(
+                                when (audioQualityFormat) {
+                                    AudioQualityFormat.Auto -> if (connectionMetered) -1 else 1
+                                    AudioQualityFormat.High -> 1
+                                    AudioQualityFormat.Medium -> 0
+                                    AudioQualityFormat.Low -> -1
+                                }
+                            ) ?: 0) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
+                        }
+                        .let {
                         // Specify range to avoid YouTube's throttling
                         it?.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
                     }.also {

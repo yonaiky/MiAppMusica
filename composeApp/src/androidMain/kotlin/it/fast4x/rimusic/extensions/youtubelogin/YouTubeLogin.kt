@@ -121,6 +121,7 @@ fun YouTubeLogin(
 
                         override fun onPageFinished(view: WebView, url: String?) {
                             loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
+                            onLogin(true)
                         }
                     }
                     settings.apply {

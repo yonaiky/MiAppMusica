@@ -8,14 +8,10 @@ import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
-import it.fast4x.innertube.requests.newPlayer
 import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
-import it.fast4x.rimusic.utils.enableYouTubeLoginKey
-import it.fast4x.rimusic.utils.preferences
-import it.fast4x.rimusic.appContext
 import me.knighthat.invidious.Invidious
 import me.knighthat.invidious.request.player
 import me.knighthat.piped.Piped
@@ -176,7 +172,7 @@ suspend fun getInnerTubeFormatUrl(
     connectionMetered: Boolean,
     ): PlayerResponse.StreamingData.AdaptiveFormat? {
     //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from format $audioQualityFormat")
-    return Innertube.newPlayer(
+    return Innertube.player(
         body = PlayerBody(videoId = videoId),
         // TODO manage login
         withLogin = false //appContext().preferences.getBoolean(enableYouTubeLoginKey, false),
