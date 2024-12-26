@@ -451,7 +451,7 @@
     <string name="info_includes_excludes_songs_on_the_device">Includes/Excludes songs on the device</string>
     <string name="info_enqueue_songs">Enqueue songs</string>
     <string name="info_download_all_songs">Download all songs</string>
-    <string name="info_remove_all_downloaded_songs">Remove all downloaded songs</string>
+    <string name="info_remove_all_downloaded_songs">Wis alle gedownloade nummers</string>
     <string name="info_start_radio">Start radio</string>
     <string name="info_translation">Translation</string>
     <string name="info_find_the_song_that_is_playing">Find the song that is playing</string>
