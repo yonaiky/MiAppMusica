@@ -1138,6 +1138,7 @@ fun AppearanceSettings(
                             AnimatedGradient.OilFlow -> stringResource(R.string.oilflow)
                             AnimatedGradient.IceReflection -> stringResource(R.string.icereflection)
                             AnimatedGradient.BlackCherryCosmos -> stringResource(R.string.blackcherrycosmos)
+                            AnimatedGradient.Random -> stringResource(R.string.random)
                         }
                     },
                     modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) 25.dp else 0.dp)
