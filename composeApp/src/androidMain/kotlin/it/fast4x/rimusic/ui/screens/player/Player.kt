@@ -804,7 +804,7 @@ fun Player(
 
                 dynamicColorPalette = dynamicColorPaletteOf(
                     bitmap,
-                    isSystemDarkMode
+                    !lightTheme
                 ) ?: color
                 println("Player INSIDE getting dynamic color ${dynamicColorPalette}")
 
