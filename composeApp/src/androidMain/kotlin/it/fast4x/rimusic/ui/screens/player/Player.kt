@@ -1051,12 +1051,12 @@ fun Player(
                         .animatedGradient(
                             binder.player.isPlaying,
                             saturate(dominant).darkenBy(),
-                            saturate(vibrant).compositeOver(Color(dominant)).darkenBy(),
-                            saturate(lightVibrant).compositeOver(Color(dominant)).darkenBy(),
-                            saturate(darkVibrant).compositeOver(Color(dominant)).darkenBy(),
-                            saturate(muted).compositeOver(Color(dominant)).darkenBy(),
-                            saturate(lightMuted).compositeOver(Color(dominant)).darkenBy(),
-                            saturate(darkMuted).compositeOver(Color(dominant)).darkenBy()
+                            saturate(vibrant).darkenBy(),
+                            saturate(lightVibrant).darkenBy(),
+                            saturate(darkVibrant).darkenBy(),
+                            saturate(muted).darkenBy(),
+                            saturate(lightMuted).darkenBy(),
+                            saturate(darkMuted).darkenBy()
                         )
                 }
                 else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[3]) || animatedGradient == AnimatedGradient.Mesh) {
@@ -1067,14 +1067,13 @@ fun Player(
                         .shaderBackground(
                             MeshGradient(
                                 arrayOf(
-                                    saturate(dominant).darkenBy(),
-                                    saturate(vibrant).compositeOver(Color(dominant)).darkenBy(),
-                                    saturate(lightVibrant).compositeOver(Color(dominant))
-                                        .darkenBy(),
-                                    saturate(darkVibrant).compositeOver(Color(dominant)).darkenBy(),
-                                    saturate(muted).compositeOver(Color(dominant)).darkenBy(),
-                                    saturate(lightMuted).compositeOver(Color(dominant)).darkenBy(),
-                                    saturate(darkMuted).compositeOver(Color(dominant)).darkenBy()
+                                    saturate(vibrant).darkenBy(),
+                                    saturate(lightVibrant).darkenBy(),
+                                    saturate(darkVibrant).darkenBy(),
+                                    saturate(muted).darkenBy(),
+                                    saturate(lightMuted).darkenBy(),
+                                    saturate(darkMuted).darkenBy(),
+                                    saturate(dominant).darkenBy()
                                 ),
                                 scale = 1f
                             )
