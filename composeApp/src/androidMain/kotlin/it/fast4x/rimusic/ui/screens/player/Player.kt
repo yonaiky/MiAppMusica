@@ -1018,14 +1018,25 @@ fun Player(
                     )
                 }
 
-        } else {
+        } else if (playerBackgroundColors == PlayerBackgroundColors.ColorPalette){
             containerModifier = containerModifier
-                .conditional (playerType == PlayerType.Essential) {
-                    background(
-                        //dynamicColorPalette.background1
-                        color.background1
-                    )
+                .drawBehind {
+                    val colors = listOf(Color(dominant),Color(vibrant),Color(lightVibrant),Color(darkVibrant),Color(muted),Color(lightMuted),Color(darkMuted))
+                    val boxheight = (size.height)/7
+                    colors.forEachIndexed {i, color ->
+                        drawRect(
+                            color = colors[i],
+                            topLeft = Offset(0f,i*boxheight),
+                            size = Size(size.width,boxheight)
+                        )
+                    }
                 }
+        } else if (playerBackgroundColors == PlayerBackgroundColors.CoverColor){
+            containerModifier = containerModifier
+                .background(dynamicColorPalette.background1)
+        } else if (playerBackgroundColors == PlayerBackgroundColors.ThemeColor){
+            containerModifier = containerModifier
+                .background(color.background1)
         }
     } else {
         when (playerBackgroundColors) {
@@ -1185,7 +1196,7 @@ fun Player(
                 containerModifier = containerModifier
                     .background(
                         Brush.verticalGradient(
-                            0.5f to dynamicColorPalette.background2,
+                            0.5f to if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) dynamicColorPalette.background1 else colorPalette().background1,
                             1.0f to if (blackgradient) Color.Black else colorPalette().background2,
                             //0.0f to colorPalette().background0,
                             //1.0f to colorPalette().background2,

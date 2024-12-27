@@ -1105,6 +1105,7 @@ fun AppearanceSettings(
                         PlayerBackgroundColors.CoverColorGradient -> stringResource(R.string.bg_colors_gradient_background_from_cover)
                         PlayerBackgroundColors.ThemeColorGradient -> stringResource(R.string.bg_colors_gradient_background_from_theme)
                         PlayerBackgroundColors.BlurredCoverColor -> stringResource(R.string.bg_colors_blurred_cover_background)
+                        PlayerBackgroundColors.ColorPalette -> stringResource(R.string.colorpalette)
                         PlayerBackgroundColors.AnimatedGradient -> stringResource(R.string.animatedgradient)
                     }
                 },
