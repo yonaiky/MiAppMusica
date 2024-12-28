@@ -1014,6 +1014,7 @@ fun Lyrics(
                                                 ) else Color.Transparent else Color.Transparent,
                                                 RoundedCornerShape(6.dp)
                                             )
+                                            .fillMaxWidth()
                                     )
                                 else
                                     BasicText(
