@@ -149,7 +149,6 @@ import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.utils.conditional
 import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -1015,7 +1014,6 @@ fun Lyrics(
                                                 ) else Color.Transparent else Color.Transparent,
                                                 RoundedCornerShape(6.dp)
                                             )
-                                            .conditional(lyricsHighlight != LyricsHighlight.None){fillMaxWidth()}
                                     )
                                 else
                                     BasicText(
