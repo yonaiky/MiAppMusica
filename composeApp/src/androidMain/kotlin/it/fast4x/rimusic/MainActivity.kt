@@ -979,14 +979,6 @@ class MainActivity :
                         )
                     )
                 }
-                if (colorPaletteName == ColorPaletteName.CustomColor) {
-                    appearance = appearance.copy(
-                        colorPalette = dynamicColorPaletteOf(
-                              Color(customColor),
-                       colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
-                        )
-                    )
-                }
             }
 
 
