@@ -27,8 +27,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "RiMusic"
 include(":composeApp")
-include(":compose-reordering")
-include(":compose-persist")
 // Projects from extensions
 include(":innertube")
 project(":innertube").projectDir = file("extensions/innertube")
