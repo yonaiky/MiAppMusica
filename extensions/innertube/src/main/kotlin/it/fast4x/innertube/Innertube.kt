@@ -34,6 +34,7 @@ import it.fast4x.innertube.clients.YouTubeClient
 import it.fast4x.innertube.clients.YouTubeClient.Companion.IOS
 import it.fast4x.innertube.clients.YouTubeClient.Companion.WEB_REMIX
 import it.fast4x.innertube.clients.YouTubeLocale
+import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.Context.Client
 import it.fast4x.innertube.models.Context.Companion.DefaultAndroid
 import it.fast4x.innertube.models.Context.Companion.DefaultIOS
