@@ -40,6 +40,7 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YT_PREFIX
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.PlaylistsType
@@ -137,6 +138,7 @@ fun HomeLibrary(
             PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
             PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
             PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
+            PlaylistsType.YTPlaylist -> Database.songsInAllYTPlaylists()
         }.map { it.map( Song::asMediaItem ) }
     }
     //<editor-fold desc="New playlist dialog">
@@ -236,6 +238,7 @@ fun HomeLibrary(
     val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
 
     var buttonsList = listOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
+    buttonsList += PlaylistsType.YTPlaylist to stringResource(R.string.yt_playlists)
     if (showPipedPlaylists) buttonsList +=
         PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
     if (showPinnedPlaylists) buttonsList +=
@@ -307,6 +310,7 @@ fun HomeLibrary(
                         PlaylistsType.PinnedPlaylist -> PINNED_PREFIX
                         PlaylistsType.MonthlyPlaylist -> MONTHLY_PREFIX
                         PlaylistsType.PipedPlaylist -> PIPED_PREFIX
+                        PlaylistsType.YTPlaylist -> YT_PREFIX
                     }
                 val condition: (PlaylistPreview) -> Boolean = {
                     it.playlist.name.startsWith( listPrefix, true )

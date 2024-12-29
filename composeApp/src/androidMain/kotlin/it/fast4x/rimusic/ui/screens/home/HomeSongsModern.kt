@@ -997,7 +997,7 @@ fun HomeSongsModern(
                                 ),
                             icon = R.drawable.locate,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                            color = colorPalette().text,
                             onClick = {}
                         )
                         LaunchedEffect(scrollToNowPlaying) {
@@ -1010,7 +1010,7 @@ fun HomeSongsModern(
                             HeaderIconButton(
                                 icon = R.drawable.downloaded,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -1065,7 +1065,7 @@ fun HomeSongsModern(
                             HeaderIconButton(
                                 icon = R.drawable.download,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -1137,7 +1137,7 @@ fun HomeSongsModern(
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = items.isNotEmpty(),
-                            color = if (items.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                            color = colorPalette().text,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 2.dp)
