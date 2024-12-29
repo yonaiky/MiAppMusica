@@ -70,7 +70,7 @@ fun YouTubeLogin(
                 //cookieManager.flush()
                 //WebStorage.getInstance().deleteAllData()
                 println("YoutubeLogin Cookie: $cookie")
-                GlobalScope.launch {
+                scope.launch {
                     Innertube.accountInfo().onSuccess {
                         accountName = it.name.orEmpty()
                         accountEmail = it.email.orEmpty()
@@ -92,7 +92,10 @@ fun YouTubeLogin(
         modifier = Modifier.fillMaxSize().windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
     ) {
         //Row(modifier = Modifier.fillMaxWidth()) {
-            Title("Login to YouTube Music", icon = R.drawable.chevron_down, onClick = { onLogin(true) })
+            Title("Login to YouTube Music",
+                icon = R.drawable.chevron_down,
+                onClick = { onLogin(true) }
+            )
         //}
 
         AndroidView(
@@ -105,23 +108,24 @@ fun YouTubeLogin(
                         override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
                             if (url.startsWith("https://music.youtube.com")) {
                                 cookie = CookieManager.getInstance().getCookie(url)
-                                GlobalScope.launch {
-                                    Innertube.accountInfo().onSuccess {
-                                        accountName = it.name.orEmpty()
-                                        accountEmail = it.email.orEmpty()
-                                        accountChannelHandle = it.channelHandle.orEmpty()
-                                        onLogin(true)
-                                    }.onFailure {
-                                        Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
-                                        println("Error YoutubeLogin: ${it.stackTraceToString()}")
-                                    }
-                                }
+                                if (cookie.isNotEmpty())
+                                    onLogin(true)
+//                                scope.launch {
+//                                    Innertube.accountInfo().onSuccess {
+//                                        accountName = it.name.orEmpty()
+//                                        accountEmail = it.email.orEmpty()
+//                                        accountChannelHandle = it.channelHandle.orEmpty()
+//                                        onLogin(true)
+//                                    }.onFailure {
+//                                        Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
+//                                        println("Error YoutubeLogin: ${it.stackTraceToString()}")
+//                                    }
+//                                }
                             }
                         }
 
                         override fun onPageFinished(view: WebView, url: String?) {
                             loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
-                            onLogin(true)
                         }
                     }
                     settings.apply {

@@ -175,6 +175,12 @@ fun HomeLibrary(
                         }
 
                 }
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    Database.asyncTransaction {
+                        insert(Playlist(name = newValue))
+                    }
+                }
             }
 
             if ( isPipedEnabled && pipedSession.token.isNotEmpty() )
@@ -237,7 +243,7 @@ fun HomeLibrary(
     val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
     val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
 
-    var buttonsList = listOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
+    val buttonsList = mutableListOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
     buttonsList += PlaylistsType.YTPlaylist to stringResource(R.string.yt_playlists)
     if (showPipedPlaylists) buttonsList +=
         PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)

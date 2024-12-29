@@ -42,13 +42,10 @@ import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.MONTHLY_PREFIX
-import it.fast4x.rimusic.YT_PREFIX
 import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.cleanString
 import it.fast4x.rimusic.utils.checkFileExists
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
-import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -128,6 +125,7 @@ fun PlaylistItem(
     }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
 
     PlaylistItem(
+        browseId = playlist.playlist.browseId,
         thumbnailContent = {
             if (playlistThumbnailUrl.value != "") {
                 AsyncImage(
@@ -250,6 +248,7 @@ fun PlaylistItem(
 
 @Composable
 fun PlaylistItem(
+    browseId: String? = null,
     thumbnailContent: @Composable BoxScope.(
         //modifier: Modifier
             ) -> Unit,
@@ -316,19 +315,19 @@ fun PlaylistItem(
                         contentScale = ContentScale.Fit
                     )
                 }
-                if (it.startsWith(YT_PREFIX,0,true)) {
-                    Image(
-                        painter = painterResource(R.drawable.logo_youtube),
-                        colorFilter = ColorFilter.tint(colorPalette().red),
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(all = 5.dp),
-                        contentDescription = "Background Image",
-                        contentScale = ContentScale.Fit
-                    )
-                }
-            }
 
+            }
+            if (browseId != null) {
+                Image(
+                    painter = painterResource(R.drawable.ytmusic),
+                    colorFilter = ColorFilter.tint(colorPalette().text),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(all = 5.dp),
+                    contentDescription = "Background Image",
+                    contentScale = ContentScale.Fit
+                )
+            }
 
             if (showSongsCount)
                 songCount?.let {

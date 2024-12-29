@@ -75,7 +75,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.YT_PREFIX
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
@@ -266,7 +265,7 @@ fun PlaylistSongList(
             placeholder = "https://........",
             setValue = { text ->
                 Database.asyncTransaction {
-                    val playlistId = insert(Playlist(name = "$YT_PREFIX$text", browseId = browseId))
+                    val playlistId = insert(Playlist(name = text, browseId = browseId))
 
                     playlistPage?.songsPage?.items
                                 ?.map(Innertube.SongItem::asMediaItem)

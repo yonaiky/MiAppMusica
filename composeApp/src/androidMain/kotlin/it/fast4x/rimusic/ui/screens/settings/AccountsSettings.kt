@@ -173,10 +173,10 @@ fun AccountsSettings() {
             key = ytAccountChannelHandleKey,
             defaultValue = ""
         )
-        val isLoggedIn = remember(cookie) {
+        var isLoggedIn = remember(cookie) {
             "SAPISID" in parseCookieString(cookie)
         }
-        //if (!isLoggedIn) isYouTubeLoginEnabled = false // disable if not logged in
+
 
 
 
@@ -209,8 +209,8 @@ fun AccountsSettings() {
                         ButtonBarSettingEntry(
                             isEnabled = true,
                             title = if (isLoggedIn) "Disconnect" else "Connect",
-                            text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
-                            icon = R.drawable.logo_youtube,
+                            text = "", //if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
+                            icon = R.drawable.ytmusic,
                             iconColor = colorPalette().text,
                             onClick = {
                                 if (isLoggedIn) {
@@ -229,7 +229,7 @@ fun AccountsSettings() {
                             text = "You need to log in to listen the songs online"
                         )
                          */
-                        SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+                        //SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
 
                         CustomModalBottomSheet(
                             showSheet = loginYouTube,
@@ -240,7 +240,6 @@ fun AccountsSettings() {
                                     context = context
                                 )
                                 loginYouTube = false
-                                restartActivity = !restartActivity
                             },
                             containerColor = colorPalette().background0,
                             contentColor = colorPalette().background0,
@@ -260,7 +259,7 @@ fun AccountsSettings() {
                                     if (success) {
                                         loginYouTube = false
                                         SmartMessage(
-                                            "Login successful, restart RiMusic",
+                                            "Login successful",
                                             type = PopupType.Info,
                                             context = context
                                         )

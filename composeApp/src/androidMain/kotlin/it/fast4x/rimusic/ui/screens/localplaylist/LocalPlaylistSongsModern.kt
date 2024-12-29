@@ -179,9 +179,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.checkFileExists
 import it.fast4x.rimusic.utils.deleteFileIfExists
@@ -190,7 +188,6 @@ import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.map
 
 
 @KotlinCsvExperimental
@@ -892,7 +889,9 @@ fun LocalPlaylistSongsModern(
                         .fillMaxWidth()
                 ) {
 
-                    if (playlistNotMonthlyType)
+                    if (playlistNotMonthlyType &&
+                        playlistPreview?.playlist?.browseId?.isEmpty() == true
+                    )
                         HeaderIconButton(
                             icon = R.drawable.pin,
                             enabled = playlistSongs.isNotEmpty(),
