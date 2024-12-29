@@ -853,4 +853,6 @@
     <string name="icereflection">Buz Əksi</string>
     <string name="blackcherrycosmos">Qara Albalı Kainat</string>
     <string name="gradienttype">Dəyişmə Növü</string>
+    <string name="random">Təsadüfi</string>
+    <string name="colorpalette">Rəng Palitrası</string>
 </resources>

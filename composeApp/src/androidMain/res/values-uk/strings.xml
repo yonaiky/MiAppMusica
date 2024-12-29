@@ -853,4 +853,6 @@
     <string name="icereflection">Відображення льоду</string>
     <string name="blackcherrycosmos">Чорна вишня Космос</string>
     <string name="gradienttype">Тип градієнта</string>
+    <string name="random">Random</string>
+    <string name="colorpalette">Color Palette</string>
 </resources>
