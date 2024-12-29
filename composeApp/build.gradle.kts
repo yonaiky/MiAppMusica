@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -142,39 +143,48 @@ android {
             manifestPlaceholders["appName"] = "RiMusic-Debug"
         }
 
-        release {
-            vcsInfo.include = false
+        create( "full" ) {
+            // App's properties
+            manifestPlaceholders["appName"] = "RiMusic-KBuild"
+            applicationIdSuffix = ".kbuild"
+            versionNameSuffix = "-kbf"
+        }
+
+        create( "minified" ) {
+            // App's properties
+            manifestPlaceholders["appName"] = "RiMusic-KBuild"
+            applicationIdSuffix = ".kbuild"
+            versionNameSuffix = "-kbm"
+
+            // Package optimization
             isMinifyEnabled = true
             isShrinkResources = true
-            manifestPlaceholders["appName"] = "RiMusic"
-            signingConfig = signingConfigs.getByName("debug")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
     applicationVariants.all {
-        val variant = this
-        variant.outputs
-            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
-            .forEach { output ->
-                //val outputFileName = "app-${variant.baseName}-${variant.versionName}-${variant.versionCode}.apk"
-                val outputFileName = "app-${variant.baseName}.apk"
-                output.outputFileName = outputFileName
-            }
+        outputs.map { it as BaseVariantOutputImpl }
+               .forEach { output ->
+                   output.outputFileName = "RiMusic-$flavorName-${buildType.name}-unsigned.apk"
+               }
     }
 
-    flavorDimensions += "version"
+    //<editor-fold desc="Kbuild dimension">
+    flavorDimensions += "kbuild"
     productFlavors {
-        create("foss") {
-            dimension = "version"
+        create( "upstream" ) {
+            dimension = "kbuild"
+            applicationIdSuffix += ".upstream"
+        }
+        create( "improvised" ) {
+            dimension = "kbuild"
         }
     }
-    productFlavors {
-        create("accrescent") {
-            dimension = "version"
-            manifestPlaceholders["appName"] = "RiMusic-Acc"
-        }
-    }
+    //</editor-fold>
 
     sourceSets.all {
         kotlin.srcDir("src/$name/kotlin")
