@@ -48,6 +48,7 @@ import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Instance
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
@@ -76,6 +77,8 @@ import it.fast4x.rimusic.utils.ytVisitorDataKey
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
+import it.fast4x.rimusic.utils.enableYouTubeSyncKey
+import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
@@ -96,6 +99,7 @@ import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.pipedInstanceNameKey
 import it.fast4x.rimusic.utils.pipedPasswordKey
 import it.fast4x.rimusic.utils.pipedUsernameKey
+import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.proxyHostnameKey
 import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
@@ -159,6 +163,7 @@ fun AccountsSettings() {
         /****** YOUTUBE LOGIN ******/
 
         var isYouTubeLoginEnabled by rememberPreference(enableYouTubeLoginKey, false)
+        var isYouTubeSyncEnabled by rememberPreference(enableYouTubeSyncKey, false)
         var loginYouTube by remember { mutableStateOf(false) }
         var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = "")
         var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
@@ -267,6 +272,16 @@ fun AccountsSettings() {
                     }
 
                 }
+
+                SwitchSettingEntry(
+                    title = "Sync with your YouTube Music Account",
+                    text = "",
+                    isChecked = isYouTubeSyncEnabled,
+                    onCheckedChange = {
+                        isYouTubeSyncEnabled = it
+                    }
+                )
+
             }
         }
 
@@ -577,6 +592,27 @@ fun AccountsSettings() {
 
 
     }
+
+
 }
+
+fun isYouTubeLoginEnabled(): Boolean {
+    val isYouTubeLoginEnabled = appContext().preferences.getBoolean(enableYouTubeLoginKey, false)
+    return isYouTubeLoginEnabled
+}
+
+fun isYouTubeSyncEnabled(): Boolean {
+    val isYouTubeSyncEnabled = appContext().preferences.getBoolean(enableYouTubeSyncKey, false)
+    return isYouTubeSyncEnabled && isYouTubeLoggedIn() && isYouTubeLoginEnabled()
+}
+
+fun isYouTubeLoggedIn(): Boolean {
+    val cookie = appContext().encryptedPreferences.getString(ytCookieKey, "")
+    val isLoggedIn = cookie?.let { parseCookieString(it) }?.contains("SAPISID") == true
+    return isLoggedIn
+}
+
+
+
 
 

@@ -40,8 +40,12 @@ import it.fast4x.innertube.models.Context.Companion.DefaultAndroid
 import it.fast4x.innertube.models.Context.Companion.DefaultIOS
 import it.fast4x.innertube.models.Context.Companion.DefaultWebRemix
 import it.fast4x.innertube.models.bodies.AccountMenuBody
+import it.fast4x.innertube.models.bodies.Action
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.models.bodies.CreatePlaylistBody
+import it.fast4x.innertube.models.bodies.EditPlaylistBody
 import it.fast4x.innertube.models.bodies.PlayerBody
+import it.fast4x.innertube.models.bodies.PlaylistDeleteBody
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.YoutubePreferences
 import it.fast4x.innertube.utils.parseCookieString
@@ -183,6 +187,10 @@ object Innertube {
     internal const val search = "/youtubei/v1/search"
     internal const val searchSuggestions = "/youtubei/v1/music/get_search_suggestions"
     internal const val accountMenu = "/youtubei/v1/account/account_menu"
+    internal const val playlistCreate = "/youtubei/v1/playlist/create"
+    internal const val playlistDelete = "/youtubei/v1/playlist/delete"
+    internal const val playlistEdit = "/youtubei/v1/browse/edit_playlist"
+
 
     internal const val musicResponsiveListItemRendererMask = "musicResponsiveListItemRenderer(flexColumns,fixedColumns,thumbnail,navigationEndpoint)"
     internal const val musicTwoRowItemRendererMask = "musicTwoRowItemRenderer(thumbnailRenderer,title,subtitle,navigationEndpoint)"
@@ -544,10 +552,9 @@ object Innertube {
                     //if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
                     if ("SAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidHash =
-                            sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
-                        println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
-                        append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
+                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
+                    println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
+                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
 //                    if (clientType != DefaultWebRemix.client) {
 //                        val sapisidHash =
 //                            sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
@@ -655,5 +662,50 @@ object Innertube {
         }
 */
 
+    suspend fun createPlaylist(
+        ytClient: Client,
+        title: String,
+    ) = client.post(playlistCreate) {
+        setLogin(ytClient, true)
+        setBody(
+            CreatePlaylistBody(
+                context = ytClient.toContext(locale, visitorData),
+                title = title
+            )
+        )
+    }
+
+    suspend fun deletePlaylist(
+        ytClient: Client,
+        playlistId: String,
+    ) = client.post(playlistDelete) {
+        println("deleting $playlistId")
+        setLogin(ytClient, setLogin = true)
+        setBody(
+            PlaylistDeleteBody(
+                context = ytClient.toContext(locale, visitorData),
+                playlistId = playlistId
+            )
+        )
+    }
+
+    suspend fun renamePlaylist(
+        ytClient: Client,
+        playlistId: String,
+        name: String,
+    ) = client.post(playlistEdit) {
+        setLogin(ytClient, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = ytClient.toContext(locale, visitorData),
+                playlistId = playlistId,
+                actions = listOf(
+                    Action.RenamePlaylistAction(
+                        playlistName = name
+                    )
+                )
+            )
+        )
+    }
 
 }
