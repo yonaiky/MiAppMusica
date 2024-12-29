@@ -84,8 +84,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -189,6 +191,18 @@ import androidx.core.graphics.ColorUtils.colorToHSL
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Timeline
 import androidx.palette.graphics.Palette
+import com.mikepenz.hypnoticcanvas.shaderBackground
+import com.mikepenz.hypnoticcanvas.shaders.BlackCherryCosmos
+import com.mikepenz.hypnoticcanvas.shaders.GlossyGradients
+import com.mikepenz.hypnoticcanvas.shaders.GoldenMagma
+import com.mikepenz.hypnoticcanvas.shaders.GradientFlow
+import com.mikepenz.hypnoticcanvas.shaders.IceReflection
+import com.mikepenz.hypnoticcanvas.shaders.InkFlow
+import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
+import com.mikepenz.hypnoticcanvas.shaders.MesmerizingLens
+import com.mikepenz.hypnoticcanvas.shaders.OilFlow
+import com.mikepenz.hypnoticcanvas.shaders.PurpleLiquid
+import com.mikepenz.hypnoticcanvas.shaders.Stage
 import dev.chrisbanes.haze.HazeDefaults
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.haze
@@ -266,8 +280,10 @@ import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.statsExpandedKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.AnimatedGradient
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.animatedGradientKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.thumbnailFadeExKey
@@ -738,20 +754,34 @@ fun Player(
         val colorHSL by remember { mutableStateOf(floatArrayOf(0f, 0f, 0f)) }
         val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
         colorToHSL(color,colorHSL)
-        colorHSL[1] = (colorHSL[1] + if (lightTheme) 0f else 0.35f).coerceIn(0f,1f)
+        colorHSL[1] = (colorHSL[1] + if (lightTheme || colorHSL[1] < 0.1f) 0f else 0.35f).coerceIn(0f,1f)
         colorHSL[2] = if (lightTheme) {colorHSL[2].coerceIn(0.5f,1f)} else colorHSL[2]
         return Color.hsl(colorHSL[0],colorHSL[1],colorHSL[2])
+    }
+
+    var lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
+    var ratio = if (lightTheme) 1f else 0.5f
+
+    fun Color.darkenBy(): Color {
+        return copy(
+            red = red * ratio,
+            green = green * ratio,
+            blue = blue * ratio,
+            alpha = alpha
+        )
     }
 
     val playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
         PlayerBackgroundColors.BlurredCoverColor
     )
+    val animatedGradient by rememberPreference(
+        animatedGradientKey,
+        AnimatedGradient.Linear
+    )
     val isGradientBackgroundEnabled =
         playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
-                playerBackgroundColors == PlayerBackgroundColors.FluidThemeColorGradient ||
-                playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient
 
 
@@ -764,7 +794,6 @@ fun Player(
         LaunchedEffect(mediaItem.mediaId, updateBrush) {
             if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
-                playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient || updateBrush
             ) {
             try {
@@ -775,19 +804,19 @@ fun Player(
 
                 dynamicColorPalette = dynamicColorPaletteOf(
                     bitmap,
-                    isSystemDarkMode
+                    !lightTheme
                 ) ?: color
                 println("Player INSIDE getting dynamic color ${dynamicColorPalette}")
 
                 val palette = Palette.from(bitmap).generate()
 
-                dominant = palette.getDominantColor(0)
-                vibrant = palette.getVibrantColor(0)
-                lightVibrant = palette.getLightVibrantColor(0)
-                darkVibrant = palette.getDarkVibrantColor(0)
-                muted = palette.getMutedColor(0)
-                lightMuted = palette.getLightMutedColor(0)
-                darkMuted = palette.getDarkMutedColor(0)
+                dominant = palette.getDominantColor(dynamicColorPalette.accent.toArgb())
+                vibrant = palette.getVibrantColor(dynamicColorPalette.accent.toArgb())
+                lightVibrant = palette.getLightVibrantColor(dynamicColorPalette.accent.toArgb())
+                darkVibrant = palette.getDarkVibrantColor(dynamicColorPalette.accent.toArgb())
+                muted = palette.getMutedColor(dynamicColorPalette.accent.toArgb())
+                lightMuted = palette.getLightMutedColor(dynamicColorPalette.accent.toArgb())
+                darkMuted = palette.getDarkMutedColor(dynamicColorPalette.accent.toArgb())
 
             } catch (e: Exception) {
                 dynamicColorPalette = color
@@ -910,6 +939,17 @@ fun Player(
     val showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
     var coverThumbnailAnimation by rememberPreference(coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl)
 
+    var value by remember{ mutableStateOf(2) }
+    val gradients = enumValues<AnimatedGradient>()
+    var tempGradient by remember{ mutableStateOf(AnimatedGradient.Linear) }
+
+    if (animatedGradient == AnimatedGradient.Random){
+        LaunchedEffect(mediaItem.mediaId){
+            value = (2..13).random()
+        }
+        tempGradient = gradients[value]
+    }
+
 
     if (!isGradientBackgroundEnabled) {
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || showthumbnail)) {
@@ -939,7 +979,7 @@ fun Player(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = {
-                        if (thumbnailTapEnabled) {
+                        if (thumbnailTapEnabled && !showthumbnail) {
                             if (isShowingVisualizer) isShowingVisualizer = false
                             isShowingLyrics = !isShowingLyrics
                         }
@@ -978,52 +1018,185 @@ fun Player(
                     )
                 }
 
-        } else {
+        } else if (playerBackgroundColors == PlayerBackgroundColors.ColorPalette){
             containerModifier = containerModifier
-                .conditional (playerType == PlayerType.Essential) {
-                    background(
-                        //dynamicColorPalette.background1
-                        color.background1
-                    )
+                .drawBehind {
+                    val colors = listOf(Color(dominant),Color(vibrant),Color(lightVibrant),Color(darkVibrant),Color(muted),Color(lightMuted),Color(darkMuted))
+                    val boxheight = (size.height)/7
+                    colors.forEachIndexed {i, color ->
+                        drawRect(
+                            color = colors[i],
+                            topLeft = Offset(0f,i*boxheight),
+                            size = Size(size.width,boxheight)
+                        )
+                    }
                 }
+        } else if (playerBackgroundColors == PlayerBackgroundColors.CoverColor){
+            containerModifier = containerModifier
+                .background(dynamicColorPalette.background1)
+        } else if (playerBackgroundColors == PlayerBackgroundColors.ThemeColor){
+            containerModifier = containerModifier
+                .background(color.background1)
         }
     } else {
         when (playerBackgroundColors) {
-            PlayerBackgroundColors.FluidThemeColorGradient,
-            PlayerBackgroundColors.FluidCoverColorGradient -> {
-                containerModifier = containerModifier
-                    .onSizeChanged {
-                        sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                    }
-                    .drawBehind {
-                        drawRect(brush = brushA)
-                        drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
-                        drawRect(brush = brushB, blendMode = BlendMode.DstAtop)
-                    }
-            }
 
-            PlayerBackgroundColors.AnimatedGradient ->{
-                containerModifier = containerModifier
-                    .onSizeChanged {
-                        sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                    }
-                    .animatedGradient(
-                        binder.player.isPlaying,
-                        saturate(dominant),
-                        saturate(vibrant),
-                        saturate(lightVibrant),
-                        saturate(darkVibrant),
-                        saturate(muted),
-                        saturate(lightMuted),
-                        saturate(darkMuted)
-                    )
+            PlayerBackgroundColors.AnimatedGradient -> {
+                if (animatedGradient == AnimatedGradient.FluidCoverColorGradient ||
+                    animatedGradient == AnimatedGradient.FluidThemeColorGradient) {
+                    containerModifier = containerModifier
+                            .onSizeChanged {
+                                sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                            }
+                            .drawBehind {
+                                drawRect(brush = brushA)
+                                drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
+                                drawRect(brush = brushB, blendMode = BlendMode.DstAtop)
+                            }
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[2]) || animatedGradient == AnimatedGradient.Linear){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .animatedGradient(
+                            binder.player.isPlaying,
+                            saturate(dominant).darkenBy(),
+                            saturate(vibrant).darkenBy(),
+                            saturate(lightVibrant).darkenBy(),
+                            saturate(darkVibrant).darkenBy(),
+                            saturate(muted).darkenBy(),
+                            saturate(lightMuted).darkenBy(),
+                            saturate(darkMuted).darkenBy()
+                        )
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[3]) || animatedGradient == AnimatedGradient.Mesh) {
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            MeshGradient(
+                                arrayOf(
+                                    saturate(vibrant).darkenBy(),
+                                    saturate(lightVibrant).darkenBy(),
+                                    saturate(darkVibrant).darkenBy(),
+                                    saturate(muted).darkenBy(),
+                                    saturate(lightMuted).darkenBy(),
+                                    saturate(darkMuted).darkenBy(),
+                                    saturate(dominant).darkenBy()
+                                ),
+                                scale = 1f
+                            )
+                        )
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[4]) || animatedGradient == AnimatedGradient.MesmerizingLens){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            MesmerizingLens
+                        )
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[5]) || animatedGradient == AnimatedGradient.GlossyGradients){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            GlossyGradients
+                        )
+                        .background(if (!lightTheme) Color.Black.copy(0.2f) else Color.Transparent)
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[6]) || animatedGradient == AnimatedGradient.GradientFlow){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            GradientFlow
+                        )
+                        .background(if (!lightTheme) Color.Black.copy(0.2f) else Color.Transparent)
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[7]) || animatedGradient == AnimatedGradient.PurpleLiquid){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            PurpleLiquid
+                        )
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[8]) || animatedGradient == AnimatedGradient.InkFlow){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            InkFlow
+                        )
+                        .background(if (lightTheme) Color.White.copy(0.4f) else Color.Transparent)
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[9]) || animatedGradient == AnimatedGradient.OilFlow){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            OilFlow
+                        )
+                        .background(if (lightTheme) Color.White.copy(0.4f) else Color.Transparent)
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[10]) || animatedGradient == AnimatedGradient.IceReflection){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            IceReflection
+                        )
+                        .background(if (!lightTheme) Color.Black.copy(0.3f) else Color.Transparent)
+                        .background(if (lightTheme) Color.White.copy(0.4f) else Color.Transparent)
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[11]) || animatedGradient == AnimatedGradient.Stage){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            Stage
+                        )
+                        .background(if (!lightTheme) Color.Black.copy(0.3f) else Color.Transparent)
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[12]) || animatedGradient == AnimatedGradient.GoldenMagma){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            GoldenMagma
+                        )
+                        .background(if (!lightTheme) Color.Black.copy(0.2f) else Color.Transparent)
+                        .background(if (lightTheme) Color.White.copy(0.3f) else Color.Transparent)
+                }
+                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[13]) || animatedGradient == AnimatedGradient.BlackCherryCosmos){
+                    containerModifier = containerModifier
+                        .onSizeChanged {
+                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
+                        }
+                        .shaderBackground(
+                            BlackCherryCosmos
+                        )
+                        .background(if (lightTheme) Color.White.copy(0.35f) else Color.Transparent)
+                }
             }
 
             else -> {
                 containerModifier = containerModifier
                     .background(
                         Brush.verticalGradient(
-                            0.5f to dynamicColorPalette.background2,
+                            0.5f to if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) dynamicColorPalette.background1 else colorPalette().background1,
                             1.0f to if (blackgradient) Color.Black else colorPalette().background2,
                             //0.0f to colorPalette().background0,
                             //1.0f to colorPalette().background2,

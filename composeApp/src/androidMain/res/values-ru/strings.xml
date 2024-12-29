@@ -842,4 +842,21 @@
     <string name="bookmark">Закладка</string>
     <string name="downloading_videos_not_supported">Загрузка видео не поддерживается</string>
     <string name="animatedgradient">Анимация градиента</string>
+    <string name="linear">Линейный градиент</string>
+    <string name="mesh">Сетчатый градиент</string>
+    <string name="mesmerizinglens">Завораживающая линза</string>
+    <string name="glossygradient">Глянцевый градиент</string>
+    <string name="gradientflow">Градиентный поток</string>
+    <string name="purpleliquid">Фиолетовая жидкость</string>
+    <string name="stage">Состояние</string>
+    <string name="inkflow">Поток чернил</string>
+    <string name="goldenmagma">Золотая Магма</string>
+    <string name="oilflow">Поток нефти</string>
+    <string name="icereflection">Отражение льда</string>
+    <string name="blackcherrycosmos">Черная вишня Космос</string>
+    <string name="gradienttype">Тип градиента</string>
+    <string name="random">Random</string>
+    <string name="colorpalette">Color Palette</string>
+    <string name="customcolor">Custom Color</string>
+    <string name="lyricsanimate">Animate Lyrics Size</string>
 </resources>

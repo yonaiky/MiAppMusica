@@ -178,6 +178,7 @@ const val showMonthlyPlaylistInQuickPicksKey = "showMonthlyPlaylistInQuickPicks"
 const val showMonthlyPlaylistInLibraryKey = "showMonthlyPlaylistInLibrary"
 const val enableQuickPicksPageKey = "enableQuickPicksPage"
 const val playerBackgroundColorsKey = "playerBackgroundColors"
+const val animatedGradientKey = "animatedGradient"
 const val playerControlsTypeKey = "playerControlsType"
 const val playerInfoTypeKey = "playerInfoType"
 const val showTopActionsBarKey = "showTopActionsBar"
@@ -333,6 +334,8 @@ const val playlistSwipeLeftActionKey = "playlistSwipeLeftAction"
 const val playlistSwipeRightActionKey = "playlistSwipeRightAction"
 const val albumSwipeLeftActionKey = "albumSwipeLeftAction"
 const val albumSwipeRightActionKey = "albumSwipeRightAction"
+const val customColorKey = "customColor"
+const val lyricsSizeAnimateKey = "lyricsSizeAnimate"
 
 /*
 @PublishedApi

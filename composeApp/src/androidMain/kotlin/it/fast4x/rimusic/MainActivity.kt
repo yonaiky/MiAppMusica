@@ -109,6 +109,7 @@ import it.fast4x.innertube.utils.ProxyPreferenceItem
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.YoutubePreferenceItem
 import it.fast4x.innertube.utils.YoutubePreferences
+import it.fast4x.rimusic.enums.AnimatedGradient
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.ColorPaletteMode
@@ -149,6 +150,7 @@ import it.fast4x.rimusic.utils.InitDownloader
 import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
 import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.animatedGradientKey
 import it.fast4x.rimusic.utils.applyFontPaddingKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
@@ -157,6 +159,7 @@ import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
+import it.fast4x.rimusic.utils.customColorKey
 import it.fast4x.rimusic.utils.customThemeDark_Background0Key
 import it.fast4x.rimusic.utils.customThemeDark_Background1Key
 import it.fast4x.rimusic.utils.customThemeDark_Background2Key
@@ -528,6 +531,9 @@ class MainActivity :
             val navController = rememberNavController()
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
+            var animatedGradient by rememberPreference(animatedGradientKey, AnimatedGradient.Linear)
+            var customColor by rememberPreference(customColorKey, Color.Green.hashCode())
+            val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
 
 
             LocalePreferences.preference =
@@ -606,7 +612,13 @@ class MainActivity :
                     if (colorPaletteName == ColorPaletteName.MaterialYou) {
                         colorPalette = dynamicColorPaletteOf(
                             Color(monet.getAccentColor(this@MainActivity)),
-                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
+                            !lightTheme
+                        )
+                    }
+                    if (colorPaletteName == ColorPaletteName.CustomColor) {
+                        colorPalette = dynamicColorPaletteOf(
+                            Color(customColor),
+                            !lightTheme
                         )
                     }
 
@@ -640,7 +652,7 @@ class MainActivity :
                 val isCoverColor =
                     playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
                             playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
-                            playerBackgroundColors == PlayerBackgroundColors.FluidCoverColorGradient
+                            animatedGradient == AnimatedGradient.FluidCoverColorGradient
 
                 if (!isDynamicPalette) return
 
@@ -849,7 +861,7 @@ class MainActivity :
                                     if (colorPaletteName == ColorPaletteName.MaterialYou) {
                                         colorPalette = dynamicColorPaletteOf(
                                             Color(monet.getAccentColor(this@MainActivity)),
-                                            colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
+                                            !lightTheme
                                         )
                                     }
 
@@ -858,6 +870,12 @@ class MainActivity :
                                             colorPalette,
                                             this@MainActivity,
                                             isSystemInDarkTheme
+                                        )
+                                    }
+                                    if (colorPaletteName == ColorPaletteName.CustomColor) {
+                                        colorPalette = dynamicColorPaletteOf(
+                                            Color(customColor),
+                                            !lightTheme
                                         )
                                     }
 
