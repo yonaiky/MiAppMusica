@@ -194,6 +194,11 @@ interface Database {
                 SortOrder.Ascending -> songsOfflineByDurationAsc()
                 SortOrder.Descending -> songsOfflineByDurationDesc()
             }
+
+            SongSortBy.RelativePlayTime -> when (sortOrder) {
+                SortOrder.Ascending -> songsOfflineByRelativePlayTimeAsc()
+                SortOrder.Descending -> songsOfflineByRelativePlayTimeDesc()
+            }
         }
     }
 
