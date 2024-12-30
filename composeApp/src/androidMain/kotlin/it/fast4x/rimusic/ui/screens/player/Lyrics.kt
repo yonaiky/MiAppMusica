@@ -883,7 +883,7 @@ fun Lyrics(
                                 }
                             }
                             val animateSizeText by animateFloatAsState(
-                                targetValue = if (index == synchronizedLyrics.index) 1.1f else 0.9f,
+                                targetValue = if (index == synchronizedLyrics.index) 1.05f else 0.85f,
                                 animationSpec = tween(500, easing = LinearOutSlowInEasing),
                                 label = ""
                             )
@@ -1015,18 +1015,18 @@ fun Lyrics(
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
                                             .conditional(lyricsSizeAnimate){padding(vertical = 4.dp)}
                                             .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
-                                            .clickable {
-                                                if (clickLyricsText)
-                                                    binder?.player?.seekTo(sentence.first)
-                                            }
                                             .conditional(lyricsSizeAnimate){
                                                 graphicsLayer {
                                                     transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f,0.5f)
-                                                                      else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f,0.5f)
-                                                                      else TransformOrigin(1f,0.5f)
+                                                    else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f,0.5f)
+                                                    else TransformOrigin(1f,0.5f)
                                                     scaleY = animateSizeText
                                                     scaleX = animateSizeText
                                                 }
+                                            }
+                                            .clickable {
+                                                if (clickLyricsText)
+                                                    binder?.player?.seekTo(sentence.first)
                                             }
                                             .background(
                                                 if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(
@@ -1075,10 +1075,6 @@ fun Lyrics(
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
                                             .conditional(lyricsSizeAnimate){padding(vertical = 4.dp)}
                                             .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
-                                            .clickable {
-                                                if (clickLyricsText)
-                                                    binder?.player?.seekTo(sentence.first)
-                                            }
                                             .conditional(lyricsSizeAnimate){
                                                 graphicsLayer {
                                                     transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f,0.5f)
@@ -1087,6 +1083,10 @@ fun Lyrics(
                                                     scaleY = if (index == synchronizedLyrics.index) 1.1f else 0.9f
                                                     scaleX = if (index == synchronizedLyrics.index) 1.1f else 0.9f
                                                 }
+                                            }
+                                            .clickable {
+                                                if (clickLyricsText)
+                                                    binder?.player?.seekTo(sentence.first)
                                             }
                                     )
                                 /*else
@@ -1263,10 +1263,6 @@ fun Lyrics(
                                                 .padding(vertical = 4.dp, horizontal = 32.dp)
                                                 .conditional(lyricsSizeAnimate){padding(vertical = 4.dp)}
                                                 .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
-                                                .clickable {
-                                                    if (clickLyricsText)
-                                                        binder?.player?.seekTo(sentence.first)
-                                                }
                                                 .conditional(lyricsSizeAnimate){
                                                     graphicsLayer {
                                                         transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f,0.5f)
@@ -1275,6 +1271,10 @@ fun Lyrics(
                                                         scaleY = animateSizeText
                                                         scaleX = animateSizeText
                                                     }
+                                                }
+                                                .clickable {
+                                                    if (clickLyricsText)
+                                                        binder?.player?.seekTo(sentence.first)
                                                 }
                                         )
                                     else if (lyricsOutline == LyricsOutline.Rainbow)
@@ -1321,10 +1321,6 @@ fun Lyrics(
                                                 .padding(vertical = 4.dp, horizontal = 32.dp)
                                                 .conditional(lyricsSizeAnimate){padding(vertical = 4.dp)}
                                                 .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
-                                                .clickable {
-                                                    if (clickLyricsText)
-                                                        binder?.player?.seekTo(sentence.first)
-                                                }
                                                 .conditional(lyricsSizeAnimate){
                                                     graphicsLayer {
                                                         transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f,0.5f)
@@ -1333,6 +1329,10 @@ fun Lyrics(
                                                         scaleY = animateSizeText
                                                         scaleX = animateSizeText
                                                     }
+                                                }
+                                                .clickable {
+                                                    if (clickLyricsText)
+                                                        binder?.player?.seekTo(sentence.first)
                                                 }
                                         )
                                     else //For Glow Outline//
@@ -1401,10 +1401,6 @@ fun Lyrics(
                                                 .padding(vertical = 4.dp, horizontal = 32.dp)
                                                 .conditional(lyricsSizeAnimate){padding(vertical = 4.dp)}
                                                 .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
-                                                .clickable {
-                                                    if (clickLyricsText)
-                                                        binder?.player?.seekTo(sentence.first)
-                                                }
                                                 .conditional(lyricsSizeAnimate){
                                                     graphicsLayer {
                                                         transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f,0.5f)
@@ -1414,6 +1410,11 @@ fun Lyrics(
                                                         scaleX = animateSizeText
                                                     }
                                                 }
+                                                .clickable {
+                                                    if (clickLyricsText)
+                                                        binder?.player?.seekTo(sentence.first)
+                                                }
+
                                         )
                             }
                         }
