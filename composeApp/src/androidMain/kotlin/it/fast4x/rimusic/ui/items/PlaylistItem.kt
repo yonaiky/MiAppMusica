@@ -249,9 +249,7 @@ fun PlaylistItem(
 @Composable
 fun PlaylistItem(
     browseId: String? = null,
-    thumbnailContent: @Composable BoxScope.(
-        //modifier: Modifier
-            ) -> Unit,
+    thumbnailContent: @Composable BoxScope.() -> Unit,
     songCount: Int?,
     name: String?,
     channelName: String?,
@@ -317,7 +315,9 @@ fun PlaylistItem(
                 }
 
             }
-            if (browseId != null) {
+            if (browseId?.isNotEmpty() == true && name?.startsWith(
+                    PIPED_PREFIX) == false
+            ) {
                 Image(
                     painter = painterResource(R.drawable.ytmusic),
                     colorFilter = ColorFilter.tint(colorPalette().text),

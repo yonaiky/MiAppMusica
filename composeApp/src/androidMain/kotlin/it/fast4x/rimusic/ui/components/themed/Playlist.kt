@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
@@ -87,7 +88,9 @@ fun Playlist(
                     }
                 }
             }
-            if (playlist.playlist.browseId?.isNotEmpty() == true) {
+            if (playlist.playlist.browseId?.isNotEmpty() == true && !playlist.playlist.name.startsWith(
+                    PIPED_PREFIX)
+            ) {
                 Image(
                     painter = painterResource(R.drawable.ytmusic),
                     colorFilter = ColorFilter.tint(colorPalette().text),

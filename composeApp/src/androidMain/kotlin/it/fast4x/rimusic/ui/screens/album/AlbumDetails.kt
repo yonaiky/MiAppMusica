@@ -61,6 +61,7 @@ import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
@@ -75,7 +76,7 @@ import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -135,6 +136,7 @@ import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -857,7 +859,11 @@ fun AlbumDetails(
                                                                 )
                                                             )
                                                         }
-                                                        //Log.d("mediaItemPos", "added position ${position + index}")
+
+                                                        if(isYouTubeSyncEnabled())
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                playlistPreview.playlist.browseId?.let { YtMusic.addToPlaylist(it, song.id) }
+                                                            }
                                                     }
                                                 } else {
                                                     listMediaItems.forEachIndexed { index, song ->
@@ -872,7 +878,10 @@ fun AlbumDetails(
                                                                 )
                                                             )
                                                         }
-                                                        //Log.d("mediaItemPos", "add position $position")
+                                                        if(isYouTubeSyncEnabled())
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                playlistPreview.playlist.browseId?.let { YtMusic.addToPlaylist(it, song.mediaId) }
+                                                            }
                                                     }
                                                     listMediaItems.clear()
                                                     selectItems = false

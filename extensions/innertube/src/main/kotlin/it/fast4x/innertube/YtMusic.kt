@@ -24,4 +24,16 @@ object YtMusic {
         println("YtMusic renamePlaylist error: ${it.stackTraceToString()}")
     }
 
+    suspend fun addToPlaylist(playlistId: String, videoId: String) = runCatching {
+        Innertube.addToPlaylist(Context.DefaultWebRemix.client, playlistId, videoId)
+    }.onFailure {
+        println("YtMusic addToPlaylist error: ${it.stackTraceToString()}")
+    }
+
+    suspend fun removeFromPlaylist(playlistId: String, videoId: String, setVideoId: String? = null) = runCatching {
+        Innertube.removeFromPlaylist(Context.DefaultWebRemix.client, playlistId, videoId, setVideoId)
+    }.onFailure {
+        println("YtMusic removeFromPlaylist error: ${it.stackTraceToString()}")
+    }
+
 }

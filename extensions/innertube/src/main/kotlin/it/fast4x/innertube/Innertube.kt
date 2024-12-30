@@ -703,4 +703,42 @@ object Innertube {
         )
     }
 
+    suspend fun addToPlaylist(
+        ytClient: Client,
+        playlistId: String,
+        videoId: String,
+    ) = client.post(playlistEdit) {
+        setLogin(ytClient, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = ytClient.toContext(locale, visitorData),
+                playlistId = playlistId.removePrefix("VL"),
+                actions = listOf(
+                    Action.AddVideoAction(addedVideoId = videoId)
+                )
+            )
+        )
+    }
+
+    suspend fun removeFromPlaylist(
+        ytClient: Client,
+        playlistId: String,
+        videoId: String,
+        setVideoId: String? = null,
+    ) = client.post(playlistEdit) {
+        setLogin(ytClient, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = ytClient.toContext(locale, visitorData),
+                playlistId = playlistId.removePrefix("VL"),
+                actions = listOf(
+                    Action.RemoveVideoAction(
+                        removedVideoId = videoId,
+                        setVideoId = setVideoId,
+                    )
+                )
+            )
+        )
+    }
+
 }

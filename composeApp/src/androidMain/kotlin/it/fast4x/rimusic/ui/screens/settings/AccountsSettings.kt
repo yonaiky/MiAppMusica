@@ -163,7 +163,7 @@ fun AccountsSettings() {
         /****** YOUTUBE LOGIN ******/
 
         var isYouTubeLoginEnabled by rememberPreference(enableYouTubeLoginKey, false)
-        var isYouTubeSyncEnabled by rememberPreference(enableYouTubeSyncKey, false)
+        var isYouTubeSyncEnabled by rememberPreference(enableYouTubeSyncKey, true)
         var loginYouTube by remember { mutableStateOf(false) }
         var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = "")
         var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
@@ -273,6 +273,7 @@ fun AccountsSettings() {
                 }
 
                 SwitchSettingEntry(
+                    isEnabled = false,
                     title = "Sync with your YouTube Music Account",
                     text = "",
                     isChecked = isYouTubeSyncEnabled,
@@ -601,7 +602,7 @@ fun isYouTubeLoginEnabled(): Boolean {
 }
 
 fun isYouTubeSyncEnabled(): Boolean {
-    val isYouTubeSyncEnabled = appContext().preferences.getBoolean(enableYouTubeSyncKey, false)
+    val isYouTubeSyncEnabled = appContext().preferences.getBoolean(enableYouTubeSyncKey, true)
     return isYouTubeSyncEnabled && isYouTubeLoggedIn() && isYouTubeLoginEnabled()
 }
 
