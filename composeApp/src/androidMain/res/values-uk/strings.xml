@@ -853,8 +853,8 @@
     <string name="icereflection">Відображення льоду</string>
     <string name="blackcherrycosmos">Чорна вишня Космос</string>
     <string name="gradienttype">Тип градієнта</string>
-    <string name="random">Random</string>
-    <string name="colorpalette">Color Palette</string>
-    <string name="customcolor">Custom Color</string>
-    <string name="lyricsanimate">Animate Lyrics Size</string>
+    <string name="random">Випадковий</string>
+    <string name="colorpalette">Палітра кольорів</string>
+    <string name="customcolor">Користувальницький колір</string>
+    <string name="lyricsanimate">Розмір анімації тексту пісні</string>
 </resources>

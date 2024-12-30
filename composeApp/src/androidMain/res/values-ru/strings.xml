@@ -855,8 +855,8 @@
     <string name="icereflection">Отражение льда</string>
     <string name="blackcherrycosmos">Черная вишня Космос</string>
     <string name="gradienttype">Тип градиента</string>
-    <string name="random">Random</string>
-    <string name="colorpalette">Color Palette</string>
-    <string name="customcolor">Custom Color</string>
-    <string name="lyricsanimate">Animate Lyrics Size</string>
+    <string name="random">Случайный</string>
+    <string name="colorpalette">Цветовая палитра</string>
+    <string name="customcolor">Пользовательский цвет</string>
+    <string name="lyricsanimate">Размер анимации текста песни</string>
 </resources>
