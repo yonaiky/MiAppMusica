@@ -13,6 +13,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -94,6 +95,8 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.context
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.HorizontalfadingEdge2
+import it.fast4x.rimusic.utils.conditional
 
 
 @UnstableApi
@@ -159,7 +162,7 @@ fun InfoAlbumAndArtistEssential(
                     modifier = Modifier.weight(0.1f)
                 ) {
                     if (title?.startsWith(EXPLICIT_PREFIX) == true) {
-                        if (title?.startsWith(EXPLICIT_PREFIX) == true)
+                        if (title.startsWith(EXPLICIT_PREFIX))
                             IconButton(
                                 icon = R.drawable.explicit,
                                 color = colorPalette().text,
@@ -173,9 +176,10 @@ fun InfoAlbumAndArtistEssential(
                 }
             }
 
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
-                    .weight(1f),
+                    .weight(1f)
+                    .conditional(!disableScrollingText){HorizontalfadingEdge2()},
                 contentAlignment = Alignment.Center
             ) {
                 BasicText(
@@ -194,6 +198,7 @@ fun InfoAlbumAndArtistEssential(
                     ),
                     maxLines = 1,
                     modifier = modifierTitle
+                        .conditional(!disableScrollingText){padding(horizontal = maxWidth*0.05f)}
                 )
                 BasicText(
                     text = cleanPrefix(title ?: ""),
@@ -209,6 +214,7 @@ fun InfoAlbumAndArtistEssential(
                     ),
                     maxLines = 1,
                     modifier = modifierTitle
+                        .conditional(!disableScrollingText){padding(horizontal = maxWidth*0.05f)}
                 )
             }
 
@@ -303,8 +309,10 @@ fun InfoAlbumAndArtistEssential(
 
         if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
 
-        Box(
-            //modifier = Modifier
+        BoxWithConstraints(
+            modifier = Modifier
+                .conditional(!disableScrollingText){HorizontalfadingEdge2()},
+            contentAlignment = Alignment.Center
         ) {
             BasicText(
                 text = artist ?: "",
@@ -322,6 +330,7 @@ fun InfoAlbumAndArtistEssential(
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
+                    .conditional(!disableScrollingText){padding(horizontal = maxWidth*0.05f)}
 
             )
             BasicText(
@@ -338,6 +347,7 @@ fun InfoAlbumAndArtistEssential(
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
+                    .conditional(!disableScrollingText){padding(horizontal = maxWidth*0.05f)}
 
             )
         }
