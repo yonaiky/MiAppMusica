@@ -72,6 +72,11 @@ data class Context(
         val lockedSafetyMode: Boolean = false
     )
 
+    @Serializable
+    data class Request(
+        val useSsl: Boolean = true
+    )
+
     fun apply() {
         client.userAgent
 
@@ -130,12 +135,14 @@ data class Context(
             client = Client(
                 clientName = "WEB_REMIX",
                 //clientVersion = "1.20220606.03.00",
-                clientVersion = "1.20230731.00.00",
+                //clientVersion = "1.20230731.00.00",
+                clientVersion = "1.20241218.01.00",
+                platform = "DESKTOP",
                 userAgent = USER_AGENT_WEB,
-                referer = REFERER_YOUTUBE_MUSIC,
+                //referer = REFERER_YOUTUBE_MUSIC,
                 hl = hl,
                 visitorData = Innertube.visitorData,
-                api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
+                api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
             )
         )
 

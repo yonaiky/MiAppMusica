@@ -40,19 +40,19 @@ suspend fun Innertube.newPlayer(body: PlayerBody, withLogin: Boolean = false): R
 suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false): Result<PlayerResponse> = runCatching {
     val response = when (withLogin) {
         true -> try {
-            println("Innertube.newPlayer Player Response Try Android")
+            println("Innertube newPlayer Player Response Try Android")
             //with login
-            //player(if (cookie != null) Context.DefaultAndroid.client else Context.DefaultIOS.client, body.videoId, body.playlistId).body<PlayerResponse>()
+            //player(if (cookie != null) Context.DefaultWebRemix.client else Context.DefaultIOS.client, body.videoId, body.playlistId).body<PlayerResponse>()
             //whitout login
             player(Context.DefaultIOS.client, body.videoId, body.playlistId).body<PlayerResponse>()
         } catch (e: Exception) {
-            println("Innertube.newPlayer Player Response Error $e")
-            println("Innertube.newPlayer Player Response Try IOS")
+            println("Innertube newPlayer Player Response Error $e")
+            println("Innertube newPlayer Player Response Try IOS")
             noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
         }
         false -> {
-            println("Innertube.newPlayer Player Response without login")
-            println("Innertube.newPlayer Player Response Try IOS")
+            println("Innertube newPlayer Player Response without login")
+            println("Innertube newPlayer Player Response Try IOS")
             noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
         }
     }
