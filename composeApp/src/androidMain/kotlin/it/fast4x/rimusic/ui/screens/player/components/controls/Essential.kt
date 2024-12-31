@@ -154,18 +154,23 @@ fun InfoAlbumAndArtistEssential(
 
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
 
-            Box(
-                modifier = Modifier.weight(0.1f)
-            ){
-             if (title?.startsWith(EXPLICIT_PREFIX) == true)
-                 IconButton(
-                     icon = R.drawable.explicit,
-                     color = colorPalette().text,
-                     enabled = true,
-                     onClick = {},
-                     modifier = Modifier
-                         .size(18.dp)
-                 )
+            if (title?.startsWith(EXPLICIT_PREFIX) == true || playerControlsType == PlayerControlsType.Modern) {
+                Box(
+                    modifier = Modifier.weight(0.1f)
+                ) {
+                    if (title?.startsWith(EXPLICIT_PREFIX) == true) {
+                        if (title?.startsWith(EXPLICIT_PREFIX) == true)
+                            IconButton(
+                                icon = R.drawable.explicit,
+                                color = colorPalette().text,
+                                enabled = true,
+                                onClick = {},
+                                modifier = Modifier
+                                    .size(18.dp)
+                                    .align(Alignment.Center)
+                            )
+                    }
+                }
             }
 
             Box(
@@ -208,46 +213,46 @@ fun InfoAlbumAndArtistEssential(
             }
 
             //}
-            if (playerControlsType == PlayerControlsType.Modern)
+            if (title?.startsWith(EXPLICIT_PREFIX) == true || playerControlsType == PlayerControlsType.Modern)
              Box(
                  modifier = Modifier.weight(0.1f)
              ) {
-                 IconButton(
-                     color = colorPalette().favoritesIcon,
-                     icon = getLikeState(mediaId),
-                     onClick = {
-                         val currentMediaItem = binder.player.currentMediaItem
-                         Database.asyncTransaction {
-                             if ( like( mediaId, setLikeState(likedAt) ) == 0 ) {
-                                 currentMediaItem
-                                     ?.takeIf { it.mediaId == mediaId }
-                                     ?.let {
-                                         insert(currentMediaItem, Song::toggleLike)
+                 if (playerControlsType == PlayerControlsType.Modern) {
+                     IconButton(
+                         color = colorPalette().favoritesIcon,
+                         icon = getLikeState(mediaId),
+                         onClick = {
+                             val currentMediaItem = binder.player.currentMediaItem
+                             Database.asyncTransaction {
+                                 if (like(mediaId, setLikeState(likedAt)) == 0) {
+                                     currentMediaItem
+                                         ?.takeIf { it.mediaId == mediaId }
+                                         ?.let {
+                                             insert(currentMediaItem, Song::toggleLike)
+                                         }
+                                     if (currentMediaItem != null) {
+                                         MyDownloadHelper.autoDownloadWhenLiked(context(),currentMediaItem)
                                      }
-                                 if (currentMediaItem != null) {
-                                     MyDownloadHelper.autoDownloadWhenLiked(context(),currentMediaItem)
                                  }
                              }
-                         }
-                         if (effectRotationEnabled) isRotated = !isRotated
-                     },
-                     modifier = Modifier
-                         .padding(start = 5.dp)
-                         .size(24.dp)
-                 )
-                 if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
-                     Icon(
-                         painter = painterResource(id = getUnlikedIcon()),
-                         tint = colorPalette().text,
-                         contentDescription = null,
+                             if (effectRotationEnabled) isRotated = !isRotated
+                         },
                          modifier = Modifier
                              .padding(start = 5.dp)
                              .size(24.dp)
                      )
+                     if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
+                         Icon(
+                             painter = painterResource(id = getUnlikedIcon()),
+                             tint = colorPalette().text,
+                             contentDescription = null,
+                             modifier = Modifier
+                                 .padding(start = 5.dp)
+                                 .size(24.dp)
+                         )
+                     }
                  }
              }
-            else
-              Spacer(modifier = Modifier.weight(0.1f))
         }
 
     }
