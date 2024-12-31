@@ -1,16 +1,18 @@
 /captures
 .externalNativeBuild
 .cxx
+.ignore.d/
 
 ###      IDEA
 .idea
 .gradle
+.vscode
 
 ###      BUILDS
 **build/
 
 ###      BINS
-*/bin/
+**bin/
 
 ###      ANDROID
 **APK keystore/
