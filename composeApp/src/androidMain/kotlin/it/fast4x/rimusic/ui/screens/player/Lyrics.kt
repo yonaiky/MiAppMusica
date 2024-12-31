@@ -38,6 +38,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -49,6 +52,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -332,6 +336,14 @@ fun Lyrics(
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
+        val mediaMetadata = mediaMetadataProvider()
+        var artistName by rememberSaveable { mutableStateOf(mediaMetadata.artist?.toString().orEmpty())}
+        var title by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.title?.toString().orEmpty()))}
+
+        LaunchedEffect(mediaMetadata.title, mediaMetadata.artist) {
+            artistName = mediaMetadata.artist?.toString().orEmpty()
+            title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
+        }
 
         fun translateLyricsWithRomanization(output: MutableState<String>, textToTranslate: String, isSync: Boolean, destinationLanguage: Language = Language.AUTO) = @Composable{
             LaunchedEffect(showSecondLine, romanization, textToTranslate, destinationLanguage){
@@ -404,7 +416,6 @@ fun Lyrics(
                 Database.lyrics(mediaId).collect { currentLyrics ->
                     if (isShowingSynchronizedLyrics && currentLyrics?.synced == null) {
                         lyrics = null
-                        val mediaMetadata = mediaMetadataProvider()
                         var duration = withContext(Dispatchers.Main) {
                             durationProvider()
                         }
@@ -418,8 +429,8 @@ fun Lyrics(
 
                         kotlin.runCatching {
                             LrcLib.lyrics(
-                                artist = mediaMetadata.artist?.toString() ?: "",
-                                title = cleanPrefix(mediaMetadata.title?.toString() ?: ""),
+                                artist = artistName ?: "",
+                                title = title ?: "",
                                 duration = duration.milliseconds,
                                 album = mediaMetadata.albumTitle?.toString()
                             )?.onSuccess {
@@ -577,6 +588,91 @@ fun Lyrics(
             )
         }
 
+        @Composable
+        fun SelectLyricFromTrack(
+            tracks: List<Track>,
+            mediaId: String,
+            lyrics: Lyrics?
+        ) {
+            menuState.display {
+                Menu {
+                    MenuEntry(
+                        icon = R.drawable.chevron_back,
+                        text = stringResource(R.string.cancel),
+                        onClick = { menuState.hide() }
+                    )
+                    Row{
+                        TextField(
+                            value = title,
+                            onValueChange = {
+                                title = it
+                            },
+                            singleLine = true,
+                            colors = TextFieldDefaults.textFieldColors(textColor = colorPalette().text, unfocusedIndicatorColor = colorPalette().text),
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp)
+                                .weight(1f)
+                        )
+                        TextField(
+                            value = artistName,
+                            onValueChange = {
+                                artistName = it
+                            },
+                            singleLine = true,
+                            colors = TextFieldDefaults.textFieldColors(textColor = colorPalette().text, unfocusedIndicatorColor = colorPalette().text),
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp)
+                                .weight(1f)
+                        )
+                        IconButton(
+                            icon = R.drawable.search,
+                            color = colorPalette().accent,
+                            onClick = {
+                                isPicking = false
+                                menuState.hide()
+                                isPicking = true
+                            },
+                            modifier = Modifier
+                                .background(shape = RoundedCornerShape(4.dp), color = Color.White)
+                                .padding(all = 4.dp)
+                                .size(24.dp)
+                                .align(Alignment.CenterVertically)
+                                .weight(0.2f)
+                        )
+                    }
+                    tracks.forEach {
+                        MenuEntry(
+                            icon = R.drawable.text,
+                            text = "${it.artistName} - ${it.trackName}",
+                            secondaryText = "(${stringResource(R.string.sort_duration)} ${
+                                it.duration.seconds.toComponents { minutes, seconds, _ ->
+                                    "$minutes:${seconds.toString().padStart(2, '0')}"
+                                }
+                            } ${stringResource(R.string.id)} ${it.id}) ",
+                            onClick = {
+                                menuState.hide()
+                                Database.asyncTransaction {
+                                    upsert(
+                                        Lyrics(
+                                            songId = mediaId,
+                                            fixed = lyrics?.fixed,
+                                            synced = it.syncedLyrics.orEmpty()
+                                        )
+                                    )
+                                }
+                            }
+                        )
+                    }
+                    MenuEntry(
+                        icon = R.drawable.chevron_back,
+                        text = stringResource(R.string.cancel),
+                        onClick = { menuState.hide() }
+                    )
+                }
+            }
+            isPicking = false
+        }
+
 
         if (isPicking && isShowingSynchronizedLyrics) {
             var loading by remember { mutableStateOf(true) }
@@ -584,11 +680,10 @@ fun Lyrics(
             var error by remember { mutableStateOf(false) }
 
             LaunchedEffect(Unit) {
-                val mediaMetadata = mediaMetadataProvider()
                 kotlin.runCatching {
                     LrcLib.lyrics(
-                        artist = mediaMetadata.artist?.toString().orEmpty(),
-                        title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
+                        artist = artistName,
+                        title = title
                     )?.onSuccess {
                         if (it.isNotEmpty() && playerEnableLyricsPopupMessage)
                             coroutineScope.launch {
@@ -608,6 +703,66 @@ fun Lyrics(
                                         durationLong = true, context = context
                                     )
                                 }
+                        if (it.isEmpty()){
+                            menuState.display {
+                                Menu {
+                                    MenuEntry(
+                                        icon = R.drawable.chevron_back,
+                                        text = stringResource(R.string.cancel),
+                                        onClick = { menuState.hide() }
+                                    )
+                                    Row {
+                                        TextField(
+                                            value = title,
+                                            onValueChange = { it ->
+                                                title = it
+                                            },
+                                            singleLine = true,
+                                            colors = TextFieldDefaults.textFieldColors(
+                                                textColor = colorPalette().text,
+                                                unfocusedIndicatorColor = colorPalette().text
+                                            ),
+                                            modifier = Modifier
+                                                .padding(horizontal = 6.dp)
+                                                .weight(1f)
+                                        )
+                                        TextField(
+                                            value = artistName,
+                                            onValueChange = { it ->
+                                                artistName = it
+                                            },
+                                            singleLine = true,
+                                            colors = TextFieldDefaults.textFieldColors(
+                                                textColor = colorPalette().text,
+                                                unfocusedIndicatorColor = colorPalette().text
+                                            ),
+                                            modifier = Modifier
+                                                .padding(horizontal = 6.dp)
+                                                .weight(1f)
+                                        )
+                                        IconButton(
+                                            icon = R.drawable.search,
+                                            color = colorPalette().accent,
+                                            onClick = {
+                                                isPicking = false
+                                                menuState.hide()
+                                                isPicking = true
+                                            },
+                                            modifier = Modifier
+                                                .background(
+                                                    shape = RoundedCornerShape(4.dp),
+                                                    color = Color.White
+                                                )
+                                                .padding(all = 4.dp)
+                                                .size(24.dp)
+                                                .align(Alignment.CenterVertically)
+                                                .weight(0.2f)
+                                        )
+                                    }
+                                }
+                            }
+                            isPicking = false
+                        }
 
                         tracks.clear()
                         tracks.addAll(it)
@@ -642,8 +797,7 @@ fun Lyrics(
                 }
 
             if (tracks.isNotEmpty()) {
-                SelectLyricFromTrack(tracks = tracks, mediaId = mediaId, lyrics = lyrics)
-                isPicking = false
+                SelectLyricFromTrack(tracks = tracks,mediaId = mediaId,lyrics = lyrics)
             }
         }
 
@@ -923,10 +1077,15 @@ fun Lyrics(
                                         modifier = Modifier
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
                                             .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
-                                            .clickable {
-                                                if (clickLyricsText)
-                                                    binder?.player?.seekTo(sentence.first)
-                                            }
+                                            .clickable(
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                indication = if (clickLyricsText) ripple(true) else null,
+                                                onClick = {
+                                                    if (clickLyricsText)
+                                                        binder?.player?.seekTo(sentence.first)
+                                                    else onDismiss()
+                                                }
+                                            )
                                     )
                                 else if ((lyricsColor == LyricsColor.White) || (lyricsColor == LyricsColor.Black) || (lyricsColor == LyricsColor.Accent) || (lyricsColor == LyricsColor.Thememode))
                                     BasicText(
@@ -1024,10 +1183,15 @@ fun Lyrics(
                                                     scaleX = animateSizeText
                                                 }
                                             }
-                                            .clickable {
-                                                if (clickLyricsText)
-                                                    binder?.player?.seekTo(sentence.first)
-                                            }
+                                            .clickable(
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                indication = if (clickLyricsText) ripple(true) else null,
+                                                onClick = {
+                                                    if (clickLyricsText)
+                                                        binder?.player?.seekTo(sentence.first)
+                                                    else onDismiss()
+                                                }
+                                            )
                                             .background(
                                                 if (index == synchronizedLyrics.index) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(
                                                     0.5f
@@ -1084,10 +1248,15 @@ fun Lyrics(
                                                     scaleX = if (index == synchronizedLyrics.index) 1.1f else 0.9f
                                                 }
                                             }
-                                            .clickable {
-                                                if (clickLyricsText)
-                                                    binder?.player?.seekTo(sentence.first)
-                                            }
+                                            .clickable(
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                indication = if (clickLyricsText) ripple(true) else null,
+                                                onClick = {
+                                                    if (clickLyricsText)
+                                                        binder?.player?.seekTo(sentence.first)
+                                                    else onDismiss()
+                                                }
+                                            )
                                     )
                                 /*else
                                   BasicText(
@@ -1272,10 +1441,6 @@ fun Lyrics(
                                                         scaleX = animateSizeText
                                                     }
                                                 }
-                                                .clickable {
-                                                    if (clickLyricsText)
-                                                        binder?.player?.seekTo(sentence.first)
-                                                }
                                         )
                                     else if (lyricsOutline == LyricsOutline.Rainbow)
                                         BasicText(
@@ -1329,10 +1494,6 @@ fun Lyrics(
                                                         scaleY = animateSizeText
                                                         scaleX = animateSizeText
                                                     }
-                                                }
-                                                .clickable {
-                                                    if (clickLyricsText)
-                                                        binder?.player?.seekTo(sentence.first)
                                                 }
                                         )
                                     else //For Glow Outline//
@@ -1409,10 +1570,6 @@ fun Lyrics(
                                                         scaleY = animateSizeText
                                                         scaleX = animateSizeText
                                                     }
-                                                }
-                                                .clickable {
-                                                    if (clickLyricsText)
-                                                        binder?.player?.seekTo(sentence.first)
                                                 }
 
                                         )
@@ -2406,7 +2563,7 @@ fun Lyrics(
 }
 
 
-@Composable
+/*@Composable
 fun SelectLyricFromTrack(
     tracks: List<Track>,
     mediaId: String,
@@ -2451,4 +2608,4 @@ fun SelectLyricFromTrack(
             )
         }
     }
-}
+}*/
