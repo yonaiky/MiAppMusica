@@ -9,6 +9,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
+import it.fast4x.invidious.Invidious
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
@@ -21,8 +22,6 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.appContext
-import me.knighthat.invidious.Invidious
-import me.knighthat.invidious.request.player
 import me.knighthat.piped.Piped
 import me.knighthat.piped.request.player
 import java.net.ConnectException
@@ -71,13 +70,13 @@ private suspend fun getInvidiousFormatUrl(
     videoId: String,
     audioQualityFormat: AudioQualityFormat
 ): Uri {
-    val format = Invidious.player( videoId )?.fold(
+    val format = Invidious.api.videos( videoId )?.fold(
         {
             when( audioQualityFormat ){
-                AudioQualityFormat.Auto -> it?.autoMaxQualityFormat
-                AudioQualityFormat.High -> it?.highestQualityFormat
-                AudioQualityFormat.Medium -> it?.mediumQualityFormat
-                AudioQualityFormat.Low -> it?.lowestQualityFormat
+                AudioQualityFormat.Auto -> it.autoMaxQualityFormat
+                AudioQualityFormat.High -> it.highestQualityFormat
+                AudioQualityFormat.Medium -> it.mediumQualityFormat
+                AudioQualityFormat.Low -> it.lowestQualityFormat
             }.also {
                 //println("PlayerService MyDownloadHelper DataSpecProcess getInvidiousFormatUrl before upsert format $it")
                 Database.asyncTransaction {
