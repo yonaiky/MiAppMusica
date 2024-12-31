@@ -2,13 +2,7 @@ package it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
@@ -18,18 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.extensions.contributors.ShowDevelopers
-import it.fast4x.rimusic.extensions.contributors.ShowTranslators
-import it.fast4x.rimusic.extensions.contributors.countDevelopers
-import it.fast4x.rimusic.extensions.contributors.countTranslators
+import it.fast4x.rimusic.extensions.contributors.*
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.getVersionName
 import it.fast4x.rimusic.utils.secondary
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
 
 
 @ExperimentalAnimationApi
@@ -141,7 +132,7 @@ fun About() {
 
         SettingsGroupSpacer()
 
-        SettingsEntryGroupText(title = "${ countDevelopers() } " + "Developers / Designers")
+        SettingsEntryGroupText(title = "${ countDevelopers() } ${stringResource( R.string.about_developers_designers )}")
         SettingsDescription(text = stringResource(R.string.in_alphabetical_order))
         ShowDevelopers()
 
