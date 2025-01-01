@@ -540,33 +540,20 @@ object Innertube {
             if (setLogin) {
                 cookie?.let { cookie ->
                     cookieMap = parseCookieString(cookie)
-                    println("YoutubeLogin Innertube ytClient cookie: $cookie")
-                    println("YoutubeLogin Innertube ytClient SAPISID in cookie: ${"SAPISID" in cookieMap}")
-                    println("YoutubeLogin Innertube ytClient cookieMap: $cookieMap")
+                    append("X-Goog-Authuser", "1")
+                    append("X-Goog-Visitor-Id", visitorData)
                     append("Cookie", cookie)
-                    //if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
-                    if ("SAPISID" !in cookieMap) return@let
+                    if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
-                    println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
+                    val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
+                    val sapisidHash = sha1("$currentTime $sapisidCookie https://music.youtube.com")
                     append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
-//                    if (clientType != DefaultWebRemix.client) {
-//                        val sapisidHash =
-//                            sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
-//                        println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
-//                        append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
-//                    } else {
-//                        val sapisidHash =
-//                            sha1("$currentTime ${cookieMap["__Secure-3PAPISID"]} https://music.youtube.com")
-//                        println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
-//                        append(
-//                            "Authorization",
-//                            "SAPISIDHASH ${currentTime}_$sapisidHash",
-//                        )
-//                    }
                 }
             }
         }
+        clientType.userAgent?.let { userAgent(it) }
+        parameter("prettyPrint", false)
+
     }
 
     /*******************************************
