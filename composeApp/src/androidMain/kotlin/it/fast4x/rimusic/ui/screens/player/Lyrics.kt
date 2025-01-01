@@ -2365,15 +2365,17 @@ fun Lyrics(
                                             }
                                         )
 
-                                        MenuEntry(
-                                            icon = if (lyricsSizeAnimate) R.drawable.checkmark else R.drawable.close,
-                                            text = stringResource(R.string.lyricsanimate),
-                                            enabled = true,
-                                            onClick = {
-                                                menuState.hide()
-                                                lyricsSizeAnimate = !lyricsSizeAnimate
-                                            }
-                                        )
+                                        if (!showlyricsthumbnail) {
+                                            MenuEntry(
+                                                icon = if (lyricsSizeAnimate) R.drawable.checkmark else R.drawable.close,
+                                                text = stringResource(R.string.lyricsanimate),
+                                                enabled = true,
+                                                onClick = {
+                                                    menuState.hide()
+                                                    lyricsSizeAnimate = !lyricsSizeAnimate
+                                                }
+                                            )
+                                        }
 
                                         if (!showlyricsthumbnail)
                                             MenuEntry(
