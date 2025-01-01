@@ -2125,7 +2125,7 @@ fun Lyrics(
                                             }
                                         )
 
-                                        if (!showlyricsthumbnail) {
+                                        if (!showlyricsthumbnail && isShowingSynchronizedLyrics) {
                                             MenuEntry(
                                                 icon = if (lyricsSizeAnimate) R.drawable.checkmark else R.drawable.close,
                                                 text = stringResource(R.string.lyricsanimate),
