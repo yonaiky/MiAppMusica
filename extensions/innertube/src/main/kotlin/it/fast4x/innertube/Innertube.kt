@@ -540,7 +540,7 @@ object Innertube {
             if (setLogin) {
                 cookie?.let { cookie ->
                     cookieMap = parseCookieString(cookie)
-                    append("X-Goog-Authuser", "1")
+                    append("X-Goog-Authuser", "0")
                     append("X-Goog-Visitor-Id", visitorData)
                     append("Cookie", cookie)
                     if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
