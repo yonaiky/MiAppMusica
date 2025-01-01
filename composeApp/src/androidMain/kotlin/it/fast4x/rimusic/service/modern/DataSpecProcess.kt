@@ -3,6 +3,7 @@ package it.fast4x.rimusic.service.modern
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
+import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
@@ -129,9 +130,12 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
         return dataSpec.withUri(Uri.parse(format?.url))
 
     } catch ( e: LoginRequiredException ) {
+        println("PlayerServiceModern DataSpecProcess Playing song $videoId from ALTERNATIVE url")
+        val alternativeUrl = "https://jossred.josprox.com/yt/stream/$videoId"
+        return dataSpec.withUri(alternativeUrl.toUri())
+
+
         // Temporary disabled piped and invidious
-        println("PlayerServiceModern DataSpecProcess Playing song $videoId from url LOGIN REQUIRED ISSUE ${e.message}")
-        throw e
 //        try {
 //            // Switch to Piped
 //            val formatUrl = getPipedFormatUrl( videoId, audioQualityFormat )

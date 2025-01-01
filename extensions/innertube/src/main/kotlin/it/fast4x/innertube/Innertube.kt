@@ -472,61 +472,7 @@ object Innertube {
             .jsonArray.first { (it as? JsonPrimitive)?.content?.startsWith(VISITOR_DATA_PREFIX) == true }
             .jsonPrimitive.content
     }
-/*
-    fun HttpRequestBuilder.ytClient(client: YouTubeClient, setLogin: Boolean = false) {
-        contentType(ContentType.Application.Json)
-        headers {
-            append("X-Goog-Api-Format-Version", "1")
-            append("X-YouTube-Client-Name", client.clientName)
-            append("X-YouTube-Client-Version", client.clientVersion)
-            append("x-origin", "https://music.youtube.com")
-            if (client.referer != null) {
-                append("Referer", client.referer)
-            }
-            if (setLogin) {
-                cookie?.let { cookie ->
-                    cookieMap = parseCookieString(cookie)
-                    println("YoutubeLogin Innertube ytClient cookie: $cookie")
-                    println("YoutubeLogin Innertube ytClient SAPISID in cookie: ${"SAPISID" in cookieMap}")
-                    println("YoutubeLogin Innertube ytClient cookieMap: $cookieMap")
-                    append("Cookie", cookie)
-                    if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
-                    val currentTime = System.currentTimeMillis() / 1000
-                    if (client != WEB_REMIX) {
-                        val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
-                        println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
-                        append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
-                    } else {
-                        val sapisidHash = sha1("$currentTime ${cookieMap["__Secure-3PAPISID"]} https://music.youtube.com")
-                        println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
-                        append(
-                            "Authorization",
-                            "SAPISIDHASH ${currentTime}_$sapisidHash",
-                        )
-                    }
-                }
-            }
-//            if (setLogin) {
-//                cookie?.let { cookie ->
-//                    cookieMap = parseCookieString(cookie)
-//                    println("YoutubeLogin Innertube ytClient cookie: $cookie")
-//                    println("YoutubeLogin Innertube ytClient SAPISID in cookie: ${"SAPISID" in cookieMap}")
-//                    println("YoutubeLogin Innertube ytClient cookieMap: $cookieMap")
-//                    append("cookie", cookie)
-//                    if ("SAPISID" !in cookieMap) return@let
-//                    val currentTime = System.currentTimeMillis() / 1000
-//                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
-//                    println("YoutubeLogin Innertube ytClient sapisidHash : ${sapisidHash}")
-//                    append("Authorization", "SAPISIDHASH ${currentTime}_${sapisidHash}")
-//
-//                }
-//            }
-        }
-        userAgent(client.userAgent)
-        parameter("key", client.api_key)
-        parameter("prettyPrint", false)
-    }
-*/
+
     fun HttpRequestBuilder.setLogin(clientType: Client = DefaultAndroid.client, setLogin: Boolean = false) {
         contentType(ContentType.Application.Json)
         headers {
