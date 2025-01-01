@@ -2161,11 +2161,17 @@ fun Player(
                              //.padding(vertical = 10.dp)
                          ) {
                              if (showthumbnail) {
-                                 if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail)) {
+                                 if (!isShowingVisualizer) {
                                      val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
                                      val pageSpacing = thumbnailSpacing.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSize.size.dp)
 
-                                     pagerState.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
+                                     LaunchedEffect(pagerState, binder.player.currentMediaItemIndex) {
+                                         if (appRunningInBackground || isShowingLyrics) {
+                                             pagerState.scrollToPage(binder.player.currentMediaItemIndex)
+                                         } else {
+                                             pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                         }
+                                     }
 
                                      LaunchedEffect(pagerState) {
                                          var previousPage = pagerState.settledPage
@@ -2405,7 +2411,7 @@ fun Player(
                                      }
                                  }
                             }
-                            if (isShowingVisualizer && !showvisthumbnail) {
+                            if (isShowingVisualizer) {
                                 Box(
                                     modifier = Modifier
                                         .pointerInput(Unit) {
