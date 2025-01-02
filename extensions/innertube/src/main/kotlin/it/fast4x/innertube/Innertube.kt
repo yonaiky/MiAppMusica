@@ -112,53 +112,6 @@ object Innertube {
         }
     }
 
-    val ytHttpClient = createYTHttpClient()
-
-    @OptIn(ExperimentalSerializationApi::class)
-    private fun createYTHttpClient() = HttpClient(OkHttp) {
-        expectSuccess = true
-
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                explicitNulls = false
-                encodeDefaults = true
-            })
-        }
-
-        install(HttpRequestRetry) {
-            exponentialDelay()
-            maxRetries = 2
-        }
-
-        install(ContentEncoding) {
-            //brotli(1.0F)
-            gzip(0.9F)
-            deflate(0.8F)
-        }
-
-        engine {
-            addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                }
-            )
-        }
-
-        ProxyPreferences.preference?.let {
-            engine {
-                proxy = getProxy(it)
-            }
-        }
-
-        defaultRequest {
-            accept(ContentType.Application.Json)
-            contentType(ContentType.Application.Json)
-            url("https://music.youtube.com")
-        }
-
-    }
-
     var proxy: Proxy? = null
         set(value) {
             field = value
@@ -606,5 +559,46 @@ object Innertube {
             parameter("type", "next")
         }
     }
+
+    suspend fun player(
+        //ytClient: Client,
+        videoId: String,
+        playlistId: String?,
+    ) = client.post(player) {
+        //setLogin(ytClient, setLogin = true)
+        setLogin(setLogin = true)
+        setBody(
+            PlayerBody(
+//                context = ytClient.toContext(locale, visitorData).let {
+//                    if (ytClient == Context.DefaultRestrictionBypass.client) {
+//                        it.copy(
+//                            thirdParty =
+//                            Context.ThirdParty(
+//                                embedUrl = "https://www.youtube.com/watch?v=$videoId",
+//                            ),
+//                        )
+//                    } else {
+//                        it
+//                    }
+//                },
+                videoId = videoId,
+                playlistId = playlistId,
+            ),
+        )
+    }
+
+    suspend fun noLogInPlayer(videoId: String, withLogin: Boolean = false) =
+        client.post(player) {
+            accept(ContentType.Application.Json)
+            contentType(ContentType.Application.Json)
+            header("Host", "music.youtube.com")
+            setBody(
+                PlayerBody(
+                    context = DefaultIOS,
+                    playlistId = null,
+                    videoId = videoId,
+                ),
+            )
+        }
 
 }

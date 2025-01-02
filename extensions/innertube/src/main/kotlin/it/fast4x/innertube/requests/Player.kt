@@ -45,16 +45,16 @@ suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false): Resu
             //with login
             //player(if (cookie != null) Context.DefaultAndroid.client else Context.DefaultIOS.client, body.videoId, body.playlistId).body<PlayerResponse>()
             //whitout login
-            YtMusic.player(body.videoId, body.playlistId).body<PlayerResponse>()
+            player(body.videoId, body.playlistId).body<PlayerResponse>()
         } catch (e: Exception) {
             println("Innertube newPlayer Player Response Error $e")
             println("Innertube newPlayer Player Response Try IOS")
-            YtMusic.noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
+            noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
         }
         false -> {
             println("Innertube newPlayer Player Response without login")
             println("Innertube newPlayer Player Response Try IOS")
-            YtMusic.noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
+            noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
         }
     }
 

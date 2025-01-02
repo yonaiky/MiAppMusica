@@ -76,45 +76,4 @@ object YtMusic {
         HomePage(sections)
     }
 
-    suspend fun player(
-        //ytClient: Client,
-        videoId: String,
-        playlistId: String?,
-    ) = client.post(Innertube.player) {
-        //setLogin(ytClient, setLogin = true)
-        setLogin(setLogin = true)
-        setBody(
-            PlayerBody(
-//                context = ytClient.toContext(locale, visitorData).let {
-//                    if (ytClient == Context.DefaultRestrictionBypass.client) {
-//                        it.copy(
-//                            thirdParty =
-//                            Context.ThirdParty(
-//                                embedUrl = "https://www.youtube.com/watch?v=$videoId",
-//                            ),
-//                        )
-//                    } else {
-//                        it
-//                    }
-//                },
-                videoId = videoId,
-                playlistId = playlistId,
-            ),
-        )
-    }
-
-    suspend fun noLogInPlayer(videoId: String, withLogin: Boolean = false) =
-        client.post(Innertube.player) {
-            accept(ContentType.Application.Json)
-            contentType(ContentType.Application.Json)
-            header("Host", "music.youtube.com")
-            setBody(
-                PlayerBody(
-                    context = DefaultIOS.client.toContext(locale, visitorData),
-                    playlistId = null,
-                    videoId = videoId,
-                ),
-            )
-        }
-
 }

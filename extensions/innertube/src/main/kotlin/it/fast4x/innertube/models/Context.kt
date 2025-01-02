@@ -68,7 +68,6 @@ data class Context(
                 acceptHeader = acceptHeader,
                 api_key = api_key,
                 platform = platform,
-
             )
         )
     }
