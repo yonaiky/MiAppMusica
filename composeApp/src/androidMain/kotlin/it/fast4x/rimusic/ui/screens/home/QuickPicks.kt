@@ -61,8 +61,10 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.HomePage
 import it.fast4x.innertube.requests.chartsPageComplete
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.relatedPage
@@ -182,6 +184,8 @@ fun QuickPicks(
     var chartsPageInit by persist<Innertube.ChartsPage>("home/chartsPage")
 //    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
 
+    var homePageResult by persist<Result<HomePage?>>("home/homePage")
+
     var preferitesArtists by persistList<Artist>("home/artists")
 
     var localMonthlyPlaylists by persistList<PlaylistPreview>("home/monthlyPlaylists")
@@ -232,6 +236,14 @@ fun QuickPicks(
 
         runCatching {
             refreshScope.launch(Dispatchers.IO) {
+
+                //******* HOMEPAGE *********
+                homePageResult = YtMusic.homePage()
+
+                println("Innertube homePageResult: $homePageResult")
+
+                //****************
+
                 when (playEventType) {
                     PlayEventsType.MostPlayed ->
                         Database.songsMostPlayedByPeriod(from, now, 1).distinctUntilChanged()

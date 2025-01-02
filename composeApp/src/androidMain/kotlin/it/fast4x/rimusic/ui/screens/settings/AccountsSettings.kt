@@ -211,7 +211,7 @@ fun AccountsSettings() {
                         ButtonBarSettingEntry(
                             isEnabled = true,
                             title = if (isLoggedIn) "Disconnect" else "Connect",
-                            text = "", //if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
+                            text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
                             icon = R.drawable.ytmusic,
                             iconColor = colorPalette().text,
                             onClick = {

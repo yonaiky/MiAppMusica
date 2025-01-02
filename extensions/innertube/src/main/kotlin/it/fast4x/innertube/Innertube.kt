@@ -69,13 +69,13 @@ object Innertube {
     //const val DEFAULT_VISITOR_DATA = "CgtsZG1ySnZiQWtSbyiMjuGSBg%3D%3D"
     const val DEFAULT_VISITOR_DATA = "CgtMN0FkbDFaWERfdyi8t4u7BjIKCgJWThIEGgAgWQ%3D%3D"
 
+    @OptIn(ExperimentalSerializationApi::class)
     val client = HttpClient(OkHttp) {
-        BrowserUserAgent()
+        //BrowserUserAgent()
 
         expectSuccess = true
 
         install(ContentNegotiation) {
-            @OptIn(ExperimentalSerializationApi::class)
             json(Json {
                 ignoreUnknownKeys = true
                 explicitNulls = false
@@ -84,7 +84,7 @@ object Innertube {
         }
 
         install(ContentEncoding) {
-            brotli(1.0F)
+            //brotli(1.0F)
             gzip(0.9F)
             deflate(0.8F)
         }
@@ -106,7 +106,7 @@ object Innertube {
         defaultRequest {
             url(scheme = "https", host ="music.youtube.com") {
                 headers.append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                //headers.append("X-Goog-Api-Key", "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8")
+                headers.append("X-Goog-Api-Key", "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8")
                 //parameters.append("prettyPrint", "false")
             }
         }
@@ -132,7 +132,7 @@ object Innertube {
         }
 
         install(ContentEncoding) {
-            brotli(1.0F)
+            //brotli(1.0F)
             gzip(0.9F)
             deflate(0.8F)
         }
@@ -143,6 +143,12 @@ object Innertube {
                     level = HttpLoggingInterceptor.Level.BODY
                 }
             )
+        }
+
+        ProxyPreferences.preference?.let {
+            engine {
+                proxy = getProxy(it)
+            }
         }
 
         defaultRequest {
@@ -429,21 +435,21 @@ object Innertube {
 
 
     suspend fun accountInfo(): Result<AccountInfo> = runCatching {
-        accountMenu(DefaultWebRemix.client)
+        accountMenu()
             .body<AccountMenuResponse>()
             .actions[0].openPopupAction.popup.multiPageMenuRenderer
             .header?.activeAccountHeaderRenderer
             ?.toAccountInfo()!!
     }
 
-    suspend fun accountMenu(ytclient: Client): HttpResponse {
+    suspend fun accountMenu(): HttpResponse {
         val response =
             client.post(accountMenu) {
-                setLogin(ytclient, setLogin = true)
-                setBody(AccountMenuBody(ytclient.toContext(locale, visitorData)))
+                setLogin(setLogin = true)
+                setBody(AccountMenuBody())
             }
 
-        println("YoutubeLogin Innertube accountMenuBody: ${AccountMenuBody(ytclient.toContext(locale, visitorData))}")
+        println("YoutubeLogin Innertube accountMenuBody: ${AccountMenuBody()}")
         println("YoutubeLogin Innertube accountMenu RESPONSE: ${response.bodyAsText()}")
 
         return response
@@ -459,7 +465,7 @@ object Innertube {
             .jsonPrimitive.content
     }
 
-    fun HttpRequestBuilder.setLogin(clientType: Client = DefaultAndroid.client, setLogin: Boolean = false) {
+    fun HttpRequestBuilder.setLogin(clientType: Client = Context.DefaultWeb.client, setLogin: Boolean = false) {
         contentType(ContentType.Application.Json)
         headers {
             append("X-Goog-Api-Format-Version", "1")
@@ -484,6 +490,7 @@ object Innertube {
             }
         }
         clientType.userAgent?.let { userAgent(it) }
+        parameter("key", clientType.api_key)
         parameter("prettyPrint", false)
 
     }
@@ -491,90 +498,6 @@ object Innertube {
     /*******************************************
      * NEW CODE
      */
-
-    suspend fun player(
-        ytClient: Client,
-        videoId: String,
-        playlistId: String?,
-    ) = client.post(player) {
-        setLogin(ytClient, setLogin = true)
-        setBody(
-            PlayerBody(
-                context =
-                ytClient.toContext(locale, visitorData).let {
-                    if (ytClient == Context.DefaultRestrictionBypass.client) {
-                        it.copy(
-                            thirdParty =
-                            Context.ThirdParty(
-                                embedUrl = "https://www.youtube.com/watch?v=$videoId",
-                            ),
-                        )
-                    } else {
-                        it
-                    }
-                },
-                videoId = videoId,
-                playlistId = playlistId,
-            ),
-        )
-    }
-
-    suspend fun noLogInPlayer(videoId: String, withLogin: Boolean = false) =
-        client.post(player) {
-            accept(ContentType.Application.Json)
-            contentType(ContentType.Application.Json)
-            header("Host", "music.youtube.com")
-            setBody(
-                PlayerBody(
-                    context = DefaultIOS.client.toContext(locale, visitorData),
-                    playlistId = null,
-                    videoId = videoId,
-                ),
-            )
-        }
-
-/*
-    suspend fun player(
-        ytClient: YouTubeClient,
-        videoId: String,
-        playlistId: String?,
-    ) = ytHttpClient.post(player) {
-        ytClient(ytClient, setLogin = true)
-        setBody(
-            PlayerBody(
-                context =
-                ytClient.toContext(locale, visitorData).let {
-                    if (ytClient == YouTubeClient.TVHTML5) {
-                        it.copy(
-                            thirdParty =
-                            Context.ThirdParty(
-                                embedUrl = "https://www.youtube.com/watch?v=$videoId",
-                            ),
-                        )
-                    } else {
-                        it
-                    }
-                },
-                videoId = videoId,
-                playlistId = playlistId,
-            ),
-        )
-    }
-
-    suspend fun noLogInPlayer(videoId: String) =
-        ytHttpClient.post(player) {
-            accept(ContentType.Application.Json)
-            contentType(ContentType.Application.Json)
-            header("Host", "music.youtube.com")
-            setBody(
-                PlayerBody(
-                    context = IOS.toContext(locale, visitorData),
-                    playlistId = null,
-                    videoId = videoId,
-                ),
-            )
-        }
-*/
 
     suspend fun createPlaylist(
         ytClient: Client,
@@ -658,6 +581,30 @@ object Innertube {
                 )
             )
         )
+    }
+
+    suspend fun browse(
+        ytClient: Client,
+        browseId: String,
+        params: String? = null,
+        browseContinuation: String? = null,
+        continuation: String? = null,
+        setLogin: Boolean = false,
+    ) = client.post(browse) {
+        setLogin(ytClient, true)
+        setBody(
+            BrowseBody(
+                context = Context.DefaultWebWithLocale,
+                browseId = browseId,
+                params = params,
+                continuation = browseContinuation
+            )
+        )
+        parameter("continuation", continuation)
+        parameter("ctoken", continuation)
+        if (continuation != null) {
+            parameter("type", "next")
+        }
     }
 
 }

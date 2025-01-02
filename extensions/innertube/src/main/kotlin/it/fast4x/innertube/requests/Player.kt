@@ -4,6 +4,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.clients.YouTubeClient
@@ -44,22 +45,22 @@ suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false): Resu
             //with login
             //player(if (cookie != null) Context.DefaultAndroid.client else Context.DefaultIOS.client, body.videoId, body.playlistId).body<PlayerResponse>()
             //whitout login
-            player(Context.DefaultIOS.client, body.videoId, body.playlistId).body<PlayerResponse>()
+            YtMusic.player(body.videoId, body.playlistId).body<PlayerResponse>()
         } catch (e: Exception) {
             println("Innertube newPlayer Player Response Error $e")
             println("Innertube newPlayer Player Response Try IOS")
-            noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
+            YtMusic.noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
         }
         false -> {
             println("Innertube newPlayer Player Response without login")
             println("Innertube newPlayer Player Response Try IOS")
-            noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
+            YtMusic.noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
         }
     }
 
-    println("Innertube newNewPlayer withLogin $withLogin response adaptiveFormats ${response.streamingData?.adaptiveFormats}")
-    println("Innertube newNewPlayer withLogin $withLogin response Formats ${response.streamingData?.formats}")
-    println("Innertube newNewPlayer withLogin $withLogin response expire ${response.streamingData?.expiresInSeconds}")
+    println("Innertube newPlayer withLogin $withLogin response adaptiveFormats ${response.streamingData?.adaptiveFormats}")
+    println("Innertube newPlayer withLogin $withLogin response Formats ${response.streamingData?.formats}")
+    println("Innertube newPlayer withLogin $withLogin response expire ${response.streamingData?.expiresInSeconds}")
 
     return@runCatching response
 }

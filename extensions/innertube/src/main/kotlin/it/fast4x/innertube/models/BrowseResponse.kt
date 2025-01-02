@@ -8,7 +8,10 @@ import kotlinx.serialization.json.JsonNames
 data class BrowseResponse(
     val contents: Contents?,
     val header: Header?,
-    val microformat: Microformat?
+    val microformat: Microformat?,
+    val continuationContents: ContinuationContents?,
+    val responseContext: ResponseContext?,
+    val background: ThumbnailRenderer?
 ) {
     @Serializable
     data class Contents(
@@ -63,5 +66,43 @@ data class BrowseResponse(
         data class MicroformatDataRenderer(
             val urlCanonical: String?
         )
+    }
+
+    @Serializable
+    data class ContinuationContents(
+        val sectionListContinuation: SectionListContinuation?,
+        val musicPlaylistShelfContinuation: MusicPlaylistShelfContinuation?,
+        val gridContinuation: GridRenderer?,
+        val musicShelfContinuation: MusicShelfRenderer?,
+    ) {
+        @Serializable
+        data class SectionListContinuation(
+            val contents: List<SectionListRenderer.Content>,
+            val continuations: List<Continuation>?,
+        )
+
+        @Serializable
+        data class MusicPlaylistShelfContinuation(
+            val contents: List<MusicShelfRenderer.Content>,
+            val continuations: List<Continuation>?,
+        )
+    }
+
+    @Serializable
+    data class ResponseContext(
+        val visitorData: String?,
+        val serviceTrackingParams: List<ServiceTrackingParam>?,
+    ) {
+        @Serializable
+        data class ServiceTrackingParam(
+            val params: List<Param>,
+            val service: String,
+        ) {
+            @Serializable
+            data class Param(
+                val key: String,
+                val value: String,
+            )
+        }
     }
 }

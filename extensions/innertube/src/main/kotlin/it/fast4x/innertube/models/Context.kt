@@ -157,6 +157,16 @@ data class Context(
             )
         )
 
+        val DefaultWebCreator = Context(
+            client = Client(
+                clientName = "WEB_CREATOR",
+                clientVersion = "1.20240918.03.00",
+                userAgent = USER_AGENT_WEB,
+                referer = REFERER_YOUTUBE_MUSIC,
+                api_key = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+            )
+        )
+
 
 
         val DefaultAndroid = Context(

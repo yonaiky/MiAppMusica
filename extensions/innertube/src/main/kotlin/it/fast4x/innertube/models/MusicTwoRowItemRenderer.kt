@@ -10,6 +10,7 @@ data class MusicTwoRowItemRenderer(
     val subtitle: Runs?,
     val thumbnailOverlay: ThumbnailOverlay?,
     val aspectRatio: String? = null,
+    val subtitleBadges: List<Badges>?,
 ){
     val isPlaylist: Boolean
         get() = navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_PLAYLIST"
@@ -27,4 +28,6 @@ data class MusicTwoRowItemRenderer(
                 thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails?.firstOrNull()
             thumbnail != null && thumbnail.height != thumbnail.width
         })
+    val isSong: Boolean
+        get() = navigationEndpoint == null || navigationEndpoint.watchEndpoint != null || navigationEndpoint.watchPlaylistEndpoint != null
 }

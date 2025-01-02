@@ -108,19 +108,19 @@ fun YouTubeLogin(
                         override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
                             if (url.startsWith("https://music.youtube.com")) {
                                 cookie = CookieManager.getInstance().getCookie(url)
-                                onLogin(cookie)
+                                //onLogin(cookie)
 
-//                                    GlobalScope.launch {
-//                                        Innertube.accountInfo().onSuccess {
-//                                            accountName = it.name.orEmpty()
-//                                            accountEmail = it.email.orEmpty()
-//                                            accountChannelHandle = it.channelHandle.orEmpty()
-//                                            onLogin(true)
-//                                        }.onFailure {
-//                                            Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
-//                                            println("Error YoutubeLogin: ${it.stackTraceToString()}")
-//                                        }
-//                                    }
+                                    GlobalScope.launch {
+                                        Innertube.accountInfo().onSuccess {
+                                            accountName = it.name.orEmpty()
+                                            accountEmail = it.email.orEmpty()
+                                            accountChannelHandle = it.channelHandle.orEmpty()
+                                            onLogin(cookie)
+                                        }.onFailure {
+                                            Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
+                                            println("Error YoutubeLogin: ${it.stackTraceToString()}")
+                                        }
+                                    }
                             }
                         }
 
