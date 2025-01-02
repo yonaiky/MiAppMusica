@@ -448,20 +448,7 @@ object Innertube {
 
         return response
     }
-/*
-    suspend fun accountMenu(client: YouTubeClient): HttpResponse {
-        val response =
-        ytHttpClient.post(accountMenu) {
-            ytClient(client, setLogin = true)
-            setBody(AccountMenuBody(client.toContext(locale, visitorData)))
-        }
 
-        println("YoutubeLogin Innertube accountMenuBody: ${AccountMenuBody(client.toContext(locale, visitorData))}")
-        println("YoutubeLogin Innertube accountMenu RESPONSE: ${response.bodyAsText()}")
-
-        return response
-    }
-*/
     suspend fun getSwJsData() = client.get("https://music.youtube.com/sw.js_data")
 
     suspend fun visitorData(): Result<String> = runCatching {
@@ -497,7 +484,7 @@ object Innertube {
             }
         }
         clientType.userAgent?.let { userAgent(it) }
-        //parameter("prettyPrint", false)
+        parameter("prettyPrint", false)
 
     }
 
