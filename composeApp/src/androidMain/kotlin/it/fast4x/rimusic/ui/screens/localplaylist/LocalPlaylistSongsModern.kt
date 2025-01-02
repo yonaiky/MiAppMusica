@@ -1635,7 +1635,7 @@ fun LocalPlaylistSongsModern(
                             if(isYouTubeSyncEnabled() && playlistNotPipedType && playlistNotMonthlyType && playlistPreview?.playlist?.browseId != null)
                                 CoroutineScope(Dispatchers.IO).launch {
                                     playlistPreview?.playlist?.browseId?.let { YtMusic.removeFromPlaylist(
-                                        it, song.id
+                                        it, song.song.id
                                     ) }
                                 }
 

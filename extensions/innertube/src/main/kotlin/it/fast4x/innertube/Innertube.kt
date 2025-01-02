@@ -429,7 +429,6 @@ object Innertube {
 
 
     suspend fun accountInfo(): Result<AccountInfo> = runCatching {
-        //accountMenu(YouTubeClient.WEB_REMIX)
         accountMenu(DefaultWebRemix.client)
             .body<AccountMenuResponse>()
             .actions[0].openPopupAction.popup.multiPageMenuRenderer
@@ -498,7 +497,7 @@ object Innertube {
             }
         }
         clientType.userAgent?.let { userAgent(it) }
-        parameter("prettyPrint", false)
+        //parameter("prettyPrint", false)
 
     }
 

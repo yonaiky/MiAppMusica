@@ -48,7 +48,7 @@ import timber.log.Timber
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun YouTubeLogin(
-    onLogin: (Boolean) -> Unit
+    onLogin: (String) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -76,7 +76,7 @@ fun YouTubeLogin(
                         accountEmail = it.email.orEmpty()
                         accountChannelHandle = it.channelHandle.orEmpty()
                         println("YoutubeLogin webClient AccountInfo: $it")
-                        onLogin(true)
+                        //onLogin(true)
                     }.onFailure {
                         Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
                         println("Error YoutubeLogin: ${it.stackTraceToString()}")
@@ -94,7 +94,7 @@ fun YouTubeLogin(
         //Row(modifier = Modifier.fillMaxWidth()) {
             Title("Login to YouTube Music",
                 icon = R.drawable.chevron_down,
-                onClick = { onLogin(true) }
+                onClick = { onLogin(cookie) }
             )
         //}
 
@@ -108,25 +108,28 @@ fun YouTubeLogin(
                         override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
                             if (url.startsWith("https://music.youtube.com")) {
                                 cookie = CookieManager.getInstance().getCookie(url)
-                                if (cookie.isNotEmpty())
-                                    onLogin(true)
-//                                scope.launch {
-//                                    Innertube.accountInfo().onSuccess {
-//                                        accountName = it.name.orEmpty()
-//                                        accountEmail = it.email.orEmpty()
-//                                        accountChannelHandle = it.channelHandle.orEmpty()
-//                                        onLogin(true)
-//                                    }.onFailure {
-//                                        Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
-//                                        println("Error YoutubeLogin: ${it.stackTraceToString()}")
+                                onLogin(cookie)
+
+//                                    GlobalScope.launch {
+//                                        Innertube.accountInfo().onSuccess {
+//                                            accountName = it.name.orEmpty()
+//                                            accountEmail = it.email.orEmpty()
+//                                            accountChannelHandle = it.channelHandle.orEmpty()
+//                                            onLogin(true)
+//                                        }.onFailure {
+//                                            Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
+//                                            println("Error YoutubeLogin: ${it.stackTraceToString()}")
+//                                        }
 //                                    }
-//                                }
                             }
                         }
 
                         override fun onPageFinished(view: WebView, url: String?) {
                             loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
                         }
+
+
+
                     }
                     settings.apply {
                         javaScriptEnabled = true

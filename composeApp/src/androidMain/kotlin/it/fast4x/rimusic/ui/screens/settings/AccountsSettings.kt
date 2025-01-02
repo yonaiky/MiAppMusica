@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import android.webkit.CookieManager
+import android.webkit.WebStorage
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -220,6 +222,11 @@ fun AccountsSettings() {
                                     accountEmail = ""
                                     visitorData = ""
                                     loginYouTube = false
+                                    //Delete cookies after logout
+                                    val cookieManager = CookieManager.getInstance()
+                                    cookieManager.removeAllCookies(null)
+                                    cookieManager.flush()
+                                    WebStorage.getInstance().deleteAllData()
                                 } else
                                     loginYouTube = true
                             }
@@ -255,8 +262,8 @@ fun AccountsSettings() {
                             shape = thumbnailRoundness.shape()
                         ) {
                             YouTubeLogin(
-                                onLogin = { success ->
-                                    if (success) {
+                                onLogin = { cookieRetrieved ->
+                                    if (cookieRetrieved.contains("SAPISID")) {
                                         loginYouTube = false
                                         SmartMessage(
                                             "Login successful",
@@ -265,6 +272,7 @@ fun AccountsSettings() {
                                         )
                                         restartActivity = !restartActivity
                                     }
+
                                 }
                             )
                         }

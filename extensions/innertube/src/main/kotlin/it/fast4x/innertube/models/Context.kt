@@ -58,6 +58,17 @@ data class Context(
                 gl = locale.gl,
                 hl = locale.hl,
                 visitorData = visitorData,
+                androidSdkVersion = androidSdkVersion,
+                userAgent = userAgent,
+                referer = referer,
+                deviceMake = deviceMake,
+                deviceModel = deviceModel,
+                osName = osName,
+                osVersion = osVersion,
+                acceptHeader = acceptHeader,
+                api_key = api_key,
+                platform = platform,
+
             )
         )
     }
@@ -134,14 +145,14 @@ data class Context(
         val DefaultWebRemix = Context(
             client = Client(
                 clientName = "WEB_REMIX",
-                //clientVersion = "1.20220606.03.00",
+                clientVersion = "1.20220606.03.00",
                 //clientVersion = "1.20230731.00.00",
-                clientVersion = "1.20241218.01.00",
-                platform = "DESKTOP",
+                //clientVersion = "1.20241218.01.00",
+                //platform = "DESKTOP",
                 userAgent = USER_AGENT_WEB,
-                //referer = REFERER_YOUTUBE_MUSIC,
-                hl = hl,
-                visitorData = Innertube.visitorData,
+                referer = REFERER_YOUTUBE_MUSIC,
+                //hl = hl,
+                //visitorData = Innertube.visitorData,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
             )
         )
@@ -155,7 +166,7 @@ data class Context(
                 //clientVersion = "6.33.52",
                 //clientVersion = "5.28.1",
                 //clientVersion = "5.22.1",
-                androidSdkVersion = 30,
+                androidSdkVersion = 31,
                 platform = "MOBILE",
                 userAgent = USER_AGENT_ANDROID_MUSIC,
                 referer = REFERER_YOUTUBE_MUSIC,
