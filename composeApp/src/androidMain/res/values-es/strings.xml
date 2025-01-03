@@ -857,5 +857,5 @@
     <string name="colorpalette">Paleta de colores</string>
     <string name="customcolor">Color personalizado</string>
     <string name="lyricsanimate">Animar tamaño de letra</string>
-    <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="lyricsSizeSecondary">Pulsación larga para cambiar el tamaño</string>
 </resources>
