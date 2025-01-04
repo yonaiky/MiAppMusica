@@ -352,6 +352,7 @@
     <string name="sort_year">Anno</string>
     <string name="sort_name">Nome</string>
     <string name="sort_songs_number">Numero Brani</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Segui</string>
     <string name="following">Segui già</string>
     <string name="artist_subscribers">%1$s iscritti</string>
