@@ -352,6 +352,7 @@
     <string name="sort_year">An</string>
     <string name="sort_name">Nume</string>
     <string name="sort_songs_number">Număr de melodii</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Urmărește</string>
     <string name="following">Urmărit</string>
     <string name="artist_subscribers">%s Abonați</string>
