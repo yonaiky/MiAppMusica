@@ -352,6 +352,7 @@
     <string name="sort_year">Aasta</string>
     <string name="sort_name">Nimi</string>
     <string name="sort_songs_number">Lugude arv</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Jälgi</string>
     <string name="following">Jälgid</string>
     <string name="artist_subscribers">%s tellijat</string>
