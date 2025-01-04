@@ -352,6 +352,7 @@
     <string name="sort_year">Év</string>
     <string name="sort_name">Név</string>
     <string name="sort_songs_number">Dalok száma</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Követés</string>
     <string name="following">Követve</string>
     <string name="artist_subscribers">%s feliratkozók</string>
