@@ -352,6 +352,7 @@
     <string name="sort_year">Tahun</string>
     <string name="sort_name">Nama</string>
     <string name="sort_songs_number">Jumlah Lagu</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Ikuti</string>
     <string name="following">Mengikuti</string>
     <string name="artist_subscribers">%s berlangganan</string>
