@@ -1960,7 +1960,7 @@ fun AppearanceSettings(
                     onCheckedChange = { controlsExpanded = it }
                 )
 
-            if (statsfornerds){
+            if (statsfornerds && (!(showthumbnail && playerType == PlayerType.Essential))){
                 if (search.input.isBlank() || stringResource(R.string.statsfornerds).contains(
                         search.input,
                         true
