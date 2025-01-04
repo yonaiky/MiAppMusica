@@ -859,4 +859,6 @@
     <string name="customcolor">Користувальницький колір</string>
     <string name="lyricsanimate">Розмір анімації тексту пісні</string>
     <string name="lyricsSizeSecondary">Довге натискання для зміни розміру</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
