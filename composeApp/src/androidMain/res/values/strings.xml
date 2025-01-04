@@ -859,4 +859,5 @@
     <string name="lyricsanimate">Animate Lyrics Size</string>
     <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="home">Home</string>
 </resources>

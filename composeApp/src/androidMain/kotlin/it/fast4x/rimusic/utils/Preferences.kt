@@ -338,6 +338,8 @@ const val customColorKey = "customColor"
 const val lyricsSizeAnimateKey = "lyricsSizeAnimate"
 const val lyricsSizeKey = "lyricsSize"
 const val lyricsSizeLKey = "lyricsSizeL"
+const val ytAccountNameKey = "ytAccountName"
+const val ytAccountEmailKey = "ytAccountEmail"
 
 /*
 @PublishedApi

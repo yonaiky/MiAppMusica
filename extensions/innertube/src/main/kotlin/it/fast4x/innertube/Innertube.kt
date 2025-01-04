@@ -34,11 +34,11 @@ import it.fast4x.innertube.clients.YouTubeClient
 import it.fast4x.innertube.clients.YouTubeClient.Companion.IOS
 import it.fast4x.innertube.clients.YouTubeClient.Companion.WEB_REMIX
 import it.fast4x.innertube.clients.YouTubeLocale
+import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.Context.Client
 import it.fast4x.innertube.models.Context.Companion.DefaultAndroid
 import it.fast4x.innertube.models.Context.Companion.DefaultIOS
-import it.fast4x.innertube.models.Context.Companion.DefaultWebRemix
 import it.fast4x.innertube.models.bodies.AccountMenuBody
 import it.fast4x.innertube.models.bodies.Action
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -182,6 +182,7 @@ object Innertube {
     sealed class Item {
         abstract val thumbnail: Thumbnail?
         abstract val key: String
+        abstract val title: String?
     }
 
     @Serializable
@@ -195,6 +196,7 @@ object Innertube {
     ) : Item() {
         //override val key get() = info!!.endpoint!!.videoId!!
         override val key get() = info?.endpoint?.videoId ?: ""
+        override val title get() = info?.name
 
         companion object
     }
@@ -208,6 +210,7 @@ object Innertube {
         override val thumbnail: Thumbnail?
     ) : Item() {
         override val key get() = info!!.endpoint!!.videoId!!
+        override val title get() = info?.name
 
         val isOfficialMusicVideo: Boolean
             get() = info
@@ -234,6 +237,7 @@ object Innertube {
         override val thumbnail: Thumbnail?
     ) : Item() {
         override val key get() = info!!.endpoint!!.browseId!!
+        override val title get() = info?.name
 
         companion object
     }
@@ -245,6 +249,7 @@ object Innertube {
         override val thumbnail: Thumbnail?
     ) : Item() {
         override val key get() = info!!.endpoint!!.browseId!!
+        override val title get() = info?.name
 
         companion object
     }
@@ -257,6 +262,7 @@ object Innertube {
         override val thumbnail: Thumbnail?
     ) : Item() {
         override val key get() = info!!.endpoint!!.browseId!!
+        override val title get() = info?.name
 
         companion object
     }
@@ -390,9 +396,13 @@ object Innertube {
     suspend fun accountInfo(): Result<AccountInfo> = runCatching {
         accountMenu()
             .body<AccountMenuResponse>()
-            .actions[0].openPopupAction.popup.multiPageMenuRenderer
-            .header?.activeAccountHeaderRenderer
-            ?.toAccountInfo()!!
+            .actions?.get(0)?.openPopupAction?.popup?.multiPageMenuRenderer
+            ?.header?.activeAccountHeaderRenderer
+            ?.toAccountInfo() ?: AccountInfo(
+                name = null,
+                email = null,
+                channelHandle = null
+            )
     }
 
     suspend fun accountMenu(): HttpResponse {
@@ -537,10 +547,9 @@ object Innertube {
     }
 
     suspend fun browse(
-        ytClient: Client,
-        browseId: String,
+        ytClient: Client = Context.DefaultWeb.client,
+        browseId: String? = null,
         params: String? = null,
-        browseContinuation: String? = null,
         continuation: String? = null,
         setLogin: Boolean = false,
     ) = client.post(browse) {
@@ -550,7 +559,6 @@ object Innertube {
                 context = Context.DefaultWebWithLocale,
                 browseId = browseId,
                 params = params,
-                continuation = browseContinuation
             )
         )
         parameter("continuation", continuation)
@@ -600,5 +608,14 @@ object Innertube {
                 ),
             )
         }
+
+    suspend fun customBrowse(
+        browseId: String? = null,
+        params: String? = null,
+        continuation: String? = null,
+        setLogin: Boolean = true,
+    ) = runCatching {
+        browse(Context.DefaultWeb.client, browseId, params, continuation, setLogin).body<BrowseResponse>()
+    }
 
 }

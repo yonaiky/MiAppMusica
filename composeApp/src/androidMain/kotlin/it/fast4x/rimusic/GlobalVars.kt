@@ -5,9 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
+import it.fast4x.rimusic.utils.ytAccountNameKey
 
 @Composable
 fun typography() = LocalAppearance.current.typography
@@ -30,3 +32,5 @@ fun binder() = LocalPlayerServiceBinder.current?.service
 
 fun appContext(): Context = Dependencies.application.applicationContext
 fun context(): Context = Dependencies.application
+
+fun ytAccountName() = appContext().preferences.getString(ytAccountNameKey, "")

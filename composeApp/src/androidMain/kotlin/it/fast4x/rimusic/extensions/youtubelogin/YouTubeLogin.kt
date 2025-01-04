@@ -38,6 +38,7 @@ import it.fast4x.rimusic.utils.ytAccountNameKey
 import it.fast4x.rimusic.utils.ytAccountEmailKey
 import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
+import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -55,8 +56,8 @@ fun YouTubeLogin(
 
     var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = Innertube.DEFAULT_VISITOR_DATA)
     var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
-    var accountName by rememberEncryptedPreference(key = ytAccountNameKey, defaultValue = "")
-    var accountEmail by rememberEncryptedPreference(key = ytAccountEmailKey, defaultValue = "")
+    var accountName by rememberPreference(key = ytAccountNameKey, defaultValue = "")
+    var accountEmail by rememberPreference(key = ytAccountEmailKey, defaultValue = "")
     var accountChannelHandle by rememberEncryptedPreference(key = ytAccountChannelHandleKey, defaultValue = "")
 
     var webView: WebView? = null

@@ -7,17 +7,17 @@ import kotlinx.serialization.json.JsonNames
 @Serializable
 data class BrowseResponse(
     val contents: Contents?,
+    val continuationContents: ContinuationContents?,
     val header: Header?,
     val microformat: Microformat?,
-    val continuationContents: ContinuationContents?,
     val responseContext: ResponseContext?,
     val background: ThumbnailRenderer?
 ) {
     @Serializable
     data class Contents(
         val singleColumnBrowseResultsRenderer: Tabs?,
+        val twoColumnBrowseResultsRenderer: TwoColumnBrowseResultsRenderer?,
         val sectionListRenderer: SectionListRenderer?,
-        val twoColumnBrowseResultsRenderer: TwoColumnBrowseResultsRenderer?
     )
 
     @Serializable

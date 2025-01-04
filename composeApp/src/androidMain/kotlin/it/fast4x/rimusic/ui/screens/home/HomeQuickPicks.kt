@@ -140,6 +140,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.items.VideoItem
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import timber.log.Timber
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -154,7 +156,7 @@ import kotlin.time.Duration.Companion.days
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun QuickPicks(
+fun HomeQuickPicks(
     navController: NavController,
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
@@ -232,18 +234,13 @@ fun QuickPicks(
             chartsPageResult =
                 Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
+        if (isYouTubeLoggedIn())
+            homePageResult = YtMusic.getHomePage()
+
         if (loadedData) return
 
         runCatching {
             refreshScope.launch(Dispatchers.IO) {
-
-                //******* HOMEPAGE *********
-                homePageResult = YtMusic.homePage()
-
-                println("Innertube homePageResult: $homePageResult")
-
-                //****************
-
                 when (playEventType) {
                     PlayEventsType.MostPlayed ->
                         Database.songsMostPlayedByPeriod(from, now, 1).distinctUntilChanged()
@@ -440,7 +437,8 @@ fun QuickPicks(
 
                 if (UiType.ViMusic.isCurrent())
                     HeaderWithIcon(
-                        title = stringResource(R.string.quick_picks),
+                        title = if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
+                        else stringResource(R.string.home),
                         iconId = R.drawable.search,
                         enabled = true,
                         showIcon = !showSearchTab,
@@ -575,7 +573,7 @@ fun QuickPicks(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.deleteFormat( song.asMediaItem.mediaId )
+                                                                Database.deleteFormat(song.asMediaItem.mediaId)
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -664,7 +662,7 @@ fun QuickPicks(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.deleteFormat( song.asMediaItem.mediaId )
+                                                                Database.deleteFormat(song.asMediaItem.mediaId)
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -1096,6 +1094,111 @@ fun QuickPicks(
                     }
                 }
 
+
+                homePageResult?.getOrNull()?.let { page ->
+                    println("homePage() in HomeYouTubeMusic accountName: ${page.accountName} accountThumbnailUrl ${page.accountThumbnailUrl}")
+                    page.sections.forEach {
+                        println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
+                        BasicText(
+                            text = it.title,
+                            style = typography().l.semiBold,
+                            modifier = sectionTextModifier
+                        )
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(it.items) { item ->
+                                when (item) {
+                                    is Innertube.SongItem -> {
+                                        println("Innertube homePage SongItem: ${item.info?.name}")
+                                        SongItem(
+                                            song = item,
+                                            thumbnailSizePx = songThumbnailSizePx,
+                                            thumbnailSizeDp = songThumbnailSizeDp,
+                                            onDownloadClick = {},
+                                            downloadState = Download.STATE_STOPPED,
+                                            disableScrollingText = disableScrollingText,
+                                            isNowPlaying = false,
+                                            modifier = Modifier.clickable(onClick = {
+                                                binder?.player?.forcePlay(item.asMediaItem)
+                                            })
+                                        )
+                                    }
+
+                                    is Innertube.AlbumItem -> {
+                                        println("Innertube homePage AlbumItem: ${item.info?.name}")
+                                        AlbumItem(
+                                            album = item,
+                                            alternative = true,
+                                            thumbnailSizePx = albumThumbnailSizePx,
+                                            thumbnailSizeDp = albumThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clickable(onClick = {
+                                                navController.navigate("${NavRoutes.album.name}/${item.key}")
+                                            })
+
+                                        )
+                                    }
+
+                                    is Innertube.ArtistItem -> {
+                                        println("Innertube homePage ArtistItem: ${item.info?.name}")
+                                        ArtistItem(
+                                            artist = item,
+                                            thumbnailSizePx = artistThumbnailSizePx,
+                                            thumbnailSizeDp = artistThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clickable(onClick = {
+                                                navController.navigate("${NavRoutes.artist.name}/${item.key}")
+                                            })
+                                        )
+                                    }
+
+                                    is Innertube.PlaylistItem -> {
+                                        println("Innertube homePage PlaylistItem: ${item.info?.name}")
+                                        PlaylistItem(
+                                            playlist = item,
+                                            alternative = true,
+                                            thumbnailSizePx = playlistThumbnailSizePx,
+                                            thumbnailSizeDp = playlistThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clickable(onClick = {
+                                                navController.navigate("${NavRoutes.playlist.name}/${item.key}")
+                                            })
+                                        )
+                                    }
+
+                                    is Innertube.VideoItem -> {
+                                        println("Innertube homePage VideoItem: ${item.info?.name}")
+                                        VideoItem(
+                                            video = item,
+                                            thumbnailHeightDp = playlistThumbnailSizeDp,
+                                            thumbnailWidthDp = playlistThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText
+                                        )
+                                    }
+
+                                    null -> {}
+                                }
+
+                            }
+                        }
+                    }
+                } ?: BasicText(
+                    text = "Log in to your YTM account for more content",
+                    style = typography().xs.center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(vertical = 32.dp)
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate(NavRoutes.settings.name)
+                        }
+                )
+
+
+
+
+
+
                 Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 
 
@@ -1167,14 +1270,6 @@ fun QuickPicks(
                     onClickSettings = onSettingsClick,
                     onClickSearch = onSearchClick
                 )
-
-            /*
-            FloatingActionsContainerWithScrollToTop(
-                scrollState = scrollState,
-                iconId = R.drawable.search,
-                onClick = onSearchClick
-            )
-             */
 
         }
 

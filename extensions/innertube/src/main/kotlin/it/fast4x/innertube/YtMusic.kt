@@ -25,39 +25,93 @@ import it.fast4x.innertube.requests.browse
 object YtMusic {
 
     suspend fun createPlaylist(title: String) = runCatching {
-        Innertube.createPlaylist(Context.DefaultWebRemix.client, title).body<CreatePlaylistResponse>().playlistId
+        Innertube.createPlaylist(Context.DefaultWeb.client, title).body<CreatePlaylistResponse>().playlistId
     }.onFailure {
         println("YtMusic createPlaylist error: ${it.stackTraceToString()}")
     }
 
     suspend fun deletePlaylist(playlistId: String) = runCatching {
-        Innertube.deletePlaylist(Context.DefaultWebRemix.client, playlistId)
+        Innertube.deletePlaylist(Context.DefaultWeb.client, playlistId)
     }.onFailure {
         println("YtMusic deletePlaylist error: ${it.stackTraceToString()}")
     }
 
     suspend fun renamePlaylist(playlistId: String, name: String) = runCatching {
-        Innertube.renamePlaylist(Context.DefaultWebRemix.client, playlistId, name)
+        Innertube.renamePlaylist(Context.DefaultWeb.client, playlistId, name)
     }.onFailure {
         println("YtMusic renamePlaylist error: ${it.stackTraceToString()}")
     }
 
     suspend fun addToPlaylist(playlistId: String, videoId: String) = runCatching {
-        Innertube.addToPlaylist(Context.DefaultWebRemix.client, playlistId, videoId)
+        Innertube.addToPlaylist(Context.DefaultWeb.client, playlistId, videoId)
     }.onFailure {
         println("YtMusic addToPlaylist error: ${it.stackTraceToString()}")
     }
 
     suspend fun removeFromPlaylist(playlistId: String, videoId: String, setVideoId: String? = null) = runCatching {
-        Innertube.removeFromPlaylist(Context.DefaultWebRemix.client, playlistId, videoId, setVideoId)
+        Innertube.removeFromPlaylist(Context.DefaultWeb.client, playlistId, videoId, setVideoId)
     }.onFailure {
         println("YtMusic removeFromPlaylist error: ${it.stackTraceToString()}")
     }
 
-    suspend fun homePage(): Result<HomePage> = runCatching {
-        var response = Innertube.browse(Context.DefaultWeb.client, browseId = "FEmusic_home").body<BrowseResponse>()
+    suspend fun getHomePage(setLogin: Boolean = false): Result<HomePage> = runCatching {
+
+        var response = Innertube.browse(browseId = "FEmusic_home", setLogin = setLogin).body<BrowseResponse>()
+
+        println("homePage() response sections: ${response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents}" )
+
+
+
+        val accountName =
+                response.contents
+                    ?.singleColumnBrowseResultsRenderer
+                    ?.tabs
+                    ?.get(
+                        0,
+                    )?.tabRenderer
+                    ?.content
+                    ?.sectionListRenderer
+                    ?.contents
+                    ?.get(
+                        0,
+                    )?.musicCarouselShelfRenderer
+                    ?.header
+                    ?.musicCarouselShelfBasicHeaderRenderer
+                    ?.strapline
+                    ?.runs
+                    ?.get(
+                        0,
+                    )?.text ?: ""
+        val accountThumbnailUrl =
+                response.contents
+                    ?.singleColumnBrowseResultsRenderer
+                    ?.tabs
+                    ?.get(
+                        0,
+                    )?.tabRenderer
+                    ?.content
+                    ?.sectionListRenderer
+                    ?.contents
+                    ?.get(
+                        0,
+                    )?.musicCarouselShelfRenderer
+                    ?.header
+                    ?.musicCarouselShelfBasicHeaderRenderer
+                    ?.thumbnail
+                    ?.musicThumbnailRenderer
+                    ?.thumbnail
+                    ?.thumbnails
+                    ?.get(
+                        0,
+                    )?.url
+                    ?.replace("s88", "s352") ?: ""
+
+
+
         var continuation = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.continuations?.getContinuation()
+
         val sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.contents!!
             .mapNotNull { it.musicCarouselShelfRenderer }
@@ -65,15 +119,23 @@ object YtMusic {
                 HomePage.Section.fromMusicCarouselShelfRenderer(it)
             }.toMutableList()
         while (continuation != null) {
-            response = Innertube.browse(Context.DefaultWeb.client, browseId = "", continuation = continuation).body<BrowseResponse>()
+            println("gethomePage() continuation before:  ${continuation}" )
+            response = Innertube.browse(continuation = continuation).body<BrowseResponse>()
             continuation = response.continuationContents?.sectionListContinuation?.continuations?.getContinuation()
+            println("gethomePage() continuation after:  ${continuation}" )
+
             sections += response.continuationContents?.sectionListContinuation?.contents
                 ?.mapNotNull { it.musicCarouselShelfRenderer }
                 ?.mapNotNull {
                     HomePage.Section.fromMusicCarouselShelfRenderer(it)
                 }.orEmpty()
+
         }
-        HomePage(sections)
+        HomePage(
+            sections =sections.sortedBy { it.title },
+            accountName = accountName,
+            accountThumbnailUrl = accountThumbnailUrl,
+        )
     }
 
 }

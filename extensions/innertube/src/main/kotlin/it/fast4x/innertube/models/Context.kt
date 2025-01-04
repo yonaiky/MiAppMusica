@@ -120,14 +120,12 @@ data class Context(
         val DefaultWeb = Context(
             client = Client(
                 clientName = "WEB_REMIX",
-                //clientVersion = "1.20220606.03.00",
-                clientVersion = "1.20230731.00.00",
-                platform = "DESKTOP",
+                clientVersion = "1.20220606.03.00",
+                //clientVersion = "1.20230731.00.00",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
                 visitorData = Innertube.visitorData,
-                api_key = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8", // Youtube web
-               // api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30" //Youtube web music
+                api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30"
             )
         )
 
@@ -141,30 +139,30 @@ data class Context(
             client = DefaultWeb.client.copy(hl = hl)
         )
 
-        val DefaultWebRemix = Context(
-            client = Client(
-                clientName = "WEB_REMIX",
-                clientVersion = "1.20220606.03.00",
-                //clientVersion = "1.20230731.00.00",
-                //clientVersion = "1.20241218.01.00",
-                //platform = "DESKTOP",
-                userAgent = USER_AGENT_WEB,
-                referer = REFERER_YOUTUBE_MUSIC,
-                //hl = hl,
-                //visitorData = Innertube.visitorData,
-                api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
-            )
-        )
-
-        val DefaultWebCreator = Context(
-            client = Client(
-                clientName = "WEB_CREATOR",
-                clientVersion = "1.20240918.03.00",
-                userAgent = USER_AGENT_WEB,
-                referer = REFERER_YOUTUBE_MUSIC,
-                api_key = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
-            )
-        )
+//        val DefaultWebRemix = Context(
+//            client = Client(
+//                clientName = "WEB_REMIX",
+//                clientVersion = "1.20220606.03.00",
+//                //clientVersion = "1.20230731.00.00",
+//                //clientVersion = "1.20241218.01.00",
+//                //platform = "DESKTOP",
+//                userAgent = USER_AGENT_WEB,
+//                referer = REFERER_YOUTUBE_MUSIC,
+//                //hl = hl,
+//                //visitorData = Innertube.visitorData,
+//                api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
+//            )
+//        )
+//
+//        val DefaultWebCreator = Context(
+//            client = Client(
+//                clientName = "WEB_CREATOR",
+//                clientVersion = "1.20240918.03.00",
+//                userAgent = USER_AGENT_WEB,
+//                referer = REFERER_YOUTUBE_MUSIC,
+//                api_key = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
+//            )
+//        )
 
 
 

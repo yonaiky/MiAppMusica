@@ -52,6 +52,7 @@ import it.fast4x.piped.models.Instance
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -72,8 +73,6 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
-import it.fast4x.rimusic.utils.ytAccountEmailKey
-import it.fast4x.rimusic.utils.ytAccountNameKey
 import it.fast4x.rimusic.utils.ytCookieKey
 import it.fast4x.rimusic.utils.ytVisitorDataKey
 import it.fast4x.rimusic.utils.defaultFolderKey
@@ -110,6 +109,8 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.ytAccountEmailKey
+import it.fast4x.rimusic.utils.ytAccountNameKey
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -169,8 +170,8 @@ fun AccountsSettings() {
         var loginYouTube by remember { mutableStateOf(false) }
         var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = "")
         var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
-        var accountName by rememberEncryptedPreference(key = ytAccountNameKey, defaultValue = "")
-        var accountEmail by rememberEncryptedPreference(key = ytAccountEmailKey, defaultValue = "")
+        var accountName by rememberPreference(key = ytAccountNameKey, defaultValue = "")
+        var accountEmail by rememberPreference(key = ytAccountEmailKey, defaultValue = "")
         var accountChannelHandle by rememberEncryptedPreference(
             key = ytAccountChannelHandleKey,
             defaultValue = ""

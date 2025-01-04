@@ -23,8 +23,6 @@ const val discordPersonalAccessTokenKey = "DiscordPersonalAccessToken"
 
 const val ytVisitorDataKey = "ytVisitorData"
 const val ytCookieKey = "ytCookie"
-const val ytAccountNameKey = "ytAccountName"
-const val ytAccountEmailKey = "ytAccountEmail"
 const val ytAccountChannelHandleKey = "ytAccountChannelHandle"
 
 inline fun <reified T : Enum<T>> EncryptedSharedPreferences.getEnum(
