@@ -353,6 +353,7 @@
     <string name="sort_year">По году</string>
     <string name="sort_name">По названию</string>
     <string name="sort_songs_number">По количеству песен</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Подписаться</string>
     <string name="following">Подписан</string>
     <string name="artist_subscribers">%s подписчиков</string>
