@@ -352,6 +352,7 @@
     <string name="sort_year">ବର୍ଷ</string>
     <string name="sort_name">ନାମ</string>
     <string name="sort_songs_number">ଗୀତ ସଂଖ୍ୟା</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">ଅନୁସରଣ କରନ୍ତୁ</string>
     <string name="following">ଅନୁସରଣ କରାଯାଇଛି</string>
     <string name="artist_subscribers">%s ସବସ୍କ୍ରାଇବର</string>
