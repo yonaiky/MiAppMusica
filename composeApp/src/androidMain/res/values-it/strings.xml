@@ -859,4 +859,6 @@
     <string name="customcolor">Colore personalizzato</string>
     <string name="lyricsanimate">Dimensione delle lyrics animate</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
