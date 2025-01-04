@@ -352,6 +352,7 @@
     <string name="sort_year">İl</string>
     <string name="sort_name">Ad</string>
     <string name="sort_songs_number">Mahnı Nömrəsi</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">İzlə</string>
     <string name="following">İzlənilir</string>
     <string name="artist_subscribers">%s izləyici</string>
