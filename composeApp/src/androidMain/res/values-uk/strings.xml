@@ -857,5 +857,7 @@
     <string name="colorpalette">Палітра кольорів</string>
     <string name="customcolor">Користувальницький колір</string>
     <string name="lyricsanimate">Розмір анімації тексту пісні</string>
+    <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="home">Home</string>
 </resources>

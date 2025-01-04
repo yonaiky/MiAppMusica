@@ -857,5 +857,7 @@
     <string name="colorpalette">Rəng Palitrası</string>
     <string name="customcolor">Fərdi Rəng</string>
     <string name="lyricsanimate">Lirika ölçüsün hərəkət etdir</string>
+    <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="home">Home</string>
 </resources>

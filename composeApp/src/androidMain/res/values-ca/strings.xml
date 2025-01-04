@@ -857,5 +857,7 @@
     <string name="colorpalette">Paleta de colors</string>
     <string name="customcolor">Color personalitzat</string>
     <string name="lyricsanimate">Mida de la lletra d\'animació</string>
+    <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="home">Home</string>
 </resources>

@@ -857,5 +857,7 @@
     <string name="colorpalette">Paletă de culori</string>
     <string name="customcolor">Culoare personalizată</string>
     <string name="lyricsanimate">Animare dimensiunea versurilor</string>
+    <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="home">Home</string>
 </resources>

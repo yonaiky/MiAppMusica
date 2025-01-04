@@ -859,5 +859,7 @@
     <string name="colorpalette">Palette de couleurs</string>
     <string name="customcolor">Couleur personnalisée</string>
     <string name="lyricsanimate">Taille des paroles animées</string>
+    <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Appuyez longuement pour changer la taille</string>
+    <string name="home">Home</string>
 </resources>
