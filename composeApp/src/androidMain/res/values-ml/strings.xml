@@ -352,6 +352,7 @@
     <string name="sort_year">വർഷം</string>
     <string name="sort_name">പേര്</string>
     <string name="sort_songs_number">ഗീതങ്ങളുടെ എണ്ണം</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">പിന്തുടരുക</string>
     <string name="following">Following</string>
     <string name="artist_subscribers">%s subscribers</string>
