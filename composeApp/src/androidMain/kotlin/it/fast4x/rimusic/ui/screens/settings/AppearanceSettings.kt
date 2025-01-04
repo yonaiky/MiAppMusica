@@ -841,24 +841,24 @@ fun AppearanceSettings(
             )
         }
 
-        Column {
-            BasicText(
-                text = stringResource(R.string.appearancepresets),
-                style = typography().m.semiBold.copy(color = colorPalette().text),
-                modifier = Modifier
-                    .padding(all = 12.dp)
-                    .clickable(onClick = { appearanceChooser = true })
-            )
-            BasicText(
-                text = stringResource(R.string.appearancepresetssecondary),
-                style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .padding(bottom = 10.dp)
-            )
-        }
-
         if (!isLandscape) {
+            Column {
+                BasicText(
+                    text = stringResource(R.string.appearancepresets),
+                    style = typography().m.semiBold.copy(color = colorPalette().text),
+                    modifier = Modifier
+                        .padding(all = 12.dp)
+                        .clickable(onClick = { appearanceChooser = true })
+                )
+                BasicText(
+                    text = stringResource(R.string.appearancepresetssecondary),
+                    style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .padding(bottom = 10.dp)
+                )
+            }
+
             if (search.input.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                     search.input,
                     true
