@@ -281,9 +281,11 @@ import it.fast4x.rimusic.utils.statsExpandedKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AnimatedGradient
+import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.utils.animatedGradientKey
+import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.thumbnailFadeExKey
@@ -409,6 +411,7 @@ fun Player(
     val miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
     val statsExpanded by rememberPreference(statsExpandedKey, true)
     val actionExpanded by rememberPreference(actionExpandedKey, true)
+    val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
 
 
     binder.player.DisposableListener {
@@ -1676,7 +1679,9 @@ fun Player(
                         if (showButtonPlayerAddToPlaylist)
                             IconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = if (songPlaylist > 0 && playlistindicator) colorPalette().text else colorPalette().accent,
+                                color = if (songPlaylist > 0 && playlistindicator)
+                                    if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text
+                                    else colorPalette().accent,
                                 onClick = {
                                     menuState.display {
                                         MiniPlayerMenu(
