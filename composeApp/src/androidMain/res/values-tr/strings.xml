@@ -859,4 +859,6 @@
     <string name="customcolor">Özel Renk</string>
     <string name="lyricsanimate">Animasyonlu Şarkı Sözleri</string>
     <string name="lyricsSizeSecondary">Boyutu değiştirmek için uzun basın</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
