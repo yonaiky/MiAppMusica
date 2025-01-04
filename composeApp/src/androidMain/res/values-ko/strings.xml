@@ -859,4 +859,6 @@
     <string name="customcolor">맞춤 색상</string>
     <string name="lyricsanimate">가사 크기 애니메이션</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
