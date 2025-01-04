@@ -1382,6 +1382,7 @@ fun LocalPlaylistSongsModern(
                             PlaylistSongSortBy.PlayTime -> stringResource(R.string.sort_listening_time)
                             PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                             PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
+                            PlaylistSongSortBy.RelativePlayTime -> stringResource(R.string.sort_relative_listening_time)
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
@@ -1403,6 +1404,9 @@ fun LocalPlaylistSongsModern(
                                             sortBy = PlaylistSongSortBy.ArtistAndAlbum
                                         },
                                         onPlayTime = { sortBy = PlaylistSongSortBy.PlayTime },
+                                        onRelativePlayTime = {
+                                            sortBy = PlaylistSongSortBy.RelativePlayTime
+                                        },
                                         onDuration = { sortBy = PlaylistSongSortBy.Duration },
                                         onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded }
                                     )
@@ -1729,6 +1733,27 @@ fun LocalPlaylistSongsModern(
                                 if (sortBy == PlaylistSongSortBy.PlayTime) {
                                     BasicText(
                                         text = song.song.formattedTotalPlayTime,
+                                        style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        colorPalette.overlay
+                                                    )
+                                                ),
+                                                shape = thumbnailShape
+                                            )
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                            .align(Alignment.BottomCenter)
+                                    )
+                                }
+                                if (sortBy == PlaylistSongSortBy.RelativePlayTime) {
+                                    BasicText(
+                                        text = "${song.relativePlayTime().toLong()}",
                                         style = typography.xxs.semiBold.center.color(colorPalette.onOverlay),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,
