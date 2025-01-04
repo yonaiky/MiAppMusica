@@ -352,6 +352,7 @@
     <string name="sort_year">Any</string>
     <string name="sort_name">Nom</string>
     <string name="sort_songs_number">Número de cançons</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Segueix</string>
     <string name="following">Seguint</string>
     <string name="artist_subscribers">%s subscriptors</string>
