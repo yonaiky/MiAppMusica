@@ -352,6 +352,7 @@
     <string name="sort_year">Année</string>
     <string name="sort_name">Nom</string>
     <string name="sort_songs_number">Numéro du titre</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Suivre</string>
     <string name="following">Suit</string>
     <string name="artist_subscribers">%s abonnés</string>
@@ -862,4 +863,6 @@
     <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Appuyez longuement pour changer la taille</string>
     <string name="home">Home</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>

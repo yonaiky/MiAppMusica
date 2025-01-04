@@ -352,6 +352,7 @@
     <string name="sort_year">Рік</string>
     <string name="sort_name">Ім’я</string>
     <string name="sort_songs_number">Номер пісні</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Підписатися</string>
     <string name="following">Підписаний</string>
     <string name="artist_subscribers">%s Підписників</string>
@@ -860,4 +861,6 @@
     <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Довге натискання для зміни розміру</string>
     <string name="home">Home</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>

@@ -352,6 +352,7 @@
     <string name="sort_year">Jaar</string>
     <string name="sort_name">Naam</string>
     <string name="sort_songs_number">Liedjie Nommer</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Volg</string>
     <string name="following">Word Gevolg</string>
     <string name="artist_subscribers">%s volgelinge</string>
@@ -860,4 +861,6 @@
     <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
     <string name="home">Home</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
