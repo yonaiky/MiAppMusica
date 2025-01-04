@@ -859,4 +859,6 @@
     <string name="customcolor">Benutzerdefinierte Farbe</string>
     <string name="lyricsanimate">Animiere Songtextgröße</string>
     <string name="lyricsSizeSecondary">Lange drücken, um Größe zu ändern</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
