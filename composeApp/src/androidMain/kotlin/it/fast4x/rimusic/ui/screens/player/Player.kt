@@ -2022,7 +2022,7 @@ fun Player(
                      .background(
                          Brush.verticalGradient(
                              0.0f to Color.Transparent,
-                             1.0f to if (bottomgradient) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                             1.0f to if (bottomgradient) if (lightTheme) Color.White.copy(
                                  if (isLandscape) 0.8f else 0.75f
                              ) else Color.Black.copy(if (isLandscape) 0.8f else 0.75f) else Color.Transparent,
                              startY = if (isLandscape) 600f else if (expandedplayer) 1300f else 950f,
@@ -2030,7 +2030,7 @@ fun Player(
                          )
                      )
                      .background(
-                         if (bottomgradient) if (isLandscape) if (colorPaletteMode == ColorPaletteMode.Light) Color.White.copy(
+                         if (bottomgradient) if (isLandscape) if (lightTheme) Color.White.copy(
                              0.25f
                          ) else Color.Black.copy(0.25f) else Color.Transparent else Color.Transparent
                      )){}
