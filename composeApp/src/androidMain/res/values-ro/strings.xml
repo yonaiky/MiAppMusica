@@ -859,4 +859,6 @@
     <string name="customcolor">Culoare personalizată</string>
     <string name="lyricsanimate">Animare dimensiunea versurilor</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
