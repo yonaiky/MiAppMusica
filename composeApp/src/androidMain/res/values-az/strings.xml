@@ -859,4 +859,6 @@
     <string name="customcolor">Fərdi Rəng</string>
     <string name="lyricsanimate">Lirika ölçüsün hərəkət etdir</string>
     <string name="lyricsSizeSecondary">Ölçünü dəyişmək üçün uzun basın</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
