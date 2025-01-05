@@ -2,36 +2,13 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.ScrollableDefaults
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,8 +30,7 @@ import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.discoverPage
-import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import it.fast4x.rimusic.*
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -69,16 +45,7 @@ import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
-import it.fast4x.rimusic.utils.center
-import it.fast4x.rimusic.utils.disableScrollingTextKey
-import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.secondary
-import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.showSearchTabKey
-import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.*
 
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
@@ -334,7 +301,7 @@ fun MoodItemColored(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clip(thumbnailRoundness.shape())
+            .clip(thumbnailRoundness.shape)
             .clickable { onClick() }
 
     ) {
@@ -397,7 +364,7 @@ fun MoodGridItemColored(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxSize(0.9f)
-                .clip(thumbnailRoundness.shape())
+                .clip(thumbnailRoundness.shape)
 
         ) {
             Row(
@@ -449,14 +416,14 @@ fun MoodItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clip(thumbnailRoundness.shape())
+            .clip(thumbnailRoundness.shape)
             .clickable { onClick() }
 
     ) {
         Box(
             modifier = Modifier
                 .requiredWidth(150.dp)
-                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape())
+                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape)
                 .fillMaxWidth(0.9f)
                 .padding(all = 10.dp)
         ){
@@ -495,13 +462,13 @@ fun MoodGridItem(
         modifier = modifier
             .size(thumbnailSizeDp,thumbnailSizeDp)
             //.background(colorPalette().background1)
-            .clip(thumbnailRoundness.shape())
+            .clip(thumbnailRoundness.shape)
             .clickable { onClick() }
 
     ) {
         Box(
             modifier = Modifier
-                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape())
+                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape)
                 .fillMaxSize(0.9f)
                 .padding(horizontal = 10.dp)
                 .padding(vertical = 50.dp)

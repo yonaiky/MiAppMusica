@@ -140,7 +140,7 @@ fun ArtistScreen(
                     artist?.thumbnailUrl,
                     //CircleShape
                     onClick = { changeShape = !changeShape },
-                    shape = if (changeShape) CircleShape else thumbnailRoundness.shape(),
+                    shape = if (changeShape) CircleShape else thumbnailRoundness.shape,
                 )
 
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit =

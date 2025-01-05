@@ -1,31 +1,16 @@
 package it.fast4x.rimusic.ui.screens
 
 import android.net.Uri
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -41,12 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.enums.BuiltInPlaylist
-import it.fast4x.rimusic.enums.DeviceLists
-import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.StatisticsType
-import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.enums.TransitionEffect
+import it.fast4x.rimusic.enums.*
 import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.extensions.games.snake.SnakeGame
 import it.fast4x.rimusic.models.Mood
@@ -70,13 +50,7 @@ import it.fast4x.rimusic.ui.screens.search.SearchScreen
 import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
 import it.fast4x.rimusic.ui.screens.settings.SettingsScreen
 import it.fast4x.rimusic.ui.screens.statistics.StatisticsScreen
-import it.fast4x.rimusic.utils.clearPreference
-import it.fast4x.rimusic.utils.homeScreenTabIndexKey
-import it.fast4x.rimusic.utils.pauseSearchHistoryKey
-import it.fast4x.rimusic.utils.preferences
-import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.utils.transitionEffectKey
+import it.fast4x.rimusic.utils.*
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
@@ -126,7 +100,7 @@ fun AppNavigation(
                     //shape = thumbnailShape
                 ) {}
             },
-            shape = thumbnailRoundness.shape()
+            shape = thumbnailRoundness.shape
         ) {
             content()
         }

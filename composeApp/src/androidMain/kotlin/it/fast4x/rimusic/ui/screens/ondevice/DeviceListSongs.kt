@@ -305,7 +305,7 @@ fun DeviceListSongs(
                         .fillMaxSize(0.99F)
                         .background(
                             color = colorPalette().background1,
-                            shape = thumbnailRoundness.shape()
+                            shape = thumbnailRoundness.shape
                         )
                 ) {
                     if (filteredSongs.isEmpty())
@@ -728,7 +728,7 @@ fun DeviceListSongs(
                                 .fillMaxWidth()
                                 .background(
                                     colorPalette().background4,
-                                    shape = thumbnailRoundness.shape()
+                                    shape = thumbnailRoundness.shape
                                 )
                                 .focusRequester(focusRequester)
                                 .onFocusChanged {

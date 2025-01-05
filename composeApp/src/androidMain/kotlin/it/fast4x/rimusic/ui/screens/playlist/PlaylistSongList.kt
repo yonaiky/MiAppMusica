@@ -661,7 +661,7 @@ fun PlaylistSongList(
                                     .fillMaxWidth()
                                     .background(
                                         colorPalette().background4,
-                                        shape = thumbnailRoundness.shape()
+                                        shape = thumbnailRoundness.shape
                                     )
                                     .focusRequester(focusRequester)
                                     .onFocusChanged {

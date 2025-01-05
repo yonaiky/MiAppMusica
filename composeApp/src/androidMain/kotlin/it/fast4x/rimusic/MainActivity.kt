@@ -442,7 +442,7 @@ class MainActivity :
                                 applyFontPadding,
                                 fontType
                             ),
-                            thumbnailShape = thumbnailRoundness.shape()
+                            thumbnailShape = thumbnailRoundness.shape
                         )
                     )
                 }
@@ -710,7 +710,7 @@ class MainActivity :
                                     sharedPreferences.getEnum(key, ThumbnailRoundness.Heavy)
 
                                 appearance = appearance.copy(
-                                    thumbnailShape = thumbnailRoundness.shape()
+                                    thumbnailShape = thumbnailRoundness.shape
                                 )
                             }
 
@@ -981,7 +981,7 @@ class MainActivity :
                                             shape = thumbnailShape()
                                         ) {}
                                     },
-                                    shape = thumbnailRoundness.shape()
+                                    shape = thumbnailRoundness.shape
                                 ) {
                                     player()
                                 }
@@ -1001,7 +1001,7 @@ class MainActivity :
                                         shape = thumbnailShape()
                                     ) {}
                                 },
-                                shape = thumbnailRoundness.shape()
+                                shape = thumbnailRoundness.shape
                             ) {
                                 youtubePlayer()
                             }
@@ -1027,7 +1027,7 @@ class MainActivity :
                                         //shape = thumbnailShape
                                     ) {}
                                 },
-                                shape = thumbnailRoundness.shape()
+                                shape = thumbnailRoundness.shape
                             ) {
                                 menuState.content()
                             }

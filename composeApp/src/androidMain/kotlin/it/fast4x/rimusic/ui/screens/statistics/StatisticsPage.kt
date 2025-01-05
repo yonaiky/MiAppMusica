@@ -258,7 +258,7 @@ fun StatisticsPage(
                                         modifier = Modifier
                                             .background(
                                                 color = colorPalette().background4,
-                                                shape = thumbnailRoundness.shape()
+                                                shape = thumbnailRoundness.shape
                                             )
 
                                     )

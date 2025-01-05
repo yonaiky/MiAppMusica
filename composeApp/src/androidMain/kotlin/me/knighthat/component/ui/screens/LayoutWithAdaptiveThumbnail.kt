@@ -47,7 +47,7 @@ fun DynamicOrientationLayout(
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier.fillMaxSize( .5f )
                         .aspectRatio( 1f )
-                        .clip( roundness.shape() )
+                        .clip( roundness.shape )
                 )
             }
             content()

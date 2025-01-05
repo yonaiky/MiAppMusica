@@ -2127,12 +2127,12 @@ fun Player(
                                              }
                                              .conditional(thumbnailType == ThumbnailType.Modern) {
                                                  doubleShadowDrop(
-                                                     if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape(),
+                                                     if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape,
                                                      4.dp,
                                                      8.dp
                                                  )
                                              }
-                                             .clip(thumbnailRoundness.shape())
+                                             .clip(thumbnailRoundness.shape)
                                              .combinedClickable(
                                                  interactionSource = remember { MutableInteractionSource() },
                                                  indication = null,
@@ -2667,12 +2667,12 @@ fun Player(
                                          }
                                          .conditional(thumbnailType == ThumbnailType.Modern) {
                                              doubleShadowDrop(
-                                                 if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape(),
+                                                 if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape,
                                                  4.dp,
                                                  8.dp
                                              )
                                          }
-                                         .clip(thumbnailRoundness.shape())
+                                         .clip(thumbnailRoundness.shape)
                                          .combinedClickable(
                                              interactionSource = remember { MutableInteractionSource() },
                                              indication = null,
@@ -2930,7 +2930,7 @@ fun Player(
                     shape = thumbnailShape()
                 ) {}
             },
-            shape = thumbnailRoundness.shape()
+            shape = thumbnailRoundness.shape
         ) {
             Queue(
                 navController = navController,
@@ -2960,7 +2960,7 @@ fun Player(
                     shape = thumbnailShape()
                 ) {}
             },
-            shape = thumbnailRoundness.shape()
+            shape = thumbnailRoundness.shape
         ) {
             SearchYoutubeEntity(
                 navController = navController,

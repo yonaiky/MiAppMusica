@@ -1,37 +1,19 @@
 package it.fast4x.rimusic.ui.screens.settings
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +26,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
-import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Instance
 import it.fast4x.rimusic.R
@@ -52,62 +33,15 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
-import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
-import it.fast4x.rimusic.service.PlayerMediaBrowserService
-import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.themed.DefaultDialog
-import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.components.themed.Loader
-import it.fast4x.rimusic.ui.components.themed.Menu
-import it.fast4x.rimusic.ui.components.themed.MenuEntry
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.components.themed.*
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.textCopyToClipboard
-import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
-import it.fast4x.rimusic.utils.ytAccountEmailKey
-import it.fast4x.rimusic.utils.ytAccountNameKey
-import it.fast4x.rimusic.utils.ytCookieKey
-import it.fast4x.rimusic.utils.ytVisitorDataKey
-import it.fast4x.rimusic.utils.defaultFolderKey
-import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
-import it.fast4x.rimusic.utils.enableYouTubeLoginKey
-import it.fast4x.rimusic.utils.extraspaceKey
-import it.fast4x.rimusic.utils.isAtLeastAndroid10
-import it.fast4x.rimusic.utils.isAtLeastAndroid12
-import it.fast4x.rimusic.utils.isAtLeastAndroid6
-import it.fast4x.rimusic.utils.isAtLeastAndroid7
-import it.fast4x.rimusic.utils.isAtLeastAndroid81
-import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
-import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
-import it.fast4x.rimusic.utils.isInvincibilityEnabledKey
-import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
-import it.fast4x.rimusic.utils.isPipedCustomEnabledKey
-import it.fast4x.rimusic.utils.isPipedEnabledKey
-import it.fast4x.rimusic.utils.isProxyEnabledKey
-import it.fast4x.rimusic.utils.logDebugEnabledKey
-import it.fast4x.rimusic.utils.parentalControlEnabledKey
-import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
-import it.fast4x.rimusic.utils.pipedApiTokenKey
-import it.fast4x.rimusic.utils.pipedInstanceNameKey
-import it.fast4x.rimusic.utils.pipedPasswordKey
-import it.fast4x.rimusic.utils.pipedUsernameKey
-import it.fast4x.rimusic.utils.proxyHostnameKey
-import it.fast4x.rimusic.utils.proxyModeKey
-import it.fast4x.rimusic.utils.proxyPortKey
-import it.fast4x.rimusic.utils.rememberEncryptedPreference
-import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.restartActivityKey
-import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
-import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
-import java.net.Proxy
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -557,7 +491,7 @@ fun AccountsSettings() {
                             shape = thumbnailShape()
                         ) {}
                     },
-                    shape = thumbnailRoundness.shape()
+                    shape = thumbnailRoundness.shape
                 ) {
                     DiscordLoginAndGetToken(
                         rememberNavController(),

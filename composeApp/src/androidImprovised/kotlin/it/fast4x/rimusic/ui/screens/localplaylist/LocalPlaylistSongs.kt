@@ -528,7 +528,7 @@ fun LocalPlaylistSongs(
                         .fillMaxSize(0.99F)
                         .background(
                             color = colorPalette().background1,
-                            shape = thumbnailRoundness.shape()
+                            shape = thumbnailRoundness.shape
                         )
                 ) {
 

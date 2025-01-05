@@ -666,11 +666,11 @@ fun AppearanceSettings(
                                     .border(
                                         width = 1.dp,
                                         color = colorPalette().accent,
-                                        shape = thumbnailRoundness.shape()
+                                        shape = thumbnailRoundness.shape
                                     )
                                     .background(
                                         color = colorPalette().background1,
-                                        shape = thumbnailRoundness.shape()
+                                        shape = thumbnailRoundness.shape
                                     )
                                     .size(36.dp)
                             )
