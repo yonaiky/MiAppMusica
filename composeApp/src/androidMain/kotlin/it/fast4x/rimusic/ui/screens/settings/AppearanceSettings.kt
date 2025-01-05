@@ -595,6 +595,8 @@ fun AppearanceSettings(
                 bottomgradient = true
                 showRemainingSongTime = true
                 showNextSongsInPlayer = false
+                colorPaletteName = ColorPaletteName.Dynamic
+                colorPaletteMode = ColorPaletteMode.System
                 ///////ACTION BAR BUTTONS////////////////
                 transparentBackgroundActionBarPlayer = true
                 actionspacedevenly = true
@@ -640,6 +642,8 @@ fun AppearanceSettings(
                 showlyricsthumbnail = false
                 thumbnailRoundness = ThumbnailRoundness.Medium
                 showNextSongsInPlayer = true
+                colorPaletteName = ColorPaletteName.Dynamic
+                colorPaletteMode = ColorPaletteMode.System
                 ///////ACTION BAR BUTTONS////////////////
                 transparentBackgroundActionBarPlayer = true
                 actionspacedevenly = true
@@ -681,6 +685,8 @@ fun AppearanceSettings(
                 bottomgradient = true
                 showlyricsthumbnail = false
                 showNextSongsInPlayer = false
+                colorPaletteName = ColorPaletteName.Dynamic
+                colorPaletteMode = ColorPaletteMode.System
                 ///////ACTION BAR BUTTONS////////////////
                 transparentBackgroundActionBarPlayer = true
                 actionspacedevenly = true
