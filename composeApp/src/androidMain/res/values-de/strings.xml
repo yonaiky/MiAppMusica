@@ -352,6 +352,7 @@
     <string name="sort_year">Jahr</string>
     <string name="sort_name">Namen</string>
     <string name="sort_songs_number">Titelnummer</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Folgen</string>
     <string name="following">Gefolgt</string>
     <string name="artist_subscribers">%s Abonnenten</string>
@@ -858,4 +859,6 @@
     <string name="customcolor">Benutzerdefinierte Farbe</string>
     <string name="lyricsanimate">Animiere Songtextgröße</string>
     <string name="lyricsSizeSecondary">Lange drücken, um Größe zu ändern</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
