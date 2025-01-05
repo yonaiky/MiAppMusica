@@ -76,6 +76,7 @@ fun AlbumsItemMenu(
     onPlayNext: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
+    onLikeAllSongs: (() -> Unit)? = null,
     disableScrollingText: Boolean
 ) {
     val density = LocalDensity.current
@@ -105,6 +106,7 @@ fun AlbumsItemMenu(
             onPlayNext = onPlayNext,
             onEnqueue = onEnqueue,
             onAddToPlaylist = onAddToPlaylist,
+            onLikeAllSongs = onLikeAllSongs,
             disableScrollingText = disableScrollingText
         )
     } else {
@@ -442,6 +444,16 @@ fun AlbumsItemMenu(
                         )
                     }
 
+                    onLikeAllSongs?.let { onLikeAllSongs ->
+                        MenuEntry(
+                            icon = R.drawable.heart,
+                            text = stringResource(R.string.like_all_songs),
+                            onClick = {
+                                onDismiss()
+                                onLikeAllSongs()
+                            }
+                        )
+                    }
                 }
             }
         }
