@@ -148,6 +148,7 @@ import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
+import it.fast4x.rimusic.utils.quickPicsHomePageKey
 import timber.log.Timber
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -188,11 +189,15 @@ fun HomeQuickPicks(
     var discoverPageInit by persist<Innertube.DiscoverPage>("home/discoveryAlbums")
     var discoverPagePreference by rememberPreference(quickPicsDiscoverPageKey, discoverPageInit)
 
+    var homePageResult by persist<Result<HomePage?>>("home/homePage")
+    var homePageInit by persist<HomePage?>("home/homePage")
+    var homePagePreference by rememberPreference(quickPicsHomePageKey, homePageInit)
+
     var chartsPageResult by persist<Result<Innertube.ChartsPage?>>("home/chartsPage")
     var chartsPageInit by persist<Innertube.ChartsPage>("home/chartsPage")
 //    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
 
-    var homePageResult by persist<Result<HomePage?>>("home/homePage")
+
 
     var preferitesArtists by persistList<Artist>("home/artists")
 
@@ -240,9 +245,6 @@ fun HomeQuickPicks(
             chartsPageResult =
                 Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
-        if (isYouTubeLoggedIn())
-            homePageResult = YtMusic.getHomePage()
-
         if (loadedData) return
 
         runCatching {
@@ -286,6 +288,9 @@ fun HomeQuickPicks(
             if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres) {
                 discoverPageResult = Innertube.discoverPage()
             }
+
+            if (isYouTubeLoggedIn())
+                homePageResult = YtMusic.getHomePage()
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
@@ -437,6 +442,23 @@ fun HomeQuickPicks(
 
                 // Not saved/cached to preference
                 chartsPageInit = chartsPageResult?.getOrNull()
+
+                if (homePagePreference != null) {
+                    when (loadedData) {
+                        true -> {
+                            homePageResult = Result.success(homePagePreference)
+                            homePageInit = homePageResult?.getOrNull()
+                        }
+                        else -> {
+                            homePageInit = homePageResult?.getOrNull()
+                            homePagePreference = homePageInit
+                        }
+
+                    }
+                } else {
+                    homePageInit = homePageResult?.getOrNull()
+                    homePagePreference = homePageInit
+                }
 
                 /*   Load data from url or from saved preference   */
 
@@ -1101,7 +1123,7 @@ fun HomeQuickPicks(
                 }
 
 
-                homePageResult?.getOrNull()?.let { page ->
+                homePageInit?.let { page ->
                     println("homePage() in HomeYouTubeMusic accountName: ${page.accountName} accountThumbnailUrl ${page.accountThumbnailUrl}")
                     BasicText(
                         text = "YOUR MUSIC CONTENT",

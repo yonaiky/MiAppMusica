@@ -179,6 +179,7 @@ object Innertube {
         }
     }
 
+    @Serializable
     sealed class Item {
         abstract val thumbnail: Thumbnail?
         abstract val key: String

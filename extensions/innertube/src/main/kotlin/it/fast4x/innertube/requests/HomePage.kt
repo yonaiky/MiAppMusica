@@ -9,12 +9,15 @@ import it.fast4x.innertube.models.MusicTwoRowItemRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.models.splitBySeparator
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class HomePage(
     val sections: List<Section>,
     val accountName: String? = null,
     val accountThumbnailUrl: String? = null,
 ) {
+    @Serializable
     data class Section(
         val title: String,
         val label: String?,

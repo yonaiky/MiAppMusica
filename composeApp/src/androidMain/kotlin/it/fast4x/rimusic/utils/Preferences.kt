@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
 import com.google.gson.Gson
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.requests.HomePage
 import it.fast4x.rimusic.models.Song
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.encodeToString
@@ -305,6 +306,7 @@ const val quickPicsTrendingSongKey = "quickPicsTrendingSong"
 const val quickPicsRelatedPageKey = "quickPicsRelatedPage"
 const val quickPicsChartsPageKey = "quickPicsChartsPage"
 const val quickPicsDiscoverPageKey = "quickPicsDiscoverPage"
+const val quickPicsHomePageKey = "quickPicsHomePage"
 const val loadedDataKey = "loadedData"
 
 const val enablePictureInPictureKey = "enablePicturInPicture"
@@ -491,6 +493,28 @@ fun rememberPreference(key: String, defaultValue: Innertube.RelatedPage?): Mutab
                     ?.let { Json.decodeFromString<Innertube.RelatedPage>(it) }
             } catch (e: Exception) {
                 Timber.e("RememberPreference RelatedPage Error: ${ e.stackTraceToString() }")
+                null
+            }
+        ) {
+            context.preferences.edit { putString(
+                key,
+                Json.encodeToString(it)
+            ) }
+        }
+    }
+}
+
+@Composable
+fun rememberPreference(key: String, defaultValue: HomePage?): MutableState<HomePage?> {
+    val context = LocalContext.current
+    val json = Json.encodeToString(defaultValue)
+    return remember {
+        mutableStatePreferenceOf(
+            try {
+                context.preferences.getString(key, json)
+                    ?.let { Json.decodeFromString<HomePage>(it) }
+            } catch (e: Exception) {
+                Timber.e("RememberPreference HomePage Error: ${ e.stackTraceToString() }")
                 null
             }
         ) {
