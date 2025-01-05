@@ -140,6 +140,12 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.ShimmerHost
+import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import it.fast4x.rimusic.ui.components.themed.TitleSection
+import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
+import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
+import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import timber.log.Timber
@@ -1097,11 +1103,26 @@ fun HomeQuickPicks(
 
                 homePageResult?.getOrNull()?.let { page ->
                     println("homePage() in HomeYouTubeMusic accountName: ${page.accountName} accountThumbnailUrl ${page.accountThumbnailUrl}")
+                    BasicText(
+                        text = "YOUR MUSIC CONTENT",
+                        style = typography().l.semiBold.color(colorPalette().accent),
+                        modifier = sectionTextModifier
+                    )
                     page.sections.forEach {
+                        if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
+                        println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
+                        it.label?.let { label ->
+                            BasicText(
+                                text = label,
+                                style = typography().l.semiBold.color(colorPalette().accent),
+                                modifier = sectionTextModifier
+                            )
+                        }
+
                         BasicText(
                             text = it.title,
-                            style = typography().l.semiBold,
+                            style = typography().m.semiBold.color(colorPalette().text),
                             modifier = sectionTextModifier
                         )
                         LazyRow(contentPadding = endPaddingValues) {
@@ -1181,7 +1202,7 @@ fun HomeQuickPicks(
                             }
                         }
                     }
-                } ?: BasicText(
+                } ?: if (!isYouTubeLoggedIn()) BasicText(
                     text = "Log in to your YTM account for more content",
                     style = typography().xs.center,
                     maxLines = 2,
@@ -1192,7 +1213,37 @@ fun HomeQuickPicks(
                         .clickable {
                             navController.navigate(NavRoutes.settings.name)
                         }
-                )
+                ) else {
+                    ShimmerHost {
+                        repeat(3) {
+                            SongItemPlaceholder(
+                                thumbnailSizeDp = songThumbnailSizeDp,
+                            )
+                        }
+
+                        TextPlaceholder(modifier = sectionTextModifier)
+
+                        Row {
+                            repeat(2) {
+                                AlbumItemPlaceholder(
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true
+                                )
+                            }
+                        }
+
+                        TextPlaceholder(modifier = sectionTextModifier)
+
+                        Row {
+                            repeat(2) {
+                                PlaylistItemPlaceholder(
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true
+                                )
+                            }
+                        }
+                    }
+                }
 
 
 

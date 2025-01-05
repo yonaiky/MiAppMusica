@@ -63,49 +63,49 @@ object YtMusic {
 
 
 
-        val accountName =
-                response.contents
-                    ?.singleColumnBrowseResultsRenderer
-                    ?.tabs
-                    ?.get(
-                        0,
-                    )?.tabRenderer
-                    ?.content
-                    ?.sectionListRenderer
-                    ?.contents
-                    ?.get(
-                        0,
-                    )?.musicCarouselShelfRenderer
-                    ?.header
-                    ?.musicCarouselShelfBasicHeaderRenderer
-                    ?.strapline
-                    ?.runs
-                    ?.get(
-                        0,
-                    )?.text ?: ""
-        val accountThumbnailUrl =
-                response.contents
-                    ?.singleColumnBrowseResultsRenderer
-                    ?.tabs
-                    ?.get(
-                        0,
-                    )?.tabRenderer
-                    ?.content
-                    ?.sectionListRenderer
-                    ?.contents
-                    ?.get(
-                        0,
-                    )?.musicCarouselShelfRenderer
-                    ?.header
-                    ?.musicCarouselShelfBasicHeaderRenderer
-                    ?.thumbnail
-                    ?.musicThumbnailRenderer
-                    ?.thumbnail
-                    ?.thumbnails
-                    ?.get(
-                        0,
-                    )?.url
-                    ?.replace("s88", "s352") ?: ""
+//        val accountName =
+//                response.contents
+//                    ?.singleColumnBrowseResultsRenderer
+//                    ?.tabs
+//                    ?.get(
+//                        0,
+//                    )?.tabRenderer
+//                    ?.content
+//                    ?.sectionListRenderer
+//                    ?.contents
+//                    ?.get(
+//                        0,
+//                    )?.musicCarouselShelfRenderer
+//                    ?.header
+//                    ?.musicCarouselShelfBasicHeaderRenderer
+//                    ?.strapline
+//                    ?.runs
+//                    ?.get(
+//                        0,
+//                    )?.text ?: ""
+//        val accountThumbnailUrl =
+//                response.contents
+//                    ?.singleColumnBrowseResultsRenderer
+//                    ?.tabs
+//                    ?.get(
+//                        0,
+//                    )?.tabRenderer
+//                    ?.content
+//                    ?.sectionListRenderer
+//                    ?.contents
+//                    ?.get(
+//                        0,
+//                    )?.musicCarouselShelfRenderer
+//                    ?.header
+//                    ?.musicCarouselShelfBasicHeaderRenderer
+//                    ?.thumbnail
+//                    ?.musicThumbnailRenderer
+//                    ?.thumbnail
+//                    ?.thumbnails
+//                    ?.get(
+//                        0,
+//                    )?.url
+//                    ?.replace("s88", "s352") ?: ""
 
 
 
@@ -132,9 +132,9 @@ object YtMusic {
 
         }
         HomePage(
-            sections =sections.sortedBy { it.title },
-            accountName = accountName,
-            accountThumbnailUrl = accountThumbnailUrl,
+            sections = sections,
+            //accountName = accountName,
+            //accountThumbnailUrl = accountThumbnailUrl,
         )
     }
 
