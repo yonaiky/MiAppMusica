@@ -1,14 +1,10 @@
 package it.fast4x.innertube.requests
 
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.Innertube.getBestQuality
 import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.models.MusicCarouselShelfRenderer
-import it.fast4x.innertube.models.MusicResponsiveListItemRenderer
 import it.fast4x.innertube.models.MusicTwoRowItemRenderer
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.oddElements
-import it.fast4x.innertube.models.splitBySeparator
 import kotlinx.serialization.Serializable
 
 @Serializable

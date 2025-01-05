@@ -139,6 +139,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.isVideoEnabled
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
@@ -148,6 +149,7 @@ import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
+import it.fast4x.rimusic.utils.playVideo
 import it.fast4x.rimusic.utils.quickPicsHomePageKey
 import timber.log.Timber
 import kotlin.time.Duration
@@ -1154,8 +1156,8 @@ fun HomeQuickPicks(
                                         println("Innertube homePage SongItem: ${item.info?.name}")
                                         SongItem(
                                             song = item,
-                                            thumbnailSizePx = songThumbnailSizePx,
-                                            thumbnailSizeDp = songThumbnailSizeDp,
+                                            thumbnailSizePx = albumThumbnailSizePx,
+                                            thumbnailSizeDp = albumThumbnailSizeDp,
                                             onDownloadClick = {},
                                             downloadState = Download.STATE_STOPPED,
                                             disableScrollingText = disableScrollingText,
@@ -1214,7 +1216,14 @@ fun HomeQuickPicks(
                                             video = item,
                                             thumbnailHeightDp = playlistThumbnailSizeDp,
                                             thumbnailWidthDp = playlistThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clickable(onClick = {
+                                                binder?.stopRadio()
+                                                if (isVideoEnabled())
+                                                    binder?.player?.playVideo(item.asMediaItem)
+                                                else
+                                                    binder?.player?.forcePlay(item.asMediaItem)
+                                            })
                                         )
                                     }
 
