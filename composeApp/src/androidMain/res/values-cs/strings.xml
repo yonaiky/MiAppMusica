@@ -845,12 +845,12 @@
     <string name="mesh">Síťový přechod</string>
     <string name="mesmerizinglens">Fascinující objektiv</string>
     <string name="glossygradient">Lesklý přechod</string>
-    <string name="gradientflow">Přechodový tok</string>
+    <string name="gradientflow">Tok přechodu</string>
     <string name="purpleliquid">Fialová kapalina</string>
     <string name="stage">Stav</string>
-    <string name="inkflow">Inkoustový tok</string>
+    <string name="inkflow">Tok inkoustu</string>
     <string name="goldenmagma">Zlatá magma</string>
-    <string name="oilflow">Olejový tok</string>
+    <string name="oilflow">Tok oleje</string>
     <string name="icereflection">Odraz ledu</string>
     <string name="blackcherrycosmos">Kosmos černá třešeň</string>
     <string name="gradienttype">Typ přechodu</string>
