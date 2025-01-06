@@ -19,6 +19,7 @@ import it.fast4x.innertube.models.CreatePlaylistResponse
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.getContinuation
+import it.fast4x.innertube.requests.HistoryPage
 import it.fast4x.innertube.requests.HomePage
 import it.fast4x.innertube.requests.browse
 
@@ -85,6 +86,26 @@ object YtMusic {
 
         }
         HomePage( sections = sections )
+    }
+
+    suspend fun getHistory(setLogin: Boolean = false): Result<HistoryPage> = runCatching {
+
+        val response = Innertube.browse(browseId = "FEmusic_history", setLogin = setLogin)
+            .body<BrowseResponse>()
+
+        println("getHistory() response sections: ${response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents}" )
+
+        HistoryPage(
+            sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.contents
+                ?.mapNotNull {
+                    it.musicShelfRenderer?.let { musicShelfRenderer ->
+                        HistoryPage.fromMusicShelfRenderer(musicShelfRenderer)
+                    }
+                }
+        )
+
     }
 
 }

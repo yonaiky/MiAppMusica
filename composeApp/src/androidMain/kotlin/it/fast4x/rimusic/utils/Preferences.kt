@@ -191,6 +191,7 @@ const val playlistTypeKey = "playlistType"
 const val iconLikeTypeKey = "iconLikeType"
 const val playerSwapControlsWithTimelineKey = "playerSwapControlsWithTimeline"
 const val playerEnableLyricsPopupMessageKey = "playerEnableLyricsPopupMessage"
+const val historyTypeKey = "historyType"
 /**** CUSTOM THEME **** */
 const val customThemeLight_Background0Key = "customThemeLight_Background0"
 const val customThemeLight_Background1Key = "customThemeLight_Background1"
