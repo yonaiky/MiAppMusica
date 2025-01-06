@@ -729,7 +729,7 @@ fun AppearanceSettings(
                 bottomgradient = true
                 showlyricsthumbnail = false
                 thumbnailType = ThumbnailType.Essential
-                thumbnailRoundness = ThumbnailRoundness.None
+                thumbnailRoundness = ThumbnailRoundness.Light
                 playerType = PlayerType.Modern
                 fadingedge = true
                 thumbnailFade = 5f
