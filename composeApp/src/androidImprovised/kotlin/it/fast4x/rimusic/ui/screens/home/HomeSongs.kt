@@ -65,6 +65,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import me.knighthat.component.SongItem
+import me.knighthat.component.tab.ItemSelector
 import timber.log.Timber
 import java.util.Optional
 import kotlin.math.max
@@ -94,10 +95,6 @@ fun HomeSongs(
 
     var items by persistList<SongEntity>( "home/songs" )
     var itemsOnDisplay by persistList<SongEntity>( "home/songs/on_display" )
-    // List should be cleared when tab changed
-    val selectedItems = remember { mutableListOf<SongEntity>() }
-
-    fun getMediaItems() = selectedItems.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
 
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
@@ -144,6 +141,10 @@ fun HomeSongs(
         playlistNameState.value = context.resources.getString( builtInPlaylist.textId )
     }
 
+    val itemSelector = ItemSelector<SongEntity>()
+
+    fun getMediaItems() = itemSelector.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
+
     val search = Search.init()
 
     val songSort = Sort.init(
@@ -184,12 +185,6 @@ fun HomeSongs(
     val topPlaylists = PeriodSelector.init()
 
     //<editor-fold desc="Menu">
-    val itemSelector = ItemSelector.init()
-    LaunchedEffect( itemSelector.isActive ) {
-        // Clears itemsOnDisplay when check boxes are disabled
-        if( !itemSelector.isActive ) selectedItems.clear()
-    }
-
     val playNext = PlayNext {
         getMediaItems().let {
             binder?.player?.addNext( it, appContext() )
@@ -788,8 +783,8 @@ fun HomeSongs(
                             trailingContent = {
                                 // It must watch for [selectedItems.size] for changes
                                 // Otherwise, state will stay the same
-                                val checkedState = remember( selectedItems.size ) {
-                                    mutableStateOf( song in selectedItems )
+                                val checkedState = remember( itemSelector.size ) {
+                                    mutableStateOf( song in itemSelector )
                                 }
 
                                 if( itemSelector.isActive )
@@ -798,9 +793,9 @@ fun HomeSongs(
                                         onCheckedChange = {
                                             checkedState.value = it
                                             if ( it )
-                                                selectedItems.add( song )
+                                                itemSelector.add( song )
                                             else
-                                                selectedItems.remove( song )
+                                                itemSelector.remove( song )
                                         },
                                         colors = CheckboxDefaults.colors(
                                             checkedColor = colorPalette().accent,

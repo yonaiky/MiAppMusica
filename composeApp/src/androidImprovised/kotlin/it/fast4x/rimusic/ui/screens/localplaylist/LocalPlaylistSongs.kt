@@ -71,6 +71,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import me.knighthat.component.tab.ItemSelector
 import timber.log.Timber
 import java.util.UUID
 
@@ -100,10 +101,6 @@ fun LocalPlaylistSongs(
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
     var items by persistList<SongEntity>("localPlaylist/$playlistId/itemsOffShelve")
     var itemsOnDisplay by persistList<SongEntity>("localPlaylist/$playlistId/songs/on_display")
-    // List should be cleared when tab changed
-    val selectedItems = remember { mutableListOf<SongEntity>() }
-
-    fun getMediaItems() = selectedItems.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
 
     // Non-vital
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
@@ -115,10 +112,12 @@ fun LocalPlaylistSongs(
     val playlistName = remember { mutableStateOf( "" ) }
     val thumbnailUrl = remember { mutableStateOf("") }
 
+    val itemSelector = ItemSelector<SongEntity>()
+
+    fun getMediaItems() = itemSelector.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
+
     val search = Search.init()
-
     val sort = PlaylistSongsSort.init()
-
     val shuffle = SongsShuffle.init { flowOf( getMediaItems() ) }
     val renameDialog = RenameDialog.init( pipedSession, coroutineScope, { isPipedEnabled }, playlistName, { playlistPreview } )
     val exportDialog = ExportSongsToCSVDialog.init( playlistName, ::getMediaItems )
@@ -165,14 +164,9 @@ fun LocalPlaylistSongs(
     }
     val pin = pin( playlistPreview, playlistId )
     val positionLock = PositionLock.init( sort.sortOrder )
-
-    val itemSelector = ItemSelector.init()
     LaunchedEffect( itemSelector.isActive ) {
-        // Clears selectedItems when check boxes are disabled
-        if( !itemSelector.isActive )
-            selectedItems.clear()
-        else
         // Setting this field to true means disable it
+        if( itemSelector.isActive )
             positionLock.isFirstIcon = true
     }
     // Either position lock or item selector can be turned on at a time
@@ -800,8 +794,8 @@ fun LocalPlaylistSongs(
                             trailingContent = {
                                 // It must watch for [selectedItems.size] for changes
                                 // Otherwise, state will stay the same
-                                val checkedState = remember( selectedItems.size ) {
-                                    mutableStateOf( song in selectedItems )
+                                val checkedState = remember( itemSelector.size ) {
+                                    mutableStateOf( song in itemSelector )
                                 }
 
                                 if( itemSelector.isActive || !positionLock.isLocked() )
@@ -814,9 +808,9 @@ fun LocalPlaylistSongs(
                                                 onCheckedChange = {
                                                     checkedState.value = it
                                                     if ( it )
-                                                        selectedItems.add( song )
+                                                        itemSelector.add( song )
                                                     else
-                                                        selectedItems.remove( song )
+                                                        itemSelector.remove( song )
                                                 },
                                                 colors = CheckboxDefaults.colors(
                                                     checkedColor = colorPalette().accent,

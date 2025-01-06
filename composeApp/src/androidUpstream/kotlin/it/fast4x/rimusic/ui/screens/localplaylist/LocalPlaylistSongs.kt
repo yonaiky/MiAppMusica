@@ -73,7 +73,9 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.PopupType
@@ -84,22 +86,46 @@ import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
+import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
+import it.fast4x.rimusic.ui.components.tab.ExportSongsToCSVDialog
+import it.fast4x.rimusic.ui.components.tab.LocateComponent
+import it.fast4x.rimusic.ui.components.tab.toolbar.Button
+import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
+import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
+import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
+import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
+import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.IconInfo
 import it.fast4x.rimusic.ui.components.themed.InPlaylistMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.LikeSongs
+import it.fast4x.rimusic.ui.components.themed.ListenOnYouTube
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
+import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.Playlist
+import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
+import it.fast4x.rimusic.ui.components.themed.ResetThumbnail
+import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.components.themed.Synchronize
+import it.fast4x.rimusic.ui.components.themed.ThumbnailPicker
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DeletePlaylist
+import it.fast4x.rimusic.utils.PlaylistSongsSort
+import it.fast4x.rimusic.utils.PositionLock
+import it.fast4x.rimusic.utils.RenameDialog
+import it.fast4x.rimusic.utils.Reposition
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
@@ -127,6 +153,7 @@ import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.pin
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
@@ -143,34 +170,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.ui.components.themed.Enqueue
-import it.fast4x.rimusic.ui.components.themed.ItemSelector
-import it.fast4x.rimusic.ui.components.themed.LikeSongs
-import it.fast4x.rimusic.ui.components.themed.ListenOnYouTube
-import it.fast4x.rimusic.ui.components.themed.PlayNext
-import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.components.themed.ResetThumbnail
-import it.fast4x.rimusic.ui.components.themed.Search
-import it.fast4x.rimusic.ui.components.themed.Synchronize
-import it.fast4x.rimusic.ui.components.themed.ThumbnailPicker
-import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.utils.DeletePlaylist
-import it.fast4x.rimusic.utils.PlaylistSongsSort
-import it.fast4x.rimusic.utils.PositionLock
-import it.fast4x.rimusic.utils.RenameDialog
-import it.fast4x.rimusic.utils.Reposition
-import it.fast4x.rimusic.utils.pin
-import it.fast4x.rimusic.ui.components.tab.ExportSongsToCSVDialog
-import it.fast4x.rimusic.ui.components.tab.LocateComponent
-import it.fast4x.rimusic.ui.components.tab.toolbar.Button
-import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
-import it.fast4x.rimusic.thumbnailShape
-import it.fast4x.rimusic.typography
+import me.knighthat.component.tab.ItemSelector
 import timber.log.Timber
 import java.util.UUID
 
@@ -266,7 +266,7 @@ fun LocalPlaylistSongs(
     val pin = pin( playlistPreview, playlistId )
     val positionLock = PositionLock.init( sort.sortOrder )
 
-    val itemSelector = ItemSelector.init()
+    val itemSelector = ItemSelector<SongEntity>()
     LaunchedEffect( itemSelector.isActive ) {
         // Clears selectedItems when check boxes are disabled
         if( !itemSelector.isActive ) selectedItems.clear()

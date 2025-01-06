@@ -56,6 +56,7 @@ import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.*
 import me.knighthat.component.SongItem
+import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.ui.screens.player.*
 import timber.log.Timber
 
@@ -113,19 +114,14 @@ fun Queue(
 
         val positionLock = PositionLock.init( SortOrder.Ascending )
 
-        // List should be cleared when tab changed
-        val selectedItems = remember { mutableListOf<Timeline.Window>() }
-        val itemSelector = ItemSelector.init()
+        val itemSelector = ItemSelector<Timeline.Window>()
         LaunchedEffect( itemSelector.isActive ) {
-            // Clears selectedItems when check boxes are disabled
-            if( !itemSelector.isActive )
-                selectedItems.clear()
-            else
             // Setting this field to true means disable it
+            if( itemSelector.isActive )
                 positionLock.isFirstIcon = true
         }
 
-        fun getMediaItems() = selectedItems.ifEmpty { windows }.map( Timeline.Window::mediaItem )
+        fun getMediaItems() = itemSelector.ifEmpty { windows }.map( Timeline.Window::mediaItem )
 
         val search = Search.init()
         LaunchedEffect( windows, search.input ) {
@@ -151,12 +147,12 @@ fun Queue(
         val discover = Discover( onDiscoverClick )
         val repeat = Repeat.init()
         val deleteDialog = DeleteFromQueue {
-            if( selectedItems.isEmpty() ) {
+            if( itemSelector.isEmpty() ) {
                 player.stop()
                 player.clearMediaItems()
                 player.release()
             } else
-                selectedItems.map( windows::indexOf )
+                itemSelector.map( windows::indexOf )
                              .sorted()
                              // Goes backward to prevent item from being skipped
                              // due to the previous element is removed and the indices
@@ -316,8 +312,8 @@ fun Queue(
                                     trailingContent = {
                                         // It must watch for [selectedItems.size] for changes
                                         // Otherwise, state will stay the same
-                                        val checkedState = remember( selectedItems.size ) {
-                                            mutableStateOf( window in selectedItems )
+                                        val checkedState = remember( itemSelector.size ) {
+                                            mutableStateOf( window in itemSelector )
                                         }
 
                                         if( itemSelector.isActive || !positionLock.isLocked() )
@@ -330,9 +326,9 @@ fun Queue(
                                                         onCheckedChange = {
                                                             checkedState.value = it
                                                             if ( it )
-                                                                selectedItems.add( window )
+                                                                itemSelector.add( window )
                                                             else
-                                                                selectedItems.remove( window )
+                                                                itemSelector.remove( window )
                                                         },
                                                         colors = CheckboxDefaults.colors(
                                                             checkedColor = colorPalette().accent,

@@ -62,6 +62,7 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import me.knighthat.component.SongItem
+import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.ui.screens.DynamicOrientationLayout
 import me.knighthat.component.ui.screens.album.AlbumBookmark
@@ -113,17 +114,10 @@ fun AlbumDetails(
             }
     }
 
-    // List should be cleared when tab changed
-    val selectedItems = remember { mutableListOf<SongEntity>() }
+    val itemSelector = ItemSelector<SongEntity>()
 
-    fun getMediaItems() = selectedItems.ifEmpty { items }.map( SongEntity::asMediaItem )
+    fun getMediaItems() = itemSelector.ifEmpty { items }.map( SongEntity::asMediaItem )
 
-    val itemSelector = ItemSelector.init()
-    LaunchedEffect( itemSelector.isActive ) {
-        // Clears selectedItems when check boxes are disabled
-        if( !itemSelector.isActive )
-            selectedItems.clear()
-    }
     val bookmark = AlbumBookmark( browseId )
     val deleteAllDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
     val downloadALlDialog = DownloadAllDialog.init( ::getMediaItems )
@@ -384,8 +378,8 @@ fun AlbumDetails(
                             trailingContent = {
                                 // It must watch for [selectedItems.size] for changes
                                 // Otherwise, state will stay the same
-                                val checkedState = remember( selectedItems.size ) {
-                                    mutableStateOf( song in selectedItems )
+                                val checkedState = remember( itemSelector.size ) {
+                                    mutableStateOf( song in itemSelector )
                                 }
 
                                 if( itemSelector.isActive )
@@ -394,9 +388,9 @@ fun AlbumDetails(
                                         onCheckedChange = {
                                             checkedState.value = it
                                             if (it)
-                                                selectedItems.add(song)
+                                                itemSelector.add(song)
                                             else
-                                                selectedItems.remove(song)
+                                                itemSelector.remove(song)
                                         },
                                         colors = androidx.compose.material3.CheckboxDefaults.colors(
                                             checkedColor = colorPalette().accent,
