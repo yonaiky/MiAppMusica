@@ -39,6 +39,7 @@ import it.fast4x.rimusic.utils.ytAccountEmailKey
 import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.ytAccountThumbnailKey
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -59,6 +60,7 @@ fun YouTubeLogin(
     var accountName by rememberPreference(key = ytAccountNameKey, defaultValue = "")
     var accountEmail by rememberPreference(key = ytAccountEmailKey, defaultValue = "")
     var accountChannelHandle by rememberEncryptedPreference(key = ytAccountChannelHandleKey, defaultValue = "")
+    var accountThumbnail by rememberPreference(key = ytAccountThumbnailKey, defaultValue = "")
 
     var webView: WebView? = null
 
@@ -113,9 +115,11 @@ fun YouTubeLogin(
 
                                 GlobalScope.launch {
                                     Innertube.accountInfo().onSuccess {
+                                        println("YoutubeLogin doUpdateVisitedHistory accountInfo() $it")
                                         accountName = it.name.orEmpty()
                                         accountEmail = it.email.orEmpty()
                                         accountChannelHandle = it.channelHandle.orEmpty()
+                                        accountThumbnail = it.thumbnailUrl.orEmpty()
                                         onLogin(cookie)
                                     }.onFailure {
                                         Timber.e("Error YoutubeLogin: $it.stackTraceToString()")

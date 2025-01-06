@@ -1126,7 +1126,6 @@ fun HomeQuickPicks(
 
 
                 homePageInit?.let { page ->
-                    println("homePage() in HomeYouTubeMusic accountName: ${page.accountName} accountThumbnailUrl ${page.accountThumbnailUrl}")
                     BasicText(
                         text = "YOUR MUSIC CONTENT",
                         style = typography().l.semiBold.color(colorPalette().accent),

@@ -402,7 +402,8 @@ object Innertube {
             ?.toAccountInfo() ?: AccountInfo(
                 name = null,
                 email = null,
-                channelHandle = null
+                channelHandle = null,
+                thumbnailUrl = null
             )
     }
 

@@ -10,8 +10,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HomePage(
     val sections: List<Section>,
-    val accountName: String? = null,
-    val accountThumbnailUrl: String? = null,
 ) {
     @Serializable
     data class Section(

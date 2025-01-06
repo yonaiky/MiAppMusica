@@ -11,6 +11,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showStatsInNavbarKey
 import it.fast4x.rimusic.utils.ytAccountNameKey
+import it.fast4x.rimusic.utils.ytAccountThumbnailKey
 
 @Composable
 fun typography() = LocalAppearance.current.typography
@@ -35,5 +36,6 @@ fun appContext(): Context = Dependencies.application.applicationContext
 fun context(): Context = Dependencies.application
 
 fun ytAccountName() = appContext().preferences.getString(ytAccountNameKey, "")
+fun ytAccountThumbnail() = appContext().preferences.getString(ytAccountThumbnailKey, "")
 
 fun isVideoEnabled() = appContext().preferences.getBoolean(showButtonPlayerVideoKey, false)
