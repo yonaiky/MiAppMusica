@@ -169,27 +169,29 @@ fun AlbumDetails(
     var songExists by remember { mutableStateOf(false) }
 
     LaunchedEffect(startSync) {
-        songs.forEach {song ->
-            Database.asyncTransaction {
-                songPlaylist = Database.songUsedInPlaylists(song.id)
-                if (songPlaylist > 0) songExists = true
-                playlistsList = Database.playlistsUsedForSong(song.id)
-                binder?.cache?.removeResource(song.id)
-                binder?.downloadCache?.removeResource(song.id)
-                Database.delete(song)
-                if (songExists){
-                    playlistsList?.forEach{item ->
-                        insert(song)
-                        insert(
-                            SongPlaylistMap(
-                                songId = song.id,
-                                playlistId = item.playlistId,
-                                position = item.position
+        withContext(Dispatchers.IO) {
+            songs.forEach {song ->
+                Database.asyncTransaction {
+                    songPlaylist = Database.songUsedInPlaylists(song.id)
+                    if (songPlaylist > 0) songExists = true
+                    playlistsList = Database.playlistsUsedForSong(song.id)
+                    binder?.cache?.removeResource(song.id)
+                    binder?.downloadCache?.removeResource(song.id)
+                    Database.delete(song)
+                    if (songExists){
+                        playlistsList?.forEach{item ->
+                            insert(song)
+                            insert(
+                                SongPlaylistMap(
+                                    songId = song.id,
+                                    playlistId = item.playlistId,
+                                    position = item.position
+                                )
                             )
-                        )
+                        }
                     }
+                    startSync = false
                 }
-                startSync = false
             }
         }
     }
