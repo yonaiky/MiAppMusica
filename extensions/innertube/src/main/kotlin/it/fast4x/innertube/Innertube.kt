@@ -268,7 +268,7 @@ object Innertube {
         companion object
     }
 
-    data class ArtistPage(
+    data class ArtistInfoPage(
         val name: String?,
         val description: String?,
         val subscriberCountText: String?,

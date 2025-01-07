@@ -13,7 +13,7 @@ import it.fast4x.innertube.utils.findSectionByTitle
 import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.runCatchingNonCancellable
 
-suspend fun Innertube.artistPage(body: BrowseBody): Result<Innertube.ArtistPage>? =
+suspend fun Innertube.artistPage(body: BrowseBody): Result<Innertube.ArtistInfoPage>? =
     runCatchingNonCancellable {
         val response = client.post(browse) {
             setBody(body)
@@ -39,7 +39,7 @@ suspend fun Innertube.artistPage(body: BrowseBody): Result<Innertube.ArtistPage>
 
         println("mediaItem innertube artistPage playlistsSection $playlistsSection")
 
-        Innertube.ArtistPage(
+        Innertube.ArtistInfoPage(
             name = response
                 .header
                 ?.musicImmersiveHeaderRenderer
