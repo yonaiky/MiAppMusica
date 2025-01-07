@@ -173,30 +173,27 @@ fun AlbumDetails(
 
     LaunchedEffect(startSync) {
         songs.forEach {song ->
-            withContext(Dispatchers.IO) {
+            Database.asyncTransaction {
                 songPlaylist = Database.songUsedInPlaylists(song.id)
                 if (songPlaylist > 0) songExists = true
                 playlistsList = Database.playlistsUsedForSong(song.id)
-                Database.asyncTransaction {
-                    binder?.cache?.removeResource(song.id)
-                    binder?.downloadCache?.removeResource(song.id)
-                    Database.delete(song)
-                    if (songExists){
-                        playlistsList?.forEach{item ->
-                            insert(song)
-                            insert(
-                                SongPlaylistMap(
-                                    songId = song.id,
-                                    playlistId = item.playlistId,
-                                    position = item.position
-                                )
+                binder?.cache?.removeResource(song.id)
+                binder?.downloadCache?.removeResource(song.id)
+                Database.delete(song)
+                if (songExists){
+                    playlistsList?.forEach{item ->
+                        insert(song)
+                        insert(
+                            SongPlaylistMap(
+                                songId = song.id,
+                                playlistId = item.playlistId,
+                                position = item.position
                             )
-                        }
+                        )
                     }
-                    startSync = false
                 }
+                startSync = false
             }
-
         }
     }
 
