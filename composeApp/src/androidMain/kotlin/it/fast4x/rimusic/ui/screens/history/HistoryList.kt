@@ -141,8 +141,13 @@ fun HistoryList(
         }
         .collectAsState(initial = emptyMap(), context = Dispatchers.IO)
 
+    val buttonsList = mutableListOf(HistoryType.History to stringResource(R.string.history))
+    buttonsList += HistoryType.YTMHistory to stringResource(R.string.yt_history)
+
+    var historyType by rememberPreference(historyTypeKey, HistoryType.History)
+
     var historyPage by persist<Result<HistoryPage>>("home/historyPage")
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit, historyType) {
         if (isYouTubeLoggedIn())
             historyPage = YtMusic.getHistory()
     }
@@ -164,10 +169,7 @@ fun HistoryList(
         ThumbnailRoundness.Heavy
     )
 
-    val buttonsList = mutableListOf(HistoryType.History to stringResource(R.string.history))
-    buttonsList += HistoryType.YTMHistory to stringResource(R.string.yt_history)
 
-    var historyType by rememberPreference(historyTypeKey, HistoryType.History)
 
     Column (
         modifier = Modifier
@@ -225,7 +227,7 @@ fun HistoryList(
                             },
                             modifier = Modifier
                                 .background(
-                                    colorPalette().favoritesOverlay,
+                                    colorPalette().background3,
                                     shape = thumbnailRoundness.shape()
                                 )
 
@@ -323,7 +325,7 @@ fun HistoryList(
                             title = section.title,
                             modifier = Modifier
                                 .background(
-                                    colorPalette().favoritesOverlay,
+                                    colorPalette().background3,
                                     shape = thumbnailRoundness.shape()
                                 )
 
@@ -331,27 +333,28 @@ fun HistoryList(
                         )
                     }
                     items(
-                        items = section.songs,
-                        key = { it.key }
+                        items = section.songs.map { it.asMediaItem }
+                            .filter { it.mediaId.isNotEmpty() },
+                        key = { it.mediaId }
                     ) { song ->
-                        val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                        downloadState = getDownloadState(song.asMediaItem.mediaId)
+                        val isLocal by remember { derivedStateOf { song.isLocal } }
+                        downloadState = getDownloadState(song.mediaId)
                         val isDownloaded =
-                            if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
+                            if (!isLocal) isDownloadedSong(song.mediaId) else true
                         val checkedState = rememberSaveable { mutableStateOf(false) }
                         var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
-                            song = song.asMediaItem,
+                            song = song,
                             onDownloadClick = {
-                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                                binder?.cache?.removeResource(song.mediaId)
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    Database.deleteFormat( song.asMediaItem.mediaId )
+                                    Database.deleteFormat( song.mediaId )
                                 }
 
                                 if (!isLocal)
                                     manageDownload(
                                         context = context,
-                                        mediaItem = song.asMediaItem,
+                                        mediaItem = song,
                                         downloadState = isDownloaded
                                     )
                             },
@@ -359,7 +362,7 @@ fun HistoryList(
                             thumbnailSizeDp = thumbnailSizeDp,
                             thumbnailSizePx = thumbnailSizePx,
                             onThumbnailContent = {
-                                NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
+                                NowPlayingSongIndicator(song.mediaId, binder?.player)
                             },
                             trailingContent = {
                                 if (selectItems)
@@ -367,8 +370,8 @@ fun HistoryList(
                                         checked = checkedState.value,
                                         onCheckedChange = {
                                             checkedState.value = it
-                                            if (it) listMediaItems.add(song.asMediaItem) else
-                                                listMediaItems.remove(song.asMediaItem)
+                                            if (it) listMediaItems.add(song) else
+                                                listMediaItems.remove(song)
                                         },
                                         colors = CheckboxDefaults.colors(
                                             checkedColor = colorPalette().accent,
@@ -385,7 +388,7 @@ fun HistoryList(
                                         menuState.display {
                                             NonQueuedMediaItemMenuLibrary(
                                                 navController = navController,
-                                                mediaItem = song.asMediaItem,
+                                                mediaItem = song,
                                                 onDismiss = {
                                                     menuState.hide()
                                                     forceRecompose = true
@@ -395,13 +398,13 @@ fun HistoryList(
                                         }
                                     },
                                     onClick = {
-                                        binder?.player?.forcePlay(song.asMediaItem)
+                                        binder?.player?.forcePlay(song)
                                     }
                                 )
                                 .background(color = colorPalette().background0)
                                 .animateItem(),
                             disableScrollingText = disableScrollingText,
-                            isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false,
+                            isNowPlaying = binder?.player?.isNowPlaying(song.mediaId) ?: false,
                             forceRecompose = forceRecompose
                         )
                     }

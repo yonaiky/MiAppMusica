@@ -245,6 +245,7 @@ fun AccountsSettings() {
                                         accountName = ""
                                         accountChannelHandle = ""
                                         accountEmail = ""
+                                        accountThumbnail = ""
                                         visitorData = ""
                                         loginYouTube = false
                                         //Delete cookies after logout

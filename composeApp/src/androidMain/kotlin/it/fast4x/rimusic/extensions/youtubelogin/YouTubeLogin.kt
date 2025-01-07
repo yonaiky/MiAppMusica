@@ -64,31 +64,6 @@ fun YouTubeLogin(
 
     var webView: WebView? = null
 
-    fun processData(url: String) {
-        if (url.startsWith("https://music.youtube.com")) {
-            runBlocking {
-                val cookieManager = CookieManager.getInstance()
-                cookie = cookieManager.getCookie(url)
-                //cookieManager.removeAllCookies(null)
-                //cookieManager.flush()
-                //WebStorage.getInstance().deleteAllData()
-                println("YoutubeLogin Cookie: $cookie")
-                scope.launch {
-                    Innertube.accountInfo().onSuccess {
-                        accountName = it.name.orEmpty()
-                        accountEmail = it.email.orEmpty()
-                        accountChannelHandle = it.channelHandle.orEmpty()
-                        println("YoutubeLogin webClient AccountInfo: $it")
-                        //onLogin(true)
-                    }.onFailure {
-                        Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
-                        println("Error YoutubeLogin: ${it.stackTraceToString()}")
-                    }
-                }
-            }
-        }
-    }
-
     Column (
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -114,12 +89,12 @@ fun YouTubeLogin(
                                 //onLogin(cookie)
 
                                 GlobalScope.launch {
-                                    Innertube.accountInfo().onSuccess {
+                                    Innertube.accountInfoList().onSuccess {
                                         println("YoutubeLogin doUpdateVisitedHistory accountInfo() $it")
-                                        accountName = it.name.orEmpty()
-                                        accountEmail = it.email.orEmpty()
-                                        accountChannelHandle = it.channelHandle.orEmpty()
-                                        accountThumbnail = it.thumbnailUrl.orEmpty()
+                                        accountName = it.first().name.orEmpty()
+                                        accountEmail = it.first().email.orEmpty()
+                                        accountChannelHandle = it.first().channelHandle.orEmpty()
+                                        accountThumbnail = it.first().thumbnailUrl.orEmpty()
                                         onLogin(cookie)
                                     }.onFailure {
                                         Timber.e("Error YoutubeLogin: $it.stackTraceToString()")

@@ -407,6 +407,14 @@ object Innertube {
             )
     }
 
+    suspend fun accountInfoList(): Result<List<AccountInfo>> = runCatching {
+        accountMenu()
+            .body<AccountMenuResponse>()
+            .actions?.get(0)?.openPopupAction?.popup?.multiPageMenuRenderer
+            ?.header?.activeAccountHeaderRenderer
+            ?.toAccountInfoList() ?: emptyList()
+    }
+
     suspend fun accountMenu(): HttpResponse {
         val response =
             client.post(accountMenu) {
