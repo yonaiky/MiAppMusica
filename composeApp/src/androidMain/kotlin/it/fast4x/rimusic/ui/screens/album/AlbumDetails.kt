@@ -37,12 +37,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -135,7 +133,6 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import timber.log.Timber
