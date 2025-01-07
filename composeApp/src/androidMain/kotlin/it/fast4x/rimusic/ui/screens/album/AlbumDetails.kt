@@ -37,10 +37,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -133,6 +135,7 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import timber.log.Timber
@@ -161,6 +164,41 @@ fun AlbumDetails(
     //val albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    var startSync by remember{ mutableStateOf(false) }
+    var songPlaylist by remember {
+        mutableIntStateOf(0)
+    }
+    var playlistsList by remember { mutableStateOf<List<Database.PlayListIdPosition>?>(null) }
+    var songExists by remember { mutableStateOf(false) }
+
+    LaunchedEffect(startSync) {
+        songs.forEach {song ->
+            withContext(Dispatchers.IO) {
+                songPlaylist = Database.songUsedInPlaylists(song.id)
+                if (songPlaylist > 0) songExists = true
+                playlistsList = Database.playlistsUsedForSong(song.id)
+                Database.asyncTransaction {
+                    binder?.cache?.removeResource(song.id)
+                    binder?.downloadCache?.removeResource(song.id)
+                    Database.delete(song)
+                    if (songExists){
+                        playlistsList?.forEach{item ->
+                            insert(song)
+                            insert(
+                                SongPlaylistMap(
+                                    songId = song.id,
+                                    playlistId = item.playlistId,
+                                    position = item.position
+                                )
+                            )
+                        }
+                    }
+                    startSync = false
+                }
+            }
+
+        }
+    }
 
     LaunchedEffect(Unit) {
         Database.albumSongs(browseId).collect {
@@ -182,6 +220,10 @@ fun AlbumDetails(
         mutableStateOf(false)
     }
      */
+
+    var showAlbumSyncConfirmationDialog by remember {
+        mutableStateOf(false)
+    }
 
     var showConfirmDeleteDownloadDialog by remember {
         mutableStateOf(false)
@@ -421,6 +463,14 @@ fun AlbumDetails(
                 showSelectDialog = false
             }
         )
+
+    if (showAlbumSyncConfirmationDialog) {
+        ConfirmationDialog(
+            text = stringResource(R.string.delete_album),
+            onDismiss = { showAlbumSyncConfirmationDialog = false },
+            onConfirm = {startSync = true}
+        )
+    }
 
     LaunchedEffect(scrollToNowPlaying) {
         if (scrollToNowPlaying)
@@ -775,6 +825,17 @@ fun AlbumDetails(
                             onClick = {}
 
 
+                        )
+
+                        HeaderIconButton(
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp),
+                            icon = R.drawable.update,
+                            enabled = songs.isNotEmpty(),
+                            color = if (songs.isNotEmpty()) colorPalette()
+                                .text else colorPalette()
+                                .textDisabled,
+                            onClick = {showAlbumSyncConfirmationDialog = true}
                         )
 
 
