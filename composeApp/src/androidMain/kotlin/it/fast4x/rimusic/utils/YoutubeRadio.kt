@@ -16,6 +16,7 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 data class YouTubeRadio @OptIn(UnstableApi::class) constructor
@@ -62,16 +63,23 @@ data class YouTubeRadio @OptIn(UnstableApi::class) constructor
         }
             //coroutineScope.launch(Dispatchers.Main) {
 
-            fun songsInQueue(mediaId: String): String? {
-                for (i in 0 until ((binder?.player?.mediaItemCount ?: 0) - 1)) {
-                    coroutineScope.launch(Dispatchers.Main) {
-                        if (mediaId == (binder?.player?.getMediaItemAt(i)?.mediaId ?: ""))
-                            return@launch
+        fun songsInQueue(mediaId: String): String? {
+            var mediaIdFound = false
+            runBlocking {
+                withContext(Dispatchers.Main) {
+                    for (i in 0 until (binder?.player?.mediaItemCount ?: 0)) {
+                        if (mediaId == binder?.player?.getMediaItemAt(i)?.mediaId) {
+                            mediaIdFound = true
+                            return@withContext
+                        }
                     }
-                    return mediaId
                 }
-                return null
             }
+            if(mediaIdFound){
+                return mediaId
+            }
+            return null
+        }
 
 
             if (isDiscoverEnabled) {
