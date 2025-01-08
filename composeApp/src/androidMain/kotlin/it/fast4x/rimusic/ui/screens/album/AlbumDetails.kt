@@ -141,8 +141,6 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.utils.setLikeState
-import kotlinx.coroutines.flow.combine
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -175,8 +173,12 @@ fun AlbumDetails(
     }
     var playlistsList by remember { mutableStateOf<List<Database.PlayListIdPosition>?>(null) }
     var songExists by remember { mutableStateOf(false) }
-    var isLiked by remember {mutableStateOf(false)}
-    var likedAt by remember { mutableLongStateOf(0L) }
+    var likedAt by remember {
+        mutableStateOf<Long?>(null)
+    }
+    var playTime by remember {
+        mutableStateOf<Long?>(null)
+    }
     LaunchedEffect(startSync) {
         withContext(Dispatchers.IO) {
             songs.forEach {song ->
@@ -184,6 +186,8 @@ fun AlbumDetails(
                     songPlaylist = Database.songUsedInPlaylists(song.id)
                     if (songPlaylist > 0) songExists = true
                     playlistsList = Database.playlistsUsedForSong(song.id)
+                    likedAt = song.likedAt
+                    playTime = song.totalPlayTimeMs
                     binder?.cache?.removeResource(song.id)
                     binder?.downloadCache?.removeResource(song.id)
                     Database.delete(song)
@@ -215,6 +219,7 @@ fun AlbumDetails(
                   )
 
                     if (songExists){
+                        insert(song)
                         playlistsList?.forEach{item ->
                             insert(
                                 SongPlaylistMap(
@@ -225,6 +230,10 @@ fun AlbumDetails(
                             )
                         }
                     }
+                    if (likedAt != null){
+                        Database.like(song.id,likedAt)
+                    }
+                    Database.incrementTotalPlayTimeMs(song.id,playTime ?: 0)
                     startSync = false
                 }
             }
@@ -251,10 +260,6 @@ fun AlbumDetails(
         mutableStateOf(false)
     }
      */
-
-    var showAlbumSyncConfirmationDialog by remember {
-        mutableStateOf(false)
-    }
 
     var showConfirmDeleteDownloadDialog by remember {
         mutableStateOf(false)
@@ -494,14 +499,6 @@ fun AlbumDetails(
                 showSelectDialog = false
             }
         )
-
-    if (showAlbumSyncConfirmationDialog) {
-        ConfirmationDialog(
-            text = stringResource(R.string.delete_album),
-            onDismiss = { showAlbumSyncConfirmationDialog = false },
-            onConfirm = {startSync = true}
-        )
-    }
 
     LaunchedEffect(scrollToNowPlaying) {
         if (scrollToNowPlaying)
@@ -860,13 +857,22 @@ fun AlbumDetails(
 
                         HeaderIconButton(
                             modifier = Modifier
-                                .padding(horizontal = 5.dp),
+                                .padding(horizontal = 5.dp)
+                                .combinedClickable(
+                                    onClick = {startSync = true},
+                                    onLongClick = {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.update_album),
+                                            context = context
+                                        )
+                                    }
+                                ),
                             icon = R.drawable.update,
                             enabled = songs.isNotEmpty(),
                             color = if (songs.isNotEmpty()) colorPalette()
                                 .text else colorPalette()
                                 .textDisabled,
-                            onClick = {showAlbumSyncConfirmationDialog = true}
+                            onClick = {}
                         )
 
 
