@@ -1677,7 +1677,9 @@ class PlayerServiceModern : MediaLibraryService(),
                 endpoint?.playlistSetVideoId,
                 endpoint?.params,
                 isDiscoverEnabled,
-                applicationContext
+                applicationContext,
+                binder,
+                coroutineScope
             ).let {
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {
