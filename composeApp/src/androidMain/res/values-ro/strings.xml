@@ -718,6 +718,7 @@
     <string name="error_timeout">Conexiune expirată</string>
     <string name="error_unknown">Eroare necunoscută</string>
     <string name="delete_song">Sigur vrei să ștergi această melodie? Va fi ștearsă din baza de date.\nAceastă acțiune este ireversibilă.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Verifică acum</string>
     <string name="info_no_update_available">Nu sunt actualizări disponibile</string>
     <string name="lang_galician">Galiciană (Galego)</string>
