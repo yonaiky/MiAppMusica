@@ -52,7 +52,10 @@ import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
@@ -64,15 +67,19 @@ import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.UiMedia
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.HorizontalfadingEdge2
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.buttonStateKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.colorPaletteNameKey
+import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.getIconQueueLoopState
 import it.fast4x.rimusic.utils.getLikeState
@@ -90,13 +97,6 @@ import it.fast4x.rimusic.utils.setQueueLoopState
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.textoutlineKey
-import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.context
-import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.utils.HorizontalfadingEdge2
-import it.fast4x.rimusic.utils.conditional
 
 
 @UnstableApi
@@ -112,6 +112,7 @@ fun InfoAlbumAndArtistEssential(
     likedAt: Long?,
     artistIds: List<Info>?,
     artist: String?,
+    isExplicit: Boolean,
     onCollapse: () -> Unit,
     disableScrollingText: Boolean = false
 ) {
@@ -157,23 +158,19 @@ fun InfoAlbumAndArtistEssential(
 
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
 
-            if (title?.startsWith(EXPLICIT_PREFIX) == true || playerControlsType == PlayerControlsType.Modern) {
-                Box(
-                    modifier = Modifier.weight(0.1f)
-                ) {
-                    if (title?.startsWith(EXPLICIT_PREFIX) == true) {
-                        if (title.startsWith(EXPLICIT_PREFIX))
-                            IconButton(
-                                icon = R.drawable.explicit,
-                                color = colorPalette().text,
-                                enabled = true,
-                                onClick = {},
-                                modifier = Modifier
-                                    .size(18.dp)
-                                    .align(Alignment.Center)
-                            )
-                    }
-                }
+            Box(
+                modifier = Modifier.weight(0.1f)
+            ) {
+                if ( isExplicit || playerControlsType == PlayerControlsType.Modern )
+                    IconButton(
+                        icon = R.drawable.explicit,
+                        color = colorPalette().text,
+                        enabled = true,
+                        onClick = {},
+                        modifier = Modifier
+                            .size(18.dp)
+                            .align(Alignment.Center)
+                    )
             }
 
             BoxWithConstraints(
