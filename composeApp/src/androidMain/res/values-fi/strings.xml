@@ -718,6 +718,7 @@
     <string name="error_timeout">Yhteyden aikakatkaisu</string>
     <string name="error_unknown">Tuntematon virhe</string>
     <string name="delete_song">Haluatko varmasti poistaa tämän kappaleen? Se poistetaan tietokannasta. Tämä toiminto on peruuttamaton.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Tarkista nyt</string>
     <string name="info_no_update_available">Päivitystä ei ole saatavilla</string>
     <string name="lang_galician">galicia</string>
