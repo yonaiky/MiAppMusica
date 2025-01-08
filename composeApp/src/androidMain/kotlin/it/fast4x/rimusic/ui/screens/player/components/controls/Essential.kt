@@ -436,9 +436,7 @@ fun ControlsEssential(
                     else binder.player.playPrevious()
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
-                onLongClick = {
-                    binder.player.seekTo(position - 5000)
-                }
+                onLongClick = {}
             )
             .rotate(rotationAngle)
             .padding(10.dp)
@@ -562,9 +560,7 @@ fun ControlsEssential(
                     binder.player.playNext()
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
-                onLongClick = {
-                    binder.player.seekTo(position + 5000)
-                }
+                onLongClick = {}
             )
             .rotate(rotationAngle)
             .padding(10.dp)
