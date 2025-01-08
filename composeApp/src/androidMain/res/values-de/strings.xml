@@ -353,6 +353,7 @@
     <string name="sort_name">Namen</string>
     <string name="sort_songs_number">Titelnummer</string>
     <string name="sort_relative_listening_time">Relative Listening Time</string>
+    <string name="sort_relative_listening_time">Relative Wiedergabedauer</string>
     <string name="follow">Folgen</string>
     <string name="following">Gefolgt</string>
     <string name="artist_subscribers">%s Abonnenten</string>
@@ -828,24 +829,24 @@
     <string name="action_bar_show_start_radio_button">Starte Radio Button</string>
     <string name="tab_accounts">Konten</string>
     <string name="blankspace">Leerer Abstand oben</string>
-    <string name="settings_enable_autodownload_song">Song Auto-Download aktivieren</string>
+    <string name="settings_enable_autodownload_song">Automatisches Herunterladen aktivieren</string>
     <string name="settings_enable_autodownload_song_when_liked">Auto Download, wenn geliked</string>
-    <string name="settings_enable_autodownload_song_when_album_bookmarked">Titel automatisch herunterladen, wenn Album in Lesezeichen</string>
+    <string name="settings_enable_autodownload_song_when_album_bookmarked">Titel herunterladen, wenn Album in Lesezeichen</string>
     <string name="tab_general">Allgemein</string>
     <string name="queue_and_local_playlists_left_swipe">Warteschlange und lokale Wiedergabelisten links wischen</string>
     <string name="queue_and_local_playlists_right_swipe">Warteschlange und lokale Wiedergabelisten rechts wischen</string>
     <string name="playlist_left_swipe">Wiedergabeliste links wischen</string>
     <string name="playlist_right_swipe">Wiedergabeliste rechts wischen</string>
-    <string name="album_left_swipe">Album nach links wischen</string>
-    <string name="album_right_swipe">Album nach rechts wischen</string>
+    <string name="album_left_swipe">Album links wischen</string>
+    <string name="album_right_swipe">Album rechts wischen</string>
     <string name="bookmark">Lesezeichen</string>
     <string name="downloading_videos_not_supported">Herunterladen von Videos nicht unterstützt</string>
     <string name="animatedgradient">Animierter Farbverlauf</string>
     <string name="linear">Linearer Farbverlauf</string>
     <string name="mesh">Mesh Farbverlauf</string>
-    <string name="mesmerizinglens">Faszinierende Linse</string>
+    <string name="mesmerizinglens">Hypnotisierende Linse</string>
     <string name="glossygradient">Glänzender Farbverlauf</string>
-    <string name="gradientflow">Flow Farbverlauf</string>
+    <string name="gradientflow">Fließender Farbverlauf</string>
     <string name="purpleliquid">Lila Flüssigkeit</string>
     <string name="stage">Stufe</string>
     <string name="inkflow">Tintenfluss</string>
@@ -864,4 +865,6 @@
     <string name="appearancepresets">Appearance Presets</string>
     <string name="appearancepresetssecondary">Previews will be in low quality</string>
     <string name="yt_history">YTM History</string>
+    <string name="appearancepresets">Erscheinungsbild Voreinstellungen</string>
+    <string name="appearancepresetssecondary">Vorschau in niedriger Qualität</string>
 </resources>

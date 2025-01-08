@@ -353,6 +353,7 @@
     <string name="sort_name">Ім’я</string>
     <string name="sort_songs_number">Номер пісні</string>
     <string name="sort_relative_listening_time">Relative Listening Time</string>
+    <string name="sort_relative_listening_time">Відносний час прослуховування</string>
     <string name="follow">Підписатися</string>
     <string name="following">Підписаний</string>
     <string name="artist_subscribers">%s Підписників</string>
@@ -864,4 +865,6 @@
     <string name="appearancepresets">Appearance Presets</string>
     <string name="appearancepresetssecondary">Previews will be in low quality</string>
     <string name="yt_history">YTM History</string>
+    <string name="appearancepresets">Пресети зовнішнього вигляду</string>
+    <string name="appearancepresetssecondary">Попередній перегляд буде в низькій якості</string>
 </resources>

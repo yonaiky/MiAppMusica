@@ -354,6 +354,7 @@
     <string name="sort_name">По названию</string>
     <string name="sort_songs_number">По количеству песен</string>
     <string name="sort_relative_listening_time">Relative Listening Time</string>
+    <string name="sort_relative_listening_time">Относительное время прослушивания</string>
     <string name="follow">Подписаться</string>
     <string name="following">Подписан</string>
     <string name="artist_subscribers">%s подписчиков</string>
@@ -866,4 +867,6 @@
     <string name="appearancepresets">Appearance Presets</string>
     <string name="appearancepresetssecondary">Previews will be in low quality</string>
     <string name="yt_history">YTM History</string>
+    <string name="appearancepresets">Пресеты внешнего вида</string>
+    <string name="appearancepresetssecondary">Предпросмотр будет в низком качестве</string>
 </resources>

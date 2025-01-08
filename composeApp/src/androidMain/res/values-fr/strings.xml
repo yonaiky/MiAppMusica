@@ -353,6 +353,7 @@
     <string name="sort_name">Nom</string>
     <string name="sort_songs_number">Numéro du titre</string>
     <string name="sort_relative_listening_time">Relative Listening Time</string>
+    <string name="sort_relative_listening_time">Temps d\'écoute relatif</string>
     <string name="follow">Suivre</string>
     <string name="following">Suit</string>
     <string name="artist_subscribers">%s abonnés</string>
@@ -866,4 +867,6 @@
     <string name="appearancepresets">Appearance Presets</string>
     <string name="appearancepresetssecondary">Previews will be in low quality</string>
     <string name="yt_history">YTM History</string>
+    <string name="appearancepresets">Préréglages d\'apparence</string>
+    <string name="appearancepresetssecondary">Les aperçus seront de faible qualité</string>
 </resources>
