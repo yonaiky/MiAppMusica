@@ -718,6 +718,7 @@
     <string name="error_timeout">Temps d\'espera de connexió</string>
     <string name="error_unknown">Error desconegut</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Comprova-ho ara</string>
     <string name="info_no_update_available">No hi ha cap actualització disponible</string>
     <string name="lang_galician">Gallec</string>

@@ -718,6 +718,7 @@
     <string name="error_timeout">Zeitüberschreitung der Verbindung</string>
     <string name="error_unknown">Unbekannter Fehler</string>
     <string name="delete_song">Soll der Titel wirklich aus der Datenbank gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Jetzt überprüfen</string>
     <string name="info_no_update_available">Keine Aktualisierung verfügbar</string>
     <string name="lang_galician">Galicisch (galego)</string>

@@ -720,6 +720,7 @@
     <string name="error_timeout">Délai de connexion expiré</string>
     <string name="error_unknown">Erreur Inconnue</string>
     <string name="delete_song">Voulez-vous vraiment supprimer ce titre ? Elle sera supprimée de la base de données. Cette action est irréversible.</string>
+    <string name="update_album">Mise à jour de l\'album</string>
     <string name="info_check_update_now">Vérifiez maintenant</string>
     <string name="info_no_update_available">Aucune mise à jour disponible</string>
     <string name="lang_galician">Galicien</string>
