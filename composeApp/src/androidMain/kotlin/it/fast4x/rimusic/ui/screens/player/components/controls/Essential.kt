@@ -187,7 +187,7 @@ fun InfoAlbumAndArtistEssential(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically,
                     modifier = modifierTitle
-                    .conditional(!disableScrollingText && (playerControlsType == PlayerControlsType.Essential)) { padding(horizontal = maxWidth * 0.05f) }
+                    .conditional(!disableScrollingText) { padding(horizontal = maxWidth * 0.05f) }
                     .conditional(playerControlsType == PlayerControlsType.Modern) { padding(start = likeButtonWidth) }
                 ) {
                     if (isExplicit) {
