@@ -28,6 +28,7 @@ import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.getProxy
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
@@ -43,6 +44,7 @@ import java.util.Date
 import java.util.GregorianCalendar
 import kotlin.time.Duration.Companion.minutes
 
+const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 
 fun getDateTimeAsFormattedString(dateAsLongInMs: Long): String? {
     try {
@@ -168,6 +170,7 @@ val Innertube.SongItem.asMediaItem: MediaItem
                         "artistNames" to authors?.filter { it.endpoint != null }
                             ?.mapNotNull { it.name },
                         "artistIds" to authors?.mapNotNull { it.endpoint?.browseId },
+                        EXPLICIT_BUNDLE_TAG to explicit
                     )
                 )
                 .build()
@@ -223,7 +226,8 @@ val Song.asMediaItem: MediaItem
                 .setArtworkUri(thumbnailUrl?.toUri())
                 .setExtras(
                     bundleOf(
-                        "durationText" to durationText
+                        "durationText" to durationText,
+                        EXPLICIT_BUNDLE_TAG to title.startsWith( EXPLICIT_PREFIX, true )
                     )
                 )
                 .build()
@@ -249,7 +253,8 @@ val SongEntity.asMediaItem: MediaItem
                 .setArtworkUri(song.thumbnailUrl?.toUri())
                 .setExtras(
                     bundleOf(
-                        "durationText" to song.durationText
+                        "durationText" to song.durationText,
+                        EXPLICIT_BUNDLE_TAG to song.title.startsWith( EXPLICIT_PREFIX, true )
                     )
                 )
                 .build()
@@ -297,6 +302,14 @@ val MediaItem.cleaned: MediaItem
 
 val MediaItem.isVideo: Boolean
     get() = mediaMetadata.extras?.getBoolean("isVideo") == true
+
+val MediaItem.isExplicit: Boolean
+    get() {
+        val isTitleContain = mediaMetadata.title?.startsWith( EXPLICIT_PREFIX, true )
+        val isBundleContain = mediaMetadata.extras?.getBoolean( EXPLICIT_BUNDLE_TAG )
+
+        return isTitleContain == true || isBundleContain == true
+    }
 
 fun String.resize(
     width: Int? = null,
