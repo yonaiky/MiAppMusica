@@ -841,13 +841,13 @@
     <string name="album_right_swipe">Albumi pyyhkäisemällä oikealle</string>
     <string name="bookmark">Kirjanmerkki</string>
     <string name="downloading_videos_not_supported">Videoiden lataamista ei tueta</string>
-    <string name="animatedgradient">Animated Gradient</string>
-    <string name="linear">Linear Gradient</string>
-    <string name="mesh">Mesh Gradient</string>
-    <string name="mesmerizinglens">Mesmerizing Lens</string>
-    <string name="glossygradient">Glossy Gradient</string>
-    <string name="gradientflow">Gradient Flow</string>
-    <string name="purpleliquid">Purple Liquid</string>
+    <string name="animatedgradient">Animoitu liukuväri</string>
+    <string name="linear">Lineaarinen liukuväri</string>
+    <string name="mesh">Mesh-liukuväri</string>
+    <string name="mesmerizinglens">Kiehtova linssi</string>
+    <string name="glossygradient">Kiiltävä liukuväri</string>
+    <string name="gradientflow">Virtaava liukuväri</string>
+    <string name="purpleliquid">Violetti neste</string>
     <string name="stage">Stage</string>
     <string name="inkflow">Ink Flow</string>
     <string name="goldenmagma">Golden Magma</string>
@@ -859,7 +859,7 @@
     <string name="colorpalette">Color Palette</string>
     <string name="customcolor">Custom Color</string>
     <string name="lyricsanimate">Animate Lyrics Size</string>
-    <string name="lyricsSizeSecondary">Long Press to change the size</string>
-    <string name="appearancepresets">Appearance Presets</string>
-    <string name="appearancepresetssecondary">Previews will be in low quality</string>
+    <string name="lyricsSizeSecondary">Paina pitkään vaihtaaksesi kokoa</string>
+    <string name="appearancepresets">Oletusulkonäkö</string>
+    <string name="appearancepresetssecondary">Esikatselut ovat heikkolaatuisia</string>
 </resources>
