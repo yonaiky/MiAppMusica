@@ -352,7 +352,6 @@
     <string name="sort_year">An</string>
     <string name="sort_name">Nume</string>
     <string name="sort_songs_number">Număr de melodii</string>
-    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="sort_relative_listening_time">Timp de ascultare relativă</string>
     <string name="follow">Urmărește</string>
     <string name="following">Urmărit</string>
@@ -865,7 +864,5 @@
     <string name="appearancepresets">Presetări de aspect</string>
     <string name="appearancepresetssecondary">Previzualizările vor fi de slabă calitate</string>
     <string name="home">Home</string>
-    <string name="appearancepresets">Appearance Presets</string>
-    <string name="appearancepresetssecondary">Previews will be in low quality</string>
     <string name="yt_history">YTM History</string>
 </resources>

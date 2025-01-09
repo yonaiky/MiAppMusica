@@ -352,7 +352,6 @@
     <string name="sort_year">Any</string>
     <string name="sort_name">Nom</string>
     <string name="sort_songs_number">Número de cançons</string>
-    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="sort_relative_listening_time">Temps relatiu d\'escolta</string>
     <string name="follow">Segueix</string>
     <string name="following">Seguint</string>
@@ -865,7 +864,5 @@
     <string name="appearancepresets">Presets d\'aparença</string>
     <string name="appearancepresetssecondary">Les previsualitzacions seran de baixa qualitat</string>
     <string name="home">Home</string>
-    <string name="appearancepresets">Appearance Presets</string>
-    <string name="appearancepresetssecondary">Previews will be in low quality</string>
     <string name="yt_history">YTM History</string>
 </resources>

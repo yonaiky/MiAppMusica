@@ -352,7 +352,6 @@
     <string name="sort_year">Ano</string>
     <string name="sort_name">Nome</string>
     <string name="sort_songs_number">Número de músicas</string>
-    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="sort_relative_listening_time">Tempo Relativo de Escuta</string>
     <string name="follow">Seguir</string>
     <string name="following">Seguindo</string>
@@ -866,6 +865,4 @@
     <string name="appearancepresets">Appearance Presets</string>
     <string name="appearancepresetssecondary">Previews will be in low quality</string>
     <string name="yt_history">YTM History</string>
-    <string name="appearancepresets">Appearance Presets</string>
-    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>

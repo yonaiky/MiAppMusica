@@ -353,7 +353,6 @@
     <string name="sort_year">По году</string>
     <string name="sort_name">По названию</string>
     <string name="sort_songs_number">По количеству песен</string>
-    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="sort_relative_listening_time">Относительное время прослушивания</string>
     <string name="follow">Подписаться</string>
     <string name="following">Подписан</string>
@@ -865,8 +864,6 @@
     <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Долгое нажатие для изменения размера</string>
     <string name="home">Home</string>
-    <string name="appearancepresets">Appearance Presets</string>
-    <string name="appearancepresetssecondary">Previews will be in low quality</string>
     <string name="yt_history">YTM History</string>
     <string name="appearancepresets">Пресеты внешнего вида</string>
     <string name="appearancepresetssecondary">Предпросмотр будет в низком качестве</string>
