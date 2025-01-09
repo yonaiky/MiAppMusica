@@ -180,7 +180,7 @@ fun InfoAlbumAndArtistEssential(
             BoxWithConstraints(
                 modifier = Modifier
                     .weight(1f)
-                    .conditional(!disableScrollingText){HorizontalfadingEdge2()},
+                    .conditional(!disableScrollingText){HorizontalfadingEdge2(0.025f)},
                 contentAlignment = Alignment.Center
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically,
@@ -336,7 +336,7 @@ fun InfoAlbumAndArtistEssential(
 
         BoxWithConstraints(
             modifier = Modifier
-                .conditional(!disableScrollingText){HorizontalfadingEdge2()},
+                .conditional(!disableScrollingText){HorizontalfadingEdge2(0.025f)},
             contentAlignment = Alignment.Center
         ) {
             BasicText(
