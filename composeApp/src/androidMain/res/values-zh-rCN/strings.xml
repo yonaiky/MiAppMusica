@@ -718,6 +718,7 @@
     <string name="error_timeout">连接超时</string>
     <string name="error_unknown">未知错误</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">立即检查</string>
     <string name="info_no_update_available">没有可用更新</string>
     <string name="lang_galician">加利西亚语</string>

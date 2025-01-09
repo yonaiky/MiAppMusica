@@ -718,6 +718,7 @@
     <string name="error_timeout">Kapcsolat időtúllépés</string>
     <string name="error_unknown">Ismeretlen hiba</string>
     <string name="delete_song">Biztosan törölni akarod ezt a dalt? Törölve lesz az adatbázisból. Ez a művelet visszafordíthatatlan.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Ellenőrizd most</string>
     <string name="info_no_update_available">Nincs elérhető frissítés</string>
     <string name="lang_galician">Galíciai</string>

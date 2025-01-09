@@ -718,6 +718,7 @@
     <string name="error_timeout">Koneksi kehabisan waktu</string>
     <string name="error_unknown">Kesalahan tidak diketahui</string>
     <string name="delete_song">Apakah anda ingin menghapus lagu ini? lagu akan dihapus dari basis data. Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Periksa sekarang</string>
     <string name="info_no_update_available">Pembaruan tidak tersedia</string>
     <string name="lang_galician">Galisia (galego)</string>

@@ -718,6 +718,7 @@
     <string name="error_timeout">Sospensione connessione</string>
     <string name="error_unknown">Errore sconosciuto</string>
     <string name="delete_song">Vuoi davvero eliminare questo brano? Sarà cancellato dal database. Questa azione è irreversibile.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Controlla ora</string>
     <string name="info_no_update_available">Nessun aggiornamento disponibile</string>
     <string name="lang_galician">Galiziano</string>
