@@ -1,6 +1,5 @@
 package it.fast4x.rimusic.ui.screens.player.components.controls
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
