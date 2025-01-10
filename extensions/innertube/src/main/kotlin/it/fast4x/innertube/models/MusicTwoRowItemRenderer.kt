@@ -11,6 +11,7 @@ data class MusicTwoRowItemRenderer(
     val thumbnailOverlay: ThumbnailOverlay?,
     val aspectRatio: String? = null,
     val subtitleBadges: List<Badges>?,
+    val menu: Menu?,
 ){
     val isPlaylist: Boolean
         get() = navigationEndpoint?.browseEndpoint?.browseEndpointContextSupportedConfigs?.browseEndpointContextMusicConfig?.pageType == "MUSIC_PAGE_TYPE_PLAYLIST"

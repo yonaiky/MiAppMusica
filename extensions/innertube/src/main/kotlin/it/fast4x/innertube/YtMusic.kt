@@ -11,14 +11,18 @@ import it.fast4x.innertube.Innertube.client
 import it.fast4x.innertube.Innertube.locale
 import it.fast4x.innertube.Innertube.setLogin
 import it.fast4x.innertube.Innertube.visitorData
+import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.Context.Client
 import it.fast4x.innertube.models.Context.Companion.DefaultIOS
 import it.fast4x.innertube.models.CreatePlaylistResponse
+import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.getContinuation
+import it.fast4x.innertube.requests.ArtistItemsPage
+import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.HistoryPage
 import it.fast4x.innertube.requests.HomePage
 import it.fast4x.innertube.requests.browse
@@ -108,33 +112,64 @@ object YtMusic {
 
     }
 
-//    suspend fun getArtistPage(browseId: String): Result<Innertube.ArtistPage> = runCatching {
-//        val response = innerTube.browse(WEB_REMIX, browseId, setLogin = useLoginForBrowse).body<BrowseResponse>()
-//
-//        ArtistPage(
-//            artist = ArtistItem(
-//                id = browseId,
-//                title = response.header?.musicImmersiveHeaderRenderer?.title?.runs?.firstOrNull()?.text
-//                    ?: response.header?.musicVisualHeaderRenderer?.title?.runs?.firstOrNull()?.text
-//                    ?: response.header?.musicHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
-//                thumbnail = response.header?.musicImmersiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
-//                    ?: response.header?.musicVisualHeaderRenderer?.foregroundThumbnail?.musicThumbnailRenderer?.getThumbnailUrl()
-//                    ?: response.header?.musicDetailHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.getThumbnailUrl(),
-//                channelId = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer?.channelId,
-//                playEndpoint = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-//                    ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer
-//                    ?.contents?.firstOrNull()?.musicResponsiveListItemRenderer?.overlay?.musicItemThumbnailOverlayRenderer
-//                    ?.content?.musicPlayButtonRenderer?.playNavigationEndpoint?.watchEndpoint,
-//                shuffleEndpoint = response.header?.musicImmersiveHeaderRenderer?.playButton?.buttonRenderer?.navigationEndpoint?.watchEndpoint
-//                    ?: response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer
-//                        ?.contents?.firstOrNull()?.musicShelfRenderer?.contents?.firstOrNull()?.musicResponsiveListItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint,
-//                radioEndpoint = response.header?.musicImmersiveHeaderRenderer?.startRadioButton?.buttonRenderer?.navigationEndpoint?.watchEndpoint
-//            ),
-//            sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-//                ?.tabRenderer?.content?.sectionListRenderer?.contents
-//                ?.mapNotNull(ArtistPage::fromSectionListRendererContent)!!,
-//            description = response.header?.musicImmersiveHeaderRenderer?.description?.runs?.firstOrNull()?.text
-//        )
-//    }
+    suspend fun getArtistPage(browseId: String, setLogin: Boolean = false): Result<ArtistPage> = runCatching {
+        val response = Innertube.browse(browseId = browseId, setLogin = setLogin).body<BrowseResponse>()
+        val sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents
+            ?.mapNotNull(ArtistPage::fromSectionListRendererContent)!!
+
+        ArtistPage(
+            artist = Innertube.ArtistItem(
+                info = Innertube.Info(
+                    name = response.header?.musicImmersiveHeaderRenderer?.title?.runs?.firstOrNull()?.text
+                        ?: response.header?.musicVisualHeaderRenderer?.title?.runs?.firstOrNull()?.text
+                        ?: response.header?.musicHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
+                    endpoint = NavigationEndpoint.Endpoint.Browse(
+                        browseId = browseId,
+                        params = response.header?.musicImmersiveHeaderRenderer?.title?.runs?.firstOrNull()?.navigationEndpoint?.browseEndpoint?.params
+                    )
+                ),
+                thumbnail = response.header?.musicImmersiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
+                    ?: response.header?.musicVisualHeaderRenderer?.foregroundThumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
+                    ?: response.header?.musicDetailHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
+                subscribersCountText = null,
+            ),
+            sections = sections,
+            description = response.header?.musicImmersiveHeaderRenderer?.description?.runs?.firstOrNull()?.text,
+            subscribers = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer?.subscriberCountText?.text,
+            shuffleEndpoint = response.header?.musicImmersiveHeaderRenderer?.playButton?.buttonRenderer?.navigationEndpoint?.watchEndpoint,
+            radioEndpoint = response.header?.musicImmersiveHeaderRenderer?.startRadioButton?.buttonRenderer?.navigationEndpoint?.watchEndpoint,
+        )
+    }
+
+    suspend fun getArtistItemsPage(endpoint: BrowseEndpoint): Result<ArtistItemsPage> = runCatching {
+        val response = Innertube.browse(browseId = endpoint.browseId, params = endpoint.params).body<BrowseResponse>()
+        val gridRenderer = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?.gridRenderer
+        if (gridRenderer != null) {
+            ArtistItemsPage(
+                title = gridRenderer.header?.gridHeaderRenderer?.title?.runs?.firstOrNull()?.text.orEmpty(),
+                items = gridRenderer.items!!.mapNotNull {
+                    it.musicTwoRowItemRenderer?.let { renderer ->
+                        ArtistItemsPage.fromMusicTwoRowItemRenderer(renderer)
+                    }
+                },
+                continuation = gridRenderer.continuations?.getContinuation()
+            )
+        } else {
+            ArtistItemsPage(
+                title = response.header?.musicHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
+                items = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                    ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                    ?.musicPlaylistShelfRenderer?.contents?.mapNotNull {
+                        ArtistItemsPage.fromMusicResponsiveListItemRenderer(it.musicResponsiveListItemRenderer!!)
+                    }!!,
+                continuation = response.contents.singleColumnBrowseResultsRenderer.tabs.firstOrNull()
+                    ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                    ?.musicPlaylistShelfRenderer?.continuations?.getContinuation()
+            )
+        }
+    }
 
 }

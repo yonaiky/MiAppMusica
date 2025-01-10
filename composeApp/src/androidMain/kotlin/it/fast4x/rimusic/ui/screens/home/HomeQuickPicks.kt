@@ -143,6 +143,7 @@ import it.fast4x.rimusic.isVideoEnabled
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
@@ -1135,18 +1136,13 @@ fun HomeQuickPicks(
                         if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
                         println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
-                        it.label?.let { label ->
-                            BasicText(
-                                text = label,
-                                style = typography().l.semiBold.color(colorPalette().accent),
-                                modifier = sectionTextModifier
-                            )
-                        }
 
+                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 16.dp).padding(top = 14.dp, bottom = 4.dp))
+                        
                         BasicText(
                             text = it.title,
-                            style = typography().m.semiBold.color(colorPalette().text),
-                            modifier = sectionTextModifier
+                            style = typography().l.semiBold.color(colorPalette().text),
+                            modifier = Modifier.padding(horizontal = 16.dp).padding(vertical = 4.dp)
                         )
                         LazyRow(contentPadding = endPaddingValues) {
                             items(it.items) { item ->

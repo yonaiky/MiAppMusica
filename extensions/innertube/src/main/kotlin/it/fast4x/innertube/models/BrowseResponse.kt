@@ -25,6 +25,8 @@ data class BrowseResponse(
         @JsonNames("musicVisualHeaderRenderer")
         val musicImmersiveHeaderRenderer: MusicImmersiveHeaderRenderer?,
         val musicDetailHeaderRenderer: MusicDetailHeaderRenderer?,
+        val musicVisualHeaderRenderer: MusicVisualHeaderRenderer?,
+        val musicHeaderRenderer: MusicHeaderRenderer?,
     ) {
         @Serializable
         data class MusicDetailHeaderRenderer(
@@ -32,6 +34,13 @@ data class BrowseResponse(
             val description: Runs?,
             val subtitle: Runs?,
             val secondSubtitle: Runs?,
+            val thumbnail: ThumbnailRenderer?,
+        )
+
+        @Serializable
+        data class MusicVisualHeaderRenderer(
+            val title: Runs,
+            val foregroundThumbnail: ThumbnailRenderer,
             val thumbnail: ThumbnailRenderer?,
         )
 
@@ -56,6 +65,33 @@ data class BrowseResponse(
             )
 
         }
+
+        @Serializable
+        data class Buttons(
+            val menuRenderer: Menu.MenuRenderer?,
+        )
+
+        @Serializable
+        data class MusicThumbnail(
+            val url: String?,
+        )
+
+        @Serializable
+        data class MusicThumbnailRenderer(
+            val musicThumbnailRenderer: MusicThumbnailRenderer,
+            val thumbnails: List<MusicThumbnail>?,
+        )
+
+        @Serializable
+        data class MusicHeaderRenderer(
+            val buttons: List<Buttons>?,
+            val title: Runs?,
+            val thumbnail: MusicThumbnailRenderer?,
+            val subtitle: Runs?,
+            val secondSubtitle: Runs?,
+            val straplineTextOne: Runs?,
+            val straplineThumbnail: MusicThumbnailRenderer?,
+        )
     }
 
     @Serializable
