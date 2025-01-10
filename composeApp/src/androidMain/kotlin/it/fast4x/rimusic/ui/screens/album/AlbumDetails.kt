@@ -880,7 +880,7 @@ fun AlbumDetails(
                                                     selectItems = false
                                                 }
                                             },
-                                            onLikeAllSongs = {
+                                            onAddToFavourites = {
                                                 songs.forEach { song ->
 
                                                       val likedAt: Long? = song.likedAt
