@@ -1474,7 +1474,7 @@ fun AppearanceSettings(
                     onCheckedChange = { blackgradient = it }
                 )
 
-        if ((playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) && (playerType == PlayerType.Modern) && (!isLandscape))
+        if ((playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) && (playerType == PlayerType.Modern))
             if (search.input.isBlank() || stringResource(R.string.albumCoverRotation).contains(
                     search.input,
                     true
