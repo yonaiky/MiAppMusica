@@ -2529,6 +2529,7 @@ fun Player(
                         userScrollEnabled = !albumCoverRotation,
                         modifier = Modifier
                     ) { it ->
+
                         var currentRotation by remember {
                             mutableFloatStateOf(0f)
                         }
@@ -2540,12 +2541,26 @@ fun Player(
                         LaunchedEffect(player.isPlaying, pagerStateFS.settledPage) {
                             if (player.isPlaying && it == pagerStateFS.settledPage) {
                                 rotation.animateTo(
-                                    targetValue = 360f,
+                                    targetValue = currentRotation + 360f,
                                     animationSpec = infiniteRepeatable(
                                         animation = tween(30000, easing = LinearEasing),
                                         repeatMode = RepeatMode.Restart
                                     )
-                                )
+                                ) {
+                                    currentRotation = value
+                                }
+                            } else {
+                                if (currentRotation > 0f && it == pagerStateFS.settledPage) {
+                                    rotation.animateTo(
+                                        targetValue = currentRotation + 10,
+                                        animationSpec = tween(
+                                            1250,
+                                            easing = LinearOutSlowInEasing
+                                        )
+                                    ) {
+                                        currentRotation = value
+                                    }
+                                }
                             }
                         }
 
