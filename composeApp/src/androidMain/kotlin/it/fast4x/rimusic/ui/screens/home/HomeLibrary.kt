@@ -244,7 +244,7 @@ fun HomeLibrary(
     val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
 
     val buttonsList = mutableListOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
-    buttonsList += PlaylistsType.YTPlaylist to stringResource(R.string.yt_playlists)
+    //buttonsList += PlaylistsType.YTPlaylist to stringResource(R.string.yt_playlists)
     if (showPipedPlaylists) buttonsList +=
         PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
     if (showPinnedPlaylists) buttonsList +=
