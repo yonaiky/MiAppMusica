@@ -1127,11 +1127,7 @@ fun HomeQuickPicks(
 
 
                 homePageInit?.let { page ->
-                    BasicText(
-                        text = "YOUR MUSIC CONTENT",
-                        style = typography().l.semiBold.color(colorPalette().accent),
-                        modifier = sectionTextModifier
-                    )
+
                     page.sections.forEach {
                         if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
