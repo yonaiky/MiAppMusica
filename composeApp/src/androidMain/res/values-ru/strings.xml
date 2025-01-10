@@ -864,5 +864,5 @@
     <string name="lyricsSizeSecondary">Долгое нажатие для изменения размера</string>
     <string name="appearancepresets">Пресеты внешнего вида</string>
     <string name="appearancepresetssecondary">Предпросмотр будет в низком качестве</string>
-    <string name="albumCoverRotation">Background Rotation Animation</string>
+    <string name="albumCoverRotation">Анимация поворота фона</string>
 </resources>
