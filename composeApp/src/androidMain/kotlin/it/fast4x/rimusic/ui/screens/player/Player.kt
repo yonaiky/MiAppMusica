@@ -1982,7 +1982,7 @@ fun Player(
                      state = pagerStateFS,
                      beyondViewportPageCount = 1,
                      flingBehavior = fling,
-                     userScrollEnabled = !albumCoverRotation,
+                     userScrollEnabled = !(albumCoverRotation && (isShowingLyrics || showthumbnail)),
                      modifier = Modifier
                  ) { it ->
 
@@ -2042,14 +2042,14 @@ fun Player(
                              )
                              .build(),
                          contentDescription = "",
-                         contentScale = if (albumCoverRotation) ContentScale.Fit else ContentScale.Crop,
+                         contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
                          modifier = Modifier
                              .fillMaxWidth()
                              .zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
                              .conditional(albumCoverRotation) {
                                  graphicsLayer {
-                                     scaleX = (screenWidth/screenHeight) + 0.5f
-                                     scaleY = (screenWidth/screenHeight) + 0.5f
+                                     scaleX = if (isShowingLyrics || showthumbnail) (screenWidth/screenHeight) + 0.5f else 1f
+                                     scaleY = if (isShowingLyrics || showthumbnail) (screenWidth/screenHeight) + 0.5f else 1f
                                      rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
                                  }
                              }
@@ -2057,7 +2057,7 @@ fun Player(
                                  interactionSource = remember { MutableInteractionSource() },
                                  indication = null,
                                  onClick = {
-                                     if (thumbnailTapEnabled) {
+                                     if (thumbnailTapEnabled && !showthumbnail) {
                                          if (isShowingVisualizer) isShowingVisualizer = false
                                          isShowingLyrics = !isShowingLyrics
                                      }
@@ -2554,7 +2554,7 @@ fun Player(
            ) {
                if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && (!showthumbnail || albumCoverRotation)) {
                     val fling = PagerDefaults.flingBehavior(
-                        state = pagerState,
+                        state = pagerStateFS,
                         snapPositionalThreshold = 0.20f
                     )
                    pagerStateFS.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
@@ -2572,7 +2572,7 @@ fun Player(
                         state = pagerStateFS,
                         beyondViewportPageCount = 1,
                         flingBehavior = fling,
-                        userScrollEnabled = !albumCoverRotation,
+                        userScrollEnabled = !(albumCoverRotation && (isShowingLyrics || showthumbnail)),
                         modifier = Modifier
                     ) { it ->
 
@@ -2633,14 +2633,14 @@ fun Player(
                                 )
                                 .build(),
                             contentDescription = "",
-                            contentScale = if (albumCoverRotation) ContentScale.Fit else ContentScale.Crop,
+                            contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
                                 .conditional(albumCoverRotation) {
                                     graphicsLayer {
-                                        scaleX = (screenHeight / screenWidth) + 0.5f
-                                        scaleY = (screenHeight / screenWidth) + 0.5f
+                                        scaleX = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
+                                        scaleY = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
                                         rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
                                     }
                                 }
@@ -2648,7 +2648,7 @@ fun Player(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
                                     onClick = {
-                                        if (thumbnailTapEnabled) {
+                                        if (thumbnailTapEnabled && !showthumbnail) {
                                             if (isShowingVisualizer) isShowingVisualizer = false
                                             isShowingLyrics = !isShowingLyrics
                                         }
