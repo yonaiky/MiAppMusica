@@ -450,7 +450,7 @@
     <string name="info_show_hide_hidden_songs">非表示の曲の表示/非表示</string>
     <string name="info_shuffle">シャッフル</string>
     <string name="info_includes_excludes_songs_on_the_device">端末内の曲を含める/除外する</string>
-    <string name="info_enqueue_songs">Enqueue songs</string>
+    <string name="info_enqueue_songs">曲をキューに挿入</string>
     <string name="info_download_all_songs">すべての曲をダウンロード</string>
     <string name="info_remove_all_downloaded_songs">すべてのダウンロード済みの曲を削除</string>
     <string name="info_start_radio">ラジオを開始</string>
@@ -459,23 +459,23 @@
     <string name="info_smart_recommendation">スマートなおすすめ</string>
     <string name="info_clean_cached_congs">キャッシュされた曲を消去</string>
     <string name="info_pin_unpin_playlist">プレイリストのピン留め/ピン留め解除</string>
-    <string name="info_lock_unlock_reorder_songs">Lock/Unlock reorder songs</string>
+    <string name="info_lock_unlock_reorder_songs">曲の並び順をロック/ロック解除</string>
     <string name="info_add_in_playlist">プレイリストに追加</string>
     <string name="info_not_find_application_audio">音声を均等化するアプリが見つかりませんでした</string>
     <string name="info_error">エラー</string>
     <string name="info_not_find_app_open_doc">文書を開くためのアプリが見つかりませんでした</string>
     <string name="info_not_find_app_create_doc">文書を作成するためのアプリが見つかりませんでした</string>
     <string name="info_not_find_app_browse_internet">ネットを閲覧するためのアプリが見つかりませんでした</string>
-    <string name="show_floating_icon">Show floating icon</string>
+    <string name="show_floating_icon">フローティングアイコンを表示</string>
     <string name="show_equalizer">イコライザを表示</string>
     <string name="theme_pure_black">漆黒</string>
     <string name="theme_modern_black">モダンブラック</string>
     <string name="theme_mode_pitch_black">ピッチブラック</string>
     <string name="show_actions_bar">操作バーを表示</string>
     <string name="transition_effect">遷移効果</string>
-    <string name="te_expand">Expand</string>
+    <string name="te_expand">展開する</string>
     <string name="te_fade">フェード</string>
-    <string name="te_scale">Scale</string>
+    <string name="te_scale">スケール</string>
     <string name="te_slide_vertical">縦にスライド</string>
     <string name="te_slide_horizontal">横にスライド</string>
     <string name="info_wait_it_may_take_a_few_minutes">お待ちください。数分かかることがあります...</string>
@@ -862,4 +862,5 @@
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
     <string name="appearancepresets">Appearance Presets</string>
     <string name="appearancepresetssecondary">Previews will be in low quality</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>
