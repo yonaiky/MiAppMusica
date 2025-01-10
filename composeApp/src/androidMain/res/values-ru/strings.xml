@@ -353,6 +353,7 @@
     <string name="sort_year">По году</string>
     <string name="sort_name">По названию</string>
     <string name="sort_songs_number">По количеству песен</string>
+    <string name="sort_relative_listening_time">Относительное время прослушивания</string>
     <string name="follow">Подписаться</string>
     <string name="following">Подписан</string>
     <string name="artist_subscribers">%s подписчиков</string>
@@ -718,6 +719,7 @@
     <string name="error_timeout">Время ожидания подключения истекло</string>
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="delete_song">Вы действительно хотите удалить эту песню? Она будет удалена из базы данных. Это действие необратимо.</string>
+    <string name="update_album">Обновить альбом</string>
     <string name="info_check_update_now">Проверить</string>
     <string name="info_no_update_available">Нет доступных обновлений</string>
     <string name="lang_galician">Галисиийский (Galego)</string>
@@ -860,4 +862,6 @@
     <string name="customcolor">Пользовательский цвет</string>
     <string name="lyricsanimate">Размер анимации текста песни</string>
     <string name="lyricsSizeSecondary">Долгое нажатие для изменения размера</string>
+    <string name="appearancepresets">Пресеты внешнего вида</string>
+    <string name="appearancepresetssecondary">Предпросмотр будет в низком качестве</string>
 </resources>

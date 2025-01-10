@@ -352,6 +352,7 @@
     <string name="sort_year">År</string>
     <string name="sort_name">Namn</string>
     <string name="sort_songs_number">Låtnummer</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Följ</string>
     <string name="following">Följer</string>
     <string name="artist_subscribers">%s prenumeranter</string>
@@ -717,6 +718,7 @@
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Okänt fel</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">Ingen uppdatering tillgänglig</string>
     <string name="lang_galician">Galiciska</string>
@@ -858,4 +860,6 @@
     <string name="customcolor">Custom Color</string>
     <string name="lyricsanimate">Animate Lyrics Size</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>

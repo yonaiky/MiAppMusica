@@ -352,6 +352,7 @@
     <string name="sort_year">Ano</string>
     <string name="sort_name">Nome</string>
     <string name="sort_songs_number">Número de cancións</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Seguir</string>
     <string name="following">Seguindo</string>
     <string name="artist_subscribers">%s subscritores</string>
@@ -717,6 +718,7 @@
     <string name="error_timeout">Tempo de conexión esgotado</string>
     <string name="error_unknown">Erro descoñecido</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Comprobar agora</string>
     <string name="info_no_update_available">Sen actualización dispoñible</string>
     <string name="lang_galician">Galego</string>
@@ -858,4 +860,6 @@
     <string name="customcolor">Custom Color</string>
     <string name="lyricsanimate">Animate Lyrics Size</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>

@@ -352,6 +352,7 @@
     <string name="sort_year">Йыл</string>
     <string name="sort_name">Исем</string>
     <string name="sort_songs_number">Йырҙар һаны</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Яҙылырға</string>
     <string name="following">Яҙылған</string>
     <string name="artist_subscribers">%s яҙыусылар</string>
@@ -717,6 +718,7 @@
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
     <string name="lang_galician">Galician</string>
@@ -858,4 +860,6 @@
     <string name="customcolor">Custom Color</string>
     <string name="lyricsanimate">Animate Lyrics Size</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>

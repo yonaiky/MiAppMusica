@@ -352,6 +352,7 @@
     <string name="sort_year">Év</string>
     <string name="sort_name">Név</string>
     <string name="sort_songs_number">Dalok száma</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">Követés</string>
     <string name="following">Követve</string>
     <string name="artist_subscribers">%s feliratkozók</string>
@@ -717,6 +718,7 @@
     <string name="error_timeout">Kapcsolat időtúllépés</string>
     <string name="error_unknown">Ismeretlen hiba</string>
     <string name="delete_song">Biztosan törölni akarod ezt a dalt? Törölve lesz az adatbázisból. Ez a művelet visszafordíthatatlan.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Ellenőrizd most</string>
     <string name="info_no_update_available">Nincs elérhető frissítés</string>
     <string name="lang_galician">Galíciai</string>
@@ -858,4 +860,6 @@
     <string name="customcolor">Custom Color</string>
     <string name="lyricsanimate">Animate Lyrics Size</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>

@@ -352,6 +352,7 @@
     <string name="sort_year">年</string>
     <string name="sort_name">名前</string>
     <string name="sort_songs_number">曲番号</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">フォロー</string>
     <string name="following">フォロー中</string>
     <string name="artist_subscribers">%s 人の登録者</string>
@@ -717,6 +718,7 @@
     <string name="error_timeout">接続が時間切れです</string>
     <string name="error_unknown">不明なエラー</string>
     <string name="delete_song">本当にこの曲を削除しますか？これはデータベースから削除します。\\nこの操作は元に戻せません。</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">今すぐ確認</string>
     <string name="info_no_update_available">更新なし</string>
     <string name="lang_galician">ガリシア語</string>
@@ -858,4 +860,6 @@
     <string name="customcolor">Custom Color</string>
     <string name="lyricsanimate">Animate Lyrics Size</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
 </resources>
