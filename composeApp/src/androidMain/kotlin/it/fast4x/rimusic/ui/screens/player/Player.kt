@@ -963,7 +963,7 @@ fun Player(
 
 
     if (!isGradientBackgroundEnabled) {
-        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || (showthumbnail && (!albumCoverRotation || isLandscape)))) {
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || (showthumbnail && (!albumCoverRotation)))) {
             containerModifier = containerModifier
                 .background(dynamicColorPalette.background1)
                 .paint(
@@ -1961,16 +1961,16 @@ fun Player(
          Box(
              modifier = Modifier.haze(state = hazeState, style = HazeDefaults.style(backgroundColor = Color.Transparent, tint = Color.Black.copy(0.5f),blurRadius = 8.dp))
          ){
-             if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && !showthumbnail) {
+             if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && (!showthumbnail || albumCoverRotation)) {
                  val fling = PagerDefaults.flingBehavior(
-                     state = pagerState,
+                     state = pagerStateFS,
                      snapPositionalThreshold = 0.20f
                  )
-                 pagerState.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
+                 pagerStateFS.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
 
-                 LaunchedEffect(pagerState) {
-                     var previousPage = pagerState.settledPage
-                     snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
+                 LaunchedEffect(pagerStateFS) {
+                     var previousPage = pagerStateFS.settledPage
+                     snapshotFlow { pagerStateFS.settledPage }.distinctUntilChanged().collect {
                          if (previousPage != it) {
                              if (it != binder.player.currentMediaItemIndex) binder.player.playAtIndex(it)
                          }
@@ -1979,11 +1979,46 @@ fun Player(
                  }
 
                  HorizontalPager(
-                     state = pagerState,
+                     state = pagerStateFS,
                      beyondViewportPageCount = 1,
                      flingBehavior = fling,
+                     userScrollEnabled = !albumCoverRotation,
                      modifier = Modifier
                  ) { it ->
+
+                     var currentRotation by remember {
+                         mutableFloatStateOf(0f)
+                     }
+
+                     val rotation = remember {
+                         Animatable(currentRotation)
+                     }
+
+                     LaunchedEffect(player.isPlaying, pagerStateFS.settledPage) {
+                         if (player.isPlaying && it == pagerStateFS.settledPage) {
+                             rotation.animateTo(
+                                 targetValue = currentRotation + 360f,
+                                 animationSpec = infiniteRepeatable(
+                                     animation = tween(30000, easing = LinearEasing),
+                                     repeatMode = RepeatMode.Restart
+                                 )
+                             ) {
+                                 currentRotation = value
+                             }
+                         } else {
+                             if (currentRotation > 0f && it == pagerStateFS.settledPage) {
+                                 rotation.animateTo(
+                                     targetValue = currentRotation + 10,
+                                     animationSpec = tween(
+                                         1250,
+                                         easing = LinearOutSlowInEasing
+                                     )
+                                 ) {
+                                     currentRotation = value
+                                 }
+                             }
+                         }
+                     }
 
                      AsyncImage(
                          model = ImageRequest.Builder(LocalContext.current)
@@ -2007,9 +2042,17 @@ fun Player(
                              )
                              .build(),
                          contentDescription = "",
-                         contentScale = ContentScale.Crop,
+                         contentScale = if (albumCoverRotation) ContentScale.Fit else ContentScale.Crop,
                          modifier = Modifier
-                             .fillMaxHeight()
+                             .fillMaxWidth()
+                             .zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
+                             .conditional(albumCoverRotation) {
+                                 graphicsLayer {
+                                     scaleX = (screenWidth/screenHeight) + 0.5f
+                                     scaleY = (screenWidth/screenHeight) + 0.5f
+                                     rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
+                                 }
+                             }
                              .combinedClickable(
                                  interactionSource = remember { MutableInteractionSource() },
                                  indication = null,
@@ -2467,6 +2510,9 @@ fun Player(
                         )
                     } else {
 
+                                val index = if (!showthumbnail) {if (pagerStateFS.currentPage > binder.player.currentTimeline.windowCount) 0 else pagerStateFS.currentPage}
+                                else if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else pagerState.currentPage
+
                                 Controls(
                                     navController = navController,
                                     onCollapse = onDismiss,
@@ -2477,8 +2523,8 @@ fun Player(
                                     isShowingLyrics = isShowingLyrics,
                                     media = mediaItem.toUiMedia(positionAndDuration.second),
                                     mediaId = mediaItem.mediaId,
-                                    title = player.getMediaItemAt(pagerState.currentPage).mediaMetadata.title?.toString(),
-                                    artist = player.getMediaItemAt(pagerState.currentPage).mediaMetadata.artist?.toString(),
+                                    title = player.getMediaItemAt(index).mediaMetadata.title?.toString(),
+                                    artist = player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
                                     artistIds = artistsInfo,
                                     albumId = albumId,
                                     shouldBePlaying = shouldBePlaying,
