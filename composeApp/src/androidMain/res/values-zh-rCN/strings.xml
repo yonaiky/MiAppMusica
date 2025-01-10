@@ -862,4 +862,5 @@
     <string name="lyricsSizeSecondary">长按以更改大小</string>
     <string name="appearancepresets">预设外观</string>
     <string name="appearancepresetssecondary">预览会以较低质量</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>
