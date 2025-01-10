@@ -143,6 +143,8 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.mediaItemToggleLike
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -984,6 +986,15 @@ fun AlbumDetails(
                                                     listMediaItems.clear()
                                                     selectItems = false
                                                 }
+                                            },
+                                            onAddToFavourites = {
+                                                songs.forEach { song ->
+
+                                                      val likedAt: Long? = song.likedAt
+                                                        if(likedAt == null) {
+                                                            mediaItemToggleLike(song.asMediaItem)
+                                                        }
+                                                  }
                                             },
                                             disableScrollingText = disableScrollingText
                                         )

@@ -8,7 +8,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -61,6 +66,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
@@ -188,6 +194,7 @@ import it.fast4x.rimusic.utils.VinylSizeKey
 import it.fast4x.rimusic.utils.actionExpandedKey
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.albumCoverRotationKey
 import it.fast4x.rimusic.utils.animatedGradientKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.blackgradientKey
@@ -441,6 +448,7 @@ fun Player(
     val mediaItem = nullableMediaItem ?: return
 
     val pagerState = rememberPagerState(pageCount = { mediaItems.size })
+    val pagerStateFS = rememberPagerState(pageCount = { mediaItems.size })
     val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
 
     //Temporaly commented for debug
@@ -941,20 +949,21 @@ fun Player(
     val showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
     var coverThumbnailAnimation by rememberPreference(coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl)
 
-    var value by remember{ mutableStateOf(2) }
+    var valueGrad by remember{ mutableStateOf(2) }
     val gradients = enumValues<AnimatedGradient>()
     var tempGradient by remember{ mutableStateOf(AnimatedGradient.Linear) }
+    var albumCoverRotation by rememberPreference(albumCoverRotationKey, false)
 
     if (animatedGradient == AnimatedGradient.Random){
         LaunchedEffect(mediaItem.mediaId){
-            value = (2..13).random()
+            valueGrad = (2..13).random()
         }
-        tempGradient = gradients[value]
+        tempGradient = gradients[valueGrad]
     }
 
 
     if (!isGradientBackgroundEnabled) {
-        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || showthumbnail)) {
+        if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || (showthumbnail && (!albumCoverRotation || isLandscape)))) {
             containerModifier = containerModifier
                 .background(dynamicColorPalette.background1)
                 .paint(
@@ -2497,16 +2506,16 @@ fun Player(
            Box(
                modifier = Modifier.haze(state = hazeState, style = HazeDefaults.style(backgroundColor = Color.Transparent, tint = Color.Black.copy(0.5f),blurRadius = 8.dp))
            ) {
-               if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && !showthumbnail) {
+               if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && (!showthumbnail || albumCoverRotation)) {
                     val fling = PagerDefaults.flingBehavior(
                         state = pagerState,
                         snapPositionalThreshold = 0.20f
                     )
-                   pagerState.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
+                   pagerStateFS.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
 
-                    LaunchedEffect(pagerState) {
-                        var previousPage = pagerState.settledPage
-                        snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
+                    LaunchedEffect(pagerStateFS) {
+                        var previousPage = pagerStateFS.settledPage
+                        snapshotFlow { pagerStateFS.settledPage }.distinctUntilChanged().collect {
                             if (previousPage != it) {
                                 if (it != binder.player.currentMediaItemIndex) binder.player.playAtIndex(it)
                             }
@@ -2514,11 +2523,46 @@ fun Player(
                         }
                     }
                     HorizontalPager(
-                        state = pagerState,
+                        state = pagerStateFS,
                         beyondViewportPageCount = 1,
                         flingBehavior = fling,
+                        userScrollEnabled = !albumCoverRotation,
                         modifier = Modifier
                     ) { it ->
+
+                        var currentRotation by remember {
+                            mutableFloatStateOf(0f)
+                        }
+
+                        val rotation = remember {
+                            Animatable(currentRotation)
+                        }
+
+                        LaunchedEffect(player.isPlaying, pagerStateFS.settledPage) {
+                            if (player.isPlaying && it == pagerStateFS.settledPage) {
+                                rotation.animateTo(
+                                    targetValue = currentRotation + 360f,
+                                    animationSpec = infiniteRepeatable(
+                                        animation = tween(30000, easing = LinearEasing),
+                                        repeatMode = RepeatMode.Restart
+                                    )
+                                ) {
+                                    currentRotation = value
+                                }
+                            } else {
+                                if (currentRotation > 0f && it == pagerStateFS.settledPage) {
+                                    rotation.animateTo(
+                                        targetValue = currentRotation + 10,
+                                        animationSpec = tween(
+                                            1250,
+                                            easing = LinearOutSlowInEasing
+                                        )
+                                    ) {
+                                        currentRotation = value
+                                    }
+                                }
+                            }
+                        }
 
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
@@ -2543,9 +2587,17 @@ fun Player(
                                 )
                                 .build(),
                             contentDescription = "",
-                            contentScale = ContentScale.Crop,
+                            contentScale = if (albumCoverRotation) ContentScale.Fit else ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxHeight()
+                                .zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
+                                .conditional(albumCoverRotation) {
+                                    graphicsLayer {
+                                        scaleX = (screenHeight / screenWidth) + 0.5f
+                                        scaleY = (screenHeight / screenWidth) + 0.5f
+                                        rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
+                                    }
+                                }
                                 .combinedClickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
@@ -2986,8 +3038,9 @@ fun Player(
 
                         )
                     } else {
-                                val index = if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else
-                                pagerState.currentPage
+                                val index = if (!showthumbnail) {if (pagerStateFS.currentPage > binder.player.currentTimeline.windowCount) 0 else pagerStateFS.currentPage}
+                                            else if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else pagerState.currentPage
+
                                 Controls(
                                     navController = navController,
                                     onCollapse = onDismiss,

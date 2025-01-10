@@ -343,6 +343,7 @@ const val lyricsSizeKey = "lyricsSize"
 const val lyricsSizeLKey = "lyricsSizeL"
 const val ytAccountNameKey = "ytAccountName"
 const val ytAccountEmailKey = "ytAccountEmail"
+const val albumCoverRotationKey = "albumCoverRotation"
 
 /*
 @PublishedApi
