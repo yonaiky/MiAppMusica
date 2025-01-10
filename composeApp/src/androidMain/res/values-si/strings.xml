@@ -863,4 +863,5 @@ CC-BY-SA 3.0</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
     <string name="appearancepresets">Appearance Presets</string>
     <string name="appearancepresetssecondary">Previews will be in low quality</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>

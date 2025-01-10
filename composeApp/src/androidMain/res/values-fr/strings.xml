@@ -864,4 +864,5 @@
     <string name="lyricsSizeSecondary">Appuyez longuement pour changer la taille</string>
     <string name="appearancepresets">Préréglages d\'apparence</string>
     <string name="appearancepresetssecondary">Les aperçus seront de faible qualité</string>
+    <string name="albumCoverRotation">Animation de rotation d\'arrière-plan</string>
 </resources>

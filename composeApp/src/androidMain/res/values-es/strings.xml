@@ -862,4 +862,5 @@
     <string name="lyricsSizeSecondary">Pulsación larga para cambiar el tamaño</string>
     <string name="appearancepresets">Preajustes de apariencia</string>
     <string name="appearancepresetssecondary">Las vistas previas serán de baja calidad</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>

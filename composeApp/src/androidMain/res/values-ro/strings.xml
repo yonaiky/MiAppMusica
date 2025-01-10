@@ -862,4 +862,5 @@
     <string name="lyricsSizeSecondary">Țineți apăsat pentru a schimba dimensiunea</string>
     <string name="appearancepresets">Presetări de aspect</string>
     <string name="appearancepresetssecondary">Previzualizările vor fi de slabă calitate</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>

@@ -862,4 +862,5 @@
     <string name="lyricsSizeSecondary">Premeu llargament per canviar la mida</string>
     <string name="appearancepresets">Presets d\'aparença</string>
     <string name="appearancepresetssecondary">Les previsualitzacions seran de baixa qualitat</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>
