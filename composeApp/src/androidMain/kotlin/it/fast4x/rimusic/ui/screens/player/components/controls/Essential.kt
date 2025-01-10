@@ -355,7 +355,7 @@ fun InfoAlbumAndArtistEssential(
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
-                    .conditional(!disableScrollingText){padding(horizontal = maxWidth*0.05f)}
+                    .conditional(!disableScrollingText){padding(horizontal = maxWidth*0.025f)}
 
             )
             BasicText(
@@ -372,7 +372,7 @@ fun InfoAlbumAndArtistEssential(
                 ),
                 maxLines = 1,
                 modifier = modifierArtist
-                    .conditional(!disableScrollingText){padding(horizontal = maxWidth*0.05f)}
+                    .conditional(!disableScrollingText){padding(horizontal = maxWidth*0.025f)}
 
             )
         }
