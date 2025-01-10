@@ -606,7 +606,7 @@
     <string name="transparentbar">透明なタイムラインバー</string>
     <string name="timelinesize">プレイヤーのタイムラインサイズ</string>
     <string name="actionspacedevenly">均等な間隔</string>
-    <string name="expandedplayer">展開したプレーヤー</string>
+    <string name="expandedplayer">拡大プレーヤー</string>
     <string name="expandedlyrics">Expanded view of lyrics</string>
     <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
     <string name="info_connect_your_piped_account_first">最初に Piped アカウントに接続するか、Piped の同期を無効にしてください</string>
@@ -664,7 +664,7 @@
     <string name="deleted">削除済み</string>
     <string name="playlistindicatorinfo2">曲は再生リスト内にあります</string>
     <string name="statsfornerdsplayer">プレーヤーに上級者向けの統計を表示する</string>
-    <string name="discover">ディスカバー</string>
+    <string name="discover">発見</string>
     <string name="discoverinfo">いいねと再生リストの曲をキューから除去します</string>
     <string name="controls_header_customize">カスタマイズ</string>
     <string name="controls_title_blur_effect">透かし効果</string>
