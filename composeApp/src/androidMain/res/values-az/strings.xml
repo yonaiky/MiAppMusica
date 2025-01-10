@@ -865,4 +865,5 @@
     <string name="yt_history">YTM History</string>
     <string name="appearancepresets">Görünüş İlkin Qrupları</string>
     <string name="appearancepresetssecondary">Önizləmələr aşağı keyfiyyətdə olacaq</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>

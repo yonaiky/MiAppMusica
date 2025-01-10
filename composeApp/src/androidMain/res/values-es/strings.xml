@@ -865,4 +865,5 @@
     <string name="appearancepresets">Preajustes de apariencia</string>
     <string name="appearancepresetssecondary">Las vistas previas serán de baja calidad</string>
     <string name="yt_history">YTM History</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>

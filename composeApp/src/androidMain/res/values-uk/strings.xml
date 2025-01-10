@@ -865,4 +865,5 @@
     <string name="yt_history">YTM History</string>
     <string name="appearancepresets">Пресети зовнішнього вигляду</string>
     <string name="appearancepresetssecondary">Попередній перегляд буде в низькій якості</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>

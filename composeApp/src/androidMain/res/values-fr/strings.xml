@@ -867,4 +867,5 @@
     <string name="yt_history">YTM History</string>
     <string name="appearancepresets">Préréglages d\'apparence</string>
     <string name="appearancepresetssecondary">Les aperçus seront de faible qualité</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>
