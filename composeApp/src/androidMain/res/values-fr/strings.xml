@@ -864,8 +864,8 @@
     <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Appuyez longuement pour changer la taille</string>
     <string name="home">Home</string>
-    <string name="yt_history">YTM History</string>
     <string name="appearancepresets">Préréglages d\'apparence</string>
     <string name="appearancepresetssecondary">Les aperçus seront de faible qualité</string>
-    <string name="albumCoverRotation">Background Rotation Animation</string>
+    <string name="yt_history">YTM History</string>
+    <string name="albumCoverRotation">Animation de rotation d\'arrière-plan</string>
 </resources>
