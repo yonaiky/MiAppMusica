@@ -742,7 +742,7 @@
     <string name="social_discord">Discord</string>
     <string name="discord_enable_rich_presence">Activer Rich Presence (Discord)</string>
     <string name="discord_disconnect">Déconnecté</string>
-    <string name="discord_connect">Connecter</string>
+    <string name="discord_connect">Se connecter</string>
     <string name="discord_connected_to_discord_account">Connecté à un compte Discord</string>
     <string name="settings_reset">Réinitialiser</string>
     <string name="settings_restore_default_settings">Restaurer les paramètres par défaut</string>
