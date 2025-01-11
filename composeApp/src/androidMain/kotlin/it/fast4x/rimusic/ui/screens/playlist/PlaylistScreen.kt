@@ -42,8 +42,6 @@ fun PlaylistScreen(
                 0 -> PlaylistSongList(
                     navController = navController,
                     browseId = browseId,
-                    params = params,
-                    maxDepth = maxDepth
                 )
             }
         }
