@@ -864,6 +864,6 @@
     <string name="home">Home</string>
     <string name="appearancepresets">外観のプリセット</string>
     <string name="appearancepresetssecondary">プレビューは低品質になります</string>
-    <string name="albumCoverRotation">背景の回転アニメーション</string>
     <string name="yt_history">YTM History</string>
+    <string name="albumCoverRotation">背景の回転アニメーション</string>
 </resources>
