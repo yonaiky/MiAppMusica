@@ -1043,8 +1043,8 @@ fun HomeSongsModern(
                                     //isRecommendationEnabled = false
                                     downloadState = Download.STATE_DOWNLOADING
                                     if (listMediaItems.isEmpty()) {
-                                        if (items.isNotEmpty() == true)
-                                            items.forEach {
+                                        if (items.filter { it.song.likedAt != -1L }.isNotEmpty()) {
+                                            items.filter { it.song.likedAt != -1L }.forEach {
                                                 binder?.cache?.removeResource(it.song.asMediaItem.mediaId)
                                                 manageDownload(
                                                     context = context,
@@ -1052,6 +1052,7 @@ fun HomeSongsModern(
                                                     downloadState = false
                                                 )
                                             }
+                                        }
                                     } else {
                                         listMediaItems.forEach {
                                             binder?.cache?.removeResource(it.mediaId)
@@ -1143,7 +1144,7 @@ fun HomeSongsModern(
 
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
-                            enabled = items.isNotEmpty(),
+                            enabled = items.filter { it.song.likedAt != -1L }.isNotEmpty(),
                             color = colorPalette().text,
                             onClick = {},
                             modifier = Modifier
@@ -1154,9 +1155,9 @@ fun HomeSongsModern(
                                             filteredSongs
                                         if (items.isNotEmpty()) {
                                             val itemsLimited =
-                                                if (items.size > maxSongsInQueue.number) items
+                                                if (items.filter { it.song.likedAt != -1L }.size > maxSongsInQueue.number) items.filter { it.song.likedAt != -1L }
                                                     .shuffled()
-                                                    .take(maxSongsInQueue.number.toInt()) else items
+                                                    .take(maxSongsInQueue.number.toInt()) else items.filter { it.song.likedAt != -1L }
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayFromBeginning(
                                                 itemsLimited
@@ -1257,7 +1258,7 @@ fun HomeSongsModern(
                                                 filteredSongs
                                             if (listMediaItems.isEmpty()) {
                                                 binder?.player?.enqueue(
-                                                    items.map(SongEntity::asMediaItem),
+                                                    items.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
                                                     context
                                                 )
                                             } else {
@@ -1874,64 +1875,74 @@ fun HomeSongsModern(
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     },
                                     onClick = {
-                                        searching = false
-                                        filter = null
+                                        if (song.song.likedAt != -1L) {
+                                            searching = false
+                                            filter = null
 
-                                        val maxSongs = maxSongsInQueue.number.toInt()
-                                        val itemsRange: IntRange
-                                        val playIndex: Int
-                                        if (items.size < maxSongsInQueue.number) {
-                                            itemsRange = items.indices
-                                            playIndex = index
-                                        } else {
-                                            when (queueLimit) {
-                                                QueueSelection.START_OF_QUEUE -> {
-                                                    // tries to guarantee maxSongs many songs
-                                                    // window starting from index with maxSongs songs (if possible)
-                                                    itemsRange = index..<min(index+maxSongs, items.size)
+                                            val maxSongs = maxSongsInQueue.number.toInt()
+                                            val itemsRange: IntRange
+                                            val playIndex: Int
+                                            if (items.size < maxSongsInQueue.number) {
+                                                itemsRange = items.indices
+                                                playIndex = index
+                                            } else {
+                                                when (queueLimit) {
+                                                    QueueSelection.START_OF_QUEUE -> {
+                                                        // tries to guarantee maxSongs many songs
+                                                        // window starting from index with maxSongs songs (if possible)
+                                                        itemsRange = index..<min(
+                                                            index + maxSongs,
+                                                            items.size
+                                                        )
 
-                                                    // index is located at the first position
-                                                    playIndex = 0
-                                                }
-                                                QueueSelection.CENTERED -> {
-                                                    // tries to guarantee >= maxSongs/2 many songs
-                                                    // window with +- maxSongs/2 songs (if possible) around index
-                                                    val minIndex = max(0, index - maxSongs/2)
-                                                    val maxIndex = min(index + maxSongs/2, items.size)
-                                                    itemsRange = minIndex..<maxIndex
+                                                        // index is located at the first position
+                                                        playIndex = 0
+                                                    }
 
-                                                    // index is located at "center"
-                                                    playIndex = index - minIndex
-                                                }
-                                                QueueSelection.END_OF_QUEUE -> {
-                                                    // tries to guarantee maxSongs many songs
-                                                    // window with maxSongs songs (if possible) ending at index
-                                                    val minIndex = max(0, index - maxSongs + 1)
-                                                    val maxIndex = min(index, items.size)
-                                                    itemsRange = minIndex..maxIndex
+                                                    QueueSelection.CENTERED -> {
+                                                        // tries to guarantee >= maxSongs/2 many songs
+                                                        // window with +- maxSongs/2 songs (if possible) around index
+                                                        val minIndex = max(0, index - maxSongs / 2)
+                                                        val maxIndex =
+                                                            min(index + maxSongs / 2, items.size)
+                                                        itemsRange = minIndex..<maxIndex
 
-                                                    // index is located at end
-                                                    playIndex = index - minIndex
-                                                }
-                                                QueueSelection.END_OF_QUEUE_WINDOWED -> {
-                                                    // tries to guarantee maxSongs many songs,
-                                                    // similar to original implementation in it's valid range
-                                                    // window with maxSongs songs (if possible) before index
-                                                    val minIndex = max(0, index - maxSongs + 1)
-                                                    val maxIndex = min(minIndex+maxSongs, items.size)
-                                                    itemsRange = minIndex..<maxIndex
+                                                        // index is located at "center"
+                                                        playIndex = index - minIndex
+                                                    }
 
-                                                    // index is located at "end"
-                                                    playIndex = index - minIndex
+                                                    QueueSelection.END_OF_QUEUE -> {
+                                                        // tries to guarantee maxSongs many songs
+                                                        // window with maxSongs songs (if possible) ending at index
+                                                        val minIndex = max(0, index - maxSongs + 1)
+                                                        val maxIndex = min(index, items.size)
+                                                        itemsRange = minIndex..maxIndex
+
+                                                        // index is located at end
+                                                        playIndex = index - minIndex
+                                                    }
+
+                                                    QueueSelection.END_OF_QUEUE_WINDOWED -> {
+                                                        // tries to guarantee maxSongs many songs,
+                                                        // similar to original implementation in it's valid range
+                                                        // window with maxSongs songs (if possible) before index
+                                                        val minIndex = max(0, index - maxSongs + 1)
+                                                        val maxIndex =
+                                                            min(minIndex + maxSongs, items.size)
+                                                        itemsRange = minIndex..<maxIndex
+
+                                                        // index is located at "end"
+                                                        playIndex = index - minIndex
+                                                    }
                                                 }
                                             }
+                                            val itemsLimited = items.slice(itemsRange)
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlayAtIndex(
+                                                itemsLimited.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
+                                                itemsLimited.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem).indexOf(song.asMediaItem)
+                                            )
                                         }
-                                        val itemsLimited = items.slice(itemsRange)
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            itemsLimited.map(SongEntity::asMediaItem),
-                                            playIndex
-                                        )
                                     }
                                 )
                                 .animateItem(),
