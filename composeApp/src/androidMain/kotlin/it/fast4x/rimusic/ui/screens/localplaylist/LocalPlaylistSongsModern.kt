@@ -850,13 +850,13 @@ fun LocalPlaylistSongsModern(
                         Spacer(modifier = Modifier.height(10.dp))
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
-                            enabled = playlistSongs.isNotEmpty() == true,
-                            color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                            enabled = playlistSongs.any { it.song.likedAt != -1L },
+                            color = if (playlistSongs.any { it.song.likedAt != -1L }) colorPalette.text else colorPalette.textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
-                                        playlistSongs.let { songs ->
+                                        playlistSongs.filter { it.song.likedAt != -1L }.let { songs ->
                                             if (songs.isNotEmpty()) {
                                                 val itemsLimited =
                                                     if (songs.size > maxSongsInQueue.number) songs.shuffled()
@@ -980,8 +980,8 @@ fun LocalPlaylistSongsModern(
                                 isRecommendationEnabled = false
                                 downloadState = Download.STATE_DOWNLOADING
                                 if (listMediaItems.isEmpty()) {
-                                    if (playlistSongs.isNotEmpty() == true)
-                                        playlistSongs.forEach {
+                                    if (playlistSongs.any { it.song.likedAt != -1L }) {
+                                        playlistSongs.filter { it.song.likedAt != -1L }.forEach {
                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                             Database.asyncTransaction {
                                                 Database.insert(
@@ -1000,6 +1000,7 @@ fun LocalPlaylistSongsModern(
                                                 downloadState = false
                                             )
                                         }
+                                    }
                                 } else {
                                     listMediaItems.forEach {
                                         binder?.cache?.removeResource(it.mediaId)
@@ -1133,7 +1134,7 @@ fun LocalPlaylistSongsModern(
                                         onEnqueue = {
                                             if (listMediaItems.isEmpty()) {
                                                 binder?.player?.enqueue(
-                                                    playlistSongs.map(SongEntity::asMediaItem),
+                                                    playlistSongs.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
                                                     context
                                                 )
                                             } else {
@@ -1145,7 +1146,7 @@ fun LocalPlaylistSongsModern(
                                         onPlayNext = {
                                             if (listMediaItems.isEmpty()) {
                                                 binder?.player?.addNext(
-                                                    playlistSongs.map(SongEntity::asMediaItem),
+                                                    playlistSongs.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
                                                     context
                                                 )
                                             } else {
@@ -1825,17 +1826,19 @@ fun LocalPlaylistSongsModern(
                                     },
                                     onClick = {
                                         if (!selectItems) {
-                                            searching = false
-                                            filter = null
-                                            playlistSongs
-                                                .map(SongEntity::asMediaItem)
-                                                .let { mediaItems ->
-                                                    binder?.stopRadio()
-                                                    binder?.player?.forcePlayAtIndex(
-                                                        mediaItems,
-                                                        index
-                                                    )
-                                                }
+                                            if (song.song.likedAt != -1L) {
+                                                searching = false
+                                                filter = null
+                                                playlistSongs.filter { it.song.likedAt != -1L }
+                                                    .map(SongEntity::asMediaItem)
+                                                    .let { mediaItems ->
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlayAtIndex(
+                                                            mediaItems,
+                                                            mediaItems.indexOf(song.asMediaItem)
+                                                        )
+                                                    }
+                                            }
                                         } else checkedState.value = !checkedState.value
                                     }
                                 )
@@ -1866,7 +1869,7 @@ fun LocalPlaylistSongsModern(
                 iconId = R.drawable.shuffle,
                 visible = !reorderingState.isDragging,
                 onClick = {
-                    playlistSongs.let { songs ->
+                    playlistSongs.filter { it.song.likedAt != -1L }.let { songs ->
                         if (songs.isNotEmpty()) {
                             binder?.stopRadio()
                             binder?.player?.forcePlayFromBeginning(
