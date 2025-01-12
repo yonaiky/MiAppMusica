@@ -1244,7 +1244,7 @@ fun HomeSongsModern(
                                                 filteredSongs
                                             if (listMediaItems.isEmpty()) {
                                                 binder?.player?.addNext(
-                                                    items.map(SongEntity::asMediaItem),
+                                                    items.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
                                                     context
                                                 )
                                             } else {
