@@ -1942,6 +1942,10 @@ fun HomeSongsModern(
                                                 itemsLimited.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
                                                 itemsLimited.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem).indexOf(song.asMediaItem)
                                             )
+                                        } else {
+                                            CoroutineScope(Dispatchers.Main).launch {
+                                                SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
+                                            }
                                         }
                                     }
                                 )

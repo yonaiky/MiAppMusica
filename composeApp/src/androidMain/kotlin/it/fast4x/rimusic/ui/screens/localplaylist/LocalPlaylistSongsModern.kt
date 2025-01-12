@@ -1838,6 +1838,10 @@ fun LocalPlaylistSongsModern(
                                                             mediaItems.indexOf(song.asMediaItem)
                                                         )
                                                     }
+                                            } else {
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
+                                                }
                                             }
                                         } else checkedState.value = !checkedState.value
                                     }
