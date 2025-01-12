@@ -6,14 +6,19 @@ import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.CreatePlaylistResponse
+import it.fast4x.innertube.models.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.getContinuation
+import it.fast4x.innertube.models.oddElements
+import it.fast4x.innertube.requests.AlbumPage
 import it.fast4x.innertube.requests.ArtistItemsPage
 import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.HistoryPage
 import it.fast4x.innertube.requests.HomePage
+import it.fast4x.innertube.requests.NewReleaseAlbumPage
 import it.fast4x.innertube.requests.PlaylistContinuationPage
 import it.fast4x.innertube.requests.PlaylistPage
+import it.fast4x.innertube.utils.from
 
 object YtMusic {
 
@@ -165,11 +170,11 @@ object YtMusic {
             browseId = playlistId,
             setLogin = true
         ).body<BrowseResponse>()
-
+        val playlistIdChecked = if (playlistId.startsWith("VL")) playlistId else "VL$playlistId"
         if (response.header != null)
-            getPlaylistPreviousMode(playlistId, response)
+            getPlaylistPreviousMode(playlistIdChecked, response)
         else
-            getPlaylistNewMode(playlistId, response)
+            getPlaylistNewMode(playlistIdChecked, response)
     }
 
     private fun getPlaylistPreviousMode(playlistId: String, response: BrowseResponse): PlaylistPage {
@@ -280,6 +285,87 @@ object YtMusic {
             }!!,
             continuation = response.continuationContents.musicPlaylistShelfContinuation.continuations?.getContinuation()
         )
+    }
+
+    suspend fun getAlbum(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
+        val response = Innertube.browse(browseId = browseId).body<BrowseResponse>()
+        val playlistId = response.microformat?.microformatDataRenderer?.urlCanonical?.substringAfterLast('=')!!
+//        val otherVersions = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer?.contents?.getOrNull(
+//            1
+//        )?.musicCarouselShelfRenderer?.contents
+        //println("mediaItem getAlbum otherVersions: $otherVersions")
+//        val description = response.contents?.twoColumnBrowseResultsRenderer?.tabs
+//            ?.firstOrNull()
+//            ?.tabRenderer
+//            ?.content
+//            ?.sectionListRenderer
+//            ?.contents
+//            ?.firstOrNull()
+//            ?.musicResponsiveHeaderRenderer
+//            ?.description
+//            ?.musicDescriptionShelfRenderer
+//            ?.description
+//        println("mediaItem getAlbum description: $description")
+
+        AlbumPage(
+            album = Innertube.AlbumItem(
+                info = Innertube.Info(
+                    name = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
+                    endpoint = NavigationEndpoint.Endpoint.Browse(
+                        browseId = browseId,
+                    )
+                ),
+                authors = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.straplineTextOne?.runs?.oddElements()
+                    ?.map {
+                        Innertube.Info(
+                            name = it.text,
+                            endpoint = NavigationEndpoint.Endpoint.Browse(
+                                browseId = it.navigationEndpoint?.browseEndpoint?.browseId
+                            ),
+                        )
+                    }!!,
+                year = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.subtitle?.runs?.lastOrNull()?.text,
+                thumbnail = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
+            ),
+            songs = if (withSongs) getAlbumSongs(playlistId).getOrThrow() else emptyList(),
+            otherVersions = response.contents.twoColumnBrowseResultsRenderer.secondaryContents?.sectionListRenderer?.contents?.getOrNull(
+                1
+            )?.musicCarouselShelfRenderer?.contents
+//                ?.mapNotNull(MusicCarouselShelfRenderer.Content::musicTwoRowItemRenderer)
+//                ?.mapNotNull(Innertube.AlbumItem::from)
+                ?.mapNotNull { it.musicTwoRowItemRenderer }
+                ?.map(NewReleaseAlbumPage::fromMusicTwoRowItemRenderer)
+                .orEmpty(),
+            url = response.microformat.microformatDataRenderer.urlCanonical,
+            //description = response.header?.musicDetailHeaderRenderer?.description?.text,
+            description = response.contents.twoColumnBrowseResultsRenderer.tabs
+                .firstOrNull()
+                ?.tabRenderer
+                ?.content
+                ?.sectionListRenderer
+                ?.contents
+                ?.firstOrNull()
+                ?.musicResponsiveHeaderRenderer
+                ?.description
+                ?.musicDescriptionShelfRenderer
+                ?.description?.text,
+        )
+    }
+
+    suspend fun getAlbumSongs(playlistId: String): Result<List<Innertube.SongItem>> = runCatching {
+        val response = Innertube.browse(browseId = "VL$playlistId").body<BrowseResponse>()
+
+        val contents =
+            response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+                ?.musicPlaylistShelfRenderer?.contents ?:
+            response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
+                ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents
+
+        val songs = contents?.mapNotNull {
+            it.musicResponsiveListItemRenderer?.let { it1 -> AlbumPage.getSong(it1) }
+        }
+        songs!!
     }
 
 }

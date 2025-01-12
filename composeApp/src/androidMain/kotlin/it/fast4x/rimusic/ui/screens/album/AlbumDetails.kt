@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -66,6 +68,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.requests.AlbumPage
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.Database.Companion
@@ -143,6 +146,7 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.asAlbum
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
@@ -157,12 +161,13 @@ import timber.log.Timber
 fun AlbumDetails(
     navController: NavController,
     browseId: String,
-    albumPage: Innertube.PlaylistOrAlbumPage?,
+    albumPage: AlbumPage?,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
     thumbnailContent: @Composable () -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
 
@@ -199,18 +204,17 @@ fun AlbumDetails(
                   Database.upsert(
                     Album(
                         id = browseId,
-                        title = if (album?.title?.startsWith(MODIFIED_PREFIX) == true) album?.title else albumPage?.title,
-                        thumbnailUrl = if (album?.thumbnailUrl?.startsWith(MODIFIED_PREFIX) == true) album?.thumbnailUrl else albumPage?.thumbnail?.url,
-                        year = albumPage?.year,
-                        authorsText = if (album?.authorsText?.startsWith(MODIFIED_PREFIX) == true) album?.authorsText else albumPage?.authors
+                        title = if (album?.title?.startsWith(MODIFIED_PREFIX) == true) album?.title else albumPage?.album?.title,
+                        thumbnailUrl = if (album?.thumbnailUrl?.startsWith(MODIFIED_PREFIX) == true) album?.thumbnailUrl else albumPage?.album?.thumbnail?.url,
+                        year = albumPage?.album?.year,
+                        authorsText = if (album?.authorsText?.startsWith(MODIFIED_PREFIX) == true) album?.authorsText else albumPage?.album?.authors
                             ?.joinToString("") { it.name ?: "" },
                         shareUrl = albumPage?.url,
                         timestamp = System.currentTimeMillis(),
                         bookmarkedAt = album?.bookmarkedAt
                     ),
                     albumPage
-                        ?.songsPage
-                        ?.items?.distinct()
+                        ?.songs?.distinct()
                         ?.map(Innertube.SongItem::asMediaItem)
                         ?.onEach(Database::insert)
                         ?.mapIndexed { position, mediaItem ->
@@ -641,7 +645,7 @@ fun AlbumDetails(
 
                 }
 
-                if (albumPage != null)
+                if (album?.year != null && songs.isNotEmpty())
                     item(
                         key = "infoAlbum"
                     ) {
@@ -653,7 +657,7 @@ fun AlbumDetails(
                                 .fillMaxWidth()
                         ) {
                             BasicText(
-                                text = "${albumPage?.year} - " + songs.size.toString() + " "
+                                text = "${album?.year} - " + songs.size.toString() + " "
                                         + stringResource(R.string.songs)
                                         + " - " + formatAsTime(totalPlayTimes),
                                 style = typography().xs.medium,
@@ -1170,12 +1174,12 @@ fun AlbumDetails(
                             ({
                                 Result.success(
                                     Innertube.ItemsPage(
-                                        items = albumPage?.otherVersions,
+                                        items = albumPage.otherVersions,
                                         continuation = null
                                     )
                                 )
                             })
-                        },
+                        } ?: { Result.success(Innertube.ItemsPage(items = emptyList(), continuation = null)) },
                         itemContent = { album ->
                             AlbumItem(
                                 alternative = true,
@@ -1194,6 +1198,8 @@ fun AlbumDetails(
                             AlbumItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)
                         }
                     )
+
+                            /**********/
 
                     /**********/
                 }
