@@ -452,11 +452,11 @@ fun AlbumDetails(
                 showConfirmDownloadAllDialog = false
                 downloadState = Download.STATE_DOWNLOADING
                 if (listMediaItems.isEmpty()) {
-                    if (songs.isNotEmpty() == true)
-                        songs.forEach {
+                    if (songs.filter { it.likedAt != -1L }.isNotEmpty()){
+                        songs.filter { it.likedAt != -1L }.forEach {
                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.deleteFormat( it.asMediaItem.mediaId )
+                                Database.deleteFormat(it.asMediaItem.mediaId)
                             }
                             manageDownload(
                                 context = context,
@@ -464,6 +464,7 @@ fun AlbumDetails(
                                 downloadState = false
                             )
                         }
+                    }
                 } else {
                     runCatching {
                         listMediaItems.forEach {
@@ -786,7 +787,7 @@ fun AlbumDetails(
                                         if (songs.isNotEmpty()) {
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayFromBeginning(
-                                                songs
+                                                songs.filter { it.likedAt != -1L }
                                                     .shuffled()
                                                     .map(Song::asMediaItem)
                                             )
@@ -918,7 +919,7 @@ fun AlbumDetails(
                                             onPlayNext = {
                                                 if (listMediaItems.isEmpty()) {
                                                     binder?.player?.addNext(
-                                                        songs.map(Song::asMediaItem),
+                                                        songs.filter { it.likedAt != -1L }.map(Song::asMediaItem),
                                                         context
                                                     )
                                                 } else {
@@ -930,7 +931,7 @@ fun AlbumDetails(
                                             onEnqueue = {
                                                 if (listMediaItems.isEmpty()) {
                                                     binder?.player?.enqueue(
-                                                        songs.map(Song::asMediaItem),
+                                                        songs.filter { it.likedAt != -1L }.map(Song::asMediaItem),
                                                         context
                                                     )
                                                 } else {
@@ -1111,11 +1112,13 @@ fun AlbumDetails(
                                     },
                                     onClick = {
                                         if (!selectItems) {
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayAtIndex(
-                                                songs.map(Song::asMediaItem),
-                                                index
-                                            )
+                                            if (song.likedAt != -1L) {
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlayAtIndex(
+                                                    songs.filter { it.likedAt != -1L }.map(Song::asMediaItem),
+                                                    songs.filter { it.likedAt != -1L }.map(Song::asMediaItem).indexOf(song.asMediaItem)
+                                                )
+                                            }
                                         } else checkedState.value = !checkedState.value
                                     }
                                 ),
