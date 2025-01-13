@@ -198,7 +198,7 @@ fun ArtistOverviewItems(
 
     var artistItemsPage by persist<ArtistItemsPage?>("artist/${browseId}/artistPage")
 
-    val thumbnailSizeDp = Dimensions.thumbnails.album + 24.dp
+    val thumbnailSizeDp = Dimensions.thumbnails.album //+ 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
     LaunchedEffect(Unit) {
@@ -227,7 +227,7 @@ fun ArtistOverviewItems(
             )
     ) {
 
-        //if (artistItemsPage?.items?.firstOrNull() is Innertube.SongItem) {
+        if (artistItemsPage?.items?.firstOrNull() is Innertube.SongItem) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = WindowInsets.systemBars.asPaddingValues()
@@ -339,13 +339,195 @@ fun ArtistOverviewItems(
                                 )
                             }
                         }
+                        else -> {}
+//                        is Innertube.AlbumItem -> {
+//                            AlbumItem(
+//                                album = item,
+//                                thumbnailSizePx = thumbnailSizePx,
+//                                thumbnailSizeDp = thumbnailSizeDp,
+//                                alternative = false,
+//                                yearCentered = false,
+//                                showAuthors = true,
+//                                modifier = Modifier.clickable(onClick = {
+//                                    navController.navigate(route = "${NavRoutes.album.name}/${item.key}")
+//                                }),
+//                                disableScrollingText = disableScrollingText
+//                            )
+//                        }
+//                        is Innertube.PlaylistItem -> {
+//                            PlaylistItem(
+//                                playlist = item,
+//                                alternative = false,
+//                                thumbnailSizePx = playlistThumbnailSizePx,
+//                                thumbnailSizeDp = playlistThumbnailSizeDp,
+//                                disableScrollingText = disableScrollingText,
+//                                modifier = Modifier.clickable(onClick = {
+//                                    navController.navigate("${NavRoutes.playlist.name}/${item.key}")
+//                                })
+//                            )
+//                        }
+//                        is Innertube.VideoItem -> {
+//                            VideoItem(
+//                                video = item,
+//                                thumbnailHeightDp = playlistThumbnailSizeDp,
+//                                thumbnailWidthDp = playlistThumbnailSizeDp,
+//                                disableScrollingText = disableScrollingText,
+//                                modifier = Modifier.clickable(onClick = {
+//                                    binder?.stopRadio()
+//                                    if (isVideoEnabled())
+//                                        binder?.player?.playVideo(item.asMediaItem)
+//                                    else
+//                                        binder?.player?.forcePlay(item.asMediaItem)
+//                                })
+//                            )
+//                        }
+//                        is Innertube.ArtistItem -> {
+//                            ArtistItem(
+//                                artist = item,
+//                                thumbnailSizePx = artistThumbnailSizePx,
+//                                thumbnailSizeDp = artistThumbnailSizeDp,
+//                                disableScrollingText = disableScrollingText,
+//                                modifier = Modifier.clickable(onClick = {
+//                                    navController.navigate("${NavRoutes.artist.name}/${item.key}")
+//                                })
+//                            )
+//                        }
+
+                    }
+
+
+
+                }
+
+            }
+        } else {
+            LazyVerticalGrid(
+                state = rememberLazyGridState(),
+                columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
+                modifier = Modifier
+                    .background(colorPalette().background0)
+                    .fillMaxSize(),
+                contentPadding = WindowInsets.systemBars.asPaddingValues()
+            ) {
+
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Column{
+                        Title(
+                            title = artistName ?: "",
+                            modifier = sectionTextModifier,
+                            icon = R.drawable.chevron_down,
+                            onClick = onDismiss
+                        )
+                        TitleSection(
+                            title = sectionName ?: "",
+                            modifier = Modifier
+                                .padding(bottom = 16.dp)
+                                .padding(horizontal = 16.dp)
+                        )
+                    }
+
+                }
+                items(
+                    items = artistItemsPage?.items!!) { item ->
+                    when (item) {
+//                        is Innertube.SongItem -> {
+////                            if (parentalControlEnabled && item.explicit) return@items
+////
+////                            downloadState = getDownloadState(item.asMediaItem.mediaId)
+////                            val isDownloaded = isDownloadedSong(item.asMediaItem.mediaId)
+////
+////                            SwipeablePlaylistItem(
+////                                mediaItem = item.asMediaItem,
+////                                onPlayNext = {
+////                                    binder?.player?.addNext(item.asMediaItem)
+////                                },
+////                                onDownload = {
+////                                    binder?.cache?.removeResource(item.asMediaItem.mediaId)
+////                                    CoroutineScope(Dispatchers.IO).launch {
+////                                        Database.resetContentLength( item.asMediaItem.mediaId )
+////                                    }
+////
+////                                    manageDownload(
+////                                        context = context,
+////                                        mediaItem = item.asMediaItem,
+////                                        downloadState = isDownloaded
+////                                    )
+////                                },
+////                                onEnqueue = {
+////                                    binder?.player?.enqueue(item.asMediaItem)
+////                                }
+////                            ) {
+////                                listMediaItems.add(item.asMediaItem)
+////                                var forceRecompose by remember { mutableStateOf(false) }
+////                                SongItem(
+////                                    song = item,
+////                                    onDownloadClick = {
+////                                        binder?.cache?.removeResource(item.asMediaItem.mediaId)
+////                                        CoroutineScope(Dispatchers.IO).launch {
+////                                            Database.deleteFormat( item.asMediaItem.mediaId )
+////                                        }
+////
+////                                        manageDownload(
+////                                            context = context,
+////                                            mediaItem = item.asMediaItem,
+////                                            downloadState = isDownloaded
+////                                        )
+////                                    },
+////                                    thumbnailContent = {
+////                                        NowPlayingSongIndicator(item.asMediaItem.mediaId, binder?.player)
+////                                    },
+////                                    downloadState = downloadState,
+////                                    thumbnailSizeDp = songThumbnailSizeDp,
+////                                    thumbnailSizePx = songThumbnailSizePx,
+////                                    modifier = Modifier
+////                                        .combinedClickable(
+////                                            onLongClick = {
+////                                                menuState.display {
+////                                                    NonQueuedMediaItemMenu(
+////                                                        navController = navController,
+////                                                        onDismiss = {
+////                                                            menuState.hide()
+////                                                            forceRecompose = true
+////                                                        },
+////                                                        mediaItem = item.asMediaItem,
+////                                                        disableScrollingText = disableScrollingText
+////                                                    )
+////                                                };
+////                                                hapticFeedback.performHapticFeedback(
+////                                                    HapticFeedbackType.LongPress
+////                                                )
+////                                            },
+////                                            onClick = {
+////                                                CoroutineScope(Dispatchers.IO).launch {
+////                                                    withContext(Dispatchers.Main) {
+////                                                        binder?.stopRadio()
+////                                                        binder?.player?.forcePlay(item.asMediaItem)
+////                                                        binder?.player?.addMediaItems(
+////                                                            artistItemsPage!!.items
+////                                                                .map{it as Innertube.SongItem}
+////                                                                .map { it.asMediaItem }
+////                                                                .filterNot { it.mediaId == item.key }
+////                                                            //.toMutableList()
+////
+////                                                        )
+////                                                    }
+////                                                }
+////
+////                                            }
+////                                        ),
+////                                    disableScrollingText = disableScrollingText,
+////                                    isNowPlaying = binder?.player?.isNowPlaying(item.key) ?: false,
+////                                    forceRecompose = forceRecompose
+////                                )
+////                            }
+//                        }
                         is Innertube.AlbumItem -> {
                             AlbumItem(
                                 album = item,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
-                                alternative = false,
-                                yearCentered = false,
+                                alternative = true,
+                                yearCentered = true,
                                 showAuthors = true,
                                 modifier = Modifier.clickable(onClick = {
                                     navController.navigate(route = "${NavRoutes.album.name}/${item.key}")
@@ -356,7 +538,7 @@ fun ArtistOverviewItems(
                         is Innertube.PlaylistItem -> {
                             PlaylistItem(
                                 playlist = item,
-                                alternative = false,
+                                alternative = true,
                                 thumbnailSizePx = playlistThumbnailSizePx,
                                 thumbnailSizeDp = playlistThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
@@ -383,6 +565,7 @@ fun ArtistOverviewItems(
                         is Innertube.ArtistItem -> {
                             ArtistItem(
                                 artist = item,
+                                alternative = true,
                                 thumbnailSizePx = artistThumbnailSizePx,
                                 thumbnailSizeDp = artistThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
@@ -391,47 +574,11 @@ fun ArtistOverviewItems(
                                 })
                             )
                         }
-
+                        else -> {}
                     }
-
-
-
                 }
-
             }
-        //} else {
-//            LazyVerticalGrid(
-//                state = rememberLazyGridState(),
-//                columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
-//                modifier = Modifier
-//                    .background(colorPalette().background0)
-//                    .fillMaxSize()
-//            ) {
-//                item(span = { GridItemSpan(maxLineSpan) }) {
-//                    TitleSection(
-//                        title = artistName ?: "",
-//                        modifier = sectionTextModifier
-//                    )
-//                    TitleSection(
-//                        title = artistItemsPage?.title ?: "",
-//                        modifier = Modifier.padding(bottom = 16.dp).padding(horizontal = 16.dp)
-//                    )
-//                }
-//                items(
-//                    items = artistItemsPage?.items!!) { item ->
-//                    AlbumItem(
-//                        album = item as Innertube.AlbumItem,
-//                        thumbnailSizePx = thumbnailSizePx,
-//                        thumbnailSizeDp = thumbnailSizeDp,
-//                        alternative = true,
-//                        modifier = Modifier.clickable(onClick = {
-//                            navController.navigate(route = "${NavRoutes.album.name}/${item.key}")
-//                        }),
-//                        disableScrollingText = disableScrollingText
-//                    )
-//                }
-//            }
-        //}
+        }
 
     }
 
