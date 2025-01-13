@@ -237,7 +237,7 @@ fun AlbumScreen(
                     },
                     //shape = thumbnailRoundness.shape()
                     onClick = { changeShape = !changeShape },
-                    shape = if (changeShape) CircleShape else thumbnailRoundness.shape(),
+                    shape = if (changeShape) CircleShape else thumbnailRoundness.shape,
                 )
 
             val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
