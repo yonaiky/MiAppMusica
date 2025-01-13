@@ -714,14 +714,17 @@ fun AlbumDetails(
                         )
                         HeaderIconButton(
                             icon = R.drawable.downloaded,
-                            color = colorPalette()
-.text,
+                            color = if (songs.any { it.likedAt != -1L }) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
                                 .combinedClickable(
                                     onClick = {
-                                        showConfirmDownloadAllDialog = true
+                                        if (songs.any { it.likedAt != -1L }) {
+                                            showConfirmDownloadAllDialog = true
+                                        } else {
+                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                        }
                                     },
                                     onLongClick = {
                                         SmartMessage(
@@ -776,8 +779,8 @@ fun AlbumDetails(
 
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
-                            enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette()
+                            enabled = songs.any { it.likedAt != -1L },
+                            color = if (songs.any { it.likedAt != -1L }) colorPalette()
 .text else colorPalette()
 .textDisabled,
                             onClick = {},
@@ -785,13 +788,15 @@ fun AlbumDetails(
                                 .padding(horizontal = 5.dp)
                                 .combinedClickable(
                                     onClick = {
-                                        if (songs.isNotEmpty()) {
+                                        if (songs.any { it.likedAt != -1L }) {
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayFromBeginning(
                                                 songs.filter { it.likedAt != -1L }
                                                     .shuffled()
                                                     .map(Song::asMediaItem)
                                             )
+                                        } else {
+                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
                                         }
                                     },
                                     onLongClick = {
@@ -919,10 +924,15 @@ fun AlbumDetails(
                                             },
                                             onPlayNext = {
                                                 if (listMediaItems.isEmpty()) {
-                                                    binder?.player?.addNext(
-                                                        songs.filter { it.likedAt != -1L }.map(Song::asMediaItem),
-                                                        context
-                                                    )
+                                                    if (songs.any { it.likedAt != -1L }) {
+                                                        binder?.player?.addNext(
+                                                            songs.filter { it.likedAt != -1L }
+                                                                .map(Song::asMediaItem),
+                                                            context
+                                                        )
+                                                    } else {
+                                                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                    }
                                                 } else {
                                                     binder?.player?.addNext(listMediaItems, context)
                                                     listMediaItems.clear()
@@ -931,10 +941,14 @@ fun AlbumDetails(
                                             },
                                             onEnqueue = {
                                                 if (listMediaItems.isEmpty()) {
-                                                    binder?.player?.enqueue(
-                                                        songs.filter { it.likedAt != -1L }.map(Song::asMediaItem),
-                                                        context
-                                                    )
+                                                    if (songs.any { it.likedAt != -1L }) {
+                                                        binder?.player?.enqueue(
+                                                            songs.filter { it.likedAt != -1L }
+                                                                .map(Song::asMediaItem),context
+                                                        )
+                                                    } else {
+                                                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                    }
                                                 } else {
                                                     binder?.player?.enqueue(listMediaItems, context)
                                                     listMediaItems.clear()

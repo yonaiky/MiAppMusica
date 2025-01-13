@@ -1016,13 +1016,17 @@ fun HomeSongsModern(
                         if (builtInPlaylist == BuiltInPlaylist.Favorites) {
                             HeaderIconButton(
                                 icon = R.drawable.downloaded,
-                                enabled = songs.isNotEmpty(),
-                                color = colorPalette().text,
+                                enabled = (items.any { it.song.likedAt != -1L }),
+                                color = if (items.any { it.song.likedAt != -1L }) colorPalette().text else colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
                                         onClick = {
-                                            showConfirmDownloadAllDialog = true
+                                            if (items.any { it.song.likedAt != -1L }) {
+                                                showConfirmDownloadAllDialog = true
+                                            } else {
+                                                SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                            }
                                         },
                                         onLongClick = {
                                             SmartMessage(
@@ -1043,7 +1047,7 @@ fun HomeSongsModern(
                                     //isRecommendationEnabled = false
                                     downloadState = Download.STATE_DOWNLOADING
                                     if (listMediaItems.isEmpty()) {
-                                        if (items.filter { it.song.likedAt != -1L }.isNotEmpty()) {
+                                        if (items.any { it.song.likedAt != -1L }) {
                                             items.filter { it.song.likedAt != -1L }.forEach {
                                                 binder?.cache?.removeResource(it.song.asMediaItem.mediaId)
                                                 manageDownload(
@@ -1144,8 +1148,8 @@ fun HomeSongsModern(
 
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
-                            enabled = items.filter { it.song.likedAt != -1L }.isNotEmpty(),
-                            color = colorPalette().text,
+                            enabled = items.any { it.song.likedAt != -1L },
+                            color = if (items.any { it.song.likedAt != -1L }) colorPalette().text else colorPalette().textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 2.dp)
@@ -1153,7 +1157,7 @@ fun HomeSongsModern(
                                     onClick = {
                                         if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
                                             filteredSongs
-                                        if (items.isNotEmpty()) {
+                                        if (items.filter { it.song.likedAt != -1L }.isNotEmpty()) {
                                             val itemsLimited =
                                                 if (items.filter { it.song.likedAt != -1L }.size > maxSongsInQueue.number) items.filter { it.song.likedAt != -1L }
                                                     .shuffled()
@@ -1164,6 +1168,8 @@ fun HomeSongsModern(
                                                     .shuffled()
                                                     .map(SongEntity::asMediaItem)
                                             )
+                                        } else {
+                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
                                         }
                                     },
                                     onLongClick = {
@@ -1243,10 +1249,15 @@ fun HomeSongsModern(
                                             if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
                                                 filteredSongs
                                             if (listMediaItems.isEmpty()) {
-                                                binder?.player?.addNext(
-                                                    items.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
-                                                    context
-                                                )
+                                                if (items.any { it.song.likedAt != -1L }) {
+                                                    binder?.player?.addNext(
+                                                        items.filter { it.song.likedAt != -1L }
+                                                            .map(SongEntity::asMediaItem),
+                                                        context
+                                                    )
+                                                } else {
+                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                }
                                             } else {
                                                 binder?.player?.addNext(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -1257,10 +1268,15 @@ fun HomeSongsModern(
                                             if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
                                                 filteredSongs
                                             if (listMediaItems.isEmpty()) {
-                                                binder?.player?.enqueue(
-                                                    items.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
-                                                    context
-                                                )
+                                                if (items.any { it.song.likedAt != -1L }) {
+                                                    binder?.player?.enqueue(
+                                                        items.filter { it.song.likedAt != -1L }
+                                                            .map(SongEntity::asMediaItem),
+                                                        context
+                                                    )
+                                                } else {
+                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                }
                                             } else {
                                                 binder?.player?.enqueue(listMediaItems, context)
                                                 listMediaItems.clear()
