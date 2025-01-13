@@ -42,20 +42,35 @@ data class PlayerResponse(
     ) {
 
         val autoMaxQualityFormat: AdaptiveFormat?
-            get() = adaptiveFormats?.sortedBy { it.bitrate }?.findLast {
-                it.itag == 251 || it.itag == 141 ||
+            get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
+                ?.let { formats ->
+                    formats.findLast { it.itag == 251 || it.itag == 141 ||
                         it.itag == 250 || it.itag == 140 ||
                         it.itag == 249 || it.itag == 139 || it.itag == 171
-            }
+                    } ?: formats.maxByOrNull { it.bitrate ?: 0 }
+                }
+
 
         val highestQualityFormat: AdaptiveFormat?
-            get() = adaptiveFormats?.sortedBy { it.bitrate }?.findLast { it.itag == 251 || it.itag == 141 }
+            get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
+                ?.let { formats ->
+                    formats.findLast { it.itag == 251 || it.itag == 141 }
+                        ?: formats.maxByOrNull { it.bitrate ?: 0 }
+                }
 
         val mediumQualityFormat: AdaptiveFormat?
-            get() = adaptiveFormats?.sortedBy { it.bitrate }?.findLast { it.itag == 250 || it.itag == 140 }
+            get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
+                ?.let { formats ->
+                    formats.findLast { it.itag == 250 || it.itag == 140 }
+                        ?: formats.maxByOrNull { it.bitrate ?: 0 }
+                }
 
         val lowestQualityFormat: AdaptiveFormat?
-            get() = adaptiveFormats?.sortedBy { it.bitrate }?.findLast { it.itag == 249 || it.itag == 139 }
+            get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
+                ?.let { formats ->
+                    formats.findLast { it.itag == 249 || it.itag == 139 || it.itag == 171 }
+                        ?: formats.maxByOrNull { it.bitrate ?: 0 }
+                }
 
 
 
@@ -72,7 +87,8 @@ data class PlayerResponse(
             val loudnessDb: Double?,
             val audioSampleRate: Int?,
             val url: String?,
-            val width: Int?
+            val width: Int?,
+            val signatureCipher: String?
         ) {
             val isAudio: Boolean
                 get() = width == null
