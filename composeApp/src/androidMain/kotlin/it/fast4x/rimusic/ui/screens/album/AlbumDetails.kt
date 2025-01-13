@@ -1365,11 +1365,15 @@ fun AlbumDetails(
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,
                     onClick = {
-                        if (songs.isNotEmpty()) {
+                        if (songs.any { it.likedAt != -1L }) {
                             binder?.stopRadio()
                             binder?.player?.forcePlayFromBeginning(
-                                songs.shuffled().map(Song::asMediaItem)
+                                songs.filter { it.likedAt != -1L }
+                                    .shuffled()
+                                    .map(Song::asMediaItem)
                             )
+                        } else {
+                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
                         }
                     },
                     onClickSettings = onSettingsClick,
