@@ -590,22 +590,23 @@ fun PlaylistSongList(
 
                             HeaderIconButton(
                                 icon = R.drawable.radio,
-                                enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
-                                color = colorPalette().text,
+                                enabled = playlistPage?.songsPage?.items?.any { it.asMediaItem.mediaId !in dislikedSongs } == true,
+                                color = if (playlistPage?.songsPage?.items?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
                                     .combinedClickable(
                                         onClick = {
                                             if (binder != null) {
-                                                binder.stopRadio()
-                                                binder.playRadio(
-                                                    NavigationEndpoint.Endpoint.Watch( videoId =
-                                                        if (binder.player.currentMediaItem?.mediaId != null)
-                                                            binder.player.currentMediaItem?.mediaId
-                                                        else playlistPage?.songsPage?.items?.first()?.asMediaItem?.mediaId
-                                                    )
-                                                )
+                                                if (playlistPage?.songsPage?.items?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
+                                                    binder.stopRadio()
+                                                    binder.playRadio(NavigationEndpoint.Endpoint.Watch(
+                                                        videoId = if (binder.player.currentMediaItem?.mediaId != null)
+                                                                    binder.player.currentMediaItem?.mediaId
+                                                                  else playlistPage?.songsPage?.items?.first { it.asMediaItem.mediaId !in dislikedSongs }?.asMediaItem?.mediaId))
+                                                } else {
+                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                }
                                             }
 
                                         },
