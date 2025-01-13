@@ -538,8 +538,8 @@ fun PlaylistSongList(
 
                             HeaderIconButton(
                                 icon = R.drawable.enqueue,
-                                enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
-                                color =  if (playlistPage?.songsPage?.items?.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
+                                enabled = playlistPage?.songsPage?.items?.any { it.asMediaItem.mediaId !in dislikedSongs } == true,
+                                color =  if (playlistPage?.songsPage?.items?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
@@ -563,16 +563,16 @@ fun PlaylistSongList(
 
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
-                                enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
-                                color = if (playlistPage?.songsPage?.items?.isNotEmpty() ==true) colorPalette().text else colorPalette().textDisabled,
+                                enabled = playlistPage?.songsPage?.items?.any { it.asMediaItem.mediaId !in dislikedSongs } == true,
+                                color = if (playlistPage?.songsPage?.items?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) colorPalette().text else colorPalette().textDisabled,
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
                                     .combinedClickable(
                                         onClick = {
-                                            if (playlistPage?.songsPage?.items?.isNotEmpty() == true) {
+                                            if (playlistPage?.songsPage?.items?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
                                                 binder?.stopRadio()
-                                                playlistPage?.songsPage?.items?.shuffled()?.map(Innertube.SongItem::asMediaItem)
+                                                playlistPage?.songsPage?.items?.filter{ it.asMediaItem.mediaId !in dislikedSongs }?.shuffled()?.map(Innertube.SongItem::asMediaItem)
                                                     ?.let {
                                                         binder?.player?.forcePlayFromBeginning(
                                                             it
@@ -882,17 +882,16 @@ fun PlaylistSongList(
                                         if (song.asMediaItem.mediaId !in dislikedSongs) {
                                             searching = false
                                             filter = null
-                                            playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)
+                                            playlistPage?.songsPage?.items?.filter { it.asMediaItem.mediaId !in dislikedSongs }
+                                                ?.map(Innertube.SongItem::asMediaItem)
                                                 ?.let { mediaItems ->
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlayAtIndex(
                                                         mediaItems,
-                                                        index
+                                                        mediaItems.indexOf(song.asMediaItem)
                                                     )
                                                 }
-                                        } else {
-                                                SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
-                                               }
+                                        } else {SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)}
                                     }
                                 ),
                             disableScrollingText = disableScrollingText,
