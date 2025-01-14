@@ -71,7 +71,7 @@ enum class DurationInMinutes(
 
     `60`( 60 );
 
-    val asMillis: Long = this.asMinutes *  3_600_000L
+    val asMillis: Long = this.asMinutes *  60_000L
 
     override val text: String
         @Composable

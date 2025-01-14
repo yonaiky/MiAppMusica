@@ -3,10 +3,17 @@ package it.fast4x.rimusic
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
-import android.hardware.*
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,13 +26,47 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.RippleConfiguration
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,8 +101,25 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.song
-import it.fast4x.innertube.utils.*
-import it.fast4x.rimusic.enums.*
+import it.fast4x.innertube.utils.LocalePreferenceItem
+import it.fast4x.innertube.utils.LocalePreferences
+import it.fast4x.innertube.utils.ProxyPreferenceItem
+import it.fast4x.innertube.utils.ProxyPreferences
+import it.fast4x.innertube.utils.YoutubePreferenceItem
+import it.fast4x.innertube.utils.YoutubePreferences
+import it.fast4x.rimusic.enums.AnimatedGradient
+import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.enums.ColorPaletteName
+import it.fast4x.rimusic.enums.FontType
+import it.fast4x.rimusic.enums.HomeScreenTabs
+import it.fast4x.rimusic.enums.Languages
+import it.fast4x.rimusic.enums.LogType
+import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PipModule
+import it.fast4x.rimusic.enums.PlayerBackgroundColors
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.extensions.pip.PipEventContainer
 import it.fast4x.rimusic.extensions.pip.PipModuleContainer
 import it.fast4x.rimusic.extensions.pip.PipModuleCover
@@ -76,11 +134,103 @@ import it.fast4x.rimusic.ui.screens.player.MiniPlayer
 import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.components.YoutubePlayer
 import it.fast4x.rimusic.ui.screens.player.rememberPlayerSheetState
-import it.fast4x.rimusic.ui.styling.*
-import it.fast4x.rimusic.utils.*
-import kotlinx.coroutines.*
+import it.fast4x.rimusic.ui.styling.Appearance
+import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.ui.styling.applyPitchBlack
+import it.fast4x.rimusic.ui.styling.colorPaletteOf
+import it.fast4x.rimusic.ui.styling.customColorPalette
+import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
+import it.fast4x.rimusic.ui.styling.typographyOf
+import it.fast4x.rimusic.utils.InitDownloader
+import it.fast4x.rimusic.utils.LocalMonetCompat
+import it.fast4x.rimusic.utils.OkHttpRequest
+import it.fast4x.rimusic.utils.UiTypeKey
+import it.fast4x.rimusic.utils.animatedGradientKey
+import it.fast4x.rimusic.utils.applyFontPaddingKey
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.backgroundProgressKey
+import it.fast4x.rimusic.utils.closeWithBackButtonKey
+import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.colorPaletteNameKey
+import it.fast4x.rimusic.utils.customColorKey
+import it.fast4x.rimusic.utils.customThemeDark_Background0Key
+import it.fast4x.rimusic.utils.customThemeDark_Background1Key
+import it.fast4x.rimusic.utils.customThemeDark_Background2Key
+import it.fast4x.rimusic.utils.customThemeDark_Background3Key
+import it.fast4x.rimusic.utils.customThemeDark_Background4Key
+import it.fast4x.rimusic.utils.customThemeDark_TextKey
+import it.fast4x.rimusic.utils.customThemeDark_accentKey
+import it.fast4x.rimusic.utils.customThemeDark_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeDark_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeDark_textSecondaryKey
+import it.fast4x.rimusic.utils.customThemeLight_Background0Key
+import it.fast4x.rimusic.utils.customThemeLight_Background1Key
+import it.fast4x.rimusic.utils.customThemeLight_Background2Key
+import it.fast4x.rimusic.utils.customThemeLight_Background3Key
+import it.fast4x.rimusic.utils.customThemeLight_Background4Key
+import it.fast4x.rimusic.utils.customThemeLight_TextKey
+import it.fast4x.rimusic.utils.customThemeLight_accentKey
+import it.fast4x.rimusic.utils.customThemeLight_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeLight_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
+import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
+import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
+import it.fast4x.rimusic.utils.effectRotationKey
+import it.fast4x.rimusic.utils.enableYouTubeLoginKey
+import it.fast4x.rimusic.utils.encryptedPreferences
+import it.fast4x.rimusic.utils.fontTypeKey
+import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.intent
+import it.fast4x.rimusic.utils.invokeOnReady
+import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isAtLeastAndroid8
+import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
+import it.fast4x.rimusic.utils.isProxyEnabledKey
+import it.fast4x.rimusic.utils.isValidIP
+import it.fast4x.rimusic.utils.isVideo
+import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
+import it.fast4x.rimusic.utils.languageAppKey
+import it.fast4x.rimusic.utils.loadAppLog
+import it.fast4x.rimusic.utils.loadedDataKey
+import it.fast4x.rimusic.utils.logDebugEnabledKey
+import it.fast4x.rimusic.utils.miniPlayerTypeKey
+import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.navigationBarTypeKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.pipModuleKey
+import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playerBackgroundColorsKey
+import it.fast4x.rimusic.utils.playerThumbnailSizeKey
+import it.fast4x.rimusic.utils.playerVisualizerTypeKey
+import it.fast4x.rimusic.utils.preferences
+import it.fast4x.rimusic.utils.proxyHostnameKey
+import it.fast4x.rimusic.utils.proxyModeKey
+import it.fast4x.rimusic.utils.proxyPortKey
+import it.fast4x.rimusic.utils.rememberEncryptedPreference
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resize
+import it.fast4x.rimusic.utils.restartActivityKey
+import it.fast4x.rimusic.utils.setDefaultPalette
+import it.fast4x.rimusic.utils.shakeEventEnabledKey
+import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
+import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.showTotalTimeQueueKey
+import it.fast4x.rimusic.utils.textCopyToClipboard
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.transitionEffectKey
+import it.fast4x.rimusic.utils.useSystemFontKey
+import it.fast4x.rimusic.utils.ytCookieKey
+import it.fast4x.rimusic.utils.ytVisitorDataKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.net.Proxy
@@ -160,12 +310,6 @@ class MainActivity :
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-//        var splashScreenStays = true
-//        val delayTime = 800L
-//
-//        installSplashScreen().setKeepOnScreenCondition { splashScreenStays }
-//        Handler(Looper.getMainLooper()).postDelayed({ splashScreenStays = false }, delayTime)
-
         MonetCompat.setup(this)
         _monet = MonetCompat.getInstance()
         monet.setDefaultPalette()
@@ -192,15 +336,6 @@ class MainActivity :
 
         checkIfAppIsRunningInBackground()
 
-        // Fetch Piped & Invidious instances
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            try {
-//                Piped.fetchInstances()
-//                Invidious.fetchInstances()
-//            } catch (e: Exception) {
-//                Timber.e(e, "MainActivity Error fetching Piped & Invidious instances")
-//            }
-//        }
     }
 
     private fun checkIfAppIsRunningInBackground() {
@@ -353,55 +488,32 @@ class MainActivity :
                     //gl = "US" // US IMPORTANT
                 )
                 //TODO Manage login
-//            if (preferences.getBoolean(enableYouTubeLoginKey, false)) {
-//                    var visitorData by rememberEncryptedPreference(
-//                        key = ytVisitorDataKey,
-//                        defaultValue = Innertube.DEFAULT_VISITOR_DATA
-//                    )
-//
-//                    if (visitorData.isEmpty()) runBlocking {
-//                        Innertube.visitorData().getOrNull()?.also {
-//                            visitorData = it
-//                        }
-//                    }
-//
-//                    YoutubePreferences.preference =
-//                        YoutubePreferenceItem(
-//                            cookie = encryptedPreferences.getString(ytCookieKey, ""),
-//                            visitordata = visitorData
-//                                .takeIf { it != "null" }
-//                                ?: Innertube.DEFAULT_VISITOR_DATA
-//
-//                        )
-//            }
+            if (preferences.getBoolean(enableYouTubeLoginKey, false)) {
+                    var visitorData by rememberEncryptedPreference(
+                        key = ytVisitorDataKey,
+                        defaultValue = Innertube.DEFAULT_VISITOR_DATA
+                    )
 
+                    if (visitorData.isEmpty()) runBlocking {
+                        Innertube.visitorData().getOrNull()?.also {
+                            visitorData = it
+                        }
+                    }
 
-//            if (preferences.getBoolean(enableYouTubeLoginKey, false)
-//                && encryptedPreferences.getString(ytCookieKey, "") != ""
-//            ) {
-//
-//                var visitorData by rememberEncryptedPreference(
-//                    key = ytVisitorDataKey,
-//                    defaultValue = Innertube.DEFAULT_VISITOR_DATA
-//                )
-//
-//                if (visitorData.isEmpty()) runBlocking {
-//                    Innertube.visitorData().getOrNull()?.also {
-//                        visitorData = it
-//                    }
-//                }
-//
-//                YoutubePreferences.preference =
-//                    YoutubePreferenceItem(
-//                        cookie = encryptedPreferences.getString(ytCookieKey, ""),
-//                        visitordata = visitorData
-//                    )
-//            }
+                    YoutubePreferences.preference =
+                        YoutubePreferenceItem(
+                            cookie = encryptedPreferences.getString(ytCookieKey, ""),
+                            visitordata = visitorData
+                                .takeIf { it != "null" }
+                                ?: Innertube.DEFAULT_VISITOR_DATA
+
+                        )
+            }
 
             preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 
             var appearance by rememberSaveable(
-                isSystemInDarkTheme,
+                !lightTheme,
                 stateSaver = Appearance.Companion
             ) {
                 with(preferences) {
@@ -414,7 +526,7 @@ class MainActivity :
                     val applyFontPadding = getBoolean(applyFontPaddingKey, false)
 
                     var colorPalette =
-                        colorPaletteOf(colorPaletteName, colorPaletteMode, isSystemInDarkTheme)
+                        colorPaletteOf(colorPaletteName, colorPaletteMode, !lightTheme)
 
                     val fontType = getEnum(fontTypeKey, FontType.Rubik)
 
@@ -511,7 +623,7 @@ class MainActivity :
             }
 
 
-            DisposableEffect(binder, isSystemInDarkTheme) {
+            DisposableEffect(binder, !lightTheme) {
                 /*
             var bitmapListenerJob: Job? = null
 
@@ -632,7 +744,7 @@ class MainActivity :
                                 var colorPalette = colorPaletteOf(
                                     colorPaletteName,
                                     colorPaletteMode,
-                                    isSystemInDarkTheme
+                                    !lightTheme
                                 )
 
                                 if (colorPaletteName == ColorPaletteName.Dynamic) {
@@ -643,8 +755,7 @@ class MainActivity :
                                         if (it.isNotEmpty())
                                             setDynamicPalette(it)
                                         else {
-//                                                val isPicthBlack =
-//                                                    colorPaletteMode == ColorPaletteMode.PitchBlack
+
                                             setSystemBarAppearance(colorPalette.isDark)
                                             appearance = appearance.copy(
                                                 colorPalette = if (!isPicthBlack) colorPalette else colorPalette.copy(
@@ -689,8 +800,7 @@ class MainActivity :
                                     }
 
                                     setSystemBarAppearance(colorPalette.isDark)
-//                                        val isPicthBlack =
-//                                            colorPaletteMode == ColorPaletteMode.PitchBlack
+
                                     appearance = appearance.copy(
                                         colorPalette = if (!isPicthBlack) colorPalette else colorPalette.copy(
                                             background0 = Color.Black,
@@ -792,8 +902,6 @@ class MainActivity :
             }
 
 
-//                val colorPaletteMode =
-//                    preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
             if (colorPaletteMode == ColorPaletteMode.PitchBlack)
                 appearance = appearance.copy(
                     colorPalette = appearance.colorPalette.applyPitchBlack,
@@ -858,19 +966,6 @@ class MainActivity :
                     intent.action = null
                 }
 
-
-                /*
-            isInPip(
-                onChange = {
-                    println("MainActivity isInPip change $it")
-                    //if (!it || vm.binder?.player?.shouldBePlaying != true) return@isInPip
-                    //showPlayer = true
-                    pipState.value = it
-                }
-            )
-            */
-
-
                 CrossfadeContainer(state = pipState.value) { isCurrentInPip ->
                     println("MainActivity pipState ${pipState.value} CrossfadeContainer isCurrentInPip $isCurrentInPip ")
                     val pipModule by rememberPreference(pipModuleKey, PipModule.Cover)
@@ -922,7 +1017,6 @@ class MainActivity :
                             )
 
                             checkIfAppIsRunningInBackground()
-                            // if (appRunningInBackground) showPlayer = false
 
 
                             val thumbnailRoundness by rememberPreference(
@@ -1064,43 +1158,6 @@ class MainActivity :
                             }
 
                             setDynamicPalette(mediaItem?.mediaMetadata?.artworkUri.toString())
-                            /**** NEW CODE ******/
-                            /*
-                        if (mediaItem != null) {
-                            coroutineScope.launch(Dispatchers.Main) {
-                                val result = imageLoader.execute(
-                                    ImageRequest.Builder(this@MainActivity)
-                                        .data(mediaItem.mediaMetadata.artworkUri)
-                                        .allowHardware(false)
-                                        .build()
-                                )
-                                val bitmap = (result.drawable as? BitmapDrawable)?.bitmap
-                                if (bitmap != null) {
-                                    val palette = Palette
-                                        .from(bitmap)
-                                        .maximumColorCount(8)
-                                        //.addFilter(if (isDark || isPitchBlack) ({ _, hsl -> hsl[0] !in 36f..100f }) else null)
-                                        .generate()
-                                    println("Mainactivity onmediaItemTRansition palette dominantSwatch: ${palette.dominantSwatch}")
-                                    val isDark =
-                                        colorPaletteMode == ColorPaletteMode.Dark || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
-                                    val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
-                                    dynamicColorPaletteOf(bitmap, isDark, isPicthBlack)?.let {
-                                        withContext(Dispatchers.Main) {
-                                            setSystemBarAppearance(it.isDark)
-                                        }
-                                        appearance = appearance.copy(
-                                            colorPalette = it,
-                                            typography = appearance.typography.copy(it.text)
-                                        )
-                                        println("Mainactivity onmediaItemTRansition appearance inside: ${appearance.colorPalette}")
-                                    }
-                                }
-                            }
-                            println("Mainactivity onmediaItemTRansition appearance outside: ${appearance.colorPalette}")
-                        }
-                         */
-                            /*********/
                         }
 
 
@@ -1241,7 +1298,6 @@ class MainActivity :
         super.onPause()
         runCatching {
             sensorListener.let { sensorManager?.unregisterListener(it) }
-            //sensorManager!!.unregisterListener(sensorListener)
         }.onFailure {
             Timber.e("MainActivity.onPause unregisterListener sensorListener ${it.stackTraceToString()}")
         }
@@ -1254,9 +1310,6 @@ class MainActivity :
         intentUriData = intent.data ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.toUri()
 
     }
-
-    //@Deprecated("Deprecated in Java", ReplaceWith("persistMap"))
-    //override fun onRetainCustomNonConfigurationInstance() = persistMap
 
     override fun onStop() {
         runCatching {

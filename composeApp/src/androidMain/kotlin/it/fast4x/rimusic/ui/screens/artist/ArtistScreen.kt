@@ -84,7 +84,7 @@ fun ArtistScreen(
 
     var artist by persist<Artist?>("artist/$browseId/artist")
 
-    var artistPage by persist<Innertube.ArtistPage?>("artist/$browseId/artistPage")
+    var artistPage by persist<Innertube.ArtistInfoPage?>("artist/$browseId/artistPage")
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)

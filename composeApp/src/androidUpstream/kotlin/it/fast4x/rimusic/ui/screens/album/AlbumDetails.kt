@@ -3,8 +3,28 @@ package it.fast4x.rimusic.ui.screens.album
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,10 +37,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -41,25 +63,87 @@ import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
-import it.fast4x.rimusic.*
+import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.requests.albumPage
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion
+import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.*
-import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.Info
+import it.fast4x.rimusic.models.Playlist
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongPlaylistMap
+import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
-import it.fast4x.rimusic.ui.components.themed.*
-import it.fast4x.rimusic.ui.items.*
+import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
+import it.fast4x.rimusic.ui.components.themed.AutoResizeText
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
+import it.fast4x.rimusic.ui.components.themed.FontSizeRange
+import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
+import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.ItemsList
+import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
+import it.fast4x.rimusic.ui.components.themed.SelectorDialog
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.items.AlbumItem
+import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
+import it.fast4x.rimusic.ui.items.SongItem
+import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.*
-import kotlinx.coroutines.*
+import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.align
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.durationTextToMillis
+import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.fadingEdge
+import it.fast4x.rimusic.utils.forcePlayAtIndex
+import it.fast4x.rimusic.utils.forcePlayFromBeginning
+import it.fast4x.rimusic.utils.formatAsTime
+import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getHttpClient
+import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNowPlaying
+import it.fast4x.rimusic.utils.languageDestination
+import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resize
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showFloatingIconKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.models.SongAlbumMap
+import it.fast4x.rimusic.service.MyDownloadHelper
+import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.mediaItemToggleLike
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,6 +170,78 @@ fun AlbumDetails(
     //val albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    var startSync by remember{ mutableStateOf(false) }
+    var songPlaylist by remember {
+        mutableIntStateOf(0)
+    }
+    var playlistsList by remember { mutableStateOf<List<Database.PlayListIdPosition>?>(null) }
+    var songExists by remember { mutableStateOf(false) }
+    var likedAt by remember {
+        mutableStateOf<Long?>(null)
+    }
+    var playTime by remember {
+        mutableStateOf<Long?>(null)
+    }
+    LaunchedEffect(startSync) {
+        withContext(Dispatchers.IO) {
+            songs.forEach {song ->
+                Database.asyncTransaction {
+                    songPlaylist = Database.songUsedInPlaylists(song.id)
+                    if (songPlaylist > 0) songExists = true
+                    playlistsList = Database.playlistsUsedForSong(song.id)
+                    likedAt = song.likedAt
+                    playTime = song.totalPlayTimeMs
+                    binder?.cache?.removeResource(song.id)
+                    binder?.downloadCache?.removeResource(song.id)
+                    Database.delete(song)
+
+                  Database.upsert(
+                    Album(
+                        id = browseId,
+                        title = if (album?.title?.startsWith(MODIFIED_PREFIX) == true) album?.title else albumPage?.title,
+                        thumbnailUrl = if (album?.thumbnailUrl?.startsWith(MODIFIED_PREFIX) == true) album?.thumbnailUrl else albumPage?.thumbnail?.url,
+                        year = albumPage?.year,
+                        authorsText = if (album?.authorsText?.startsWith(MODIFIED_PREFIX) == true) album?.authorsText else albumPage?.authors
+                            ?.joinToString("") { it.name ?: "" },
+                        shareUrl = albumPage?.url,
+                        timestamp = System.currentTimeMillis(),
+                        bookmarkedAt = album?.bookmarkedAt
+                    ),
+                    albumPage
+                        ?.songsPage
+                        ?.items?.distinct()
+                        ?.map(Innertube.SongItem::asMediaItem)
+                        ?.onEach(Database::insert)
+                        ?.mapIndexed { position, mediaItem ->
+                            SongAlbumMap(
+                                songId = mediaItem.mediaId,
+                                albumId = browseId,
+                                position = position
+                            )
+                        } ?: emptyList()
+                  )
+
+                    if (songExists){
+                        insert(song)
+                        playlistsList?.forEach{item ->
+                            insert(
+                                SongPlaylistMap(
+                                    songId = song.id,
+                                    playlistId = item.playlistId,
+                                    position = item.position
+                                )
+                            )
+                        }
+                    }
+                    if (likedAt != null){
+                        Database.like(song.id,likedAt)
+                    }
+                    Database.incrementTotalPlayTimeMs(song.id,playTime ?: 0)
+                    startSync = false
+                }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         Database.albumSongs(browseId).collect {
@@ -702,6 +858,26 @@ fun AlbumDetails(
 
                         )
 
+                        HeaderIconButton(
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                                .combinedClickable(
+                                    onClick = {startSync = true},
+                                    onLongClick = {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.update_album),
+                                            context = context
+                                        )
+                                    }
+                                ),
+                            icon = R.drawable.update,
+                            enabled = songs.isNotEmpty(),
+                            color = if (songs.isNotEmpty()) colorPalette()
+                                .text else colorPalette()
+                                .textDisabled,
+                            onClick = {}
+                        )
+
 
                         HeaderIconButton(
                             modifier = Modifier
@@ -782,7 +958,11 @@ fun AlbumDetails(
                                                                 )
                                                             )
                                                         }
-                                                        //Log.d("mediaItemPos", "added position ${position + index}")
+
+                                                        if(isYouTubeSyncEnabled())
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                playlistPreview.playlist.browseId?.let { YtMusic.addToPlaylist(it, song.id) }
+                                                            }
                                                     }
                                                 } else {
                                                     listMediaItems.forEachIndexed { index, song ->
@@ -797,11 +977,23 @@ fun AlbumDetails(
                                                                 )
                                                             )
                                                         }
-                                                        //Log.d("mediaItemPos", "add position $position")
+                                                        if(isYouTubeSyncEnabled())
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                playlistPreview.playlist.browseId?.let { YtMusic.addToPlaylist(it, song.mediaId) }
+                                                            }
                                                     }
                                                     listMediaItems.clear()
                                                     selectItems = false
                                                 }
+                                            },
+                                            onAddToFavourites = {
+                                                songs.forEach { song ->
+
+                                                      val likedAt: Long? = song.likedAt
+                                                        if(likedAt == null) {
+                                                            mediaItemToggleLike(song.asMediaItem)
+                                                        }
+                                                  }
                                             },
                                             disableScrollingText = disableScrollingText
                                         )

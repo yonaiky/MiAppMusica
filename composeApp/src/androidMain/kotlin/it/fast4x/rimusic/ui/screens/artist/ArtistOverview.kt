@@ -65,7 +65,7 @@ import kotlin.random.Random
 fun ArtistOverview(
     navController: NavController,
     browseId: String?,
-    youtubeArtistPage: Innertube.ArtistPage?,
+    youtubeArtistPage: Innertube.ArtistInfoPage?,
     onViewAllSongsClick: () -> Unit,
     onViewAllAlbumsClick: () -> Unit,
     onViewAllSinglesClick: () -> Unit,
@@ -154,17 +154,18 @@ fun ArtistOverview(
                      */
             ) {
 
-                val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier
+                /*val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier
                     .fillMaxWidth()
-                    .aspectRatio(4f / 3)
+                    .aspectRatio(4f / 3)*/
 
                 Box(
-                    modifier = modifierArt
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
                     if (youtubeArtistPage != null) {
                         if(!isLandscape)
                             AsyncImage(
-                                model = youtubeArtistPage?.thumbnail?.url?.resize(1200, 900),
+                                model = youtubeArtistPage?.thumbnail?.url?.resize(1200, 1200),
                                 contentDescription = "loading...",
                                 modifier = Modifier
                                     .fillMaxWidth()

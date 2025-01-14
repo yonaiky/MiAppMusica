@@ -739,9 +739,10 @@ class PlayerServiceModern : MediaLibraryService(),
         }
 
          */
-
+        val isDiscoverEnabled = applicationContext.preferences.getBoolean(discoverKey, false)
         if (reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
-            player.mediaItemCount - player.currentMediaItemIndex <= 3
+            player.mediaItemCount - player.currentMediaItemIndex <= if (
+                isDiscoverEnabled) 10 else 3
         ) {
             if (radio == null) {
                 binder.setupRadio(
@@ -1568,7 +1569,9 @@ class PlayerServiceModern : MediaLibraryService(),
                 endpoint?.playlistSetVideoId,
                 endpoint?.params,
                 isDiscoverEnabled,
-                applicationContext
+                applicationContext,
+                binder,
+                coroutineScope
             ).let {
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {

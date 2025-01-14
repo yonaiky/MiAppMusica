@@ -352,6 +352,7 @@
     <string name="sort_year">年</string>
     <string name="sort_name">歌曲名稱</string>
     <string name="sort_songs_number">歌曲編號</string>
+    <string name="sort_relative_listening_time">Relative Listening Time</string>
     <string name="follow">追隨</string>
     <string name="following">已追隨</string>
     <string name="artist_subscribers">%s 追隨者</string>
@@ -717,6 +718,7 @@
     <string name="error_timeout">連線逾時</string>
     <string name="error_unknown">未知的錯誤</string>
     <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">立即檢查</string>
     <string name="info_no_update_available">沒有可用的更新</string>
     <string name="lang_galician">加利西亞語</string>
@@ -857,5 +859,11 @@
     <string name="colorpalette">Color Palette</string>
     <string name="customcolor">Custom Color</string>
     <string name="lyricsanimate">Animate Lyrics Size</string>
+    <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Long Press to change the size</string>
+    <string name="home">Home</string>
+    <string name="appearancepresets">Appearance Presets</string>
+    <string name="appearancepresetssecondary">Previews will be in low quality</string>
+    <string name="yt_history">YTM History</string>
+    <string name="albumCoverRotation">Background Rotation Animation</string>
 </resources>

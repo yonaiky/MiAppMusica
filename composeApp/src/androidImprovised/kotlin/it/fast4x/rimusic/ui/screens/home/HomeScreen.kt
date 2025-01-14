@@ -26,8 +26,16 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.toUiMood
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.utils.*
-import kotlinx.coroutines.*
+import it.fast4x.rimusic.utils.enableQuickPicksPageKey
+import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.homeScreenTabIndexKey
+import it.fast4x.rimusic.utils.indexNavigationTabKey
+import it.fast4x.rimusic.utils.preferences
+import it.fast4x.rimusic.utils.rememberPreference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
 
@@ -88,7 +96,7 @@ fun HomeScreen(
     ) { currentTabIndex ->
         saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
             when (currentTabIndex) {
-                0 -> QuickPicks(
+                0 -> HomeQuickPicks(
                     onAlbumClick = {
                         navController.navigate(route = "${NavRoutes.album.name}/$it")
                     },

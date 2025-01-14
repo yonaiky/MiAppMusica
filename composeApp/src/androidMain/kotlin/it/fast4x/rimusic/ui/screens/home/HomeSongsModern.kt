@@ -11,16 +11,35 @@ import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.*
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,9 +59,15 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.ImeAction
@@ -55,22 +80,105 @@ import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
-import it.fast4x.rimusic.*
+import it.fast4x.innertube.YtMusic
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.*
-import it.fast4x.rimusic.models.*
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.BuiltInPlaylist
+import it.fast4x.rimusic.enums.CacheType
+import it.fast4x.rimusic.enums.DurationInMinutes
+import it.fast4x.rimusic.enums.MaxSongs
+import it.fast4x.rimusic.enums.MaxTopPlaylistItems
+import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
+import it.fast4x.rimusic.enums.OnDeviceSongSortBy
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueSelection
+import it.fast4x.rimusic.enums.SongSortBy
+import it.fast4x.rimusic.enums.SortOrder
+import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.enums.TopPlaylistPeriod
+import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.models.Folder
+import it.fast4x.rimusic.models.OnDeviceSong
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.service.modern.isLocal
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
-import it.fast4x.rimusic.ui.components.themed.*
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
+import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
+import it.fast4x.rimusic.ui.components.themed.FolderItemMenu
+import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
+import it.fast4x.rimusic.ui.components.themed.HeaderInfo
+import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
+import it.fast4x.rimusic.ui.components.themed.PeriodMenu
+import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
+import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.components.themed.SortMenu
+import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
-import it.fast4x.rimusic.ui.styling.*
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.ui.styling.onOverlay
+import it.fast4x.rimusic.ui.styling.overlay
+import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import it.fast4x.rimusic.utils.OnDeviceOrganize
+import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.autoShuffleKey
+import it.fast4x.rimusic.utils.builtInPlaylistKey
+import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.defaultFolderKey
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.downloadedStateMedia
+import it.fast4x.rimusic.utils.durationTextToMillis
+import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
+import it.fast4x.rimusic.utils.forcePlayAtIndex
+import it.fast4x.rimusic.utils.forcePlayFromBeginning
+import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.hasPermission
+import it.fast4x.rimusic.utils.includeLocalSongsKey
+import it.fast4x.rimusic.utils.isCompositionLaunched
+import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.maxSongsInQueueKey
+import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
+import it.fast4x.rimusic.utils.onDeviceSongSortByKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showCachedPlaylistKey
+import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
+import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
+import it.fast4x.rimusic.utils.showFloatingIconKey
+import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
+import it.fast4x.rimusic.utils.showMyTopPlaylistKey
+import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
+import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.songSortByKey
+import it.fast4x.rimusic.utils.songSortOrderKey
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -82,6 +190,11 @@ import java.util.Date
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration
+import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isNowPlaying
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -474,6 +587,7 @@ fun HomeSongsModern(
                 when (sortBy) {
                     SongSortBy.Title, SongSortBy.AlbumName -> items = items.sortedBy { it.song.title }
                     SongSortBy.PlayTime -> items = items.sortedBy { it.song.totalPlayTimeMs }
+                    SongSortBy.RelativePlayTime -> items = items.sortedBy { it.relativePlayTime() }
                     SongSortBy.Duration -> items = items.sortedBy { it.song.durationText }
                     SongSortBy.Artist -> items = items.sortedBy { it.song.artistsText }
                     SongSortBy.DatePlayed -> {}
@@ -486,6 +600,7 @@ fun HomeSongsModern(
                 when (sortBy) {
                     SongSortBy.Title, SongSortBy.AlbumName -> items = items.sortedByDescending { it.song.title }
                     SongSortBy.PlayTime -> items = items.sortedByDescending { it.song.totalPlayTimeMs }
+                    SongSortBy.RelativePlayTime -> items = items.sortedByDescending { it.relativePlayTime() }
                     SongSortBy.Duration -> items = items.sortedByDescending { it.song.durationText }
                     SongSortBy.Artist -> items = items.sortedByDescending { it.song.artistsText }
                     SongSortBy.DatePlayed -> {}
@@ -809,6 +924,9 @@ fun HomeSongsModern(
                                                             onPlayTime = {
                                                                 sortBy = SongSortBy.PlayTime
                                                             },
+                                                            onRelativePlayTime = {
+                                                                sortBy = SongSortBy.RelativePlayTime
+                                                            },
                                                             onDateLiked = {
                                                                 sortBy = SongSortBy.DateLiked
                                                             },
@@ -886,7 +1004,7 @@ fun HomeSongsModern(
                                 ),
                             icon = R.drawable.locate,
                             enabled = songs.isNotEmpty(),
-                            color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                            color = colorPalette().text,
                             onClick = {}
                         )
                         LaunchedEffect(scrollToNowPlaying) {
@@ -899,7 +1017,7 @@ fun HomeSongsModern(
                             HeaderIconButton(
                                 icon = R.drawable.downloaded,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -954,7 +1072,7 @@ fun HomeSongsModern(
                             HeaderIconButton(
                                 icon = R.drawable.download,
                                 enabled = songs.isNotEmpty(),
-                                color = if (songs.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                                color = colorPalette().text,
                                 onClick = {},
                                 modifier = Modifier
                                     .combinedClickable(
@@ -1026,7 +1144,7 @@ fun HomeSongsModern(
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
                             enabled = items.isNotEmpty(),
-                            color = if (items.isNotEmpty()) colorPalette().text else colorPalette().textDisabled,
+                            color = colorPalette().text,
                             onClick = {},
                             modifier = Modifier
                                 .padding(horizontal = 2.dp)
@@ -1192,6 +1310,11 @@ fun HomeSongsModern(
                                                     Timber.e("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
                                                     println("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
                                                 }
+                                                if(isYouTubeSyncEnabled() && !song.song.id.startsWith(
+                                                        LOCAL_KEY_PREFIX))
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                        playlistPreview.playlist.browseId?.let { YtMusic.addToPlaylist(it, song.song.asMediaItem.mediaId) }
+                                                    }
                                             }
                                             CoroutineScope(Dispatchers.Main).launch {
                                                 SmartMessage(
@@ -1650,6 +1773,27 @@ fun HomeSongsModern(
                                 if (sortBy == SongSortBy.PlayTime) {
                                     BasicText(
                                         text = song.song.formattedTotalPlayTime,
+                                        style = typography().xxs.semiBold.center.color(colorPalette().onOverlay),
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        colorPalette().overlay
+                                                    )
+                                                ),
+                                                shape = thumbnailShape()
+                                            )
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                            .align(Alignment.BottomCenter)
+                                    )
+                                }
+                                if (sortBy == SongSortBy.RelativePlayTime){
+                                    BasicText(
+                                        text = "${song.relativePlayTime().toLong()}",
                                         style = typography().xxs.semiBold.center.color(colorPalette().onOverlay),
                                         maxLines = 2,
                                         overflow = TextOverflow.Ellipsis,

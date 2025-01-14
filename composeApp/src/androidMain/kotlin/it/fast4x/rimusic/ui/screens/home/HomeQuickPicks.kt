@@ -2,13 +2,37 @@ package it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -37,28 +61,96 @@ import androidx.navigation.NavController
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.HomePage
 import it.fast4x.innertube.requests.chartsPageComplete
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.relatedPage
-import it.fast4x.rimusic.*
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.*
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.Countries
+import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PlayEventsType
+import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.isVideoEnabled
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
-import it.fast4x.rimusic.ui.components.themed.*
-import it.fast4x.rimusic.ui.items.*
+import it.fast4x.rimusic.ui.components.ShimmerHost
+import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
+import it.fast4x.rimusic.ui.components.themed.Loader
+import it.fast4x.rimusic.ui.components.themed.Menu
+import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import it.fast4x.rimusic.ui.components.themed.Title
+import it.fast4x.rimusic.ui.components.themed.Title2Actions
+import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
+import it.fast4x.rimusic.ui.items.AlbumItem
+import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
+import it.fast4x.rimusic.ui.items.ArtistItem
+import it.fast4x.rimusic.ui.items.PlaylistItem
+import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
+import it.fast4x.rimusic.ui.items.SongItem
+import it.fast4x.rimusic.ui.items.SongItemPlaceholder
+import it.fast4x.rimusic.ui.items.VideoItem
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.*
-import kotlinx.coroutines.*
+import it.fast4x.rimusic.utils.WelcomeMessage
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.bold
+import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNowPlaying
+import it.fast4x.rimusic.utils.loadedDataKey
+import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.playEventsTypeKey
+import it.fast4x.rimusic.utils.playVideo
+import it.fast4x.rimusic.utils.quickPicsDiscoverPageKey
+import it.fast4x.rimusic.utils.quickPicsHomePageKey
+import it.fast4x.rimusic.utils.quickPicsRelatedPageKey
+import it.fast4x.rimusic.utils.quickPicsTrendingSongKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.selectedCountryCodeKey
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showChartsKey
+import it.fast4x.rimusic.utils.showFloatingIconKey
+import it.fast4x.rimusic.utils.showMonthlyPlaylistInQuickPicksKey
+import it.fast4x.rimusic.utils.showMoodsAndGenresKey
+import it.fast4x.rimusic.utils.showNewAlbumsArtistsKey
+import it.fast4x.rimusic.utils.showNewAlbumsKey
+import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
+import it.fast4x.rimusic.utils.showRelatedAlbumsKey
+import it.fast4x.rimusic.utils.showSearchTabKey
+import it.fast4x.rimusic.utils.showSimilarArtistsKey
+import it.fast4x.rimusic.utils.showTipsKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -73,7 +165,7 @@ import kotlin.time.Duration.Companion.days
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun QuickPicks(
+fun HomeQuickPicks(
     navController: NavController,
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
@@ -99,9 +191,15 @@ fun QuickPicks(
     var discoverPageInit by persist<Innertube.DiscoverPage>("home/discoveryAlbums")
     var discoverPagePreference by rememberPreference(quickPicsDiscoverPageKey, discoverPageInit)
 
+    var homePageResult by persist<Result<HomePage?>>("home/homePage")
+    var homePageInit by persist<HomePage?>("home/homePage")
+    var homePagePreference by rememberPreference(quickPicsHomePageKey, homePageInit)
+
     var chartsPageResult by persist<Result<Innertube.ChartsPage?>>("home/chartsPage")
     var chartsPageInit by persist<Innertube.ChartsPage>("home/chartsPage")
 //    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
+
+
 
     var preferitesArtists by persistList<Artist>("home/artists")
 
@@ -192,6 +290,9 @@ fun QuickPicks(
             if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres) {
                 discoverPageResult = Innertube.discoverPage()
             }
+
+            if (isYouTubeLoggedIn())
+                homePageResult = YtMusic.getHomePage()
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
@@ -344,12 +445,30 @@ fun QuickPicks(
                 // Not saved/cached to preference
                 chartsPageInit = chartsPageResult?.getOrNull()
 
+                if (homePagePreference != null) {
+                    when (loadedData) {
+                        true -> {
+                            homePageResult = Result.success(homePagePreference)
+                            homePageInit = homePageResult?.getOrNull()
+                        }
+                        else -> {
+                            homePageInit = homePageResult?.getOrNull()
+                            homePagePreference = homePageInit
+                        }
+
+                    }
+                } else {
+                    homePageInit = homePageResult?.getOrNull()
+                    homePagePreference = homePageInit
+                }
+
                 /*   Load data from url or from saved preference   */
 
 
                 if (UiType.ViMusic.isCurrent())
                     HeaderWithIcon(
-                        title = stringResource(R.string.quick_picks),
+                        title = if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
+                        else stringResource(R.string.home),
                         iconId = R.drawable.search,
                         enabled = true,
                         showIcon = !showSearchTab,
@@ -480,7 +599,7 @@ fun QuickPicks(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.deleteFormat( song.asMediaItem.mediaId )
+                                                                Database.deleteFormat(song.asMediaItem.mediaId)
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -569,7 +688,7 @@ fun QuickPicks(
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                                             CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.deleteFormat( song.asMediaItem.mediaId )
+                                                                Database.deleteFormat(song.asMediaItem.mediaId)
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -1001,6 +1120,151 @@ fun QuickPicks(
                     }
                 }
 
+
+                homePageInit?.let { page ->
+
+                    page.sections.forEach {
+                        if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
+                        println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
+                        println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
+
+                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 16.dp).padding(top = 14.dp, bottom = 4.dp))
+
+                        BasicText(
+                            text = it.title,
+                            style = typography().l.semiBold.color(colorPalette().text),
+                            modifier = Modifier.padding(horizontal = 16.dp).padding(vertical = 4.dp)
+                        )
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(it.items) { item ->
+                                when (item) {
+                                    is Innertube.SongItem -> {
+                                        println("Innertube homePage SongItem: ${item.info?.name}")
+                                        SongItem(
+                                            song = item,
+                                            thumbnailSizePx = albumThumbnailSizePx,
+                                            thumbnailSizeDp = albumThumbnailSizeDp,
+                                            onDownloadClick = {},
+                                            downloadState = Download.STATE_STOPPED,
+                                            disableScrollingText = disableScrollingText,
+                                            isNowPlaying = false,
+                                            modifier = Modifier.clickable(onClick = {
+                                                binder?.player?.forcePlay(item.asMediaItem)
+                                            })
+                                        )
+                                    }
+
+                                    is Innertube.AlbumItem -> {
+                                        println("Innertube homePage AlbumItem: ${item.info?.name}")
+                                        AlbumItem(
+                                            album = item,
+                                            alternative = true,
+                                            thumbnailSizePx = albumThumbnailSizePx,
+                                            thumbnailSizeDp = albumThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clickable(onClick = {
+                                                navController.navigate("${NavRoutes.album.name}/${item.key}")
+                                            })
+
+                                        )
+                                    }
+
+                                    is Innertube.ArtistItem -> {
+                                        println("Innertube homePage ArtistItem: ${item.info?.name}")
+                                        ArtistItem(
+                                            artist = item,
+                                            thumbnailSizePx = artistThumbnailSizePx,
+                                            thumbnailSizeDp = artistThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clickable(onClick = {
+                                                navController.navigate("${NavRoutes.artist.name}/${item.key}")
+                                            })
+                                        )
+                                    }
+
+                                    is Innertube.PlaylistItem -> {
+                                        println("Innertube homePage PlaylistItem: ${item.info?.name}")
+                                        PlaylistItem(
+                                            playlist = item,
+                                            alternative = true,
+                                            thumbnailSizePx = playlistThumbnailSizePx,
+                                            thumbnailSizeDp = playlistThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clickable(onClick = {
+                                                navController.navigate("${NavRoutes.playlist.name}/${item.key}")
+                                            })
+                                        )
+                                    }
+
+                                    is Innertube.VideoItem -> {
+                                        println("Innertube homePage VideoItem: ${item.info?.name}")
+                                        VideoItem(
+                                            video = item,
+                                            thumbnailHeightDp = playlistThumbnailSizeDp,
+                                            thumbnailWidthDp = playlistThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clickable(onClick = {
+                                                binder?.stopRadio()
+                                                if (isVideoEnabled())
+                                                    binder?.player?.playVideo(item.asMediaItem)
+                                                else
+                                                    binder?.player?.forcePlay(item.asMediaItem)
+                                            })
+                                        )
+                                    }
+
+                                    null -> {}
+                                }
+
+                            }
+                        }
+                    }
+                } ?: if (!isYouTubeLoggedIn()) BasicText(
+                    text = "Log in to your YTM account for more content",
+                    style = typography().xs.center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(vertical = 32.dp)
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate(NavRoutes.settings.name)
+                        }
+                ) else {
+                    ShimmerHost {
+                        repeat(3) {
+                            SongItemPlaceholder()
+                        }
+
+                        TextPlaceholder(modifier = sectionTextModifier)
+
+                        Row {
+                            repeat(2) {
+                                AlbumItemPlaceholder(
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true
+                                )
+                            }
+                        }
+
+                        TextPlaceholder(modifier = sectionTextModifier)
+
+                        Row {
+                            repeat(2) {
+                                PlaylistItemPlaceholder(
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true
+                                )
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+
                 Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 
 
@@ -1072,14 +1336,6 @@ fun QuickPicks(
                     onClickSettings = onSettingsClick,
                     onClickSearch = onSearchClick
                 )
-
-            /*
-            FloatingActionsContainerWithScrollToTop(
-                scrollState = scrollState,
-                iconId = R.drawable.search,
-                onClick = onSearchClick
-            )
-             */
 
         }
 

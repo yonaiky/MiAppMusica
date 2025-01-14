@@ -1,20 +1,57 @@
 package it.fast4x.rimusic.ui.components.themed
 
 //import it.fast4x.rimusic.utils.blurStrength2Key
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.*
-import androidx.compose.material.*
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -25,7 +62,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.center
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -49,16 +90,50 @@ import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.compose.persist.persist
-import it.fast4x.rimusic.*
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.shimmer
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.utils.VinylSizeKey
+import it.fast4x.rimusic.utils.blurDarkenFactorKey
+import it.fast4x.rimusic.utils.blurStrengthKey
+import it.fast4x.rimusic.utils.bold
+import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.drawCircle
+import it.fast4x.rimusic.utils.expandedplayerKey
+import it.fast4x.rimusic.utils.fadingedgeKey
+import it.fast4x.rimusic.utils.getDeviceVolume
+import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isValidIP
+import it.fast4x.rimusic.utils.lyricsSizeKey
+import it.fast4x.rimusic.utils.lyricsSizeLKey
+import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.playbackDeviceVolumeKey
+import it.fast4x.rimusic.utils.playbackDurationKey
+import it.fast4x.rimusic.utils.playbackPitchKey
+import it.fast4x.rimusic.utils.playbackSpeedKey
+import it.fast4x.rimusic.utils.playbackVolumeKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resize
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.setDeviceVolume
+import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
+import it.fast4x.rimusic.utils.thumbnailFadeExKey
+import it.fast4x.rimusic.utils.thumbnailFadeKey
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.thumbnailSpacingKey
+import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import kotlinx.coroutines.delay
 
 @Composable
@@ -1149,7 +1224,8 @@ fun BlurParamsDialog(
                 onSlide = { blurStrength = it },
                 onSlideComplete = {},
                 toDisplay = { "%.0f".format(it) },
-                range = 0f..50f
+                range = 0f..100f,
+                steps = 99
             )
 
             /*
@@ -1291,7 +1367,7 @@ fun BlurParamsDialog(
                             onSlide = { thumbnailFadeEx = it },
                             onSlideComplete = {},
                             toDisplay = { "%.0f".format(it) },
-                            steps = 10,
+                            steps = 9,
                             range = 0f..10f
                         )
 
@@ -1375,7 +1451,7 @@ fun BlurParamsDialog(
                             onSlide = { thumbnailFade = it },
                             onSlideComplete = {},
                             toDisplay = { "%.0f".format(it) },
-                            steps = 10,
+                            steps = 9,
                             range = 0f..10f
                         )
                     }
@@ -1494,6 +1570,101 @@ fun BlurParamsDialog(
             }
         }
     }
+
+
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
+fun AppearancePresetDialog(
+    onDismiss: () -> Unit,
+    onClick0: () -> Unit,
+    onClick1: () -> Unit,
+    onClick2: () -> Unit,
+    onClick3: () -> Unit,
+    onClick4: () -> Unit,
+    onClick5: () -> Unit
+) {
+    val images = listOf(R.drawable.preset0,R.drawable.preset1,R.drawable.preset2,R.drawable.preset3,R.drawable.preset4,R.drawable.preset5)
+    val pagerStateAppearance = rememberPagerState(pageCount = { images.size })
+
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .background(color = colorPalette().background1)
+        ){
+            Box(
+                modifier = Modifier
+            ){
+                HorizontalPager(
+                    state = pagerStateAppearance,
+                    pageSize = PageSize.Fill,
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) { index ->
+                    Image(
+                        painter = painterResource(images[index]),
+                        contentDescription = null,
+                        contentScale = ContentScale.FillHeight,
+                        colorFilter = null,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxSize()
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = 30.dp)
+                        .padding(end = 15.dp)
+                        .background(colorPalette().accent, CircleShape)
+                        .align(Alignment.BottomEnd),
+                ) {
+                    IconButton(
+                        icon = R.drawable.checkmark,
+                        color = colorPalette().background0,
+                        indication = ripple(false),
+                        onClick = if (pagerStateAppearance.settledPage == 0) onClick0
+                        else if (pagerStateAppearance.settledPage == 1) onClick1
+                        else if (pagerStateAppearance.settledPage == 2) onClick2
+                        else if (pagerStateAppearance.settledPage == 3) onClick3
+                        else if (pagerStateAppearance.settledPage == 4) onClick4
+                        else onClick5,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(30.dp)
+                    )
+                }
+                Row(
+                    Modifier
+                        .height(20.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(images.size) { iteration ->
+                        val lineWeight = animateFloatAsState(
+                            targetValue = if (pagerStateAppearance.currentPage == iteration) {1.5f} else {
+                                if (iteration < pagerStateAppearance.currentPage) {0.5f} else {1f}
+                            }, label = "weight", animationSpec = tween(300, easing = EaseInOut)
+                        )
+                        val color = if (pagerStateAppearance.currentPage == iteration) Color.White else Color.White.copy(alpha = 0.5f)
+                        Box(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(color)
+                                .weight(lineWeight.value)
+                                .size(5.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @Composable

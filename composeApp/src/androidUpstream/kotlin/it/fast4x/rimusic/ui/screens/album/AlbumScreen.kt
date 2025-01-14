@@ -107,6 +107,7 @@ fun AlbumScreen(
                             ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
+                                println("mediaItem albumScreen ${currentAlbumPage.songsPage}")
                                 Database.upsert(
                                     Album(
                                         id = browseId,
@@ -133,11 +134,11 @@ fun AlbumScreen(
                                         } ?: emptyList()
                                 )
                             }
-                            /*
+
                             ?.onFailure {
-                                println("mediaItem error home artist ${it.message}")
+                                println("mediaItem error albumScreen ${it.message}")
                             }
-                             */
+
                     }
 
                 }
