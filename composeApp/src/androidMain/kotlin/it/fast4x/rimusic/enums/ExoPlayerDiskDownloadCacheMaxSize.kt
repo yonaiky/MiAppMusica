@@ -18,7 +18,7 @@ enum class ExoPlayerDiskDownloadCacheMaxSize(
     `8GB`( 8192 ),
     Unlimited( 0 );
 
-    val bytes: Long = megabytes.times( 1000L ).times( 100 )
+    val bytes: Long = megabytes.times( 1000L ).times( 1000 )
 
     override val text: String
         @Composable
