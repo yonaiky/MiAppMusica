@@ -2249,6 +2249,7 @@ fun Player(
                                          contentPadding = PaddingValues(start = ((maxWidth - maxHeight)/2).coerceAtLeast(0.dp), end = ((maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp).coerceAtLeast(0.dp)),
                                          beyondViewportPageCount = 3,
                                          flingBehavior = fling,
+                                         userScrollEnabled = !disablePlayerHorizontalSwipe,
                                          modifier = Modifier
                                              .padding(
                                                  all = (if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(
@@ -2835,6 +2836,7 @@ fun Player(
                                      pageSpacing = if (expandedplayer) (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*carouselSize.size.dp)) else 10.dp,
                                      beyondViewportPageCount = 2,
                                      flingBehavior = fling,
+                                     userScrollEnabled = expandedplayer || !disablePlayerHorizontalSwipe,
                                      modifier = modifier
                                          .padding(
                                              all = (if (expandedplayer) 0.dp else if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(
