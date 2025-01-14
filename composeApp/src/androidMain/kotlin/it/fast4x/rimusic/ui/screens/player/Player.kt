@@ -228,6 +228,7 @@ import it.fast4x.rimusic.utils.horizontalFadingEdge
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.jumpPreviousKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.miniQueueExpandedKey
@@ -601,6 +602,7 @@ fun Player(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
+    var jumpPrevious by rememberPreference(jumpPreviousKey,"3")
 
     if (isShowingSleepTimerDialog) {
         if (sleepTimerMillisLeft != null) {
@@ -2169,29 +2171,8 @@ fun Player(
                         modifier = Modifier
                             .weight(1f)
                             .navigationBarsPadding()
-                            .pointerInput(Unit) {
-                                detectHorizontalDragGestures(
-                                    onHorizontalDrag = { change, dragAmount ->
-                                        deltaX = dragAmount
-                                    },
-                                    onDragStart = {
-                                    },
-                                    onDragEnd = {
-                                        if (!disablePlayerHorizontalSwipe) {
-                                            if (deltaX > 5) {
-                                                binder.player.playPrevious()
-                                            } else if (deltaX < -5) {
-                                                binder.player.playNext()
-                                            }
-
-                                        }
-
-                                    }
-
-                                )
-                            }
                     ){
-                        if (!showlyricsthumbnail)
+                        if (!showlyricsthumbnail) {
                             Lyrics(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
@@ -2204,7 +2185,121 @@ fun Player(
                                 durationProvider = player::getDuration,
                                 isLandscape = isLandscape,
                                 clickLyricsText = clickLyricsText,
+                                modifier = Modifier
+                                    .pointerInput(Unit) {
+                                        detectHorizontalDragGestures(
+                                            onHorizontalDrag = { change, dragAmount ->
+                                                deltaX = dragAmount
+                                            },
+                                            onDragStart = {
+                                            },
+                                            onDragEnd = {
+                                                if (!disablePlayerHorizontalSwipe) {
+                                                    if (deltaX > 5) {
+                                                        binder.player.playPrevious()
+                                                    } else if (deltaX < -5) {
+                                                        binder.player.playNext()
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        )
+                                    }
                             )
+                        }
+                        if (!showlyricsthumbnail && isShowingLyrics) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(Color.Transparent,if (lightTheme) Color.White.copy(0.5f) else Color.Black.copy(0.5f)),
+                                            startY = 0f,
+                                            endY = POSITIVE_INFINITY
+                                        ),
+                                    )
+                                    .align(Alignment.BottomCenter)
+                                    .padding(bottom = 10.dp)
+                            ){
+                                Image(
+                                    painter = painterResource(R.drawable.play_skip_back),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(colorPalette().text),
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            indication = ripple(bounded = false),
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            onClick = {
+                                                if (jumpPrevious == "") jumpPrevious = "0"
+                                                if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
+                                                    binder.player.seekTo(0)
+                                                }
+                                                else binder.player.playPrevious()
+                                                if (effectRotationEnabled) isRotated = !isRotated
+                                            },
+                                            onLongClick = {}
+                                        )
+                                        .rotate(rotationAngle)
+                                        .padding(horizontal = 15.dp)
+                                        .size(30.dp)
+
+                                )
+                                Box {
+                                    Box(modifier = Modifier
+                                        .align(Alignment.Center)
+                                        .size(45.dp)
+                                        .background(colorPalette().accent, RoundedCornerShape(15.dp))
+                                        ){}
+                                    Image(
+                                        painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+                                        contentDescription = null,
+                                        colorFilter = ColorFilter.tint(colorPalette().text),
+                                        modifier = Modifier
+                                            .combinedClickable(
+                                                indication = ripple(bounded = false),
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                onClick = {
+                                                    if (shouldBePlaying) {
+                                                        binder.callPause({})
+                                                    } else {
+                                                        binder.player.play()
+                                                    }
+                                                },
+                                                onLongClick = {}
+                                            )
+                                            .align(Alignment.Center)
+                                            .rotate(rotationAngle)
+                                            .padding(horizontal = 15.dp)
+                                            .size(36.dp)
+
+                                    )
+                                }
+                                Image(
+                                    painter = painterResource(R.drawable.play_skip_forward),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(colorPalette().text),
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            indication = ripple(bounded = false),
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            onClick = {
+                                                binder.player.playNext()
+                                                if (effectRotationEnabled) isRotated = !isRotated
+                                            },
+                                            onLongClick = {}
+                                        )
+                                        .rotate(rotationAngle)
+                                        .padding(horizontal = 15.dp)
+                                        .size(30.dp)
+
+                                )
+                            }
+
+                        }
                     }
                 }
                 Column (
