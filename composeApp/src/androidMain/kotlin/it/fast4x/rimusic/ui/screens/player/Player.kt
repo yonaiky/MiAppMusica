@@ -954,6 +954,15 @@ fun Player(
     var tempGradient by remember{ mutableStateOf(AnimatedGradient.Linear) }
     var albumCoverRotation by rememberPreference(albumCoverRotationKey, false)
 
+    @Composable
+    fun Modifier.conditional(condition : Boolean, modifier : @Composable Modifier.() -> Modifier) : Modifier {
+        return if (condition) {
+            then(modifier(Modifier))
+        } else {
+            this
+        }
+    }
+
     if (animatedGradient == AnimatedGradient.Random){
         LaunchedEffect(mediaItem.mediaId){
             valueGrad = (2..13).random()
@@ -1086,20 +1095,22 @@ fun Player(
                         .onSizeChanged {
                             sizeShader = Size(it.width.toFloat(), it.height.toFloat())
                         }
-                        .shaderBackground(
-                            MeshGradient(
-                                arrayOf(
-                                    saturate(vibrant).darkenBy(),
-                                    saturate(lightVibrant).darkenBy(),
-                                    saturate(darkVibrant).darkenBy(),
-                                    saturate(muted).darkenBy(),
-                                    saturate(lightMuted).darkenBy(),
-                                    saturate(darkMuted).darkenBy(),
-                                    saturate(dominant).darkenBy()
-                                ),
-                                scale = 1f
+                        .conditional(!appRunningInBackground) {
+                            shaderBackground(
+                                MeshGradient(
+                                    arrayOf(
+                                        saturate(vibrant).darkenBy(),
+                                        saturate(lightVibrant).darkenBy(),
+                                        saturate(darkVibrant).darkenBy(),
+                                        saturate(muted).darkenBy(),
+                                        saturate(lightMuted).darkenBy(),
+                                        saturate(darkMuted).darkenBy(),
+                                        saturate(dominant).darkenBy()
+                                    ),
+                                    scale = 1f
+                                )
                             )
-                        )
+                        }
                 }
                 else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[4]) || animatedGradient == AnimatedGradient.MesmerizingLens){
                     containerModifier = containerModifier
@@ -1318,14 +1329,6 @@ fun Player(
         )
     }
     val textoutline by rememberPreference(textoutlineKey, false)
-
-    fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
-        return if (condition) {
-            then(modifier(Modifier))
-        } else {
-            this
-        }
-    }
 
     var songPlaylist by remember {
         mutableStateOf(0)
