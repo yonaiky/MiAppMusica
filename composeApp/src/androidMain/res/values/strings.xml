@@ -871,4 +871,5 @@
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
+    <string name="toggle_controls_landscape">Toggle On-screen Controls</string>
 </resources>
