@@ -1780,7 +1780,7 @@ fun Lyrics(
                             .size(24.dp)
                     )
             }
-            if (!showlyricsthumbnail && isDisplayed && landscapeControls) {
+            if (!showlyricsthumbnail && isDisplayed && isLandscape && landscapeControls) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
