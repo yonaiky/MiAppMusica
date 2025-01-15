@@ -372,10 +372,11 @@ fun StatsForNerds(
                         contentAlignment = Alignment.Center,
                         modifier = modifier.weight(1f)
                     ) {
+                        println("StatsForNerds modern player bitrate: ${format?.bitrate}")
                         BasicText(
                             text = format?.bitrate?.let { stringResource(R.string.bitrate) + " : " + "${it / 1000} kbps" }
                                 ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),
-                            maxLines = 1,
+                            maxLines = 2,
                             style = typography().xs.medium.color(colorPalette().text)
                         )
                     }
