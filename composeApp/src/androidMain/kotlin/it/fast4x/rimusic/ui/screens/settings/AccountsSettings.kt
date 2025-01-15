@@ -78,6 +78,7 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import it.fast4x.rimusic.utils.ytCookieKey
@@ -137,6 +138,7 @@ fun AccountsSettings() {
     )
 
     var restartActivity by rememberPreference(restartActivityKey, false)
+    var restartService by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -253,6 +255,7 @@ fun AccountsSettings() {
                                         cookieManager.removeAllCookies(null)
                                         cookieManager.flush()
                                         WebStorage.getInstance().deleteAllData()
+                                        restartService = true
                                     } else
                                         loginYouTube = true
                                 }
@@ -267,11 +270,11 @@ fun AccountsSettings() {
                             CustomModalBottomSheet(
                                 showSheet = loginYouTube,
                                 onDismissRequest = {
-                                    SmartMessage(
-                                        "Restart RiMusic, please",
-                                        type = PopupType.Info,
-                                        context = context
-                                    )
+//                                    SmartMessage(
+//                                        "Restart RiMusic, please",
+//                                        type = PopupType.Info,
+//                                        context = context
+//                                    )
                                     loginYouTube = false
                                 },
                                 containerColor = colorPalette().background0,
@@ -290,18 +293,23 @@ fun AccountsSettings() {
                                 YouTubeLogin(
                                     onLogin = { cookieRetrieved ->
                                         if (cookieRetrieved.contains("SAPISID")) {
+                                            isLoggedIn = true
                                             loginYouTube = false
                                             SmartMessage(
                                                 "Login successful",
                                                 type = PopupType.Info,
                                                 context = context
                                             )
-                                            restartActivity = !restartActivity
+                                            restartService = true
                                         }
 
                                     }
                                 )
                             }
+                            RestartPlayerService(restartService, onRestart = {
+                                restartService = false
+                                restartActivity = !restartActivity
+                            })
                         }
 
                     }

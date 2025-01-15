@@ -40,6 +40,8 @@ import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.Context.Client
 import it.fast4x.innertube.models.Context.Companion.DefaultAndroid
 import it.fast4x.innertube.models.Context.Companion.DefaultIOS
+import it.fast4x.innertube.models.Context.Companion.DefaultWebCreator
+import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.AccountMenuBody
 import it.fast4x.innertube.models.bodies.Action
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -580,29 +582,33 @@ object Innertube {
         }
     }
 
+    suspend fun customBrowse(
+        browseId: String? = null,
+        params: String? = null,
+        continuation: String? = null,
+        setLogin: Boolean = true,
+    ) = runCatching {
+        browse(Context.DefaultWeb.client, browseId, params, continuation, setLogin).body<BrowseResponse>()
+    }
+
     suspend fun player(
-        //ytClient: Client,
         videoId: String,
         playlistId: String?,
+        withLogin: Boolean = false,
+        signatureTimestamp: Int?,
     ) = client.post(player) {
-        //setLogin(ytClient, setLogin = true)
-        setLogin(setLogin = true)
+        setLogin(setLogin = withLogin)
         setBody(
             PlayerBody(
-//                context = ytClient.toContext(locale, visitorData).let {
-//                    if (ytClient == Context.DefaultRestrictionBypass.client) {
-//                        it.copy(
-//                            thirdParty =
-//                            Context.ThirdParty(
-//                                embedUrl = "https://www.youtube.com/watch?v=$videoId",
-//                            ),
-//                        )
-//                    } else {
-//                        it
-//                    }
-//                },
+                context = if (withLogin) DefaultWebCreator else DefaultIOS,
                 videoId = videoId,
                 playlistId = playlistId,
+                playbackContext =
+                if (signatureTimestamp != null) {
+                    PlayerBody.PlaybackContext(PlayerBody.PlaybackContext.ContentPlaybackContext(
+                        signatureTimestamp = signatureTimestamp
+                    ))
+                } else null
             ),
         )
     }
@@ -620,15 +626,6 @@ object Innertube {
                 ),
             )
         }
-
-    suspend fun customBrowse(
-        browseId: String? = null,
-        params: String? = null,
-        continuation: String? = null,
-        setLogin: Boolean = true,
-    ) = runCatching {
-        browse(Context.DefaultWeb.client, browseId, params, continuation, setLogin).body<BrowseResponse>()
-    }
 
 
 

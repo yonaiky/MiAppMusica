@@ -21,7 +21,11 @@ import it.fast4x.rimusic.service.TimeoutException
 import it.fast4x.rimusic.service.UnknownException
 import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoginEnabled
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
+import it.fast4x.rimusic.utils.getSignatureTimestampOrNull
+import it.fast4x.rimusic.utils.getStreamUrl
 import it.fast4x.rimusic.utils.preferences
 import me.knighthat.piped.Piped
 import me.knighthat.piped.request.player
@@ -87,40 +91,40 @@ suspend fun getInnerTubeFormatUrl(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean,
-): PlayerResponse.StreamingData.AdaptiveFormat? {
-    //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from format $audioQualityFormat")
+    signatureTimestamp: Int? = getSignatureTimestampOrNull(videoId)
+): PlayerResponse.StreamingData.Format? {
     return Innertube.player(
         body = PlayerBody(videoId = videoId),
         //TODO manage login
-        withLogin = appContext().preferences.getBoolean(enableYouTubeLoginKey, false),
-        //pipedSession = getPipedSession().toApiSession()
+        withLogin = isYouTubeLoginEnabled() && isYouTubeLoggedIn(),
+        signatureTimestamp = signatureTimestamp
     ).fold(
         { playerResponse ->
             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from formats itag ${playerResponse.streamingData?.adaptiveFormats?.map { it.itag }}")
             when(playerResponse.playabilityStatus?.status) {
                 "OK" -> {
-                    when (audioQualityFormat) {
-                        AudioQualityFormat.Auto -> if (!connectionMetered) playerResponse.streamingData?.autoMaxQualityFormat
-                        else playerResponse.streamingData?.lowestQualityFormat
-                        AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
-                        AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
-                        AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
-                    }
-//                    playerResponse.streamingData?.adaptiveFormats
-//                        ?.filter { it.isAudio }
-//                        ?.maxByOrNull {
-//                            (it.bitrate?.times(
-//                                when (audioQualityFormat) {
-//                                    AudioQualityFormat.Auto -> if (connectionMetered) -1 else 1
-//                                    AudioQualityFormat.High -> 1
-//                                    AudioQualityFormat.Medium -> 0
-//                                    AudioQualityFormat.Low -> -1
-//                                }
-//                            ) ?: 0) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0) // prefer opus stream
-//                        }
+//                    when (audioQualityFormat) {
+//                        AudioQualityFormat.Auto -> if (!connectionMetered) playerResponse.streamingData?.autoMaxQualityFormat
+//                        else playerResponse.streamingData?.lowestQualityFormat
+//                        AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
+//                        AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
+//                        AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
+//                    }
+                    playerResponse.streamingData?.adaptiveFormats
+                        ?.filter { it.isAudio }
+                        ?.maxByOrNull {
+                            ( it.bitrate.times(
+                                when (audioQualityFormat) {
+                                    AudioQualityFormat.Auto -> if (connectionMetered) -1 else 1
+                                    AudioQualityFormat.High -> 1
+                                    AudioQualityFormat.Medium -> 0
+                                    AudioQualityFormat.Low -> -1
+                                }
+                            ) ) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                        }
                     .let {
-                        // Specify range to avoid YouTube's throttling
-                        it?.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
+                        // recover streaming url with newpipe extractor and specify range to avoid YouTube's throttling
+                        it?.copy(url = "${getStreamUrl(it, videoId) ?: it.url}&range=0-${it.contentLength ?: 10000000}")
                     }.also {
                             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from formats itag selected ${it}")
                         //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")

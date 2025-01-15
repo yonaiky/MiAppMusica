@@ -171,7 +171,7 @@ suspend fun getInnerTubeFormatUrl(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean,
-    ): PlayerResponse.StreamingData.AdaptiveFormat? {
+    ): PlayerResponse.StreamingData.Format? {
     //println("PlayerService MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from format $audioQualityFormat")
     return Innertube.player(
         body = PlayerBody(videoId = videoId),

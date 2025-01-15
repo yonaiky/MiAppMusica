@@ -5,21 +5,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PlayerBody(
-    val context: Context = Context.DefaultAndroid, // take as is to throw error
+    val context: Context = Context.DefaultWebCreator,
     val videoId: String,
     val playlistId: String? = null,
     val contentCheckOk: Boolean = true,
     val racyCheckOk: Boolean = true,
-    val playbackContext: PlaybackContext? = PlaybackContext(),
+    val playbackContext: PlaybackContext? = null,
 ) {
     @Serializable
     data class PlaybackContext(
-        val contentPlaybackContext: ContentPlaybackContext = ContentPlaybackContext(),
+        val contentPlaybackContext: ContentPlaybackContext,
     ) {
         @Serializable
         data class ContentPlaybackContext(
-            val html5Preference: String = "HTML5_PREF_WANTS",
-            val signatureTimestamp: Int = 20073,
+            //val html5Preference: String = "HTML5_PREF_WANTS",
+            val signatureTimestamp: Int //= 20073,
         )
     }
 }
