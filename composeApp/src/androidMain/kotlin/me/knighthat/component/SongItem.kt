@@ -1,11 +1,31 @@
 package me.knighthat.component
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,23 +40,43 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import it.fast4x.rimusic.*
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.Icon
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
-import it.fast4x.rimusic.ui.styling.*
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.ui.styling.favoritesOverlay
+import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.downloadedStateMedia
+import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getLikedIcon
+import it.fast4x.rimusic.utils.isNowPlaying
+import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.playlistindicatorKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOf
 
 private interface SongIndicator: Icon {
     override val sizeDp: Dp
@@ -206,10 +246,7 @@ fun SongItem(
                 if( showInPlaylistIndicator && !isInPlaylistScreen ) {
 
                     val isExistedInAPlaylist by remember( showInPlaylistIndicator ) {
-                        if( !showInPlaylistIndicator )
-                            flowOf( false )
-                        else
-                            Database.isSongMappedToPlaylist( song.id )
+                        Database.isSongMappedToPlaylist( song.id )
                     }.collectAsState( initial = false, context = Dispatchers.IO )
 
                     if( isExistedInAPlaylist )
@@ -220,6 +257,9 @@ fun SongItem(
                             override val modifier: Modifier =
                                 Modifier.background(colorPalette().accent, CircleShape)
                                         .padding(all = 3.dp)
+                            override val color: Color
+                                @Composable
+                                get() = colorPalette.text
 
                             override fun onShortClick() = super.onShortClick()
                         }.ToolBarButton()

@@ -62,7 +62,6 @@ import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.intellij.lang.annotations.MagicConstant
-import kotlin.collections.sortedBy
 
 @Dao
 interface Database {
@@ -576,7 +575,7 @@ interface Database {
      *  Whether the song is mapped to a playlist
      */
     @Query("""
-        SELECT COUNT(s.id) > 1
+        SELECT COUNT(s.id) > 0
         FROM Song s
         JOIN SongPlaylistMap spm ON spm.songId = s.id 
         WHERE s.id = :songId
