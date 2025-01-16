@@ -1542,6 +1542,7 @@ interface Database {
         LEFT JOIN Song ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Format ON Format.songId = Song.id
         WHERE Album.id = :albumId
+        ORDER BY SongAlbumMap.position
     """)
     fun findSongsOfAlbum( albumId: String ): Flow<List<SongEntity>>
 

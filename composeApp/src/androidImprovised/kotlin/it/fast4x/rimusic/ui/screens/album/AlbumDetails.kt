@@ -2,8 +2,26 @@ package it.fast4x.rimusic.ui.screens.album
 
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -34,12 +52,19 @@ import coil.compose.AsyncImagePainter
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
-import it.fast4x.rimusic.*
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
@@ -47,13 +72,41 @@ import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
-import it.fast4x.rimusic.ui.components.themed.*
+import it.fast4x.rimusic.ui.components.themed.AutoResizeText
+import it.fast4x.rimusic.ui.components.themed.Enqueue
+import it.fast4x.rimusic.ui.components.themed.FontSizeRange
+import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
+import it.fast4x.rimusic.ui.components.themed.ItemsList
+import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.PlayNext
+import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.align
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.center
+import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.durationTextToMillis
+import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.fadingEdge
+import it.fast4x.rimusic.utils.forcePlayAtIndex
+import it.fast4x.rimusic.utils.formatAsTime
+import it.fast4x.rimusic.utils.getHttpClient
+import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.languageDestination
+import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
@@ -105,13 +158,13 @@ fun AlbumDetails(
         if( album == null ) return@LaunchedEffect
 
         Database.findSongsOfAlbum( browseId )
-            .flowOn( Dispatchers.IO )
-            .distinctUntilChanged()
-            .collect { list ->
-                items = list.filter {
-                    !parentalControlEnabled || !it.song.title.contains( EXPLICIT_PREFIX, true )
+                .flowOn( Dispatchers.IO )
+                .distinctUntilChanged()
+                .collect { list ->
+                    items = list.filter {
+                        !parentalControlEnabled || !it.song.title.contains( EXPLICIT_PREFIX, true )
+                    }
                 }
-            }
     }
 
     val itemSelector = ItemSelector<SongEntity>()

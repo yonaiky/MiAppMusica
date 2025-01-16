@@ -1,10 +1,30 @@
 package it.fast4x.rimusic.ui.screens.album
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,12 +50,22 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
-import it.fast4x.rimusic.*
-import it.fast4x.rimusic.enums.*
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.MODIFIED_PREFIX
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PlayerPosition
+import it.fast4x.rimusic.enums.TransitionEffect
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.ui.components.navigation.header.AppHeader
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.playerPositionKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resize
+import it.fast4x.rimusic.utils.transitionEffectKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
@@ -69,9 +99,9 @@ fun AlbumScreen(
     var album by persist<Album?>("album/$browseId")
     LaunchedEffect(Unit) {
         Database.album( browseId )
-            .flowOn( Dispatchers.IO )
-            .distinctUntilChanged()
-            .collect { album = it }
+                .flowOn( Dispatchers.IO )
+                .distinctUntilChanged()
+                .collect { album = it }
     }
 
     var alternatives by persistList<Innertube.AlbumItem>( "album/$browseId/alternatives" )
