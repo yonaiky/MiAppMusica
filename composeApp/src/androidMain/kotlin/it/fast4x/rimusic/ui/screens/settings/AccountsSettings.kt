@@ -117,6 +117,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.useYtLoginOnlyForBrowseKey
 import it.fast4x.rimusic.utils.ytAccountEmailKey
 import it.fast4x.rimusic.utils.ytAccountNameKey
 import it.fast4x.rimusic.utils.ytAccountThumbnailKey
@@ -175,6 +176,7 @@ fun AccountsSettings() {
         //TODO MANAGE LOGIN
         /****** YOUTUBE LOGIN ******/
 
+        var useYtLoginOnlyForBrowse by rememberPreference(useYtLoginOnlyForBrowseKey, false)
         var isYouTubeLoginEnabled by rememberPreference(enableYouTubeLoginKey, false)
         var isYouTubeSyncEnabled by rememberPreference(enableYouTubeSyncKey, false)
         var loginYouTube by remember { mutableStateOf(false) }
@@ -315,6 +317,15 @@ fun AccountsSettings() {
                     }
 
                 }
+
+                SwitchSettingEntry(
+                    title = "Use login only for browse",
+                    text = "To be used if the songs are not played when logged in",
+                    isChecked = useYtLoginOnlyForBrowse,
+                    onCheckedChange = {
+                        useYtLoginOnlyForBrowse = it
+                    }
+                )
 
 //                SwitchSettingEntry(
 //                    isEnabled = false,

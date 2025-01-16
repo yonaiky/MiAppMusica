@@ -23,6 +23,7 @@ import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoginEnabled
+import it.fast4x.rimusic.useYtLoginOnlyForBrowse
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.getSignatureTimestampOrNull
 import it.fast4x.rimusic.utils.getStreamUrl
@@ -41,7 +42,7 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
 ): DataSpec {
     val songUri = dataSpec.uri.toString()
     val videoId = songUri.substringAfter("watch?v=")
-    val chunkLength = 512 * 1024L
+    val chunkLength = 1024 * 1024L
 
     if( dataSpec.isLocal ||
         cache.isCached(videoId, dataSpec.position, chunkLength) ||
@@ -56,9 +57,9 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
         val format = getInnerTubeFormatUrl(videoId, audioQualityFormat, connectionMetered)
 
         println("PlayerServiceModern DataSpecProcess Playing song ${videoId} from format $format from url=${format?.url}")
-        return dataSpec.withUri(Uri.parse(format?.url))
+        return dataSpec.withUri(Uri.parse(format?.url)).subrange(dataSpec.uriPositionOffset, chunkLength)
 
-    } catch ( e: LoginRequiredException ) {
+    } catch ( e: Exception ) {
         println("PlayerServiceModern DataSpecProcess Playing song $videoId from ALTERNATIVE url")
         val alternativeUrl = "https://jossred.josprox.com/yt/stream/$videoId"
         return dataSpec.withUri(alternativeUrl.toUri())
@@ -96,7 +97,7 @@ suspend fun getInnerTubeFormatUrl(
     return Innertube.player(
         body = PlayerBody(videoId = videoId),
         //TODO manage login
-        withLogin = isYouTubeLoginEnabled() && isYouTubeLoggedIn(),
+        withLogin = !useYtLoginOnlyForBrowse(), //isYouTubeLoginEnabled() && isYouTubeLoggedIn(),
         signatureTimestamp = signatureTimestamp
     ).fold(
         { playerResponse ->
@@ -124,7 +125,10 @@ suspend fun getInnerTubeFormatUrl(
                         }
                     .let {
                         // recover streaming url with newpipe extractor and specify range to avoid YouTube's throttling
-                        it?.copy(url = "${getStreamUrl(it, videoId) ?: it.url}&range=0-${it.contentLength ?: 10000000}")
+                        if (it?.url != null)
+                            it.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
+                        else
+                            it?.copy(url = getStreamUrl(it, videoId))
                     }.also {
                             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from formats itag selected ${it}")
                         //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")

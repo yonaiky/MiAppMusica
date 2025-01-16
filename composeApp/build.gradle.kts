@@ -324,5 +324,7 @@ dependencies {
     implementation(projects.piped)
 
 
-    coreLibraryDesugaring(libs.desugaring)
+//    coreLibraryDesugaring(libs.desugaring)
+    coreLibraryDesugaring(libs.desugaring.nio)
+
 }

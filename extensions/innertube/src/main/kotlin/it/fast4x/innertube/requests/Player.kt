@@ -16,19 +16,19 @@ import it.fast4x.innertube.models.bodies.PlayerBody
 suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false, signatureTimestamp: Int? = null): Result<PlayerResponse> = runCatching {
     val response = when (withLogin) {
         true -> try {
-            println("Innertube newPlayer Player Response Try Android")
-            player(body.videoId, body.playlistId, withLogin, signatureTimestamp).body<PlayerResponse>()
+            println("Innertube newPlayer Player Response Try Android with login")
+            player(body.videoId, body.playlistId, signatureTimestamp).body<PlayerResponse>()
         } catch (e: Exception) {
             println("Innertube newPlayer Player Response Error $e")
-            println("Innertube newPlayer Player Response Try IOS")
-            noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
+            println("Innertube newPlayer Player Response Try noLogInPlayer")
+            noLogInPlayer(body.videoId).body<PlayerResponse>()
         }
         false -> {
-            println("Innertube newPlayer Player Response without login")
-            println("Innertube newPlayer Player Response Try IOS")
-            noLogInPlayer(body.videoId, withLogin).body<PlayerResponse>()
+            println("Innertube newPlayer Player Response Try noLogInPlayer")
+            noLogInPlayer(body.videoId).body<PlayerResponse>()
         }
     }
+
 
     println("Innertube newPlayer withLogin $withLogin response adaptiveFormats ${response.streamingData?.adaptiveFormats}")
     println("Innertube newPlayer withLogin $withLogin response Formats ${response.streamingData?.formats}")

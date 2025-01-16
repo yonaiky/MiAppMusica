@@ -40,6 +40,7 @@ import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.Context.Client
 import it.fast4x.innertube.models.Context.Companion.DefaultAndroid
 import it.fast4x.innertube.models.Context.Companion.DefaultIOS
+import it.fast4x.innertube.models.Context.Companion.DefaultWeb
 import it.fast4x.innertube.models.Context.Companion.DefaultWebCreator
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.AccountMenuBody
@@ -442,7 +443,7 @@ object Innertube {
             .jsonPrimitive.content
     }
 
-    fun HttpRequestBuilder.setLogin(clientType: Client = Context.DefaultWeb.client, setLogin: Boolean = false) {
+    fun HttpRequestBuilder.setLogin(clientType: Client = DefaultWeb.client, setLogin: Boolean = false) {
         contentType(ContentType.Application.Json)
         headers {
             append("X-Goog-Api-Format-Version", "1")
@@ -455,13 +456,41 @@ object Innertube {
             if (setLogin) {
                 cookie?.let { cookie ->
                     cookieMap = parseCookieString(cookie)
-                    append("X-Goog-Authuser", "0")
-                    append("X-Goog-Visitor-Id", visitorData)
-                    append("Cookie", cookie)
-                    if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
+                    //append("X-Goog-Authuser", "0")
+                    //append("X-Goog-Visitor-Id", visitorData)
+                    append("cookie", cookie)
+                    if ("SAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
-                    val sapisidHash = sha1("$currentTime $sapisidCookie https://music.youtube.com")
+                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
+                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
+                }
+            }
+        }
+        clientType.userAgent?.let { userAgent(it) }
+        parameter("key", clientType.api_key)
+        parameter("prettyPrint", false)
+
+    }
+
+    fun HttpRequestBuilder.setHeaders(clientType: Client = DefaultWeb.client, setLogin: Boolean = false) {
+        contentType(ContentType.Application.Json)
+        headers {
+            append("X-Goog-Api-Format-Version", "1")
+            append("X-YouTube-Client-Name", clientType.clientName)
+            append("X-YouTube-Client-Version", clientType.clientVersion)
+            append("x-origin", "https://music.youtube.com")
+            if (clientType.referer != null) {
+                append("Referer", clientType.referer)
+            }
+            if (setLogin) {
+                cookie?.let { cookie ->
+                    cookieMap = parseCookieString(cookie)
+                    //append("X-Goog-Authuser", "0")
+                    //append("X-Goog-Visitor-Id", visitorData)
+                    append("cookie", cookie)
+                    if ("SAPISID" !in cookieMap) return@let
+                    val currentTime = System.currentTimeMillis() / 1000
+                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
                     append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
                 }
             }
@@ -594,13 +623,11 @@ object Innertube {
     suspend fun player(
         videoId: String,
         playlistId: String?,
-        withLogin: Boolean = false,
         signatureTimestamp: Int?,
     ) = client.post(player) {
-        setLogin(setLogin = withLogin)
+        setLogin(setLogin = true)
         setBody(
             PlayerBody(
-                context = if (withLogin) DefaultWebCreator else DefaultIOS,
                 videoId = videoId,
                 playlistId = playlistId,
                 playbackContext =
@@ -613,7 +640,7 @@ object Innertube {
         )
     }
 
-    suspend fun noLogInPlayer(videoId: String, withLogin: Boolean = false) =
+    suspend fun noLogInPlayer(videoId: String) =
         client.post(player) {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)

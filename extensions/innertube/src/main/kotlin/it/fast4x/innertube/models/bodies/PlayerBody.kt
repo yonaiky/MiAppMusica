@@ -5,12 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PlayerBody(
-    val context: Context = Context.DefaultWebCreator,
+    val context: Context = Context.DefaultWeb,
     val videoId: String,
     val playlistId: String? = null,
     val contentCheckOk: Boolean = true,
     val racyCheckOk: Boolean = true,
     val playbackContext: PlaybackContext? = null,
+    val cpn: String? = "wzf9Y0nqz6AUe2Vr",
 ) {
     @Serializable
     data class PlaybackContext(

@@ -297,6 +297,8 @@ const val coverThumbnailAnimationKey = "coverThumbnailAnimation"
 const val restartActivityKey = "restartActivity"
 const val enableYouTubeLoginKey = "enableYoutubeLogin"
 const val enableYouTubeSyncKey = "enableYoutubeSync"
+const val useYtLoginOnlyForBrowseKey = "useYtLoginOnlyForBrowse"
+
 
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 const val showSecondLineKey = "showSecondLine"
