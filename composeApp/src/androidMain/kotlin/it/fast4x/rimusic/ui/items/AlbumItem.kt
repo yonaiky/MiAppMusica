@@ -2,12 +2,20 @@ package it.fast4x.rimusic.ui.items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,16 +25,21 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.models.Album
-import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.styling.shimmer
-import it.fast4x.rimusic.utils.conditional
-import it.fast4x.rimusic.utils.secondary
-import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.ThumbnailRoundness
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.shimmer
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.shimmerEffect
+import it.fast4x.rimusic.utils.thumbnail
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 
 @Composable
 fun AlbumItem(
@@ -128,7 +141,8 @@ fun AlbumItem(
                         modifier = Modifier
                             .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                             .align(
-                                if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start)
+                                if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start
+                            )
                     )
                 }
             }
@@ -141,7 +155,8 @@ fun AlbumItem(
                 modifier = Modifier
                     .padding(top = 4.dp)
                     .align(
-                        if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start)
+                        if (yearCentered == true) Alignment.CenterHorizontally else Alignment.Start
+                    )
             )
         }
     }
@@ -176,5 +191,71 @@ fun AlbumItemPlaceholder(
                     .padding(top = 4.dp)
             )
         }
+    }
+}
+
+/**
+ * New component is more resemble to the final
+ * [AlbumItem] that's currently being used.
+ */
+@Composable
+fun AlbumPlaceholder(
+    showYear: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    val thumbnailSizeDp = Dimensions.thumbnails.album
+
+    val thumbnailRoundness by rememberPreference( thumbnailRoundnessKey, ThumbnailRoundness.None )
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy( 12.dp ),
+        modifier = modifier.padding(
+                               vertical = Dimensions.itemsVerticalPadding,
+                               horizontal = 16.dp
+                           )
+                           // [width] placed behind padding to ensure
+                           // outer padding instead of inner
+                           .width( thumbnailSizeDp )
+    ) {
+
+        Row( Modifier.fillMaxWidth() ) {
+            Box(
+                Modifier.size( thumbnailSizeDp )
+                        .clip( thumbnailRoundness.shape )
+                        .shimmerEffect()
+            )
+        }
+
+        Row(
+            Modifier.padding( top = 4.dp )
+                    .fillMaxWidth( .7f )
+                    .clip( RoundedCornerShape(25) )
+        ) {
+            // Title with shimmer effect
+            BasicText(
+                text = "",
+                style = typography().xs.semiBold.secondary,
+                maxLines = 1,
+                overflow = TextOverflow.Clip,
+                modifier = Modifier.weight( 1f ).shimmerEffect()
+            )
+        }
+
+        if( showYear )
+            Row(
+                Modifier.padding( top = 4.dp )
+                        .fillMaxWidth( .3f )
+                        .clip( RoundedCornerShape(25) )
+            ) {
+                // Year (if enabled) with shimmer effect
+                BasicText(
+                    text = "",
+                    style = typography().xs.semiBold.secondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Clip,
+                    modifier = Modifier.weight( 1f ).shimmerEffect()
+                )
+            }
     }
 }
