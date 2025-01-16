@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.media3.common.util.UnstableApi
@@ -359,11 +360,13 @@ fun StatsForNerds(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = modifier.weight(1f)
+                            .padding(end = 4.dp)
                     ) {
                         if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                             BasicText(
                                 text = stringResource(R.string.quality) + " : " + getQuality(format!!),
                                 maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 style = typography().xs.medium.color(colorPalette().text)
                             )
                         }
@@ -376,7 +379,8 @@ fun StatsForNerds(
                         BasicText(
                             text = format?.bitrate?.let { stringResource(R.string.bitrate) + " : " + "${it / 1000} kbps" }
                                 ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),
-                            maxLines = 2,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             style = typography().xs.medium.color(colorPalette().text)
                         )
                     }
@@ -389,6 +393,7 @@ fun StatsForNerds(
                                 ?.let {stringResource(R.string.size) + " : " + Formatter.formatShortFileSize(context,it)}
                                 ?: (stringResource(R.string.size) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             style = typography().xs.medium.color(colorPalette().text)
                         )
                     }

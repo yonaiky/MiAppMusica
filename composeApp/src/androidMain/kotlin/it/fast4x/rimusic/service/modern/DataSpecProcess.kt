@@ -14,6 +14,8 @@ import it.fast4x.invidious.Invidious
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.isConnectionMetered
+import it.fast4x.rimusic.isConnectionMeteredEnabled
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.NoInternetException
@@ -97,7 +99,7 @@ suspend fun getInnerTubeFormatUrl(
     return Innertube.player(
         body = PlayerBody(videoId = videoId),
         //TODO manage login
-        withLogin = !useYtLoginOnlyForBrowse(), //isYouTubeLoginEnabled() && isYouTubeLoggedIn(),
+        withLogin =  (!useYtLoginOnlyForBrowse() && isYouTubeLoginEnabled() && isYouTubeLoggedIn()),
         signatureTimestamp = signatureTimestamp
     ).fold(
         { playerResponse ->
@@ -105,7 +107,7 @@ suspend fun getInnerTubeFormatUrl(
             when(playerResponse.playabilityStatus?.status) {
                 "OK" -> {
 //                    when (audioQualityFormat) {
-//                        AudioQualityFormat.Auto -> if (!connectionMetered) playerResponse.streamingData?.autoMaxQualityFormat
+//                        AudioQualityFormat.Auto -> if (!isConnectionMeteredEnabled()) playerResponse.streamingData?.autoMaxQualityFormat
 //                        else playerResponse.streamingData?.lowestQualityFormat
 //                        AudioQualityFormat.High -> playerResponse.streamingData?.highestQualityFormat
 //                        AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
@@ -116,7 +118,7 @@ suspend fun getInnerTubeFormatUrl(
                         ?.maxByOrNull {
                             ( it.bitrate.times(
                                 when (audioQualityFormat) {
-                                    AudioQualityFormat.Auto -> if (connectionMetered) -1 else 1
+                                    AudioQualityFormat.Auto -> if (!isConnectionMeteredEnabled() && !connectionMetered) 1 else -1
                                     AudioQualityFormat.High -> 1
                                     AudioQualityFormat.Medium -> 0
                                     AudioQualityFormat.Low -> -1

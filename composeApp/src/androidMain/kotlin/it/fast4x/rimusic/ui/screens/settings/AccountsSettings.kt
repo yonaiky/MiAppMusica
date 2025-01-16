@@ -232,8 +232,9 @@ fun AccountsSettings() {
                             AsyncImage(
                                 model = accountThumbnail,
                                 contentDescription = null,
-                                modifier = Modifier.height(50.dp)
-                                    .clip( thumbnailShape() )
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .clip(thumbnailShape())
                             )
 
                         Column {
@@ -319,8 +320,8 @@ fun AccountsSettings() {
                 }
 
                 SwitchSettingEntry(
-                    title = "Use login only for browse",
-                    text = "To be used if the songs are not played when logged in",
+                    title = stringResource(R.string.use_ytm_login_only_for_browse),
+                    text = stringResource(R.string.info_use_ytm_login_only_for_browse),
                     isChecked = useYtLoginOnlyForBrowse,
                     onCheckedChange = {
                         useYtLoginOnlyForBrowse = it
