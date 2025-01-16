@@ -259,7 +259,7 @@ fun GeneralSettings(
     var skipMediaOnError by rememberPreference(skipMediaOnErrorKey, false)
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
     var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
-    var isConnectionMeteredEnabled by rememberPreference(isConnectionMeteredEnabledKey, false)
+    var isConnectionMeteredEnabled by rememberPreference(isConnectionMeteredEnabledKey, true)
 
 
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)

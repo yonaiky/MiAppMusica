@@ -44,4 +44,4 @@ fun useYtLoginOnlyForBrowse() = appContext().preferences.getBoolean(useYtLoginOn
 fun isVideoEnabled() = appContext().preferences.getBoolean(showButtonPlayerVideoKey, false)
 
 fun isConnectionMetered() = appContext().isConnectionMetered()
-fun isConnectionMeteredEnabled() = appContext().preferences.getBoolean(isConnectionMeteredEnabledKey, false)
+fun isConnectionMeteredEnabled() = appContext().preferences.getBoolean(isConnectionMeteredEnabledKey, true)
