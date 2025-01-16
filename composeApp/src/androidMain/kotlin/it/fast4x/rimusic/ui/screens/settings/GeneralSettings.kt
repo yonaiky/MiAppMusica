@@ -461,16 +461,16 @@ fun GeneralSettings(
         }
 
         if (search.input.isBlank() || stringResource(R.string.enable_connection_metered).contains(search.input,true))
-        SwitchSettingEntry(
-            title = stringResource(R.string.enable_connection_metered),
-            text = stringResource(R.string.info_enable_connection_metered),
-            isChecked = isConnectionMeteredEnabled,
-            onCheckedChange = {
-                isConnectionMeteredEnabled = it
-                if (it)
-                    audioQualityFormat = AudioQualityFormat.Auto
-            }
-        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.enable_connection_metered),
+                text = stringResource(R.string.info_enable_connection_metered),
+                isChecked = isConnectionMeteredEnabled,
+                onCheckedChange = {
+                    isConnectionMeteredEnabled = it
+                    if (it)
+                        audioQualityFormat = AudioQualityFormat.Auto
+                }
+            )
 
         if (search.input.isBlank() || stringResource(R.string.jump_previous).contains(search.input,true)) {
             BasicText(
