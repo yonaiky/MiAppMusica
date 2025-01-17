@@ -220,6 +220,7 @@ fun HomeSongsModern(
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     var items by persistList<SongEntity>("home/songs")
+    var itemsAll by persistList<SongEntity>("")
 
     //var songsWithAlbum by persistList<SongWithAlbum>("home/songsWithAlbum")
 
@@ -248,6 +249,10 @@ fun HomeSongsModern(
 
     var showHiddenSongs by remember {
         mutableStateOf(0)
+    }
+
+    LaunchedEffect(Unit) {
+        Database.listAllSongsAsFlow().collect { itemsAll = it }
     }
 
     var includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
@@ -1338,6 +1343,16 @@ fun HomeSongsModern(
                                                     context.resources.getString(R.string.done),
                                                     type = PopupType.Success, context = context
                                                 )
+                                            }
+                                        },
+                                        onDeleteSongsNotInLibrary = {
+                                            itemsAll.filter {!it.song.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
+                                                Database.asyncTransaction {
+                                                    if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id ?: "") == 0)){
+                                                        Database.delete(song.song)
+                                                    }
+                                                }
+
                                             }
                                         },
                                         onExport = {
