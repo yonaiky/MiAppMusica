@@ -192,9 +192,12 @@ import kotlin.math.min
 import kotlin.time.Duration
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
+import it.fast4x.rimusic.ui.components.themed.DeleteInProgressDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isNowPlaying
+import kotlinx.coroutines.withContext
+import kotlin.system.exitProcess
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -310,6 +313,14 @@ fun HomeSongsModern(
     var currentFolderPath by remember {
         mutableStateOf(defaultFolder)
     }
+
+    var deleteProgressDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var totalSongsToDelete by remember { mutableIntStateOf(0) }
+
+    var songsDeleted by remember { mutableIntStateOf(0) }
 
     val importLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -1078,6 +1089,19 @@ fun HomeSongsModern(
                             )
                         }
 
+                        if (deleteProgressDialog){
+                            DeleteInProgressDialog(total = totalSongsToDelete, deleted = songsDeleted)
+                        }
+
+                        Database.asyncTransaction {
+                            totalSongsToDelete = (itemsAll.filter {
+                                !it.song.id.startsWith(LOCAL_KEY_PREFIX)
+                                        && it.song.likedAt == null
+                                        && songUsedInPlaylists(it.song.id) == 0
+                                        && albumBookmarked(songAlbumInfo(it.song.id)?.id ?: "") == 0
+                            }).size
+                        }
+
                         if (builtInPlaylist == BuiltInPlaylist.Favorites || builtInPlaylist == BuiltInPlaylist.Downloaded) {
                             HeaderIconButton(
                                 icon = R.drawable.download,
@@ -1346,15 +1370,21 @@ fun HomeSongsModern(
                                             }
                                         },
                                         onDeleteSongsNotInLibrary = {
+                                            songsDeleted = 0
+                                            deleteProgressDialog = true
                                             itemsAll.filter {!it.song.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
                                                 Database.asyncTransaction {
                                                     if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id ?: "") == 0)){
                                                         binder?.cache?.removeResource(song.song.id)
                                                         binder?.downloadCache?.removeResource(song.song.id)
                                                         Database.delete(song.song)
+                                                        songsDeleted ++
+                                                        if (songsDeleted == totalSongsToDelete) {
+                                                            deleteProgressDialog = false
+                                                            exitProcess(0)
+                                                        }
                                                     }
                                                 }
-
                                             }
                                         },
                                         onExport = {
