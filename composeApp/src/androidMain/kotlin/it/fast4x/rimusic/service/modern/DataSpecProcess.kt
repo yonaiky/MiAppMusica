@@ -30,6 +30,7 @@ import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.getSignatureTimestampOrNull
 import it.fast4x.rimusic.utils.getStreamUrl
 import it.fast4x.rimusic.utils.preferences
+import kotlinx.coroutines.flow.asFlow
 import me.knighthat.piped.Piped
 import me.knighthat.piped.request.player
 import java.net.ConnectException
@@ -44,8 +45,9 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
 ): DataSpec {
     val songUri = dataSpec.uri.toString()
     val videoId = songUri.substringAfter("watch?v=")
-    val chunkLength = 1024 * 1024L
+    val chunkLength = 512 * 1024L
 
+    println("PlayerServiceModern DataSpecProcess Playing song ${videoId} dataSpec position ${dataSpec.position} length ${dataSpec.length}")
     if( dataSpec.isLocal ||
         cache.isCached(videoId, dataSpec.position, chunkLength) ||
         downloadCache.isCached(videoId, dataSpec.position, if (dataSpec.length >= 0) dataSpec.length else 1)
@@ -55,13 +57,12 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
     }
 
     try {
-
         val format = getInnerTubeFormatUrl(videoId, audioQualityFormat, connectionMetered)
-
         println("PlayerServiceModern DataSpecProcess Playing song ${videoId} from format $format from url=${format?.url}")
         return dataSpec.withUri(Uri.parse(format?.url)).subrange(dataSpec.uriPositionOffset, chunkLength)
 
     } catch ( e: Exception ) {
+        println("PlayerServiceModern DataSpecProcess Error: ${e.stackTraceToString()}")
         println("PlayerServiceModern DataSpecProcess Playing song $videoId from ALTERNATIVE url")
         val alternativeUrl = "https://jossred.josprox.com/yt/stream/$videoId"
         return dataSpec.withUri(alternativeUrl.toUri())
@@ -95,7 +96,7 @@ suspend fun getInnerTubeFormatUrl(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean,
     signatureTimestamp: Int? = getSignatureTimestampOrNull(videoId)
-): PlayerResponse.StreamingData.Format? {
+): PlayerResponse.StreamingData.AdaptiveFormat? {
     return Innertube.player(
         body = PlayerBody(videoId = videoId),
         //TODO manage login
@@ -103,9 +104,11 @@ suspend fun getInnerTubeFormatUrl(
         signatureTimestamp = signatureTimestamp
     ).fold(
         { playerResponse ->
-            println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from formats itag ${playerResponse.streamingData?.adaptiveFormats?.map { it.itag }}")
+            println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnertubeFormat playabilityStatus ${playerResponse.playabilityStatus?.status} for song $videoId from adaptiveFormats itag ${playerResponse.streamingData?.adaptiveFormats?.map { it.itag }}")
+            println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnertubeFormat playabilityStatus ${playerResponse.playabilityStatus?.status} for song $videoId from formats itag ${playerResponse.streamingData?.formats?.map { it.itag }}")
             when(playerResponse.playabilityStatus?.status) {
                 "OK" -> {
+                    // SELECT FORMAT BY ITAG
 //                    when (audioQualityFormat) {
 //                        AudioQualityFormat.Auto -> if (!isConnectionMeteredEnabled()) playerResponse.streamingData?.autoMaxQualityFormat
 //                        else playerResponse.streamingData?.lowestQualityFormat
@@ -113,26 +116,38 @@ suspend fun getInnerTubeFormatUrl(
 //                        AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
 //                        AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
 //                    }
+                    // *********************
+
+                    // SELECT FORMAT BY BITRATE
+//                    val selectedFormat = playerResponse.streamingData?.formats?.filter { it.isAudio }
+//                        ?: playerResponse.streamingData?.adaptiveFormats?.map { it.asFormat }?.filter { it.isAudio }
                     playerResponse.streamingData?.adaptiveFormats
                         ?.filter { it.isAudio }
                         ?.maxByOrNull {
-                            ( it.bitrate.times(
+                            ( it.bitrate?.times(
                                 when (audioQualityFormat) {
-                                    AudioQualityFormat.Auto -> if (!isConnectionMeteredEnabled() && !connectionMetered) 1 else -1
-                                    AudioQualityFormat.High -> 1
-                                    AudioQualityFormat.Medium -> 0
-                                    AudioQualityFormat.Low -> -1
+                                    AudioQualityFormat.Auto -> if (!isConnectionMeteredEnabled() && !connectionMetered) 2 else 1
+                                    AudioQualityFormat.High -> 2
+                                    AudioQualityFormat.Medium -> 1
+                                    AudioQualityFormat.Low -> 0
                                 }
-                            ) ) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
+                            ) ?: 0 ) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
                         }
-                    .let {
-                        // recover streaming url with newpipe extractor and specify range to avoid YouTube's throttling
-                        if (it?.url != null)
-                            it.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
-                        else
+                    // *********************
+
+                        .let {
                             it?.copy(url = getStreamUrl(it, videoId))
-                    }.also {
-                            println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat Playing song $videoId from formats itag selected ${it}")
+                        }
+//                    .let {
+//                        // recover streaming url with newpipe extractor and specify range to avoid YouTube's throttling
+//                        if (it?.url != null)
+//                            it.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
+//                        else
+//                            it?.copy(url = getStreamUrl(it, videoId))
+//
+//                    }
+                    .also {
+                        println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnertubeFormat song $videoId itag selected ${it}")
                         //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                         Database.asyncTransaction {
                             if (songExist(videoId) > 0)
@@ -250,3 +265,5 @@ private suspend fun getInvidiousFormatUrl(
     // Return parsed URL to play song or throw error if none of the responses is valid
     return Uri.parse( format?.url ) ?: throw NoSuchElementException( "Could not find any playable format from Piped ($videoId)" )
 }
+
+

@@ -3,20 +3,16 @@ package it.fast4x.innertube.requests
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.util.generateNonce
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.PlayerResponse
-import it.fast4x.innertube.clients.YouTubeClient
-import it.fast4x.innertube.clients.YouTubeClient.Companion.ANDROID_MUSIC
-import it.fast4x.innertube.clients.YouTubeClient.Companion.IOS
-import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 
 suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false, signatureTimestamp: Int? = null): Result<PlayerResponse> = runCatching {
     val response = when (withLogin) {
         true -> try {
-            println("Innertube newPlayer Player Response Try Android with login")
+            println("Innertube newPlayer Player Response Try Player with login")
             player(body.videoId, body.playlistId, signatureTimestamp).body<PlayerResponse>()
         } catch (e: Exception) {
             println("Innertube newPlayer Player Response Error $e")

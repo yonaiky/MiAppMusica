@@ -36,13 +36,13 @@ data class PlayerResponse(
 
     @Serializable
     data class StreamingData(
-        val adaptiveFormats: List<Format>, //List<AdaptiveFormat>?,
+        val adaptiveFormats: List<AdaptiveFormat>?,
         val formats: List<Format>?,
         val expiresInSeconds: Int,
     ) {
 
-        val autoMaxQualityFormat: Format?
-            get() = formats?.filter { it.isAudio }
+        val autoMaxQualityFormat: AdaptiveFormat?
+            get() = adaptiveFormats?.filter { it.isAudio }
                 ?.let { formats ->
                     formats.findLast { it.itag == 251 || it.itag == 141 ||
                             it.itag == 250 || it.itag == 140 ||
@@ -51,22 +51,22 @@ data class PlayerResponse(
                 }
 
 
-        val highestQualityFormat: Format?
-            get() = formats?.filter { it.isAudio }
+        val highestQualityFormat: AdaptiveFormat?
+            get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
                 ?.let { formats ->
-                    formats.findLast { it.itag == 251 || it.itag == 141 }
+                    adaptiveFormats.findLast { it.itag == 251 || it.itag == 140 || it.itag == 141 }
                         ?: formats.maxByOrNull { it.bitrate ?: 0 }
                 }
 
-        val mediumQualityFormat: Format?
-            get() = formats?.filter { it.isAudio }
+        val mediumQualityFormat: AdaptiveFormat?
+            get() = adaptiveFormats?.filter { it.isAudio }
                 ?.let { formats ->
                     formats.findLast { it.itag == 250 || it.itag == 140 }
                         ?: formats.maxByOrNull { it.bitrate ?: 0 }
                 }
 
-        val lowestQualityFormat: Format?
-            get() = formats?.filter { it.isAudio }
+        val lowestQualityFormat: AdaptiveFormat?
+            get() = adaptiveFormats?.filter { it.isAudio }
                 ?.let { formats ->
                     formats.findLast { it.itag == 249 || it.itag == 139 || it.itag == 171 }
                         ?: formats.maxByOrNull { it.bitrate ?: 0 }

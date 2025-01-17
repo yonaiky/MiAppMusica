@@ -72,7 +72,7 @@ object NewPipeUtils {
         YoutubeJavaScriptPlayerManager.getSignatureTimestamp(videoId)
     }
 
-    fun getStreamUrl(format: PlayerResponse.StreamingData.Format, videoId: String) = runCatching {
+    fun getStreamUrl(format: PlayerResponse.StreamingData.AdaptiveFormat, videoId: String) = runCatching {
         format.url?.let {
             return@runCatching it
         }

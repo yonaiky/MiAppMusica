@@ -16,7 +16,7 @@ fun getSignatureTimestampOrNull(
 }
 
 fun getStreamUrl(
-    format: PlayerResponse.StreamingData.Format,
+    format: PlayerResponse.StreamingData.AdaptiveFormat,
     videoId: String
 ): String? {
     return NewPipeUtils.getStreamUrl(format, videoId)
