@@ -863,9 +863,9 @@
     <string name="lyricsanimate">Размер анимации текста песни</string>
     <string name="yt_playlists">YT/YTM</string>
     <string name="lyricsSizeSecondary">Долгое нажатие для изменения размера</string>
-    <string name="home">Home</string>
-    <string name="yt_history">YTM History</string>
+    <string name="home">Главная</string>
     <string name="appearancepresets">Пресеты внешнего вида</string>
     <string name="appearancepresetssecondary">Предпросмотр будет в низком качестве</string>
-    <string name="albumCoverRotation">Background Rotation Animation</string>
+    <string name="yt_history">История YTM</string>
+    <string name="albumCoverRotation">Анимация поворота фона</string>
 </resources>
