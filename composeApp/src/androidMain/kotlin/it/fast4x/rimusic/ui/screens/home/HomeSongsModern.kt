@@ -1349,6 +1349,8 @@ fun HomeSongsModern(
                                             itemsAll.filter {!it.song.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
                                                 Database.asyncTransaction {
                                                     if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id ?: "") == 0)){
+                                                        binder?.cache?.removeResource(song.song.id)
+                                                        binder?.downloadCache?.removeResource(song.song.id)
                                                         Database.delete(song.song)
                                                     }
                                                 }
