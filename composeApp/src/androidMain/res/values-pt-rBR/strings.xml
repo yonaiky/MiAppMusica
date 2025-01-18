@@ -866,8 +866,8 @@
     <string name="appearancepresetssecondary">Pré-visualizações estarão em baixa qualidade</string>
     <string name="yt_history">Histórico do YTM</string>
     <string name="albumCoverRotation">Animação de rotação de fundo</string>
-    <string name="enable_connection_metered">Use metered connection to save data</string>
+    <string name="enable_connection_metered">Usar conexão limitada para salvar os dados</string>
     <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
     <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
-    <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
+    <string name="info_use_ytm_login_only_for_browse">Para ser usado se as músicas não estão sendo reproduzidas enquanto está logado</string>
 </resources>
