@@ -630,7 +630,7 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
     val searchQuery = Innertube.searchPage(
         body = SearchBody(
-            query = "${song.title} ${song.artistsText}",
+            query = "${song.title} ${song.artistsText}".filter { it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }.lowercase().replace("lyrics", ""),
             params = Innertube.SearchFilter.Song.value
         ),
         fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
