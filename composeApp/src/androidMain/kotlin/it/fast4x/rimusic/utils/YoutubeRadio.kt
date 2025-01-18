@@ -87,9 +87,9 @@ data class YouTubeRadio @OptIn(UnstableApi::class) constructor
                 withContext(Dispatchers.IO) {
                     mediaItems?.forEach {
                         val songInPlaylist = Database.songUsedInPlaylists(it.mediaId)
-                        val songIsLiked = Database.songliked(it.mediaId)
+                        val songIsLiked = (Database.getLikedAt(it.mediaId) !in listOf(-1L,null))
                         val sIQ = songsInQueue(it.mediaId)
-                        if (songInPlaylist == 0 && songIsLiked == 0 && (it.mediaId != sIQ)) {
+                        if (songInPlaylist == 0 && !songIsLiked && (it.mediaId != sIQ)) {
                             listMediaItems.add(it)
                         }
                     }
