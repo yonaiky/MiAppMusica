@@ -1341,6 +1341,9 @@ interface Database {
     @Query("SELECT likedAt FROM Song WHERE id = :songId")
     fun likedAt(songId: String): Flow<Long?>
 
+    @Query("SELECT likedAt FROM Song WHERE id = :songId")
+    fun getLikedAt(songId: String): Long?
+
     @Query("UPDATE Album SET bookmarkedAt = :bookmarkedAt WHERE id = :id")
     fun bookmarkAlbum(id: String, bookmarkedAt: Long?): Int
 
