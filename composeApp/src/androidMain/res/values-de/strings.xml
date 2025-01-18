@@ -864,10 +864,10 @@
     <string name="home">Homepage</string>
     <string name="appearancepresets">Erscheinungsbild Voreinstellungen</string>
     <string name="appearancepresetssecondary">Vorschau in niedriger Qualität</string>
-    <string name="yt_history">YTM History</string>
+    <string name="yt_history">YTM Verlauf</string>
     <string name="albumCoverRotation">Background Rotation Animation</string>
-    <string name="enable_connection_metered">Use metered connection to save data</string>
+    <string name="enable_connection_metered">Getaktete Verbindung verwenden, um Daten zu sparen</string>
     <string name="info_enable_connection_metered">Datensparen mindert die Qualität, nur bei Verbindung mit eingeschränkten Daten verwenden</string>
-    <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
+    <string name="use_ytm_login_only_for_browse">Benutze YouTube Music Login nur zum Browsen</string>
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
 </resources>
