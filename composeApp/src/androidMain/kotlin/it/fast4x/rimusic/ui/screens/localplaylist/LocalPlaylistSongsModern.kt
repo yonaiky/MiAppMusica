@@ -215,6 +215,7 @@ fun LocalPlaylistSongsModern(
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
+    var playlistSongsSortByPosition by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
     val thumbnailUrl = remember { mutableStateOf("") }
 
@@ -229,6 +230,11 @@ fun LocalPlaylistSongsModern(
     LaunchedEffect(Unit, filter, sortOrder, sortBy) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
             .collect { playlistSongs = it }
+    }
+
+    LaunchedEffect(Unit) {
+        Database.songsPlaylist(playlistId, PlaylistSongSortBy.Position, SortOrder.Ascending).filterNotNull()
+            .collect { playlistSongsSortByPosition = it }
     }
 
     LaunchedEffect(Unit) {
@@ -731,7 +737,7 @@ fun LocalPlaylistSongsModern(
     var getAlbumVersion by remember { mutableStateOf(false) }
 
     LaunchedEffect(getAlbumVersion) {
-        playlistSongs.forEachIndexed { index, video ->
+        playlistSongsSortByPosition.forEachIndexed { index, video ->
             if (video.song.thumbnailUrl?.startsWith("https://i.ytimg.com") == true){
             getAlbumVersionFromVideo(
                 song = video.song,
