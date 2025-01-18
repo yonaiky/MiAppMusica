@@ -1370,18 +1370,25 @@ fun HomeSongsModern(
                                             }
                                         },
                                         onDeleteSongsNotInLibrary = {
-                                            songsDeleted = 0
-                                            deleteProgressDialog = true
-                                            itemsAll.filter {!it.song.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
-                                                Database.asyncTransaction {
-                                                    if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id ?: "") == 0)){
-                                                        binder?.cache?.removeResource(song.song.id)
-                                                        binder?.downloadCache?.removeResource(song.song.id)
-                                                        Database.delete(song.song)
-                                                        songsDeleted ++
-                                                        if (songsDeleted == totalSongsToDelete) {
-                                                            deleteProgressDialog = false
-                                                            exitProcess(0)
+                                            if (totalSongsToDelete == 0) {
+                                                SmartMessage(
+                                                    context.resources.getString(R.string.nothing_to_delete),
+                                                    type = PopupType.Info, context = context
+                                                )
+                                            } else {
+                                                songsDeleted = 0
+                                                deleteProgressDialog = true
+                                                itemsAll.filter {!it.song.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
+                                                    Database.asyncTransaction {
+                                                        if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id?: "") == 0)) {
+                                                            binder?.cache?.removeResource(song.song.id)
+                                                            binder?.downloadCache?.removeResource(song.song.id)
+                                                            Database.delete(song.song)
+                                                            songsDeleted++
+                                                            if (songsDeleted == totalSongsToDelete) {
+                                                                deleteProgressDialog = false
+                                                                exitProcess(0)
+                                                            }
                                                         }
                                                     }
                                                 }
