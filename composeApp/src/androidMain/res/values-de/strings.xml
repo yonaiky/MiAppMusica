@@ -718,7 +718,7 @@
     <string name="error_timeout">Zeitüberschreitung der Verbindung</string>
     <string name="error_unknown">Unbekannter Fehler</string>
     <string name="delete_song">Soll der Titel wirklich aus der Datenbank gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.</string>
-    <string name="update_album">Updates the Album</string>
+    <string name="update_album">Album aktualisieren</string>
     <string name="info_check_update_now">Jetzt überprüfen</string>
     <string name="info_no_update_available">Keine Aktualisierung verfügbar</string>
     <string name="lang_galician">Galicisch (galego)</string>
@@ -867,7 +867,7 @@
     <string name="yt_history">YTM History</string>
     <string name="albumCoverRotation">Background Rotation Animation</string>
     <string name="enable_connection_metered">Use metered connection to save data</string>
-    <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
+    <string name="info_enable_connection_metered">Datensparen mindert die Qualität, nur bei Verbindung mit eingeschränkten Daten verwenden</string>
     <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
 </resources>
