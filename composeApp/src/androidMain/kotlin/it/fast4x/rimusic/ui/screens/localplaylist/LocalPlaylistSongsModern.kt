@@ -189,6 +189,7 @@ import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import kotlinx.coroutines.CoroutineScope
 import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import kotlinx.coroutines.flow.map
@@ -735,8 +736,21 @@ fun LocalPlaylistSongsModern(
     }
 
     var getAlbumVersion by remember { mutableStateOf(false) }
+    var showGetAlbumVersionDialogue by remember { mutableStateOf(false) }
+    var totalSongsToMatch by remember { mutableIntStateOf(0) }
+    var songsMatched by remember { mutableIntStateOf(0) }
+
+    if (showGetAlbumVersionDialogue){
+        InProgressDialog(
+            total = totalSongsToMatch,
+            done = songsMatched,
+            text = stringResource(R.string.matching_songs)
+        )
+    }
 
     LaunchedEffect(getAlbumVersion) {
+        totalSongsToMatch = playlistSongsSortByPosition.filter { it.song.thumbnailUrl?.startsWith("https://i.ytimg.com") == true }.size
+        songsMatched = 0
         playlistSongsSortByPosition.forEachIndexed { index, video ->
             if (video.song.thumbnailUrl?.startsWith("https://i.ytimg.com") == true){
             getAlbumVersionFromVideo(
@@ -744,6 +758,8 @@ fun LocalPlaylistSongsModern(
                 playlistId = playlistId,
                 position = index
                 )
+                songsMatched++
+                if (songsMatched == totalSongsToMatch) showGetAlbumVersionDialogue = false
             }
         }
         getAlbumVersion = false
@@ -1060,6 +1076,7 @@ fun LocalPlaylistSongsModern(
                                 onClick = {
                                     if (playlistSongs.any {it.asMediaItem.mediaMetadata.artworkUri.toString().startsWith("https://i.ytimg.com")}) {
                                         getAlbumVersion = true
+                                        showGetAlbumVersionDialogue = true
                                     } else {
                                         SmartMessage(context.resources.getString(R.string.no_videos_found), context = context)
                                     }

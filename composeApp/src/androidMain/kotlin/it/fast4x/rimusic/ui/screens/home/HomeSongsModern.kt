@@ -192,7 +192,7 @@ import kotlin.math.min
 import kotlin.time.Duration
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
-import it.fast4x.rimusic.ui.components.themed.DeleteInProgressDialog
+import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isNowPlaying
@@ -1090,7 +1090,7 @@ fun HomeSongsModern(
                         }
 
                         if (deleteProgressDialog){
-                            DeleteInProgressDialog(total = totalSongsToDelete, deleted = songsDeleted)
+                            InProgressDialog(total = totalSongsToDelete, done = songsDeleted, text = stringResource(R.string.delete_in_process))
                         }
 
                         Database.asyncTransaction {

@@ -1743,9 +1743,10 @@ fun LyricsSizeDialog(
 }
 
 @Composable
-fun DeleteInProgressDialog(
+fun InProgressDialog(
     total : Int,
-    deleted : Int
+    done : Int,
+    text : String
 ) {
     DefaultDialog(
         onDismiss = {},
@@ -1753,7 +1754,7 @@ fun DeleteInProgressDialog(
             .fillMaxWidth(if (isLandscape) 0.3f else 0.8f)
     ) {
         BasicText(
-            text = stringResource(R.string.delete_in_process),
+            text = text,
             style = TextStyle(
                 textAlign = TextAlign.Center,
                 fontSize = typography().l.bold.fontSize,
@@ -1766,7 +1767,7 @@ fun DeleteInProgressDialog(
             .height(10.dp)
         )
         BasicText(
-            text = "$deleted / $total",
+            text = "$done / $total",
             style = TextStyle(
                 textAlign = TextAlign.Center,
                 fontStyle = typography().xs.semiBold.fontStyle,
