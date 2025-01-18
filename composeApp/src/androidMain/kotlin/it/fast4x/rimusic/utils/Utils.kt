@@ -639,7 +639,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     val requiredSong = searchResults?.get(0)
     Database.asyncTransaction {
         if (requiredSong != null) {
-            Database.delete(song)
+            deleteSongFromPlaylist(song.id, playlistId)
             Database.insert(requiredSong.asSong)
             insert(
                 SongPlaylistMap(
