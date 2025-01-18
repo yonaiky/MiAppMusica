@@ -189,6 +189,7 @@ import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import kotlinx.coroutines.CoroutineScope
 import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import kotlinx.coroutines.flow.map
 
@@ -727,6 +728,21 @@ fun LocalPlaylistSongsModern(
         }
     }
 
+    var getAlbumVersion by remember { mutableStateOf(false) }
+
+    LaunchedEffect(getAlbumVersion) {
+        playlistSongs.forEachIndexed { index, video ->
+            if (video.song.thumbnailUrl?.startsWith("https://i.ytimg.com") == true){
+            getAlbumVersionFromVideo(
+                song = video.song,
+                playlistId = playlistId,
+                position = index
+                )
+            }
+        }
+        getAlbumVersion = false
+    }
+
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
@@ -1025,6 +1041,25 @@ fun LocalPlaylistSongsModern(
                                 },
                                 onLongClick = {
                                     SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                }
+                            )
+                    )
+                    HeaderIconButton(
+                        icon = R.drawable.random,
+                        enabled = (playlistSongs.any {it.asMediaItem.mediaMetadata.artworkUri.toString().startsWith("https://i.ytimg.com")}),
+                        color = if (playlistSongs.any {it.asMediaItem.mediaMetadata.artworkUri.toString().startsWith("https://i.ytimg.com")}) colorPalette.text else colorPalette.textDisabled,
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    if (playlistSongs.any {it.asMediaItem.mediaMetadata.artworkUri.toString().startsWith("https://i.ytimg.com")}) {
+                                        getAlbumVersion = true
+                                    } else {
+                                        SmartMessage(context.resources.getString(R.string.no_videos_found), context = context)
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartMessage(context.resources.getString(R.string.get_album_version), context = context)
                                 }
                             )
                     )
