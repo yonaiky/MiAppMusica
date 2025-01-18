@@ -902,39 +902,26 @@ fun LocalPlaylistSongsModern(
                         .fillMaxWidth()
                 ) {
 
-                    if (playlistNotMonthlyType &&
-                        playlistPreview?.playlist?.browseId?.isEmpty() == true
-                    )
-                        HeaderIconButton(
-                            icon = R.drawable.pin,
-                            enabled = playlistSongs.isNotEmpty(),
-                            color = if (playlistPreview?.playlist?.name?.startsWith(
-                                    PINNED_PREFIX,
-                                    0,
-                                    true
-                                ) == true
-                            )
-                                colorPalette.text else colorPalette.textDisabled,
-                            onClick = {},
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        Database.asyncTransaction {
-                                            if (playlistPreview?.playlist?.name?.startsWith(
-                                                    PINNED_PREFIX,
-                                                    0,
-                                                    true
-                                                ) == true
-                                            )
-                                                Database.unPinPlaylist(playlistId) else
-                                                Database.pinPlaylist(playlistId)
-                                        }
-                                    },
-                                    onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_pin_unpin_playlist), context = context)
+                    HeaderIconButton(
+                        icon = R.drawable.pin,
+                        enabled = playlistSongs.isNotEmpty(),
+                        color = if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                            colorPalette.text else colorPalette.textDisabled,
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    Database.asyncTransaction {
+                                        if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                                            Database.unPinPlaylist(playlistId) else
+                                            Database.pinPlaylist(playlistId)
                                     }
-                                )
-                        )
+                                },
+                                onLongClick = {
+                                    SmartMessage(context.resources.getString(R.string.info_pin_unpin_playlist), context = context)
+                                }
+                            )
+                    )
 
                     if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending)
                         HeaderIconButton(
