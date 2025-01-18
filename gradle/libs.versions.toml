@@ -76,6 +76,7 @@ ktor-serialization-json = {group = "io.ktor", name = "ktor-serialization-kotlinx
 brotli = {group = "org.brotli", name = "dec", version.ref = "brotli"}
 palette = {group = "androidx.palette", name = "palette", version.ref = "palette"}
 desugaring = {group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugaring"}
+desugaring-nio = {group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugaring"}
 appcompat = {group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat"}
 appcompat-resources = {group = "androidx.appcompat", name = "appcompat-resources", version.ref = "appcompat"}
 media = {group = "androidx.media", name = "media", version.ref = "media"}
@@ -110,6 +111,9 @@ hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hypnoticcanvas = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas", version.ref = "hypnoticcanvas"}
 hypnoticcanvas-shaders = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas-shaders", version.ref = "hypnoticcanvas"}
+#newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version = "v0.24.3" }
+# Use fork of NewPipeExtractor until https://github.com/TeamNewPipe/NewPipeExtractor/pull/1253 is merged
+newpipe-extractor = { group = "com.github.gechoto", name = "NewPipeExtractor", version = "00cf7dad9e49933c7faaa382c9c7b1e7afb28a7d" }
 
 
 [plugins]

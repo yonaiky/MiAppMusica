@@ -2402,6 +2402,9 @@ interface Database {
     @Delete
     fun delete(song: Song)
 
+    @Delete
+    fun delete(album: Album)
+
     /**
      * Reset [Format.contentLength] of provided song.
      *

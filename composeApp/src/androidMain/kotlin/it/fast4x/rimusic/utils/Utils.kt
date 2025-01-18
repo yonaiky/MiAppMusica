@@ -417,6 +417,8 @@ suspend fun Result<Innertube.ItemsPage<Innertube.SongItem>?>.completed(
     var continuationsList = arrayOf<String>()
     //continuationsList += continuation.orEmpty()
 
+    println("mediaItem playlist completed() continuation? $continuation")
+
     while (continuation != null && depth++ < maxDepth) {
         val newSongs = Innertube
             .playlistPage(

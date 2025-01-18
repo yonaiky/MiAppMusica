@@ -297,6 +297,8 @@ const val coverThumbnailAnimationKey = "coverThumbnailAnimation"
 const val restartActivityKey = "restartActivity"
 const val enableYouTubeLoginKey = "enableYoutubeLogin"
 const val enableYouTubeSyncKey = "enableYoutubeSync"
+const val useYtLoginOnlyForBrowseKey = "useYtLoginOnlyForBrowse"
+
 
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 const val showSecondLineKey = "showSecondLine"
@@ -344,6 +346,7 @@ const val lyricsSizeLKey = "lyricsSizeL"
 const val ytAccountNameKey = "ytAccountName"
 const val ytAccountEmailKey = "ytAccountEmail"
 const val albumCoverRotationKey = "albumCoverRotation"
+const val isConnectionMeteredEnabledKey = "isConnectionMeteredEnabled"
 const val landscapeControlsKey = "landscapeControls"
 
 /*
