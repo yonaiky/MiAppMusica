@@ -628,8 +628,8 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 }
 
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
-    var explicit = if (song.asMediaItem.isExplicit) "explicit" else ""
-    fun stringWithFilters(text : String): String {
+    val explicit = if (song.asMediaItem.isExplicit) "explicit" else ""
+    fun filteredText(text : String): String{
         val filteredText = text
             .lowercase()
             .replace("lyrics", "")
@@ -637,24 +637,29 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
             .replace(" hd", "")
             .replace("official video", "")
             .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
-
         return filteredText
     }
+
     val searchQuery = Innertube.searchPage(
         body = SearchBody(
-            query = stringWithFilters("${cleanPrefix(song.title)} ${song.artistsText} $explicit"),
+            query = filteredText("${cleanPrefix(song.title)} ${song.artistsText} $explicit"),
             params = Innertube.SearchFilter.Song.value
         ),
         fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
     )
+
     val searchResults = searchQuery?.getOrNull()?.items
     val requiredSong = searchResults?.get(0)
-    val sourceSongWords = stringWithFilters(cleanPrefix(song.title))
+
+    val sourceSongWords = filteredText(cleanPrefix(song.title))
         .split(" ").filter { it.isNotEmpty() }
-    val requiredSongWords = cleanPrefix(requiredSong?.asSong?.title ?: "").split(" ").filter { it.isNotEmpty() }
-    val songIsMatched = (requiredSong != null) && (requiredSongWords.any { it in sourceSongWords })
+    val requiredSongWords = cleanPrefix(requiredSong?.title ?: "")
+        .lowercase()
+        .split(" ").filter { it.isNotEmpty() }
+
+    val songMatched = (requiredSong != null) && (requiredSongWords.any { it in sourceSongWords })
     Database.asyncTransaction {
-        if (songIsMatched) {
+        if (songMatched) {
             deleteSongFromPlaylist(song.id, playlistId)
             if (requiredSong != null) {
                 Database.insert(requiredSong.asSong)
