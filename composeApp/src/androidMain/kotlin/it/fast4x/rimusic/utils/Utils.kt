@@ -631,7 +631,13 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     var explicit = if (song.asMediaItem.isExplicit) "explicit" else ""
     val searchQuery = Innertube.searchPage(
         body = SearchBody(
-            query = "${cleanPrefix(song.title)} ${song.artistsText} $explicit".filter { it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }.lowercase().replace("lyrics", ""),
+            query = "${cleanPrefix(song.title)} ${song.artistsText} $explicit"
+                .lowercase()
+                .replace("lyrics", "")
+                .replace("vevo", "")
+                .replace(" hd", "")
+                .replace("official video", "")
+                .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' },
             params = Innertube.SearchFilter.Song.value
         ),
         fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
