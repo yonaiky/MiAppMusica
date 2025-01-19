@@ -632,10 +632,13 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     fun filteredText(text : String): String{
         val filteredText = text
             .lowercase()
+            .replace("(", " ")
+            .replace(")", " ")
             .replace("lyrics", "")
             .replace("vevo", "")
             .replace(" hd", "")
             .replace("official video", "")
+            .replace(Regex("\\s+"), " ")
             .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
         return filteredText
     }
@@ -653,8 +656,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
 
     val sourceSongWords = filteredText(cleanPrefix(song.title))
         .split(" ").filter { it.isNotEmpty() }
-    val requiredSongWords = cleanPrefix(requiredSong?.title ?: "")
-        .lowercase()
+    val requiredSongWords = filteredText(cleanPrefix(requiredSong?.title ?: ""))
         .split(" ").filter { it.isNotEmpty() }
 
     val songMatched = (requiredSong != null) && (requiredSongWords.any { it in sourceSongWords })
