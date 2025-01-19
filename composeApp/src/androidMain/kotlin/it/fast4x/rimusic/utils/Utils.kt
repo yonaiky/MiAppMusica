@@ -629,32 +629,45 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
     var explicit = if (song.asMediaItem.isExplicit) "explicit" else ""
+    fun stringWithFilters(text : String): String {
+        val filteredText = text
+            .lowercase()
+            .replace("lyrics", "")
+            .replace("vevo", "")
+            .replace(" hd", "")
+            .replace("official video", "")
+            .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+
+        return filteredText
+    }
     val searchQuery = Innertube.searchPage(
         body = SearchBody(
-            query = "${cleanPrefix(song.title)} ${song.artistsText} $explicit"
-                .lowercase()
-                .replace("lyrics", "")
-                .replace("vevo", "")
-                .replace(" hd", "")
-                .replace("official video", "")
-                .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' },
+            query = stringWithFilters("${cleanPrefix(song.title)} ${song.artistsText} $explicit"),
             params = Innertube.SearchFilter.Song.value
         ),
         fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
     )
     val searchResults = searchQuery?.getOrNull()?.items
     val requiredSong = searchResults?.get(0)
+    val sourceSongWords = stringWithFilters(cleanPrefix(song.title))
+        .split(" ").filter { it.isNotEmpty() }
+    val requiredSongWords = cleanPrefix(requiredSong?.asSong?.title ?: "").split(" ").filter { it.isNotEmpty() }
+    val songIsMatched = (requiredSong != null) && (requiredSongWords.any { it in sourceSongWords })
     Database.asyncTransaction {
-        if (requiredSong != null) {
+        if (songIsMatched) {
             deleteSongFromPlaylist(song.id, playlistId)
-            Database.insert(requiredSong.asSong)
-            insert(
-                SongPlaylistMap(
-                    songId = requiredSong.asMediaItem.mediaId,
-                    playlistId = playlistId,
-                    position = position
+            if (requiredSong != null) {
+                Database.insert(requiredSong.asSong)
+            }
+            if (requiredSong != null) {
+                insert(
+                    SongPlaylistMap(
+                        songId = requiredSong.asMediaItem.mediaId,
+                        playlistId = playlistId,
+                        position = position
+                    )
                 )
-            )
+            }
         }
     }
 }
