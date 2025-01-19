@@ -41,23 +41,33 @@ import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.YT_PREFIX
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.ui.components.ButtonsRow
+import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
+import it.fast4x.rimusic.ui.components.tab.ImportSongsFromCSV
+import it.fast4x.rimusic.ui.components.tab.ItemSize
+import it.fast4x.rimusic.ui.components.tab.Sort
+import it.fast4x.rimusic.ui.components.tab.TabHeader
+import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
+import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.items.PlaylistItem
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.ImportPipedPlaylists
-import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
@@ -65,30 +75,17 @@ import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
+import it.fast4x.rimusic.utils.playlistSync
 import it.fast4x.rimusic.utils.playlistTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
-import kotlinx.coroutines.flow.map
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.ui.components.themed.IDialog
-import it.fast4x.rimusic.ui.components.themed.Search
-import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.utils.playlistSync
-import it.fast4x.rimusic.ui.components.tab.ImportSongsFromCSV
-import it.fast4x.rimusic.ui.components.tab.ItemSize
-import it.fast4x.rimusic.ui.components.tab.Sort
-import it.fast4x.rimusic.ui.components.tab.TabHeader
-import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
-import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.component.tab.SongShuffler
 
 
 @ExperimentalMaterial3Api
@@ -132,15 +129,26 @@ fun HomeLibrary(
 
     val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
 
-    val shuffle = SongsShuffle.init {
+    //<editor-fold desc="Songs shuffler">
+    /**
+     * Previous implementation calls this every time shuffle button is clicked.
+     * It is extremely slow since the database needs some time to look for and
+     * sort songs before it can go through and start playing.
+     *
+     * This implementation will make sure that new list is fetched when [PlaylistsType]
+     * is changed, but this process happens in the background, therefore, there's no
+     * visible penalty. Furthermore, this will reduce load time significantly.
+     */
+    val shuffle = SongShuffler(
         when( playlistType ) {
-            PlaylistsType.Playlist -> Database.songsInAllPlaylists()
-            PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
-            PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
-            PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
-            PlaylistsType.YTPlaylist -> Database.songsInAllYTPlaylists()
-        }.map { it.map( Song::asMediaItem ) }
-    }
+            PlaylistsType.Playlist -> Database::songsInAllPlaylists
+            PlaylistsType.PinnedPlaylist -> Database::songsInAllPinnedPlaylists
+            PlaylistsType.MonthlyPlaylist -> Database::songsInAllMonthlyPlaylists
+            PlaylistsType.PipedPlaylist -> Database::songsInAllPipedPlaylists
+            PlaylistsType.YTPlaylist -> Database::songsInAllYTPlaylists
+        }
+    )
+    //</editor-fold>
     //<editor-fold desc="New playlist dialog">
     val newPlaylistDialog = object: IDialog, Descriptive, MenuIcon {
 

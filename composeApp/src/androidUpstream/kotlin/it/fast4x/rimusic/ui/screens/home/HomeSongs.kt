@@ -50,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
@@ -95,7 +96,6 @@ import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.Enqueue
@@ -124,6 +124,7 @@ import it.fast4x.rimusic.utils.OnDeviceOrganize
 import it.fast4x.rimusic.utils.PeriodSelector
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.builtInPlaylistKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
@@ -165,6 +166,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.tab.ItemSelector
+import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
 import java.util.Optional
 import kotlin.math.max
@@ -261,7 +263,7 @@ fun HomeSongs(
         OnDeviceFolderSortBy.entries,
         rememberPreference(onDeviceFolderSortByKey, OnDeviceFolderSortBy.Title)
     )
-    val shuffle = SongsShuffle.init{ flowOf( getMediaItems() ) }
+    val shuffle = SongShuffler { getMediaItems().map( MediaItem::asSong ) }
     val import = ImportSongsFromCSV.init(
         afterTransaction = { _, song ->
             Database.upsert( song )

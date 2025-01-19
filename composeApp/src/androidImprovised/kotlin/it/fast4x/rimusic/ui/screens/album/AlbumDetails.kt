@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
@@ -71,7 +72,6 @@ import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
@@ -89,6 +89,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
@@ -109,7 +110,6 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
@@ -117,6 +117,7 @@ import me.bush.translator.Translator
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.Radio
+import me.knighthat.component.tab.SongShuffler
 import me.knighthat.component.ui.screens.DynamicOrientationLayout
 import me.knighthat.component.ui.screens.album.AlbumBookmark
 import me.knighthat.component.ui.screens.album.AlbumModifier
@@ -174,7 +175,9 @@ fun AlbumDetails(
     val bookmark = AlbumBookmark( browseId )
     val deleteAllDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
     val downloadALlDialog = DownloadAllDialog.init( ::getMediaItems )
-    val shuffle = SongsShuffle.init { flowOf( getMediaItems() ) }
+    val shuffle = SongShuffler {
+        getMediaItems().map( MediaItem::asSong )
+    }
     val radio = Radio.init( ::getMediaItems )
     val locator = LocateComponent.init( lazyListState, ::getMediaItems )
     val playNext = PlayNext {

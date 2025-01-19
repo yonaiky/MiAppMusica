@@ -97,7 +97,6 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -129,6 +128,7 @@ import it.fast4x.rimusic.utils.Reposition
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.checkFileExists
@@ -171,6 +171,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.component.tab.ItemSelector
+import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
 import java.util.UUID
 
@@ -219,7 +220,7 @@ fun LocalPlaylistSongs(
 
     val sort = PlaylistSongsSort.init()
 
-    val shuffle = SongsShuffle.init { flowOf( getMediaItems() ) }
+    val shuffle = SongShuffler { getMediaItems().map( MediaItem::asSong ) }
     val renameDialog = RenameDialog.init( pipedSession, coroutineScope, { isPipedEnabled }, playlistName, { playlistPreview } )
     val exportDialog = ExportSongsToCSVDialog.init( playlistName, ::getMediaItems )
     val deleteDialog = DeletePlaylist {

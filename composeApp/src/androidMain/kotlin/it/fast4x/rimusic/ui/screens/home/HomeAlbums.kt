@@ -56,7 +56,6 @@ import it.fast4x.rimusic.ui.components.tab.ItemSize
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
-import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
@@ -78,8 +77,8 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import me.knighthat.component.tab.SongShuffler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -119,9 +118,7 @@ fun HomeAlbums(
         override fun getItems(): List<Album> = itemsOnDisplay
         override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
     }
-    val shuffle = SongsShuffle.init {
-        Database.songsInAllBookmarkedAlbums().map { it.map( Song::asMediaItem ) }
-    }
+    val shuffle = SongShuffler( Database::songsInAllBookmarkedAlbums )
 
     var albumType by rememberPreference(albumTypeKey, AlbumsType.Favorites )
     val buttonsList = AlbumsType.entries.map { it to it.text }
