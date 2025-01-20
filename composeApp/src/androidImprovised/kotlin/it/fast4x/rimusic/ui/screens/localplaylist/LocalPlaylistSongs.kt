@@ -92,7 +92,6 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.ExportSongsToCSVDialog
 import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
@@ -167,6 +166,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
@@ -217,7 +217,11 @@ fun LocalPlaylistSongs(
     val sort = PlaylistSongsSort.init()
     val shuffle = SongShuffler { getMediaItems().map( MediaItem::asSong ) }
     val renameDialog = RenameDialog.init( pipedSession, coroutineScope, { isPipedEnabled }, playlistName, { playlistPreview } )
-    val exportDialog = ExportSongsToCSVDialog.init( playlistName, ::getMediaItems )
+    val exportDialog = ExportSongsToCSVDialog(
+        playlistId = playlistId,
+        playlistName = playlistName.value,
+        songs = { getMediaItems().map(MediaItem::asSong) }
+    )
     val deleteDialog = DeletePlaylist {
         Database.asyncTransaction {
             playlistPreview?.playlist?.let( ::delete )

@@ -87,7 +87,6 @@ import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.DelSongDialog
 import it.fast4x.rimusic.ui.components.tab.DeleteHiddenSongsDialog
-import it.fast4x.rimusic.ui.components.tab.ExportSongsToCSVDialog
 import it.fast4x.rimusic.ui.components.tab.HideSongDialog
 import it.fast4x.rimusic.ui.components.tab.ImportSongsFromCSV
 import it.fast4x.rimusic.ui.components.tab.LocateComponent
@@ -165,6 +164,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
@@ -239,15 +239,7 @@ fun HomeSongs(
 
     val maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
-    val playlistNameState = remember { mutableStateOf( "" ) }
-
-    // Update playlistNameState's value based on current builtInPlaylist
-    LaunchedEffect( builtInPlaylist ) {
-        playlistNameState.value = context.resources.getString( builtInPlaylist.textId )
-    }
-
     val search = Search.init()
-
     val songSort = Sort.init(
         songSortOrderKey,
         SongSortBy.entries,
@@ -270,7 +262,11 @@ fun HomeSongs(
             Database.like( song.id, System.currentTimeMillis() )
         }
     )
-    val exportDialog = ExportSongsToCSVDialog.init( playlistNameState, ::getMediaItems )
+    val exportDialog = ExportSongsToCSVDialog(
+        playlistId = -1,        // Doesn't belong to any playlist
+        playlistName = builtInPlaylist.text,
+        songs = { getMediaItems().map( MediaItem::asSong ) }
+    )
     val downloadAllDialog = DownloadAllDialog.init( ::getMediaItems )
     val deleteDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
     val deleteSongDialog =  DelSongDialog.init()

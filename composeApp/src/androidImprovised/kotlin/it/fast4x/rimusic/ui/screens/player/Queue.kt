@@ -3,8 +3,28 @@ package it.fast4x.rimusic.ui.screens.player
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -32,6 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.navigation.NavController
@@ -43,21 +64,48 @@ import it.fast4x.compose.reordering.reorder
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.*
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueLoopType
+import it.fast4x.rimusic.enums.QueueType
+import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.ExportSongsToCSVDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
-import it.fast4x.rimusic.ui.components.themed.*
+import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
+import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.IconInfo
+import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
+import it.fast4x.rimusic.ui.components.themed.QueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.Search
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.utils.DisposableListener
+import it.fast4x.rimusic.utils.PositionLock
+import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNowPlaying
+import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.queueTypeKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.shouldBePlaying
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
+import it.fast4x.rimusic.utils.windows
 import me.knighthat.component.SongItem
+import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
-import me.knighthat.component.ui.screens.player.*
+import me.knighthat.component.ui.screens.player.DeleteFromQueue
+import me.knighthat.component.ui.screens.player.Discover
+import me.knighthat.component.ui.screens.player.QueueArrow
+import me.knighthat.component.ui.screens.player.Repeat
+import me.knighthat.component.ui.screens.player.ShuffleQueue
 import timber.log.Timber
 
 
@@ -142,7 +190,11 @@ fun Queue(
         }
 
         val plistName = remember { mutableStateOf("") }
-        val exportDialog = ExportSongsToCSVDialog.init( plistName, ::getMediaItems )
+        val exportDialog = ExportSongsToCSVDialog(
+            playlistId = -1,        // Doesn't belong to any playlist
+            playlistName = plistName.value,
+            songs = { getMediaItems().map( MediaItem::asSong ) }
+        )
         val shuffle = ShuffleQueue( player, reorderingState )
         val discover = Discover( onDiscoverClick )
         val repeat = Repeat.init()
