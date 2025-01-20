@@ -88,7 +88,6 @@ import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.DelSongDialog
 import it.fast4x.rimusic.ui.components.tab.DeleteHiddenSongsDialog
 import it.fast4x.rimusic.ui.components.tab.HideSongDialog
-import it.fast4x.rimusic.ui.components.tab.ImportSongsFromCSV
 import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
@@ -163,6 +162,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ExportSongsToCSVDialog
+import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
@@ -256,12 +256,7 @@ fun HomeSongs(
     val shuffle = SongShuffler {
         getMediaItems().map( MediaItem::asSong )
     }
-    val import = ImportSongsFromCSV.init(
-        afterTransaction = { _, song ->
-            Database.upsert( song )
-            Database.like( song.id, System.currentTimeMillis() )
-        }
-    )
+    val import = ImportSongsFromCSV()
     val exportDialog = ExportSongsToCSVDialog(
         playlistId = -1,    // Doesn't belong to any playlist
         playlistName = builtInPlaylist.text,

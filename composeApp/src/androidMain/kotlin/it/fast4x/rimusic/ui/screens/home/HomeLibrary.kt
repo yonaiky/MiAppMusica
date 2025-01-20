@@ -48,10 +48,8 @@ import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.ImportSongsFromCSV
 import it.fast4x.rimusic.ui.components.tab.ItemSize
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
@@ -85,6 +83,7 @@ import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.SongShuffler
 
 
@@ -206,30 +205,7 @@ fun HomeLibrary(
 
     }
     //</editor-fold>
-    val importPlaylistDialog = ImportSongsFromCSV.init(
-        beforeTransaction = { _, row ->
-            plistId = row["PlaylistName"]?.let {
-                Database.playlistExistByName( it )
-            } ?: 0L
-
-            if (plistId == 0L)
-                plistId = row["PlaylistName"]?.let {
-                    Database.insert( Playlist( plistId, it, row["PlaylistBrowseId"] ) )
-                }!!
-        },
-        afterTransaction = { index, song ->
-            if (song.id.isBlank()) return@init
-
-            Database.insert(song)
-            Database.insert(
-                SongPlaylistMap(
-                    songId = song.id,
-                    playlistId = plistId,
-                    position = index
-                )
-            )
-        }
-    )
+    val importPlaylistDialog = ImportSongsFromCSV()
     val sync = playlistSync()
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
