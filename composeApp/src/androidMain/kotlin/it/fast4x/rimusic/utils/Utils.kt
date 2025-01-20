@@ -627,13 +627,15 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
     }
 }
 
-suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int, isPlaylist : Boolean = true){
+suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int, isPlaylist : Boolean = true, isExtPlaylist : Boolean = false){
     val explicit = if (song.asMediaItem.isExplicit) "explicit" else ""
+    var songNotFound: Song
     fun filteredText(text : String): String{
         val filteredText = text
             .lowercase()
             .replace("(", " ")
             .replace(")", " ")
+            .replace("-", " ")
             .replace("lyrics", "")
             .replace("vevo", "")
             .replace(" hd", "")
@@ -652,7 +654,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     )
 
     val searchResults = searchQuery?.getOrNull()?.items
-    val requiredSong = searchResults?.get(0)
+    val requiredSong = searchResults?.getOrNull(0)
 
     val sourceSongWords = filteredText(cleanPrefix(song.title))
         .split(" ").filter { it.isNotEmpty() }
@@ -675,6 +677,17 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     )
                 )
             }
+        } else if (isExtPlaylist){
+            songNotFound = song.copy(id = "${song.artistsText}${song.title}")
+            Database.delete(song)
+            Database.insert(songNotFound)
+            Database.insert(
+                SongPlaylistMap(
+                    songId = songNotFound.id,
+                    playlistId = playlistId,
+                    position = position
+                )
+            )
         } else if (!isPlaylist){
             Database.insert(song)
             Database.insert(

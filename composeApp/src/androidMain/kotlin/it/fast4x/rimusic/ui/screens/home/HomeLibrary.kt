@@ -199,13 +199,15 @@ fun HomeLibrary(
         }
 
     }
+    val currentDateTime = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+    var time by remember {mutableStateOf("")}
+    val formattedDate = currentDateTime.format(formatter)
     //</editor-fold>
     val importPlaylistDialog = ImportSongsFromCSV.init(
         beforeTransaction = { _, row ->
-            val currentDateTime = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            val formattedDate = currentDateTime.format(formatter)
-            val playlistName = row["PlaylistName"] ?: "New Playlist $formattedDate"
+            time = formattedDate
+            val playlistName = row["PlaylistName"] ?: "New Playlist $time"
             plistId = playlistName.let {
                 Database.playlistExistByName( it )
             }

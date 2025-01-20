@@ -193,6 +193,8 @@ import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.mediaItemToggleLike
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 
 
@@ -738,6 +740,7 @@ fun LocalPlaylistSongsModern(
 
     var getAlbumVersion by remember { mutableStateOf(false) }
     var showGetAlbumVersionDialogue by remember { mutableStateOf(false) }
+    var showGetAlbumVersionDialogueExt by remember { mutableStateOf(false) }
     var totalSongsToMatch by remember { mutableIntStateOf(0) }
     var songsMatched by remember { mutableIntStateOf(0) }
 
@@ -749,24 +752,45 @@ fun LocalPlaylistSongsModern(
         )
     }
 
+    if (showGetAlbumVersionDialogueExt){
+        InProgressDialog(
+            total = totalSongsToMatch,
+            done = songsMatched,
+            text = stringResource(R.string.matching_songs),
+            onDismiss = {showGetAlbumVersionDialogueExt = false}
+        )
+    }
+
+
     if (playlistSongsSortByPosition.any{songEntity -> songEntity.song.id == ("${songEntity.song.title}${songEntity.song.artistsText}").filter{it.isLetterOrDigit()}}){
-        showGetAlbumVersionDialogue = true
+        showGetAlbumVersionDialogueExt = true
             LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
                 totalSongsToMatch = playlistSongsSortByPosition
                     .filter { songEntity -> songEntity.song.id == ("${songEntity.song.title}${songEntity.song.artistsText}").filter{it.isLetterOrDigit()}}.size
                 songsMatched = 0
+
+                val jobs = mutableListOf<Job>()
                 playlistSongsSortByPosition.forEachIndexed { index, video ->
                     if (video.song.id == ("${video.song.title}${video.song.artistsText}").filter{it.isLetterOrDigit()}){
-                        getAlbumVersionFromVideo(
-                            song = video.song,
-                            playlistId = playlistId,
-                            position = index
+                        jobs.add(coroutineScope.launch(Dispatchers.IO) {
+                            getAlbumVersionFromVideo(
+                                song = video.song,
+                                playlistId = playlistId,
+                                position = index,
+                                isExtPlaylist = true
+                            )
+                          }
                         )
-                        songsMatched++
-                        if (songsMatched == totalSongsToMatch) showGetAlbumVersionDialogue = false
                     }
                 }
+                while(jobs.isNotEmpty()){
+                    val oldSize = jobs.size
+                    jobs.removeIf{it.isCompleted}
+                    songsMatched += oldSize - jobs.size
+                    delay(10)
+                }
+                showGetAlbumVersionDialogueExt = false
                 getAlbumVersion = false
             }
         }
@@ -777,17 +801,28 @@ fun LocalPlaylistSongsModern(
             totalSongsToMatch = playlistSongsSortByPosition
                 .filter {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}.size
             songsMatched = 0
+
+            val jobs = mutableListOf<Job>()
             playlistSongsSortByPosition.forEachIndexed { index, video ->
                 if ((video.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(video.song.id.startsWith(LOCAL_KEY_PREFIX))) {
-                    getAlbumVersionFromVideo(
-                        song = video.song,
-                        playlistId = playlistId,
-                        position = index
+                    jobs.add(coroutineScope.launch(Dispatchers.IO) {
+                        getAlbumVersionFromVideo(
+                            song = video.song,
+                            playlistId = playlistId,
+                            position = index
+                        )
+                      }
                     )
-                    songsMatched++
-                    if (songsMatched == totalSongsToMatch) showGetAlbumVersionDialogue = false
                 }
             }
+            while(jobs.isNotEmpty()){
+                val oldSize = jobs.size
+                jobs.removeIf{it.isCompleted}
+                songsMatched += oldSize - jobs.size
+                delay(10)
+            }
+
+            showGetAlbumVersionDialogue = false
             getAlbumVersion = false
         }
     }

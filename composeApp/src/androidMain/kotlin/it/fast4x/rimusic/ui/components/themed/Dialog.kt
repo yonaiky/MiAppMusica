@@ -1746,10 +1746,11 @@ fun LyricsSizeDialog(
 fun InProgressDialog(
     total : Int,
     done : Int,
-    text : String
+    text : String,
+    onDismiss: (() -> Unit)? = null,
 ) {
     DefaultDialog(
-        onDismiss = {},
+        onDismiss = {if (onDismiss != null) {onDismiss()}},
         modifier = Modifier
             .fillMaxWidth(if (isLandscape) 0.3f else 0.8f)
     ) {
