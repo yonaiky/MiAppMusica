@@ -189,6 +189,7 @@ import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import kotlinx.coroutines.CoroutineScope
 import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.mediaItemToggleLike
@@ -748,21 +749,47 @@ fun LocalPlaylistSongsModern(
         )
     }
 
-    LaunchedEffect(getAlbumVersion) {
-        totalSongsToMatch = playlistSongsSortByPosition.filter { it.song.thumbnailUrl?.startsWith("https://i.ytimg.com") == true }.size
-        songsMatched = 0
-        playlistSongsSortByPosition.forEachIndexed { index, video ->
-            if (video.song.thumbnailUrl?.startsWith("https://i.ytimg.com") == true){
-            getAlbumVersionFromVideo(
-                song = video.song,
-                playlistId = playlistId,
-                position = index
-                )
-                songsMatched++
-                if (songsMatched == totalSongsToMatch) showGetAlbumVersionDialogue = false
+    if (playlistSongsSortByPosition.any{songEntity -> songEntity.song.id == ("${songEntity.song.title}${songEntity.song.artistsText}").filter{it.isLetterOrDigit()}}){
+        showGetAlbumVersionDialogue = true
+            LaunchedEffect(Unit) {
+            withContext(Dispatchers.IO) {
+                totalSongsToMatch = playlistSongsSortByPosition
+                    .filter { songEntity -> songEntity.song.id == ("${songEntity.song.title}${songEntity.song.artistsText}").filter{it.isLetterOrDigit()}}.size
+                songsMatched = 0
+                playlistSongsSortByPosition.forEachIndexed { index, video ->
+                    if (video.song.id == ("${video.song.title}${video.song.artistsText}").filter{it.isLetterOrDigit()}){
+                        getAlbumVersionFromVideo(
+                            song = video.song,
+                            playlistId = playlistId,
+                            position = index
+                        )
+                        songsMatched++
+                        if (songsMatched == totalSongsToMatch) showGetAlbumVersionDialogue = false
+                    }
+                }
+                getAlbumVersion = false
             }
         }
-        getAlbumVersion = false
+    }
+
+    LaunchedEffect(getAlbumVersion) {
+        withContext(Dispatchers.IO) {
+            totalSongsToMatch = playlistSongsSortByPosition
+                .filter {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}.size
+            songsMatched = 0
+            playlistSongsSortByPosition.forEachIndexed { index, video ->
+                if ((video.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(video.song.id.startsWith(LOCAL_KEY_PREFIX))) {
+                    getAlbumVersionFromVideo(
+                        song = video.song,
+                        playlistId = playlistId,
+                        position = index
+                    )
+                    songsMatched++
+                    if (songsMatched == totalSongsToMatch) showGetAlbumVersionDialogue = false
+                }
+            }
+            getAlbumVersion = false
+        }
     }
 
     Box(
@@ -1068,13 +1095,13 @@ fun LocalPlaylistSongsModern(
                     )
                     HeaderIconButton(
                         icon = R.drawable.random,
-                        enabled = (playlistSongs.any {it.asMediaItem.mediaMetadata.artworkUri.toString().startsWith("https://i.ytimg.com")}),
-                        color = if (playlistSongs.any {it.asMediaItem.mediaMetadata.artworkUri.toString().startsWith("https://i.ytimg.com")}) colorPalette.text else colorPalette.textDisabled,
+                        enabled = playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))},
+                        color = if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) colorPalette.text else colorPalette.textDisabled,
                         onClick = {},
                         modifier = Modifier
                             .combinedClickable(
                                 onClick = {
-                                    if (playlistSongs.any {it.asMediaItem.mediaMetadata.artworkUri.toString().startsWith("https://i.ytimg.com")}) {
+                                    if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) {
                                         getAlbumVersion = true
                                         showGetAlbumVersionDialogue = true
                                     } else {

@@ -89,6 +89,8 @@ import it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @ExperimentalMaterial3Api
@@ -200,14 +202,18 @@ fun HomeLibrary(
     //</editor-fold>
     val importPlaylistDialog = ImportSongsFromCSV.init(
         beforeTransaction = { _, row ->
-            plistId = row["PlaylistName"]?.let {
+            val currentDateTime = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formattedDate = currentDateTime.format(formatter)
+            val playlistName = row["PlaylistName"] ?: "New Playlist $formattedDate"
+            plistId = playlistName.let {
                 Database.playlistExistByName( it )
-            } ?: 0L
+            }
 
             if (plistId == 0L)
-                plistId = row["PlaylistName"]?.let {
+                plistId = playlistName.let {
                     Database.insert( Playlist( plistId, it, row["PlaylistBrowseId"] ) )
-                }!!
+                }
         },
         afterTransaction = { index, song ->
             if (song.id.isBlank()) return@init

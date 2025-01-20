@@ -38,18 +38,17 @@ class ImportSongsFromCSV private constructor(
                                     Database.asyncTransaction {
                                         beforeTransaction( index, row )
                                         /**/
-                                        val mediaId = row["MediaId"]
-                                        val title = row["Title"]
-
-                                        if( mediaId == null || title == null)
-                                            return@asyncTransaction
+                                        val pseudoMediaId = (row["Track Name"]+row["Artist Name(s)"]).filter { it.isLetterOrDigit() }
+                                        val title = row["Title"] ?: row["Track Name"] ?: return@asyncTransaction
+                                        val mediaId = row["MediaId"] ?: pseudoMediaId
+                                        val artistsText = row["Artists"] ?: row["Artist Name(s)"] ?: ""
 
                                         val song = Song (
                                             id = mediaId,
                                             title = title,
-                                            artistsText = row["Artists"],
-                                            durationText = row["Duration"],
-                                            thumbnailUrl = row["ThumbnailUrl"],
+                                            artistsText = artistsText,
+                                            durationText = row["Duration"] ?: "",
+                                            thumbnailUrl = row["ThumbnailUrl"] ?: "",
                                             totalPlayTimeMs = 1L
                                         )
                                         afterTransaction( index, song )
