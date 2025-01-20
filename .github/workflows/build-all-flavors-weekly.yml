@@ -464,6 +464,11 @@ jobs:
                 <li>Album screen rework, single update on open</li>
               </ul>
             </details>
+            <summary>January 20th 2025</summary>
+              <ul>
+                <li>Reduce load time on shuffle</li>
+              </ul>
+            </details>
 
           token: ${{ secrets.RELEASE_TOKEN }}
           generate_release_notes: true
