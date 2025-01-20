@@ -2361,6 +2361,30 @@ interface Database {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(songPlaylistMap: SongPlaylistMap): Long
 
+    /**
+     * Insert provided song into indicated playlist
+     * at the next available position.
+     *
+     * @param songId     song to add
+     * @param playlistId playlist to add song into
+     */
+    @Query("""
+        INSERT INTO SongPlaylistMap ( songId, playlistId, position )
+        VALUES( 
+            :songId,
+            :playlistId,
+            COALESCE(
+                (
+                    SELECT MAX(position) + 1 
+                    FROM SongPlaylistMap 
+                    WHERE playlistId = :playlistId
+                ), 
+                0
+            )
+        )
+    """)
+    fun insertSongToPlaylist( songId: String, playlistId: Long )
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(songArtistMap: SongArtistMap): Long
 
