@@ -122,7 +122,7 @@ val Innertube.AlbumItem.asAlbum: Album
         title = info?.name,
         thumbnailUrl = thumbnail?.url,
         year = year,
-        authorsText = authors?.joinToString("") { it.name ?: "" },
+        authorsText = authors?.joinToString(", ") { it.name ?: "" },
         //shareUrl =
     )
 
@@ -160,7 +160,7 @@ val Innertube.SongItem.asMediaItem: MediaItem
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(info?.name)
-                .setArtist(authors?.joinToString("") { it.name ?: "" })
+                .setArtist(authors?.joinToString(", ") { it.name ?: "" })
                 .setAlbumTitle(album?.name)
                 .setArtworkUri(thumbnail?.url?.toUri())
                 .setExtras(
@@ -182,7 +182,7 @@ val Innertube.SongItem.asSong: Song
     get() = Song (
         id = key,
         title = info?.name ?: "",
-        artistsText = authors?.joinToString("") { it.name ?: "" },
+        artistsText = authors?.joinToString(", ") { it.name ?: "" },
         durationText = durationText,
         thumbnailUrl = thumbnail?.url
     )
@@ -196,7 +196,7 @@ val Innertube.VideoItem.asMediaItem: MediaItem
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(info?.name)
-                .setArtist(authors?.joinToString("") { it.name ?: "" })
+                .setArtist(authors?.joinToString(", ") { it.name ?: "" })
                 .setArtworkUri(thumbnail?.url?.toUri())
                 .setExtras(
                     bundleOf(

@@ -68,7 +68,7 @@ fun AlbumItem(
     AlbumItem(
         thumbnailUrl = album.thumbnail?.url,
         title = album.info?.name,
-        authors = album.authors?.joinToString("") { it.name ?: "" },
+        authors = album.authors?.joinToString(", ") { it.name ?: "" },
         year = album.year,
         yearCentered = yearCentered,
         thumbnailSizePx = thumbnailSizePx,
