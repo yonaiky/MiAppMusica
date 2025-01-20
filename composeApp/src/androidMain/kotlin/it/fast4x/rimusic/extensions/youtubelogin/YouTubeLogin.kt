@@ -89,12 +89,12 @@ fun YouTubeLogin(
                                 //onLogin(cookie)
 
                                 GlobalScope.launch {
-                                    Innertube.accountInfoList().onSuccess {
+                                    Innertube.accountInfo().onSuccess {
                                         println("YoutubeLogin doUpdateVisitedHistory accountInfo() $it")
-                                        accountName = it.firstOrNull()?.name.orEmpty()
-                                        accountEmail = it.firstOrNull()?.email.orEmpty()
-                                        accountChannelHandle = it.firstOrNull()?.channelHandle.orEmpty()
-                                        accountThumbnail = it.firstOrNull()?.thumbnailUrl.orEmpty()
+                                        accountName = it?.name.orEmpty()
+                                        accountEmail = it?.email.orEmpty()
+                                        accountChannelHandle = it?.channelHandle.orEmpty()
+                                        accountThumbnail = it?.thumbnailUrl.orEmpty()
                                         onLogin(cookie)
                                     }.onFailure {
                                         Timber.e("Error YoutubeLogin: $it.stackTraceToString()")

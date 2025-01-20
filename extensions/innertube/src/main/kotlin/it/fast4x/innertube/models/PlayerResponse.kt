@@ -36,37 +36,37 @@ data class PlayerResponse(
 
     @Serializable
     data class StreamingData(
-        val adaptiveFormats: List<AdaptiveFormat>?,
         val formats: List<Format>?,
+        val adaptiveFormats: List<Format>?,
         val expiresInSeconds: Int,
     ) {
 
-        val autoMaxQualityFormat: AdaptiveFormat?
-            get() = adaptiveFormats?.filter { it.isAudio }
+        val autoMaxQualityFormat: Format?
+            get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
                 ?.let { formats ->
-                    formats.findLast { it.itag == 251 || it.itag == 141 ||
+                    formats.findLast { it.itag == 774 || it.itag == 251 || it.itag == 141 ||
                             it.itag == 250 || it.itag == 140 ||
                             it.itag == 249 || it.itag == 139 || it.itag == 171
                     } ?: formats.maxByOrNull { it.bitrate ?: 0 }
                 }
 
 
-        val highestQualityFormat: AdaptiveFormat?
+        val highestQualityFormat: Format?
             get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
                 ?.let { formats ->
-                    adaptiveFormats.findLast { it.itag == 251 || it.itag == 140 || it.itag == 141 }
+                    formats.findLast { it.itag == 774 || it.itag == 251 || it.itag == 140 || it.itag == 141 }
                         ?: formats.maxByOrNull { it.bitrate ?: 0 }
                 }
 
-        val mediumQualityFormat: AdaptiveFormat?
-            get() = adaptiveFormats?.filter { it.isAudio }
+        val mediumQualityFormat: Format?
+            get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
                 ?.let { formats ->
                     formats.findLast { it.itag == 250 || it.itag == 140 }
                         ?: formats.maxByOrNull { it.bitrate ?: 0 }
                 }
 
-        val lowestQualityFormat: AdaptiveFormat?
-            get() = adaptiveFormats?.filter { it.isAudio }
+        val lowestQualityFormat: Format?
+            get() = adaptiveFormats?.filter { it.url != null || it.signatureCipher != null }
                 ?.let { formats ->
                     formats.findLast { it.itag == 249 || it.itag == 139 || it.itag == 171 }
                         ?: formats.maxByOrNull { it.bitrate ?: 0 }
@@ -74,28 +74,28 @@ data class PlayerResponse(
 
 
 
-        @Serializable
-        data class AdaptiveFormat(
-            val itag: Int,
-            val mimeType: String,
-            val bitrate: Long?,
-            val averageBitrate: Long?,
-            val contentLength: Long?,
-            val audioQuality: String?,
-            val approxDurationMs: Long?,
-            val lastModified: Long?,
-            val loudnessDb: Double?,
-            val audioSampleRate: Int?,
-            val url: String?,
-            val width: Int?,
-            val signatureCipher: String?
-        ) {
-            val isAudio: Boolean
-                get() = width == null
-
-            val isVideo: Boolean
-                get() = width != null
-        }
+//        @Serializable
+//        data class AdaptiveFormat(
+//            val itag: Int,
+//            val mimeType: String,
+//            val bitrate: Long?,
+//            val averageBitrate: Long?,
+//            val contentLength: Long?,
+//            val audioQuality: String?,
+//            val approxDurationMs: Long?,
+//            val lastModified: Long?,
+//            val loudnessDb: Double?,
+//            val audioSampleRate: Int?,
+//            val url: String?,
+//            val width: Int?,
+//            val signatureCipher: String?
+//        ) {
+//            val isAudio: Boolean
+//                get() = width == null
+//
+//            val isVideo: Boolean
+//                get() = width != null
+//        }
 
         @Serializable
         data class Format(
