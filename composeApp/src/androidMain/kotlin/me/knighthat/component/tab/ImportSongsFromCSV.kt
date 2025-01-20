@@ -18,8 +18,12 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.formatAsDuration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.knighthat.component.ImportSongsFromFile
 import me.knighthat.utils.csv.SongCSV
+import java.io.InputStream
 
 /**
  * Import songs from custom CSV file.
@@ -41,6 +45,58 @@ class ImportSongsFromCSV(
 ) : ImportSongsFromFile(launcher), MenuIcon, Descriptive {
 
     companion object {
+        private fun parseFromCsvFile( inputStream: InputStream ): List<SongCSV> =
+            csvReader().readAllWithHeader(inputStream)
+                       .fastMap { row ->      // Experimental, revert back to [map] if needed
+                           SongCSV(
+                               playlistId = (row["PlaylistBrowseId"] ?: "-1").toLong(),
+                               playlistName = row["PlaylistName"] ?: "",
+                               songId = row["MediaId"] ?: "",
+                               title = row["Title"] ?: "",
+                               artists = row["Artists"] ?: "",
+                               thumbnailUrl = row["ThumbnailUrl"] ?: "",
+                               duration = (row["Duration"]?.toLong() ?: 0L).run {
+                                   // Duration is saved as second
+                                   formatAsDuration(this.times(1000L))
+                               }
+                           )
+                       }
+                       .toList()        // Make it immutable
+
+        private fun importSongs( songs: List<SongCSV> ): Unit =
+            Database.asyncTransaction {
+                songs.fastForEach {
+                    // Skip this song if it doesn't have id
+                    if( it.songId.isBlank() ) return@fastForEach
+
+                    insert(     // Use [insert] because it'll ignore if song exists
+                        Song(
+                            id = it.songId,
+                            title = it.title,
+                            artistsText = it.artists,
+                            thumbnailUrl = it.thumbnailUrl,
+                            durationText = it.duration,
+                            totalPlayTimeMs = 1L       // Bypass hidden song checker
+                        )
+                    )
+
+                    // '-1' playlistId indicates song doesn't belong to any playlist
+                    if( it.playlistId != -1L && it.playlistName.isNotBlank() ) {
+                        insert(     // Use [insert] because it'll ignore if song exists
+                            Playlist( it.playlistId, it.playlistName )
+                        )
+
+                        insertSongToPlaylist( it.songId, it.playlistId )
+                    }
+                }
+
+                // Show message when it's done
+                SmartMessage(
+                    message = appContext().resources.getString( R.string.done ),
+                    context = appContext()
+                )
+            }
+
         @Composable
         operator fun invoke() = ImportSongsFromCSV(
             rememberLauncherForActivityResult(
@@ -49,61 +105,14 @@ class ImportSongsFromCSV(
                 // [uri] must be non-null (meaning path exists) in order to work
                 uri ?: return@rememberLauncherForActivityResult
 
-                appContext().contentResolver
-                            .openInputStream( uri )
-                            ?.use { inStream ->     // Use [use] because it closes stream on exit
-                                val songsToImport = mutableListOf<SongCSV>()
-
-                                csvReader().readAllWithHeader( inStream )
-                                           .fastMap { row ->      // Experimental, revert back to [map] if needed
-                                               SongCSV(
-                                                   playlistId = (row["PlaylistBrowseId"] ?: "-1").toLong(),
-                                                   playlistName = row["PlaylistName"] ?: "",
-                                                   songId = row["MediaId"] ?: "",
-                                                   title = row["Title"] ?: "",
-                                                   artists = row["Artists"] ?: "",
-                                                   thumbnailUrl = row["ThumbnailUrl"] ?: "",
-                                                   duration = (row["Duration"]?.toLong() ?: 0L).run {
-                                                       // Duration is saved as second
-                                                       formatAsDuration( this.times( 1000L) )
-                                                   }
-                                               )
-                                           }
-                                           .fastForEach( songsToImport::add )
-
-                                Database.asyncTransaction {
-                                    songsToImport.fastForEach {
-                                        // Skip this song if it doesn't have id
-                                        if( it.songId.isBlank() ) return@fastForEach
-
-                                        insert(     // Use [insert] because it'll ignore if song exists
-                                            Song(
-                                                id = it.songId,
-                                                title = it.title,
-                                                artistsText = it.artists,
-                                                thumbnailUrl = it.thumbnailUrl,
-                                                durationText = it.duration,
-                                                totalPlayTimeMs = 1L       // Bypass hidden song checker
-                                            )
-                                        )
-
-                                        // '-1' playlistId indicates song doesn't belong to any playlist
-                                        if( it.playlistId != -1L && it.playlistName.isNotBlank() ) {
-                                            insert(     // Use [insert] because it'll ignore if song exists
-                                                Playlist( it.playlistId, it.playlistName )
-                                            )
-
-                                            insertSongToPlaylist( it.songId, it.playlistId )
-                                        }
-                                    }
-
-                                    // Show message when it's done
-                                    SmartMessage(
-                                        message = appContext().resources.getString( R.string.done ),
-                                        context = appContext()
-                                    )
-                                }
-                            }
+                // Run in background to prevent UI thread
+                // from freezing due to large file.
+                CoroutineScope( Dispatchers.IO ).launch {
+                    appContext().contentResolver
+                                .openInputStream( uri )
+                                ?.use( ::parseFromCsvFile )       // Use [use] because it closes stream on exit
+                                ?.also( ::importSongs )
+                }
             }
         )
     }

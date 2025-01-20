@@ -16,8 +16,12 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.knighthat.component.ExportToFileDialog
 import me.knighthat.utils.csv.SongCSV
+import java.io.OutputStream
 
 /**
  * Create a custom CSV file with replicable information of
@@ -38,6 +42,23 @@ class ExportSongsToCSVDialog private constructor(
 ): ExportToFileDialog(valueState, activeState, launcher), MenuIcon, Descriptive {
 
     companion object {
+        private fun writeToCsvFile( outputStream: OutputStream, songs: List<SongCSV> ): Unit =
+            csvWriter().open( outputStream ) {
+                writeRow(       // Write down needed sections
+                    "PlaylistBrowseId",
+                    "PlaylistName",
+                    "MediaId",
+                    "Title",
+                    "Artists",
+                    "Duration",
+                    "ThumbnailUrl"
+                )
+                flush()
+
+                songs.forEach { it.write( this ) }
+                close()
+            }
+
         @Composable
         operator fun invoke(
             playlistId: Long,
@@ -55,33 +76,23 @@ class ExportSongsToCSVDialog private constructor(
                 // [uri] must be non-null (meaning path exists) in order to work
                 uri ?: return@rememberLauncherForActivityResult
 
-                appContext().contentResolver
-                            .openOutputStream( uri )
-                            ?.use { outStream ->         // Use [use] because it closes stream on exit
-                                csvWriter().open( outStream ) {
-                                    writeRow(       // Write down needed sections
-                                        "PlaylistBrowseId",
-                                        "PlaylistName",
-                                        "MediaId",
-                                        "Title",
-                                        "Artists",
-                                        "Duration",
-                                        "ThumbnailUrl"
-                                    )
-                                    flush()
+                // Run in background to prevent UI thread
+                // from freezing due to large file.
+                CoroutineScope( Dispatchers.IO ).launch {
+                    val songsToWrite = songs().map {
+                        SongCSV(
+                            playlistId = playlistId,
+                            playlistName = playlistName,
+                            song = it
+                        )
+                    }
 
-                                    songs().map {
-                                                SongCSV(
-                                                    playlistId = playlistId,
-                                                    playlistName = playlistName,
-                                                    song = it
-                                                )
-                                           }
-                                           .forEach { it.write( this ) }
-
-                                    close()
+                    appContext().contentResolver
+                                .openOutputStream( uri )
+                                ?.use { outStream ->         // Use [use] because it closes stream on exit
+                                    writeToCsvFile( outStream, songsToWrite )
                                 }
-                            }
+                }
             }
         )
     }
