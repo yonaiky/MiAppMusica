@@ -16,6 +16,7 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import it.fast4x.rimusic.utils.formatAsDuration
 
 class ImportSongsFromCSV private constructor(
     private val launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
@@ -42,12 +43,13 @@ class ImportSongsFromCSV private constructor(
                                         val title = row["Title"] ?: row["Track Name"] ?: return@asyncTransaction
                                         val mediaId = row["MediaId"] ?: pseudoMediaId
                                         val artistsText = row["Artists"] ?: row["Artist Name(s)"] ?: ""
+                                        val durationText = row["Duration"] ?: formatAsDuration(row["Track Duration (ms)"]?.toLong() ?: 0L)
 
-                                        val song = Song (
+                                        val song = Song(
                                             id = mediaId,
                                             title = title,
                                             artistsText = artistsText,
-                                            durationText = row["Duration"] ?: "",
+                                            durationText = durationText,
                                             thumbnailUrl = row["ThumbnailUrl"] ?: "",
                                             totalPlayTimeMs = 1L
                                         )

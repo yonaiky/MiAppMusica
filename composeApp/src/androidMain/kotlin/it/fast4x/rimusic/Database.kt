@@ -1992,6 +1992,18 @@ interface Database {
     fun sortSongsFromPlaylistByDuration( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
+        FROM Song S 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
+        LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
+        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
+        ORDER BY S.thumbnailUrl
+    """)
+    fun sortSongsFromPlaylistByUrl( id: Long ): Flow<List<SongEntity>>
+
+    @Query("""
         SELECT DISTINCT S.*, A.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
         INNER JOIN songplaylistmap SP ON S.id = SP.songId 
@@ -2053,6 +2065,7 @@ interface Database {
             PlaylistSongSortBy.Duration -> sortSongsFromPlaylistByDuration( id )
             PlaylistSongSortBy.DateLiked -> sortSongsFromPlaylistByLikedAt( id )
             PlaylistSongSortBy.DateAdded -> sortSongsFromPlaylistByRowId( id )
+            PlaylistSongSortBy.UnmatchedSongs -> sortSongsFromPlaylistByUrl(id)
         }.map {
             it.run {
                 if( sortOrder == SortOrder.Descending )

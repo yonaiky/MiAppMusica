@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,6 +46,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -127,15 +130,19 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setDeviceVolume
 import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
-import it.fast4x.rimusic.utils.thumbnailOffsetKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import kotlinx.coroutines.delay
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.styling.ColorPalette
+import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.lyricsSizeKey
 import it.fast4x.rimusic.utils.lyricsSizeLKey
+import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailFadeExKey
 import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 
@@ -1776,6 +1783,86 @@ fun InProgressDialog(
             ),
             overflow = TextOverflow.Ellipsis,
         )
+    }
+}
+
+@Composable
+fun SongMatchingDialog(
+    songsList : List<Song>,
+    songToRematch : Song,
+    playlistId : Long,
+    position : Int,
+    onDismiss: (() -> Unit)? = null,
+) {
+    DefaultDialog(
+        onDismiss = {if (onDismiss != null) {onDismiss()}},
+        modifier = Modifier
+            .fillMaxWidth(if (isLandscape) 0.3f else 0.8f)
+            .fillMaxHeight(if (isLandscape) 1f else 0.7f)
+    ) {
+        if (songsList.isNotEmpty()) {
+            songsList.take(10).forEachIndexed { index, song ->
+                Row(horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .clickable(onClick = {
+                            Database.asyncTransaction {
+                                deleteSongFromPlaylist(songToRematch.id, playlistId)
+                                Database.insert(song)
+                                insert(
+                                    SongPlaylistMap(
+                                        songId = song.id,
+                                        playlistId = playlistId,
+                                        position = position
+                                    )
+                                )
+                            }
+                            if (onDismiss != null) {
+                                onDismiss()
+                            }
+                        }
+                        )
+                ) {
+                    AsyncImage(
+                        model = song.asMediaItem.mediaMetadata.artworkUri.thumbnail(
+                            Dimensions.thumbnails.song.px / 2
+                        ),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .clip(RoundedCornerShape(5.dp))
+                            .size(30.dp)
+                    )
+                    Column {
+                        BasicText(
+                            text = cleanPrefix(song.title ?: ""),
+                            style = TextStyle(
+                                color = Color.White,
+                                fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .basicMarquee(iterations = Int.MAX_VALUE)
+                        )
+                        BasicText(
+                            text = song.artistsText ?: "",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontSize = MaterialTheme.typography.titleSmall.fontSize,
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .basicMarquee(iterations = Int.MAX_VALUE)
+                        )
+                    }
+                }
+            }
+
+        }
     }
 }
 

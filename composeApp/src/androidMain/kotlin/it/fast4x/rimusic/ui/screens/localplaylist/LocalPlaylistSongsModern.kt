@@ -89,8 +89,11 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.relatedSongs
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -191,7 +194,10 @@ import kotlinx.coroutines.CoroutineScope
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
+import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
+import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -263,6 +269,15 @@ fun LocalPlaylistSongsModern(
     var songBaseRecommendation by persist<SongEntity?>("home/songBaseRecommendation")
     var positionsRecommendationList = arrayListOf<Int>()
     var autosync by rememberPreference(autosyncKey, false)
+    var songMatchingDialogEnable by remember { mutableStateOf(false) }
+    var matchingSong by remember { mutableStateOf(Song(
+        id = "",
+        title = "",
+        durationText = null,
+        thumbnailUrl = null
+            )
+        )
+    }
 
     if (isRecommendationEnabled) {
         LaunchedEffect(Unit, isRecommendationEnabled) {
@@ -351,6 +366,45 @@ fun LocalPlaylistSongsModern(
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
+    var matchingSongIndex by remember { mutableStateOf(0) }
+    var searchedSongs: List<Song>
+
+    if (songMatchingDialogEnable){
+        val explicit = if (matchingSong.asMediaItem.isExplicit) "explicit" else ""
+        fun filteredText(text: String): String {
+            val filteredText = text
+                .lowercase()
+                .replace("(", " ")
+                .replace(")", " ")
+                .replace("-", " ")
+                .replace("lyrics", "")
+                .replace("vevo", "")
+                .replace(" hd", "")
+                .replace("official video", "")
+                .replace(Regex("\\s+"), " ")
+                .filter { it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+            return filteredText
+        }
+
+        runBlocking(Dispatchers.IO) {
+            searchedSongs = Innertube.searchPage(
+                body = SearchBody(
+                    query = filteredText("${cleanPrefix(matchingSong.title)} ${matchingSong.artistsText} $explicit"),
+                    params = Innertube.SearchFilter.Song.value
+                ),
+                fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
+            )?.map {
+                it?.items?.map { it.asSong }
+            }?.getOrNull() ?: emptyList()
+        }
+        SongMatchingDialog(
+            songsList = searchedSongs,
+            songToRematch = matchingSong,
+            playlistId = playlistId,
+            position = matchingSongIndex,
+            onDismiss = {songMatchingDialogEnable = false}
+        )
+    }
 
     if (isDeleting) {
         ConfirmationDialog(
@@ -1511,6 +1565,7 @@ fun LocalPlaylistSongsModern(
                             PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                             PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                             PlaylistSongSortBy.RelativePlayTime -> stringResource(R.string.sort_relative_listening_time)
+                            PlaylistSongSortBy.UnmatchedSongs -> stringResource(R.string.unmatched)
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
@@ -1536,7 +1591,8 @@ fun LocalPlaylistSongsModern(
                                             sortBy = PlaylistSongSortBy.RelativePlayTime
                                         },
                                         onDuration = { sortBy = PlaylistSongSortBy.Duration },
-                                        onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded }
+                                        onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded },
+                                        onUnmatchedSong = {sortBy = PlaylistSongSortBy.UnmatchedSongs}
                                     )
                                 }
 
@@ -1932,6 +1988,11 @@ fun LocalPlaylistSongsModern(
                                     onLongClick = {
                                         menuState.display {
                                             InPlaylistMediaItemMenu(
+                                                onMatchingSong = {
+                                                    songMatchingDialogEnable = true
+                                                    matchingSong = song.song
+                                                    matchingSongIndex = index
+                                                },
                                                 navController = navController,
                                                 playlist = playlistPreview,
                                                 playlistId = playlistId,

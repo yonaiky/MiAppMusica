@@ -46,6 +46,7 @@ import java.time.Duration
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
+import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.minutes
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
@@ -661,7 +662,11 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     val requiredSongWords = filteredText(cleanPrefix(requiredSong?.title ?: ""))
         .split(" ").filter { it.isNotEmpty() }
 
-    val songMatched = (requiredSong != null) && (requiredSongWords.any { it in sourceSongWords })
+    val songMatched = (requiredSong != null) && (requiredSongWords.any { it in sourceSongWords }) &&
+            if (isExtPlaylist) {
+                (durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000
+            } else {true}
+
     Database.asyncTransaction {
         if (songMatched) {
             deleteSongFromPlaylist(song.id, playlistId)

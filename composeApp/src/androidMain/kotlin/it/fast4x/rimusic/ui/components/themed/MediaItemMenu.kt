@@ -165,6 +165,7 @@ fun InPlaylistMediaItemMenu(
     playlistId: Long,
     positionInPlaylist: Int,
     song: Song,
+    onMatchingSong: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     disableScrollingText: Boolean
 ) {
@@ -206,6 +207,8 @@ fun InPlaylistMediaItemMenu(
             }
             MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
         },
+        onMatchingSong = { if (onMatchingSong != null) {onMatchingSong()}
+            onDismiss() },
         modifier = modifier,
         disableScrollingText = disableScrollingText
     )
@@ -223,6 +226,7 @@ fun NonQueuedMediaItemMenuLibrary(
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
+    onMatchingSong: (() -> Unit)? = null,
     disableScrollingText: Boolean
 ) {
     val binder = LocalPlayerServiceBinder.current
@@ -319,6 +323,7 @@ fun NonQueuedMediaItemMenuLibrary(
                 }
                 MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
             },
+            onMatchingSong = onMatchingSong,
             modifier = modifier,
             disableScrollingText = disableScrollingText
         )
@@ -340,6 +345,7 @@ fun NonQueuedMediaItemMenu(
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
     onAddToPreferites: (() -> Unit)? = null,
+    onMatchingSong: (() -> Unit)? = null,
     disableScrollingText: Boolean
 ) {
     val binder = LocalPlayerServiceBinder.current
@@ -402,6 +408,7 @@ fun NonQueuedMediaItemMenu(
             onDeleteFromDatabase = onDeleteFromDatabase,
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = onAddToPreferites,
+            onMatchingSong =  onMatchingSong,
             modifier = modifier,
             disableScrollingText = disableScrollingText
         )
@@ -416,6 +423,7 @@ fun QueuedMediaItemMenu(
     navController: NavController,
     onDismiss: () -> Unit,
     onDownload: (() -> Unit)?,
+    onMatchingSong: (() -> Unit)? = null,
     mediaItem: MediaItem,
     indexInQueue: Int?,
     modifier: Modifier = Modifier,
@@ -497,6 +505,7 @@ fun QueuedMediaItemMenu(
                 }
                 MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
             },
+            onMatchingSong = onMatchingSong,
             disableScrollingText = disableScrollingText
         )
     }
@@ -525,6 +534,7 @@ fun BaseMediaItemMenu(
     onClosePlayer: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)?,
+    onMatchingSong: (() -> Unit)?,
     disableScrollingText: Boolean
 ) {
     val context = LocalContext.current
@@ -546,6 +556,7 @@ fun BaseMediaItemMenu(
         onEnqueue = onEnqueue,
         onDownload = onDownload,
         onAddToPreferites = onAddToPreferites,
+        onMatchingSong =  onMatchingSong,
         onAddToPlaylist = { playlist, position ->
             Database.asyncTransaction {
                 insert(mediaItem)
@@ -761,6 +772,7 @@ fun MediaItemMenu(
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onShare: () -> Unit,
     onGoToPlaylist: ((Long) -> Unit)? = null,
+    onMatchingSong: (() -> Unit)? = null,
     disableScrollingText: Boolean
 ) {
     val density = LocalDensity.current
@@ -1477,6 +1489,13 @@ fun MediaItemMenu(
                         icon = R.drawable.heart,
                         text = stringResource(R.string.add_to_favorites),
                         onClick = onAddToPreferites
+                    )
+
+                if (onMatchingSong != null)
+                    MenuEntry(
+                        icon = R.drawable.random,
+                        text = stringResource(R.string.match_song),
+                        onClick = { onMatchingSong() }
                     )
 
                 if (onAddToPlaylist != null) {

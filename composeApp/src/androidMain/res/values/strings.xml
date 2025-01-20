@@ -882,4 +882,6 @@
     <string name="get_album_version">Match the Album/Audio Version of the Songs</string>
     <string name="no_videos_found">No Songs Found to Match</string>
     <string name="matching_songs">Matching Songs. Please Wait. Do not Minimize or Exit the App</string>
+    <string name="unmatched">Unmatched Songs</string>
+    <string name="match_song">Rematch this Song</string>
 </resources>
