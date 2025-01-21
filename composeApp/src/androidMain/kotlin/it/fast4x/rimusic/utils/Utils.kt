@@ -628,8 +628,9 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
     }
 }
 
-suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int, isPlaylist : Boolean = true, isExtPlaylist : Boolean = false){
+suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
     val explicit = if (song.asMediaItem.isExplicit) "explicit" else ""
+    val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "")
     var songNotFound: Song
     fun filteredText(text : String): String{
         val filteredText = text
@@ -689,15 +690,6 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
             Database.insert(
                 SongPlaylistMap(
                     songId = songNotFound.id,
-                    playlistId = playlistId,
-                    position = position
-                )
-            )
-        } else if (!isPlaylist){
-            Database.insert(song)
-            Database.insert(
-                SongPlaylistMap(
-                    songId = song.id,
                     playlistId = playlistId,
                     position = position
                 )

@@ -366,26 +366,24 @@ fun LocalPlaylistSongsModern(
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
-    var matchingSongIndex by remember { mutableStateOf(0) }
     var searchedSongs: List<Song>
+    fun filteredText(text : String): String{
+        val filteredText = text
+            .lowercase()
+            .replace("(", " ")
+            .replace(")", " ")
+            .replace("-", " ")
+            .replace("lyrics", "")
+            .replace("vevo", "")
+            .replace(" hd", "")
+            .replace("official video", "")
+            .replace(Regex("\\s+"), " ")
+            .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+        return filteredText
+    }
 
     if (songMatchingDialogEnable){
         val explicit = if (matchingSong.asMediaItem.isExplicit) "explicit" else ""
-        fun filteredText(text: String): String {
-            val filteredText = text
-                .lowercase()
-                .replace("(", " ")
-                .replace(")", " ")
-                .replace("-", " ")
-                .replace("lyrics", "")
-                .replace("vevo", "")
-                .replace(" hd", "")
-                .replace("official video", "")
-                .replace(Regex("\\s+"), " ")
-                .filter { it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
-            return filteredText
-        }
-
         runBlocking(Dispatchers.IO) {
             searchedSongs = Innertube.searchPage(
                 body = SearchBody(
@@ -401,7 +399,7 @@ fun LocalPlaylistSongsModern(
             songsList = searchedSongs,
             songToRematch = matchingSong,
             playlistId = playlistId,
-            position = matchingSongIndex,
+            position = playlistSongsSortByPosition.indexOf(SongEntity(song = matchingSong)),
             onDismiss = {songMatchingDialogEnable = false}
         )
     }
@@ -831,8 +829,7 @@ fun LocalPlaylistSongsModern(
                             getAlbumVersionFromVideo(
                                 song = video.song,
                                 playlistId = playlistId,
-                                position = index,
-                                isExtPlaylist = true
+                                position = index
                             )
                           }
                         )
@@ -1991,7 +1988,6 @@ fun LocalPlaylistSongsModern(
                                                 onMatchingSong = {
                                                     songMatchingDialogEnable = true
                                                     matchingSong = song.song
-                                                    matchingSongIndex = index
                                                 },
                                                 navController = navController,
                                                 playlist = playlistPreview,
