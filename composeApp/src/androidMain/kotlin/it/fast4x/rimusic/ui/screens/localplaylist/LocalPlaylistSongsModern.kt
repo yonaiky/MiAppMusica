@@ -757,6 +757,7 @@ fun LocalPlaylistSongsModern(
     val playlistNotPipedType =
         playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX, 0, true) == false
     val hapticFeedback = LocalHapticFeedback.current
+    var unmatchedSongsCount = playlistSongs.filter { it.song.thumbnailUrl == "" }.size
 
     val editThumbnailLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
@@ -814,17 +815,17 @@ fun LocalPlaylistSongsModern(
     }
 
 
-    if (playlistSongsSortByPosition.any{songEntity -> songEntity.song.id == ("${songEntity.song.title}${songEntity.song.artistsText}").filter{it.isLetterOrDigit()}}){
+    if (playlistSongsSortByPosition.any{songEntity -> songEntity.song.id == (cleanPrefix(songEntity.song.title)+songEntity.song.artistsText).filter{it.isLetterOrDigit()}}){
         showGetAlbumVersionDialogueExt = true
             LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
                 totalSongsToMatch = playlistSongsSortByPosition
-                    .filter { songEntity -> songEntity.song.id == ("${songEntity.song.title}${songEntity.song.artistsText}").filter{it.isLetterOrDigit()}}.size
+                    .filter{songEntity -> songEntity.song.id == (cleanPrefix(songEntity.song.title)+songEntity.song.artistsText).filter{it.isLetterOrDigit()}}.size
                 songsMatched = 0
 
                 val jobs = mutableListOf<Job>()
                 playlistSongsSortByPosition.forEachIndexed { index, video ->
-                    if (video.song.id == ("${video.song.title}${video.song.artistsText}").filter{it.isLetterOrDigit()}){
+                    if (video.song.id == (cleanPrefix(video.song.title)+video.song.artistsText).filter{it.isLetterOrDigit()}){
                         jobs.add(coroutineScope.launch(Dispatchers.IO) {
                             getAlbumVersionFromVideo(
                                 song = video.song,
@@ -961,7 +962,7 @@ fun LocalPlaylistSongsModern(
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
                         IconInfo(
-                            title = playlistSongs.size.toString(),
+                            title = playlistSongs.size.toString()+if (unmatchedSongsCount != 0){"($unmatchedSongsCount)"} else "",
                             icon = painterResource(R.drawable.musical_notes)
                         )
                         Spacer(modifier = Modifier.height(5.dp))
