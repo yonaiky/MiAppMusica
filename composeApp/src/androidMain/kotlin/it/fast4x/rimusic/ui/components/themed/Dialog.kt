@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
@@ -96,6 +97,7 @@ import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.compose.persist.persist
+import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -143,6 +145,8 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.left
 import it.fast4x.rimusic.utils.lyricsSizeKey
 import it.fast4x.rimusic.utils.lyricsSizeLKey
@@ -1793,7 +1797,7 @@ fun InProgressDialog(
 
 @Composable
 fun SongMatchingDialog(
-    songsList : List<Song>,
+    songsList :  List<Innertube. SongItem>?,
     songToRematch : Song,
     playlistId : Long,
     position : Int,
@@ -1834,14 +1838,31 @@ fun SongMatchingDialog(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    BasicText(
-                        text = cleanPrefix(songToRematch.title),
-                        style = typography().m.semiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                    Row(
                         modifier = Modifier
                             .basicMarquee(iterations = Int.MAX_VALUE)
-                    )
+                    ) {
+                        if (songToRematch.asMediaItem.isExplicit) {
+                            IconButton(
+                                icon = R.drawable.explicit,
+                                color = colorPalette().text,
+                                enabled = true,
+                                onClick = {},
+                                modifier = Modifier
+                                    .size(18.dp)
+                            )
+                            Spacer(
+                                modifier = Modifier
+                                    .width(5.dp)
+                            )
+                        }
+                        BasicText(
+                            text = cleanPrefix(songToRematch.title),
+                            style = typography().xs.semiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
@@ -1869,7 +1890,7 @@ fun SongMatchingDialog(
                 }
             }
 
-            if (songsList.isNotEmpty()) {
+            if (songsList?.isNotEmpty() == true) {
                 LazyColumn {
                     itemsIndexed(songsList) { index, song ->
                         Row(horizontalArrangement = Arrangement.Start,
@@ -1881,10 +1902,10 @@ fun SongMatchingDialog(
                                 .clickable(onClick = {
                                     Database.asyncTransaction {
                                         deleteSongFromPlaylist(songToRematch.id, playlistId)
-                                        Database.insert(song)
+                                        Database.insert(song.asSong)
                                         insert(
                                             SongPlaylistMap(
-                                                songId = song.id,
+                                                songId = song.asSong.id,
                                                 playlistId = playlistId,
                                                 position = position
                                             )
@@ -1908,21 +1929,38 @@ fun SongMatchingDialog(
                                     .size(30.dp)
                             )
                             Column {
-                                BasicText(
-                                    text = cleanPrefix(song.title),
-                                    style = typography().xs.semiBold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
+                                Row(
                                     modifier = Modifier
                                         .basicMarquee(iterations = Int.MAX_VALUE)
-                                )
+                                ) {
+                                    if (song.asMediaItem.isExplicit) {
+                                        IconButton(
+                                            icon = R.drawable.explicit,
+                                            color = colorPalette().text,
+                                            enabled = true,
+                                            onClick = {},
+                                            modifier = Modifier
+                                                .size(18.dp)
+                                        )
+                                        Spacer(
+                                            modifier = Modifier
+                                                .width(5.dp)
+                                        )
+                                    }
+                                    BasicText(
+                                        text = cleanPrefix(song.title ?: ""),
+                                        style = typography().xs.semiBold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                 ) {
                                     BasicText(
-                                        text = song.artistsText ?: "",
+                                        text = song.asSong.artistsText ?: "",
                                         style = typography().xs.semiBold.secondary,
                                         maxLines = 1,
                                         overflow = TextOverflow.Clip,

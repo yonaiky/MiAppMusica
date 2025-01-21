@@ -366,7 +366,7 @@ fun LocalPlaylistSongsModern(
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
-    var searchedSongs: List<Song>
+    var searchedSongs:  List<Innertube. SongItem>?
     fun filteredText(text : String): String{
         val filteredText = text
             .lowercase()
@@ -385,15 +385,15 @@ fun LocalPlaylistSongsModern(
     if (songMatchingDialogEnable){
         val explicit = if (matchingSong.asMediaItem.isExplicit) " explicit" else ""
         runBlocking(Dispatchers.IO) {
-            searchedSongs = Innertube.searchPage(
+            val searchQuery = Innertube.searchPage(
                 body = SearchBody(
                     query = filteredText("${cleanPrefix(matchingSong.title)} ${matchingSong.artistsText}$explicit"),
                     params = Innertube.SearchFilter.Song.value
                 ),
                 fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
-            )?.map {
-                it?.items?.map { it.asSong }
-            }?.getOrNull() ?: emptyList()
+            )
+
+            searchedSongs = searchQuery?.getOrNull()?.items
         }
         SongMatchingDialog(
             songsList = searchedSongs,
