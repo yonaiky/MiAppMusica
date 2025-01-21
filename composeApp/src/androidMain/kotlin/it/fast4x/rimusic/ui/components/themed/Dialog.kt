@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -146,6 +147,7 @@ import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.left
 import it.fast4x.rimusic.utils.lyricsSizeKey
@@ -1823,17 +1825,30 @@ fun SongMatchingDialog(
                     .padding(horizontal = 5.dp)
                     .padding(vertical = 10.dp)
             ) {
-                AsyncImage(
-                    model = songToRematch.asMediaItem.mediaMetadata.artworkUri.thumbnail(
-                        Dimensions.thumbnails.song.px / 2
-                    ),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .padding(end = 5.dp)
-                        .clip(RoundedCornerShape(5.dp))
-                        .size(40.dp)
-                )
+                Box {
+                    AsyncImage(
+                        model = songToRematch.asMediaItem.mediaMetadata.artworkUri.thumbnail(
+                            Dimensions.thumbnails.song.px / 2
+                        ),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .clip(RoundedCornerShape(5.dp))
+                            .size(40.dp)
+                    )
+                    if (songToRematch.likedAt != null) {
+                        HeaderIconButton(
+                            onClick = {},
+                            icon = getLikeState(songToRematch.asMediaItem.mediaId),
+                            color = colorPalette().favoritesIcon,
+                            iconSize = 12.dp,
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .absoluteOffset((-8).dp, 0.dp)
+                        )
+                    }
+                }
                 Column(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
@@ -1892,7 +1907,7 @@ fun SongMatchingDialog(
 
             if (songsList?.isNotEmpty() == true) {
                 LazyColumn {
-                    itemsIndexed(songsList) { index, song ->
+                    itemsIndexed(songsList) { _, song ->
                         Row(horizontalArrangement = Arrangement.Start,
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -1905,7 +1920,7 @@ fun SongMatchingDialog(
                                         Database.insert(song.asSong)
                                         insert(
                                             SongPlaylistMap(
-                                                songId = song.asSong.id,
+                                                songId = song.asMediaItem.mediaId,
                                                 playlistId = playlistId,
                                                 position = position
                                             )
@@ -1915,19 +1930,32 @@ fun SongMatchingDialog(
                                         onDismiss()
                                     }
                                 }
-                                )
-                        ) {
-                            AsyncImage(
-                                model = song.asMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                    Dimensions.thumbnails.song.px / 2
-                                ),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .padding(end = 5.dp)
-                                    .clip(RoundedCornerShape(5.dp))
-                                    .size(30.dp)
                             )
+                        ) {
+                            Box {
+                                AsyncImage(
+                                    model = song.asMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                        Dimensions.thumbnails.song.px / 2
+                                    ),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .padding(end = 5.dp)
+                                        .clip(RoundedCornerShape(5.dp))
+                                        .size(30.dp)
+                                )
+                                if (song.asSong.likedAt != null) {
+                                    HeaderIconButton(
+                                        onClick = {},
+                                        icon = getLikeState(song.asMediaItem.mediaId),
+                                        color = colorPalette().favoritesIcon,
+                                        iconSize = 9.dp,
+                                        modifier = Modifier
+                                            .align(Alignment.BottomStart)
+                                            .absoluteOffset((-6.75).dp, 0.dp)
+                                    )
+                                }
+                            }
                             Column {
                                 Row(
                                     modifier = Modifier
