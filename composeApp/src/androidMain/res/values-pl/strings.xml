@@ -778,8 +778,8 @@
     <string name="no_thumbnail_present">Brak miniaturki</string>
     <string name="removed_thumbnail">Usunięta miniaturka</string>
     <string name="failed_to_remove_thumbnail">Nie udało się usunąć miniatury</string>
-    <string name="settings_enable_pip">Enable Picture in Picture</string>
-    <string name="settings_enable_pip_auto">Enable Automatic Picture in Picture</string>
+    <string name="settings_enable_pip">Włącz Obraz w Obrazie</string>
+    <string name="settings_enable_pip_auto">Włącz Automatyczny Obraz w Obrazie</string>
     <string name="pipmodule_cover">Cover</string>
     <string name="settings_pip_module">Pip module</string>
     <string name="menu_go_to_picture_in_picture">PIP</string>
@@ -816,13 +816,13 @@
     <string name="jump_previous_blank">Leave it Blank or 0 for Previous Button to Always Play the Previous Song</string>
     <string name="delete_hidden_songs">Do you really want to delete all hidden songs from database? This action is irreversible.</string>
     <string name="delete_hidden_songs_message">Usuń ukryte utwory</string>
-    <string name="cover_type_vinyl">Vinyl</string>
+    <string name="cover_type_vinyl">Winyl</string>
     <string name="cover_type_cd">CD</string>
     <string name="cover_type_cd_with_cover">CD z okładką</string>
     <string name="wallpaper">Tapeta</string>
     <string name="enable_wallpaper">Włącz tapetę</string>
     <string name="set_cover_thumbnail_as_wallpaper">Set cover thumbnail as wallpaper</string>
-    <string name="notification_type">Notification type</string>
+    <string name="notification_type">Typ powiadomień</string>
     <string name="notification_type_default">Domyślny</string>
     <string name="notification_type_advanced">Zaawansowane</string>
     <string name="notification_type_info">The way the player is handled in the notification area and lockscreen.</string>
@@ -830,7 +830,7 @@
     <string name="tab_accounts">Konta</string>
     <string name="blankspace">Pusta przestrzeń na górze</string>
     <string name="settings_enable_autodownload_song">Włącz automatyczne pobieranie utworu</string>
-    <string name="settings_enable_autodownload_song_when_liked">Auto download song when liked</string>
+    <string name="settings_enable_autodownload_song_when_liked">Pobierz automatycznie, gdy polubiono</string>
     <string name="settings_enable_autodownload_song_when_album_bookmarked">Auto download song when album bookmarked</string>
     <string name="tab_general">Ogólne</string>
     <string name="queue_and_local_playlists_left_swipe">Queue and Local Playlists Left Swipe</string>
