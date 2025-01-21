@@ -55,7 +55,7 @@
     <string name="online">En ligne</string>
     <string name="no_results_found">Aucun résultat trouvé. Veuillez essayer une autre recherche ou une autre catégorie.</string>
     <string name="videos">Vidéos</string>
-    <string name="featured">En vedette</string>
+    <string name="featured">En Vedette</string>
     <string name="view_the_source_code">Afficher le code source</string>
     <string name="report_an_issue">Signaler un problème</string>
     <string name="you_will_be_redirected_to_github">Vous allez être redirigé vers GitHub.</string>
