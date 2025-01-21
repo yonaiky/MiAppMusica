@@ -1341,6 +1341,9 @@ interface Database {
     @Query("SELECT likedAt FROM Song WHERE id = :songId")
     fun likedAt(songId: String): Flow<Long?>
 
+    @Query("SELECT likedAt FROM Song WHERE id = :songId")
+    fun getLikedAt(songId: String): Long?
+
     @Query("UPDATE Album SET bookmarkedAt = :bookmarkedAt WHERE id = :id")
     fun bookmarkAlbum(id: String, bookmarkedAt: Long?): Int
 
@@ -1989,6 +1992,18 @@ interface Database {
     fun sortSongsFromPlaylistByDuration( id: Long ): Flow<List<SongEntity>>
 
     @Query("""
+        SELECT DISTINCT S.*, Album.title as albumTitle, Format.contentLength as contentLength
+        FROM Song S 
+        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
+        LEFT JOIN SongAlbumMap ON SongAlbumMap.songId = S.id 
+        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId
+        LEFT JOIN Format ON Format.songId = S.id
+        WHERE SP.playlistId = :id 
+        ORDER BY S.thumbnailUrl
+    """)
+    fun sortSongsFromPlaylistByUrl( id: Long ): Flow<List<SongEntity>>
+
+    @Query("""
         SELECT DISTINCT S.*, A.title as albumTitle, Format.contentLength as contentLength
         FROM Song S 
         INNER JOIN songplaylistmap SP ON S.id = SP.songId 
@@ -2050,6 +2065,7 @@ interface Database {
             PlaylistSongSortBy.Duration -> sortSongsFromPlaylistByDuration( id )
             PlaylistSongSortBy.DateLiked -> sortSongsFromPlaylistByLikedAt( id )
             PlaylistSongSortBy.DateAdded -> sortSongsFromPlaylistByRowId( id )
+            PlaylistSongSortBy.UnmatchedSongs -> sortSongsFromPlaylistByUrl(id)
         }.map {
             it.run {
                 if( sortOrder == SortOrder.Descending )
@@ -2066,6 +2082,10 @@ interface Database {
     @Transaction
     @Query("SELECT SP.position FROM Song S INNER JOIN songplaylistmap SP ON S.id=SP.songId WHERE SP.playlistId=:id AND S.id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY SP.position")
     fun songsPlaylistMap(id: Long): Flow<List<Int>>
+
+    @Transaction
+    @Query("SELECT id FROM SONG WHERE likedAt IS NOT NULL AND likedAt < 0")
+    fun dislikedSongsById(): Flow<List<String>>
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction

@@ -40,6 +40,7 @@ fun SortMenu (
     onDateAdded: (() -> Unit)? = null,
     onDateLiked: (() -> Unit)? = null,
     onDuration: (() -> Unit)? = null,
+    onUnmatchedSong: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     var height by remember {
@@ -221,6 +222,17 @@ fun SortMenu (
                 onClick = {
                     onDismiss()
                     onDuration()
+                }
+            )
+        }
+
+        onUnmatchedSong?.let {
+            MenuEntry(
+                icon = R.drawable.alert,
+                text = stringResource(R.string.unmatched),
+                onClick = {
+                    onDismiss()
+                    onUnmatchedSong()
                 }
             )
         }
