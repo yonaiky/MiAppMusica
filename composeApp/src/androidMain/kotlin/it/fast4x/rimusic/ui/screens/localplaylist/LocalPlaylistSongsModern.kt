@@ -383,11 +383,11 @@ fun LocalPlaylistSongsModern(
     }
 
     if (songMatchingDialogEnable){
-        val explicit = if (matchingSong.asMediaItem.isExplicit) "explicit" else ""
+        val explicit = if (matchingSong.asMediaItem.isExplicit) " explicit" else ""
         runBlocking(Dispatchers.IO) {
             searchedSongs = Innertube.searchPage(
                 body = SearchBody(
-                    query = filteredText("${cleanPrefix(matchingSong.title)} ${matchingSong.artistsText} $explicit"),
+                    query = filteredText("${cleanPrefix(matchingSong.title)} ${matchingSong.artistsText}$explicit"),
                     params = Innertube.SearchFilter.Song.value
                 ),
                 fromMusicShelfRendererContent = Innertube.SongItem.Companion::from

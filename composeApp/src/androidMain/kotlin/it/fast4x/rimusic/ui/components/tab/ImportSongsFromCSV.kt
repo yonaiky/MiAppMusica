@@ -39,6 +39,7 @@ class ImportSongsFromCSV private constructor(
                                     Database.asyncTransaction {
                                         beforeTransaction( index, row )
                                         /**/
+                                        val explicitPrefix = if (row["Explicit"] == "true") "e:" else ""
                                         val pseudoMediaId = (row["Track Name"]+row["Artist Name(s)"]).filter { it.isLetterOrDigit() }
                                         val title = row["Title"] ?: row["Track Name"] ?: return@asyncTransaction
                                         val mediaId = row["MediaId"] ?: pseudoMediaId
@@ -47,7 +48,7 @@ class ImportSongsFromCSV private constructor(
 
                                         val song = Song(
                                             id = mediaId,
-                                            title = title,
+                                            title = explicitPrefix+title,
                                             artistsText = artistsText,
                                             durationText = durationText,
                                             thumbnailUrl = row["ThumbnailUrl"] ?: "",
