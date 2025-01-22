@@ -718,7 +718,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                 )
             }
         } else if (isExtPlaylist && (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()}))){
-            songNotFound = song.copy(id = (song.artistsText+cleanPrefix(song.title)).filter{it.isLetterOrDigit()})
+            songNotFound = song.copy(id = (song.artistsText+"Ri14"+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
             Database.delete(song)
             Database.insert(songNotFound)
             Database.insert(
