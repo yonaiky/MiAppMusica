@@ -876,7 +876,7 @@
     <string name="info_use_ytm_login_only_for_browse">À utiliser si les titres ne sont pas joués lors de la connexion</string>
     <string name="disliked_this_song">Impossible d\'effectuer cette action lorsque tous les titres ne sont pas appréciés</string>
     <string name="removed_from_disliked">Supprimé des titres non appréciés</string>
-    <string name="disliked_this_collection">Impossible d\'effectuer cette action lorsque tous les titres ne sont pas appréciés</string>
+    <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are either Disliked or Unmatched</string>
     <string name="toggle_controls_landscape">Activer / Désactiver les commandes à l\'écran</string>
     <string name="delete_songs_not_in_library">Supprimer les titres qui ne sont pas dans la bibliothèque</string>
     <string name="delete_in_process">Suppression des titres qui ne sont pas dans votre bibliothèque. L\'application se fermera une fois le processus terminé</string>
