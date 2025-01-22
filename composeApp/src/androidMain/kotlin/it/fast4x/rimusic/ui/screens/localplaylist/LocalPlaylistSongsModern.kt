@@ -937,9 +937,16 @@ fun LocalPlaylistSongsModern(
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
                         IconInfo(
-                            title = playlistSongs.size.toString()+if (unmatchedSongsCount != 0){"($unmatchedSongsCount)"} else "",
+                            title = playlistSongs.size.toString(),
                             icon = painterResource(R.drawable.musical_notes)
                         )
+                        if (unmatchedSongsCount != 0) {
+                            Spacer(modifier = Modifier.height(5.dp))
+                            IconInfo(
+                                title = "($unmatchedSongsCount)",
+                                icon = painterResource(R.drawable.alert)
+                            )
+                        }
                         Spacer(modifier = Modifier.height(5.dp))
                         IconInfo(
                             title = formatAsTime(totalPlayTimes),
@@ -1978,7 +1985,10 @@ fun LocalPlaylistSongsModern(
                                     },
                                     onClick = {
                                         if (!selectItems) {
-                                            if (song.song.likedAt != -1L) {
+                                            if (song.song.thumbnailUrl == ""){
+                                                songMatchingDialogEnable = true
+                                                matchingSongEntity = song
+                                            } else if (song.song.likedAt != -1L) {
                                                 searching = false
                                                 filter = null
                                                 playlistSongs.filter { it.song.likedAt != -1L }
