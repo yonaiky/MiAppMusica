@@ -114,6 +114,7 @@ WARNING, the custom version is not an official release, download only if invited
 - Go to [Crowdin](https://crowdin.com/project/rimusic/invite?h=73f0e6b64be1c64a8aebd467d286cf851925330) and help with the translations.
 
 ###  **Developer / Designer that contribute:**
+- [0x5h31d0n](https://github.com/0x5h31d0n)
 - [25huizengek1](https://github.com/25huizengek1)
 - [821938089](https://github.com/821938089)
 - [aneesh1122](https://github.com/aneesh1122)
