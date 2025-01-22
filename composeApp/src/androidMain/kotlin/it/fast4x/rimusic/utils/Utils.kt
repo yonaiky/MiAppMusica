@@ -682,7 +682,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
             && if (instrumental) (requiredSongWords.any { it == "instrumental" }) else requiredSongWords.all{ it != "instrumental" }
             && if (remix) (requiredSongWords.any { it == "remix" }) else requiredSongWords.all{ it != "remix" }
             && if (acapella) (requiredSongWords.any { it == "acapella" }) else requiredSongWords.all{ it != "acapella" }
-            && if (acoustic) (requiredSongWords.any { it == "remix" }) else requiredSongWords.all{ it != "remix" }
+            && if (acoustic) (requiredSongWords.any { it == "acoustic" }) else requiredSongWords.all{ it != "acoustic" }
             && if (live) (requiredSongWords.any { it == "live" }) else requiredSongWords.all{ it != "live" }
             && if (concert) (requiredSongWords.any { it == "concert" }) else requiredSongWords.all{ it != "concert" }
             && if (isExtPlaylist) {(durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000}
