@@ -21,6 +21,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.ArrayDeque
 
+var GlobalVolume: Float = 0.5f
+
+fun Player.setGlobalVolume(v: Float) {
+    GlobalVolume = v
+}
+
 fun Player.isNowPlaying(mediaId: String): Boolean {
     return mediaId == currentMediaItem?.mediaId
 }
@@ -124,16 +130,20 @@ fun Player.forceSeekToNext() =
     if (hasNextMediaItem()) seekToNext() else seekTo(0, C.TIME_UNSET)
 
 fun Player.playNext() {
+    GlobalVolume = volume
     seekToNextMediaItem()
     //seekToNext()
     prepare()
+    volume = GlobalVolume
     playWhenReady = true
 }
 
 fun Player.playPrevious() {
+    GlobalVolume = volume
     seekToPreviousMediaItem()
     //seekToPrevious()
     prepare()
+    volume = GlobalVolume
     playWhenReady = true
 }
 
