@@ -55,6 +55,7 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -99,6 +100,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -156,6 +160,8 @@ import it.fast4x.rimusic.utils.right
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailFadeExKey
 import it.fast4x.rimusic.utils.thumbnailSpacingLKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun TextFieldDialog(
@@ -1799,14 +1805,13 @@ fun InProgressDialog(
 
 @Composable
 fun SongMatchingDialog(
-    songsList :  List<Innertube. SongItem>?,
     songToRematch : Song,
     playlistId : Long,
     position : Int,
-    onDismiss: (() -> Unit)? = null,
+    onDismiss: (() -> Unit)
 ) {
     Dialog(
-        onDismissRequest = {if (onDismiss != null) {onDismiss()}},
+        onDismissRequest = { onDismiss() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Column(
@@ -1816,6 +1821,37 @@ fun SongMatchingDialog(
                 .fillMaxHeight(if (isLandscape) 0.9f else 0.7f)
                 .background(color = colorPalette().background1,shape = RoundedCornerShape(8.dp))
         ) {
+            fun filteredText(text : String): String{
+                val filteredText = text
+                    .lowercase()
+                    .replace("(", " ")
+                    .replace(")", " ")
+                    .replace("-", " ")
+                    .replace("lyrics", "")
+                    .replace("vevo", "")
+                    .replace(" hd", "")
+                    .replace("official video", "")
+                    .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+                    .replace(Regex("\\s+"), " ")
+                return filteredText
+            }
+            var songsList by remember { mutableStateOf<List<Innertube.SongItem?>>(emptyList()) }
+            var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}"))}
+            var startSearch by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit,startSearch) {
+                runBlocking(Dispatchers.IO) {
+                    val searchQuery = Innertube.searchPage(
+                        body = SearchBody(
+                            query = searchText,
+                            params = Innertube.SearchFilter.Song.value
+                        ),
+                        fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
+                    )
+
+                    songsList = searchQuery?.getOrNull()?.items ?: emptyList()
+                    startSearch = false
+                }
+            }
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
@@ -1904,118 +1940,141 @@ fun SongMatchingDialog(
                     }
                 }
             }
-
-            if (songsList?.isNotEmpty() == true) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    value = searchText,
+                    onValueChange = { it ->
+                        searchText = it
+                    },
+                    singleLine = true,
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = colorPalette().text,
+                        unfocusedIndicatorColor = colorPalette().text
+                    ),
+                    modifier = Modifier
+                        .padding(horizontal = 6.dp)
+                        .weight(1f)
+                )
+                IconButton(
+                    icon = R.drawable.search,
+                    color = Color.Black,
+                    onClick = {
+                        startSearch = true
+                    },
+                    modifier = Modifier
+                        .background(shape = RoundedCornerShape(4.dp),color = Color.White)
+                        .padding(all = 4.dp)
+                        .size(24.dp)
+                        .align(Alignment.CenterVertically)
+                        .weight(0.1f)
+                )
+            }
+            if (songsList.isNotEmpty()) {
                 LazyColumn {
                     itemsIndexed(songsList) { _, song ->
-                        Row(horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp)
-                                .padding(vertical = 10.dp)
-                                .clickable(onClick = {
-                                    Database.asyncTransaction {
-                                        deleteSongFromPlaylist(songToRematch.id, playlistId)
-                                        Database.insert(song.asSong)
-                                        insert(
-                                            SongPlaylistMap(
-                                                songId = song.asMediaItem.mediaId,
-                                                playlistId = playlistId,
-                                                position = position
+                        if (song != null) {
+                            Row(horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp)
+                                    .padding(vertical = 10.dp)
+                                    .clickable(onClick = {
+                                        Database.asyncTransaction {
+                                            deleteSongFromPlaylist(songToRematch.id, playlistId)
+                                            Database.insert(song.asSong)
+                                            insert(
+                                                SongPlaylistMap(
+                                                    songId = song.asMediaItem.mediaId,
+                                                    playlistId = playlistId,
+                                                    position = position
+                                                )
                                             )
-                                        )
-                                    }
-                                    if (onDismiss != null) {
+                                        }
                                         onDismiss()
                                     }
-                                }
-                            )
-                        ) {
-                            Box {
-                                AsyncImage(
-                                    model = song.asMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                        Dimensions.thumbnails.song.px / 2
-                                    ),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .padding(end = 5.dp)
-                                        .clip(RoundedCornerShape(5.dp))
-                                        .size(30.dp)
-                                )
-                                if (song.asSong.likedAt != null) {
-                                    HeaderIconButton(
-                                        onClick = {},
-                                        icon = getLikeState(song.asMediaItem.mediaId),
-                                        color = colorPalette().favoritesIcon,
-                                        iconSize = 9.dp,
-                                        modifier = Modifier
-                                            .align(Alignment.BottomStart)
-                                            .absoluteOffset((-6.75).dp, 0.dp)
                                     )
-                                }
-                            }
-                            Column {
-                                Row(
-                                    modifier = Modifier
-                                        .basicMarquee(iterations = Int.MAX_VALUE)
-                                ) {
-                                    if (song.asMediaItem.isExplicit) {
-                                        IconButton(
-                                            icon = R.drawable.explicit,
-                                            color = colorPalette().text,
-                                            enabled = true,
-                                            onClick = {},
-                                            modifier = Modifier
-                                                .size(18.dp)
-                                        )
-                                        Spacer(
-                                            modifier = Modifier
-                                                .width(5.dp)
-                                        )
-                                    }
-                                    BasicText(
-                                        text = cleanPrefix(song.title ?: ""),
-                                        style = typography().xs.semiBold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                    )
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                ) {
-                                    BasicText(
-                                        text = song.asSong.artistsText ?: "",
-                                        style = typography().xs.semiBold.secondary,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Clip,
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .basicMarquee(iterations = Int.MAX_VALUE)
-                                    )
-                                    BasicText(
-                                        text = song.durationText ?: "",
-                                        style = typography().xxs.secondary.medium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
+                            ) {
+                                Box {
+                                    AsyncImage(
+                                        model = song.asMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                            Dimensions.thumbnails.song.px / 2
+                                        ),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop,
                                         modifier = Modifier
                                             .padding(end = 5.dp)
+                                            .clip(RoundedCornerShape(5.dp))
+                                            .size(30.dp)
                                     )
+                                    if (song.asSong.likedAt != null) {
+                                        HeaderIconButton(
+                                            onClick = {},
+                                            icon = getLikeState(song.asMediaItem.mediaId),
+                                            color = colorPalette().favoritesIcon,
+                                            iconSize = 9.dp,
+                                            modifier = Modifier
+                                                .align(Alignment.BottomStart)
+                                                .absoluteOffset((-6.75).dp, 0.dp)
+                                        )
+                                    }
+                                }
+                                Column {
+                                    Row(
+                                        modifier = Modifier
+                                            .basicMarquee(iterations = Int.MAX_VALUE)
+                                    ) {
+                                        if (song.asMediaItem.isExplicit) {
+                                            IconButton(
+                                                icon = R.drawable.explicit,
+                                                color = colorPalette().text,
+                                                enabled = true,
+                                                onClick = {},
+                                                modifier = Modifier
+                                                    .size(18.dp)
+                                            )
+                                            Spacer(
+                                                modifier = Modifier
+                                                    .width(5.dp)
+                                            )
+                                        }
+                                        BasicText(
+                                            text = cleanPrefix(song.title ?: ""),
+                                            style = typography().xs.semiBold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    }
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    ) {
+                                        BasicText(
+                                            text = song.asSong.artistsText ?: "",
+                                            style = typography().xs.semiBold.secondary,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Clip,
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .basicMarquee(iterations = Int.MAX_VALUE)
+                                        )
+                                        BasicText(
+                                            text = song.durationText ?: "",
+                                            style = typography().xxs.secondary.medium,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier
+                                                .padding(end = 5.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            } else {
-                BasicText(
-                    text = stringResource(R.string.songsnotfound),
-                    style = typography().xl.semiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
             }
         }
     }
