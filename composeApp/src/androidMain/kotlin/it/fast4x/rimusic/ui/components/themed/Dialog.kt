@@ -1831,19 +1831,19 @@ fun SongMatchingDialog(
                     .replace("vevo", "")
                     .replace(" hd", "")
                     .replace("official video", "")
-                    .replace(Regex("\\s+"), " ")
                     .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+                    .replace(Regex("\\s+"), " ")
                 return filteredText
             }
             var songsList by remember { mutableStateOf<List<Innertube.SongItem?>>(emptyList()) }
             val explicit = if (songToRematch.asMediaItem.isExplicit) " explicit" else ""
-            var searchText by remember {mutableStateOf("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}")}
+            var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}$explicit"))}
             var startSearch by remember { mutableStateOf(false) }
             LaunchedEffect(Unit,startSearch) {
                 runBlocking(Dispatchers.IO) {
                     val searchQuery = Innertube.searchPage(
                         body = SearchBody(
-                            query = filteredText("$searchText$explicit"),
+                            query = searchText,
                             params = Innertube.SearchFilter.Song.value
                         ),
                         fromMusicShelfRendererContent = Innertube.SongItem.Companion::from

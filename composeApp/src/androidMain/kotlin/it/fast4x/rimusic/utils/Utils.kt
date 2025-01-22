@@ -642,8 +642,8 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
             .replace("vevo", "")
             .replace(" hd", "")
             .replace("official video", "")
-            .replace(Regex("\\s+"), " ")
             .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+            .replace(Regex("\\s+"), " ")
         return filteredText
     }
 
@@ -662,11 +662,31 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
         .split(" ").filter { it.isNotEmpty() }
     val requiredSongWords = filteredText(cleanPrefix(requiredSong?.title ?: ""))
         .split(" ").filter { it.isNotEmpty() }
+    val lofi = sourceSongWords.contains("lofi")
+    val rock = sourceSongWords.contains("rock")
+    val reprise = sourceSongWords.contains("reprise")
+    val unplugged = sourceSongWords.contains("unplugged")
+    val instrumental = sourceSongWords.contains("instrumental")
+    val remix = sourceSongWords.contains("remix")
+    val acapella = sourceSongWords.contains("acapella")
+    val acoustic = sourceSongWords.contains("acoustic")
+    val live = sourceSongWords.contains("live")
+    val concert = sourceSongWords.contains("concert")
 
-    val songMatched = (requiredSong != null) && (requiredSongWords.any { it in sourceSongWords }) &&
-            if (isExtPlaylist) {
-                (durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000
-            } else {true}
+    val songMatched = (requiredSong != null)
+            && (requiredSongWords.any { it in sourceSongWords })
+            && if (lofi) (requiredSongWords.any { it == "lofi" }) else requiredSongWords.all{ it != "lofi" }
+            && if (rock) (requiredSongWords.any { it == "rock" }) else requiredSongWords.all{ it != "rock" }
+            && if (reprise) (requiredSongWords.any { it == "reprise" }) else requiredSongWords.all{ it != "reprise" }
+            && if (unplugged) (requiredSongWords.any { it == "unplugged" }) else requiredSongWords.all{ it != "unplugged" }
+            && if (instrumental) (requiredSongWords.any { it == "instrumental" }) else requiredSongWords.all{ it != "instrumental" }
+            && if (remix) (requiredSongWords.any { it == "remix" }) else requiredSongWords.all{ it != "remix" }
+            && if (acapella) (requiredSongWords.any { it == "acapella" }) else requiredSongWords.all{ it != "acapella" }
+            && if (acoustic) (requiredSongWords.any { it == "remix" }) else requiredSongWords.all{ it != "remix" }
+            && if (live) (requiredSongWords.any { it == "live" }) else requiredSongWords.all{ it != "live" }
+            && if (concert) (requiredSongWords.any { it == "concert" }) else requiredSongWords.all{ it != "concert" }
+            && if (isExtPlaylist) {(durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000}
+            else {true}
 
     Database.asyncTransaction {
         if (songMatched) {
