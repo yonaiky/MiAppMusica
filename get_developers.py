@@ -33,8 +33,8 @@ def fetch_contributors() -> None:
     contributors = json.loads(response.text)
 
     # Filter out unused keys to save space
-    for entry in contributors:
-        filter_keys(entry)
+    #for entry in contributors:
+    #    filter_keys(entry)
 
 
 filename: str = 'README.md'
