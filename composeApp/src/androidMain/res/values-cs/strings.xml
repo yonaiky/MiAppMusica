@@ -867,11 +867,10 @@
     <string name="appearancepresetssecondary">Náhledy budou v nízké kvalitě</string>
     <string name="yt_history">Historie YTM</string>
     <string name="albumCoverRotation">Animace rotace pozadí</string>
-    <string name="enable_connection_metered">Use metered connection to save data</string>
-    <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
-    <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
-    <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
-    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
+    <string name="enable_connection_metered">Použití měřeného připojení pro úsporu dat</string>
+    <string name="info_enable_connection_metered">Úspora dat snižuje kvalitu, používejte pouze v případě, že máte připojení s omezeným objemem dat</string>
+    <string name="use_ytm_login_only_for_browse">Použití přihlášení YTM pouze pro procházení</string>
+    <string name="info_use_ytm_login_only_for_browse">Použije se, pokud se skladby po přihlášení nepřehrávají</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
@@ -885,4 +884,5 @@
     <string name="unmatched">Unmatched Songs</string>
     <string name="match_song">Rematch this Song</string>
     <string name="songsnotfound">Songs Not Found</string>
+    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
 </resources>

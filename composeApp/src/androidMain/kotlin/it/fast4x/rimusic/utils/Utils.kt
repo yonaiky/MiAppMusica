@@ -629,8 +629,7 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 }
 
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
-    val explicit = if (song.asMediaItem.isExplicit) " explicit" else ""
-    val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "")
+    val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "0:00")
     var songNotFound: Song
     fun filteredText(text : String): String{
         val filteredText = text
@@ -642,42 +641,77 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
             .replace("vevo", "")
             .replace(" hd", "")
             .replace("official video", "")
-            .replace(Regex("\\s+"), " ")
             .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+            .replace(Regex("\\s+"), " ")
         return filteredText
     }
 
     val searchQuery = Innertube.searchPage(
         body = SearchBody(
-            query = filteredText("${cleanPrefix(song.title)} ${song.artistsText}$explicit"),
+            query = filteredText("${cleanPrefix(song.title)} ${song.artistsText}"),
             params = Innertube.SearchFilter.Song.value
         ),
         fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
     )
 
     val searchResults = searchQuery?.getOrNull()?.items
-    val requiredSong = searchResults?.getOrNull(0)
 
     val sourceSongWords = filteredText(cleanPrefix(song.title))
         .split(" ").filter { it.isNotEmpty() }
-    val requiredSongWords = filteredText(cleanPrefix(requiredSong?.title ?: ""))
-        .split(" ").filter { it.isNotEmpty() }
+    val lofi = sourceSongWords.contains("lofi")
+    val rock = sourceSongWords.contains("rock")
+    val reprise = sourceSongWords.contains("reprise")
+    val unplugged = sourceSongWords.contains("unplugged")
+    val instrumental = sourceSongWords.contains("instrumental")
+    val remix = sourceSongWords.contains("remix")
+    val acapella = sourceSongWords.contains("acapella")
+    val acoustic = sourceSongWords.contains("acoustic")
+    val live = sourceSongWords.contains("live")
+    val concert = sourceSongWords.contains("concert")
+    val tour = sourceSongWords.contains("tour")
+    val redux = sourceSongWords.contains("redux")
 
-    val songMatched = (requiredSong != null) && (requiredSongWords.any { it in sourceSongWords }) &&
-            if (isExtPlaylist) {
-                (durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000
-            } else {true}
+    fun findSongIndex() : Int {
+        for (i in 0..4) {
+            val requiredSong = searchResults?.getOrNull(i)
+            val requiredSongWords = filteredText(cleanPrefix(requiredSong?.title ?: ""))
+                .split(" ").filter { it.isNotEmpty() }
+
+            val songMatched = (requiredSong != null)
+                    && (requiredSongWords.any { it in sourceSongWords })
+                    && (if (lofi) (requiredSongWords.any { it == "lofi" }) else requiredSongWords.all { it != "lofi" })
+                    && (if (rock) (requiredSongWords.any { it == "rock" }) else requiredSongWords.all { it != "rock" })
+                    && (if (reprise) (requiredSongWords.any { it == "reprise" }) else requiredSongWords.all { it != "reprise" })
+                    && (if (unplugged) (requiredSongWords.any { it == "unplugged" }) else requiredSongWords.all { it != "unplugged" })
+                    && (if (instrumental) (requiredSongWords.any { it == "instrumental" }) else requiredSongWords.all { it != "instrumental" })
+                    && (if (remix) (requiredSongWords.any { it == "remix" }) else requiredSongWords.all { it != "remix" })
+                    && (if (acapella) (requiredSongWords.any { it == "acapella" }) else requiredSongWords.all { it != "acapella" })
+                    && (if (acoustic) (requiredSongWords.any { it == "acoustic" }) else requiredSongWords.all { it != "acoustic" })
+                    && (if (live) (requiredSongWords.any { it == "live" }) else requiredSongWords.all { it != "live" })
+                    && (if (concert) (requiredSongWords.any { it == "concert" }) else requiredSongWords.all { it != "concert" })
+                    && (if (tour) (requiredSongWords.any { it == "tour" }) else requiredSongWords.all { it != "tour" })
+                    && (if (redux) (requiredSongWords.any { it == "redux" }) else requiredSongWords.all { it != "redux" })
+                    && (if (song.asMediaItem.isExplicit) {requiredSong.asMediaItem.isExplicit} else {true})
+                    && (if (isExtPlaylist) {(durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000}
+            else {true})
+
+            if (songMatched) return i
+        }
+        return -1
+    }
+
+    val matchedSong = searchResults?.getOrNull(findSongIndex())
 
     Database.asyncTransaction {
-        if (songMatched) {
+        if (findSongIndex() != -1) {
             deleteSongFromPlaylist(song.id, playlistId)
-            if (requiredSong != null) {
-                Database.insert(requiredSong.asSong)
+            if (matchedSong != null) {
+                Database.insert(matchedSong.asSong)
             }
-            if (requiredSong != null) {
+            if (matchedSong != null) {
                 insert(
                     SongPlaylistMap(
-                        songId = requiredSong.asMediaItem.mediaId,
+                        songId = matchedSong.asMediaItem.mediaId,
                         playlistId = playlistId,
                         position = position
                     )

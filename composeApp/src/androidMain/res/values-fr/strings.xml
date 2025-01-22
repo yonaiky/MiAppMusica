@@ -11,12 +11,12 @@
     <string name="add_to_playlist">Ajouter à la playlist</string>
     <string name="go_to_album">Aller à l\'album</string>
     <string name="remove_from_queue">Supprimer de la file d\'attente</string>
-    <string name="remove_from_playlist">Supprimer de la liste de lecture</string>
+    <string name="remove_from_playlist">Supprimer de la playlist </string>
     <string name="hide">Cacher</string>
     <string name="hide_from_quick_picks">Cacher de la \"Sélection Rapide\"</string>
     <string name="related_albums">Albums Associés</string>
     <string name="similar_artists">Artistes Similaires</string>
-    <string name="playlists_you_might_like">Listes de lecture que vous pourriez aimer</string>
+    <string name="playlists_you_might_like">Playlists que vous pourriez aimer</string>
     <string name="an_error_has_occurred">Une erreur est survenue</string>
     <string name="albums">Albums</string>
     <string name="artists">Artistes</string>
@@ -55,7 +55,7 @@
     <string name="online">En ligne</string>
     <string name="no_results_found">Aucun résultat trouvé. Veuillez essayer une autre recherche ou une autre catégorie.</string>
     <string name="videos">Vidéos</string>
-    <string name="featured">En vedette</string>
+    <string name="featured">En Vedette</string>
     <string name="view_the_source_code">Afficher le code source</string>
     <string name="report_an_issue">Signaler un problème</string>
     <string name="you_will_be_redirected_to_github">Vous allez être redirigé vers GitHub.</string>
