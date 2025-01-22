@@ -1836,8 +1836,7 @@ fun SongMatchingDialog(
                 return filteredText
             }
             var songsList by remember { mutableStateOf<List<Innertube.SongItem?>>(emptyList()) }
-            val explicit = if (songToRematch.asMediaItem.isExplicit) " explicit" else ""
-            var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}$explicit"))}
+            var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}"))}
             var startSearch by remember { mutableStateOf(false) }
             LaunchedEffect(Unit,startSearch) {
                 runBlocking(Dispatchers.IO) {

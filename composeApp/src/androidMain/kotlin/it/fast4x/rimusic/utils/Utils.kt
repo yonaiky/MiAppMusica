@@ -629,7 +629,6 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 }
 
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
-    val explicit = if (song.asMediaItem.isExplicit) " explicit" else ""
     val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "")
     var songNotFound: Song
     fun filteredText(text : String): String{
@@ -649,7 +648,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
 
     val searchQuery = Innertube.searchPage(
         body = SearchBody(
-            query = filteredText("${cleanPrefix(song.title)} ${song.artistsText}$explicit"),
+            query = filteredText("${cleanPrefix(song.title)} ${song.artistsText}"),
             params = Innertube.SearchFilter.Song.value
         ),
         fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
