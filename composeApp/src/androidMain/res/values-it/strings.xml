@@ -224,8 +224,8 @@
     <string name="listen_on_piped">Ascolta su Piped</string>
     <string name="listen_on_invidious">Ascolta su Invidious</string>
     <string name="disable_horizontal_swipe">Disattiva swipe orizzontale</string>
-    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
-    <string name="disable_vertical_swipe_secondary">It affects only when the Expanded Player is off</string>
+    <string name="disable_vertical_swipe">Disabilita il cambio del brano tramite scorrimento verticale</string>
+    <string name="disable_vertical_swipe_secondary">Influisce solo quando il lettore ampliato è disabilitato</string>
     <string name="disable_song_switching_via_swipe">Disabilita il cambio brano tramite swipe</string>
     <string name="interface_in_use">Interfaccia in uso</string>
     <string name="user_interface">Interfaccia</string>
@@ -869,7 +869,7 @@
     <string name="yt_history">Cronologia YTM</string>
     <string name="albumCoverRotation">Animazione Rotazione Sfondo</string>
     <string name="enable_connection_metered">Use metered connection to save data</string>
-    <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
+    <string name="info_enable_connection_metered">Il risparmio dei dati diminuisce la qualità, da usare solo se si ha una connessione debole</string>
     <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
