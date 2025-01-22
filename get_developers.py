@@ -5,10 +5,6 @@ import json
         
         
 contributors: list[dict]
-headers = {
-    'Authorization': 'token {{ACCESS_TOKEN}}',
-    'Accept': 'application/vnd.github.v3+json'
-}
 
 needed_keys = ['login', 'id', 'avatar_url', 'html_url', 'contributions']
 def filter_keys(entry: dict):
@@ -27,6 +23,11 @@ def fetch_contributors() -> None:
     Gets all the contributors of this repository with Github API.
     """
     global contributors
+
+        headers = {
+            'Authorization': 'token {{ACCESS_TOKEN}}',
+            'Accept': 'application/vnd.github.v3+json'
+        }
 
     response = requests.get(contributors_url, headers=headers)
     # Convert response from Github API to list of entries
