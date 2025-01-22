@@ -672,6 +672,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     val acoustic = sourceSongWords.contains("acoustic")
     val live = sourceSongWords.contains("live")
     val concert = sourceSongWords.contains("concert")
+    val tour = sourceSongWords.contains("tour")
 
     val songMatched = (requiredSong != null)
             && (requiredSongWords.any { it in sourceSongWords })
@@ -685,6 +686,8 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
             && if (acoustic) (requiredSongWords.any { it == "acoustic" }) else requiredSongWords.all{ it != "acoustic" }
             && if (live) (requiredSongWords.any { it == "live" }) else requiredSongWords.all{ it != "live" }
             && if (concert) (requiredSongWords.any { it == "concert" }) else requiredSongWords.all{ it != "concert" }
+            && if (tour) (requiredSongWords.any { it == "tour" }) else requiredSongWords.all{ it != "tour" }
+            //&& (song.asMediaItem.isExplicit && requiredSong.title?.startsWith("e:") == true)
             && if (isExtPlaylist) {(durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000}
             else {true}
 
