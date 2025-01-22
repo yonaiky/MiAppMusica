@@ -874,7 +874,7 @@
     <string name="info_use_ytm_login_only_for_browse">Giriş yapıldığında şarkılar çalınmıyorsa kullanılacak</string>
     <string name="disliked_this_song">Bu eylemi Beğenilmeyen Şarkılarla gerçekleştiremezsiniz</string>
     <string name="removed_from_disliked">Beğenmediklerimen kaldırıldı</string>
-    <string name="disliked_this_collection">Tüm Şarkılar Beğenilmediğinde bu eylem gerçekleştirilemez</string>
+    <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are either Disliked or Unmatched</string>
     <string name="toggle_controls_landscape">Ekran Kontrollerini Aç/Kapat</string>
     <string name="delete_songs_not_in_library">Kitaplıkta Olmayan Şarkıları Sil</string>
     <string name="delete_in_process">Kitaplığınızda Olmayan Şarkıları Sil. İşlem Bittikten Sonra Uygulama Kapanacaktır</string>
