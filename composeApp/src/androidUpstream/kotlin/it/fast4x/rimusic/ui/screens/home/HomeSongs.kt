@@ -92,8 +92,6 @@ import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
-import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.Enqueue
@@ -132,7 +130,6 @@ import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.includeLocalSongsKey
 import it.fast4x.rimusic.utils.isCompositionLaunched
@@ -163,6 +160,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
+import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.ItemSelector
@@ -262,8 +261,8 @@ fun HomeSongs(
         playlistName = builtInPlaylist.text,
         songs = { getMediaItems().map( MediaItem::asSong ) }
     )
-    val downloadAllDialog = DownloadAllDialog.init( ::getMediaItems )
-    val deleteDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
+    val downloadAllDialog = DownloadAllSongsDialog { getMediaItems().map( MediaItem::asSong ) }
+    val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog { getMediaItems().map( MediaItem::asSong ) }
     val deleteSongDialog =  DelSongDialog.init()
     val hideSongDialog = HideSongDialog.init()
     val deleteHiddenSongs = DeleteHiddenSongsDialog.init()
@@ -767,8 +766,6 @@ fun HomeSongs(
                             binder?.player?.enqueue(mediaItem)
                         }
                     ) {
-                        downloadAllDialog.state = getDownloadState( mediaItem.mediaId )
-
                         var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = song.song,

@@ -93,9 +93,7 @@ import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
-import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -142,7 +140,6 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.isDownloadedSong
@@ -168,6 +165,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
+import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.SongShuffler
@@ -252,8 +251,8 @@ fun LocalPlaylistSongs(
         { playlistPreview?.playlist?.id },
         { items.map(SongEntity::song) }
     )
-    val downloadAllDialog = DownloadAllDialog.init( ::getMediaItems )
-    val deleteDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
+    val downloadAllDialog = DownloadAllSongsDialog { getMediaItems().map( MediaItem::asSong ) }
+    val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog { getMediaItems().map( MediaItem::asSong ) }
     val editThumbnailLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
@@ -749,7 +748,6 @@ fun LocalPlaylistSongs(
 
 
                         val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                        downloadAllDialog.state = getDownloadState( song.asMediaItem.mediaId )
                         val isDownloaded =
                             if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
                         val positionInPlaylist: Int = index
@@ -846,7 +844,7 @@ fun LocalPlaylistSongs(
                                         )
                                     }
                                 },
-                                downloadState = downloadAllDialog.state,
+                                downloadState = Download.STATE_STOPPED,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 trailingContent = {

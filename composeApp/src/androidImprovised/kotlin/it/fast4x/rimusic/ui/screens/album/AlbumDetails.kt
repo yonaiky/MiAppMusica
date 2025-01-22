@@ -70,8 +70,6 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.LocateComponent
-import it.fast4x.rimusic.ui.components.tab.toolbar.DelAllDownloadedDialog
-import it.fast4x.rimusic.ui.components.tab.toolbar.DownloadAllDialog
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
@@ -115,6 +113,8 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import me.knighthat.component.SongItem
+import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
+import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
@@ -173,8 +173,8 @@ fun AlbumDetails(
     fun getMediaItems() = itemSelector.ifEmpty { items }.map( SongEntity::asMediaItem )
 
     val bookmark = AlbumBookmark( browseId )
-    val deleteAllDownloadsDialog = DelAllDownloadedDialog.init( ::getMediaItems )
-    val downloadALlDialog = DownloadAllDialog.init( ::getMediaItems )
+    val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog { getMediaItems().map( MediaItem::asSong ) }
+    val downloadALlDialog = DownloadAllSongsDialog { getMediaItems().map( MediaItem::asSong ) }
     val shuffle = SongShuffler {
         getMediaItems().map( MediaItem::asSong )
     }
