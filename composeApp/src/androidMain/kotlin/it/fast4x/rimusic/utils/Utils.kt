@@ -670,6 +670,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     val live = sourceSongWords.contains("live")
     val concert = sourceSongWords.contains("concert")
     val tour = sourceSongWords.contains("tour")
+    val redux = sourceSongWords.contains("redux")
 
     fun findSongIndex() : Int {
         for (i in 0..4) {
@@ -679,27 +680,28 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
 
             val songMatched = (requiredSong != null)
                     && (requiredSongWords.any { it in sourceSongWords })
-                    && if (lofi) (requiredSongWords.any { it == "lofi" }) else requiredSongWords.all { it != "lofi" }
-                    && if (rock) (requiredSongWords.any { it == "rock" }) else requiredSongWords.all { it != "rock" }
-                    && if (reprise) (requiredSongWords.any { it == "reprise" }) else requiredSongWords.all { it != "reprise" }
-                    && if (unplugged) (requiredSongWords.any { it == "unplugged" }) else requiredSongWords.all { it != "unplugged" }
-                    && if (instrumental) (requiredSongWords.any { it == "instrumental" }) else requiredSongWords.all { it != "instrumental" }
-                    && if (remix) (requiredSongWords.any { it == "remix" }) else requiredSongWords.all { it != "remix" }
-                    && if (acapella) (requiredSongWords.any { it == "acapella" }) else requiredSongWords.all { it != "acapella" }
-                    && if (acoustic) (requiredSongWords.any { it == "acoustic" }) else requiredSongWords.all { it != "acoustic" }
-                    && if (live) (requiredSongWords.any { it == "live" }) else requiredSongWords.all { it != "live" }
-                    && if (concert) (requiredSongWords.any { it == "concert" }) else requiredSongWords.all { it != "concert" }
-                    && if (tour) (requiredSongWords.any { it == "tour" }) else requiredSongWords.all { it != "tour" }
-                    && if (song.asMediaItem.isExplicit) {requiredSong.asMediaItem.isExplicit} else {true}
-                    && if (isExtPlaylist) {(durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000}
-                    else {true}
+                    && (if (lofi) (requiredSongWords.any { it == "lofi" }) else requiredSongWords.all { it != "lofi" })
+                    && (if (rock) (requiredSongWords.any { it == "rock" }) else requiredSongWords.all { it != "rock" })
+                    && (if (reprise) (requiredSongWords.any { it == "reprise" }) else requiredSongWords.all { it != "reprise" })
+                    && (if (unplugged) (requiredSongWords.any { it == "unplugged" }) else requiredSongWords.all { it != "unplugged" })
+                    && (if (instrumental) (requiredSongWords.any { it == "instrumental" }) else requiredSongWords.all { it != "instrumental" })
+                    && (if (remix) (requiredSongWords.any { it == "remix" }) else requiredSongWords.all { it != "remix" })
+                    && (if (acapella) (requiredSongWords.any { it == "acapella" }) else requiredSongWords.all { it != "acapella" })
+                    && (if (acoustic) (requiredSongWords.any { it == "acoustic" }) else requiredSongWords.all { it != "acoustic" })
+                    && (if (live) (requiredSongWords.any { it == "live" }) else requiredSongWords.all { it != "live" })
+                    && (if (concert) (requiredSongWords.any { it == "concert" }) else requiredSongWords.all { it != "concert" })
+                    && (if (tour) (requiredSongWords.any { it == "tour" }) else requiredSongWords.all { it != "tour" })
+                    && (if (redux) (requiredSongWords.any { it == "redux" }) else requiredSongWords.all { it != "redux" })
+                    && (if (song.asMediaItem.isExplicit) {requiredSong.asMediaItem.isExplicit} else {true})
+                    && (if (isExtPlaylist) {(durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 2000}
+            else {true})
 
             if (songMatched) return i
         }
         return -1
     }
 
-    var matchedSong = searchResults?.getOrNull(findSongIndex())
+    val matchedSong = searchResults?.getOrNull(findSongIndex())
 
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
