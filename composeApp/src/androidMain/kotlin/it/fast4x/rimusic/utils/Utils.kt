@@ -629,7 +629,7 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 }
 
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
-    val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "")
+    val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "0:00")
     var songNotFound: Song
     fun filteredText(text : String): String{
         val filteredText = text
