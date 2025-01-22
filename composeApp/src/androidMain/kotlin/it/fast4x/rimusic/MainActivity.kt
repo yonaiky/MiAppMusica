@@ -1100,14 +1100,6 @@ class MainActivity :
                                 youtubePlayer()
                             }
 
-                            /*
-                BottomSheetMenu(
-                    state = LocalMenuState.current,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                )
-                 */
-
                             val menuState = LocalMenuState.current
                             CustomModalBottomSheet(
                                 showSheet = menuState.isDisplayed,

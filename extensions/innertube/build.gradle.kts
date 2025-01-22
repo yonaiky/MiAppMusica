@@ -21,6 +21,7 @@ dependencies {
     implementation(libs.ktor.client.serialization)
     implementation(libs.logging.interceptor)
     implementation(libs.ktor.serialization.json)
+    implementation(libs.newpipe.extractor)
 
     //testImplementation(libs.junit)
 }

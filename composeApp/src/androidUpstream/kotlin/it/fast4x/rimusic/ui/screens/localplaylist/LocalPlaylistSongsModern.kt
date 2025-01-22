@@ -89,8 +89,11 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.relatedSongs
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -189,7 +192,15 @@ import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import kotlinx.coroutines.CoroutineScope
 import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.ui.components.themed.InProgressDialog
+import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
+import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
+import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.mediaItemToggleLike
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 
 
@@ -214,6 +225,7 @@ fun LocalPlaylistSongsModern(
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
+    var playlistSongsSortByPosition by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
     val thumbnailUrl = remember { mutableStateOf("") }
 
@@ -228,6 +240,11 @@ fun LocalPlaylistSongsModern(
     LaunchedEffect(Unit, filter, sortOrder, sortBy) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
             .collect { playlistSongs = it }
+    }
+
+    LaunchedEffect(Unit) {
+        Database.songsPlaylist(playlistId, PlaylistSongSortBy.Position, SortOrder.Ascending).filterNotNull()
+            .collect { playlistSongsSortByPosition = it }
     }
 
     LaunchedEffect(Unit) {
@@ -252,6 +269,15 @@ fun LocalPlaylistSongsModern(
     var songBaseRecommendation by persist<SongEntity?>("home/songBaseRecommendation")
     var positionsRecommendationList = arrayListOf<Int>()
     var autosync by rememberPreference(autosyncKey, false)
+    var songMatchingDialogEnable by remember { mutableStateOf(false) }
+    var matchingSong by remember { mutableStateOf(Song(
+        id = "",
+        title = "",
+        durationText = null,
+        thumbnailUrl = null
+            )
+        )
+    }
 
     if (isRecommendationEnabled) {
         LaunchedEffect(Unit, isRecommendationEnabled) {
@@ -340,6 +366,43 @@ fun LocalPlaylistSongsModern(
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
+    var searchedSongs:  List<Innertube. SongItem>?
+    fun filteredText(text : String): String{
+        val filteredText = text
+            .lowercase()
+            .replace("(", " ")
+            .replace(")", " ")
+            .replace("-", " ")
+            .replace("lyrics", "")
+            .replace("vevo", "")
+            .replace(" hd", "")
+            .replace("official video", "")
+            .replace(Regex("\\s+"), " ")
+            .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+        return filteredText
+    }
+
+    if (songMatchingDialogEnable){
+        val explicit = if (matchingSong.asMediaItem.isExplicit) " explicit" else ""
+        runBlocking(Dispatchers.IO) {
+            val searchQuery = Innertube.searchPage(
+                body = SearchBody(
+                    query = filteredText("${cleanPrefix(matchingSong.title)} ${matchingSong.artistsText}$explicit"),
+                    params = Innertube.SearchFilter.Song.value
+                ),
+                fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
+            )
+
+            searchedSongs = searchQuery?.getOrNull()?.items
+        }
+        SongMatchingDialog(
+            songsList = searchedSongs,
+            songToRematch = matchingSong,
+            playlistId = playlistId,
+            position = playlistSongsSortByPosition.indexOf(SongEntity(song = matchingSong)),
+            onDismiss = {songMatchingDialogEnable = false}
+        )
+    }
 
     if (isDeleting) {
         ConfirmationDialog(
@@ -694,6 +757,7 @@ fun LocalPlaylistSongsModern(
     val playlistNotPipedType =
         playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX, 0, true) == false
     val hapticFeedback = LocalHapticFeedback.current
+    var unmatchedSongsCount = playlistSongs.filter { it.song.thumbnailUrl == "" }.size
 
     val editThumbnailLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
@@ -724,6 +788,94 @@ fun LocalPlaylistSongsModern(
             thumbnailUrl.value = ""
         } else {
             SmartMessage(context.resources.getString(R.string.failed_to_remove_thumbnail), context = context)
+        }
+    }
+
+    var getAlbumVersion by remember { mutableStateOf(false) }
+    var showGetAlbumVersionDialogue by remember { mutableStateOf(false) }
+    var showGetAlbumVersionDialogueExt by remember { mutableStateOf(false) }
+    var totalSongsToMatch by remember { mutableIntStateOf(0) }
+    var songsMatched by remember { mutableIntStateOf(0) }
+
+    if (showGetAlbumVersionDialogue){
+        InProgressDialog(
+            total = totalSongsToMatch,
+            done = songsMatched,
+            text = stringResource(R.string.matching_songs)
+        )
+    }
+
+    if (showGetAlbumVersionDialogueExt){
+        InProgressDialog(
+            total = totalSongsToMatch,
+            done = songsMatched,
+            text = stringResource(R.string.matching_songs),
+            onDismiss = {showGetAlbumVersionDialogueExt = false}
+        )
+    }
+
+
+    if (playlistSongsSortByPosition.any{songEntity -> songEntity.song.id == (cleanPrefix(songEntity.song.title)+songEntity.song.artistsText).filter{it.isLetterOrDigit()}}){
+        showGetAlbumVersionDialogueExt = true
+            LaunchedEffect(Unit) {
+            withContext(Dispatchers.IO) {
+                totalSongsToMatch = playlistSongsSortByPosition
+                    .filter{songEntity -> songEntity.song.id == (cleanPrefix(songEntity.song.title)+songEntity.song.artistsText).filter{it.isLetterOrDigit()}}.size
+                songsMatched = 0
+
+                val jobs = mutableListOf<Job>()
+                playlistSongsSortByPosition.forEachIndexed { index, video ->
+                    if (video.song.id == (cleanPrefix(video.song.title)+video.song.artistsText).filter{it.isLetterOrDigit()}){
+                        jobs.add(coroutineScope.launch(Dispatchers.IO) {
+                            getAlbumVersionFromVideo(
+                                song = video.song,
+                                playlistId = playlistId,
+                                position = index
+                            )
+                          }
+                        )
+                    }
+                }
+                while(jobs.isNotEmpty()){
+                    val oldSize = jobs.size
+                    jobs.removeIf{it.isCompleted}
+                    songsMatched += oldSize - jobs.size
+                    delay(10)
+                }
+                showGetAlbumVersionDialogueExt = false
+                getAlbumVersion = false
+            }
+        }
+    }
+
+    LaunchedEffect(getAlbumVersion) {
+        withContext(Dispatchers.IO) {
+            totalSongsToMatch = playlistSongsSortByPosition
+                .filter {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}.size
+            songsMatched = 0
+
+            val jobs = mutableListOf<Job>()
+            playlistSongsSortByPosition.forEachIndexed { index, video ->
+                if ((video.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(video.song.id.startsWith(LOCAL_KEY_PREFIX))) {
+                    jobs.add(coroutineScope.launch(Dispatchers.IO) {
+                        getAlbumVersionFromVideo(
+                            song = video.song,
+                            playlistId = playlistId,
+                            position = index
+                        )
+                      }
+                    )
+                }
+            }
+            while(jobs.isNotEmpty()){
+                val oldSize = jobs.size
+                jobs.removeIf{it.isCompleted}
+                songsMatched += oldSize - jobs.size
+                delay(10)
+            }
+
+            showGetAlbumVersionDialogue = false
+            getAlbumVersion = false
         }
     }
 
@@ -810,7 +962,7 @@ fun LocalPlaylistSongsModern(
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
                         IconInfo(
-                            title = playlistSongs.size.toString(),
+                            title = playlistSongs.size.toString()+if (unmatchedSongsCount != 0){"($unmatchedSongsCount)"} else "",
                             icon = painterResource(R.drawable.musical_notes)
                         )
                         Spacer(modifier = Modifier.height(5.dp))
@@ -850,22 +1002,28 @@ fun LocalPlaylistSongsModern(
                         Spacer(modifier = Modifier.height(10.dp))
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
-                            enabled = playlistSongs.isNotEmpty() == true,
-                            color = if (playlistSongs.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
+                            enabled = playlistSongs.any { it.song.likedAt != -1L },
+                            color = if (playlistSongs.any { it.song.likedAt != -1L }) colorPalette.text else colorPalette.textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
-                                        playlistSongs.let { songs ->
-                                            if (songs.isNotEmpty()) {
-                                                val itemsLimited =
-                                                    if (songs.size > maxSongsInQueue.toInt()) songs.shuffled()
-                                                        .take(maxSongsInQueue.toInt()) else songs
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlayFromBeginning(
-                                                    itemsLimited.shuffled().map(SongEntity::asMediaItem)
-                                                )
-                                            }
+                                        if (playlistSongs.any { it.song.likedAt != -1L }) {
+                                            playlistSongs.filter { it.song.likedAt != -1L }
+                                                .let { songs ->
+                                                    if (songs.isNotEmpty()) {
+                                                        val itemsLimited =
+                                                            if (songs.size > maxSongsInQueue.toInt()) songs.shuffled()
+                                                                .take(maxSongsInQueue.toInt()) else songs
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlayFromBeginning(
+                                                            itemsLimited.shuffled()
+                                                                        .map(SongEntity::asMediaItem)
+                                                        )
+                                                    }
+                                                }
+                                        } else {
+                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
                                         }
                                     },
                                     onLongClick = {
@@ -896,39 +1054,26 @@ fun LocalPlaylistSongsModern(
                         .fillMaxWidth()
                 ) {
 
-                    if (playlistNotMonthlyType &&
-                        playlistPreview?.playlist?.browseId?.isEmpty() == true
-                    )
-                        HeaderIconButton(
-                            icon = R.drawable.pin,
-                            enabled = playlistSongs.isNotEmpty(),
-                            color = if (playlistPreview?.playlist?.name?.startsWith(
-                                    PINNED_PREFIX,
-                                    0,
-                                    true
-                                ) == true
-                            )
-                                colorPalette.text else colorPalette.textDisabled,
-                            onClick = {},
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        Database.asyncTransaction {
-                                            if (playlistPreview?.playlist?.name?.startsWith(
-                                                    PINNED_PREFIX,
-                                                    0,
-                                                    true
-                                                ) == true
-                                            )
-                                                Database.unPinPlaylist(playlistId) else
-                                                Database.pinPlaylist(playlistId)
-                                        }
-                                    },
-                                    onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_pin_unpin_playlist), context = context)
+                    HeaderIconButton(
+                        icon = R.drawable.pin,
+                        enabled = playlistSongs.isNotEmpty(),
+                        color = if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                            colorPalette.text else colorPalette.textDisabled,
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    Database.asyncTransaction {
+                                        if (playlistPreview?.playlist?.name?.startsWith(PINNED_PREFIX,0,true) == true)
+                                            Database.unPinPlaylist(playlistId) else
+                                            Database.pinPlaylist(playlistId)
                                     }
-                                )
-                        )
+                                },
+                                onLongClick = {
+                                    SmartMessage(context.resources.getString(R.string.info_pin_unpin_playlist), context = context)
+                                }
+                            )
+                    )
 
                     if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending)
                         HeaderIconButton(
@@ -956,13 +1101,17 @@ fun LocalPlaylistSongsModern(
 
                     HeaderIconButton(
                         icon = R.drawable.downloaded,
-                        enabled = playlistSongs.isNotEmpty(),
-                        color = if (playlistSongs.isNotEmpty()) colorPalette.text else colorPalette.textDisabled,
+                        enabled = playlistSongs.any { it.song.likedAt != -1L },
+                        color = if (playlistSongs.any { it.song.likedAt != -1L }) colorPalette.text else colorPalette.textDisabled,
                         onClick = {},
                         modifier = Modifier
                             .combinedClickable(
                                 onClick = {
-                                    showConfirmDownloadAllDialog = true
+                                    if (playlistSongs.any { it.song.likedAt != -1L }) {
+                                        showConfirmDownloadAllDialog = true
+                                    } else {
+                                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                    }
                                 },
                                 onLongClick = {
                                     SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
@@ -980,8 +1129,8 @@ fun LocalPlaylistSongsModern(
                                 isRecommendationEnabled = false
                                 downloadState = Download.STATE_DOWNLOADING
                                 if (listMediaItems.isEmpty()) {
-                                    if (playlistSongs.isNotEmpty() == true)
-                                        playlistSongs.forEach {
+                                    if (playlistSongs.any { it.song.likedAt != -1L }) {
+                                        playlistSongs.filter { it.song.likedAt != -1L }.forEach {
                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                             Database.asyncTransaction {
                                                 Database.insert(
@@ -1000,6 +1149,7 @@ fun LocalPlaylistSongsModern(
                                                 downloadState = false
                                             )
                                         }
+                                    }
                                 } else {
                                     listMediaItems.forEach {
                                         binder?.cache?.removeResource(it.mediaId)
@@ -1027,6 +1177,26 @@ fun LocalPlaylistSongsModern(
                                 },
                                 onLongClick = {
                                     SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                }
+                            )
+                    )
+                    HeaderIconButton(
+                        icon = R.drawable.random,
+                        enabled = playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))},
+                        color = if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) colorPalette.text else colorPalette.textDisabled,
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) {
+                                        getAlbumVersion = true
+                                        showGetAlbumVersionDialogue = true
+                                    } else {
+                                        SmartMessage(context.resources.getString(R.string.no_videos_found), context = context)
+                                    }
+                                },
+                                onLongClick = {
+                                    SmartMessage(context.resources.getString(R.string.get_album_version), context = context)
                                 }
                             )
                     )
@@ -1132,10 +1302,11 @@ fun LocalPlaylistSongsModern(
                                         playlist = playlistPreview,
                                         onEnqueue = {
                                             if (listMediaItems.isEmpty()) {
-                                                binder?.player?.enqueue(
-                                                    playlistSongs.map(SongEntity::asMediaItem),
-                                                    context
-                                                )
+                                                if (playlistSongs.any { it.song.likedAt != -1L }) {
+                                                    binder?.player?.enqueue(playlistSongs.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),context)
+                                                } else {
+                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                }
                                             } else {
                                                 binder?.player?.enqueue(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -1144,10 +1315,11 @@ fun LocalPlaylistSongsModern(
                                         },
                                         onPlayNext = {
                                             if (listMediaItems.isEmpty()) {
-                                                binder?.player?.addNext(
-                                                    playlistSongs.map(SongEntity::asMediaItem),
-                                                    context
-                                                )
+                                                if (playlistSongs.any { it.song.likedAt != -1L }) {
+                                                    binder?.player?.addNext(playlistSongs.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),context)
+                                                } else {
+                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                }
                                             } else {
                                                 binder?.player?.addNext(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -1391,6 +1563,7 @@ fun LocalPlaylistSongsModern(
                             PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                             PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                             PlaylistSongSortBy.RelativePlayTime -> stringResource(R.string.sort_relative_listening_time)
+                            PlaylistSongSortBy.UnmatchedSongs -> stringResource(R.string.unmatched)
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
@@ -1416,7 +1589,8 @@ fun LocalPlaylistSongsModern(
                                             sortBy = PlaylistSongSortBy.RelativePlayTime
                                         },
                                         onDuration = { sortBy = PlaylistSongSortBy.Duration },
-                                        onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded }
+                                        onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded },
+                                        onUnmatchedSong = {sortBy = PlaylistSongSortBy.UnmatchedSongs}
                                     )
                                 }
 
@@ -1812,6 +1986,10 @@ fun LocalPlaylistSongsModern(
                                     onLongClick = {
                                         menuState.display {
                                             InPlaylistMediaItemMenu(
+                                                onMatchingSong = {
+                                                    songMatchingDialogEnable = true
+                                                    matchingSong = song.song
+                                                },
                                                 navController = navController,
                                                 playlist = playlistPreview,
                                                 playlistId = playlistId,
@@ -1825,17 +2003,23 @@ fun LocalPlaylistSongsModern(
                                     },
                                     onClick = {
                                         if (!selectItems) {
-                                            searching = false
-                                            filter = null
-                                            playlistSongs
-                                                .map(SongEntity::asMediaItem)
-                                                .let { mediaItems ->
-                                                    binder?.stopRadio()
-                                                    binder?.player?.forcePlayAtIndex(
-                                                        mediaItems,
-                                                        index
-                                                    )
+                                            if (song.song.likedAt != -1L) {
+                                                searching = false
+                                                filter = null
+                                                playlistSongs.filter { it.song.likedAt != -1L }
+                                                    .map(SongEntity::asMediaItem)
+                                                    .let { mediaItems ->
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlayAtIndex(
+                                                            mediaItems,
+                                                            mediaItems.indexOf(song.asMediaItem)
+                                                        )
+                                                    }
+                                            } else {
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
                                                 }
+                                            }
                                         } else checkedState.value = !checkedState.value
                                     }
                                 )
@@ -1866,13 +2050,17 @@ fun LocalPlaylistSongsModern(
                 iconId = R.drawable.shuffle,
                 visible = !reorderingState.isDragging,
                 onClick = {
-                    playlistSongs.let { songs ->
-                        if (songs.isNotEmpty()) {
-                            binder?.stopRadio()
-                            binder?.player?.forcePlayFromBeginning(
-                                songs.shuffled().map(SongEntity::asMediaItem)
-                            )
+                    if (playlistSongs.any { it.song.likedAt != -1L }) {
+                        playlistSongs.filter { it.song.likedAt != -1L }.let { songs ->
+                            if (songs.isNotEmpty()) {
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayFromBeginning(
+                                    songs.shuffled().map(SongEntity::asMediaItem)
+                                )
+                            }
                         }
+                    } else {
+                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
                     }
                 }
             )

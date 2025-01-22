@@ -257,9 +257,6 @@ fun ArtistScreenModern(
                                 }
                             )
                         }
-                        2 -> {
-                            ArtistOverviewItems(navController, artistPage?.artist, artistItemsSection, false)
-                        }
                     }
                 }
             }

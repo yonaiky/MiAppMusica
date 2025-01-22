@@ -5,15 +5,25 @@ import android.text.TextUtils
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -21,16 +31,94 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import it.fast4x.rimusic.*
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.*
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.DurationInMilliseconds
+import it.fast4x.rimusic.enums.DurationInMinutes
+import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
+import it.fast4x.rimusic.enums.Languages
+import it.fast4x.rimusic.enums.MaxSongs
+import it.fast4x.rimusic.enums.MusicAnimationType
+import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.NavigationBarType
+import it.fast4x.rimusic.enums.NotificationType
+import it.fast4x.rimusic.enums.PauseBetweenSongs
+import it.fast4x.rimusic.enums.PipModule
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.utils.RestartActivity
+import it.fast4x.rimusic.utils.RestartPlayerService
+import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.autoDownloadSongKey
+import it.fast4x.rimusic.utils.autoDownloadSongWhenAlbumBookmarkedKey
+import it.fast4x.rimusic.utils.autoDownloadSongWhenLikedKey
+import it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
+import it.fast4x.rimusic.utils.closeWithBackButtonKey
+import it.fast4x.rimusic.utils.closebackgroundPlayerKey
+import it.fast4x.rimusic.utils.customThemeDark_Background0Key
+import it.fast4x.rimusic.utils.customThemeDark_Background1Key
+import it.fast4x.rimusic.utils.customThemeDark_Background2Key
+import it.fast4x.rimusic.utils.customThemeDark_Background3Key
+import it.fast4x.rimusic.utils.customThemeDark_Background4Key
+import it.fast4x.rimusic.utils.customThemeDark_TextKey
+import it.fast4x.rimusic.utils.customThemeDark_accentKey
+import it.fast4x.rimusic.utils.customThemeDark_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeDark_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeDark_textSecondaryKey
+import it.fast4x.rimusic.utils.customThemeLight_Background0Key
+import it.fast4x.rimusic.utils.customThemeLight_Background1Key
+import it.fast4x.rimusic.utils.customThemeLight_Background2Key
+import it.fast4x.rimusic.utils.customThemeLight_Background3Key
+import it.fast4x.rimusic.utils.customThemeLight_Background4Key
+import it.fast4x.rimusic.utils.customThemeLight_TextKey
+import it.fast4x.rimusic.utils.customThemeLight_accentKey
+import it.fast4x.rimusic.utils.customThemeLight_iconButtonPlayerKey
+import it.fast4x.rimusic.utils.customThemeLight_textDisabledKey
+import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
+import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
+import it.fast4x.rimusic.utils.discoverKey
+import it.fast4x.rimusic.utils.enablePictureInPictureAutoKey
+import it.fast4x.rimusic.utils.enablePictureInPictureKey
+import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
+import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
+import it.fast4x.rimusic.utils.isAtLeastAndroid12
+import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isConnectionMeteredEnabledKey
+import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
+import it.fast4x.rimusic.utils.jumpPreviousKey
+import it.fast4x.rimusic.utils.keepPlayerMinimizedKey
+import it.fast4x.rimusic.utils.languageAppKey
+import it.fast4x.rimusic.utils.languageDestinationName
+import it.fast4x.rimusic.utils.loudnessBaseGainKey
+import it.fast4x.rimusic.utils.maxSongsInQueueKey
+import it.fast4x.rimusic.utils.minimumSilenceDurationKey
+import it.fast4x.rimusic.utils.navigationBarPositionKey
+import it.fast4x.rimusic.utils.navigationBarTypeKey
+import it.fast4x.rimusic.utils.notificationTypeKey
+import it.fast4x.rimusic.utils.nowPlayingIndicatorKey
+import it.fast4x.rimusic.utils.pauseBetweenSongsKey
+import it.fast4x.rimusic.utils.pauseListenHistoryKey
+import it.fast4x.rimusic.utils.persistentQueueKey
+import it.fast4x.rimusic.utils.pipModuleKey
+import it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
+import it.fast4x.rimusic.utils.playlistindicatorKey
+import it.fast4x.rimusic.utils.rememberEqualizerLauncher
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.resumePlaybackOnStartKey
+import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.shakeEventEnabledKey
+import it.fast4x.rimusic.utils.skipMediaOnErrorKey
+import it.fast4x.rimusic.utils.skipSilenceKey
+import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
+import it.fast4x.rimusic.utils.volumeNormalizationKey
 import me.knighthat.updater.Updater
 
 
@@ -62,6 +150,7 @@ fun GeneralSettings(
     var skipMediaOnError by rememberPreference(skipMediaOnErrorKey, false)
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
     var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
+    var isConnectionMeteredEnabled by rememberPreference(isConnectionMeteredEnabledKey, true)
 
 
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
@@ -263,6 +352,18 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
 
         }
+
+        if (search.input.isBlank() || stringResource(R.string.enable_connection_metered).contains(search.input,true))
+            SwitchSettingEntry(
+                title = stringResource(R.string.enable_connection_metered),
+                text = stringResource(R.string.info_enable_connection_metered),
+                isChecked = isConnectionMeteredEnabled,
+                onCheckedChange = {
+                    isConnectionMeteredEnabled = it
+                    if (it)
+                        audioQualityFormat = AudioQualityFormat.Auto
+                }
+            )
 
         if (search.input.isBlank() || stringResource(R.string.jump_previous).contains(search.input,true)) {
             BasicText(

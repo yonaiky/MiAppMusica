@@ -1,6 +1,5 @@
 package it.fast4x.rimusic.ui.components.themed
 
-//import it.fast4x.rimusic.utils.blurStrength2Key
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -9,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +28,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -79,6 +84,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -90,6 +96,7 @@ import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.compose.persist.persist
+import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -100,10 +107,16 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.VinylSizeKey
+import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.blurDarkenFactorKey
 import it.fast4x.rimusic.utils.blurStrengthKey
 import it.fast4x.rimusic.utils.bold
@@ -113,6 +126,8 @@ import it.fast4x.rimusic.utils.drawCircle
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.getDeviceVolume
+import it.fast4x.rimusic.utils.getLikeState
+import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.lyricsSizeKey
@@ -129,6 +144,7 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setDeviceVolume
 import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
+import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailFadeExKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -1733,6 +1749,267 @@ fun LyricsSizeDialog(
                     onSlideComplete = {},
                     toDisplay = { "%.0f".format(it) },
                     range = 18f..100f
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun InProgressDialog(
+    total : Int,
+    done : Int,
+    text : String,
+    onDismiss: (() -> Unit)? = null,
+) {
+    DefaultDialog(
+        onDismiss = {if (onDismiss != null) {onDismiss()}},
+        modifier = Modifier
+            .fillMaxWidth(if (isLandscape) 0.3f else 0.8f)
+    ) {
+        BasicText(
+            text = text,
+            style = TextStyle(
+                textAlign = TextAlign.Center,
+                fontSize = typography().l.bold.fontSize,
+                fontWeight = typography().l.bold.fontWeight,
+                color = colorPalette().text
+            ),
+            overflow = TextOverflow.Ellipsis,
+        )
+        Spacer(modifier = Modifier
+            .height(10.dp)
+        )
+        BasicText(
+            text = "$done / $total",
+            style = TextStyle(
+                textAlign = TextAlign.Center,
+                fontStyle = typography().xs.semiBold.fontStyle,
+                color = colorPalette().text
+            ),
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+fun SongMatchingDialog(
+    songsList :  List<Innertube. SongItem>?,
+    songToRematch : Song,
+    playlistId : Long,
+    position : Int,
+    onDismiss: (() -> Unit)? = null,
+) {
+    Dialog(
+        onDismissRequest = {if (onDismiss != null) {onDismiss()}},
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth(if (isLandscape) 0.5f else 0.9f)
+                .fillMaxHeight(if (isLandscape) 0.9f else 0.7f)
+                .background(color = colorPalette().background1,shape = RoundedCornerShape(8.dp))
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, colorPalette().text, shape = RoundedCornerShape(8.dp))
+                    .padding(horizontal = 5.dp)
+                    .padding(vertical = 10.dp)
+            ) {
+                Box {
+                    AsyncImage(
+                        model = songToRematch.asMediaItem.mediaMetadata.artworkUri.thumbnail(
+                            Dimensions.thumbnails.song.px / 2
+                        ),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .clip(RoundedCornerShape(5.dp))
+                            .size(40.dp)
+                    )
+                    if (songToRematch.likedAt != null) {
+                        HeaderIconButton(
+                            onClick = {},
+                            icon = getLikeState(songToRematch.asMediaItem.mediaId),
+                            color = colorPalette().favoritesIcon,
+                            iconSize = 12.dp,
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .absoluteOffset((-8).dp, 0.dp)
+                        )
+                    }
+                }
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .basicMarquee(iterations = Int.MAX_VALUE)
+                    ) {
+                        if (songToRematch.asMediaItem.isExplicit) {
+                            IconButton(
+                                icon = R.drawable.explicit,
+                                color = colorPalette().text,
+                                enabled = true,
+                                onClick = {},
+                                modifier = Modifier
+                                    .size(18.dp)
+                            )
+                            Spacer(
+                                modifier = Modifier
+                                    .width(5.dp)
+                            )
+                        }
+                        BasicText(
+                            text = cleanPrefix(songToRematch.title),
+                            style = typography().xs.semiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        BasicText(
+                            text = songToRematch.artistsText ?: "",
+                            style = typography().s.semiBold.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Clip,
+                            modifier = Modifier
+                                .weight(1f)
+                                .basicMarquee(iterations = Int.MAX_VALUE)
+                        )
+                        BasicText(
+                            text = songToRematch.durationText ?: "",
+                            style = typography().xs.secondary.medium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .padding(end = 5.dp)
+                        )
+                    }
+                }
+            }
+
+            if (songsList?.isNotEmpty() == true) {
+                LazyColumn {
+                    itemsIndexed(songsList) { _, song ->
+                        Row(horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp)
+                                .padding(vertical = 10.dp)
+                                .clickable(onClick = {
+                                    Database.asyncTransaction {
+                                        deleteSongFromPlaylist(songToRematch.id, playlistId)
+                                        Database.insert(song.asSong)
+                                        insert(
+                                            SongPlaylistMap(
+                                                songId = song.asMediaItem.mediaId,
+                                                playlistId = playlistId,
+                                                position = position
+                                            )
+                                        )
+                                    }
+                                    if (onDismiss != null) {
+                                        onDismiss()
+                                    }
+                                }
+                            )
+                        ) {
+                            Box {
+                                AsyncImage(
+                                    model = song.asMediaItem.mediaMetadata.artworkUri.thumbnail(
+                                        Dimensions.thumbnails.song.px / 2
+                                    ),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .padding(end = 5.dp)
+                                        .clip(RoundedCornerShape(5.dp))
+                                        .size(30.dp)
+                                )
+                                if (song.asSong.likedAt != null) {
+                                    HeaderIconButton(
+                                        onClick = {},
+                                        icon = getLikeState(song.asMediaItem.mediaId),
+                                        color = colorPalette().favoritesIcon,
+                                        iconSize = 9.dp,
+                                        modifier = Modifier
+                                            .align(Alignment.BottomStart)
+                                            .absoluteOffset((-6.75).dp, 0.dp)
+                                    )
+                                }
+                            }
+                            Column {
+                                Row(
+                                    modifier = Modifier
+                                        .basicMarquee(iterations = Int.MAX_VALUE)
+                                ) {
+                                    if (song.asMediaItem.isExplicit) {
+                                        IconButton(
+                                            icon = R.drawable.explicit,
+                                            color = colorPalette().text,
+                                            enabled = true,
+                                            onClick = {},
+                                            modifier = Modifier
+                                                .size(18.dp)
+                                        )
+                                        Spacer(
+                                            modifier = Modifier
+                                                .width(5.dp)
+                                        )
+                                    }
+                                    BasicText(
+                                        text = cleanPrefix(song.title ?: ""),
+                                        style = typography().xs.semiBold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                ) {
+                                    BasicText(
+                                        text = song.asSong.artistsText ?: "",
+                                        style = typography().xs.semiBold.secondary,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Clip,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .basicMarquee(iterations = Int.MAX_VALUE)
+                                    )
+                                    BasicText(
+                                        text = song.durationText ?: "",
+                                        style = typography().xxs.secondary.medium,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .padding(end = 5.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                BasicText(
+                    text = stringResource(R.string.songsnotfound),
+                    style = typography().xl.semiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }

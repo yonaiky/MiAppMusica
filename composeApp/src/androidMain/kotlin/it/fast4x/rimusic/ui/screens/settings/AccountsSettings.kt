@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +61,7 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.enableYouTubeSyncKey
@@ -79,6 +81,7 @@ import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.useYtLoginOnlyForBrowseKey
 import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import it.fast4x.rimusic.utils.ytAccountEmailKey
 import it.fast4x.rimusic.utils.ytAccountNameKey
@@ -101,6 +104,7 @@ fun AccountsSettings() {
     )
 
     var restartActivity by rememberPreference(restartActivityKey, false)
+    var restartService by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -137,6 +141,7 @@ fun AccountsSettings() {
         //TODO MANAGE LOGIN
         /****** YOUTUBE LOGIN ******/
 
+        var useYtLoginOnlyForBrowse by rememberPreference(useYtLoginOnlyForBrowseKey, false)
         var isYouTubeLoginEnabled by rememberPreference(enableYouTubeLoginKey, false)
         var isYouTubeSyncEnabled by rememberPreference(enableYouTubeSyncKey, false)
         var loginYouTube by remember { mutableStateOf(false) }
@@ -192,8 +197,9 @@ fun AccountsSettings() {
                             AsyncImage(
                                 model = accountThumbnail,
                                 contentDescription = null,
-                                modifier = Modifier.height(50.dp)
-                                    .clip( thumbnailShape() )
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .clip(thumbnailShape())
                             )
 
                         Column {
@@ -217,6 +223,7 @@ fun AccountsSettings() {
                                         cookieManager.removeAllCookies(null)
                                         cookieManager.flush()
                                         WebStorage.getInstance().deleteAllData()
+                                        restartService = true
                                     } else
                                         loginYouTube = true
                                 }
@@ -231,11 +238,11 @@ fun AccountsSettings() {
                             CustomModalBottomSheet(
                                 showSheet = loginYouTube,
                                 onDismissRequest = {
-                                    SmartMessage(
-                                        "Restart RiMusic, please",
-                                        type = PopupType.Info,
-                                        context = context
-                                    )
+//                                    SmartMessage(
+//                                        "Restart RiMusic, please",
+//                                        type = PopupType.Info,
+//                                        context = context
+//                                    )
                                     loginYouTube = false
                                 },
                                 containerColor = colorPalette().background0,
@@ -254,23 +261,37 @@ fun AccountsSettings() {
                                 YouTubeLogin(
                                     onLogin = { cookieRetrieved ->
                                         if (cookieRetrieved.contains("SAPISID")) {
+                                            isLoggedIn = true
                                             loginYouTube = false
                                             SmartMessage(
                                                 "Login successful",
                                                 type = PopupType.Info,
                                                 context = context
                                             )
-                                            restartActivity = !restartActivity
+                                            restartService = true
                                         }
 
                                     }
                                 )
                             }
+                            RestartPlayerService(restartService, onRestart = {
+                                restartService = false
+                                restartActivity = !restartActivity
+                            })
                         }
 
                     }
 
                 }
+
+                SwitchSettingEntry(
+                    title = stringResource(R.string.use_ytm_login_only_for_browse),
+                    text = stringResource(R.string.info_use_ytm_login_only_for_browse),
+                    isChecked = useYtLoginOnlyForBrowse,
+                    onCheckedChange = {
+                        useYtLoginOnlyForBrowse = it
+                    }
+                )
 
 //                SwitchSettingEntry(
 //                    isEnabled = false,
