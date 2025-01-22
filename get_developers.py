@@ -24,7 +24,10 @@ def fetch_contributors() -> None:
     """
     global contributors
 
-    response = requests.get(contributors_url)
+    response = requests.get(contributors_url, headers=headers = {
+    'Authorization': 'token {{ACCESS_TOKEN}}',
+    'Accept': 'application/vnd.github.v3+json'
+})
     # Convert response from Github API to list of entries
     contributors = json.loads(response.text)
 
