@@ -47,6 +47,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 import kotlin.math.absoluteValue
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.minutes
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
@@ -631,6 +632,7 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
     val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "0:00")
     var songNotFound: Song
+    var random4Digit  = Random.nextInt(1000, 10000)
     fun filteredText(text : String): String{
         val filteredText = text
             .lowercase()
@@ -670,6 +672,15 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     val concert = sourceSongWords.contains("concert")
     val tour = sourceSongWords.contains("tour")
     val redux = sourceSongWords.contains("redux")
+
+    fun shuffle(word: String): String {
+        val chars = word.toCharArray()
+        for (i in chars.indices) {
+            val randomIndex = Random.nextInt(chars.size)
+            chars[i] = chars[randomIndex]
+        }
+        return String(chars)
+    }
 
     fun findSongIndex() : Int {
         for (i in 0..4) {
@@ -718,7 +729,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                 )
             }
         } else if (isExtPlaylist && (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()}))){
-            songNotFound = song.copy(id = (song.artistsText+"Ri14"+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
+            songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
             Database.delete(song)
             Database.insert(songNotFound)
             Database.insert(
