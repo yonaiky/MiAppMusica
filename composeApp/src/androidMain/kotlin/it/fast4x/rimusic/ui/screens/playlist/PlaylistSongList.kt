@@ -138,8 +138,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.DownloadSyncedLyrics
 import it.fast4x.rimusic.utils.setLikeState
 import kotlinx.coroutines.flow.filterNotNull
 import timber.log.Timber
@@ -448,6 +450,7 @@ fun PlaylistSongList(
                                                             mediaItem = it.asMediaItem,
                                                             downloadState = false
                                                         )
+                                                        DownloadSyncedLyrics(it = SongEntity(it.asSong), coroutineScope = coroutineScope)
                                                     } else {
                                                 SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
                                             }
@@ -800,6 +803,7 @@ fun PlaylistSongList(
                                     mediaItem = song.asMediaItem,
                                     downloadState = isDownloaded
                                 )
+                            DownloadSyncedLyrics(it = SongEntity(song.asSong), coroutineScope = coroutineScope)
                         },
                         onEnqueue = {
                             binder?.player?.enqueue(song.asMediaItem)
@@ -820,6 +824,7 @@ fun PlaylistSongList(
                                         mediaItem = song.asMediaItem,
                                         downloadState = isDownloaded
                                     )
+                                DownloadSyncedLyrics(it = SongEntity(song.asSong), coroutineScope = coroutineScope)
                             },
                             downloadState = downloadState,
                             thumbnailSizePx = songThumbnailSizePx,

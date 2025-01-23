@@ -50,6 +50,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -194,6 +195,8 @@ import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.DownloadSyncedLyrics
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isNowPlaying
 import kotlinx.coroutines.withContext
@@ -765,6 +768,7 @@ fun HomeSongsModern(
     }
 
     val queueLimit by remember { mutableStateOf(QueueSelection.END_OF_QUEUE_WINDOWED) }
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -1071,6 +1075,7 @@ fun HomeSongsModern(
                                                     mediaItem = it.song.asMediaItem,
                                                     downloadState = false
                                                 )
+                                                DownloadSyncedLyrics(it = it, coroutineScope = coroutineScope)
                                             }
                                         }
                                     } else {
@@ -1081,7 +1086,7 @@ fun HomeSongsModern(
                                                 mediaItem = it,
                                                 downloadState = false
                                             )
-
+                                            DownloadSyncedLyrics(it = SongEntity(it.asSong), coroutineScope = coroutineScope)
                                         }
                                         selectItems = false
                                     }
@@ -1804,16 +1809,38 @@ fun HomeSongsModern(
                         )
                     }
 
+                    val isLocal by remember { derivedStateOf { song.song.asMediaItem.isLocal } }
+                    val isDownloaded = if (!isLocal) isDownloadedSong(song.song.asMediaItem.mediaId) else true
+                    downloadState = getDownloadState(song.song.asMediaItem.mediaId)
+
                     SwipeablePlaylistItem(
                         mediaItem = song.song.asMediaItem,
                         onPlayNext = {
                             binder?.player?.addNext(song.song.asMediaItem)
+                        },
+                        onDownload = {
+                            binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
+                            Database.asyncTransaction {
+                                Database.insert(
+                                    Song(
+                                        id = song.song.asMediaItem.mediaId,
+                                        title = song.song.asMediaItem.mediaMetadata.title.toString(),
+                                        artistsText = song.song.asMediaItem.mediaMetadata.artist.toString(),
+                                        thumbnailUrl = song.song.thumbnailUrl,
+                                        durationText = null
+                                    )
+                                )
+                            }
+                            if (!isLocal)
+                                manageDownload(
+                                    context = context,
+                                    mediaItem = song.song.asMediaItem,
+                                    downloadState = isDownloaded
+                                )
+                            DownloadSyncedLyrics(it = song, coroutineScope = coroutineScope)
                         }
                     ) {
                         var forceRecompose by remember { mutableStateOf(false) }
-                        val isLocal by remember { derivedStateOf { song.song.asMediaItem.isLocal } }
-                        downloadState = getDownloadState(song.song.asMediaItem.mediaId)
-                        val isDownloaded = if (!isLocal) isDownloadedSong(song.song.asMediaItem.mediaId) else true
                         val checkedState = rememberSaveable { mutableStateOf(false) }
                         SongItem(
                             song = song.song,
@@ -1836,6 +1863,7 @@ fun HomeSongsModern(
                                         mediaItem = song.song.asMediaItem,
                                         downloadState = isDownloaded
                                     )
+                                DownloadSyncedLyrics(it = song, coroutineScope = coroutineScope)
                             },
                             downloadState = downloadState,
                             thumbnailSizePx = thumbnailSizePx,

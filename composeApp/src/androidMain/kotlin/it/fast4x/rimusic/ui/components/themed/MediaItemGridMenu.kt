@@ -32,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -92,8 +93,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.DownloadSyncedLyrics
+import it.fast4x.rimusic.utils.asSong
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -401,6 +405,7 @@ fun MediaItemGridMenu (
     val height by remember {
         mutableStateOf(0.dp)
     }
+    val coroutineScope = rememberCoroutineScope()
 
     val topContent = @Composable {
         Row(
@@ -423,6 +428,7 @@ fun MediaItemGridMenu (
                             mediaItem = mediaItem,
                             downloadState = isDownloaded
                         )
+                    DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
                 },
                 downloadState = downloadState,
                 thumbnailSizeDp = thumbnailSizeDp,

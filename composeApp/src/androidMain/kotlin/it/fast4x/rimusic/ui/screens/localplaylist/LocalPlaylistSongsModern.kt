@@ -195,6 +195,7 @@ import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
+import it.fast4x.rimusic.utils.DownloadSyncedLyrics
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.isExplicit
@@ -1130,6 +1131,7 @@ fun LocalPlaylistSongsModern(
                                                 mediaItem = it.asMediaItem,
                                                 downloadState = false
                                             )
+                                            DownloadSyncedLyrics(it = it, coroutineScope = coroutineScope)
                                         }
                                     }
                                 } else {
@@ -1140,6 +1142,7 @@ fun LocalPlaylistSongsModern(
                                             mediaItem = it,
                                             downloadState = true
                                         )
+                                        DownloadSyncedLyrics(it = SongEntity(it.asSong), coroutineScope = coroutineScope)
                                     }
                                     selectItems = false
                                 }
@@ -1826,6 +1829,29 @@ fun LocalPlaylistSongsModern(
                         },
                         onPlayNext = {
                             binder?.player?.addNext(song.asMediaItem)
+                        },
+                        onDownload = {
+                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                            Database.asyncTransaction {
+                                Database.insert(
+                                    Song(
+                                        id = song.asMediaItem.mediaId,
+                                        title = song.asMediaItem.mediaMetadata.title.toString(),
+                                        artistsText = song.asMediaItem.mediaMetadata.artist.toString(),
+                                        thumbnailUrl = song.song.thumbnailUrl,
+                                        durationText = null
+                                    )
+                                )
+                            }
+
+                            if (!isLocal) {
+                                manageDownload(
+                                    context = context,
+                                    mediaItem = song.asMediaItem,
+                                    downloadState = isDownloaded
+                                )
+                            }
+                            DownloadSyncedLyrics(it = song, coroutineScope = coroutineScope)
                         }
                     ) {
                         var forceRecompose by remember { mutableStateOf(false) }
@@ -1852,6 +1878,7 @@ fun LocalPlaylistSongsModern(
                                         downloadState = isDownloaded
                                     )
                                 }
+                                DownloadSyncedLyrics(it = song, coroutineScope = coroutineScope)
                                 //if (isDownloaded) listDownloadedMedia.dropWhile { it.asMediaItem.mediaId == song.asMediaItem.mediaId } else listDownloadedMedia.add(song)
                                 //Log.d("mediaItem", "manageDownload click isDownloaded ${isDownloaded} listDownloadedMedia ${listDownloadedMedia.distinct().size}")
                             },
