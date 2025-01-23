@@ -2,6 +2,8 @@ name: Update contributors in README
 on:
   schedule:
     - cron:  '0 0 * * 5'
+  # Allow manual trigger
+  workflow_dispatch:
 # push:
 #   branches:
 #     - master
