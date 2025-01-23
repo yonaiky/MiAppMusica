@@ -1,4 +1,4 @@
-name: Automatically update contributors list in app
+name: Update contributors list in app
 
 on:
   schedule:
