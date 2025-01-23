@@ -6,7 +6,7 @@ import json
         
 contributors: list[dict]
 headers = {
-    'Authorization': 'token {{ACCESS_TOKEN}}',
+    'Authorization': 'Bearer ${{ secrets.GITHUB_TOKEN }}',
     'Accept': 'application/vnd.github.v3+json'
 }
 

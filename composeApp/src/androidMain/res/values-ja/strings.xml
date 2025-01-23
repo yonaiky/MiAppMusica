@@ -874,7 +874,7 @@
     <string name="info_use_ytm_login_only_for_browse">ログイン時に曲が再生されない場合に使用</string>
     <string name="disliked_this_song">嫌いな曲ではこのアクションを実行できません</string>
     <string name="removed_from_disliked">嫌いな曲から削除</string>
-    <string name="disliked_this_collection">すべての曲が嫌いかマッチしない場合、このアクションを実行できません</string>
+    <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
     <string name="toggle_controls_landscape">オンスクリーンコントロールの有効化</string>
     <string name="delete_songs_not_in_library">ライブラリにない楽曲を削除</string>
     <string name="delete_in_process">ライブラリに含まれていない曲を削除します。実行した後にアプリを自動的に終了します。</string>
