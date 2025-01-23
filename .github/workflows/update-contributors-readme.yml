@@ -27,4 +27,4 @@ jobs:
         PATH: '/README.md'
         COMMIT_MESSAGE: 'docs(README): update contributors'
         AVATAR_SHAPE: 'round'
-        PULL_REQUEST: 'Update collaborators'
+        #PULL_REQUEST: 'Update collaborators'
