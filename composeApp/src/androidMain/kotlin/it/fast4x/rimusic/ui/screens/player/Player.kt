@@ -133,10 +133,6 @@ import com.mikepenz.hypnoticcanvas.shaders.MesmerizingLens
 import com.mikepenz.hypnoticcanvas.shaders.OilFlow
 import com.mikepenz.hypnoticcanvas.shaders.PurpleLiquid
 import com.mikepenz.hypnoticcanvas.shaders.Stage
-import dev.chrisbanes.haze.HazeDefaults
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
-import dev.chrisbanes.haze.hazeChild
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -227,7 +223,6 @@ import it.fast4x.rimusic.utils.horizontalFadingEdge
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.jumpPreviousKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.miniQueueExpandedKey
@@ -1342,7 +1337,6 @@ fun Player(
     val carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
 
     var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
-    val hazeState = remember { HazeState() }
 
     Box(
         modifier = Modifier
@@ -1961,7 +1955,6 @@ fun Player(
 
         if (isLandscape) {
          Box(
-             modifier = Modifier.haze(state = hazeState, style = HazeDefaults.style(backgroundColor = Color.Transparent, tint = Color.Black.copy(0.5f),blurRadius = 8.dp))
          ){
              if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && (!showthumbnail || albumCoverRotation)) {
                  val fling = PagerDefaults.flingBehavior(
@@ -2555,7 +2548,6 @@ fun Player(
          }
         } else {
            Box(
-               modifier = Modifier.haze(state = hazeState, style = HazeDefaults.style(backgroundColor = Color.Transparent, tint = Color.Black.copy(0.5f),blurRadius = 8.dp))
            ) {
                if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && (!showthumbnail || albumCoverRotation)) {
                     val fling = PagerDefaults.flingBehavior(
@@ -3142,8 +3134,7 @@ fun Player(
             containerColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
             contentColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
             modifier = Modifier
-                .fillMaxWidth()
-                .hazeChild(state = hazeState),
+                .fillMaxWidth(),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             dragHandle = {
                 Surface(
@@ -3172,8 +3163,7 @@ fun Player(
             containerColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
             contentColor = if (playerType == PlayerType.Modern) Color.Transparent else colorPalette().background2,
             modifier = Modifier
-                .fillMaxWidth()
-                .hazeChild(state = hazeState),
+                .fillMaxWidth(),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             dragHandle = {
                 Surface(

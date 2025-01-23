@@ -323,7 +323,6 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.math3)
     implementation(libs.toasty)
-    implementation(libs.haze)
     implementation(libs.androidyoutubeplayer)
     implementation(libs.glance.widgets)
     implementation(libs.kizzy.rpc)
