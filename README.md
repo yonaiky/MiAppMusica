@@ -119,9 +119,9 @@ WARNING, the custom version is not an official release, download only if invited
 <tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/fast4x>
-            <img src=https://avatars.githubusercontent.com/u/1484476?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Rino Russo/>
+            <img src=https://avatars.githubusercontent.com/u/1484476?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=fast4X/>
             <br />
-            <sub style="font-size:14px"><b>Rino Russo</b></sub>
+            <sub style="font-size:14px"><b>fast4X</b></sub>
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
