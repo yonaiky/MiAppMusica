@@ -249,6 +249,7 @@ object MyDownloadHelper {
 //            )
 
                 coroutineScope.launch {
+                    DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
                     context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
                         if (it is CancellationException) throw it
 
@@ -282,7 +283,6 @@ object MyDownloadHelper {
 
     fun autoDownload(context: Context, mediaItem: MediaItem){
         if (context.preferences.getBoolean(autoDownloadSongKey, false)) {
-            DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
             if (downloads.value[mediaItem.mediaId]?.state != Download.STATE_COMPLETED)
                 addDownload(context, mediaItem)
         }
