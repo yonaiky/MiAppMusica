@@ -93,6 +93,7 @@ import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.completed
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -439,28 +440,25 @@ fun LocalPlaylistSongsModern(
                 Database.asyncTransaction {
                     runBlocking(Dispatchers.IO) {
                         withContext(Dispatchers.IO) {
-                            Innertube.playlistPage(
-                                BrowseBody(
-                                    browseId = playlistPreview.playlist.browseId
-                                        ?: ""
-                                )
-                            )
-                                ?.completed()
+                            playlistPreview.playlist.browseId?.let {
+                                YtMusic.getPlaylist(
+                                    playlistId = it
+                                ).completed()
+                            }
                         }
                     }?.getOrNull()?.let { remotePlaylist ->
                         Database.clearPlaylist(playlistId)
 
-                        remotePlaylist.songsPage
-                            ?.items
-                            ?.map(Innertube.SongItem::asMediaItem)
-                            ?.onEach(Database::insert)
-                            ?.mapIndexed { position, mediaItem ->
+                        remotePlaylist.songs
+                            .map(Innertube.SongItem::asMediaItem)
+                            .onEach(Database::insert)
+                            .mapIndexed { position, mediaItem ->
                                 SongPlaylistMap(
                                     songId = mediaItem.mediaId,
                                     playlistId = playlistId,
                                     position = position
                                 )
-                            }?.let(Database::insertSongPlaylistMaps)
+                            }.let(Database::insertSongPlaylistMaps)
                     }
                 }
             } else {
