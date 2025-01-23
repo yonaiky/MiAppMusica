@@ -874,7 +874,7 @@
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
-    <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are either Disliked or Unmatched</string>
+    <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
     <string name="toggle_controls_landscape">Toggle On-screen Controls</string>
     <string name="delete_songs_not_in_library">Delete Songs not in the Library</string>
     <string name="delete_in_process">Deleting the Songs which are not in your Library. The App will Close After the Process is Over</string>
