@@ -2,7 +2,7 @@ name: Automatically update contributors list in app
 
 on:
   schedule:
-    - cron: '0 0 * * 1' # Every Monday @ 00:00
+    - cron: '0 16 * * 5' # Every Friday at 16:00
   # Allow manual trigger
   workflow_dispatch:
 
@@ -37,4 +37,4 @@ jobs:
       - name: Push changes
         uses: stefanzweifel/git-auto-commit-action@v5.0.1
         with:
-          commit_message: "updated ${{ steps.date.outputs.date }}"
+          commit_message: "In app contributors list updated ${{ steps.date.outputs.date }}"
