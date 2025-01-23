@@ -3,10 +3,7 @@ package it.fast4x.innertube
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.BrowserUserAgent
-import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.compression.ContentEncoding
-import io.ktor.client.plugins.compression.brotli
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
@@ -22,27 +19,20 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
-import io.ktor.http.parseQueryString
 import io.ktor.http.userAgent
 import io.ktor.serialization.kotlinx.json.json
+import it.fast4x.innertube.clients.YouTubeLocale
 import it.fast4x.innertube.models.AccountInfo
 import it.fast4x.innertube.models.AccountMenuResponse
+import it.fast4x.innertube.models.BrowseResponse
+import it.fast4x.innertube.models.Context
+import it.fast4x.innertube.models.Context.Client
+import it.fast4x.innertube.models.Context.Companion.DefaultIOS
+import it.fast4x.innertube.models.Context.Companion.DefaultWeb
 import it.fast4x.innertube.models.MusicNavigationButtonRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.Runs
 import it.fast4x.innertube.models.Thumbnail
-import it.fast4x.innertube.clients.YouTubeClient
-import it.fast4x.innertube.clients.YouTubeClient.Companion.IOS
-import it.fast4x.innertube.clients.YouTubeClient.Companion.WEB_REMIX
-import it.fast4x.innertube.clients.YouTubeLocale
-import it.fast4x.innertube.models.BrowseResponse
-import it.fast4x.innertube.models.Context
-import it.fast4x.innertube.models.Context.Client
-import it.fast4x.innertube.models.Context.Companion.DefaultAndroid
-import it.fast4x.innertube.models.Context.Companion.DefaultIOS
-import it.fast4x.innertube.models.Context.Companion.DefaultWeb
-import it.fast4x.innertube.models.Context.Companion.DefaultWebCreator
-import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.AccountMenuBody
 import it.fast4x.innertube.models.bodies.Action
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -54,7 +44,6 @@ import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.YoutubePreferences
 import it.fast4x.innertube.utils.getProxy
 import it.fast4x.innertube.utils.parseCookieString
-import it.fast4x.innertube.utils.runCatchingCancellable
 import it.fast4x.innertube.utils.sha1
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -62,8 +51,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
-import okhttp3.logging.HttpLoggingInterceptor
-import java.net.InetSocketAddress
 import java.net.Proxy
 import java.util.Locale
 
@@ -92,14 +79,6 @@ object Innertube {
             //brotli(1.0F)
             gzip(0.9F)
             deflate(0.8F)
-        }
-
-        engine {
-            addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                }
-            )
         }
 
         ProxyPreferences.preference?.let {
