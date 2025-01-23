@@ -158,9 +158,11 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.LyricsSizeDialog
+import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.jumpPreviousKey
@@ -366,6 +368,7 @@ fun Lyrics(
             targetValue = if (isRotated) 360F else 0f,
             animationSpec = tween(durationMillis = 200), label = ""
         )
+        val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
 
         if (showLyricsSizeDialog) {
             LyricsSizeDialog(
@@ -1828,7 +1831,7 @@ fun Lyrics(
                         Image(
                             painter = painterResource(if (binder?.player?.isPlaying == true) R.drawable.pause else R.drawable.play),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette().text),
+                            colorFilter = ColorFilter.tint(if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text),
                             modifier = Modifier
                                 .clickable(
                                     indication = ripple(bounded = false),
