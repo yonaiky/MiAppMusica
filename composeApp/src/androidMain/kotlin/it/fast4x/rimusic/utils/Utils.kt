@@ -13,9 +13,6 @@ import android.provider.MediaStore
 import android.text.format.DateUtils
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
@@ -33,23 +30,16 @@ import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.getProxy
-import it.fast4x.kugou.KuGou
-import it.fast4x.lrclib.LrcLib
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Album
-import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -58,7 +48,6 @@ import java.util.Date
 import java.util.GregorianCalendar
 import kotlin.math.absoluteValue
 import kotlin.random.Random
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
@@ -750,63 +739,6 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     position = position
                 )
             )
-        }
-    }
-}
-
-
-fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
-    var lyrics by mutableStateOf<Lyrics?>(null)
-    coroutineScope.launch {
-        withContext(Dispatchers.IO) {
-            Database.lyrics(it.asMediaItem.mediaId)
-                .collect { currentLyrics ->
-                    if (currentLyrics?.synced == null) {
-                        lyrics = null
-                        kotlin.runCatching {
-                            LrcLib.lyrics(
-                                artist = it.song.artistsText
-                                    ?: "",
-                                title = cleanPrefix(it.song.title),
-                                duration = durationTextToMillis(
-                                    it.song.durationText
-                                        ?: ""
-                                ).milliseconds,
-                                album = it.albumTitle
-                            )?.onSuccess { lyrics ->
-                                Database.upsert(
-                                    Lyrics(
-                                        songId = it.asMediaItem.mediaId,
-                                        fixed = currentLyrics?.fixed,
-                                        synced = lyrics?.text.orEmpty()
-                                    )
-                                )
-                            }?.onFailure { lyrics ->
-                                kotlin.runCatching {
-                                    KuGou.lyrics(
-                                        artist = it.song.artistsText
-                                            ?: "",
-                                        title = cleanPrefix(
-                                            it.song.title
-                                        ),
-                                        duration = durationTextToMillis(
-                                            it.song.durationText
-                                                ?: ""
-                                        ) / 1000
-                                    )?.onSuccess { lyrics ->
-                                        Database.upsert(
-                                            Lyrics(
-                                                songId = it.asMediaItem.mediaId,
-                                                fixed = currentLyrics?.fixed,
-                                                synced = lyrics?.value.orEmpty()
-                                            )
-                                        )
-                                    }?.onFailure {}
-                                }.onFailure {}
-                            }
-                        }.onFailure {}
-                    }
-                }
         }
     }
 }

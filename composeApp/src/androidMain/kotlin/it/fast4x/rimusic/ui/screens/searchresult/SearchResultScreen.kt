@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -41,7 +40,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongAlbumMap
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
@@ -62,10 +60,8 @@ import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.DownloadSyncedLyrics
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -157,7 +153,6 @@ fun SearchResultScreen(
             }
 
             val emptyItemsText = stringResource(R.string.no_results_found)
-            val coroutineScope = rememberCoroutineScope()
 
             Skeleton(
                 navController,
@@ -227,7 +222,6 @@ fun SearchResultScreen(
                                                 mediaItem = song.asMediaItem,
                                                 downloadState = isDownloaded
                                             )
-                                            DownloadSyncedLyrics(it = SongEntity(song.asSong), coroutineScope = coroutineScope)
                                         },
                                         onEnqueue = {
                                             localBinder?.player?.enqueue(song.asMediaItem)
@@ -247,7 +241,6 @@ fun SearchResultScreen(
                                                     mediaItem = song.asMediaItem,
                                                     downloadState = isDownloaded
                                                 )
-                                                DownloadSyncedLyrics(it = SongEntity(song.asSong), coroutineScope = coroutineScope)
                                             },
                                             thumbnailContent = {
                                                 NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)

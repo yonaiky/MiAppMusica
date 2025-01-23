@@ -115,12 +115,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.context
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.DownloadSyncedLyrics
-import it.fast4x.rimusic.utils.asSong
 import timber.log.Timber
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
@@ -1091,7 +1088,6 @@ fun MediaItemMenu(
                 val thumbnailSizePx = thumbnailSizeDp.px
                 val thumbnailArtistSizeDp = Dimensions.thumbnails.song + 10.dp
                 val thumbnailArtistSizePx = thumbnailArtistSizeDp.px
-                val coroutineScope = rememberCoroutineScope()
 
                 Box(
                     modifier = Modifier
@@ -1130,7 +1126,6 @@ fun MediaItemMenu(
                                     mediaItem = mediaItem,
                                     downloadState = isDownloaded
                                 )
-                            DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
                         },
                         downloadState = downloadState,
                         thumbnailSizeDp = thumbnailSizeDp,

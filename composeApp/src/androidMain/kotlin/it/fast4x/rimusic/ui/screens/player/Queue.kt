@@ -51,7 +51,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -140,11 +139,8 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.windows
 import kotlinx.coroutines.launch
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.utils.DownloadSyncedLyrics
-import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.enqueue
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -377,7 +373,6 @@ fun Queue(
             thumbnailRoundnessKey,
             ThumbnailRoundness.Heavy
         )
-        val coroutineScope = rememberCoroutineScope()
 
         var filterCharSequence: CharSequence
         filterCharSequence = filter.toString()
@@ -574,7 +569,6 @@ fun Queue(
                                             mediaItem = window.mediaItem,
                                             downloadState = isDownloaded
                                         )
-                                    DownloadSyncedLyrics(it = SongEntity(window.mediaItem.asSong), coroutineScope = coroutineScope)
                                 },
                                 onRemoveFromQueue = {
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
@@ -597,7 +591,6 @@ fun Queue(
                                                 mediaItem = window.mediaItem,
                                                 downloadState = isDownloaded
                                             )
-                                        DownloadSyncedLyrics(it = SongEntity(window.mediaItem.asSong), coroutineScope = coroutineScope)
                                     },
                                     downloadState = downloadState,
                                     thumbnailSizePx = thumbnailSizePx,

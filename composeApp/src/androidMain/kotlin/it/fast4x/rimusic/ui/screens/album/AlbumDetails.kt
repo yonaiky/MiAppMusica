@@ -42,7 +42,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -145,13 +144,10 @@ import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.SongAlbumMap
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.DownloadSyncedLyrics
 import it.fast4x.rimusic.utils.asAlbum
-import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
@@ -193,7 +189,6 @@ fun AlbumDetails(
     var playTime by remember {
         mutableStateOf<Long?>(null)
     }
-    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(startSync) {
         withContext(Dispatchers.IO) {
             songs.forEach {song ->
@@ -473,7 +468,6 @@ fun AlbumDetails(
                                 mediaItem = it.asMediaItem,
                                 downloadState = false
                             )
-                            DownloadSyncedLyrics(it = SongEntity(it), coroutineScope = coroutineScope)
                         }
                     }
                 } else {
@@ -488,7 +482,6 @@ fun AlbumDetails(
                                 mediaItem = it,
                                 downloadState = false
                             )
-                            DownloadSyncedLyrics(it = SongEntity(it.asSong), coroutineScope = coroutineScope)
                             //listMediaItems.clear()
                             selectItems = false
                         }
@@ -1069,7 +1062,6 @@ fun AlbumDetails(
                                     mediaItem = song.asMediaItem,
                                     downloadState = isDownloaded
                                 )
-                            DownloadSyncedLyrics(it = SongEntity(song), coroutineScope = coroutineScope)
                         },
                         onEnqueue = {
                             binder?.player?.enqueue(song.asMediaItem)
@@ -1092,7 +1084,6 @@ fun AlbumDetails(
                                         mediaItem = song.asMediaItem,
                                         downloadState = isDownloaded
                                     )
-                                DownloadSyncedLyrics(it = SongEntity(song), coroutineScope = coroutineScope)
                             },
                             thumbnailSizeDp = thumbnailSizeDp,
                             thumbnailContent = {
