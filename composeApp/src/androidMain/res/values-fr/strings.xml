@@ -886,5 +886,6 @@
     <string name="matching_songs">Titres correspondants. Veuillez patienter. Ne réduisez pas ou ne quittez pas l\'application</string>
     <string name="unmatched">Titres incomparables</string>
     <string name="match_song">Rejouer ce titre</string>
+    <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">Titres non trouvés</string>
 </resources>
