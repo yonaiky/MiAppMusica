@@ -1,5 +1,5 @@
 {
-  "message": "Requires authentication",
-  "documentation_url": "https://docs.github.com/rest/collaborators/collaborators#list-repository-collaborators",
+  "message": "Bad credentials",
+  "documentation_url": "https://docs.github.com/rest",
   "status": "401"
 }
