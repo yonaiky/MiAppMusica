@@ -381,6 +381,7 @@ fun NonQueuedMediaItemMenu(
             onDeleteFromDatabase = onDeleteFromDatabase,
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = onAddToPreferites,
+            onMatchingSong =  onMatchingSong,
             modifier = modifier,
             disableScrollingText = disableScrollingText
         )

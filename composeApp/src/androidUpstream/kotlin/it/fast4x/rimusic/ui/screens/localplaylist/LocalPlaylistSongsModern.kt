@@ -270,11 +270,13 @@ fun LocalPlaylistSongsModern(
     var positionsRecommendationList = arrayListOf<Int>()
     var autosync by rememberPreference(autosyncKey, false)
     var songMatchingDialogEnable by remember { mutableStateOf(false) }
-    var matchingSong by remember { mutableStateOf(Song(
+    var matchingSongEntity by remember { mutableStateOf(SongEntity(
+        Song(
         id = "",
         title = "",
         durationText = null,
         thumbnailUrl = null
+                )
             )
         )
     }
@@ -366,40 +368,13 @@ fun LocalPlaylistSongsModern(
     val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
-    var searchedSongs:  List<Innertube. SongItem>?
-    fun filteredText(text : String): String{
-        val filteredText = text
-            .lowercase()
-            .replace("(", " ")
-            .replace(")", " ")
-            .replace("-", " ")
-            .replace("lyrics", "")
-            .replace("vevo", "")
-            .replace(" hd", "")
-            .replace("official video", "")
-            .replace(Regex("\\s+"), " ")
-            .filter {it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
-        return filteredText
-    }
 
     if (songMatchingDialogEnable){
-        val explicit = if (matchingSong.asMediaItem.isExplicit) " explicit" else ""
-        runBlocking(Dispatchers.IO) {
-            val searchQuery = Innertube.searchPage(
-                body = SearchBody(
-                    query = filteredText("${cleanPrefix(matchingSong.title)} ${matchingSong.artistsText}$explicit"),
-                    params = Innertube.SearchFilter.Song.value
-                ),
-                fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
-            )
 
-            searchedSongs = searchQuery?.getOrNull()?.items
-        }
         SongMatchingDialog(
-            songsList = searchedSongs,
-            songToRematch = matchingSong,
+            songToRematch = matchingSongEntity.song,
             playlistId = playlistId,
-            position = playlistSongsSortByPosition.indexOf(SongEntity(song = matchingSong)),
+            position = playlistSongsSortByPosition.indexOf(matchingSongEntity),
             onDismiss = {songMatchingDialogEnable = false}
         )
     }
@@ -962,9 +937,16 @@ fun LocalPlaylistSongsModern(
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
                         IconInfo(
-                            title = playlistSongs.size.toString()+if (unmatchedSongsCount != 0){"($unmatchedSongsCount)"} else "",
+                            title = playlistSongs.size.toString(),
                             icon = painterResource(R.drawable.musical_notes)
                         )
+                        if (unmatchedSongsCount != 0) {
+                            Spacer(modifier = Modifier.height(5.dp))
+                            IconInfo(
+                                title = "($unmatchedSongsCount)",
+                                icon = painterResource(R.drawable.alert)
+                            )
+                        }
                         Spacer(modifier = Modifier.height(5.dp))
                         IconInfo(
                             title = formatAsTime(totalPlayTimes),
@@ -1002,14 +984,14 @@ fun LocalPlaylistSongsModern(
                         Spacer(modifier = Modifier.height(10.dp))
                         HeaderIconButton(
                             icon = R.drawable.shuffle,
-                            enabled = playlistSongs.any { it.song.likedAt != -1L },
-                            color = if (playlistSongs.any { it.song.likedAt != -1L }) colorPalette.text else colorPalette.textDisabled,
+                            enabled = playlistSongs.any { it.song.thumbnailUrl != "" && it.song.likedAt != -1L },
+                            color = if (playlistSongs.any { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }) colorPalette.text else colorPalette.textDisabled,
                             onClick = {},
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
-                                        if (playlistSongs.any { it.song.likedAt != -1L }) {
-                                            playlistSongs.filter { it.song.likedAt != -1L }
+                                        if (playlistSongs.any { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }) {
+                                            playlistSongs.filter { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }
                                                 .let { songs ->
                                                     if (songs.isNotEmpty()) {
                                                         val itemsLimited =
@@ -1302,8 +1284,8 @@ fun LocalPlaylistSongsModern(
                                         playlist = playlistPreview,
                                         onEnqueue = {
                                             if (listMediaItems.isEmpty()) {
-                                                if (playlistSongs.any { it.song.likedAt != -1L }) {
-                                                    binder?.player?.enqueue(playlistSongs.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),context)
+                                                if (playlistSongs.any { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }) {
+                                                    binder?.player?.enqueue(playlistSongs.filter { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }.map(SongEntity::asMediaItem),context)
                                                 } else {
                                                     SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
                                                 }
@@ -1315,8 +1297,8 @@ fun LocalPlaylistSongsModern(
                                         },
                                         onPlayNext = {
                                             if (listMediaItems.isEmpty()) {
-                                                if (playlistSongs.any { it.song.likedAt != -1L }) {
-                                                    binder?.player?.addNext(playlistSongs.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),context)
+                                                if (playlistSongs.any { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }) {
+                                                    binder?.player?.addNext(playlistSongs.filter { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }.map(SongEntity::asMediaItem),context)
                                                 } else {
                                                     SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
                                                 }
@@ -1988,7 +1970,7 @@ fun LocalPlaylistSongsModern(
                                             InPlaylistMediaItemMenu(
                                                 onMatchingSong = {
                                                     songMatchingDialogEnable = true
-                                                    matchingSong = song.song
+                                                    matchingSongEntity = song
                                                 },
                                                 navController = navController,
                                                 playlist = playlistPreview,
@@ -2003,10 +1985,13 @@ fun LocalPlaylistSongsModern(
                                     },
                                     onClick = {
                                         if (!selectItems) {
-                                            if (song.song.likedAt != -1L) {
+                                            if (song.song.thumbnailUrl == ""){
+                                                songMatchingDialogEnable = true
+                                                matchingSongEntity = song
+                                            } else if (song.song.likedAt != -1L) {
                                                 searching = false
                                                 filter = null
-                                                playlistSongs.filter { it.song.likedAt != -1L }
+                                                playlistSongs.filter { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }
                                                     .map(SongEntity::asMediaItem)
                                                     .let { mediaItems ->
                                                         binder?.stopRadio()
@@ -2050,8 +2035,8 @@ fun LocalPlaylistSongsModern(
                 iconId = R.drawable.shuffle,
                 visible = !reorderingState.isDragging,
                 onClick = {
-                    if (playlistSongs.any { it.song.likedAt != -1L }) {
-                        playlistSongs.filter { it.song.likedAt != -1L }.let { songs ->
+                    if (playlistSongs.any { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }) {
+                        playlistSongs.filter { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }.let { songs ->
                             if (songs.isNotEmpty()) {
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayFromBeginning(

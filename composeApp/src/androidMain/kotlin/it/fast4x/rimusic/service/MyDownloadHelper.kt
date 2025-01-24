@@ -20,6 +20,9 @@ import androidx.media3.exoplayer.offline.DownloadService.sendRemoveDownload
 import androidx.media3.exoplayer.scheduler.Requirements
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.utils.DownloadSyncedLyrics
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.autoDownloadSongKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenAlbumBookmarkedKey
@@ -246,6 +249,7 @@ object MyDownloadHelper {
 //            )
 
                 coroutineScope.launch {
+                    DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
                     context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
                         if (it is CancellationException) throw it
 
