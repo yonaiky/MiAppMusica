@@ -281,14 +281,16 @@ object YtMusic {
 
         println("YtMusic getPlaylistContinuation response: ${response.continuationContents?.musicPlaylistShelfContinuation}")
 
-        PlaylistContinuationPage(
-            songs = response.continuationContents?.musicPlaylistShelfContinuation?.contents?.map {
-                it.musicResponsiveListItemRenderer?.let { it1 ->
-                    PlaylistPage.fromMusicResponsiveListItemRenderer( it1 )
-                }
-            },
-            continuation = response.continuationContents?.musicPlaylistShelfContinuation?.continuations?.getContinuation()
-        )
+        response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
+            it.musicResponsiveListItemRenderer?.let { it1 ->
+                PlaylistPage.fromMusicResponsiveListItemRenderer( it1 )
+            }
+        }?.let {
+            PlaylistContinuationPage(
+                songs = it,
+                continuation = response.continuationContents.musicPlaylistShelfContinuation.continuations?.getContinuation()
+            )
+        }
     }.onFailure {
         println("YtMusic getPlaylistContinuation error: ${it.stackTraceToString()}")
     }

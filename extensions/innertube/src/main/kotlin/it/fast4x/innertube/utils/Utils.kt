@@ -13,11 +13,12 @@ suspend fun Result<PlaylistPage>.completed(): Result<PlaylistPage> = runCatching
     val songs = page.songs.toMutableList()
     var continuation = page.songsContinuation
 
-    println("PlaylistSongList Result<PlaylistPage>.completed() songs continuation ${page.songsContinuation}")
     while (continuation != null) {
-        val continuationPage = YtMusic.getPlaylistContinuation(continuation).getOrThrow()
-        songs += continuationPage.songs
-        continuation = continuationPage.continuation
+        val continuationPage = YtMusic.getPlaylistContinuation(continuation).getOrNull()
+        if (continuationPage != null) {
+            songs += continuationPage.songs
+        }
+        continuation = continuationPage?.continuation
     }
     PlaylistPage(
         playlist = page.playlist,
