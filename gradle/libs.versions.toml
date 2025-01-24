@@ -74,7 +74,6 @@ ktor-client-serialization = {group = "io.ktor", name = "ktor-client-serializatio
 ktor-serialization-json = {group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor"}
 brotli = {group = "org.brotli", name = "dec", version.ref = "brotli"}
 palette = {group = "androidx.palette", name = "palette", version.ref = "palette"}
-desugaring = {group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugaring"}
 desugaring-nio = {group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugaring"}
 appcompat = {group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat"}
 appcompat-resources = {group = "androidx.appcompat", name = "appcompat-resources", version.ref = "appcompat"}
