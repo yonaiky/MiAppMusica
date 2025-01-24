@@ -884,5 +884,6 @@
     <string name="matching_songs">Відповідні пісні. Зачекайте, будь ласка. Не згортайте та не виходьте з програми</string>
     <string name="unmatched">Неспівпадаючі пісні</string>
     <string name="match_song">Відновити цю пісню</string>
+    <string name="match_song_grid">Відновити пісню</string>
     <string name="songsnotfound">Пісні не знайдені</string>
 </resources>

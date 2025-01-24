@@ -883,6 +883,7 @@
     <string name="matching_songs">Matching Songs. Please Wait. Do not Minimize or Exit the App</string>
     <string name="unmatched">Unmatched Songs</string>
     <string name="match_song">Rematch this Song</string>
+    <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">Songs Not Found</string>
     <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
 </resources>

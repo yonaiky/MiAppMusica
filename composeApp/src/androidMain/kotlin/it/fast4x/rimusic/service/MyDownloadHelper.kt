@@ -2,6 +2,7 @@ package it.fast4x.rimusic.service
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -18,6 +19,9 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.offline.DownloadService.sendAddDownload
 import androidx.media3.exoplayer.offline.DownloadService.sendRemoveDownload
 import androidx.media3.exoplayer.scheduler.Requirements
+import coil.imageLoader
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.SongEntity
@@ -31,6 +35,7 @@ import it.fast4x.rimusic.utils.download
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.removeDownload
+import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -243,19 +248,30 @@ object MyDownloadHelper {
                     insert(mediaItem)
                 }.also { if (it.isFailure) return@asyncTransaction }
             }
+            val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1200)
 
 //            sendAddDownload(
 //                context,MyDownloadService::class.java,downloadRequest,false
 //            )
 
                 coroutineScope.launch {
-                    DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
                     context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
                         if (it is CancellationException) throw it
 
                         Timber.e(it.stackTraceToString())
                         println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
                     }
+                    DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
+                    context.imageLoader.execute(
+                        ImageRequest.Builder(context)
+                            .networkCachePolicy(CachePolicy.ENABLED)
+                            .data(imageUrl)
+                            .size(1200)
+                            .bitmapConfig(Bitmap.Config.ARGB_8888)
+                            .allowHardware(false)
+                            .diskCacheKey(imageUrl.toString())
+                            .build()
+                    )
                 }
 
         }

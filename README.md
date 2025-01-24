@@ -3,6 +3,7 @@
   <p><b>RiMusic</b> is a <b>multilingual</b> Android application for streaming music from YouTube Music.</p>
   <p>It began as an <b>extension</b> of <b>ViMusic</b>, then acquired its own identity.</p>
 <p><b>It allowing the user to customize it at will.</b></p>
+<p><b>RiMusic does not collect any data.</b></p>
 
   <a href="https://github.com/fast4x/RiMusic/releases"><img src="https://img.shields.io/github/downloads/fast4x/RiMusic/total?label=Total%20Downloads"></a>
   <a href="https://github.com/fast4x/RiMusic/releases/latest"><img src="https://img.shields.io/github/downloads/fast4x/RiMusic/latest/total?label=Downloads%20of%20latest%20Release"></a>
@@ -250,6 +251,13 @@ WARNING, the custom version is not an official release, download only if invited
 </tr>
 <tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
+        <a href=https://github.com/S0nter>
+            <img src=https://avatars.githubusercontent.com/u/108224581?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sonter/>
+            <br />
+            <sub style="font-size:14px"><b>Sonter</b></sub>
+        </a>
+    </td>
+    <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/KyNarec>
             <img src=https://avatars.githubusercontent.com/u/113847208?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=KyNarec/>
             <br />
@@ -284,6 +292,8 @@ WARNING, the custom version is not an official release, download only if invited
             <sub style="font-size:14px"><b>Bnyro</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/25huizengek1>
             <img src=https://avatars.githubusercontent.com/u/50515369?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=25huizengek1/>
@@ -291,8 +301,6 @@ WARNING, the custom version is not an official release, download only if invited
             <sub style="font-size:14px"><b>25huizengek1</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/wispl>
             <img src=https://avatars.githubusercontent.com/u/108438586?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=wispl/>
@@ -328,6 +336,8 @@ WARNING, the custom version is not an official release, download only if invited
             <sub style="font-size:14px"><b>Luca Schultz</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/davidsalido>
             <img src=https://avatars.githubusercontent.com/u/46091673?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=davidsalido/>
@@ -335,8 +345,6 @@ WARNING, the custom version is not an official release, download only if invited
             <sub style="font-size:14px"><b>davidsalido</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/ARBoyGo>
             <img src=https://avatars.githubusercontent.com/u/69381592?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=ARBoyGo/>
@@ -349,13 +357,6 @@ WARNING, the custom version is not an official release, download only if invited
             <img src=https://avatars.githubusercontent.com/u/11215000?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Surendrajat/>
             <br />
             <sub style="font-size:14px"><b>Surendrajat</b></sub>
-        </a>
-    </td>
-    <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
-        <a href=https://github.com/S0nter>
-            <img src=https://avatars.githubusercontent.com/u/108224581?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sonter/>
-            <br />
-            <sub style="font-size:14px"><b>Sonter</b></sub>
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">

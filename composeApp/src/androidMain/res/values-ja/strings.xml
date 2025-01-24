@@ -884,5 +884,6 @@
     <string name="matching_songs">一致する曲を検索しています。しばらくお待ちください。アプリを最小化または終了しないでください</string>
     <string name="unmatched">該当する曲がありません</string>
     <string name="match_song">この曲を再検索する</string>
+    <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">曲が見つかりません</string>
 </resources>

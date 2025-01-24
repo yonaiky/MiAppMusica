@@ -884,5 +884,6 @@
     <string name="matching_songs">Şarkılar Eşleştiriliyor. Lütfen Bekleyin. Uygulamayı Küçültmeyin veya Uygulamadan Çıkmayın</string>
     <string name="unmatched">Eşleştirilmeyen Şarkılar</string>
     <string name="match_song">Bu Şarkıyı Tekrar Eşleştir</string>
+    <string name="match_song_grid">Bu Şarkıyı Tekrar Eşleştir</string>
     <string name="songsnotfound">Şarkılar Bulunamadı</string>
 </resources>
