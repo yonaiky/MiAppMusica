@@ -810,7 +810,7 @@ fun Player(
             try {
                 val bitmap = getBitmapFromUrl(
                     context,
-                    binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
+                    binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.thumbnail(1200).toString()
                 )
 
                 dynamicColorPalette = dynamicColorPaletteOf(
@@ -883,10 +883,7 @@ fun Player(
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(
-                mediaItem.mediaMetadata.artworkUri.thumbnail(
-                    thumbnailSizePx
-                )
-            )
+                mediaItem.mediaMetadata.artworkUri.thumbnail(1200))
             .size(coil.size.Size.ORIGINAL)
             .transformations(
                 listOf(
@@ -1500,9 +1497,7 @@ fun Player(
                                                     model = binder.player.getMediaItemAt(
                                                         index
                                                         //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                    ).mediaMetadata.artworkUri.thumbnail(
-                                                        Dimensions.thumbnails.song.px / 2
-                                                    ),
+                                                    ).mediaMetadata.artworkUri.thumbnail(1200),
                                                     contentDescription = null,
                                                     contentScale = ContentScale.Crop,
                                                     modifier = Modifier
@@ -2026,7 +2021,7 @@ fun Player(
 
                      AsyncImage(
                          model = ImageRequest.Builder(LocalContext.current)
-                             .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                             .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.thumbnail(1200))
                              .transformations(
                                  listOf(
                                      if (showthumbnail) {
@@ -2266,8 +2261,7 @@ fun Player(
                                          val coverPainter = rememberAsyncImagePainter(
                                              model = ImageRequest.Builder(LocalContext.current)
                                                  .data(
-                                                     binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
-                                                         .resize(1200, 1200)
+                                                     binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.thumbnail(1200)
                                                  )
                                                  .build()
                                          )
@@ -2619,7 +2613,7 @@ fun Player(
 
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                                .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.thumbnail(1200))
                                 .transformations(
                                     listOf(
                                         if (showthumbnail) {
@@ -2853,7 +2847,7 @@ fun Player(
 
                                      val coverPainter = rememberAsyncImagePainter(
                                          model = ImageRequest.Builder(LocalContext.current)
-                                             .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString().resize(1200, 1200))
+                                             .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.thumbnail(1200))
                                              .build()
                                      )
 
