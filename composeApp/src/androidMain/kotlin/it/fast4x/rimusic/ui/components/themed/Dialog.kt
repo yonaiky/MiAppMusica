@@ -137,6 +137,7 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setDeviceVolume
+import it.fast4x.rimusic.utils.setGlobalVolume
 import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.thumbnailFadeKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
@@ -2661,6 +2662,7 @@ fun PlaybackParamsDialog(
                     onClick = {
                         playbackVolume = 0.5f
                         binder?.player?.volume = playbackVolume
+                        binder?.player?.setGlobalVolume(playbackVolume)
                     },
                     icon = R.drawable.volume_up,
                     color = colorPalette().favoritesIcon,
@@ -2673,6 +2675,7 @@ fun PlaybackParamsDialog(
                     onSlide = {
                         playbackVolume = it
                         binder?.player?.volume = playbackVolume
+                        binder?.player?.setGlobalVolume(playbackVolume)
                     },
                     onSlideComplete = {},
                     toDisplay = { "%.1f".format(playbackVolume) },

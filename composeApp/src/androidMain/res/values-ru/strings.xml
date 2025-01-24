@@ -886,5 +886,6 @@
     <string name="matching_songs">Соответствующие песни. Пожалуйста, подождите. Не сворачивайте и не выходите из приложения</string>
     <string name="unmatched">Несовпадающие песни</string>
     <string name="match_song">Восстановить эту песню</string>
+    <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">Песни не найдены</string>
 </resources>

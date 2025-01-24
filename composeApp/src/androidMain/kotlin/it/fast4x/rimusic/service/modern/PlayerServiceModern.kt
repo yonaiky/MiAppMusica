@@ -459,7 +459,8 @@ class PlayerServiceModern : MediaLibraryService(),
             preferences.getFloat(playbackSpeedKey, 1f),
             preferences.getFloat(playbackPitchKey, 1f)
         )
-        binder.player.setGlobalVolume(preferences.getFloat(playbackVolumeKey, 1f))
+        binder.player.volume = preferences.getFloat(playbackVolumeKey, 1f)
+        binder.player.setGlobalVolume(binder.player.volume)
 
         // Keep a connected controller so that notification works
         val sessionToken = SessionToken(this, ComponentName(this, PlayerServiceModern::class.java))

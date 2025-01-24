@@ -23,8 +23,20 @@ import java.util.ArrayDeque
 
 var GlobalVolume: Float = 0.5f
 
+fun Player.restoreGlobalVolume() {
+    volume = GlobalVolume
+}
+
+fun Player.saveGlobalVolume() {
+    GlobalVolume = volume
+}
+
 fun Player.setGlobalVolume(v: Float) {
     GlobalVolume = v
+}
+
+fun Player.getGlobalVolume(): Float {
+    return GlobalVolume
 }
 
 fun Player.isNowPlaying(mediaId: String): Boolean {
@@ -84,6 +96,7 @@ fun Player.playAtMedia(mediaItems: List<MediaItem>, mediaId: String) {
     Log.d("mediaItem-playAtMedia",itemIndex.toString())
     setMediaItems(mediaItems, itemIndex, C.TIME_UNSET)
     prepare()
+    restoreGlobalVolume()
     playWhenReady = true
 
 }
@@ -91,6 +104,7 @@ fun Player.playAtMedia(mediaItems: List<MediaItem>, mediaId: String) {
 fun Player.forcePlay(mediaItem: MediaItem) {
     setMediaItem(mediaItem.cleaned, true)
     prepare()
+    restoreGlobalVolume()
     playWhenReady = true
 }
 
@@ -102,6 +116,7 @@ fun Player.playVideo(mediaItem: MediaItem) {
 fun Player.playAtIndex(mediaItemIndex: Int) {
     seekTo(mediaItemIndex, C.TIME_UNSET)
     prepare()
+    restoreGlobalVolume()
     playWhenReady = true
 }
 
@@ -112,6 +127,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
 
     setMediaItems(mediaItems.map { it.cleaned }, mediaItemIndex, C.TIME_UNSET)
     prepare()
+    restoreGlobalVolume()
     playWhenReady = true
 }
 @UnstableApi
@@ -130,20 +146,18 @@ fun Player.forceSeekToNext() =
     if (hasNextMediaItem()) seekToNext() else seekTo(0, C.TIME_UNSET)
 
 fun Player.playNext() {
-    GlobalVolume = volume
     seekToNextMediaItem()
     //seekToNext()
     prepare()
-    volume = GlobalVolume
+    restoreGlobalVolume()
     playWhenReady = true
 }
 
 fun Player.playPrevious() {
-    GlobalVolume = volume
     seekToPreviousMediaItem()
     //seekToPrevious()
     prepare()
-    volume = GlobalVolume
+    restoreGlobalVolume()
     playWhenReady = true
 }
 
