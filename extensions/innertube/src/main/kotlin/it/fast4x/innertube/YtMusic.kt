@@ -170,11 +170,14 @@ object YtMusic {
             browseId = playlistId,
             setLogin = true
         ).body<BrowseResponse>()
+
         val playlistIdChecked = if (playlistId.startsWith("VL")) playlistId else "VL$playlistId"
         if (response.header != null)
             getPlaylistPreviousMode(playlistIdChecked, response)
         else
             getPlaylistNewMode(playlistIdChecked, response)
+    }.onFailure {
+        println("YtMusic getPlaylist error: ${it.stackTraceToString()}")
     }
 
     private fun getPlaylistPreviousMode(playlistId: String, response: BrowseResponse): PlaylistPage {
@@ -275,16 +278,19 @@ object YtMusic {
             continuation = continuation,
             setLogin = true
         ).body<BrowseResponse>()
+
+        println("YtMusic getPlaylistContinuation response: ${response.continuationContents?.musicPlaylistShelfContinuation}")
+
         PlaylistContinuationPage(
-            songs = response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
+            songs = response.continuationContents?.musicPlaylistShelfContinuation?.contents?.map {
                 it.musicResponsiveListItemRenderer?.let { it1 ->
-                    PlaylistPage.fromMusicResponsiveListItemRenderer(
-                        it1
-                    )
+                    PlaylistPage.fromMusicResponsiveListItemRenderer( it1 )
                 }
-            }!!,
-            continuation = response.continuationContents.musicPlaylistShelfContinuation.continuations?.getContinuation()
+            },
+            continuation = response.continuationContents?.musicPlaylistShelfContinuation?.continuations?.getContinuation()
         )
+    }.onFailure {
+        println("YtMusic getPlaylistContinuation error: ${it.stackTraceToString()}")
     }
 
     suspend fun getAlbum(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
