@@ -3,6 +3,7 @@
   <p><b>RiMusic</b> is a <b>multilingual</b> Android application for streaming music from YouTube Music.</p>
   <p>It began as an <b>extension</b> of <b>ViMusic</b>, then acquired its own identity.</p>
 <p><b>It allowing the user to customize it at will.</b></p>
+<p><b>RiMusic does not collect any data.</b></p>
 
   <a href="https://github.com/fast4x/RiMusic/releases"><img src="https://img.shields.io/github/downloads/fast4x/RiMusic/total?label=Total%20Downloads"></a>
   <a href="https://github.com/fast4x/RiMusic/releases/latest"><img src="https://img.shields.io/github/downloads/fast4x/RiMusic/latest/total?label=Downloads%20of%20latest%20Release"></a>
