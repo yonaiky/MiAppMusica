@@ -6,6 +6,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.compression.ContentEncoding
+import io.ktor.client.plugins.compression.brotli
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
@@ -25,6 +26,7 @@ import io.ktor.http.userAgent
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.serialization.kotlinx.protobuf.protobuf
 import io.ktor.serialization.kotlinx.xml.xml
+import it.fast4x.innertube.clients.YouTubeClient.Companion.IOS
 import it.fast4x.innertube.clients.YouTubeLocale
 import it.fast4x.innertube.models.AccountInfo
 import it.fast4x.innertube.models.AccountMenuResponse
@@ -33,13 +35,12 @@ import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.Context.Client
 import it.fast4x.innertube.models.Context.Companion.DefaultIOS
 import it.fast4x.innertube.models.Context.Companion.DefaultWeb
-import it.fast4x.innertube.models.Context.Companion.DefaultWebCreator
 import it.fast4x.innertube.models.MediaType
+import it.fast4x.innertube.models.MusicNavigationButtonRenderer
+import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.PipedResponse
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.ResponseContext
-import it.fast4x.innertube.models.MusicNavigationButtonRenderer
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.Runs
 import it.fast4x.innertube.models.Thumbnail
 import it.fast4x.innertube.models.bodies.AccountMenuBody
@@ -64,7 +65,6 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.XML
-import okhttp3.logging.HttpLoggingInterceptor
 import java.net.Proxy
 import java.util.Locale
 import kotlin.random.Random
