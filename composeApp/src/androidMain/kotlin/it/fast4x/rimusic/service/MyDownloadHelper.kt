@@ -248,6 +248,7 @@ object MyDownloadHelper {
                     insert(mediaItem)
                 }.also { if (it.isFailure) return@asyncTransaction }
             }
+
             val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1200)
 
 //            sendAddDownload(
@@ -258,7 +259,7 @@ object MyDownloadHelper {
                     context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
                         if (it is CancellationException) throw it
 
-                        Timber.e(it.stackTraceToString())
+                        Timber.e("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
                         println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
                     }
                     DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
