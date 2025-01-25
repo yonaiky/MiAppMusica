@@ -224,7 +224,6 @@
     <string name="listen_on_piped">Poslouchat na Piped</string>
     <string name="listen_on_invidious">Poslouchat na Invidious</string>
     <string name="disable_horizontal_swipe">Zakázat vodorovné přejetí</string>
-    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disable_vertical_swipe_secondary">It affects only when the Expanded Player is off</string>
     <string name="disable_song_switching_via_swipe">Zakázat přepínání skladeb přejetím</string>
     <string name="interface_in_use">Použité prostředí</string>
@@ -886,4 +885,5 @@
     <string name="match_song">Rematch this Song</string>
     <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">Songs Not Found</string>
+    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
 </resources>

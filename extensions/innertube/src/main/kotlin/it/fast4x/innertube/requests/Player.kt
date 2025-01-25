@@ -9,6 +9,7 @@ import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 
+// TODO remove in the future
 suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false, signatureTimestamp: Int? = null): Result<PlayerResponse> = runCatching {
     val response = when (withLogin) {
         true -> try {
@@ -26,10 +27,19 @@ suspend fun Innertube.player(body: PlayerBody, withLogin: Boolean = false, signa
     }
 
 
-    println("Innertube newPlayer withLogin $withLogin response adaptiveFormats ${response.streamingData?.adaptiveFormats}")
-    println("Innertube newPlayer withLogin $withLogin response Formats ${response.streamingData?.formats}")
-    println("Innertube newPlayer withLogin $withLogin response expire ${response.streamingData?.expiresInSeconds}")
+    println("Innertube newPlayer withLogin $withLogin response adaptiveFormats ${response?.streamingData?.adaptiveFormats}")
+    println("Innertube newPlayer withLogin $withLogin response Formats ${response?.streamingData?.formats}")
+    println("Innertube newPlayer withLogin $withLogin response expire ${response?.streamingData?.expiresInSeconds}")
 
     return@runCatching response
 }
 
+suspend fun Innertube.playerAdvanced(body: PlayerBody, withLogin: Boolean = false,): Result<Pair<String?, PlayerResponse?>> = runCatching {
+    val response = player(body.videoId, body.playlistId, withLogin = withLogin).getOrNull()
+
+    println("Innertube newPlayer response adaptiveFormats ${response?.second?.streamingData?.adaptiveFormats}")
+    println("Innertube newPlayer response Formats ${response?.second?.streamingData?.formats}")
+    println("Innertube newPlayer response expire ${response?.second?.streamingData?.expiresInSeconds}")
+
+    return@runCatching Pair(response?.first, response?.second)
+}

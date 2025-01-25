@@ -224,7 +224,6 @@
     <string name="listen_on_piped">Pakinggan sa Piped</string>
     <string name="listen_on_invidious">Pakinggan sa Invidious</string>
     <string name="disable_horizontal_swipe">Patayin ang horizontal swipe</string>
-    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disable_vertical_swipe_secondary">It affects only when the Expanded Player is off</string>
     <string name="disable_song_switching_via_swipe">Patayin ang song switching via swipe</string>
     <string name="interface_in_use">Itong interface ay ginagamit</string>
@@ -872,6 +871,7 @@
     <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
     <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
+    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>

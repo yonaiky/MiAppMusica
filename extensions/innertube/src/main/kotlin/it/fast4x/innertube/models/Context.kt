@@ -47,6 +47,7 @@ data class Context(
         val osVersion: String? = null,
         val acceptHeader: String? = null,
         val useSignatureTimestamp: Boolean = false,
+        val xClientName: Int? = null,
         //val timeZone: String? = "UTC",
         //val utcOffsetMinutes: Int? = 0,
         @Transient
@@ -126,7 +127,7 @@ data class Context(
                 //clientVersion = "1.20230731.00.00",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
-                visitorData = Innertube.visitorData,
+                //visitorData = Innertube.visitorData,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
                 useSignatureTimestamp = true,
             )
@@ -182,7 +183,8 @@ data class Context(
                 userAgent = USER_AGENT_ANDROID_MUSIC,
                 referer = REFERER_YOUTUBE_MUSIC,
                 visitorData = Innertube.visitorData,
-                api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI"
+                api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI",
+                xClientName = 21
             )
         )
 
@@ -196,7 +198,8 @@ data class Context(
                 osVersion = "17.5.1.21F90",
                 acceptHeader = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
                 userAgent = USER_AGENT_IOS,
-                api_key = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc"
+                api_key = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc",
+                xClientName = 5
             )
         )
 

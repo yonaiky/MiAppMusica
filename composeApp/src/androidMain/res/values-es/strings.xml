@@ -224,7 +224,6 @@
     <string name="listen_on_piped">Escuchar en Piped</string>
     <string name="listen_on_invidious">Escuchar en Invidious</string>
     <string name="disable_horizontal_swipe">Deshabilitar deslizamiento horizontal</string>
-    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disable_vertical_swipe_secondary">It affects only when the Expanded Player is off</string>
     <string name="disable_song_switching_via_swipe">Deshabilitar cambio de canción por deslizamiento</string>
     <string name="interface_in_use">Interfaz en uso</string>
@@ -868,10 +867,11 @@
     <string name="appearancepresetssecondary">Las vistas previas serán de baja calidad</string>
     <string name="yt_history">Historial de YTM</string>
     <string name="albumCoverRotation">Animación de rotación de fondo</string>
-    <string name="enable_connection_metered">Utilizar conexión medida para ahorrar datos</string>
-    <string name="info_enable_connection_metered">El ahorro de datos disminuye la calidad, utilízalo solo si tienes una conexión con datos limitados</string>
-    <string name="use_ytm_login_only_for_browse">Utilizar inicio de sesión de YTM solo para navegar</string>
-    <string name="info_use_ytm_login_only_for_browse">Se utiliza si las canciones no se reproducen al iniciar sesión</string>
+    <string name="enable_connection_metered">Use metered connection to save data</string>
+    <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
+    <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
+    <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
+    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>

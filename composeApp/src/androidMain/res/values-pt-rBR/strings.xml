@@ -869,9 +869,9 @@
     <string name="yt_history">Histórico do YTM</string>
     <string name="albumCoverRotation">Animação de rotação de fundo</string>
     <string name="enable_connection_metered">Usar conexão limitada para salvar os dados</string>
-    <string name="info_enable_connection_metered">Economia de dados diminui a qualidade, use somente se você tiver uma conexão com dados limitados</string>
-    <string name="use_ytm_login_only_for_browse">Use o login YTM apenas para navegar</string>
-    <string name="info_use_ytm_login_only_for_browse">Para ser usado se as músicas não estão sendo reproduzidas enquanto está logado</string>
+    <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
+    <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
+    <string name="info_use_ytm_login_only_for_browse">Para ser usado se as músicas não estão sendo reproduzidas quando está logado</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>

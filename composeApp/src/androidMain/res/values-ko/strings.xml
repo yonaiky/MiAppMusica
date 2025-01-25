@@ -224,8 +224,7 @@
     <string name="listen_on_piped">Piped에서 듣기</string>
     <string name="listen_on_invidious">Invidious에서 듣기</string>
     <string name="disable_horizontal_swipe">좌우 스와이프 비활성화</string>
-    <string name="disable_vertical_swipe">수직 스와이프를 통한 곡 전환 비활성화</string>
-    <string name="disable_vertical_swipe_secondary">확장된 플레이어가 사용되지 않을 때에만 적용됩니다</string>
+    <string name="disable_vertical_swipe_secondary">It affects only when the Expanded Player is off</string>
     <string name="disable_song_switching_via_swipe">스와이프를 통한 곡 전환 비활성화</string>
     <string name="interface_in_use">사용 중인 인터페이스</string>
     <string name="user_interface">사용자 인터페이스</string>
@@ -872,6 +871,7 @@
     <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
     <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
+    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>

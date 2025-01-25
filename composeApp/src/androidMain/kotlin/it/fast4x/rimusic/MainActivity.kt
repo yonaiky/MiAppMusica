@@ -219,6 +219,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import it.fast4x.rimusic.utils.textCopyToClipboard
+import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.transitionEffectKey
 import it.fast4x.rimusic.utils.useSystemFontKey
@@ -760,7 +761,7 @@ class MainActivity :
 
                                 if (colorPaletteName == ColorPaletteName.Dynamic) {
                                     val artworkUri =
-                                        (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri
+                                        (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri.thumbnail(1200)
                                             ?: "").toString()
                                     artworkUri.let {
                                         if (it.isNotEmpty())
@@ -862,7 +863,7 @@ class MainActivity :
                         getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
                     if (colorPaletteName == ColorPaletteName.Dynamic) {
                         setDynamicPalette(
-                            (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri
+                            (binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri.thumbnail(1200)
                                 ?: "").toString()
                         )
                     }
@@ -1160,7 +1161,7 @@ class MainActivity :
                                 }
                             }
 
-                            setDynamicPalette(mediaItem?.mediaMetadata?.artworkUri.toString())
+                            setDynamicPalette(mediaItem?.mediaMetadata?.artworkUri.thumbnail(1200).toString())
                         }
 
 
