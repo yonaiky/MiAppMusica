@@ -231,6 +231,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.invidious.Invidious
+import me.knighthat.piped.Piped
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.net.Proxy
@@ -336,6 +338,15 @@ class MainActivity :
 
         checkIfAppIsRunningInBackground()
 
+        // Fetch Piped & Invidious instances
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                Piped.fetchInstances()
+                Invidious.fetchInstances()
+            } catch (e: Exception) {
+                Timber.e(e, "MainActivity Error fetching Piped & Invidious instances")
+            }
+        }
     }
 
     private fun checkIfAppIsRunningInBackground() {

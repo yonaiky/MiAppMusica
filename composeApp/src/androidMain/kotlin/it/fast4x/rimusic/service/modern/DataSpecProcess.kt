@@ -10,11 +10,8 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.requests.player
-import it.fast4x.invidious.Invidious
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AudioQualityFormat
-import it.fast4x.rimusic.isConnectionMetered
 import it.fast4x.rimusic.isConnectionMeteredEnabled
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.service.LoginRequiredException
@@ -26,11 +23,10 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoginEnabled
 import it.fast4x.rimusic.useYtLoginOnlyForBrowse
-import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.getSignatureTimestampOrNull
 import it.fast4x.rimusic.utils.getStreamUrl
-import it.fast4x.rimusic.utils.preferences
-import kotlinx.coroutines.flow.asFlow
+import me.knighthat.invidious.Invidious
+import me.knighthat.invidious.request.player
 import me.knighthat.piped.Piped
 import me.knighthat.piped.request.player
 import java.net.ConnectException
@@ -61,32 +57,26 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
         println("PlayerServiceModern DataSpecProcess Playing song ${videoId} from format $format from url=${format?.url}")
         return dataSpec.withUri(Uri.parse(format?.url)).subrange(dataSpec.uriPositionOffset, chunkLength)
 
+    } catch ( e: LoginRequiredException ) {
+        try {
+            // Switch to Piped
+            val formatUrl = getPipedFormatUrl( videoId, audioQualityFormat )
+
+            println("PlayerServiceModern DataSpecProcess Playing song $videoId from url $formatUrl")
+            return dataSpec.withUri( formatUrl )
+
+        } catch ( e: NoSuchElementException ) {
+            // Switch to Invidious
+            val formatUrl = getInvidiousFormatUrl( videoId, audioQualityFormat )
+
+            println("PlayerServiceModern DataSpecProcess Playing song $videoId from url $formatUrl")
+            return dataSpec.withUri( formatUrl )
+        }
     } catch ( e: Exception ) {
         println("PlayerServiceModern DataSpecProcess Error: ${e.stackTraceToString()}")
         println("PlayerServiceModern DataSpecProcess Playing song $videoId from ALTERNATIVE url")
         val alternativeUrl = "https://jossred.josprox.com/yt/stream/$videoId"
         return dataSpec.withUri(alternativeUrl.toUri())
-
-
-        // Temporary disabled piped and invidious
-//        try {
-//            // Switch to Piped
-//            val formatUrl = getPipedFormatUrl( videoId, audioQualityFormat )
-//
-//            println("PlayerServiceModern DataSpecProcess Playing song $videoId from url $formatUrl")
-//            return dataSpec.withUri( formatUrl )
-//
-//        } catch ( e: NoSuchElementException ) {
-//            // Switch to Invidious
-//            val formatUrl = getInvidiousFormatUrl( videoId, audioQualityFormat )
-//
-//            println("PlayerServiceModern DataSpecProcess Playing song $videoId from url $formatUrl")
-//            return dataSpec.withUri( formatUrl )
-//        }
-
-    } catch ( e: Exception ) {
-        // Rethrow exception if it's not handled
-        throw e
     }
 }
 
@@ -233,13 +223,13 @@ private suspend fun getInvidiousFormatUrl(
     videoId: String,
     audioQualityFormat: AudioQualityFormat
 ): Uri {
-    val format = Invidious.api.videos( videoId )?.fold(
+    val format = Invidious.player( videoId )?.fold(
         {
             when( audioQualityFormat ){
-                AudioQualityFormat.Auto -> it.autoMaxQualityFormat
-                AudioQualityFormat.High -> it.highestQualityFormat
-                AudioQualityFormat.Medium -> it.mediumQualityFormat
-                AudioQualityFormat.Low -> it.lowestQualityFormat
+                AudioQualityFormat.Auto -> it?.autoMaxQualityFormat
+                AudioQualityFormat.High -> it?.highestQualityFormat
+                AudioQualityFormat.Medium -> it?.mediumQualityFormat
+                AudioQualityFormat.Low -> it?.lowestQualityFormat
             }.also {
                 //println("PlayerService MyDownloadHelper DataSpecProcess getInvidiousFormatUrl before upsert format $it")
                 Database.asyncTransaction {
@@ -263,7 +253,7 @@ private suspend fun getInvidiousFormatUrl(
     )
 
     // Return parsed URL to play song or throw error if none of the responses is valid
-    return Uri.parse( format?.url ) ?: throw NoSuchElementException( "Could not find any playable format from Piped ($videoId)" )
+    return Uri.parse( format?.url ) ?: throw NoSuchElementException( "Could not find any playable format from Invidious ($videoId)" )
 }
 
 
