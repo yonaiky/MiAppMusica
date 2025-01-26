@@ -823,7 +823,7 @@
     <string name="cover_type_cd_with_cover">CD com Capa</string>
     <string name="wallpaper">Papel de parede</string>
     <string name="enable_wallpaper">Habilitar papel de parede</string>
-    <string name="set_cover_thumbnail_as_wallpaper">Definir a capa da miniatura como papel de parede</string>
+    <string name="set_cover_thumbnail_as_wallpaper">Definir miniatura da capa como papel de parede</string>
     <string name="notification_type">Categoria de notificação</string>
     <string name="notification_type_default">Padrão</string>
     <string name="notification_type_advanced">Avançado</string>
@@ -879,8 +879,8 @@
     <string name="delete_songs_not_in_library">Excluir músicas que não estão na Biblioteca</string>
     <string name="delete_in_process">Excluindo as músicas que não estão na sua Biblioteca. A aplicação fechará depois que o processo terminar</string>
     <string name="nothing_to_delete">Nada a excluir</string>
-    <string name="get_album_version">Combinar a versão do álbum/áudio das músicas</string>
-    <string name="no_videos_found">Nenhuma música encontrada para combinar</string>
+    <string name="get_album_version">Corresponder a versão do álbum/áudio das músicas</string>
+    <string name="no_videos_found">Nenhuma música encontrada para corresponder</string>
     <string name="matching_songs">Combinando músicas. Aguarde. Não minimize ou saia do aplicativo</string>
     <string name="unmatched">Músicas não combinadas</string>
     <string name="match_song">Recombinar esta Música</string>
