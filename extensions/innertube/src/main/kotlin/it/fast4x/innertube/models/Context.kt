@@ -46,7 +46,6 @@ data class Context(
         val osName: String? = null,
         val osVersion: String? = null,
         val acceptHeader: String? = null,
-        val useSignatureTimestamp: Boolean = false,
         val xClientName: Int? = null,
         //val timeZone: String? = "UTC",
         //val utcOffsetMinutes: Int? = 0,
@@ -123,13 +122,14 @@ data class Context(
         val DefaultWeb = Context(
             client = Client(
                 clientName = "WEB_REMIX",
-                clientVersion = "1.20220606.03.00",
+                clientVersion = "1.20250122.01.00",
+                //clientVersion = "1.20220606.03.00",
                 //clientVersion = "1.20230731.00.00",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
                 //visitorData = Innertube.visitorData,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
-                useSignatureTimestamp = true,
+                xClientName = 67
             )
         )
 
@@ -165,7 +165,6 @@ data class Context(
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
                 api_key = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
-                useSignatureTimestamp = false,
             )
         )
 
@@ -210,7 +209,6 @@ data class Context(
                 api_key = "AIzaSyDCU8hByM-4DrUqRUYnGn-3llEO78bcxq8",
                 platform = "TV",
                 userAgent = USER_AGENT_PLAYSTATION,
-                useSignatureTimestamp = true,
             )
         )
 
