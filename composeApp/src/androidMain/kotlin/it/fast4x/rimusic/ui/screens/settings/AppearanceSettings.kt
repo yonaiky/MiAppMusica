@@ -49,6 +49,8 @@ import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.PrevNextSongs
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SongsNumber
+import it.fast4x.rimusic.enums.SwipeAnimationNoThumbnail
+import it.fast4x.rimusic.utils.swipeAnimationsNoThumbnailKey
 import it.fast4x.rimusic.enums.ThumbnailCoverType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
@@ -572,6 +574,7 @@ fun AppearanceSettings(
         var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, 0f)
         var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
         var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
+        var swipeAnimationNoThumbnail by rememberPreference(swipeAnimationsNoThumbnailKey, SwipeAnimationNoThumbnail.Sliding)
 
         if (appearanceChooser){
             AppearancePresetDialog(
@@ -932,6 +935,28 @@ fun AppearanceSettings(
                     text = "",
                     isChecked = showthumbnail,
                     onCheckedChange = {showthumbnail = it},
+                )
+        }
+        AnimatedVisibility(visible = !showthumbnail && playerType == PlayerType.Modern && !isLandscape) {
+            if (search.input.isBlank() || stringResource(R.string.swipe_Animation_No_Thumbnail).contains(
+                    search.input,
+                    true
+                )
+            )
+                EnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.swipe_Animation_No_Thumbnail),
+                    selectedValue = swipeAnimationNoThumbnail,
+                    onValueSelected = { swipeAnimationNoThumbnail = it },
+                    valueText = {
+                        when (it) {
+                            SwipeAnimationNoThumbnail.Sliding -> stringResource(R.string.te_slide_vertical)
+                            SwipeAnimationNoThumbnail.Fade -> stringResource(R.string.te_fade)
+                            SwipeAnimationNoThumbnail.Scale -> stringResource(R.string.te_scale)
+                            SwipeAnimationNoThumbnail.Carousel -> stringResource(R.string.carousel)
+                            SwipeAnimationNoThumbnail.Circle -> stringResource(R.string.vt_circular)
+                        }
+                    },
+                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                 )
         }
         AnimatedVisibility(visible = showthumbnail) {

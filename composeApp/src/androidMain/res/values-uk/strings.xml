@@ -886,4 +886,11 @@
     <string name="match_song">Відновити цю пісню</string>
     <string name="match_song_grid">Відновити пісню</string>
     <string name="songsnotfound">Пісні не знайдені</string>
+    <string name="swipe_Animation_No_Thumbnail">Анімація свайпа</string>
+    <string name="do_you_really_want_to_match_all">Ви дійсно бажаєте замінити всі відео/невідповідні пісні на відповідні пісні? Ця дія є незворотною</string>
+    <string name="online_songs">Онлайн пісні</string>
+    <string name="explicit">18+</string>
+    <string name="filter_by">Фільтрувати по</string>
+    <string name="updating_playlist">Оновлення плейлиста. Зачекайте, будь ласка. Не звертайтеся та не виходьте з програми</string>
+    <string name="updating_playlist_message">Оновити пісні з відсутнім ідентифікатором альбому</string>
 </resources>

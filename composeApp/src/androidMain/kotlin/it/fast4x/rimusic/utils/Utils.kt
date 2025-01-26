@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.text.format.DateUtils
+import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,8 +40,12 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongAlbumMap
+import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -640,6 +645,7 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
     }
 }
 
+@OptIn(UnstableApi::class)
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
     val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "0:00")
     var songNotFound: Song
@@ -723,14 +729,16 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     }
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
+    val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
+    val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
             deleteSongFromPlaylist(song.id, playlistId)
             if (matchedSong != null) {
-                Database.insert(matchedSong.asSong)
-            }
-            if (matchedSong != null) {
+                if (songExist(matchedSong.asSong.id) == 0) {
+                    Database.insert(matchedSong.asSong)
+                }
                 insert(
                     SongPlaylistMap(
                         songId = matchedSong.asMediaItem.mediaId,
@@ -738,6 +746,27 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                         position = position
                     )
                 )
+                insert(
+                    Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                    SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
+                )
+                if ((artistsNames != null) && (artistsIds != null)) {
+                    artistsNames.let { artistNames ->
+                        artistsIds.let { artistIds ->
+                            if (artistNames.size == artistIds.size) {
+                                insert(
+                                    artistNames.mapIndexed { index, artistName ->
+                                        Artist(id = (artistIds[index]) ?: "", name = artistName)
+                                    },
+                                    artistIds.map { artistId ->
+                                        SongArtistMap(songId = matchedSong.asMediaItem.mediaId, artistId = (artistId) ?: "")
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+                if (isExtPlaylist) Database.delete(song)
             }
         } else if (isExtPlaylist && (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()}))){
             songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
@@ -750,6 +779,59 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     position = position
                 )
             )
+        }
+    }
+}
+
+suspend fun updateLocalPlaylist(song: Song){
+    val searchQuery = Innertube.searchPage(
+        body = SearchBody(
+            query = "${cleanPrefix(song.title)} ${song.artistsText}",
+            params = Innertube.SearchFilter.Song.value
+        ),
+        fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
+    )
+
+    val searchResults = searchQuery?.getOrNull()?.items
+
+    fun findSongIndex() : Int {
+        for (i in 0..9) {
+            val requiredSong = searchResults?.getOrNull(i)
+            val songMatched = (requiredSong?.asMediaItem?.mediaId) == (song.asMediaItem.mediaId)
+            if (songMatched) return i
+        }
+        return -1
+    }
+
+    val matchedSong = searchResults?.getOrNull(findSongIndex())
+    val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
+    val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
+
+    Database.asyncTransaction {
+        if (findSongIndex() != -1) {
+            if (matchedSong != null) {
+                insert(
+                    Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                    SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
+                )
+
+                if ((artistsNames != null) && (artistsIds != null)) {
+                    artistsNames.let { artistNames ->
+                        artistsIds.let { artistIds ->
+                            if (artistNames.size == artistIds.size) {
+                                insert(
+                                    artistNames.mapIndexed { index, artistName ->
+                                        Artist(id = (artistIds[index]) ?: "", name = artistName)
+                                    },
+                                    artistIds.map { artistId ->
+                                        SongArtistMap(songId = song.id, artistId = (artistId) ?: "")
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

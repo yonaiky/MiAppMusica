@@ -1918,7 +1918,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY A.title COLLATE NOCASE
     """)
-    fun sortSongsFromPlaylistByAlbum(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByAlbum( id: Long ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -1929,7 +1929,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY CAST(A.year AS INTEGER)
     """)
-    fun sortSongsFromPlaylistByAlbumYear(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByAlbumYear( id: Long ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -1938,7 +1938,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY S.artistsText COLLATE NOCASE
     """)
-    fun sortSongsFromPlaylistByArtist(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByArtist( id: Long ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -1949,7 +1949,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY S.artistsText COLLATE NOCASE, A.title COLLATE NOCASE
     """)
-    fun sortSongsFromPlaylistByArtistAndAlbum(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByArtistAndAlbum( id: Long ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -1959,7 +1959,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY E.timestamp
     """)
-    fun sortSongsFromPlaylistByDatePlayed(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByDatePlayed( id: Long ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -1968,7 +1968,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY S.totalPlayTimeMs
     """)
-    fun sortSongsFromPlaylistByPlaytime(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByPlaytime( id: Long ): Flow<List<Song>>
 
     fun sortSongsFromPlaylistByRelativePlaytime(id: Long ): Flow<List<Song>> =
         sortSongsFromPlaylistByPlaytime(id).map { list ->
@@ -1982,7 +1982,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY SP.position
     """)
-    fun sortSongsPlaylistByPosition(id: Long ): Flow<List<Song>>
+    fun sortSongsPlaylistByPosition( id: Long ): Flow<List<Song>>
 
     /**
      * Fetch all records from data that have playlist id matches [id]
@@ -2003,7 +2003,7 @@ interface Database {
             END
         COLLATE NOCASE
     """)
-    fun sortSongsFromPlaylistByTitle(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByTitle( id: Long ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -2012,7 +2012,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY S.durationText
     """)
-    fun sortSongsFromPlaylistByDuration(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByDuration( id: Long ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -2021,7 +2021,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY S.LikedAt COLLATE NOCASE
     """)
-    fun sortSongsFromPlaylistByLikedAt(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByLikedAt( id: Long ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -2030,16 +2030,7 @@ interface Database {
         WHERE SP.playlistId = :id 
         ORDER BY S.ROWID
     """)
-    fun sortSongsFromPlaylistByRowId(id: Long ): Flow<List<Song>>
-
-    @Query("""
-        SELECT DISTINCT S.*
-        FROM Song S 
-        INNER JOIN songplaylistmap SP ON S.id = SP.songId 
-        WHERE SP.playlistId = :id 
-        ORDER BY S.thumbnailUrl
-    """)
-    fun sortSongsFromPlaylistByUrl(id: Long ): Flow<List<Song>>
+    fun sortSongsFromPlaylistByRowId( id: Long ): Flow<List<Song>>
 
     fun songsPlaylist(
         playlistId: Long,
@@ -2058,7 +2049,6 @@ interface Database {
         PlaylistSongSortBy.Duration -> sortSongsFromPlaylistByDuration( playlistId )
         PlaylistSongSortBy.DateLiked -> sortSongsFromPlaylistByLikedAt( playlistId )
         PlaylistSongSortBy.DateAdded -> sortSongsFromPlaylistByRowId( playlistId )
-        PlaylistSongSortBy.UnmatchedSongs -> sortSongsFromPlaylistByUrl( playlistId )
     }.map( sortOrder::applyTo )
 
     @Transaction
@@ -2232,7 +2222,7 @@ interface Database {
     @Query("SELECT * FROM Song WHERE title LIKE :query OR artistsText LIKE :query")
     fun search(query: String): Flow<List<Song>>
 
-    @Query("SELECT albumId AS id, NULL AS name, 0 AS size FROM SongAlbumMap WHERE songId = :songId")
+    @Query("SELECT albumId AS id, Album.title AS name, 0 AS size FROM SongAlbumMap LEFT JOIN Album ON id=albumId WHERE songId = :songId")
     fun songAlbumInfo(songId: String): Info?
 
     @Query("SELECT id, name, 0 AS size FROM Artist LEFT JOIN SongArtistMap ON id = artistId WHERE songId = :songId")

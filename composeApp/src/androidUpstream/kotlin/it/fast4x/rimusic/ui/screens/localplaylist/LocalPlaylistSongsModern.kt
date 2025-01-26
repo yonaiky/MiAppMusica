@@ -16,6 +16,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -91,6 +92,8 @@ import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion.songAlbumInfo
+import it.fast4x.rimusic.Database.Companion.songArtistInfo
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
@@ -108,14 +111,17 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
+import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -159,6 +165,7 @@ import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.isPipedEnabledKey
@@ -168,6 +175,7 @@ import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.playlistSongSortByKey
+import it.fast4x.rimusic.utils.playlistSongsTypeFilterKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
@@ -180,6 +188,7 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.updateLocalPlaylist
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -214,6 +223,9 @@ fun LocalPlaylistSongsModern(
     val menuState = LocalMenuState.current
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
+    var playlistAllSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
+    var downloadedPlaylistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
+    var cachedPlaylistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistSongsSortByPosition by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
@@ -226,6 +238,7 @@ fun LocalPlaylistSongsModern(
     var filter: String? by rememberSaveable { mutableStateOf(null) }
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    var playlistSongsTypeFilter by rememberPreference(playlistSongsTypeFilterKey, PlaylistSongsTypeFilter.All)
 
     LaunchedEffect(Unit, filter, sortOrder, sortBy) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder)
@@ -235,6 +248,57 @@ fun LocalPlaylistSongsModern(
                     SongEntity(song)
                 }
             }
+    }
+
+    Database.asyncTransaction {
+        val downloads = MyDownloadHelper.downloads.value
+        CoroutineScope(Dispatchers.IO).launch {
+            downloadedPlaylistSongs = playlistAllSongs.filter { song -> downloads[song.song.id]?.state == Download.STATE_COMPLETED }
+            cachedPlaylistSongs = playlistAllSongs.filter { song -> song.contentLength?.let { binder?.cache?.isCached(song.song.id, 0, song.contentLength) } ?: false
+            }
+        }
+    }
+
+    LaunchedEffect(Unit, playlistAllSongs, filter, playlistSongsTypeFilter) {
+        when (playlistSongsTypeFilter) {
+            PlaylistSongsTypeFilter.All -> {playlistSongs = playlistAllSongs}
+            PlaylistSongsTypeFilter.Local -> {
+                playlistSongs = playlistAllSongs.filter { it.asMediaItem.isLocal }
+            }
+
+            PlaylistSongsTypeFilter.OnlineSongs -> {
+                playlistSongs =
+                    playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == true }
+            }
+
+            PlaylistSongsTypeFilter.Videos -> {
+                playlistSongs =
+                    playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://i.ytimg.com/") == true }
+            }
+
+            PlaylistSongsTypeFilter.Unmatched -> {
+                playlistSongs =
+                    playlistAllSongs.filter { it.song.thumbnailUrl == "" && !it.asMediaItem.isLocal }
+            }
+
+            PlaylistSongsTypeFilter.Favorites -> {
+                playlistSongs =
+                    playlistAllSongs.filter { it.song.likedAt !in listOf(-1L,null) }
+            }
+
+            PlaylistSongsTypeFilter.Explicit -> {
+                playlistSongs =
+                    playlistAllSongs.filter { it.asMediaItem.isExplicit }
+            }
+
+            PlaylistSongsTypeFilter.Downloaded -> {
+                playlistSongs = downloadedPlaylistSongs
+            }
+
+            PlaylistSongsTypeFilter.Cached -> {
+                playlistSongs = cachedPlaylistSongs
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -278,6 +342,23 @@ fun LocalPlaylistSongsModern(
         thumbnailUrl = null
                 )
             )
+        )
+    }
+    var playlistUpdateDialog by remember { mutableStateOf(false) }
+    var songsUpdated by remember { mutableIntStateOf(0) }
+    var totalSongsToUpdate by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(Unit,playlistUpdateDialog){
+        Database.asyncTransaction {
+            totalSongsToUpdate = playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true && ((songAlbumInfo(it.asMediaItem.mediaId)?.id == null) || songArtistInfo(it.asMediaItem.mediaId).isEmpty()) }.size
+        }
+    }
+
+    if (playlistUpdateDialog){
+        InProgressDialog(
+            total = totalSongsToUpdate,
+            done = songsUpdated,
+            text = stringResource(R.string.updating_playlist)
         )
     }
 
@@ -497,6 +578,10 @@ fun LocalPlaylistSongsModern(
     }
 
     var showConfirmDownloadAllDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showConfirmMatchAllDialog by remember {
         mutableStateOf(false)
     }
 
@@ -851,6 +936,26 @@ fun LocalPlaylistSongsModern(
         }
     }
 
+    LaunchedEffect(playlistUpdateDialog) {
+        withContext(Dispatchers.IO) {
+            songsUpdated = 0
+            val jobs = mutableListOf<Job>()
+            playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true && ((songAlbumInfo(it.asMediaItem.mediaId)?.id == null) || songArtistInfo(it.asMediaItem.mediaId).isEmpty()) }.forEach { song ->
+                jobs.add(coroutineScope.launch(Dispatchers.IO) {
+                    updateLocalPlaylist(song.song)
+                    }
+                )
+            }
+            while(jobs.isNotEmpty()){
+                val oldSize = jobs.size
+                jobs.removeIf{it.isCompleted}
+                songsUpdated += oldSize - jobs.size
+                delay(10)
+            }
+            playlistUpdateDialog = false
+        }
+    }
+
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
@@ -1144,6 +1249,18 @@ fun LocalPlaylistSongsModern(
                         )
                     }
 
+                    if (showConfirmMatchAllDialog) {
+                        ConfirmationDialog(
+                            text = stringResource(R.string.do_you_really_want_to_match_all),
+                            onDismiss = { showConfirmMatchAllDialog = false },
+                            onConfirm = {
+                                getAlbumVersion = true
+                                showGetAlbumVersionDialogue = true
+                                showConfirmMatchAllDialog = false
+                            }
+                        )
+                    }
+
                     HeaderIconButton(
                         icon = R.drawable.download,
                         enabled = playlistSongs.isNotEmpty(),
@@ -1168,14 +1285,29 @@ fun LocalPlaylistSongsModern(
                             .combinedClickable(
                                 onClick = {
                                     if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) {
-                                        getAlbumVersion = true
-                                        showGetAlbumVersionDialogue = true
+                                        showConfirmMatchAllDialog = true
                                     } else {
                                         SmartMessage(context.resources.getString(R.string.no_videos_found), context = context)
                                     }
                                 },
                                 onLongClick = {
                                     SmartMessage(context.resources.getString(R.string.get_album_version), context = context)
+                                }
+                            )
+                    )
+
+                    HeaderIconButton(
+                        icon = R.drawable.update,
+                        color = colorPalette.text,
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {playlistUpdateDialog = true},
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.updating_playlist_message),
+                                        context = context
+                                    )
                                 }
                             )
                     )
@@ -1502,8 +1634,6 @@ fun LocalPlaylistSongsModern(
                     //}
                 }
 
-                if (autosync && playlistPreview?.let { playlistPreview -> !playlistPreview.playlist.browseId.isNullOrBlank()} == true) {sync()}
-
                 Spacer(modifier = Modifier.height(10.dp))
 
                 /*        */
@@ -1542,7 +1672,6 @@ fun LocalPlaylistSongsModern(
                             PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                             PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                             PlaylistSongSortBy.RelativePlayTime -> stringResource(R.string.sort_relative_listening_time)
-                            PlaylistSongSortBy.UnmatchedSongs -> stringResource(R.string.unmatched)
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
@@ -1569,7 +1698,55 @@ fun LocalPlaylistSongsModern(
                                         },
                                         onDuration = { sortBy = PlaylistSongSortBy.Duration },
                                         onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded },
-                                        onUnmatchedSong = {sortBy = PlaylistSongSortBy.UnmatchedSongs}
+                                    )
+                                }
+
+                            }
+                    )
+                    HeaderIconButton(
+                        icon = R.drawable.playlist,
+                        color = colorPalette.text,
+                        onClick = {},
+                        modifier = Modifier
+                            .offset(0.dp, 2.5.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {}
+                            )
+                    )
+
+                    BasicText(
+                        text = when (playlistSongsTypeFilter) {
+                            PlaylistSongsTypeFilter.All -> stringResource(R.string.all)
+                            PlaylistSongsTypeFilter.OnlineSongs -> stringResource(R.string.online_songs)
+                            PlaylistSongsTypeFilter.Videos -> stringResource(R.string.videos)
+                            PlaylistSongsTypeFilter.Local -> stringResource(R.string.on_device)
+                            PlaylistSongsTypeFilter.Favorites -> stringResource(R.string.favorites)
+                            PlaylistSongsTypeFilter.Unmatched -> stringResource(R.string.unmatched)
+                            PlaylistSongsTypeFilter.Downloaded -> stringResource(R.string.downloaded)
+                            PlaylistSongsTypeFilter.Cached -> stringResource(R.string.cached)
+                            PlaylistSongsTypeFilter.Explicit -> stringResource(R.string.explicit)
+                        },
+                        style = typography.xs.semiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .offset(0.dp, 1.5.dp)
+                            .clickable {
+                                menuState.display {
+                                    FilterMenu(
+                                        title = stringResource(R.string.filter_by),
+                                        onDismiss = menuState::hide,
+                                        onAll = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.All },
+                                        onOnlineSongs = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.OnlineSongs },
+                                        onFavorites =  { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Favorites },
+                                        onVideos = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Videos },
+                                        onLocal = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Local },
+                                        onUnmatched = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Unmatched },
+                                        onDownloaded = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Downloaded },
+                                        onCached = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Cached },
+                                        onExplicit = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Explicit },
                                     )
                                 }
 

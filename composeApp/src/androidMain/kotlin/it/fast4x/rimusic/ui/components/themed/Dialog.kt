@@ -98,7 +98,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
@@ -109,13 +111,16 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ValidationType
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongAlbumMap
+import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.VinylSizeKey
@@ -158,6 +163,7 @@ import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @Composable
 fun TextFieldDialog(
@@ -548,8 +554,29 @@ inline fun SelectorArtistsDialog(
                     HorizontalPager(state = pagerState) { idArtist ->
                         val browseId = values[idArtist].id
                         var artist by persist<Artist?>("artist/$browseId/artist")
+                        var artistPage by persist<ArtistPage?>("artist/$browseId/artistPage")
                         LaunchedEffect(browseId) {
                             Database.artist(values[idArtist].id).collect{artist = it}
+                        }
+                        LaunchedEffect(Unit) {
+                            if (artist?.thumbnailUrl == null) {
+                                withContext(Dispatchers.IO) {
+                                    YtMusic.getArtistPage(browseId = browseId)
+                                        .onSuccess { currentArtistPage ->
+                                            artistPage = currentArtistPage
+                                            Database.upsert(
+                                                Artist(
+                                                    id = browseId,
+                                                    name = currentArtistPage.artist.info?.name,
+                                                    thumbnailUrl = currentArtistPage.artist.thumbnail?.url,
+                                                    timestamp = artist?.timestamp,
+                                                    bookmarkedAt = artist?.bookmarkedAt
+                                                )
+                                            )
+                                            Database.artist(values[idArtist].id).collect{artist = it}
+                                        }
+                                }
+                            }
                         }
 
                         Box {
@@ -1799,6 +1826,7 @@ fun InProgressDialog(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun SongMatchingDialog(
     songToRematch : Song,
@@ -1834,6 +1862,7 @@ fun SongMatchingDialog(
             var songsList by remember { mutableStateOf<List<Innertube.SongItem?>>(emptyList()) }
             var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}"))}
             var startSearch by remember { mutableStateOf(false) }
+
             LaunchedEffect(Unit,startSearch) {
                 runBlocking(Dispatchers.IO) {
                     val searchQuery = Innertube.searchPage(
@@ -1970,6 +1999,8 @@ fun SongMatchingDialog(
             if (songsList.isNotEmpty()) {
                 LazyColumn {
                     itemsIndexed(songsList) { _, song ->
+                        val artistsNames = song?.authors?.filter { it.endpoint != null }?.map { it.name }
+                        val artistsIds = song?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
                         if (song != null) {
                             Row(horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically,
@@ -1980,7 +2011,9 @@ fun SongMatchingDialog(
                                     .clickable(onClick = {
                                         Database.asyncTransaction {
                                             deleteSongFromPlaylist(songToRematch.id, playlistId)
-                                            Database.insert(song.asSong)
+                                            if (songExist(song.asSong.id) == 0) {
+                                                Database.insert(song.asSong)
+                                            }
                                             insert(
                                                 SongPlaylistMap(
                                                     songId = song.asMediaItem.mediaId,
@@ -1988,6 +2021,29 @@ fun SongMatchingDialog(
                                                     position = position
                                                 )
                                             )
+                                            insert(
+                                                Album(id = song.album?.endpoint?.browseId ?: "", title = song.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                                                SongAlbumMap(songId = song.asMediaItem.mediaId, albumId = song.album?.endpoint?.browseId ?: "", position = null)
+                                            )
+                                            if ((artistsNames != null) && (artistsIds != null)) {
+                                                artistsNames.let { artistNames ->
+                                                    artistsIds.let { artistIds ->
+                                                        if (artistNames.size == artistIds.size) {
+                                                            insert(
+                                                                artistNames.mapIndexed { index, artistName ->
+                                                                    Artist(id = (artistIds[index]) ?: "", name = artistName)
+                                                                },
+                                                                artistIds.map { artistId ->
+                                                                    SongArtistMap(
+                                                                        songId = song.asMediaItem.mediaId,
+                                                                        artistId = (artistId) ?: ""
+                                                                    )
+                                                                }
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                         onDismiss()
                                     }
