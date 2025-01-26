@@ -183,6 +183,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
+import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.checkFileExists
@@ -194,12 +195,14 @@ import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import kotlinx.coroutines.CoroutineScope
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.mediaItemToggleLike
+import it.fast4x.rimusic.utils.playlistSongsTypeFilterKey
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
@@ -237,10 +240,50 @@ fun LocalPlaylistSongsModern(
     var filter: String? by rememberSaveable { mutableStateOf(null) }
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    var playlistSongsTypeFilter by rememberPreference(playlistSongsTypeFilterKey, PlaylistSongsTypeFilter.All)
 
     LaunchedEffect(Unit, filter, sortOrder, sortBy) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
             .collect { playlistSongs = it }
+    }
+
+    LaunchedEffect(Unit, playlistSongsTypeFilter) {
+        when (playlistSongsTypeFilter) {
+            PlaylistSongsTypeFilter.All -> {}
+            PlaylistSongsTypeFilter.Local -> {
+                playlistSongs = playlistSongs.filter { it.asMediaItem.isLocal }
+            }
+
+            PlaylistSongsTypeFilter.OnlineSongs -> {
+                playlistSongs =
+                    playlistSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == true }
+            }
+
+            PlaylistSongsTypeFilter.Videos -> {
+                playlistSongs =
+                    playlistSongs.filter { it.song.thumbnailUrl?.startsWith("https://i.ytimg.com/") == true }
+            }
+
+            PlaylistSongsTypeFilter.Unmatched -> {
+                playlistSongs =
+                    playlistSongs.filter { it.song.thumbnailUrl == "" && !it.asMediaItem.isLocal }
+            }
+
+            PlaylistSongsTypeFilter.Explicit -> {
+                playlistSongs =
+                    playlistSongs.filter { it.asMediaItem.isExplicit }
+            }
+
+            PlaylistSongsTypeFilter.Downloaded -> {
+               // playlistSongs =
+                  //  playlistSongs.filter { getDownloadState(it.asMediaItem.mediaId) == 2 }
+            }
+
+            PlaylistSongsTypeFilter.Cached -> {
+               // playlistSongs =
+                 //   playlistSongs.filter { getDownloadState(it.asMediaItem.mediaId) == 1 }
+            }
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -1586,6 +1629,45 @@ fun LocalPlaylistSongsModern(
                                         onDuration = { sortBy = PlaylistSongSortBy.Duration },
                                         onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded },
                                         onUnmatchedSong = {sortBy = PlaylistSongSortBy.UnmatchedSongs}
+                                    )
+                                }
+
+                            }
+                    )
+                    HeaderIconButton(
+                        icon = R.drawable.playlist,
+                        color = colorPalette.text,
+                        onClick = {},
+                    )
+
+                    BasicText(
+                        text = when (playlistSongsTypeFilter) {
+                            PlaylistSongsTypeFilter.All -> stringResource(R.string.all)
+                            PlaylistSongsTypeFilter.OnlineSongs -> stringResource(R.string.online_songs)
+                            PlaylistSongsTypeFilter.Videos -> stringResource(R.string.videos)
+                            PlaylistSongsTypeFilter.Local -> stringResource(R.string.on_device)
+                            PlaylistSongsTypeFilter.Unmatched -> stringResource(R.string.unmatched)
+                            PlaylistSongsTypeFilter.Downloaded -> stringResource(R.string.downloaded)
+                            PlaylistSongsTypeFilter.Cached -> stringResource(R.string.cached)
+                            PlaylistSongsTypeFilter.Explicit -> stringResource(R.string.explicit)
+                        },
+                        style = typography.xs.semiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .clickable {
+                                menuState.display {
+                                    FilterMenu(
+                                        title = stringResource(R.string.filter_by),
+                                        onDismiss = menuState::hide,
+                                        onAll = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.All },
+                                        onOnlineSongs = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.OnlineSongs },
+                                        onVideos = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Videos },
+                                        onLocal = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Local },
+                                        onUnmatched = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Unmatched },
+                                        onDownloaded = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Downloaded },
+                                        onCached = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Cached },
+                                        onExplicit = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Explicit },
                                     )
                                 }
 
