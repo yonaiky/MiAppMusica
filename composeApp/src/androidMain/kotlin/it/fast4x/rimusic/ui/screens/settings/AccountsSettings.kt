@@ -319,14 +319,14 @@ fun AccountsSettings() {
 
                 }
 
-                SwitchSettingEntry(
-                    title = stringResource(R.string.use_ytm_login_only_for_browse),
-                    text = stringResource(R.string.info_use_ytm_login_only_for_browse),
-                    isChecked = useYtLoginOnlyForBrowse,
-                    onCheckedChange = {
-                        useYtLoginOnlyForBrowse = it
-                    }
-                )
+//                SwitchSettingEntry(
+//                    title = stringResource(R.string.use_ytm_login_only_for_browse),
+//                    text = stringResource(R.string.info_use_ytm_login_only_for_browse),
+//                    isChecked = useYtLoginOnlyForBrowse,
+//                    onCheckedChange = {
+//                        useYtLoginOnlyForBrowse = it
+//                    }
+//                )
 
 //                SwitchSettingEntry(
 //                    isEnabled = false,
