@@ -228,6 +228,7 @@ fun LocalPlaylistSongsModern(
     val menuState = LocalMenuState.current
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
+    var playlistAllSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistSongsSortByPosition by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
@@ -244,44 +245,45 @@ fun LocalPlaylistSongsModern(
 
     LaunchedEffect(Unit, filter, sortOrder, sortBy) {
         Database.songsPlaylist(playlistId, sortBy, sortOrder).filterNotNull()
-            .collect { playlistSongs = it }
+            .collect { playlistAllSongs = it }
     }
+
+    //val downloadedSongs = playlistAllSongs.filter { getDownloadState(it.asMediaItem.mediaId) == 2 } NOT_SURE
+    //val cachedSongs = playlistAllSongs.filter { getDownloadState(it.asMediaItem.mediaId) == 0 } NOT_SURE
 
     LaunchedEffect(Unit, playlistSongsTypeFilter) {
         when (playlistSongsTypeFilter) {
-            PlaylistSongsTypeFilter.All -> {}
+            PlaylistSongsTypeFilter.All -> {playlistSongs = playlistAllSongs}
             PlaylistSongsTypeFilter.Local -> {
-                playlistSongs = playlistSongs.filter { it.asMediaItem.isLocal }
+                playlistSongs = playlistAllSongs.filter { it.asMediaItem.isLocal }
             }
 
             PlaylistSongsTypeFilter.OnlineSongs -> {
                 playlistSongs =
-                    playlistSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == true }
+                    playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == true }
             }
 
             PlaylistSongsTypeFilter.Videos -> {
                 playlistSongs =
-                    playlistSongs.filter { it.song.thumbnailUrl?.startsWith("https://i.ytimg.com/") == true }
+                    playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://i.ytimg.com/") == true }
             }
 
             PlaylistSongsTypeFilter.Unmatched -> {
                 playlistSongs =
-                    playlistSongs.filter { it.song.thumbnailUrl == "" && !it.asMediaItem.isLocal }
+                    playlistAllSongs.filter { it.song.thumbnailUrl == "" && !it.asMediaItem.isLocal }
             }
 
             PlaylistSongsTypeFilter.Explicit -> {
                 playlistSongs =
-                    playlistSongs.filter { it.asMediaItem.isExplicit }
+                    playlistAllSongs.filter { it.asMediaItem.isExplicit }
             }
 
             PlaylistSongsTypeFilter.Downloaded -> {
-               // playlistSongs =
-                  //  playlistSongs.filter { getDownloadState(it.asMediaItem.mediaId) == 2 }
+                //playlistSongs = downloadedSongs APP_IS_LAGGING
             }
 
             PlaylistSongsTypeFilter.Cached -> {
-               // playlistSongs =
-                 //   playlistSongs.filter { getDownloadState(it.asMediaItem.mediaId) == 1 }
+                //playlistSongs = cachedSongs APP_IS_LAGGING
             }
         }
     }
