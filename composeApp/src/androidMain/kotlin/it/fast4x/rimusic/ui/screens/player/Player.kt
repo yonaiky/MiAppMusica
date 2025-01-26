@@ -2675,7 +2675,7 @@ fun Player(
 
                         Box(
                             modifier = Modifier
-                                .conditional(showthumbnail && albumCoverRotation) {
+                                .conditional(albumCoverRotation && (isShowingLyrics || showthumbnail)) {
                                     zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
                                 }
                                 .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Scale && isDraggedFS) {
