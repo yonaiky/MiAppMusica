@@ -2628,7 +2628,7 @@ fun Player(
                     }
                     HorizontalPager(
                         state = pagerStateFS,
-                        beyondViewportPageCount = if (swipeAnimationNoThumbnail != SwipeAnimationNoThumbnail.Circle) 1 else 0,
+                        beyondViewportPageCount = if (swipeAnimationNoThumbnail != SwipeAnimationNoThumbnail.Circle || albumCoverRotation && (isShowingLyrics || showthumbnail)) 1 else 0,
                         flingBehavior = fling,
                         userScrollEnabled = !(albumCoverRotation && (isShowingLyrics || showthumbnail)),
                         modifier = Modifier
