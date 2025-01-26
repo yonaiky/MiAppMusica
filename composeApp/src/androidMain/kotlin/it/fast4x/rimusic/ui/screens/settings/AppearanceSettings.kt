@@ -963,6 +963,7 @@ fun AppearanceSettings(
                             SwipeAnimationNoThumbnail.Fade -> stringResource(R.string.te_fade)
                             SwipeAnimationNoThumbnail.Scale -> stringResource(R.string.te_scale)
                             SwipeAnimationNoThumbnail.Carousel -> stringResource(R.string.carousel)
+                            SwipeAnimationNoThumbnail.Circle -> stringResource(R.string.vt_circular)
                         }
                     },
                     modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)

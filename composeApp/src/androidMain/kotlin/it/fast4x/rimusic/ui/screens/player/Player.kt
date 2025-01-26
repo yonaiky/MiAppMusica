@@ -78,6 +78,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -305,9 +306,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.math.absoluteValue
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.center
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.unit.LayoutDirection
+import kotlin.math.sqrt
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation", "RememberReturnType", "NewApi")
 @ExperimentalFoundationApi
@@ -431,6 +440,34 @@ fun Player(
 
     fun PagerState.startOffsetForPage(page: Int): Float {
         return offsetForPage(page).coerceAtLeast(0f)
+    }
+
+    fun PagerState.endOffsetForPage(page: Int): Float {
+        return offsetForPage(page).coerceAtMost(0f)
+    }
+
+    class CirclePath(private val progress: Float, private val origin: Offset = Offset(0f, 0f)) : Shape {
+        override fun createOutline(
+            size: Size, layoutDirection: LayoutDirection, density: Density
+        ): Outline {
+
+            val center = Offset(
+                x = size.center.x - ((size.center.x - origin.x) * (1f - progress)),
+                y = size.center.y - ((size.center.y - origin.y) * (1f - progress)),
+            )
+            val radius = (sqrt(
+                size.height * size.height + size.width * size.width
+            ) * .5f) * progress
+
+            return Outline.Generic(Path().apply {
+                addOval(
+                    Rect(
+                        center = center,
+                        radius = radius,
+                    )
+                )
+            })
+        }
     }
 
     binder.player.DisposableListener {
@@ -964,6 +1001,7 @@ fun Player(
     val gradients = enumValues<AnimatedGradient>()
     var tempGradient by remember{ mutableStateOf(AnimatedGradient.Linear) }
     var albumCoverRotation by rememberPreference(albumCoverRotationKey, false)
+    var circleOffsetY by remember {mutableStateOf(0f)}
 
     @Composable
     fun Modifier.conditional(condition : Boolean, modifier : @Composable Modifier.() -> Modifier) : Modifier {
@@ -2570,10 +2608,10 @@ fun Player(
                if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && playerType == PlayerType.Modern && (!showthumbnail || albumCoverRotation)) {
                     val fling = PagerDefaults.flingBehavior(
                         state = pagerStateFS,
-                        snapPositionalThreshold = 0.20f
+                        snapPositionalThreshold = 0.30f
                     )
                    val scaleAnimationFloat by animateFloatAsState(
-                       if (isDraggedFS) 0.85f else 1f
+                       if (isDraggedFS) 0.85f else 1f, label = ""
                    )
                    pagerStateFS.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
 
@@ -2590,11 +2628,15 @@ fun Player(
                     }
                     HorizontalPager(
                         state = pagerStateFS,
-                        beyondViewportPageCount = 1,
+                        beyondViewportPageCount = if (swipeAnimationNoThumbnail != SwipeAnimationNoThumbnail.Circle || albumCoverRotation && (isShowingLyrics || showthumbnail)) 1 else 0,
                         flingBehavior = fling,
                         userScrollEnabled = !(albumCoverRotation && (isShowingLyrics || showthumbnail)),
                         modifier = Modifier
                             .background(colorPalette().background1)
+                            .pointerInteropFilter {
+                                circleOffsetY = it.y
+                                false
+                            }
                     ) { it ->
 
                         var currentRotation by remember {
@@ -2633,7 +2675,9 @@ fun Player(
 
                         Box(
                             modifier = Modifier
-                                .zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
+                                .conditional(albumCoverRotation && (isShowingLyrics || showthumbnail)) {
+                                    zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
+                                }
                                 .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Scale && isDraggedFS) {
                                     graphicsLayer {
                                         scaleY = scaleAnimationFloat
@@ -2681,7 +2725,7 @@ fun Player(
                                         alpha = 1 - pageOffset.absoluteValue
                                     }
                                 }
-                                .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Carousel && isDraggedFS) {
+                                .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Carousel && isDraggedFS) { //by sinasamaki
                                     graphicsLayer {
                                         val startOffset = pagerStateFS.startOffsetForPage(it)
                                         translationX = size.width * (startOffset * .99f)
@@ -2694,6 +2738,34 @@ fun Player(
                                         val scale = 1f - (startOffset * .1f)
                                         scaleX = scale
                                         scaleY = scale
+                                    }
+                                }
+                                .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Circle && !showthumbnail){ //by sinasamaki
+                                    graphicsLayer {
+                                        val pageOffset = pagerStateFS.offsetForPage(it)
+                                        translationX = size.width * pageOffset
+
+                                        val endOffset = pagerStateFS.endOffsetForPage(it)
+                                        shadowElevation = 20f
+
+                                        shape = CirclePath(
+                                            progress = 1f - endOffset.absoluteValue,
+                                            origin = Offset(
+                                                size.width,
+                                                circleOffsetY,
+                                            )
+                                        )
+
+                                        clip = true
+
+                                        val absoluteOffset = pagerStateFS.offsetForPage(it).absoluteValue
+                                        val scale = 1f + (absoluteOffset.absoluteValue * .4f)
+
+                                        scaleX = scale
+                                        scaleY = scale
+
+                                        val startOffset = pagerStateFS.startOffsetForPage(it)
+                                        alpha = (2f - startOffset) / 2f
                                     }
                                 }
                                 .clip(RoundedCornerShape(20.dp))

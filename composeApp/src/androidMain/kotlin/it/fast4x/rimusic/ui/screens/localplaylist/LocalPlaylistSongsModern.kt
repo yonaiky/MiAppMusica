@@ -501,6 +501,10 @@ fun LocalPlaylistSongsModern(
         mutableStateOf(false)
     }
 
+    var showConfirmMatchAllDialog by remember {
+        mutableStateOf(false)
+    }
+
     var scrollToNowPlaying by remember {
         mutableStateOf(false)
     }
@@ -1145,6 +1149,18 @@ fun LocalPlaylistSongsModern(
                         )
                     }
 
+                    if (showConfirmMatchAllDialog) {
+                        ConfirmationDialog(
+                            text = stringResource(R.string.do_you_really_want_to_match_all),
+                            onDismiss = { showConfirmMatchAllDialog = false },
+                            onConfirm = {
+                                getAlbumVersion = true
+                                showGetAlbumVersionDialogue = true
+                                showConfirmMatchAllDialog = false
+                            }
+                        )
+                    }
+
                     HeaderIconButton(
                         icon = R.drawable.download,
                         enabled = playlistSongs.isNotEmpty(),
@@ -1169,8 +1185,7 @@ fun LocalPlaylistSongsModern(
                             .combinedClickable(
                                 onClick = {
                                     if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) {
-                                        getAlbumVersion = true
-                                        showGetAlbumVersionDialogue = true
+                                        showConfirmMatchAllDialog = true
                                     } else {
                                         SmartMessage(context.resources.getString(R.string.no_videos_found), context = context)
                                     }

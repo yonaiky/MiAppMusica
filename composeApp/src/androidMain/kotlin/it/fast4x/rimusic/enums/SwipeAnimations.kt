@@ -4,5 +4,6 @@ enum class SwipeAnimationNoThumbnail {
     Sliding,
     Fade,
     Scale,
-    Carousel
+    Carousel,
+    Circle
 }
