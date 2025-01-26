@@ -502,24 +502,26 @@ object Innertube {
     fun HttpRequestBuilder.setLogin(clientType: Client = DefaultWeb.client, setLogin: Boolean = false) {
         contentType(ContentType.Application.Json)
         headers {
-            //            append("X-Goog-Api-Format-Version", "1")
-            append("X-YouTube-Client-Name", "${clientType.xClientName ?: 1}")
+            append("X-YouTube-Client-Name", "${clientType.xClientName ?: 67}")
             append("X-YouTube-Client-Version", clientType.clientVersion)
-            append("x-origin", "https://music.youtube.com")
+            append("X-Origin", "https://music.youtube.com")
             if (clientType.referer != null) {
                 append("Referer", clientType.referer)
             }
             if (setLogin) {
                 cookie?.let { cookie ->
                     cookieMap = parseCookieString(cookie)
-                    append("X-Goog-Authuser", "0")
+                    append("X-Goog-Authuser", "6")
                     append("X-Goog-Visitor-Id", visitorData)
                     append("Cookie", cookie)
                     if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
                     val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
                     val sapisidHash = sha1("$currentTime $sapisidCookie https://music.youtube.com")
-                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
+                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash "+
+                            "__Secure-1PAPISID ${currentTime}_$sapisidHash "+
+                            "__Secure-3PAPISID ${currentTime}_$sapisidHash"
+                    )
                 }
             }
         }
@@ -702,6 +704,7 @@ object Innertube {
         cpn: String?,
         poToken: String? = null,
         signatureTimestamp: Int? = null,
+        params: String? = null,
     ) = client.post(player) {
         setLogin(setLogin = true)
         setBody(
@@ -709,6 +712,7 @@ object Innertube {
                 videoId = videoId,
                 playlistId = playlistId,
                 cpn = cpn,
+                params = params,
                 playbackContext =
                 PlayerBody.PlaybackContext(
                     contentPlaybackContext =
@@ -929,30 +933,32 @@ object Innertube {
                             ),
                         ]
                     }.joinToString("")
-
-            if (!withLogin) {
-                println("PLAYERADVANCED player listUrlSig EMPTY")
-                val (tempCookie, visitorData, playbackTracking) = getVisitorData(videoId, playlistId)
-                val now = System.currentTimeMillis()
-                val poToken =
-                    if (now < poTokenObject.second) {
-                        println("PLAYERADVANCED player Use saved PoToken")
-                        poTokenObject.first
-                    } else {
-                        createPoTokenChallenge()
-                            .bodyAsText()
-                            .let { challenge ->
-                                val listChallenge = poTokenJsonDeserializer.decodeFromString<List<String?>>(challenge)
-                                listChallenge.filterIsInstance<String>().firstOrNull()
-                            }?.let { poTokenChallenge ->
-                                generatePoToken(poTokenChallenge).bodyAsText().getPoToken().also { poToken ->
-                                    if (poToken != null) {
-                                        poTokenObject = Pair(poToken, now + 21600000)
-                                    }
+            val now = System.currentTimeMillis()
+            val poToken =
+                if (now < poTokenObject.second) {
+                    println("PLAYERADVANCED player Use saved PoToken")
+                    poTokenObject.first
+                } else {
+                    createPoTokenChallenge()
+                        .bodyAsText()
+                        .let { challenge ->
+                            val listChallenge = poTokenJsonDeserializer.decodeFromString<List<String?>>(challenge)
+                            listChallenge.filterIsInstance<String>().firstOrNull()
+                        }?.let { poTokenChallenge ->
+                            generatePoToken(poTokenChallenge).bodyAsText().getPoToken().also { poToken ->
+                                if (poToken != null) {
+                                    poTokenObject = Pair(poToken, now + 21600000)
                                 }
                             }
-                    }
-                println("PLAYERADVANCED player PoToken $poToken")
+                        }
+                }
+            println("PLAYERADVANCED player PoToken $poToken")
+
+            // temporaly use of player with no login
+//            if (!withLogin) {
+                println("PLAYERADVANCED player listUrlSig EMPTY")
+                val (tempCookie, visitorData, playbackTracking) = getVisitorData(videoId, playlistId)
+
                 val playerResponse = noLogInPlayer(videoId, tempCookie, visitorData, poToken ?: "").body<PlayerResponse>()
                 println("PLAYERADVANCED player Player Response $playerResponse")
                 println("PLAYERADVANCED player Thumbnails " + playerResponse.videoDetails?.thumbnail)
@@ -1006,76 +1012,83 @@ object Innertube {
                     }
                 }
                 throw Exception(playerResponse.playabilityStatus?.status ?: "PLAYERADVANCED player ERROR Unknown error")
-            } else {
-
-                val sigTimestamp = NewPipeUtils.getSignatureTimestamp(videoId).getOrNull()
-                println("PLAYERADVANCED player sigTimestamp $sigTimestamp")
-
-                val sigResponse = playerWithPotoken(videoId, playlistId, cpn, signatureTimestamp = sigTimestamp).body<PlayerResponse>()
-                println("PLAYERADVANCED player sigResponse $sigResponse")
-
-                val decodedSigResponse =
-                    sigResponse.copy(
-                        streamingData =
-                        sigResponse.streamingData?.copy(
-                            formats =
-                            sigResponse.streamingData.formats?.map { format ->
-                                format.copy(
-                                    url = format.signatureCipher?.let {
-                                        decodeSignatureCipher(
-                                            videoId,
-                                            it
-                                        )
-                                    },
-                                )
-                            },
-                            adaptiveFormats =
-                            sigResponse.streamingData.adaptiveFormats?.map { adaptiveFormats ->
-                                adaptiveFormats.copy(
-                                    url = adaptiveFormats.signatureCipher?.let {
-                                        decodeSignatureCipher(
-                                            videoId,
-                                            it
-                                        )
-                                    },
-                                )
-                            },
-                        ),
-                    )
-
-
-
-//            listUrlSig = decodedSigResponse.streamingData
-//                            ?.adaptiveFormats
-//                            ?.mapNotNull { it.url }
-//                            ?.toMutableList() ?: mutableListOf<String>()
-//                            .apply {
-//                                decodedSigResponse.streamingData
-//                                    ?.formats
-//                                    ?.mapNotNull { it.url }
-//                                    ?.let { addAll(it) }
-//                            }
-
-
-                val firstThumb =
-                    decodedSigResponse.videoDetails
-                        ?.thumbnail
-                        ?.thumbnails
-                        ?.firstOrNull()
-                val thumbnails =
-                    if (firstThumb?.height == firstThumb?.width && firstThumb != null) MediaType.Song else MediaType.Video
-
-                println("PLAYERADVANCED player return Triple")
-                
-                return@runCatching Triple(
-                    cpn,
-                    decodedSigResponse?.copy(
-                        videoDetails = decodedSigResponse.videoDetails?.copy(),
-                        playbackTracking = decodedSigResponse.playbackTracking,
-                    ),
-                    thumbnails,
-                )
-            }
+//            } else {
+//
+//                val sigTimestamp = NewPipeUtils.getSignatureTimestamp(videoId).getOrNull()
+//                println("PLAYERADVANCED player sigTimestamp $sigTimestamp")
+//
+//                val sigResponse = playerWithPotoken(
+//                    videoId = videoId,
+//                    playlistId = playlistId,
+//                    cpn = cpn,
+//                    signatureTimestamp = sigTimestamp,
+//                    poToken = poToken,
+//                    params = null
+//                ).body<PlayerResponse>()
+//                println("PLAYERADVANCED player sigResponse $sigResponse")
+//
+//                val decodedSigResponse =
+//                    sigResponse.copy(
+//                        streamingData =
+//                        sigResponse.streamingData?.copy(
+//                            formats =
+//                            sigResponse.streamingData.formats?.map { format ->
+//                                format.copy(
+//                                    url = format.signatureCipher?.let {
+//                                        decodeSignatureCipher(
+//                                            videoId,
+//                                            it
+//                                        )
+//                                    },
+//                                )
+//                            },
+//                            adaptiveFormats =
+//                            sigResponse.streamingData.adaptiveFormats?.map { adaptiveFormats ->
+//                                adaptiveFormats.copy(
+//                                    url = adaptiveFormats.signatureCipher?.let {
+//                                        decodeSignatureCipher(
+//                                            videoId,
+//                                            it
+//                                        )
+//                                    },
+//                                )
+//                            },
+//                        ),
+//                    )
+//
+//
+//
+////            listUrlSig = decodedSigResponse.streamingData
+////                            ?.adaptiveFormats
+////                            ?.mapNotNull { it.url }
+////                            ?.toMutableList() ?: mutableListOf<String>()
+////                            .apply {
+////                                decodedSigResponse.streamingData
+////                                    ?.formats
+////                                    ?.mapNotNull { it.url }
+////                                    ?.let { addAll(it) }
+////                            }
+//
+//
+//                val firstThumb =
+//                    decodedSigResponse.videoDetails
+//                        ?.thumbnail
+//                        ?.thumbnails
+//                        ?.firstOrNull()
+//                val thumbnails =
+//                    if (firstThumb?.height == firstThumb?.width && firstThumb != null) MediaType.Song else MediaType.Video
+//
+//                println("PLAYERADVANCED player return Triple")
+//
+//                return@runCatching Triple(
+//                    cpn,
+//                    decodedSigResponse?.copy(
+//                        videoDetails = decodedSigResponse.videoDetails?.copy(),
+//                        playbackTracking = decodedSigResponse.playbackTracking,
+//                    ),
+//                    thumbnails,
+//                )
+//            }
         }.onFailure {
             println("PLAYERADVANCED player ERROR ${it.stackTraceToString()}")
         }

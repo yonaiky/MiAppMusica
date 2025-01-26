@@ -109,7 +109,8 @@ data class Context(
     companion object {
 
         //const val USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
-        const val USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
+        //const val USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
+        const val USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0,gzip(gfe)"
         private const val USER_AGENT_ANDROID = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36"
         private const val USER_AGENT_ANDROID_MUSIC = "com.google.android.youtube/19.29.1  (Linux; U; Android 11) gzip"
         private const val USER_AGENT_PLAYSTATION = "Mozilla/5.0 (PlayStation 4 5.55) AppleWebKit/601.2 (KHTML, like Gecko)"
@@ -123,11 +124,12 @@ data class Context(
             client = Client(
                 clientName = "WEB_REMIX",
                 clientVersion = "1.20250122.01.00",
+                platform = "DESKTOP",
                 //clientVersion = "1.20220606.03.00",
                 //clientVersion = "1.20230731.00.00",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
-                //visitorData = Innertube.visitorData,
+                visitorData = Innertube.visitorData,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
                 xClientName = 67
             )
