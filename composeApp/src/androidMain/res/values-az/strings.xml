@@ -886,4 +886,5 @@
     <string name="match_song">Bu mahnını təkrar uyuşdur</string>
     <string name="match_song_grid">Mahnını Təkrar Uyuşdur</string>
     <string name="songsnotfound">Mahnılar Tapılmadı</string>
+    <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
 </resources>
