@@ -80,8 +80,6 @@ import kotlin.random.Random
 object Innertube {
 
     private const val VISITOR_DATA_PREFIX = "Cgt"
-
-    //const val DEFAULT_VISITOR_DATA = "CgtsZG1ySnZiQWtSbyiMjuGSBg%3D%3D"
     const val DEFAULT_VISITOR_DATA = "CgtMN0FkbDFaWERfdyi8t4u7BjIKCgJWThIEGgAgWQ%3D%3D"
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -502,7 +500,7 @@ object Innertube {
     fun HttpRequestBuilder.setLogin(clientType: Client = DefaultWeb.client, setLogin: Boolean = false) {
         contentType(ContentType.Application.Json)
         headers {
-            append("X-YouTube-Client-Name", "${clientType.xClientName ?: 67}")
+            append("X-YouTube-Client-Name", "${clientType.xClientName ?: 1}")
             append("X-YouTube-Client-Version", clientType.clientVersion)
             append("X-Origin", "https://music.youtube.com")
             if (clientType.referer != null) {
@@ -511,17 +509,14 @@ object Innertube {
             if (setLogin) {
                 cookie?.let { cookie ->
                     cookieMap = parseCookieString(cookie)
-                    append("X-Goog-Authuser", "6")
+                    append("X-Goog-Authuser", "0")
                     append("X-Goog-Visitor-Id", visitorData)
                     append("Cookie", cookie)
                     if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
                     val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
                     val sapisidHash = sha1("$currentTime $sapisidCookie https://music.youtube.com")
-                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash "+
-                            "__Secure-1PAPISID ${currentTime}_$sapisidHash "+
-                            "__Secure-3PAPISID ${currentTime}_$sapisidHash"
-                    )
+                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
                 }
             }
         }
@@ -570,7 +565,7 @@ object Innertube {
         setLogin(ytClient, true)
         setBody(
             CreatePlaylistBody(
-                context = ytClient.toContext(locale, visitorData),
+                context = Context.DefaultWebWithLocale,
                 title = title
             )
         )
@@ -584,7 +579,7 @@ object Innertube {
         setLogin(ytClient, setLogin = true)
         setBody(
             PlaylistDeleteBody(
-                context = ytClient.toContext(locale, visitorData),
+                context = Context.DefaultWebWithLocale,
                 playlistId = playlistId
             )
         )
@@ -598,7 +593,7 @@ object Innertube {
         setLogin(ytClient, setLogin = true)
         setBody(
             EditPlaylistBody(
-                context = ytClient.toContext(locale, visitorData),
+                context = Context.DefaultWebWithLocale,
                 playlistId = playlistId,
                 actions = listOf(
                     Action.RenamePlaylistAction(
@@ -617,7 +612,7 @@ object Innertube {
         setLogin(ytClient, setLogin = true)
         setBody(
             EditPlaylistBody(
-                context = ytClient.toContext(locale, visitorData),
+                context = Context.DefaultWebWithLocale,
                 playlistId = playlistId.removePrefix("VL"),
                 actions = listOf(
                     Action.AddVideoAction(addedVideoId = videoId)
