@@ -178,7 +178,7 @@ fun AlbumDetails(
     val shuffle = SongShuffler {
         getMediaItems().map( MediaItem::asSong )
     }
-    val radio = Radio.init( ::getMediaItems )
+    val radio = Radio { getMediaItems().map( MediaItem::asSong ) }
     val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
     val playNext = PlayNext {
         getMediaItems().let {
