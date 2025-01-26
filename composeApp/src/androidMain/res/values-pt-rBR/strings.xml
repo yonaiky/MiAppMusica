@@ -886,4 +886,5 @@
     <string name="match_song">Recombinar esta Música</string>
     <string name="match_song_grid">Recombinar esta Música</string>
     <string name="songsnotfound">Músicas não encontradas</string>
+    <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
 </resources>

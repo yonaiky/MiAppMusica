@@ -888,4 +888,5 @@
     <string name="match_song">Восстановить эту песню</string>
     <string name="match_song_grid">Восстановить песню</string>
     <string name="songsnotfound">Песни не найдены</string>
+    <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
 </resources>
