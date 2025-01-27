@@ -887,5 +887,5 @@
     <string name="match_song_grid">Відновити пісню</string>
     <string name="songsnotfound">Пісні не знайдені</string>
     <string name="swipe_Animation_No_Thumbnail">Анімація свайпа</string>
-    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
+    <string name="do_you_really_want_to_match_all">Ви дійсно бажаєте замінити всі відео/невідповідні пісні на відповідні пісні? Ця дія є незворотною</string>
 </resources>
