@@ -719,7 +719,7 @@
     <string name="error_no_internet">Brak połączenia z siecią</string>
     <string name="error_timeout">Upłynął limit czasu połączenia</string>
     <string name="error_unknown">Nieznany błąd</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
     <string name="update_album">Aktualizuje Album</string>
     <string name="info_check_update_now">Sprawdź Teraz</string>
     <string name="info_no_update_available">Brak dostępnych aktualizacji</string>
@@ -732,7 +732,7 @@
     <string name="social_telegram_info">Dołącz do grupy na Telegramie</string>
     <string name="social_github">GitHub</string>
     <string name="update">Aktualizacja</string>
-    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
+    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
     <string name="player_pause_listen_history_info">Nie zapisuj odtworzeń do statystyk, historii i sugestii w szybkim wyborze</string>
     <string name="vertical_widget">Widget pionowy</string>
     <string name="horizontal_widget">Widget poziomy</string>
@@ -887,4 +887,5 @@
     <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">Songs Not Found</string>
     <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
+    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
 </resources>
