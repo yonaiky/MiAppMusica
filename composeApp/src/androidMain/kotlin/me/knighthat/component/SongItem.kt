@@ -211,11 +211,7 @@ fun SongItem(
             else
                 thumbnailOverlay()
 
-            val likedAt by remember {
-                Database.likedAt( song.id )
-            }.collectAsState( initial = null, context = Dispatchers.IO )
-
-            if( likedAt != null )
+            if( song.likedAt != null )
                 HeaderIconButton(
                     onClick = {},
                     icon = getLikedIcon(),
