@@ -100,7 +100,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.IconInfo
 import it.fast4x.rimusic.ui.components.themed.InPlaylistMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.LikeSongs
 import it.fast4x.rimusic.ui.components.themed.ListenOnYouTube
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlayNext
@@ -168,6 +167,7 @@ import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
+import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
@@ -287,7 +287,7 @@ fun LocalPlaylistSongs(
         // Turn of selector clears the selected list
         itemSelector.isActive = false
     }
-    val addToFavorite = LikeSongs( ::getMediaItems )
+    val addToFavorite = LikeComponent{ getMediaItems().map( MediaItem::asSong ) }
 
     val addToPlaylist = PlaylistsMenu.init(
         navController,
