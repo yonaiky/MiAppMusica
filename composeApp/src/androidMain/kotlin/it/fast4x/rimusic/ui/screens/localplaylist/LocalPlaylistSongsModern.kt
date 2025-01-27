@@ -1617,7 +1617,6 @@ fun LocalPlaylistSongsModern(
                             PlaylistSongSortBy.Duration -> stringResource(R.string.sort_duration)
                             PlaylistSongSortBy.DateAdded -> stringResource(R.string.sort_date_added)
                             PlaylistSongSortBy.RelativePlayTime -> stringResource(R.string.sort_relative_listening_time)
-                            PlaylistSongSortBy.UnmatchedSongs -> stringResource(R.string.unmatched)
                         },
                         style = typography.xs.semiBold,
                         maxLines = 1,
@@ -1644,7 +1643,6 @@ fun LocalPlaylistSongsModern(
                                         },
                                         onDuration = { sortBy = PlaylistSongSortBy.Duration },
                                         onDateAdded = { sortBy = PlaylistSongSortBy.DateAdded },
-                                        onUnmatchedSong = {sortBy = PlaylistSongSortBy.UnmatchedSongs}
                                     )
                                 }
 
