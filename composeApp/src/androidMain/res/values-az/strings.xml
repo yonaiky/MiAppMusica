@@ -888,4 +888,7 @@
     <string name="songsnotfound">Mahnılar Tapılmadı</string>
     <string name="swipe_Animation_No_Thumbnail">Sürüşdürmə Animasiyası</string>
     <string name="do_you_really_want_to_match_all">Həqiqətən bütün videoları/uyuşmayan mahnıları uyğun mahnılarla əvəz etmək istəyirsiniz? Bu fəaliyyət dəyişməzdir</string>
+    <string name="online_songs">Online Songs</string>
+    <string name="explicit">Explicit</string>
+    <string name="filter_by">Filter By</string>
 </resources>
