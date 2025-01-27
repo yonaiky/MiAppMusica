@@ -34,9 +34,7 @@ enum class PlaylistSongSortBy(
 
     DateLiked( R.string.sort_date_liked, R.drawable.heart ),
 
-    DateAdded( R.string.sort_date_added, R.drawable.time ),
-
-    UnmatchedSongs( R.string.unmatched, R.drawable.alert );
+    DateAdded( R.string.sort_date_added, R.drawable.time );
 
     override val titleId: Int
         get() {
