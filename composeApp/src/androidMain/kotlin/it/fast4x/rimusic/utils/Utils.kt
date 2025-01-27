@@ -725,9 +725,6 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     }
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
-    val albumInfo = matchedSong?.asMediaItem?.mediaMetadata?.extras?.getString("albumId")?.let { albumId ->
-        Info(albumId, null)
-    }
 
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
@@ -744,8 +741,8 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     )
                 )
                 insert(
-                    Album(id = albumInfo?.id ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
-                    SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = albumInfo?.id ?: "", position = null)
+                    Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                    SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
                 )
             }
         } else if (isExtPlaylist && (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()}))){
