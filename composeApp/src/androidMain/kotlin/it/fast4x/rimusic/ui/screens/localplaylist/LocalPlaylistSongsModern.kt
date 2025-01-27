@@ -195,6 +195,7 @@ import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import kotlinx.coroutines.CoroutineScope
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
@@ -229,6 +230,8 @@ fun LocalPlaylistSongsModern(
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var playlistAllSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
+    var downloadedPlaylistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
+    var cachedPlaylistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistSongsSortByPosition by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
@@ -248,8 +251,14 @@ fun LocalPlaylistSongsModern(
             .collect { playlistAllSongs = it }
     }
 
-    //val downloadedSongs = playlistAllSongs.filter { getDownloadState(it.asMediaItem.mediaId) == 2 } NOT_SURE
-    //val cachedSongs = playlistAllSongs.filter { getDownloadState(it.asMediaItem.mediaId) == 0 } NOT_SURE
+    Database.asyncTransaction {
+        val downloads = MyDownloadHelper.downloads.value
+        CoroutineScope(Dispatchers.IO).launch {
+            downloadedPlaylistSongs = playlistAllSongs.filter { song -> downloads[song.song.id]?.state == Download.STATE_COMPLETED }
+            cachedPlaylistSongs = playlistAllSongs.filter { song -> song.contentLength?.let { binder?.cache?.isCached(song.song.id, 0, song.contentLength) } ?: false
+            }
+        }
+    }
 
     LaunchedEffect(Unit, playlistSongsTypeFilter) {
         when (playlistSongsTypeFilter) {
@@ -273,17 +282,22 @@ fun LocalPlaylistSongsModern(
                     playlistAllSongs.filter { it.song.thumbnailUrl == "" && !it.asMediaItem.isLocal }
             }
 
+            PlaylistSongsTypeFilter.Favorites -> {
+                playlistSongs =
+                    playlistAllSongs.filter { it.song.likedAt !in listOf(-1L,null) }
+            }
+
             PlaylistSongsTypeFilter.Explicit -> {
                 playlistSongs =
                     playlistAllSongs.filter { it.asMediaItem.isExplicit }
             }
 
             PlaylistSongsTypeFilter.Downloaded -> {
-                //playlistSongs = downloadedSongs APP_IS_LAGGING
+                playlistSongs = downloadedPlaylistSongs
             }
 
             PlaylistSongsTypeFilter.Cached -> {
-                //playlistSongs = cachedSongs APP_IS_LAGGING
+                playlistSongs = cachedPlaylistSongs
             }
         }
     }
@@ -1648,6 +1662,7 @@ fun LocalPlaylistSongsModern(
                             PlaylistSongsTypeFilter.OnlineSongs -> stringResource(R.string.online_songs)
                             PlaylistSongsTypeFilter.Videos -> stringResource(R.string.videos)
                             PlaylistSongsTypeFilter.Local -> stringResource(R.string.on_device)
+                            PlaylistSongsTypeFilter.Favorites -> stringResource(R.string.favorites)
                             PlaylistSongsTypeFilter.Unmatched -> stringResource(R.string.unmatched)
                             PlaylistSongsTypeFilter.Downloaded -> stringResource(R.string.downloaded)
                             PlaylistSongsTypeFilter.Cached -> stringResource(R.string.cached)
@@ -1664,6 +1679,7 @@ fun LocalPlaylistSongsModern(
                                         onDismiss = menuState::hide,
                                         onAll = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.All },
                                         onOnlineSongs = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.OnlineSongs },
+                                        onFavorites =  { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Favorites },
                                         onVideos = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Videos },
                                         onLocal = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Local },
                                         onUnmatched = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Unmatched },

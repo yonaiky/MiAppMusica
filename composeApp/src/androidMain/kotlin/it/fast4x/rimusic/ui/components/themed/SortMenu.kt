@@ -248,6 +248,7 @@ fun FilterMenu (
     onOnlineSongs: (() -> Unit)? = null,
     onVideos: (() -> Unit)? = null,
     onLocal: (() -> Unit)? = null,
+    onFavorites: (() -> Unit)? = null,
     onUnmatched: (() -> Unit)? = null,
     onDownloaded: (() -> Unit)? = null,
     onCached: (() -> Unit)? = null,
@@ -322,6 +323,16 @@ fun FilterMenu (
                 onClick = {
                     onDismiss()
                     onUnmatched()
+                }
+            )
+        }
+        onFavorites?.let {
+            MenuEntry(
+                icon = R.drawable.heart,
+                text = stringResource(R.string.favorites),
+                onClick = {
+                    onDismiss()
+                    onFavorites()
                 }
             )
         }

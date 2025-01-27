@@ -10,6 +10,7 @@ enum class PlaylistSongsTypeFilter {
     All,
     OnlineSongs,
     Videos,
+    Favorites,
     Local,
     Unmatched,
     Downloaded,
