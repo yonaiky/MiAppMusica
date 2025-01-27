@@ -1678,6 +1678,7 @@ fun LocalPlaylistSongsModern(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
+                            .offset(0.dp, 1.5.dp)
                             .clickable {
                                 menuState.display {
                                     FilterMenu(
