@@ -83,6 +83,7 @@ import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
@@ -400,7 +401,11 @@ fun LocalPlaylistSongs(
         Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder )
                 .flowOn( Dispatchers.IO )
                 .distinctUntilChanged()
-                .collect { items = it }
+                .collect {
+                    items = it.map { song ->
+                        SongEntity(song)
+                    }
+                }
     }
     LaunchedEffect( items, search.input, parentalControlEnabled ) {
         items
@@ -448,7 +453,7 @@ fun LocalPlaylistSongs(
         RecommendationsNumber.`5`
     )
     var relatedSongsRecommendationResult by persist<Result<Innertube.RelatedSongs?>?>(tag = "home/relatedSongsResult")
-    var songBaseRecommendation by persist<SongEntity?>("home/songBaseRecommendation")
+    var songBaseRecommendation by persist<Song?>("home/songBaseRecommendation")
     var positionsRecommendationList = arrayListOf<Int>()
     var autosync by rememberPreference(autosyncKey, false)
 
@@ -457,9 +462,9 @@ fun LocalPlaylistSongs(
             Database.songsPlaylist(playlistId, sort.sortBy, sort.sortOrder).distinctUntilChanged()
                 .collect { songs ->
                     val song = songs.firstOrNull()
-                    if (relatedSongsRecommendationResult == null || songBaseRecommendation?.song?.id != song?.song?.id) {
+                    if (relatedSongsRecommendationResult == null || songBaseRecommendation?.id != song?.id) {
                         relatedSongsRecommendationResult =
-                            Innertube.relatedSongs(NextBody(videoId = (song?.song?.id ?: "HZnNt9nnEhw")))
+                            Innertube.relatedSongs(NextBody(videoId = (song?.id ?: "HZnNt9nnEhw")))
                     }
                     songBaseRecommendation = song
                 }

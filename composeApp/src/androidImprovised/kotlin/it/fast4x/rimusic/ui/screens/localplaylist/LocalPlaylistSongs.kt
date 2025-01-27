@@ -52,7 +52,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
-import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
@@ -84,7 +83,6 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.thumbnailShape
@@ -122,7 +120,6 @@ import it.fast4x.rimusic.utils.Reposition
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.checkFileExists
@@ -155,6 +152,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -194,8 +192,8 @@ fun LocalPlaylistSongs(
     val uriHandler = LocalUriHandler.current
 
     var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
-    var items by persistList<SongEntity>("localPlaylist/$playlistId/itemsOffShelve")
-    var itemsOnDisplay by persistList<SongEntity>("localPlaylist/$playlistId/songs/on_display")
+    var items by persistList<Song>( "localPlaylist/$playlistId/items" )
+    var itemsOnDisplay by persistList<Song>("localPlaylist/$playlistId/songs/on_display")
 
     // Non-vital
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
@@ -207,18 +205,19 @@ fun LocalPlaylistSongs(
     val playlistName = remember { mutableStateOf( "" ) }
     val thumbnailUrl = remember { mutableStateOf("") }
 
-    val itemSelector = ItemSelector<SongEntity>()
+    val itemSelector = ItemSelector<Song>()
 
-    fun getMediaItems() = itemSelector.ifEmpty { itemsOnDisplay }.map( SongEntity::asMediaItem )
+    fun getSongs() = itemSelector.ifEmpty { itemsOnDisplay }
+    fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
     val search = Search.init()
     val sort = PlaylistSongsSort.init()
-    val shuffle = SongShuffler { getMediaItems().map( MediaItem::asSong ) }
+    val shuffle = SongShuffler ( ::getSongs )
     val renameDialog = RenameDialog.init( pipedSession, coroutineScope, { isPipedEnabled }, playlistName, { playlistPreview } )
     val exportDialog = ExportSongsToCSVDialog(
         playlistId = playlistId,
         playlistName = playlistName.value,
-        songs = { getMediaItems().map(MediaItem::asSong) }
+        songs = ::getSongs
     )
     val deleteDialog = DeletePlaylist {
         Database.asyncTransaction {
@@ -244,10 +243,10 @@ fun LocalPlaylistSongs(
     }
     val renumberDialog = Reposition(
         { playlistPreview?.playlist?.id },
-        { items.map(SongEntity::song) }
+        { items }
     )
-    val downloadAllDialog = DownloadAllSongsDialog { getMediaItems().map( MediaItem::asSong ) }
-    val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog { getMediaItems().map( MediaItem::asSong ) }
+    val downloadAllDialog = DownloadAllSongsDialog ( ::getSongs )
+    val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog ( ::getSongs )
     val editThumbnailLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
@@ -290,7 +289,7 @@ fun LocalPlaylistSongs(
         // Turn of selector clears the selected list
         itemSelector.isActive = false
     }
-    val addToFavorite = LikeComponent{ getMediaItems().map( MediaItem::asSong ) }
+    val addToFavorite = LikeComponent( ::getSongs )
 
     val addToPlaylist = PlaylistsMenu.init(
         navController,
@@ -304,7 +303,7 @@ fun LocalPlaylistSongs(
                     coroutineScope = coroutineScope,
                     pipedSession = pipedSession.toApiSession(),
                     id = UUID.fromString(it.playlist.browseId),
-                    videos = getMediaItems().map( MediaItem::mediaId )
+                    videos = getSongs().map( Song::id )
                 )
 
             getMediaItems()
@@ -397,21 +396,20 @@ fun LocalPlaylistSongs(
     }
     val resetThumbnail = ResetThumbnail { resetThumbnail() }
 
-    val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
+    val locator = Locator( lazyListState, ::getSongs )
 
     //<editor-fold defaultstate="collapsed" desc="Smart recommendation">
     val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.`5` )
     var relatedSongs by rememberSaveable {
         // SongEntity before Int in case random position is equal
-        mutableStateOf( emptyMap <SongEntity, Int>() )
+        mutableStateOf( emptyMap<Song, Int>() )
     }
 
     LaunchedEffect( isRecommendationEnabled ) {
         if( !isRecommendationEnabled ) {
             // Clear the map when this feature is turned off
-            items = items.toMutableList().apply {
-                removeAll( relatedSongs.keys )
-            }
+            items = items.filterNot { it in relatedSongs.keys }
+
             relatedSongs = emptyMap()
             return@LaunchedEffect
         }
@@ -427,78 +425,70 @@ fun LocalPlaylistSongs(
         while( items.isEmpty() )
             delay( 100L )
 
-        val requestBody = NextBody( videoId =  items.random().song.id )
-        Innertube.relatedSongs( requestBody )?.onSuccess { response ->
-            val fetchedSongs = mutableMapOf<SongEntity, Int>()
+        val requestBody = NextBody( videoId =  items.random().id )
+        Innertube.relatedSongs( requestBody )
+                 ?.getOrNull()      // If result is null, all subsequence calls are cancelled
+                 ?.songs
+                 ?.filterNot { songItem ->
+                     // Fetched Song may not have properties like [likedAt]
+                     // so the result of [List.any] may be false.
+                     // Comparing their IDs is the most effective way
+                     items.map( Song::id )
+                          .any{ songItem.info?.endpoint?.videoId == it }
+                 }
+                 ?.take( recommendationsNumber.toInt() )
+                 ?.associate { songItem ->
+                     with( songItem ) {
+                         // Do NOT use [Utils#Innertube.SongItem.asSong]
+                         // It doesn't have explicit prefix
+                         val prefix = if( explicit ) EXPLICIT_PREFIX else ""
 
-            response?.songs
-                ?.map { songItem ->
+                         Song(
+                             // Song's ID & title must not be "null". If they are,
+                             // Something is wrong with Innertube.
+                             id = "$prefix${info!!.endpoint!!.videoId!!}",
+                             title = info!!.name!!,
+                             artistsText = authors?.joinToString { author -> author.name ?: "" },
+                             durationText = durationText,
+                             thumbnailUrl = thumbnail?.url
+                         ) to (0..items.size).random()      // Map this song with a random position from [items]
+                     }
+                 }
+                 ?.let {
+                     relatedSongs = it
 
-                    // Do NOT use [Utils#Innertube.SongItem.asSong]
-                    // It doesn't have explicit prefix
-                    val song = with( songItem ) {
-                        val prefix = if( explicit ) EXPLICIT_PREFIX else ""
-
-                        Song(
-                            // Song's ID & title must not be "null". If they are,
-                            // Something is wrong with Innertube.
-                            id = "$prefix${info!!.endpoint!!.videoId!!}",
-                            title = info!!.name!!,
-                            artistsText = authors?.joinToString { author -> author.name ?: "" },
-                            durationText = durationText,
-                            thumbnailUrl = thumbnail?.url
-                        )
-                    }
-
-                    SongEntity(
-                        song = song,
-                        // [albumTitle] is optional in this context,
-                        // but it doesn't hurt to reduce nullable variables
-                        albumTitle = songItem.album?.name
-                    )
-                }
-                ?.forEach {
-                    // Skip songs that are already in the playlist by comparing their IDs.
-                    if( it.song.id in items.map{ e -> e.song.id }
-                        || fetchedSongs.size >= recommendationsNumber.toInt()
-                    ) return@forEach
-
-                    val insertPosition = (0..items.size).random()
-                    fetchedSongs[it] = insertPosition
-                }
-
-            relatedSongs = fetchedSongs
-
-            // Enable position lock
-            positionLock.isFirstIcon = true
-        }
+                     // Enable position lock
+                     positionLock.isFirstIcon = true
+                 }
     }
     //</editor-fold>
     LaunchedEffect( sort.sortOrder, sort.sortBy ) {
         Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder )
-            .flowOn( Dispatchers.IO )
-            .distinctUntilChanged()
-            .collect { items = it }
+                .flowOn( Dispatchers.IO )
+                .distinctUntilChanged()
+                .collectLatest { items = it }
     }
     LaunchedEffect( items, relatedSongs, search.input, parentalControlEnabled ) {
         items.toMutableList()
              .apply {
                  relatedSongs.forEach { (song, index) ->
-                     add( index, song )
+                     // Make sure position can't go outside permissible range
+                     // causing [IndexOutOfBoundException]
+                     val position = index.coerceIn(0, size)
+                     add( position, song )
                  }
              }
-             .distinctBy { it.song.id }
-             .filter {
-                 !parentalControlEnabled || !it.song.title.startsWith( EXPLICIT_PREFIX )
-             }.filter {
+             .distinctBy( Song::id )
+             .filter { song ->
                  // Without cleaning, user can search explicit songs with "e:"
                  // I kinda want this to be a feature, but it seems unnecessary
-                 val containsName = it.song.cleanTitle().contains(search.input, true)
-                 val containsArtist = it.song.artistsText?.contains(search.input, true) ?: false
-                 val containsAlbum = it.albumTitle?.contains(search.input, true) ?: false
+                 val containsName = song.cleanTitle().contains(search.input, true)
+                 val containsArtist = song.artistsText?.contains(search.input, true) ?: false
+                 val isExplicit = !parentalControlEnabled || !song.title.startsWith( EXPLICIT_PREFIX )
 
-                 containsName || containsArtist || containsAlbum
-             }.let { itemsOnDisplay = it }
+                 containsName || containsArtist || isExplicit
+             }
+            .let { itemsOnDisplay = it }
     }
     LaunchedEffect(Unit) {
         Database.singlePlaylistPreview( playlistId )
@@ -655,7 +645,7 @@ fun LocalPlaylistSongs(
                         )
                         Spacer(modifier = Modifier.height(5.dp))
 
-                        val totalDuration = items.sumOf { durationTextToMillis(it.song.durationText ?: "0:0") }
+                        val totalDuration = items.sumOf { durationTextToMillis(it.durationText ?: "0:0") }
                         IconInfo(
                             title = formatAsTime( totalDuration ),
                             icon = painterResource(R.drawable.time)
@@ -663,7 +653,7 @@ fun LocalPlaylistSongs(
                         if (isRecommendationEnabled) {
                             Spacer(modifier = Modifier.height(5.dp))
                             IconInfo(
-                                title = relatedSongs.keys.size.toString(),
+                                title = relatedSongs.size.toString(),
                                 icon = painterResource(R.drawable.smart_shuffle)
                             )
                         }
@@ -757,8 +747,8 @@ fun LocalPlaylistSongs(
             }
 
             itemsIndexed(
-                items = itemsOnDisplay.filter { it.song.id.isNotBlank() },
-                key = { _, song -> song.song.id },
+                items = itemsOnDisplay,
+                key = { _, song -> song.id },
                 contentType = { _, song -> song },
             ) { index, song ->
 
@@ -804,7 +794,7 @@ fun LocalPlaylistSongs(
                         },
                         onRemoveFromQueue = {
                             Database.asyncTransaction {
-                                deleteSongFromPlaylist(song.song.id, playlistId)
+                                deleteSongFromPlaylist(song.id, playlistId)
                             }
 
 
@@ -837,7 +827,7 @@ fun LocalPlaylistSongs(
                                 manageDownload(
                                     context = context,
                                     mediaItem = song.asMediaItem,
-                                    downloadState = song.song.isLocal
+                                    downloadState = song.isLocal
                                 )
                             }
                         },
@@ -850,7 +840,7 @@ fun LocalPlaylistSongs(
                         modifier = Modifier.zIndex(2f)
                     ) {
                         me.knighthat.component.SongItem(
-                            song = song.song,
+                            song = song,
                             navController = navController,
                             isRecommended = song in relatedSongs,
                             modifier = Modifier
@@ -862,7 +852,7 @@ fun LocalPlaylistSongs(
                                                 playlist = playlistPreview,
                                                 playlistId = playlistId,
                                                 positionInPlaylist = index,
-                                                song = song.song,
+                                                song = song,
                                                 onDismiss = menuState::hide,
                                                 disableScrollingText = disableScrollingText
                                             )
@@ -872,7 +862,7 @@ fun LocalPlaylistSongs(
                                     onClick = {
                                         binder?.stopRadio()
                                         binder?.player?.forcePlayAtIndex(
-                                            itemsOnDisplay.map( SongEntity::asMediaItem ),
+                                            itemsOnDisplay.map( Song::asMediaItem ),
                                             index
                                         )
 
@@ -921,7 +911,7 @@ fun LocalPlaylistSongs(
                             thumbnailOverlay = {
                                 if (sort.sortBy == PlaylistSongSortBy.PlayTime) {
                                     BasicText(
-                                        text = song.song.formattedTotalPlayTime,
+                                        text = song.formattedTotalPlayTime,
                                         style = typography().xxs.semiBold.center.color(
                                             colorPalette().onOverlay
                                         ),
