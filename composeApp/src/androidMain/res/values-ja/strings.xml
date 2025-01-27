@@ -887,4 +887,5 @@
     <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">曲が見つかりません</string>
     <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
+    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
 </resources>
