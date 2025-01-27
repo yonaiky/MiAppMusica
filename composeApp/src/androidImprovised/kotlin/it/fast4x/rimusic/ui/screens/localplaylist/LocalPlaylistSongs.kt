@@ -92,7 +92,6 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
 import it.fast4x.rimusic.ui.components.themed.Enqueue
@@ -138,10 +137,8 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
-import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
@@ -168,6 +165,7 @@ import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
+import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
 import java.util.UUID
@@ -399,7 +397,7 @@ fun LocalPlaylistSongs(
     }
     val resetThumbnail = ResetThumbnail { resetThumbnail() }
 
-    val locator = LocateComponent.init( lazyListState, ::getMediaItems )
+    val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
 
     //<editor-fold defaultstate="collapsed" desc="Smart recommendation">
     val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.`5` )

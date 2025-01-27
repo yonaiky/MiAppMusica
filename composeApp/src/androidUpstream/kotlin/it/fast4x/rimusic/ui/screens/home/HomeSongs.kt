@@ -88,7 +88,6 @@ import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.DelSongDialog
 import it.fast4x.rimusic.ui.components.tab.DeleteHiddenSongsDialog
 import it.fast4x.rimusic.ui.components.tab.HideSongDialog
-import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -165,6 +164,7 @@ import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.ItemSelector
+import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
 import java.util.Optional
@@ -267,7 +267,7 @@ fun HomeSongs(
     val hideSongDialog = HideSongDialog.init()
     val deleteHiddenSongs = DeleteHiddenSongsDialog.init()
 
-    val locator = LocateComponent.init( lazyListState, ::getMediaItems )
+    val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
 
     val randomSorter = randomSort()
 

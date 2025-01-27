@@ -91,7 +91,6 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
 import it.fast4x.rimusic.ui.components.themed.Enqueue
@@ -169,6 +168,7 @@ import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
+import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
 import java.util.UUID
@@ -394,7 +394,7 @@ fun LocalPlaylistSongs(
     }
     val resetThumbnail = ResetThumbnail { resetThumbnail() }
 
-    val locator = LocateComponent.init( lazyListState, ::getMediaItems )
+    val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
 
     LaunchedEffect( sort.sortOrder, sort.sortBy ) {
         Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder )

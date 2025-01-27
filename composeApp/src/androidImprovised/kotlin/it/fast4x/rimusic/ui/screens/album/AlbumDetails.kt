@@ -69,7 +69,6 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.LocateComponent
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
@@ -116,6 +115,7 @@ import me.knighthat.component.SongItem
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ItemSelector
+import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.component.ui.screens.DynamicOrientationLayout
@@ -179,7 +179,7 @@ fun AlbumDetails(
         getMediaItems().map( MediaItem::asSong )
     }
     val radio = Radio.init( ::getMediaItems )
-    val locator = LocateComponent.init( lazyListState, ::getMediaItems )
+    val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
     val playNext = PlayNext {
         getMediaItems().let {
             binder?.player?.addNext( it, appContext() )
