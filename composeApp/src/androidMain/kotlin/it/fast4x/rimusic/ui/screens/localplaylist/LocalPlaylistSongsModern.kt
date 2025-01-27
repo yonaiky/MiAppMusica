@@ -261,7 +261,7 @@ fun LocalPlaylistSongsModern(
         }
     }
 
-    LaunchedEffect(Unit, playlistAllSongs, playlistSongsTypeFilter) {
+    LaunchedEffect(Unit, playlistAllSongs, filter, playlistSongsTypeFilter) {
         when (playlistSongsTypeFilter) {
             PlaylistSongsTypeFilter.All -> {playlistSongs = playlistAllSongs}
             PlaylistSongsTypeFilter.Local -> {
@@ -1577,8 +1577,6 @@ fun LocalPlaylistSongsModern(
                     )
                     //}
                 }
-
-                if (autosync && playlistPreview?.let { playlistPreview -> !playlistPreview.playlist.browseId.isNullOrBlank()} == true) {sync()}
 
                 Spacer(modifier = Modifier.height(10.dp))
 
