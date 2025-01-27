@@ -886,6 +886,6 @@
     <string name="match_song">Bu mahnını təkrar uyuşdur</string>
     <string name="match_song_grid">Mahnını Təkrar Uyuşdur</string>
     <string name="songsnotfound">Mahnılar Tapılmadı</string>
-    <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
-    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
+    <string name="swipe_Animation_No_Thumbnail">Sürüşdürmə Animasiyası</string>
+    <string name="do_you_really_want_to_match_all">Həqiqətən bütün videoları/uyuşmayan mahnıları uyğun mahnılarla əvəz etmək istəyirsiniz? Bu fəaliyyət dəyişməzdir</string>
 </resources>
