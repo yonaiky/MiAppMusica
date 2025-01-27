@@ -144,7 +144,9 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import kotlinx.coroutines.delay
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -1976,6 +1978,9 @@ fun SongMatchingDialog(
                 LazyColumn {
                     itemsIndexed(songsList) { _, song ->
                         if (song != null) {
+                            val albumInfo = song.asMediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
+                                Info(albumId, null)
+                            }
                             Row(horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
@@ -1992,6 +1997,10 @@ fun SongMatchingDialog(
                                                     playlistId = playlistId,
                                                     position = position
                                                 )
+                                            )
+                                            insert(
+                                                Album(id = albumInfo?.id ?: "", title = song.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                                                SongAlbumMap(songId = song.asMediaItem.mediaId, albumId = albumInfo?.id ?: "", position = null)
                                             )
                                         }
                                         onDismiss()

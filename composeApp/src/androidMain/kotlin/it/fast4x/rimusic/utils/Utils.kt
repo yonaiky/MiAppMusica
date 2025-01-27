@@ -39,8 +39,10 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -723,6 +725,9 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     }
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
+    val albumInfo = matchedSong?.asMediaItem?.mediaMetadata?.extras?.getString("albumId")?.let { albumId ->
+        Info(albumId, null)
+    }
 
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
@@ -737,6 +742,10 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                         playlistId = playlistId,
                         position = position
                     )
+                )
+                insert(
+                    Album(id = albumInfo?.id ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                    SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = albumInfo?.id ?: "", position = null)
                 )
             }
         } else if (isExtPlaylist && (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()}))){
