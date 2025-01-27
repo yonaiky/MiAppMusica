@@ -33,6 +33,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_CACHED
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_DOWNLOADED
@@ -343,9 +344,6 @@ class MediaLibrarySessionCallback @Inject constructor(
                             }
 
                             else -> database.sortSongsFromPlaylistByRowId( playlistId.toLong() )
-                                .map { list ->
-                                    list.map { it.song }
-                                }
                         }.first().map {
                             it.toMediaItem(parentId)
                         }
@@ -466,8 +464,11 @@ class MediaLibrarySessionCallback @Inject constructor(
                     }
 
                     else -> database.sortSongsFromPlaylistByRowId( playlistId.toLong() )
+                        // TODO temporary
                         .map { list ->
-                            list.map { it }
+                            list.map {
+                                SongEntity(song = it)
+                            }
                         }
                 }.first()
 
