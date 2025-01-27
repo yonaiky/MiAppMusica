@@ -158,7 +158,7 @@
     <string name="_1_month">1 Mois</string>
     <string name="_3_month">3 Mois</string>
     <string name="_6_month">6 Mois</string>
-    <string name="_1_year">1 an</string>
+    <string name="_1_year">1 An </string>
     <string name="all">Tout</string>
     <string name="most_played_songs">Titres les plus écoutés</string>
     <string name="most_listened_artists">Artistes les plus écoutés</string>
@@ -681,7 +681,8 @@
     <string name="searches_suggestions">Suggestions</string>
     <string name="searches_saved_searches">Recherches sauvegardées</string>
     <string name="event_volumekeys">Changer de chanson avec les boutons de volume</string>
-    <string name="event_volumekeysinfo">Volume HAUT : chanson suivante et volume BAS : chanson précédente</string>
+    <string name="event_volumekeysinfo">Volume HAUT : titre suivant, 
+Volume BAS : titre précédent</string>
     <string name="paste">Coller</string>
     <string name="searches_no_suggestions">Aucune suggestion</string>
     <string name="action_bar_show_discover_button">Afficher le bouton découvrir</string>
@@ -813,7 +814,7 @@
     <string name="about_developers_designers">Développeurs / Concepteurs</string>
     <string name="set_custom_value">Valeur personnalisée</string>
     <string name="title_youtube_music">YOUTUBE MUSIC</string>
-    <string name="enable_youtube_music_login">Activer la connexion à YouTube Music</string>
+    <string name="enable_youtube_music_login">Activer la connexion à YouTube Music </string>
     <string name="show_cover_thumbnail_animation">Afficher l\'animation de la vignette de couverture</string>
     <string name="cover_thumbnail_animation_type">Type d\'animation de couverture</string>
     <string name="jump_previous">Le bouton Précédent redémarrera le titre en cours une fois les secondes suivantes écoulées</string>
@@ -888,4 +889,6 @@
     <string name="match_song">Rejouer ce titre</string>
     <string name="match_song_grid">Titre de revanche</string>
     <string name="songsnotfound">Titres non trouvés</string>
+    <string name="swipe_Animation_No_Thumbnail">Animation de balayage</string>
+    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
 </resources>

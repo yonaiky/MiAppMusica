@@ -224,6 +224,7 @@
     <string name="listen_on_piped">Listen on Piped</string>
     <string name="listen_on_invidious">Listen on Invidious</string>
     <string name="disable_horizontal_swipe">Disable horizontal swipe</string>
+    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disable_vertical_swipe_secondary">It affects only when the Expanded Player is off</string>
     <string name="disable_song_switching_via_swipe">Disable song switching via swipe</string>
     <string name="interface_in_use">Interface in use</string>
@@ -718,7 +719,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
     <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Check now</string>
     <string name="info_no_update_available">No updates available</string>
@@ -731,7 +732,7 @@
     <string name="social_telegram_info">Join the group on Telegram</string>
     <string name="social_github">GitHub</string>
     <string name="update">Update</string>
-    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
+    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
     <string name="player_pause_listen_history_info">Does not save playback events used for statistics, history and suggestions in quick pics</string>
     <string name="vertical_widget">Vertical widget</string>
     <string name="horizontal_widget">Horizontal widget</string>
@@ -871,7 +872,6 @@
     <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
     <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
-    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
@@ -886,4 +886,6 @@
     <string name="match_song">Rematch this Song</string>
     <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">Songs Not Found</string>
+    <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
+    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
 </resources>

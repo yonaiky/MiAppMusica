@@ -224,7 +224,8 @@
     <string name="listen_on_piped">Piped에서 듣기</string>
     <string name="listen_on_invidious">Invidious에서 듣기</string>
     <string name="disable_horizontal_swipe">좌우 스와이프 비활성화</string>
-    <string name="disable_vertical_swipe_secondary">It affects only when the Expanded Player is off</string>
+    <string name="disable_vertical_swipe">수직 스와이프를 통한 곡 전환 비활성화</string>
+    <string name="disable_vertical_swipe_secondary">확장된 플레이어가 사용되지 않을 때에만 적용됩니다</string>
     <string name="disable_song_switching_via_swipe">스와이프를 통한 곡 전환 비활성화</string>
     <string name="interface_in_use">사용 중인 인터페이스</string>
     <string name="user_interface">사용자 인터페이스</string>
@@ -718,7 +719,7 @@
     <string name="error_no_internet">인터넷 연결 안됨</string>
     <string name="error_timeout">연결 시간 초과</string>
     <string name="error_unknown">알 수 없는 오류</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
     <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">지금 확인</string>
     <string name="info_no_update_available">새로운 업데이트 없음</string>
@@ -731,7 +732,7 @@
     <string name="social_telegram_info">텔레그램 그룹에 참여하세요</string>
     <string name="social_github">GitHub</string>
     <string name="update">업데이트</string>
-    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
+    <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
     <string name="player_pause_listen_history_info">통계, 기록, 빠른 추천을 위한 재생 기록을 저장하지 않습니다</string>
     <string name="vertical_widget">수직 위젯</string>
     <string name="horizontal_widget">수평 위젯</string>
@@ -871,7 +872,6 @@
     <string name="info_enable_connection_metered">Data saving decreases quality, use only if you have a connection with limited data</string>
     <string name="use_ytm_login_only_for_browse">Use YTM login only for browse</string>
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
-    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
@@ -886,4 +886,6 @@
     <string name="match_song">Rematch this Song</string>
     <string name="match_song_grid">Rematch Song</string>
     <string name="songsnotfound">Songs Not Found</string>
+    <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
+    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
 </resources>

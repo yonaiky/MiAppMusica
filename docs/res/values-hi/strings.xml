@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="opensource_multilingual_application">यूट्यूब म्यूजिक से संगीत स्स्त्रोतावहन करने हेतू एक मुक्त स्रोता बहुभाषी एंड्रॉयड एप्लिकेशन।</string>
-    <string name="your_library">Your library.</string>
+    <string name="your_library">सभी संग्रह</string>
     <string name="organized_in_one_place">आपके पसंदीदा गाने, डाउनलोड किए गए गाने, सुने गए गाने और आपकी सभी प्लेलिस्ट, सब कुछ एक ही स्थान पर |</string>
     <string name="beautiful_player">A beautiful player.</string>
     <string name="listen_songs_sing_lyrics">Listen to songs, sing with lyrics, translate words with built-in translator.</string>
