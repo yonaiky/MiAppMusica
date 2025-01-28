@@ -31,7 +31,6 @@ import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongWithContentLength
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.asMediaItem
@@ -160,9 +159,9 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         .sortAllSongsByPlayTime( 0 )
                         .first()
                         .reversed()
-                        .take(500)
-                        .also { lastSongs = it.map { it.song } }
-                        .map { it.song.asBrowserMediaItem }
+                        .take( 500 )
+                        .also { lastSongs = it }
+                        .map { it.asBrowserMediaItem }
                         .toMutableList()
                         .apply {
                             if (isNotEmpty()) add(0, shuffleBrowserMediaItem)
@@ -467,9 +466,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
 
                     MediaId.downloaded -> {
                         val downloads = MyDownloadHelper.downloads.value
-                        Database.listAllSongs( 1 )
+                        Database.findAllSongs( 1 )
                                 .first()
-                                .map( SongEntity::song )
                                 .filter {
                                        downloads[it.id]?.state == Download.STATE_COMPLETED
                                 }

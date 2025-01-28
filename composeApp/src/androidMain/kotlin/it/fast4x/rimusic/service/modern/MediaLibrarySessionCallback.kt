@@ -216,7 +216,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                 )
 
                 PlayerServiceModern.SONG -> database.sortAllSongsByRowId( 0 ).first()
-                    .map { it.song.toMediaItem(parentId) }
+                    .map { it.toMediaItem(parentId) }
 
                 PlayerServiceModern.ARTIST -> database.artistsByRowIdAsc().first().map { artist ->
                     browsableMediaItem(
@@ -333,11 +333,10 @@ class MediaLibrarySessionCallback @Inject constructor(
                             }
                             ID_DOWNLOADED -> {
                                 val downloads = downloadHelper.downloads.value
-                                database.listAllSongs( 1 )
+                                database.findAllSongs( 1 )
                                         .flowOn( Dispatchers.IO )
                                         .map { list ->
-                                            list.map { it.song }
-                                                .filter {
+                                            list.filter {
                                                     downloads[it.id]?.state == Download.STATE_COMPLETED
                                                 }
                                         }
@@ -400,10 +399,10 @@ class MediaLibrarySessionCallback @Inject constructor(
 
             PlayerServiceModern.SONG -> {
                 val songId = path.getOrNull(1) ?: return@future defaultResult
-                val allSongs = database.listAllSongs( -1 ).first()
+                val allSongs = database.findAllSongs( -1 ).first()
                 MediaSession.MediaItemsWithStartPosition(
-                    allSongs.map { it.song.toMediaItem() },
-                    allSongs.indexOfFirst { it.song.id == songId }.takeIf { it != -1 } ?: 0,
+                    allSongs.map { it.toMediaItem() },
+                    allSongs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
                     startPositionMs
                 )
             }
@@ -449,7 +448,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                     ID_ONDEVICE -> database.songsEntityOnDevice()
                     ID_DOWNLOADED -> {
                         val downloads = downloadHelper.downloads.value
-                        database.listAllSongs( -1 )
+                        database.findAllSongEntity( -1 )
                                 .flowOn( Dispatchers.IO )
                                 .map { songs ->
                                     songs.filter {
