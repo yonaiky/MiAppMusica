@@ -561,24 +561,24 @@ inline fun SelectorArtistsDialog(
                             Database.artist(values[idArtist].id).collect{artist = it}
                         }
                         LaunchedEffect(Unit) {
-                                if (artist?.timestamp == null) {
-                                    withContext(Dispatchers.IO) {
-                                        YtMusic.getArtistPage(browseId = browseId)
-                                            .onSuccess { currentArtistPage ->
-                                                artistPage = currentArtistPage
-                                                Database.upsert(
-                                                    Artist(
-                                                        id = browseId,
-                                                        name = currentArtistPage.artist.info?.name,
-                                                        thumbnailUrl = currentArtistPage.artist.thumbnail?.url,
-                                                        timestamp = System.currentTimeMillis(),
-                                                        bookmarkedAt = artist?.bookmarkedAt
-                                                    )
+                            if (artist?.thumbnailUrl == null) {
+                                withContext(Dispatchers.IO) {
+                                    YtMusic.getArtistPage(browseId = browseId)
+                                        .onSuccess { currentArtistPage ->
+                                            artistPage = currentArtistPage
+                                            Database.upsert(
+                                                Artist(
+                                                    id = browseId,
+                                                    name = currentArtistPage.artist.info?.name,
+                                                    thumbnailUrl = currentArtistPage.artist.thumbnail?.url,
+                                                    timestamp = artist?.timestamp,
+                                                    bookmarkedAt = artist?.bookmarkedAt
                                                 )
-                                                Database.artist(values[idArtist].id).collect{artist = it}
-                                            }
-                                    }
+                                            )
+                                            Database.artist(values[idArtist].id).collect{artist = it}
+                                        }
                                 }
+                            }
                         }
 
                         Box {
