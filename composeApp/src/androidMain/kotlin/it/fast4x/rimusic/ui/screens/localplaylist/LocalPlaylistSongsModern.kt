@@ -98,6 +98,7 @@ import it.fast4x.innertube.utils.completed
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.Database.Companion.songAlbumId
+import it.fast4x.rimusic.Database.Companion.songArtistInfo
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MaxSongs
@@ -349,11 +350,7 @@ fun LocalPlaylistSongsModern(
 
     LaunchedEffect(Unit,playlistUpdateDialog){
         Database.asyncTransaction {
-            totalSongsToUpdate = playlistAllSongs.filter {
-                it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true && songAlbumId(
-                    it.asMediaItem.mediaId
-                ) == null
-            }.size
+            totalSongsToUpdate = playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true && ((songAlbumId(it.asMediaItem.mediaId) == null) || songArtistInfo(it.asMediaItem.mediaId).isEmpty()) }.size
         }
     }
 
@@ -943,7 +940,7 @@ fun LocalPlaylistSongsModern(
         withContext(Dispatchers.IO) {
             songsUpdated = 0
             val jobs = mutableListOf<Job>()
-            playlistAllSongs.filter {it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true && songAlbumId(it.asMediaItem.mediaId) == null}.forEach { song ->
+            playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true && ((songAlbumId(it.asMediaItem.mediaId) == null) || songArtistInfo(it.asMediaItem.mediaId).isEmpty()) }.forEach { song ->
                 jobs.add(coroutineScope.launch(Dispatchers.IO) {
                     updateLocalPlaylist(song.song)
                     }
