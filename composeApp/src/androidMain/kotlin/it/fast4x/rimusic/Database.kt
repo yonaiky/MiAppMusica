@@ -706,44 +706,7 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun songsEntityOnDevice(): Flow<List<SongEntity>>
 
-    @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
-        FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.likedAt IS NOT NULL 
-        ORDER BY artistsText
-    """)
-    fun sortFavoriteSongsByArtist(): Flow<List<SongEntity>>
-
-    @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
-        FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.likedAt IS NOT NULL 
-        ORDER BY totalPlayTimeMs
-    """)
-    fun sortFavoriteSongsByPlayTime(): Flow<List<SongEntity>>
-
-    @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
-        FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Song.likedAt IS NOT NULL 
-        ORDER BY 
-            CASE
-                WHEN Song.title LIKE "$EXPLICIT_PREFIX%" THEN SUBSTR(Song.title, LENGTH('$EXPLICIT_PREFIX') + 1)
-                ELSE Song.title
-            END
-        COLLATE NOCASE
-    """)
-    fun sortFavoriteSongsByTitle(): Flow<List<SongEntity>>
-
+    //<editor-fold defaultstate="collapsed" desc="Find favorite songs">
     @Query("""
         SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
@@ -753,52 +716,84 @@ interface Database {
         WHERE Song.likedAt IS NOT NULL 
         ORDER BY Song.ROWID
     """)
-    fun sortFavoriteSongsByRowId(): Flow<List<SongEntity>>
+    fun sortFavoriteSongEntityByRowId(): Flow<List<SongEntity>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
+        SELECT DISTINCT Song.*
         FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
         WHERE Song.likedAt IS NOT NULL 
-        ORDER BY likedAt
+        ORDER BY totalPlayTimeMs
     """)
-    fun sortFavoriteSongsByLikedAt(): Flow<List<SongEntity>>
+    fun sortFavoriteSongsByPlayTime(): Flow<List<Song>>
+
+    fun sortFavoriteSongsByRelativePlayTime(): Flow<List<Song>> =
+        sortFavoriteSongsByPlayTime().map {
+            it.sortedBy( Song::relativePlayTime )
+        }
 
     @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
+        SELECT DISTINCT Song.*
         FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
+        WHERE Song.likedAt IS NOT NULL 
+        ORDER BY 
+            CASE
+                WHEN Song.title LIKE "$EXPLICIT_PREFIX%" THEN SUBSTR(Song.title, LENGTH('$EXPLICIT_PREFIX') + 1)
+                ELSE Song.title
+            END
+        COLLATE NOCASE
+    """)
+    fun sortFavoriteSongsByTitle(): Flow<List<Song>>
+
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song 
+        WHERE Song.likedAt IS NOT NULL 
+        ORDER BY Song.ROWID
+    """)
+    fun sortFavoriteSongsByRowId(): Flow<List<Song>>
+
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song 
         LEFT JOIN Event E ON E.songId = Song.id 
         WHERE Song.likedAt IS NOT NULL 
         ORDER BY E.timestamp
     """)
-    fun sortFavoriteSongsByDatePlayed(): Flow<List<SongEntity>>
+    fun sortFavoriteSongsByDatePlayed(): Flow<List<Song>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
+        SELECT DISTINCT Song.*
         FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
+        WHERE Song.likedAt IS NOT NULL 
+        ORDER BY likedAt
+    """)
+    fun sortFavoriteSongsByLikedAt(): Flow<List<Song>>
+
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song 
+        WHERE Song.likedAt IS NOT NULL 
+        ORDER BY artistsText
+    """)
+    fun sortFavoriteSongsByArtist(): Flow<List<Song>>
+
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song 
         WHERE Song.likedAt IS NOT NULL 
         ORDER BY durationText
     """)
-    fun sortFavoriteSongsByDuration(): Flow<List<SongEntity>>
+    fun sortFavoriteSongsByDuration(): Flow<List<Song>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
+        SELECT DISTINCT Song.*
         FROM Song
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
         WHERE Song.likedAt IS NOT NULL 
         ORDER BY Album.title
     """)
-    fun sortFavoriteSongsByAlbum(): Flow<List<SongEntity>>
+    fun sortFavoriteSongsByAlbum(): Flow<List<Song>>
 
     /**
      * Fetch all songs that are liked by the user
@@ -820,20 +815,19 @@ interface Database {
      * @see SongSortBy
      * @see SortOrder
      */
-    fun listFavoriteSongs(
-        sortBy: SongSortBy,
-        sortOrder: SortOrder
-    ): Flow<List<SongEntity>> = when (sortBy) {
-        SongSortBy.PlayTime -> sortFavoriteSongsByPlayTime()
-        SongSortBy.Title -> sortFavoriteSongsByTitle()
-        SongSortBy.DateAdded -> sortFavoriteSongsByRowId()
-        SongSortBy.DatePlayed -> sortFavoriteSongsByDatePlayed()
-        SongSortBy.DateLiked -> sortFavoriteSongsByLikedAt()
-        SongSortBy.Artist -> sortFavoriteSongsByArtist()
-        SongSortBy.Duration -> sortFavoriteSongsByDuration()
-        SongSortBy.AlbumName -> sortFavoriteSongsByAlbum()
-        SongSortBy.RelativePlayTime -> TODO()
-    }.map(sortOrder::applyTo)
+    fun findFavoriteSongs( sortBy: SongSortBy, sortOrder: SortOrder ): Flow<List<Song>> =
+        when (sortBy) {
+            SongSortBy.PlayTime         -> sortFavoriteSongsByPlayTime()
+            SongSortBy.RelativePlayTime -> sortFavoriteSongsByRelativePlayTime()
+            SongSortBy.Title            -> sortFavoriteSongsByTitle()
+            SongSortBy.DateAdded        -> sortFavoriteSongsByRowId()
+            SongSortBy.DatePlayed       -> sortFavoriteSongsByDatePlayed()
+            SongSortBy.DateLiked        -> sortFavoriteSongsByLikedAt()
+            SongSortBy.Artist           -> sortFavoriteSongsByArtist()
+            SongSortBy.Duration         -> sortFavoriteSongsByDuration()
+            SongSortBy.AlbumName        -> sortFavoriteSongsByAlbum()
+        }.map( sortOrder::applyTo )
+    //</editor-fold>
 
     @Query("SELECT thumbnailUrl FROM Song WHERE likedAt IS NOT NULL AND id NOT LIKE '$LOCAL_KEY_PREFIX%'  LIMIT 4")
     fun preferitesThumbnailUrls(): Flow<List<String?>>
