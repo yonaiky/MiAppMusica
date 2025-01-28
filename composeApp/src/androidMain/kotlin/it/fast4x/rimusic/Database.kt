@@ -1245,6 +1245,34 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun songsEntityByPlayTimeWithLimitDesc(limit: Int = -1): Flow<List<SongEntity>>
 
+    /**
+     * Return a list of songs that were listened to by this user.
+     *
+     * Songs must be listened at least once within [period] time
+     * to be included in the results. For example, `604,800,000` ms
+     * (_1 week in millis_) indicates that a song must be listened to
+     * once in the past week in order to be included in the results.
+     *
+     * @param period require song to be listened to once, represent in millis
+     * @param limit final results must contain at most this many elements
+     *
+     * @return a list of [Song]s that were listened to withing the provided [period]
+     */
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song 
+        JOIN Event ON Event.songId = Song.id 
+        WHERE (strftime('%s', 'now') * 1000 - Event.timestamp) <= :period
+        AND Song.title NOT LIKE 'e:%'
+        GROUP BY Event.songId 
+        ORDER BY SUM(Event.playTime) DESC
+        LIMIT :limit
+    """)
+    fun mostListenedSongs(
+        period: Long = Long.MAX_VALUE,
+        limit: Long = 0L
+    ): Flow<List<Song>>
+
 //    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
 //    @Transaction
 //    @Query("SELECT Song.*, Album.title as albumTitle FROM Song JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId  " +
@@ -2234,15 +2262,6 @@ interface Database {
     @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' GROUP BY songId ORDER BY SUM(playTime) DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun trendingSongEntity(limit: Int = 3): Flow<List<SongEntity>>
-
-    @Transaction
-    @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE (:now - Event.timestamp) <= :period AND Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' GROUP BY songId ORDER BY SUM(playTime) DESC LIMIT :limit")
-    @RewriteQueriesToDropUnusedColumns
-    fun trending(
-        limit: Int = 3,
-        now: Long = System.currentTimeMillis(),
-        period: Long
-    ): Flow<List<Song>>
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
