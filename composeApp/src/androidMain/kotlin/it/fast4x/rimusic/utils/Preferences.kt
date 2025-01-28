@@ -349,6 +349,7 @@ const val albumCoverRotationKey = "albumCoverRotation"
 const val isConnectionMeteredEnabledKey = "isConnectionMeteredEnabled"
 const val landscapeControlsKey = "landscapeControls"
 const val swipeAnimationsNoThumbnailKey = "swipeAnimationsNoThumbnail"
+const val playlistSongsTypeFilterKey = "playlistSongsTypeFilter"
 
 /*
 @PublishedApi
