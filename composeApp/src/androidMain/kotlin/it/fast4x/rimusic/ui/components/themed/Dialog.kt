@@ -150,6 +150,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
+import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -1846,8 +1847,6 @@ fun SongMatchingDialog(
             var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}"))}
             var startSearch by remember { mutableStateOf(false) }
 
-            var albumPage by remember {mutableStateOf<AlbumPage?>(null)}
-
             LaunchedEffect(Unit,startSearch) {
                 runBlocking(Dispatchers.IO) {
                     val searchQuery = Innertube.searchPage(
@@ -1984,6 +1983,8 @@ fun SongMatchingDialog(
             if (songsList.isNotEmpty()) {
                 LazyColumn {
                     itemsIndexed(songsList) { _, song ->
+                        val artistsNames = song?.authors?.filter { it.endpoint != null }?.map { it.name }
+                        val artistsIds = song?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
                         if (song != null) {
                             Row(horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically,
@@ -1994,42 +1995,7 @@ fun SongMatchingDialog(
                                     .clickable(onClick = {
                                         Database.asyncTransaction {
                                             deleteSongFromPlaylist(songToRematch.id, playlistId)
-                                            runBlocking(Dispatchers.IO) {
-                                                albumPage = YtMusic.getAlbum(song.album?.endpoint?.browseId ?: "").getOrNull()
-                                            }
-                                            val bookmarkedAt = albumBookmarkedAtLong(song.album?.endpoint?.browseId ?: "")
-                                            val songPlaylist = Database.songUsedInPlaylists(song.asSong.id)
-                                            val playlistsList = Database.playlistsUsedForSong(song.asSong.id)
-                                            val likedAt = getLikedAt(song.asMediaItem.mediaId)
-                                            val playTime = getTotalPlaytime(song.asMediaItem.mediaId)
-                                            if (songExist(song.asSong.id) != 0){
-                                                Database.delete(song.asSong)
-                                            }
-                                            Database.upsert(
-                                                Album(
-                                                    id = song.album?.endpoint?.browseId ?: "",
-                                                    title = albumPage?.album?.title,
-                                                    thumbnailUrl = albumPage?.album?.thumbnail?.url,
-                                                    year = albumPage?.album?.year,
-                                                    authorsText = albumPage?.album?.authors
-                                                        ?.joinToString("") { it.name ?: "" },
-                                                    shareUrl = albumPage?.url,
-                                                    timestamp = System.currentTimeMillis(),
-                                                    bookmarkedAt = bookmarkedAt
-                                                ),
-                                                albumPage
-                                                    ?.songs?.distinct()
-                                                    ?.map(Innertube.SongItem::asMediaItem)
-                                                    ?.onEach(Database::insert)
-                                                    ?.mapIndexed { position, mediaItem ->
-                                                        SongAlbumMap(
-                                                            songId = mediaItem.mediaId,
-                                                            albumId = song.album?.endpoint?.browseId ?: "",
-                                                            position = position
-                                                        )
-                                                    } ?: emptyList()
-                                            )
-                                            if (songExist(song.asSong.id) == 0){
+                                            if (songExist(song.asSong.id) == 0) {
                                                 Database.insert(song.asSong)
                                             }
                                             insert(
@@ -2039,21 +2005,29 @@ fun SongMatchingDialog(
                                                     position = position
                                                 )
                                             )
-                                            if (songPlaylist != 0){
-                                                playlistsList.forEach{ item ->
-                                                    insert(
-                                                        SongPlaylistMap(
-                                                            songId = song.asMediaItem.mediaId,
-                                                            playlistId = item.playlistId,
-                                                            position = item.position
-                                                        )
-                                                    )
+                                            insert(
+                                                Album(id = song.album?.endpoint?.browseId ?: "", title = song.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                                                SongAlbumMap(songId = song.asMediaItem.mediaId, albumId = song.album?.endpoint?.browseId ?: "", position = null)
+                                            )
+                                            if ((artistsNames != null) && (artistsIds != null)) {
+                                                artistsNames.let { artistNames ->
+                                                    artistsIds.let { artistIds ->
+                                                        if (artistNames.size == artistIds.size) {
+                                                            insert(
+                                                                artistNames.mapIndexed { index, artistName ->
+                                                                    Artist(id = (artistIds[index]) ?: "", name = artistName)
+                                                                },
+                                                                artistIds.map { artistId ->
+                                                                    SongArtistMap(
+                                                                        songId = song.asMediaItem.mediaId,
+                                                                        artistId = (artistId) ?: ""
+                                                                    )
+                                                                }
+                                                            )
+                                                        }
+                                                    }
                                                 }
                                             }
-                                            if (likedAt != null){
-                                                Database.like(song.asSong.id,likedAt)
-                                            }
-                                            Database.incrementTotalPlayTimeMs(song.asSong.id, playTime ?: 0)
                                         }
                                         onDismiss()
                                     }
