@@ -328,15 +328,15 @@ fun AccountsSettings() {
 //                    }
 //                )
 
-//                SwitchSettingEntry(
-//                    isEnabled = false,
-//                    title = "Sync with your YouTube Music Account",
-//                    text = "",
-//                    isChecked = isYouTubeSyncEnabled,
-//                    onCheckedChange = {
-//                        isYouTubeSyncEnabled = it
-//                    }
-//                )
+                SwitchSettingEntry(
+                    //isEnabled = false,
+                    title = "Sync data with YTM account",
+                    text = "Playlists, albums, artists, history, like, etc.",
+                    isChecked = isYouTubeSyncEnabled,
+                    onCheckedChange = {
+                        isYouTubeSyncEnabled = it
+                    }
+                )
 
             }
         }

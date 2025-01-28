@@ -2,6 +2,8 @@ package it.fast4x.innertube
 
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
 import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
+import com.zionhuang.innertube.pages.LibraryContinuationPage
+import com.zionhuang.innertube.pages.LibraryPage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -46,6 +48,7 @@ import it.fast4x.innertube.models.Context.Companion.DefaultAndroid
 import it.fast4x.innertube.models.Context.Companion.DefaultIOS
 import it.fast4x.innertube.models.Context.Companion.DefaultWeb
 import it.fast4x.innertube.models.Context.Companion.DefaultWebCreator
+import it.fast4x.innertube.models.GridRenderer
 import it.fast4x.innertube.models.MediaType
 import it.fast4x.innertube.models.PipedResponse
 import it.fast4x.innertube.models.PlayerResponse
@@ -57,6 +60,7 @@ import it.fast4x.innertube.models.bodies.CreatePlaylistBody
 import it.fast4x.innertube.models.bodies.EditPlaylistBody
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.bodies.PlaylistDeleteBody
+import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.utils.NewPipeUtils
 import it.fast4x.innertube.utils.NewPipeUtils.decodeSignatureCipher
 import it.fast4x.innertube.utils.ProxyPreferences
@@ -630,7 +634,7 @@ object Innertube {
         setLogin(ytClient, setLogin = true)
         setBody(
             EditPlaylistBody(
-                context = ytClient.toContext(locale, visitorData),
+                context = Context.DefaultWebWithLocale,
                 playlistId = playlistId.removePrefix("VL"),
                 actions = listOf(
                     Action.RemoveVideoAction(
@@ -1117,6 +1121,77 @@ object Innertube {
         }
 
         return list
+    }
+
+    suspend fun library(browseId: String, tabIndex: Int = 0) = runCatching {
+        val response = browse(
+            browseId = browseId,
+            setLogin = true
+        ).body<BrowseResponse>()
+
+        val tabs = response.contents?.singleColumnBrowseResultsRenderer?.tabs
+
+        val contents = if (tabs != null && tabs.size >= tabIndex) {
+            tabs[tabIndex].tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+        }
+        else {
+            null
+        }
+
+        when {
+            contents?.gridRenderer != null -> {
+                contents.gridRenderer.items
+                    ?.mapNotNull (GridRenderer.Item::musicTwoRowItemRenderer)
+                    ?.mapNotNull { LibraryPage.fromMusicTwoRowItemRenderer(it) }?.let {
+                        LibraryPage(
+                            items = it,
+                            continuation = contents.gridRenderer.continuations?.firstOrNull()?.nextContinuationData?.continuation
+                        )
+                    }
+            }
+
+            else -> {
+                LibraryPage(
+                    items = contents?.musicShelfRenderer?.contents!!
+                        .mapNotNull (MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
+                        .mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) },
+                    continuation = contents.musicShelfRenderer.continuations?.firstOrNull()?.
+                    nextContinuationData?.continuation
+                )
+            }
+        }
+    }
+
+    suspend fun libraryContinuation(continuation: String) = runCatching {
+        val response = browse(
+            continuation = continuation,
+            setLogin = true
+        ).body<BrowseResponse>()
+
+        val contents = response.continuationContents
+
+        when {
+            contents?.gridContinuation != null -> {
+                contents.gridContinuation.items
+                    ?.mapNotNull (GridRenderer.Item::musicTwoRowItemRenderer)
+                    ?.mapNotNull { LibraryPage.fromMusicTwoRowItemRenderer(it) }?.let {
+                        LibraryContinuationPage(
+                            items = it,
+                            continuation = contents.gridContinuation.continuations?.firstOrNull()?.nextContinuationData?.continuation
+                        )
+                    }
+            }
+
+            else -> {
+                LibraryContinuationPage(
+                    items = contents?.musicShelfContinuation?.contents!!
+                        .mapNotNull (MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
+                        .mapNotNull { LibraryPage.fromMusicResponsiveListItemRenderer(it) },
+                    continuation = contents.musicShelfContinuation.continuations?.firstOrNull()?.
+                    nextContinuationData?.continuation
+                )
+            }
+        }
     }
 
 }

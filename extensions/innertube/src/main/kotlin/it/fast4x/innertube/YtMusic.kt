@@ -166,12 +166,14 @@ object YtMusic {
     }
 
     suspend fun getPlaylist(playlistId: String): Result<PlaylistPage> = runCatching {
+        val playlistIdChecked = if (playlistId.startsWith("VL")) playlistId else "VL$playlistId"
+        println("YtMusic getPlaylist playlistId: $playlistId Checked: $playlistIdChecked")
         val response = Innertube.browse(
-            browseId = playlistId,
+            browseId = playlistIdChecked,
             setLogin = true
         ).body<BrowseResponse>()
 
-        val playlistIdChecked = if (playlistId.startsWith("VL")) playlistId else "VL$playlistId"
+
         if (response.header != null)
             getPlaylistPreviousMode(playlistIdChecked, response)
         else

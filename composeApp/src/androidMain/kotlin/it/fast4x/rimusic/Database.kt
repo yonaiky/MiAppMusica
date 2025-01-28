@@ -32,6 +32,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
+import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.BuiltInPlaylist
@@ -557,6 +558,9 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun eventWithSongByPeriod(date: Long, limit:Long = Long.MAX_VALUE): Flow<List<EventWithSong>>
 
+    @Transaction
+    @Query("SELECT * FROM Playlist WHERE browseId LIKE '${YTP_PREFIX}' || '%'")
+    fun ytmPrivatePlaylists(): Flow<List<Playlist?>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC LIMIT :count")
@@ -1818,6 +1822,10 @@ interface Database {
     fun playlistWithSongs(name: String): Flow<PlaylistWithSongs?>
 
     @Transaction
+    @Query("SELECT * FROM Playlist WHERE browseId = :browseId")
+    fun playlistWithSongsByBrowseId(browseId: String): Flow<PlaylistWithSongs?>
+
+    @Transaction
     @Query("SELECT * FROM Playlist WHERE name LIKE '${MONTHLY_PREFIX}' || :name || '%'  ")
     fun monthlyPlaylists(name: String?): Flow<List<PlaylistWithSongs?>>
 
@@ -1866,8 +1874,8 @@ interface Database {
 
     @Transaction
     @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SM ON S.id=SM.songId " +
-            "INNER JOIN Playlist P ON P.id=SM.playlistId WHERE P.browseId IS NOT NULL")
-    fun songsInAllYTPlaylists(): Flow<List<Song>>
+            "INNER JOIN Playlist P ON P.id=SM.playlistId WHERE P.browseId LIKE '${YTP_PREFIX}' || '%'")
+    fun songsInAllYTPrivatePlaylists(): Flow<List<Song>>
 
     @Transaction
     @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SM ON S.id=SM.songId " +
@@ -2073,6 +2081,11 @@ interface Database {
     @Transaction
     @Query("SELECT id FROM SONG WHERE likedAt IS NOT NULL AND likedAt < 0")
     fun dislikedSongsById(): Flow<List<String>>
+
+    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
+    @Transaction
+    @Query("SELECT * FROM Playlist WHERE browseId = :browseId")
+    fun playlist(browseId: String): Flow<Playlist?>
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
@@ -2374,6 +2387,14 @@ interface Database {
 
     @Update
     fun update(playlist: Playlist)
+
+    @Update
+    fun update(playlist: Playlist, playlistItem: Innertube.PlaylistItem) {
+        update(playlist.copy(
+            name = playlistItem.title ?: "",
+            browseId = playlistItem.key
+        ))
+    }
 
     @Upsert
     fun upsert(lyrics: Lyrics)

@@ -23,6 +23,7 @@ import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import com.zionhuang.innertube.pages.LibraryPage
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.UserAgent
 import it.fast4x.innertube.Innertube
@@ -472,6 +473,27 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
 }.onFailure {
     println("Innertube PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
 }
+
+//@JvmName("completedPlaylist")
+suspend fun Result<LibraryPage?>.completed(): Result<LibraryPage> = runCatching {
+    val page = getOrThrow()
+    val items = page?.items?.toMutableList()
+    var continuation = page?.continuation
+    while (continuation != null) {
+        val continuationPage = Innertube.libraryContinuation(continuation).getOrNull()
+        if (continuationPage != null)
+            if (items != null) {
+                items += continuationPage.items
+            }
+
+        continuation = continuationPage?.continuation
+    }
+    LibraryPage(
+        items = items ?: emptyList(),
+        continuation = page?.continuation
+    )
+}
+
 
 @Composable
 fun CheckAvailableNewVersion(

@@ -40,7 +40,7 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.YT_PREFIX
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.PlaylistsType
@@ -85,6 +85,7 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.importYTMPrivatePlaylists
 import it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -140,7 +141,7 @@ fun HomeLibrary(
             PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
             PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
             PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
-            PlaylistsType.YTPlaylist -> Database.songsInAllYTPlaylists()
+            PlaylistsType.YTPlaylist -> Database.songsInAllYTPrivatePlaylists()
         }.map { it.map( Song::asMediaItem ) }
     }
     //<editor-fold desc="New playlist dialog">
@@ -232,6 +233,15 @@ fun HomeLibrary(
     )
     val sync = playlistSync()
 
+    // START: Import YTM private playlists
+    LaunchedEffect(Unit) {
+        importYTMPrivatePlaylists()
+    }
+
+    // START: Import Piped playlists
+    if (isPipedEnabled)
+        ImportPipedPlaylists()
+
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.playlistPreviews( sort.sortBy, sort.sortOrder ).collect { items = it }
     }
@@ -252,7 +262,7 @@ fun HomeLibrary(
     val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
 
     val buttonsList = mutableListOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
-    //buttonsList += PlaylistsType.YTPlaylist to stringResource(R.string.yt_playlists)
+    buttonsList += PlaylistsType.YTPlaylist to stringResource(R.string.yt_playlists)
     if (showPipedPlaylists) buttonsList +=
         PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
     if (showPinnedPlaylists) buttonsList +=
@@ -261,10 +271,6 @@ fun HomeLibrary(
         PlaylistsType.MonthlyPlaylist to stringResource(R.string.monthly_playlists)
     // END - Additional playlists
 
-    // START - Piped
-    if (isPipedEnabled)
-        ImportPipedPlaylists()
-    // END - Piped
 
     // START - New playlist
     newPlaylistDialog.Render()
@@ -324,9 +330,12 @@ fun HomeLibrary(
                         PlaylistsType.PinnedPlaylist -> PINNED_PREFIX
                         PlaylistsType.MonthlyPlaylist -> MONTHLY_PREFIX
                         PlaylistsType.PipedPlaylist -> PIPED_PREFIX
-                        PlaylistsType.YTPlaylist -> YT_PREFIX
+                        PlaylistsType.YTPlaylist -> YTP_PREFIX
                     }
                 val condition: (PlaylistPreview) -> Boolean = {
+                    if (playlistType == PlaylistsType.YTPlaylist)
+                        it.playlist.browseId?.startsWith(listPrefix) ?: false
+                    else
                     it.playlist.name.startsWith( listPrefix, true )
                 }
                 items(
