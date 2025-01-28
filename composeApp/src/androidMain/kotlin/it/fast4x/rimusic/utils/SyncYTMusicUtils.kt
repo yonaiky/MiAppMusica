@@ -17,39 +17,40 @@ import kotlinx.coroutines.withContext
 suspend fun importYTMPrivatePlaylists() {
     if (!isYouTubeSyncEnabled()) return
 
-        Innertube.library("FEmusic_liked_playlists").completed().onSuccess { page ->
+    Innertube.library("FEmusic_liked_playlists").completed().onSuccess { page ->
 
-            val ytmPrivatePlaylists = page.items.filterIsInstance<Innertube.PlaylistItem>()
-                .filterNot { it.key == "VLLM" ||  it.key == "VLSE" }
+        val ytmPrivatePlaylists = page.items.filterIsInstance<Innertube.PlaylistItem>()
+            .filterNot { it.key == "VLLM" || it.key == "VLSE" }
 
-            val localPlaylists = Database.ytmPrivatePlaylists().firstOrNull()
+        val localPlaylists = Database.ytmPrivatePlaylists().firstOrNull()
 
-            //coroutineScope {
-                ytmPrivatePlaylists.forEach { remotePlaylist ->
-                    withContext(Dispatchers.IO) {
-                        val playlistIdChecked = if (remotePlaylist.key.startsWith("VL")) remotePlaylist.key.substringAfter("VL") else remotePlaylist.key
-                        var localPlaylist =
-                            localPlaylists?.find { it?.browseId == playlistIdChecked }
-                        println("Local playlist: $localPlaylist")
-                        println("Remote playlist: $remotePlaylist")
-                        if (localPlaylist == null && playlistIdChecked.isNotEmpty()) {
-                            localPlaylist = Playlist(
-                                name = remotePlaylist.title ?: "",
-                                browseId = playlistIdChecked,
-                            )
-                            Database.insert(localPlaylist.copy(browseId = playlistIdChecked))
-                        }
-
-                        Database.playlistWithSongsByBrowseId(playlistIdChecked).firstOrNull()?.let {
-                            if (it.songs.isEmpty())
-                                localPlaylist?.id?.let { it1 -> ytmPlaylistSync(it.playlist, it1) }
-                        }
-                    }
+        //coroutineScope {
+        ytmPrivatePlaylists.forEach { remotePlaylist ->
+            withContext(Dispatchers.IO) {
+                val playlistIdChecked =
+                    if (remotePlaylist.key.startsWith("VL")) remotePlaylist.key.substringAfter("VL") else remotePlaylist.key
+                var localPlaylist =
+                    localPlaylists?.find { it?.browseId == playlistIdChecked }
+                println("Local playlist: $localPlaylist")
+                println("Remote playlist: $remotePlaylist")
+                if (localPlaylist == null && playlistIdChecked.isNotEmpty()) {
+                    localPlaylist = Playlist(
+                        name = remotePlaylist.title ?: "",
+                        browseId = playlistIdChecked,
+                    )
+                    Database.insert(localPlaylist.copy(browseId = playlistIdChecked))
                 }
-            //}
-        }.onFailure {
-            println("Error importing YTM private playlists: ${it.stackTraceToString()}")
+
+                Database.playlistWithSongsByBrowseId(playlistIdChecked).firstOrNull()?.let {
+                    if (it.songs.isEmpty())
+                        localPlaylist?.id?.let { it1 -> ytmPlaylistSync(it.playlist, it1) }
+                }
+            }
         }
+        //}
+    }.onFailure {
+        println("Error importing YTM private playlists: ${it.stackTraceToString()}")
+    }
 
 }
 
