@@ -729,53 +729,16 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     }
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
-    //val albumPage = YtMusic.getAlbum(matchedSong?.album?.endpoint?.browseId ?: "").getOrNull()
-
-    //var likedAt by mutableStateOf<Long?>(null)
-    //var playTime by mutableStateOf<Long?>(null)
+    val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
+    val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
             deleteSongFromPlaylist(song.id, playlistId)
             if (matchedSong != null) {
-                if (songExist(matchedSong.asSong.id) == 0) { //Temporary
+                if (songExist(matchedSong.asSong.id) == 0) {
                     Database.insert(matchedSong.asSong)
                 }
-                /*val bookmarkedAt = albumBookmarkedAtLong(matchedSong.album?.endpoint?.browseId ?: "")
-                val songPlaylist = Database.songUsedInPlaylists(matchedSong.asSong.id)
-                val playlistsList = Database.playlistsUsedForSong(matchedSong.asSong.id)
-                likedAt = getLikedAt(matchedSong.asMediaItem.mediaId)
-                playTime = getTotalPlaytime(matchedSong.asMediaItem.mediaId)
-                if (songExist(matchedSong.asSong.id) != 0){
-                    Database.delete(matchedSong.asSong)
-                }
-                Database.upsert(
-                    Album(
-                        id = matchedSong.album?.endpoint?.browseId ?: "",
-                        title = albumPage?.album?.title,
-                        thumbnailUrl = albumPage?.album?.thumbnail?.url,
-                        year = albumPage?.album?.year,
-                        authorsText = albumPage?.album?.authors
-                            ?.joinToString("") { it.name ?: "" },
-                        shareUrl = albumPage?.url,
-                        timestamp = System.currentTimeMillis(),
-                        bookmarkedAt = bookmarkedAt
-                    ),
-                    albumPage
-                        ?.songs?.distinct()
-                        ?.map(Innertube.SongItem::asMediaItem)
-                        ?.onEach(Database::insert)
-                        ?.mapIndexed { position, mediaItem ->
-                            SongAlbumMap(
-                                songId = mediaItem.mediaId,
-                                albumId = matchedSong.album?.endpoint?.browseId ?: "",
-                                position = position
-                            )
-                        } ?: emptyList()
-                )
-                if (songExist(matchedSong.asSong.id) == 0){
-                    Database.insert(matchedSong.asSong)
-                }*/
                 insert(
                     SongPlaylistMap(
                         songId = matchedSong.asMediaItem.mediaId,
@@ -787,22 +750,23 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
                     SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
                 )
-                if (isExtPlaylist) Database.delete(song)
-                /*if (songPlaylist != 0){
-                    playlistsList.forEach{ item ->
-                        insert(
-                            SongPlaylistMap(
-                                songId = matchedSong.asMediaItem.mediaId,
-                                playlistId = item.playlistId,
-                                position = item.position
-                            )
-                        )
+                if ((artistsNames != null) && (artistsIds != null)) {
+                    artistsNames.let { artistNames ->
+                        artistsIds.let { artistIds ->
+                            if (artistNames.size == artistIds.size) {
+                                insert(
+                                    artistNames.mapIndexed { index, artistName ->
+                                        Artist(id = (artistIds[index]) ?: "", name = artistName)
+                                    },
+                                    artistIds.map { artistId ->
+                                        SongArtistMap(songId = matchedSong.asMediaItem.mediaId, artistId = (artistId) ?: "")
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
-                if (likedAt != null){
-                    Database.like(matchedSong.asSong.id,likedAt)
-                }
-                Database.incrementTotalPlayTimeMs(matchedSong.asSong.id, playTime ?: 0)*/
+                if (isExtPlaylist) Database.delete(song)
             }
         } else if (isExtPlaylist && (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()}))){
             songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
