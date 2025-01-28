@@ -318,7 +318,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                             ID_FAVORITES -> database.sortFavoriteSongEntityByRowId().map { list ->
                                 list.map { it.song }
                             }
-                            ID_CACHED -> database.sortOfflineSongsByPlayTime().map { list ->
+                            ID_CACHED -> database.sortOfflineSongEntityByPlayTime().map { list ->
                                 list.filter { song ->
                                     binder?.cache?.isCached(song.song.id, 0L, song.contentLength ?: 0L) ?: false
                                 }.reversed()
@@ -436,7 +436,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val playlistId = path.getOrNull(1) ?: return@future defaultResult
                 val songs = when (playlistId) {
                     ID_FAVORITES -> database.sortFavoriteSongEntityByRowId().map{ it.reversed() }
-                    ID_CACHED -> database.sortOfflineSongsByPlayTime().map {
+                    ID_CACHED -> database.sortOfflineSongEntityByPlayTime().map {
                         it.filter { song ->
                             binder?.cache?.isCached(song.song.id, 0L, song.contentLength ?: 0L) ?: false
                         }.reversed()
@@ -580,7 +580,7 @@ class MediaLibrarySessionCallback @Inject constructor(
             )
             .build()
 
-    private fun getCountCachedSongs() = database.sortOfflineSongsByPlayTime().map {
+    private fun getCountCachedSongs() = database.sortOfflineSongEntityByPlayTime().map {
         it.filter { song ->
             binder.cache.isCached(song.song.id, 0L, song.contentLength ?: 0L)
         }.size

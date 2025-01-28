@@ -836,6 +836,7 @@ interface Database {
     @Query("SELECT Song.*, contentLength FROM Song LEFT JOIN Format ON id = songId WHERE songId = :songId")
     fun songCached(songId: String): Flow<SongWithContentLength?>
 
+    //<editor-fold defaultstate="collapsed" desc="Find offline songs">
     @Query("""
         SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
@@ -845,13 +846,27 @@ interface Database {
         WHERE Format.contentLength IS NOT NULL 
         ORDER BY totalPlayTimeMs
     """)
-    fun sortOfflineSongsByPlayTime(): Flow<List<SongEntity>>
+    fun sortOfflineSongEntityByPlayTime(): Flow<List<SongEntity>>
 
     @Query("""
         SELECT DISTINCT Song.*, Format.contentLength, Album.title
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
+        LEFT JOIN Format ON Format.songId = Song.id
+        WHERE Format.contentLength IS NOT NULL 
+        ORDER BY totalPlayTimeMs
+    """)
+    fun sortOfflineSongsByPlayTime(): Flow<List<Song>>
+
+    fun sortOfflineSongsByRelativePlayTime(): Flow<List<Song>> =
+        sortOfflineSongsByPlayTime().map {
+            it.sortedBy( Song::relativePlayTime )
+        }
+
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song 
         LEFT JOIN Format ON Format.songId = Song.id
         WHERE Format.contentLength IS NOT NULL 
         ORDER BY 
@@ -861,66 +876,56 @@ interface Database {
             END
         COLLATE NOCASE
     """)
-    fun sortOfflineSongsByTitle(): Flow<List<SongEntity>>
+    fun sortOfflineSongsByTitle(): Flow<List<Song>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
+        SELECT DISTINCT Song.*
         FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
         WHERE Format.contentLength IS NOT NULL 
         ORDER BY Song.ROWID
     """)
-    fun sortOfflineSongsByRowId(): Flow<List<SongEntity>>
+    fun sortOfflineSongsByRowId(): Flow<List<Song>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
-        FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
-        ORDER BY Song.likedAt
-    """)
-    fun sortOfflineSongsByLikedAt(): Flow<List<SongEntity>>
-
-    @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
-        FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
-        ORDER BY Song.artistsText
-    """)
-    fun sortOfflineSongsByArtist(): Flow<List<SongEntity>>
-
-    @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
-        FROM Song 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
-        LEFT JOIN Format ON Format.songId = Song.id
-        WHERE Format.contentLength IS NOT NULL 
-        ORDER BY Song.durationText
-    """)
-    fun sortOfflineSongsByDuration(): Flow<List<SongEntity>>
-
-    @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
+        SELECT DISTINCT Song.*
         FROM Song 
         LEFT JOIN Event E ON E.songId=Song.id 
-        LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
-        LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
         LEFT JOIN Format ON Format.songId = Song.id
         WHERE Format.contentLength IS NOT NULL 
         ORDER BY E.timestamp
     """)
-    fun sortOfflineSongsByDatePlayed(): Flow<List<SongEntity>>
+    fun sortOfflineSongsByDatePlayed(): Flow<List<Song>>
 
     @Query("""
-        SELECT DISTINCT Song.*, Format.contentLength, Album.title
+        SELECT DISTINCT Song.*
+        FROM Song 
+        LEFT JOIN Format ON Format.songId = Song.id
+        WHERE Format.contentLength IS NOT NULL 
+        ORDER BY Song.likedAt
+    """)
+    fun sortOfflineSongsByLikedAt(): Flow<List<Song>>
+
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song 
+        LEFT JOIN Format ON Format.songId = Song.id
+        WHERE Format.contentLength IS NOT NULL 
+        ORDER BY Song.artistsText
+    """)
+    fun sortOfflineSongsByArtist(): Flow<List<Song>>
+
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song 
+        LEFT JOIN Format ON Format.songId = Song.id
+        WHERE Format.contentLength IS NOT NULL 
+        ORDER BY Song.durationText
+    """)
+    fun sortOfflineSongsByDuration(): Flow<List<Song>>
+
+    @Query("""
+        SELECT DISTINCT Song.*
         FROM Song 
         LEFT JOIN SongAlbumMap ON Song.id = SongAlbumMap.songId 
         LEFT JOIN Album ON Album.id = SongAlbumMap.albumId 
@@ -928,7 +933,7 @@ interface Database {
         WHERE Format.contentLength IS NOT NULL 
         ORDER BY Album.title COLLATE NOCASE
     """)
-    fun sortOfflineSongsByAlbum(): Flow<List<SongEntity>>
+    fun sortOfflineSongsByAlbum(): Flow<List<Song>>
 
     /**
      * Fetch all songs from that are cached the database
@@ -948,20 +953,19 @@ interface Database {
      * @see SongSortBy
      * @see SortOrder
      */
-    fun listOfflineSongs(
-        sortBy: SongSortBy,
-        sortOrder: SortOrder
-    ): Flow<List<SongEntity>> = when (sortBy) {
-        SongSortBy.PlayTime -> sortOfflineSongsByPlayTime()
-        SongSortBy.Title -> sortOfflineSongsByTitle()
-        SongSortBy.DateAdded -> sortOfflineSongsByRowId()
-        SongSortBy.DatePlayed -> sortOfflineSongsByDatePlayed()
-        SongSortBy.DateLiked -> sortOfflineSongsByLikedAt()
-        SongSortBy.Artist -> sortOfflineSongsByArtist()
-        SongSortBy.Duration -> sortOfflineSongsByDuration()
-        SongSortBy.AlbumName -> sortOfflineSongsByAlbum()
-        SongSortBy.RelativePlayTime -> TODO()
-    }.map( sortOrder::applyTo )
+    fun findOfflineSongs( sortBy: SongSortBy, sortOrder: SortOrder ): Flow<List<Song>> =
+        when (sortBy) {
+            SongSortBy.PlayTime         -> sortOfflineSongsByPlayTime()
+            SongSortBy.RelativePlayTime -> sortOfflineSongsByRelativePlayTime()
+            SongSortBy.Title            -> sortOfflineSongsByTitle()
+            SongSortBy.DateAdded        -> sortOfflineSongsByRowId()
+            SongSortBy.DatePlayed       -> sortOfflineSongsByDatePlayed()
+            SongSortBy.DateLiked        -> sortOfflineSongsByLikedAt()
+            SongSortBy.Artist           -> sortOfflineSongsByArtist()
+            SongSortBy.Duration         -> sortOfflineSongsByDuration()
+            SongSortBy.AlbumName        -> sortOfflineSongsByAlbum()
+        }.map( sortOrder::applyTo )
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Find all songs">
     @Query("""
