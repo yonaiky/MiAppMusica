@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.text.format.DateUtils
+import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -642,6 +643,7 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
     }
 }
 
+@OptIn(UnstableApi::class)
 suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : Int){
     val isExtPlaylist = (song.thumbnailUrl == "") && (song.durationText != "0:00")
     var songNotFound: Song
@@ -725,14 +727,53 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     }
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
+    //val albumPage = YtMusic.getAlbum(matchedSong?.album?.endpoint?.browseId ?: "").getOrNull()
+
+    //var likedAt by mutableStateOf<Long?>(null)
+    //var playTime by mutableStateOf<Long?>(null)
 
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
             deleteSongFromPlaylist(song.id, playlistId)
             if (matchedSong != null) {
-                Database.insert(matchedSong.asSong)
-            }
-            if (matchedSong != null) {
+                if (songExist(matchedSong.asSong.id) == 0) { //Temporary
+                    Database.insert(matchedSong.asSong)
+                }
+                /*val bookmarkedAt = albumBookmarkedAtLong(matchedSong.album?.endpoint?.browseId ?: "")
+                val songPlaylist = Database.songUsedInPlaylists(matchedSong.asSong.id)
+                val playlistsList = Database.playlistsUsedForSong(matchedSong.asSong.id)
+                likedAt = getLikedAt(matchedSong.asMediaItem.mediaId)
+                playTime = getTotalPlaytime(matchedSong.asMediaItem.mediaId)
+                if (songExist(matchedSong.asSong.id) != 0){
+                    Database.delete(matchedSong.asSong)
+                }
+                Database.upsert(
+                    Album(
+                        id = matchedSong.album?.endpoint?.browseId ?: "",
+                        title = albumPage?.album?.title,
+                        thumbnailUrl = albumPage?.album?.thumbnail?.url,
+                        year = albumPage?.album?.year,
+                        authorsText = albumPage?.album?.authors
+                            ?.joinToString("") { it.name ?: "" },
+                        shareUrl = albumPage?.url,
+                        timestamp = System.currentTimeMillis(),
+                        bookmarkedAt = bookmarkedAt
+                    ),
+                    albumPage
+                        ?.songs?.distinct()
+                        ?.map(Innertube.SongItem::asMediaItem)
+                        ?.onEach(Database::insert)
+                        ?.mapIndexed { position, mediaItem ->
+                            SongAlbumMap(
+                                songId = mediaItem.mediaId,
+                                albumId = matchedSong.album?.endpoint?.browseId ?: "",
+                                position = position
+                            )
+                        } ?: emptyList()
+                )
+                if (songExist(matchedSong.asSong.id) == 0){
+                    Database.insert(matchedSong.asSong)
+                }*/
                 insert(
                     SongPlaylistMap(
                         songId = matchedSong.asMediaItem.mediaId,
@@ -744,6 +785,22 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
                     SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
                 )
+                if (isExtPlaylist) Database.delete(song)
+                /*if (songPlaylist != 0){
+                    playlistsList.forEach{ item ->
+                        insert(
+                            SongPlaylistMap(
+                                songId = matchedSong.asMediaItem.mediaId,
+                                playlistId = item.playlistId,
+                                position = item.position
+                            )
+                        )
+                    }
+                }
+                if (likedAt != null){
+                    Database.like(matchedSong.asSong.id,likedAt)
+                }
+                Database.incrementTotalPlayTimeMs(matchedSong.asSong.id, playTime ?: 0)*/
             }
         } else if (isExtPlaylist && (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()}))){
             songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
@@ -756,6 +813,40 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     position = position
                 )
             )
+        }
+    }
+}
+
+suspend fun updateLocalPlaylist(song: Song){
+    val searchQuery = Innertube.searchPage(
+        body = SearchBody(
+            query = "${cleanPrefix(song.title)} ${song.artistsText}",
+            params = Innertube.SearchFilter.Song.value
+        ),
+        fromMusicShelfRendererContent = Innertube.SongItem.Companion::from
+    )
+
+    val searchResults = searchQuery?.getOrNull()?.items
+
+    fun findSongIndex() : Int {
+        for (i in 0..9) {
+            val requiredSong = searchResults?.getOrNull(i)
+            val songMatched = (requiredSong?.asMediaItem?.mediaId) == (song.asMediaItem.mediaId)
+            if (songMatched) return i
+        }
+        return -1
+    }
+
+    val matchedSong = searchResults?.getOrNull(findSongIndex())
+
+    Database.asyncTransaction {
+        if (findSongIndex() != -1) {
+            if (matchedSong != null) {
+                insert(
+                    Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                    SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
+                )
+            }
         }
     }
 }

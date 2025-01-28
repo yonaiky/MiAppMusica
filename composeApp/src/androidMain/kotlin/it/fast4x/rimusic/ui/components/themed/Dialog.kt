@@ -100,7 +100,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.AlbumPage
+import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
@@ -1806,6 +1809,7 @@ fun InProgressDialog(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun SongMatchingDialog(
     songToRematch : Song,
@@ -1841,6 +1845,9 @@ fun SongMatchingDialog(
             var songsList by remember { mutableStateOf<List<Innertube.SongItem?>>(emptyList()) }
             var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}"))}
             var startSearch by remember { mutableStateOf(false) }
+
+            var albumPage by remember {mutableStateOf<AlbumPage?>(null)}
+
             LaunchedEffect(Unit,startSearch) {
                 runBlocking(Dispatchers.IO) {
                     val searchQuery = Innertube.searchPage(
@@ -1978,9 +1985,6 @@ fun SongMatchingDialog(
                 LazyColumn {
                     itemsIndexed(songsList) { _, song ->
                         if (song != null) {
-                            val albumInfo = song.asMediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
-                                Info(albumId, null)
-                            }
                             Row(horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
@@ -1990,7 +1994,44 @@ fun SongMatchingDialog(
                                     .clickable(onClick = {
                                         Database.asyncTransaction {
                                             deleteSongFromPlaylist(songToRematch.id, playlistId)
-                                            Database.insert(song.asSong)
+                                            runBlocking(Dispatchers.IO) {
+                                                albumPage = YtMusic.getAlbum(song.album?.endpoint?.browseId ?: "").getOrNull()
+                                            }
+                                            val bookmarkedAt = albumBookmarkedAtLong(song.album?.endpoint?.browseId ?: "")
+                                            val songPlaylist = Database.songUsedInPlaylists(song.asSong.id)
+                                            val playlistsList = Database.playlistsUsedForSong(song.asSong.id)
+                                            val likedAt = getLikedAt(song.asMediaItem.mediaId)
+                                            val playTime = getTotalPlaytime(song.asMediaItem.mediaId)
+                                            if (songExist(song.asSong.id) != 0){
+                                                Database.delete(song.asSong)
+                                            }
+                                            Database.upsert(
+                                                Album(
+                                                    id = song.album?.endpoint?.browseId ?: "",
+                                                    title = albumPage?.album?.title,
+                                                    thumbnailUrl = albumPage?.album?.thumbnail?.url,
+                                                    year = albumPage?.album?.year,
+                                                    authorsText = albumPage?.album?.authors
+                                                        ?.joinToString("") { it.name ?: "" },
+                                                    shareUrl = albumPage?.url,
+                                                    timestamp = System.currentTimeMillis(),
+                                                    bookmarkedAt = bookmarkedAt
+                                                ),
+                                                albumPage
+                                                    ?.songs?.distinct()
+                                                    ?.map(Innertube.SongItem::asMediaItem)
+                                                    ?.onEach(Database::insert)
+                                                    ?.mapIndexed { position, mediaItem ->
+                                                        SongAlbumMap(
+                                                            songId = mediaItem.mediaId,
+                                                            albumId = song.album?.endpoint?.browseId ?: "",
+                                                            position = position
+                                                        )
+                                                    } ?: emptyList()
+                                            )
+                                            if (songExist(song.asSong.id) == 0){
+                                                Database.insert(song.asSong)
+                                            }
                                             insert(
                                                 SongPlaylistMap(
                                                     songId = song.asMediaItem.mediaId,
@@ -1998,10 +2039,21 @@ fun SongMatchingDialog(
                                                     position = position
                                                 )
                                             )
-                                            insert(
-                                                Album(id = albumInfo?.id ?: "", title = song.asMediaItem.mediaMetadata.albumTitle?.toString()),
-                                                SongAlbumMap(songId = song.asMediaItem.mediaId, albumId = albumInfo?.id ?: "", position = null)
-                                            )
+                                            if (songPlaylist != 0){
+                                                playlistsList.forEach{ item ->
+                                                    insert(
+                                                        SongPlaylistMap(
+                                                            songId = song.asMediaItem.mediaId,
+                                                            playlistId = item.playlistId,
+                                                            position = item.position
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                            if (likedAt != null){
+                                                Database.like(song.asSong.id,likedAt)
+                                            }
+                                            Database.incrementTotalPlayTimeMs(song.asSong.id, playTime ?: 0)
                                         }
                                         onDismiss()
                                     }
