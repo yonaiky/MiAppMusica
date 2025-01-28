@@ -169,6 +169,7 @@ import it.fast4x.rimusic.utils.thumbnailFadeExKey
 import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 @Composable
 fun TextFieldDialog(
@@ -559,8 +560,29 @@ inline fun SelectorArtistsDialog(
                     HorizontalPager(state = pagerState) { idArtist ->
                         val browseId = values[idArtist].id
                         var artist by persist<Artist?>("artist/$browseId/artist")
+                        var artistPage by persist<ArtistPage?>("artist/$browseId/artistPage")
                         LaunchedEffect(browseId) {
                             Database.artist(values[idArtist].id).collect{artist = it}
+                        }
+                        LaunchedEffect(Unit) {
+                            if (artist?.thumbnailUrl == null) {
+                                withContext(Dispatchers.IO) {
+                                    YtMusic.getArtistPage(browseId = browseId)
+                                        .onSuccess { currentArtistPage ->
+                                            artistPage = currentArtistPage
+                                            Database.upsert(
+                                                Artist(
+                                                    id = browseId,
+                                                    name = currentArtistPage.artist.info?.name,
+                                                    thumbnailUrl = currentArtistPage.artist.thumbnail?.url,
+                                                    timestamp = artist?.timestamp,
+                                                    bookmarkedAt = artist?.bookmarkedAt
+                                                )
+                                            )
+                                            Database.artist(values[idArtist].id).collect{artist = it}
+                                        }
+                                }
+                            }
                         }
 
                         Box {
