@@ -40,10 +40,12 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
+import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -838,6 +840,8 @@ suspend fun updateLocalPlaylist(song: Song){
     }
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
+    val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
+    val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
@@ -846,6 +850,23 @@ suspend fun updateLocalPlaylist(song: Song){
                     Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
                     SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
                 )
+
+                if ((artistsNames != null) && (artistsIds != null)) {
+                    artistsNames.let { artistNames ->
+                        artistsIds.let { artistIds ->
+                            if (artistNames.size == artistIds.size) {
+                                insert(
+                                    artistNames.mapIndexed { index, artistName ->
+                                        Artist(id = (artistIds[index]) ?: "", name = artistName)
+                                    },
+                                    artistIds.map { artistId ->
+                                        SongArtistMap(songId = song.id, artistId = (artistId) ?: "")
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
