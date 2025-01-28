@@ -890,8 +890,8 @@ Volume BAS : titre précédent</string>
     <string name="match_song_grid">Titre de revanche</string>
     <string name="songsnotfound">Titres non trouvés</string>
     <string name="swipe_Animation_No_Thumbnail">Animation de balayage</string>
-    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
-    <string name="online_songs">Online Songs</string>
-    <string name="explicit">Explicit</string>
-    <string name="filter_by">Filter By</string>
+    <string name="do_you_really_want_to_match_all">Voulez-vous vraiment remplacer tous les titres non correspondants par les titres correspondants ? Cette action est irréversible.</string>
+    <string name="online_songs">Titres en ligne</string>
+    <string name="explicit">Explicite</string>
+    <string name="filter_by">Filtrer par</string>
 </resources>
