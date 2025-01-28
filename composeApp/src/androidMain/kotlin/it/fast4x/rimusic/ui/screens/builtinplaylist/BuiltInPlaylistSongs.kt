@@ -163,7 +163,7 @@ import java.util.Date
 @ExperimentalComposeUiApi
 @UnstableApi
 @Composable
-fun BuiltInPlaylistSbuiltinPlaylistongs(
+fun BuiltInPlaylistSongs(
     navController: NavController,
     builtInPlaylist: BuiltInPlaylist,
     onSearchClick: () -> Unit
