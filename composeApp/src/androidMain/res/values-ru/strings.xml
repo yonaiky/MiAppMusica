@@ -890,7 +890,7 @@
     <string name="songsnotfound">Песни не найдены</string>
     <string name="swipe_Animation_No_Thumbnail">Анимация свайпа</string>
     <string name="do_you_really_want_to_match_all">Вы действительно хотите заменить все видео/несовпадающие песни соответствующими песнями? Это действие необратимо</string>
-    <string name="online_songs">Online Songs</string>
-    <string name="explicit">Explicit</string>
-    <string name="filter_by">Filter By</string>
+    <string name="online_songs">Онлайн песни</string>
+    <string name="explicit">18+</string>
+    <string name="filter_by">Фильтровать по</string>
 </resources>
