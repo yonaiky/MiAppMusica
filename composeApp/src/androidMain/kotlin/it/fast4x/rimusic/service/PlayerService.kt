@@ -746,7 +746,11 @@ class PlayerService : InvincibleService(),
             player.stop()
             player.release()
 
-            unregisterReceiver(notificationActionReceiver)
+            try{
+                unregisterReceiver(notificationActionReceiver)
+            } catch (e: Exception){
+                Timber.e("PlayerService onDestroy unregisterReceiver notificationActionReceiver ${e.stackTraceToString()}")
+            }
 
             mediaSession.isActive = false
             mediaSession.release()
@@ -1875,7 +1879,8 @@ class PlayerService : InvincibleService(),
                 endpoint?.playlistSetVideoId,
                 endpoint?.params,
                 false,
-                applicationContext
+                applicationContext,
+                coroutineScope = coroutineScope
             ).let {
                 var mediaItems = listOf<MediaItem>()
                 runBlocking {
@@ -1894,7 +1899,8 @@ class PlayerService : InvincibleService(),
                 endpoint?.playlistSetVideoId,
                 endpoint?.params,
                 false,
-                applicationContext
+                applicationContext,
+                coroutineScope = coroutineScope
             ).let {
                 var songs = listOf<Song>()
                 runBlocking {
@@ -1915,7 +1921,8 @@ class PlayerService : InvincibleService(),
                 endpoint?.playlistSetVideoId,
                 endpoint?.params,
                 false,
-                applicationContext
+                applicationContext,
+                coroutineScope = coroutineScope
             ).let {
                 isLoadingRadio = true
                 coroutineScope.launch(Dispatchers.Main) {
@@ -1954,7 +1961,8 @@ class PlayerService : InvincibleService(),
                 endpoint?.playlistSetVideoId,
                 endpoint?.params,
                 isDiscoverEnabled,
-                applicationContext
+                applicationContext,
+                coroutineScope = coroutineScope
             ).let {
                 isLoadingRadio = true
                 radioJob = coroutineScope.launch(Dispatchers.Main) {

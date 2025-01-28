@@ -37,6 +37,7 @@ fun PlayerMenu(
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
+    onMatchingSong: (() -> Unit)? = null,
     disableScrollingText: Boolean
     ) {
 
@@ -124,6 +125,7 @@ fun PlayerMenu(
                 }
             },
             onClosePlayer = onClosePlayer,
+            onMatchingSong = onMatchingSong,
             disableScrollingText = disableScrollingText
         )
     }

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.net.ConnectivityManager
 import android.text.format.Formatter
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -25,9 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.media3.common.util.UnstableApi
@@ -58,6 +63,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.themed.IconButton
 import kotlin.math.roundToInt
 
 @SuppressLint("LongLogTag")
@@ -105,6 +111,10 @@ fun StatsForNerds(
             PlayerBackgroundColors.BlurredCoverColor
         )
         var statsfornerdsfull by remember {mutableStateOf(false)}
+        val rotationAngle by animateFloatAsState(
+            targetValue = if (statsfornerdsfull) 180f else 0f,
+            animationSpec = tween(durationMillis = 500)
+        )
         LaunchedEffect(mediaId) {
             Database.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
                 if (currentFormat?.itag == null) {
@@ -336,8 +346,7 @@ fun StatsForNerds(
     }
         if ((statsForNerds) && (!showThumbnail || playerType == PlayerType.Modern)) {
             Column(
-                modifier = modifier
-                    .pointerInput(Unit) {detectTapGestures(onLongPress = {statsfornerdsfull = !statsfornerdsfull})}
+
             ) {
 
                 Row(
@@ -351,11 +360,13 @@ fun StatsForNerds(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = modifier.weight(1f)
+                            .padding(end = 4.dp)
                     ) {
                         if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                             BasicText(
                                 text = stringResource(R.string.quality) + " : " + getQuality(format!!),
                                 maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 style = typography().xs.medium.color(colorPalette().text)
                             )
                         }
@@ -364,10 +375,12 @@ fun StatsForNerds(
                         contentAlignment = Alignment.Center,
                         modifier = modifier.weight(1f)
                     ) {
+                        println("StatsForNerds modern player bitrate: ${format?.bitrate}")
                         BasicText(
                             text = format?.bitrate?.let { stringResource(R.string.bitrate) + " : " + "${it / 1000} kbps" }
                                 ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             style = typography().xs.medium.color(colorPalette().text)
                         )
                     }
@@ -380,7 +393,21 @@ fun StatsForNerds(
                                 ?.let {stringResource(R.string.size) + " : " + Formatter.formatShortFileSize(context,it)}
                                 ?: (stringResource(R.string.size) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             style = typography().xs.medium.color(colorPalette().text)
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = modifier.weight(0.2f)
+                    ) {
+                        IconButton(
+                            icon = R.drawable.chevron_up,
+                            color = colorPalette().text,
+                            onClick = {statsfornerdsfull = !statsfornerdsfull},
+                            modifier = Modifier
+                                .size(18.dp)
+                                .rotate(rotationAngle)
                         )
                     }
                 }
@@ -401,7 +428,7 @@ fun StatsForNerds(
                               BasicText(
                                   text = stringResource(R.string.id) + " : " + mediaId,
                                   maxLines = 1,
-                                  style = typography().xs.medium.color(colorPalette().onOverlay)
+                                  style = typography().xs.medium.color(colorPalette().text)
                               )
                           }
                           if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
@@ -415,7 +442,7 @@ fun StatsForNerds(
                                               R.string.audio_quality_format_unknown
                                           )),
                                       maxLines = 1,
-                                      style = typography().xs.medium.color(colorPalette().onOverlay)
+                                      style = typography().xs.medium.color(colorPalette().text)
                                   )
                               }
                           }
@@ -436,7 +463,7 @@ fun StatsForNerds(
                                   BasicText(
                                       text = stringResource(R.string.cached) + " : " + "100%",
                                       maxLines = 1,
-                                      style = typography().xs.medium.color(colorPalette().onOverlay)
+                                      style = typography().xs.medium.color(colorPalette().text)
                                   )
                               }
                           }
@@ -463,7 +490,7 @@ fun StatsForNerds(
                                           }
                                       ,
                                       maxLines = 1,
-                                      style = typography().xs.medium.color(colorPalette().onOverlay)
+                                      style = typography().xs.medium.color(colorPalette().text)
                                   )
                               }
                               Box(
@@ -480,7 +507,7 @@ fun StatsForNerds(
                                               R.string.audio_quality_format_unknown
                                           )),
                                       maxLines = 1,
-                                      style = typography().xs.medium.color(colorPalette().onOverlay)
+                                      style = typography().xs.medium.color(colorPalette().text)
                                   )
                               }
                           }

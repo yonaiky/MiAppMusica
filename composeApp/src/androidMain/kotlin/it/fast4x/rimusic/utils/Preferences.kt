@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
 import com.google.gson.Gson
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.requests.HomePage
 import it.fast4x.rimusic.models.Song
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.encodeToString
@@ -178,6 +179,7 @@ const val showMonthlyPlaylistInQuickPicksKey = "showMonthlyPlaylistInQuickPicks"
 const val showMonthlyPlaylistInLibraryKey = "showMonthlyPlaylistInLibrary"
 const val enableQuickPicksPageKey = "enableQuickPicksPage"
 const val playerBackgroundColorsKey = "playerBackgroundColors"
+const val animatedGradientKey = "animatedGradient"
 const val playerControlsTypeKey = "playerControlsType"
 const val playerInfoTypeKey = "playerInfoType"
 const val showTopActionsBarKey = "showTopActionsBar"
@@ -189,6 +191,7 @@ const val playlistTypeKey = "playlistType"
 const val iconLikeTypeKey = "iconLikeType"
 const val playerSwapControlsWithTimelineKey = "playerSwapControlsWithTimeline"
 const val playerEnableLyricsPopupMessageKey = "playerEnableLyricsPopupMessage"
+const val historyTypeKey = "historyType"
 /**** CUSTOM THEME **** */
 const val customThemeLight_Background0Key = "customThemeLight_Background0"
 const val customThemeLight_Background1Key = "customThemeLight_Background1"
@@ -293,6 +296,9 @@ const val coverThumbnailAnimationKey = "coverThumbnailAnimation"
 
 const val restartActivityKey = "restartActivity"
 const val enableYouTubeLoginKey = "enableYoutubeLogin"
+const val enableYouTubeSyncKey = "enableYoutubeSync"
+const val useYtLoginOnlyForBrowseKey = "useYtLoginOnlyForBrowse"
+
 
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 const val showSecondLineKey = "showSecondLine"
@@ -303,6 +309,7 @@ const val quickPicsTrendingSongKey = "quickPicsTrendingSong"
 const val quickPicsRelatedPageKey = "quickPicsRelatedPage"
 const val quickPicsChartsPageKey = "quickPicsChartsPage"
 const val quickPicsDiscoverPageKey = "quickPicsDiscoverPage"
+const val quickPicsHomePageKey = "quickPicsHomePage"
 const val loadedDataKey = "loadedData"
 
 const val enablePictureInPictureKey = "enablePicturInPicture"
@@ -332,6 +339,17 @@ const val playlistSwipeLeftActionKey = "playlistSwipeLeftAction"
 const val playlistSwipeRightActionKey = "playlistSwipeRightAction"
 const val albumSwipeLeftActionKey = "albumSwipeLeftAction"
 const val albumSwipeRightActionKey = "albumSwipeRightAction"
+const val customColorKey = "customColor"
+const val lyricsSizeAnimateKey = "lyricsSizeAnimate"
+const val lyricsSizeKey = "lyricsSize"
+const val lyricsSizeLKey = "lyricsSizeL"
+const val ytAccountNameKey = "ytAccountName"
+const val ytAccountEmailKey = "ytAccountEmail"
+const val albumCoverRotationKey = "albumCoverRotation"
+const val isConnectionMeteredEnabledKey = "isConnectionMeteredEnabled"
+const val landscapeControlsKey = "landscapeControls"
+const val swipeAnimationsNoThumbnailKey = "swipeAnimationsNoThumbnail"
+const val playlistSongsTypeFilterKey = "playlistSongsTypeFilter"
 
 /*
 @PublishedApi
@@ -483,6 +501,28 @@ fun rememberPreference(key: String, defaultValue: Innertube.RelatedPage?): Mutab
                     ?.let { Json.decodeFromString<Innertube.RelatedPage>(it) }
             } catch (e: Exception) {
                 Timber.e("RememberPreference RelatedPage Error: ${ e.stackTraceToString() }")
+                null
+            }
+        ) {
+            context.preferences.edit { putString(
+                key,
+                Json.encodeToString(it)
+            ) }
+        }
+    }
+}
+
+@Composable
+fun rememberPreference(key: String, defaultValue: HomePage?): MutableState<HomePage?> {
+    val context = LocalContext.current
+    val json = Json.encodeToString(defaultValue)
+    return remember {
+        mutableStatePreferenceOf(
+            try {
+                context.preferences.getString(key, json)
+                    ?.let { Json.decodeFromString<HomePage>(it) }
+            } catch (e: Exception) {
+                Timber.e("RememberPreference HomePage Error: ${ e.stackTraceToString() }")
                 null
             }
         ) {

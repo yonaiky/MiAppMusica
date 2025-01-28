@@ -16,6 +16,7 @@ import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import it.fast4x.rimusic.utils.formatAsDuration
 
 class ImportSongsFromCSV private constructor(
     private val launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
@@ -38,18 +39,19 @@ class ImportSongsFromCSV private constructor(
                                     Database.asyncTransaction {
                                         beforeTransaction( index, row )
                                         /**/
-                                        val mediaId = row["MediaId"]
-                                        val title = row["Title"]
+                                        val explicitPrefix = if (row["Explicit"] == "true") "e:" else ""
+                                        val pseudoMediaId = (row["Track Name"]+row["Artist Name(s)"]).filter { it.isLetterOrDigit() }
+                                        val title = row["Title"] ?: row["Track Name"] ?: return@asyncTransaction
+                                        val mediaId = row["MediaId"] ?: pseudoMediaId
+                                        val artistsText = row["Artists"] ?: row["Artist Name(s)"] ?: ""
+                                        val durationText = row["Duration"] ?: formatAsDuration(row["Track Duration (ms)"]?.toLong() ?: 0L)
 
-                                        if( mediaId == null || title == null)
-                                            return@asyncTransaction
-
-                                        val song = Song (
+                                        val song = Song(
                                             id = mediaId,
-                                            title = title,
-                                            artistsText = row["Artists"],
-                                            durationText = row["Duration"],
-                                            thumbnailUrl = row["ThumbnailUrl"],
+                                            title = explicitPrefix+title,
+                                            artistsText = artistsText,
+                                            durationText = durationText,
+                                            thumbnailUrl = row["ThumbnailUrl"] ?: "",
                                             totalPlayTimeMs = 1L
                                         )
                                         afterTransaction( index, song )

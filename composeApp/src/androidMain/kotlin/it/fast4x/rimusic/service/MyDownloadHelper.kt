@@ -2,6 +2,7 @@ package it.fast4x.rimusic.service
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -18,15 +19,23 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.offline.DownloadService.sendAddDownload
 import androidx.media3.exoplayer.offline.DownloadService.sendRemoveDownload
 import androidx.media3.exoplayer.scheduler.Requirements
+import coil.imageLoader
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.utils.DownloadSyncedLyrics
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.autoDownloadSongKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenAlbumBookmarkedKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenLikedKey
+import it.fast4x.rimusic.utils.download
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.removeDownload
+import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -49,12 +58,12 @@ import kotlin.concurrent.schedule
 
 @UnstableApi
 object MyDownloadHelper {
-//    private val executor = Executors.newCachedThreadPool()
-//    private val coroutineScope = CoroutineScope(
-//        executor.asCoroutineDispatcher() +
-//                SupervisorJob() +
-//                CoroutineName("MyDownloadService-Executor-Scope")
-//    )
+    private val executor = Executors.newCachedThreadPool()
+    private val coroutineScope = CoroutineScope(
+        executor.asCoroutineDispatcher() +
+                SupervisorJob() +
+                CoroutineName("MyDownloadService-Executor-Scope")
+    )
 
     // While the class is not a singleton (lifecycle), there should only be one download state at a time
 //    private val mutableDownloadState = MutableStateFlow(false)
@@ -73,7 +82,6 @@ object MyDownloadHelper {
     private lateinit var downloadDirectory: File
     private lateinit var downloadManager: DownloadManager
     lateinit var audioQualityFormat: AudioQualityFormat
-    //private lateinit var connectivityManager: ConnectivityManager
 
 
     var downloads = MutableStateFlow<Map<String, Download>>(emptyMap())
@@ -159,23 +167,21 @@ object MyDownloadHelper {
                 getDatabaseProvider(context),
                 getDownloadCache(context),
                 createDataSourceFactory(),
-                Executor(Runnable::run)
+                //Executor(Runnable::run)
+                executor
             ).apply {
                 maxParallelDownloads = 3
-                //minRetryCount = 2
-                //requirements = Requirements(Requirements.NETWORK)
+                minRetryCount = 2
+                requirements = Requirements(Requirements.NETWORK)
 
                 addListener(
                     object : DownloadManager.Listener {
-//                        override fun onIdle(downloadManager: DownloadManager) =
-//                            mutableDownloadState.update { false }
 
                         override fun onDownloadChanged(
                             downloadManager: DownloadManager,
                             download: Download,
                             finalException: Exception?
                         ) = run {
-                            //downloadQueue.trySend(downloadManager).let { }
                             syncDownloads(download)
                         }
 
@@ -183,7 +189,6 @@ object MyDownloadHelper {
                             downloadManager: DownloadManager,
                             download: Download
                         ) = run {
-                            //downloadQueue.trySend(downloadManager).let { }
                             syncDownloads(download)
                         }
                     }
@@ -202,7 +207,6 @@ object MyDownloadHelper {
                 set(download.request.id, download)
             }
         }
-        // getDownloads()
     }
 
     @Synchronized
@@ -244,34 +248,46 @@ object MyDownloadHelper {
                     insert(mediaItem)
                 }.also { if (it.isFailure) return@asyncTransaction }
             }
+            val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1200)
 
-            sendAddDownload(
-                context,MyDownloadService::class.java,downloadRequest,false
-            )
+//            sendAddDownload(
+//                context,MyDownloadService::class.java,downloadRequest,false
+//            )
 
-                //coroutineScope.launch {
-//                    context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
-//                        if (it is CancellationException) throw it
-//
-//                        Timber.e(it.stackTraceToString())
-//                        println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
-//                    }
-                //}
+                coroutineScope.launch {
+                    context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
+                        if (it is CancellationException) throw it
+
+                        Timber.e(it.stackTraceToString())
+                        println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
+                    }
+                    DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
+                    context.imageLoader.execute(
+                        ImageRequest.Builder(context)
+                            .networkCachePolicy(CachePolicy.ENABLED)
+                            .data(imageUrl)
+                            .size(1200)
+                            .bitmapConfig(Bitmap.Config.ARGB_8888)
+                            .allowHardware(false)
+                            .diskCacheKey(imageUrl.toString())
+                            .build()
+                    )
+                }
 
         }
 
     fun removeDownload(context: Context, mediaItem: MediaItem) {
         if (mediaItem.isLocal) return
 
-        sendRemoveDownload(context,MyDownloadService::class.java,mediaItem.mediaId,false)
-        //coroutineScope.launch {
-//            context.removeDownload<MyDownloadService>(mediaItem.mediaId).exceptionOrNull()?.let {
-//                if (it is CancellationException) throw it
-//
-//                Timber.e(it.stackTraceToString())
-//                println("MyDownloadHelper removeDownload exception ${it.stackTraceToString()}")
-//            }
-        //}
+        //sendRemoveDownload(context,MyDownloadService::class.java,mediaItem.mediaId,false)
+        coroutineScope.launch {
+            context.removeDownload<MyDownloadService>(mediaItem.mediaId).exceptionOrNull()?.let {
+                if (it is CancellationException) throw it
+
+                Timber.e(it.stackTraceToString())
+                println("MyDownloadHelper removeDownload exception ${it.stackTraceToString()}")
+            }
+        }
     }
 
     fun resumeDownloads(context: Context){

@@ -123,8 +123,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 35
-        versionCode = 76
-        versionName = "0.6.65"
+        versionCode = 80
+        versionName = "0.6.68"
     }
 
     splits {
@@ -309,6 +309,8 @@ dependencies {
     implementation(libs.glance.widgets)
     implementation(libs.kizzy.rpc)
     implementation(libs.gson)
+    implementation (libs.hypnoticcanvas)
+    implementation (libs.hypnoticcanvas.shaders)
 
     implementation(libs.room)
     ksp(libs.room.compiler)
@@ -322,5 +324,7 @@ dependencies {
     implementation(projects.piped)
 
 
-    coreLibraryDesugaring(libs.desugaring)
+//    coreLibraryDesugaring(libs.desugaring)
+    coreLibraryDesugaring(libs.desugaring.nio)
+
 }

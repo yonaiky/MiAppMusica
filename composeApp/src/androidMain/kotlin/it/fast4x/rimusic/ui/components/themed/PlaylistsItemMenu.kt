@@ -75,6 +75,7 @@ fun PlaylistsItemMenu(
     playlist: PlaylistPreview? = null,
     modifier: Modifier = Modifier,
     onPlayNext: (() -> Unit)? = null,
+    onDeleteSongsNotInLibrary: (() -> Unit)? = null,
     onEnqueue: (() -> Unit)? = null,
     onImportOnlinePlaylist: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
@@ -115,6 +116,7 @@ fun PlaylistsItemMenu(
             playlist = playlist,
             onSelectUnselect = onSelectUnselect,
             onPlayNext = onPlayNext,
+            onDeleteSongsNotInLibrary = onDeleteSongsNotInLibrary,
             onEnqueue = onEnqueue,
             onImportOnlinePlaylist = onImportOnlinePlaylist,
             onAddToPlaylist = onAddToPlaylist,
@@ -440,6 +442,16 @@ fun PlaylistsItemMenu(
                             }
                         )
                     }
+                    onDeleteSongsNotInLibrary?.let { onDeleteSongsNotInLibrary ->
+                        MenuEntry(
+                            icon = R.drawable.trash,
+                            text = stringResource(R.string.delete_songs_not_in_library),
+                            onClick = {
+                                onDismiss()
+                                onDeleteSongsNotInLibrary()
+                            }
+                        )
+                    }
 
                     onEnqueue?.let { onEnqueue ->
                         MenuEntry(
@@ -478,7 +490,10 @@ fun PlaylistsItemMenu(
                         MenuEntry(
                             icon = R.drawable.heart,
                             text = stringResource(R.string.add_to_favorites),
-                            onClick = onAddToPreferites
+                            onClick = {
+                                onDismiss()
+                                onAddToPreferites()
+                            }
                         )
 
                     if (onAddToPlaylist != null) {

@@ -1,6 +1,8 @@
 package it.fast4x.rimusic.ui.screens.player.components.controls
 
 import android.os.Build
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -47,9 +49,11 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
@@ -58,7 +62,9 @@ import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.UiMedia
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.CustomElevatedButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
@@ -83,11 +89,6 @@ import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.textoutlineKey
-import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.context
-import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.typography
 
 
 @UnstableApi
@@ -102,6 +103,7 @@ fun InfoAlbumAndArtistModern(
     title: String?,
     likedAt: Long?,
     artistIds: List<Info>?,
+    isExplicit: Boolean,
     artist: String?,
     onCollapse: () -> Unit,
     disableScrollingText: Boolean = false
@@ -126,7 +128,7 @@ fun InfoAlbumAndArtistModern(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
-            modifier = Modifier.fillMaxWidth(0.90f)
+            modifier = Modifier.fillMaxWidth()
         ) {
 
             if (playerInfoShowIcon) {
@@ -173,9 +175,11 @@ fun InfoAlbumAndArtistModern(
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                 .weight(1f)
             ) {
-                if (title?.startsWith(EXPLICIT_PREFIX) == true)
+                if ( isExplicit )
                     IconButton(
                         icon = R.drawable.explicit,
                         color = colorPalette().text,
@@ -184,9 +188,9 @@ fun InfoAlbumAndArtistModern(
                         modifier = Modifier
                             .size(18.dp)
                     )
-            Box(
+             Box(
 
-            ){
+             ){
                 BasicText(
                     text = cleanPrefix(title ?: ""),
                     style = TextStyle(
@@ -220,44 +224,46 @@ fun InfoAlbumAndArtistModern(
                 }
             }
             //}
+            if (playerControlsType == PlayerControlsType.Modern)
+                Box(
+                    modifier = Modifier
+                        .weight(0.1f)
+                ){
+                    IconButton(
+                        color = colorPalette().favoritesIcon,
+                        icon = getLikeState(mediaId),
+                        onClick = {
+                            val currentMediaItem = binder.player.currentMediaItem
+                            Database.asyncTransaction {
+                                if ( like( mediaId, setLikeState(likedAt) ) == 0 ) {
+                                    currentMediaItem
+                                        ?.takeIf { it.mediaId == mediaId }
+                                        ?.let {
+                                            insert(currentMediaItem, Song::toggleLike)
+                                        }
+                                    if (currentMediaItem != null) {
+                                        MyDownloadHelper.autoDownloadWhenLiked(context(),currentMediaItem)
+                                    }
+                                }
+                            }
+                            if (effectRotationEnabled) isRotated = !isRotated
+                        },
+                        modifier = Modifier
+                            .padding(start = 5.dp)
+                            .size(24.dp)
+                    )
+                    if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
+                        Icon(
+                            painter = painterResource(id = getUnlikedIcon()),
+                            tint = colorPalette().text,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(start = 5.dp)
+                                .size(24.dp)
+                        )
+                    }
+                }
         }
-
-        if (playerControlsType == PlayerControlsType.Modern)
-         Box{
-             IconButton(
-                 color = colorPalette().favoritesIcon,
-                 icon = getLikeState(mediaId),
-                 onClick = {
-                     val currentMediaItem = binder.player.currentMediaItem
-                     Database.asyncTransaction {
-                         if ( like( mediaId, setLikeState(likedAt) ) == 0 ) {
-                             currentMediaItem
-                                 ?.takeIf { it.mediaId == mediaId }
-                                 ?.let {
-                                     insert(currentMediaItem, Song::toggleLike)
-                                 }
-                             if (currentMediaItem != null) {
-                                 MyDownloadHelper.autoDownloadWhenLiked(context(),currentMediaItem)
-                             }
-                         }
-                     }
-                     if (effectRotationEnabled) isRotated = !isRotated
-                 },
-                 modifier = Modifier
-                     .padding(start = 5.dp)
-                     .size(24.dp)
-             )
-             if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
-                 Icon(
-                     painter = painterResource(id = getUnlikedIcon()),
-                     tint = colorPalette().text,
-                     contentDescription = null,
-                     modifier = Modifier
-                         .padding(start = 5.dp)
-                         .size(24.dp)
-                 )
-             }
-         }
 
 
     }
@@ -386,12 +392,15 @@ fun ControlsModern(
     playbackSpeed: Float,
     shouldBePlaying: Boolean,
     playerPlayButtonType: PlayerPlayButtonType,
-    rotationAngle: Float,
     isGradientBackgroundEnabled: Boolean,
     onShowSpeedPlayerDialog: () -> Unit,
 ) {
     var effectRotationEnabled by rememberPreference(effectRotationKey, true)
     var isRotated by rememberSaveable { mutableStateOf(false) }
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (isRotated) 360F else 0f,
+        animationSpec = tween(durationMillis = 200), label = ""
+    )
     var jumpPrevious by rememberPreference(jumpPreviousKey, "3")
 
   if (playerPlayButtonType != PlayerPlayButtonType.Disabled) {
@@ -413,9 +422,7 @@ fun ControlsModern(
                       else binder.player.playPrevious()
                       if (effectRotationEnabled) isRotated = !isRotated
                   },
-                  onLongClick = {
-                      binder.player.seekTo(position - 5000)
-                  }
+                  onLongClick = {}
               )
 
       ) {
@@ -462,7 +469,8 @@ fun ControlsModern(
                       modifier = Modifier
                           .offset(x = (0).dp, y = (0).dp)
                           .blur(7.dp)
-                          .size(115.dp),
+                          .size(115.dp)
+                          .rotate(rotationAngle),
                       tint = Color.Black.copy(0.75f)
                   )
               }
@@ -590,9 +598,7 @@ fun ControlsModern(
                     binder.player.playNext()
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
-                onLongClick = {
-                    binder.player.seekTo(position + 5000)
-                }
+                onLongClick = {}
             )
             .clip(RoundedCornerShape(8.dp))
 
@@ -627,7 +633,8 @@ fun ControlsModern(
                   modifier = Modifier
                       .offset(x = (8).dp, y = (8).dp)
                       .blur(4.dp)
-                      .size(38.dp),
+                      .size(38.dp)
+                      .rotate(rotationAngle),
                   tint = Color.Black
               )
               Image(
@@ -649,9 +656,7 @@ fun ControlsModern(
                               else binder.player.playPrevious()
                               if (effectRotationEnabled) isRotated = !isRotated
                           },
-                          onLongClick = {
-                              binder.player.seekTo(position - 5000)
-                          }
+                          onLongClick = {}
                       )
               )
           }
@@ -666,7 +671,8 @@ fun ControlsModern(
                   modifier = Modifier
                       .offset(x = (0).dp, y = (0).dp)
                       .blur(7.dp)
-                      .size(54.dp),
+                      .size(54.dp)
+                      .rotate(rotationAngle),
                   tint = Color.Black
               )
               Image(
@@ -710,7 +716,8 @@ fun ControlsModern(
                   modifier = Modifier
                       .offset(x = (8).dp, y = (8).dp)
                       .blur(4.dp)
-                      .size(38.dp),
+                      .size(38.dp)
+                      .rotate(rotationAngle),
                   tint = Color.Black
               )
               Image(
@@ -729,9 +736,7 @@ fun ControlsModern(
                               binder.player.playNext()
                               if (effectRotationEnabled) isRotated = !isRotated
                           },
-                          onLongClick = {
-                              binder.player.seekTo(position + 5000)
-                          }
+                          onLongClick = {}
                       )
               )
           }

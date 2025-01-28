@@ -91,6 +91,8 @@ val PureBlackColorPalette = DefaultDarkColorPalette.copy(
     background0 = Color.Black,
     background1 = Color.Black,
     background2 = Color.Black,
+    accent = Color.White,
+    onAccent = Color.DarkGray
     )
 
 val ModernBlackColorPalette = DefaultDarkColorPalette.copy(
@@ -108,7 +110,7 @@ fun colorPaletteOf(
 ): ColorPalette {
     return when (colorPaletteName) {
         ColorPaletteName.Default, ColorPaletteName.Dynamic,
-        ColorPaletteName.MaterialYou, ColorPaletteName.Customized -> when (colorPaletteMode) {
+        ColorPaletteName.MaterialYou, ColorPaletteName.Customized, ColorPaletteName.CustomColor -> when (colorPaletteMode) {
             ColorPaletteMode.Light -> DefaultLightColorPalette
             ColorPaletteMode.Dark, ColorPaletteMode.PitchBlack -> DefaultDarkColorPalette
             ColorPaletteMode.System -> when (isSystemInDarkMode) {
