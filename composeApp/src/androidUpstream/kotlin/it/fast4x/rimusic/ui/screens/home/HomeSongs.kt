@@ -157,6 +157,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DeleteHiddenSongsDialog
+import me.knighthat.component.tab.DeleteSongDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HideSongDialog
@@ -262,7 +263,7 @@ fun HomeSongs(
     )
     val downloadAllDialog = DownloadAllSongsDialog { getMediaItems().map( MediaItem::asSong ) }
     val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog { getMediaItems().map( MediaItem::asSong ) }
-    val deleteSongDialog =  DelSongDialog.init()
+    val deleteSongDialog =  DeleteSongDialog()
     val hideSongDialog = HideSongDialog()
     val deleteHiddenSongs = DeleteHiddenSongsDialog()
 

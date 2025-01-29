@@ -1,45 +1,44 @@
-package it.fast4x.rimusic.ui.components.tab
+package me.knighthat.component.tab
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.ui.components.themed.DeleteDialog
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import java.util.Optional
 
 @UnstableApi
-open class DelSongDialog protected constructor(
-    private val binder: PlayerServiceModern.Binder?,
+open class DeleteSongDialog(
     activeState: MutableState<Boolean>,
     menuState: MenuState,
-): DeleteDialog( activeState, menuState ) {
+    private val binder: PlayerServiceModern.Binder?
+) : DeleteDialog(activeState, menuState) {
 
     companion object {
-        @JvmStatic
         @Composable
-        fun init() = DelSongDialog(
-            LocalPlayerServiceBinder.current,
-            rememberSaveable { mutableStateOf( false ) },
-            LocalMenuState.current
+        operator fun invoke() = DeleteSongDialog(
+            remember { mutableStateOf(false) },
+            LocalMenuState.current,
+            LocalPlayerServiceBinder.current
         )
     }
+
+    var song = Optional.empty<Song>()
 
     override val dialogTitle: String
         @Composable
         get() = stringResource( R.string.delete_song )
-
-    var song: Optional<SongEntity> = Optional.empty()
 
     override fun onDismiss() {
         // Always override current value with empty Optional
@@ -49,16 +48,14 @@ open class DelSongDialog protected constructor(
     }
 
     override fun onConfirm() {
-        println("Deleting song ${song}")
         song.ifPresent {
-            println("Deleting song ${it.song.title}")
             Database.asyncTransaction {
                 menuState.hide()
-                binder?.cache?.removeResource(it.song.id)
-                binder?.downloadCache?.removeResource(it.song.id)
-                deleteSongFromPlaylists(it.song.id)
-                deleteFormat(it.song.id)
-                delete(it.song)
+                binder?.cache?.removeResource( it.id )
+                binder?.downloadCache?.removeResource( it.id )
+                deleteSongFromPlaylists( it.id )
+                deleteFormat( it.id )
+                delete( it )
             }
             SmartMessage(
                 message = appContext().resources.getString(R.string.deleted),
