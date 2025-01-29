@@ -66,6 +66,34 @@ object YtMusic {
         println("YtMusic unsubscribeChannel error: ${it.stackTraceToString()}")
     }
 
+    suspend fun likePlaylistOrAlbum(playlistId: String) = runCatching {
+        println("YtMusic likePlaylistOrAlbum playlistId: $playlistId")
+        Innertube.likePlaylistOrAlbum(playlistId)
+    }.onFailure {
+        println("YtMusic likePlaylistOrAlbum error: ${it.stackTraceToString()}")
+    }
+
+    suspend fun removelikePlaylistOrAlbum(playlistId: String) = runCatching {
+        println("YtMusic removelikePlaylistOrAlbum playlistId: $playlistId")
+        Innertube.removelikePlaylistOrAlbum(playlistId)
+    }.onFailure {
+        println("YtMusic removelikePlaylistOrAlbum error: ${it.stackTraceToString()}")
+    }
+
+    suspend fun likeVideoOrSong(VideoId: String) = runCatching {
+        println("YtMusic likeVideoOrSong VideoId: $VideoId")
+        Innertube.likeVideoOrSong(VideoId)
+    }.onFailure {
+        println("YtMusic likeVideoOrSong error: ${it.stackTraceToString()}")
+    }
+
+    suspend fun removelikeVideoOrSong(VideoId: String) = runCatching {
+        println("YtMusic removelikeVideoOrSong playlistIdId: $VideoId")
+        Innertube.removelikeVideoOrSong(VideoId)
+    }.onFailure {
+        println("YtMusic removelikeVideoOrSong error: ${it.stackTraceToString()}")
+    }
+
     suspend fun getHomePage(setLogin: Boolean = false): Result<HomePage> = runCatching {
 
         var response = Innertube.browse(browseId = "FEmusic_home", setLogin = setLogin).body<BrowseResponse>()
@@ -315,25 +343,10 @@ object YtMusic {
     suspend fun getAlbum(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
         val response = Innertube.browse(browseId = browseId).body<BrowseResponse>()
         val playlistId = response.microformat?.microformatDataRenderer?.urlCanonical?.substringAfterLast('=')!!
-//        val otherVersions = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer?.contents?.getOrNull(
-//            1
-//        )?.musicCarouselShelfRenderer?.contents
-        //println("mediaItem getAlbum otherVersions: $otherVersions")
-//        val description = response.contents?.twoColumnBrowseResultsRenderer?.tabs
-//            ?.firstOrNull()
-//            ?.tabRenderer
-//            ?.content
-//            ?.sectionListRenderer
-//            ?.contents
-//            ?.firstOrNull()
-//            ?.musicResponsiveHeaderRenderer
-//            ?.description
-//            ?.musicDescriptionShelfRenderer
-//            ?.description
-//        println("mediaItem getAlbum description: $description")
 
         AlbumPage(
             album = Innertube.AlbumItem(
+                playlistId = playlistId,
                 info = Innertube.Info(
                     name = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.title?.runs?.firstOrNull()?.text!!,
                     endpoint = NavigationEndpoint.Endpoint.Browse(
@@ -344,9 +357,7 @@ object YtMusic {
                     ?.map {
                         Innertube.Info(
                             name = it.text,
-                            endpoint = NavigationEndpoint.Endpoint.Browse(
-                                browseId = it.navigationEndpoint?.browseEndpoint?.browseId
-                            ),
+                            endpoint = it.navigationEndpoint?.browseEndpoint,
                         )
                     }!!,
                 year = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.subtitle?.runs?.lastOrNull()?.text,
@@ -356,13 +367,10 @@ object YtMusic {
             otherVersions = response.contents.twoColumnBrowseResultsRenderer.secondaryContents?.sectionListRenderer?.contents?.getOrNull(
                 1
             )?.musicCarouselShelfRenderer?.contents
-//                ?.mapNotNull(MusicCarouselShelfRenderer.Content::musicTwoRowItemRenderer)
-//                ?.mapNotNull(Innertube.AlbumItem::from)
                 ?.mapNotNull { it.musicTwoRowItemRenderer }
                 ?.map(NewReleaseAlbumPage::fromMusicTwoRowItemRenderer)
                 .orEmpty(),
             url = response.microformat.microformatDataRenderer.urlCanonical,
-            //description = response.header?.musicDetailHeaderRenderer?.description?.text,
             description = response.contents.twoColumnBrowseResultsRenderer.tabs
                 .firstOrNull()
                 ?.tabRenderer

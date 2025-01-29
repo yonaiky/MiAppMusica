@@ -61,6 +61,7 @@ import it.fast4x.innertube.models.bodies.EditPlaylistBody
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.bodies.PlaylistDeleteBody
 import it.fast4x.innertube.models.MusicShelfRenderer
+import it.fast4x.innertube.models.bodies.LikeBody
 import it.fast4x.innertube.models.bodies.SubscribeBody
 import it.fast4x.innertube.utils.NewPipeUtils
 import it.fast4x.innertube.utils.NewPipeUtils.decodeSignatureCipher
@@ -209,6 +210,9 @@ object Innertube {
     internal const val playlistEdit = "/youtubei/v1/browse/edit_playlist"
     internal const val subscribe = "/youtubei/v1/subscription/subscribe"
     internal const val unsubscribe = "/youtubei/v1/subscription/unsubscribe"
+    internal const val like = "/youtubei/v1/like/like"
+    internal const val removelike = "/youtubei/v1/like/removelike"
+
 
 
     internal const val musicResponsiveListItemRendererMask = "musicResponsiveListItemRenderer(flexColumns,fixedColumns,thumbnail,navigationEndpoint,badges)"
@@ -300,6 +304,7 @@ object Innertube {
         val info: Info<NavigationEndpoint.Endpoint.Browse>?,
         val authors: List<Info<NavigationEndpoint.Endpoint.Browse>>?,
         val year: String?,
+        val playlistId: String? = null,
         override val thumbnail: Thumbnail?
     ) : Item() {
         override val key get() = info!!.endpoint!!.browseId!!
@@ -673,6 +678,57 @@ object Innertube {
             )
         )
     }
+
+
+    suspend fun likePlaylistOrAlbum(
+        playlistId: String,
+    ) = client.post(like) {
+        setLogin(setLogin = true)
+        setBody(
+            LikeBody(
+                context = Context.DefaultWeb,
+                target = LikeBody.Target.PlaylistTarget(playlistId = playlistId)
+            )
+        )
+    }
+
+    suspend fun removelikePlaylistOrAlbum(
+        playlistId: String,
+    ) = client.post(removelike) {
+        setLogin(setLogin = true)
+        setBody(
+            LikeBody(
+                context = Context.DefaultWeb,
+                target = LikeBody.Target.PlaylistTarget(playlistId = playlistId)
+            )
+        )
+    }
+
+    suspend fun likeVideoOrSong(
+        videoId: String,
+    ) = client.post(like) {
+        setLogin(setLogin = true)
+        setBody(
+            LikeBody(
+                context = Context.DefaultWeb,
+                target = LikeBody.Target.VideoTarget(videoId = videoId)
+            )
+        )
+    }
+
+    suspend fun removelikeVideoOrSong(
+        videoId: String,
+    ) = client.post(removelike) {
+        setLogin(setLogin = true)
+        setBody(
+            LikeBody(
+                context = Context.DefaultWeb,
+                target = LikeBody.Target.VideoTarget(videoId = videoId)
+            )
+        )
+    }
+
+
 
     suspend fun browse(
         ytClient: Client = Context.DefaultWeb.client,

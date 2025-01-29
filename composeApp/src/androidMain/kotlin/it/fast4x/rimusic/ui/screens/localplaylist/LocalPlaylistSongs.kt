@@ -133,7 +133,6 @@ import it.fast4x.rimusic.utils.UiTypeKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.deletePipedPlaylist
@@ -178,7 +177,6 @@ import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
-import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.checkFileExists
@@ -910,13 +908,6 @@ fun LocalPlaylistSongs(
             showGetAlbumVersionDialogue = false
             getAlbumVersion = false
         }
-    }
-
-    var justSynced by rememberSaveable { mutableStateOf(false) }
-
-    if (isAutoSyncEnabled() && !justSynced && playlistPreview?.let { playlist -> !playlist.playlist.browseId.isNullOrBlank() } == true) {
-        sync()
-        justSynced = true
     }
 
     Box(

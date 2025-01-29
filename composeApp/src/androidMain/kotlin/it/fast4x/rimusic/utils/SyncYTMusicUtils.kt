@@ -13,6 +13,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.isAutoSyncEnabled
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.SongPlaylistMap
@@ -148,6 +149,52 @@ suspend fun importYTMSubscribedChannels(): Boolean {
         }
             .onFailure {
                 println("Error importing YTM subscribed artists channels: ${it.stackTraceToString()}")
+                return false
+            }
+        return true
+    } else
+        return false
+}
+
+suspend fun importYTMLikedAlbums(): Boolean {
+    println("importYTMLikedAlbums isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
+    if (isYouTubeSyncEnabled() && isAutoSyncEnabled()) {
+
+        SmartMessage(
+            message = appContext().resources.getString(R.string.syncing),
+            durationLong = true,
+            context = appContext(),
+        )
+
+        Innertube.library("FEmusic_liked_albums").completed().onSuccess { page ->
+
+            val ytmAlbums = page.items.filterIsInstance<Innertube.AlbumItem>()
+
+            println("YTM albums: $ytmAlbums")
+
+            ytmAlbums.forEach { remoteAlbum ->
+                withContext(Dispatchers.IO) {
+
+                    var localAlbum = Database.album(remoteAlbum.key).firstOrNull()
+                    println("Local album: $localAlbum")
+                    println("Remote album: $remoteAlbum")
+
+                    localAlbum = Album(
+                        id = remoteAlbum.key,
+                        title = remoteAlbum.title ?: "",
+                        thumbnailUrl = remoteAlbum.thumbnail?.url,
+                        bookmarkedAt = System.currentTimeMillis(),
+                        year = remoteAlbum.year,
+                        authorsText = remoteAlbum.authors?.getOrNull(1)?.name
+                    )
+                    Database.insert(localAlbum)
+
+                }
+            }
+
+        }
+            .onFailure {
+                println("Error importing YTM liked albums: ${it.stackTraceToString()}")
                 return false
             }
         return true

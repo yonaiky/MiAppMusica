@@ -706,6 +706,22 @@ fun AlbumDetails(
                                                 context,
                                                 songs.map { it.asMediaItem })
                                         }
+
+                                        if (isYouTubeSyncEnabled())
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                if (bookmarkedAt == null)
+                                                    albumPage?.album?.playlistId.let {
+                                                        if (it != null) {
+                                                            YtMusic.removelikePlaylistOrAlbum(it)
+                                                        }
+                                                    }
+                                                else
+                                                    albumPage?.album?.playlistId.let {
+                                                        if (it != null) {
+                                                            YtMusic.likePlaylistOrAlbum(it)
+                                                        }
+                                                    }
+                                            }
                                     },
                                     onLongClick = {
                                         SmartMessage(
