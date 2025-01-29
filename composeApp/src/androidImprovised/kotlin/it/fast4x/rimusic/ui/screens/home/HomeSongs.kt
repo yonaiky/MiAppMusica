@@ -87,7 +87,6 @@ import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.DelSongDialog
 import it.fast4x.rimusic.ui.components.tab.DeleteHiddenSongsDialog
-import it.fast4x.rimusic.ui.components.tab.HideSongDialog
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -159,6 +158,7 @@ import me.knighthat.component.SongItem
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
+import me.knighthat.component.tab.HideSongDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
@@ -264,7 +264,7 @@ fun HomeSongs(
     val downloadAllDialog = DownloadAllSongsDialog { getMediaItems().map( MediaItem::asSong ) }
     val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog { getMediaItems().map( MediaItem::asSong ) }
     val deleteSongDialog =  DelSongDialog.init()
-    val hideSongDialog = HideSongDialog.init()
+    val hideSongDialog = HideSongDialog()
     val deleteHiddenSongs = DeleteHiddenSongsDialog.init()
 
     val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
@@ -770,7 +770,7 @@ fun HomeSongs(
                                         val hideAction =
                                             if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
                                                 {
-                                                    hideSongDialog.song = Optional.of(song)
+                                                    hideSongDialog.song = Optional.of(song.song)
                                                     hideSongDialog.onShortClick()
                                                 }
                                             } else null

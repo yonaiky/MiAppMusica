@@ -1,9 +1,9 @@
-package it.fast4x.rimusic.ui.components.tab
+package me.knighthat.component.tab
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
@@ -15,18 +15,17 @@ import it.fast4x.rimusic.ui.components.MenuState
 
 @UnstableApi
 class HideSongDialog private constructor(
-    private val binder: PlayerServiceModern.Binder?,
     activeState: MutableState<Boolean>,
-    menuState: MenuState
-): DelSongDialog(binder, activeState, menuState) {
+    menuState: MenuState,
+    private val binder: PlayerServiceModern.Binder?
+) : DeleteSongDialog(activeState, menuState, binder) {
 
     companion object {
-        @JvmStatic
         @Composable
-        fun init() = HideSongDialog(
-            LocalPlayerServiceBinder.current,
-            rememberSaveable { mutableStateOf( false ) },
-            LocalMenuState.current
+        operator fun invoke() = HideSongDialog(
+            remember { mutableStateOf(false) },
+            LocalMenuState.current,
+            LocalPlayerServiceBinder.current
         )
     }
 
@@ -40,12 +39,12 @@ class HideSongDialog private constructor(
         song.ifPresent {
             Database.asyncTransaction {
                 menuState.hide()
-                binder?.cache?.removeResource(it.song.id)
-                binder?.downloadCache?.removeResource(it.song.id)
-                resetFormatContentLength(it.song.id)
+                binder?.cache?.removeResource( it.id )
+                binder?.downloadCache?.removeResource( it.id )
+                resetFormatContentLength( it.id )
                 incrementTotalPlayTimeMs(
-                    it.song.id,
-                    -it.song.totalPlayTimeMs
+                    it.id,
+                    -it.totalPlayTimeMs
                 )
             }
         }
