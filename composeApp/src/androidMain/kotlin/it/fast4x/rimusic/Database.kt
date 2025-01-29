@@ -2318,6 +2318,9 @@ interface Database {
     fun insert(format: Format)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(artist: Artist)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(searchQuery: SearchQuery)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

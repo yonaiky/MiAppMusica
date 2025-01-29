@@ -52,6 +52,20 @@ object YtMusic {
         println("YtMusic removeFromPlaylist error: ${it.stackTraceToString()}")
     }
 
+    suspend fun subscribeChannel(channelId: String) = runCatching {
+        println("YtMusic subscribeChannel channelId: $channelId")
+        Innertube.subscribeChannel(channelId)
+    }.onFailure {
+        println("YtMusic subscribeChannel error: ${it.stackTraceToString()}")
+    }
+
+    suspend fun unsubscribeChannel(channelId: String) = runCatching {
+        println("YtMusic unsubscribeChannel channelId: $channelId")
+        Innertube.unsubscribeChannel(channelId)
+    }.onFailure {
+        println("YtMusic unsubscribeChannel error: ${it.stackTraceToString()}")
+    }
+
     suspend fun getHomePage(setLogin: Boolean = false): Result<HomePage> = runCatching {
 
         var response = Innertube.browse(browseId = "FEmusic_home", setLogin = setLogin).body<BrowseResponse>()
@@ -125,7 +139,8 @@ object YtMusic {
                 thumbnail = response.header?.musicImmersiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
                     ?: response.header?.musicVisualHeaderRenderer?.foregroundThumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
                     ?: response.header?.musicDetailHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
-                subscribersCountText = null,
+                channelId = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer?.channelId,
+                subscribersCountText = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer?.subscriberCountText?.runs?.firstOrNull()?.text,
             ),
             sections = sections,
             description = response.header?.musicImmersiveHeaderRenderer?.description?.runs?.firstOrNull()?.text,
@@ -375,6 +390,7 @@ object YtMusic {
         val songs = contents?.mapNotNull {
             it.musicResponsiveListItemRenderer?.let { it1 -> AlbumPage.getSong(it1) }
         }
+        println("mediaItem getAlbumSongs songs: $songs")
         songs!!
     }
 

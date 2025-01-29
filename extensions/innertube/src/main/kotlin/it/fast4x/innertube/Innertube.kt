@@ -61,6 +61,7 @@ import it.fast4x.innertube.models.bodies.EditPlaylistBody
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.bodies.PlaylistDeleteBody
 import it.fast4x.innertube.models.MusicShelfRenderer
+import it.fast4x.innertube.models.bodies.SubscribeBody
 import it.fast4x.innertube.utils.NewPipeUtils
 import it.fast4x.innertube.utils.NewPipeUtils.decodeSignatureCipher
 import it.fast4x.innertube.utils.ProxyPreferences
@@ -206,6 +207,8 @@ object Innertube {
     internal const val playlistCreate = "/youtubei/v1/playlist/create"
     internal const val playlistDelete = "/youtubei/v1/playlist/delete"
     internal const val playlistEdit = "/youtubei/v1/browse/edit_playlist"
+    internal const val subscribe = "/youtubei/v1/subscription/subscribe"
+    internal const val unsubscribe = "/youtubei/v1/subscription/unsubscribe"
 
 
     internal const val musicResponsiveListItemRendererMask = "musicResponsiveListItemRenderer(flexColumns,fixedColumns,thumbnail,navigationEndpoint,badges)"
@@ -309,6 +312,7 @@ object Innertube {
     data class ArtistItem(
         val info: Info<NavigationEndpoint.Endpoint.Browse>?,
         val subscribersCountText: String?,
+        val channelId: String? = null,
         override val thumbnail: Thumbnail?
     ) : Item() {
         override val key get() = info!!.endpoint!!.browseId!!
@@ -642,6 +646,30 @@ object Innertube {
                         setVideoId = setVideoId,
                     )
                 )
+            )
+        )
+    }
+
+    suspend fun subscribeChannel(
+        channelId: String,
+    ) = client.post(subscribe) {
+        setLogin(setLogin = true)
+        setBody(
+            SubscribeBody(
+                context = Context.DefaultWeb,
+                channelIds = listOf(channelId)
+            )
+        )
+    }
+
+    suspend fun unsubscribeChannel(
+        channelId: String,
+    ) = client.post(unsubscribe) {
+        setLogin(setLogin = true)
+        setBody(
+            SubscribeBody(
+                context = Context.DefaultWeb,
+                channelIds = listOf(channelId)
             )
         )
     }

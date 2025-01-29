@@ -178,6 +178,7 @@ import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
+import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.checkFileExists
@@ -320,7 +321,6 @@ fun LocalPlaylistSongs(
     var relatedSongsRecommendationResult by persist<Result<Innertube.RelatedSongs?>?>(tag = "home/relatedSongsResult")
     var songBaseRecommendation by persist<SongEntity?>("home/songBaseRecommendation")
     var positionsRecommendationList = arrayListOf<Int>()
-    var autosync by rememberPreference(autosyncKey, false)
     var songMatchingDialogEnable by remember { mutableStateOf(false) }
     var matchingSongEntity by remember { mutableStateOf(SongEntity(
         Song(
@@ -481,6 +481,11 @@ fun LocalPlaylistSongs(
         )
     }
     fun sync() {
+        SmartMessage(
+            message = context.resources.getString(R.string.syncing),
+            durationLong = true,
+            context = context,
+        )
         playlistPreview?.let { playlistPreview ->
             if (!playlistPreview.playlist.name.startsWith(
                     PIPED_PREFIX,
@@ -905,6 +910,13 @@ fun LocalPlaylistSongs(
             showGetAlbumVersionDialogue = false
             getAlbumVersion = false
         }
+    }
+
+    var justSynced by rememberSaveable { mutableStateOf(false) }
+
+    if (isAutoSyncEnabled() && !justSynced && playlistPreview?.let { playlist -> !playlist.playlist.browseId.isNullOrBlank() } == true) {
+        sync()
+        justSynced = true
     }
 
     Box(
@@ -1674,15 +1686,38 @@ fun LocalPlaylistSongs(
                                     FilterMenu(
                                         title = stringResource(R.string.filter_by),
                                         onDismiss = menuState::hide,
-                                        onAll = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.All },
-                                        onOnlineSongs = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.OnlineSongs },
-                                        onFavorites =  { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Favorites },
-                                        onVideos = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Videos },
-                                        onLocal = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Local },
-                                        onUnmatched = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Unmatched },
-                                        onDownloaded = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Downloaded },
-                                        onCached = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Cached },
-                                        onExplicit = { playlistSongsTypeFilter = PlaylistSongsTypeFilter.Explicit },
+                                        onAll = {
+                                            playlistSongsTypeFilter = PlaylistSongsTypeFilter.All
+                                        },
+                                        onOnlineSongs = {
+                                            playlistSongsTypeFilter =
+                                                PlaylistSongsTypeFilter.OnlineSongs
+                                        },
+                                        onFavorites = {
+                                            playlistSongsTypeFilter =
+                                                PlaylistSongsTypeFilter.Favorites
+                                        },
+                                        onVideos = {
+                                            playlistSongsTypeFilter = PlaylistSongsTypeFilter.Videos
+                                        },
+                                        onLocal = {
+                                            playlistSongsTypeFilter = PlaylistSongsTypeFilter.Local
+                                        },
+                                        onUnmatched = {
+                                            playlistSongsTypeFilter =
+                                                PlaylistSongsTypeFilter.Unmatched
+                                        },
+                                        onDownloaded = {
+                                            playlistSongsTypeFilter =
+                                                PlaylistSongsTypeFilter.Downloaded
+                                        },
+                                        onCached = {
+                                            playlistSongsTypeFilter = PlaylistSongsTypeFilter.Cached
+                                        },
+                                        onExplicit = {
+                                            playlistSongsTypeFilter =
+                                                PlaylistSongsTypeFilter.Explicit
+                                        },
                                     )
                                 }
 
@@ -2095,7 +2130,7 @@ fun LocalPlaylistSongs(
                                     },
                                     onClick = {
                                         if (!selectItems) {
-                                            if (song.song.thumbnailUrl == ""){
+                                            if (song.song.thumbnailUrl == "") {
                                                 songMatchingDialogEnable = true
                                                 matchingSongEntity = song
                                             } else if (song.song.likedAt != -1L) {
@@ -2112,7 +2147,11 @@ fun LocalPlaylistSongs(
                                                     }
                                             } else {
                                                 CoroutineScope(Dispatchers.Main).launch {
-                                                    SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
+                                                    SmartMessage(
+                                                        context.resources.getString(R.string.disliked_this_song),
+                                                        type = PopupType.Error,
+                                                        context = context
+                                                    )
                                                 }
                                             }
                                         } else checkedState.value = !checkedState.value
