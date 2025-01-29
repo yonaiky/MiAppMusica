@@ -168,7 +168,6 @@ import timber.log.Timber
 import java.util.Optional
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.time.Duration
 
 
 @OptIn(
@@ -346,31 +345,35 @@ fun HomeSongs(
         if( builtInPlaylist == BuiltInPlaylist.OnDevice ) return@LaunchedEffect
 
         when( builtInPlaylist ) {
-            BuiltInPlaylist.All -> {
-                Database.listAllSongs( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() )
-            }
-            BuiltInPlaylist.Downloaded -> {
-                val filterList = MyDownloadHelper.downloads.value.values.filter {
-                    it.state == Download.STATE_COMPLETED
-                }.map { it.request.id }
-                println("HomeSongs: filterList: ${filterList.size} total downloads ${MyDownloadHelper.downloads.value.size}")
-                Database.listAllSongs( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown(), filterList )
-            }
-            BuiltInPlaylist.Favorites -> Database.listFavoriteSongs( songSort.sortBy, songSort.sortOrder )
-            BuiltInPlaylist.Offline -> Database.listOfflineSongs( songSort.sortBy, songSort.sortOrder )
-            BuiltInPlaylist.Top -> {
-                println("HomeSongs: topPlaylists period: ${topPlaylists.period.duration}")
-                if (topPlaylists.period.duration == Duration.INFINITE)
-                    Database.songsEntityByPlayTimeWithLimitDesc(limit = maxTopPlaylistItems.toInt())
-                else
-                    Database.trendingSongEntity(
-                        limit = maxTopPlaylistItems.toInt(),
-                        period = topPlaylists.period.duration.inWholeMilliseconds
-                    )
-            }
+            BuiltInPlaylist.All -> Database.findAllSongs( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() )
+
+            BuiltInPlaylist.Downloaded -> Database.findAllSongs(
+                sortBy = songSort.sortBy,
+                sortOrder = songSort.sortOrder,
+                showHidden = hiddenSongs.isShown(),
+                filterList = MyDownloadHelper.downloads
+                                             .value
+                                             .values
+                                             .filter {
+                                                 it.state == Download.STATE_COMPLETED
+                                             }.map {
+                                                 it.request.id
+                                             }
+            )
+
+            BuiltInPlaylist.Top -> Database.mostListenedSongs(
+                period = topPlaylists.period.duration.inWholeMilliseconds,
+                limit = maxTopPlaylistItems.toLong()
+            )
+
+            BuiltInPlaylist.Favorites -> Database.findFavoriteSongs( songSort.sortBy, songSort.sortOrder )
+
+            BuiltInPlaylist.Offline -> Database.findOfflineSongs( songSort.sortBy, songSort.sortOrder )
+
             BuiltInPlaylist.OnDevice -> flowOf()
 
-        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect {
+        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { list ->
+            val fromDatabase = list.map { SongEntity(it) }
             /*
                 When [builtInPlaylist] goes from [BuiltInPlaylist.All] to [BuiltInPlaylist.Downloaded]
                 or vice versa, the list refuses to update because new list and [items] contain
@@ -378,12 +381,12 @@ fun HomeSongs(
                 To counter this, we need to manually clear the list and update it
                 with a new one (with a little delay in between to prevent race condition)
             */
-            if( it.containsAll( items ) ) {
+            if( fromDatabase.containsAll( items ) ) {
                 items = emptyList()
                 delay( 100 )
             }
 
-            items = it
+            items = fromDatabase
         }
     }
 

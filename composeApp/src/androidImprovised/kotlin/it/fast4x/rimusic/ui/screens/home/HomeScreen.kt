@@ -36,6 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.knighthat.ui.screens.home.HomeSongs
 import kotlin.system.exitProcess
 
 
@@ -120,17 +121,7 @@ fun HomeScreen(
 
                 )
 
-                1 -> HomeSongs(
-                    navController = navController,
-                    onSearchClick = {
-                        //searchRoute("")
-                        navController.navigate(NavRoutes.search.name)
-                    },
-                    onSettingsClick = {
-                        //settingsRoute()
-                        navController.navigate(NavRoutes.settings.name)
-                    }
-                )
+                1 -> HomeSongs( navController )
 
                 2 -> HomeArtists(
                     onArtistClick = {
