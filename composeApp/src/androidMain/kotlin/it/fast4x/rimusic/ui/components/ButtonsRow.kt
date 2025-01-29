@@ -13,10 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.colorPalette
 
 @Composable
 fun <E> ButtonsRow(
@@ -49,6 +50,44 @@ fun <E> ButtonsRow(
                         selectedLabelColor = colorPalette().text,
                     ),
                 onClick = { onValueUpdate(value) }
+            )
+
+            Spacer(Modifier.width(8.dp))
+        }
+    }
+}
+
+@Composable
+fun ButtonsRow(
+    chips: List<BuiltInPlaylist>,
+    currentValue: BuiltInPlaylist,
+    onValueUpdate: (BuiltInPlaylist) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+    ) {
+        Spacer(Modifier.width(12.dp))
+
+        chips.forEach { playlistType ->
+            FilterChip(
+                label = { Text( playlistType.text ) },
+                selected = currentValue == playlistType,
+                colors = FilterChipDefaults
+                    .filterChipColors(
+                        containerColor = colorPalette().background1,
+                        labelColor = colorPalette().text,
+                        selectedContainerColor = when (colorPaletteMode) {
+                            ColorPaletteMode.Dark, ColorPaletteMode.PitchBlack
+                                -> colorPalette().textDisabled
+                            else -> colorPalette().background3
+                        } ,
+                        selectedLabelColor = colorPalette().text,
+                    ),
+                onClick = { onValueUpdate(playlistType) }
             )
 
             Spacer(Modifier.width(8.dp))
