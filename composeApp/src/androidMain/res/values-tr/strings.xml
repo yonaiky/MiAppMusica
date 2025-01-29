@@ -886,9 +886,11 @@
     <string name="match_song">Bu Şarkıyı Tekrar Eşleştir</string>
     <string name="match_song_grid">Bu Şarkıyı Tekrar Eşleştir</string>
     <string name="songsnotfound">Şarkılar Bulunamadı</string>
-    <string name="swipe_Animation_No_Thumbnail">Swipe Animation</string>
-    <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
-    <string name="online_songs">Online Songs</string>
-    <string name="explicit">Explicit</string>
-    <string name="filter_by">Filter By</string>
+    <string name="swipe_Animation_No_Thumbnail">Kaydırma Animasyonu</string>
+    <string name="do_you_really_want_to_match_all">Gerçekten tüm videoları/eşleşmeyen şarkıları eşleşen şarkılarla değiştirmek istiyor musunuz? Bu eylem geri döndürülemez</string>
+    <string name="online_songs">Çevrimiçi Şarkılar</string>
+    <string name="explicit">Müstehcen</string>
+    <string name="filter_by">Filtrele</string>
+    <string name="updating_playlist">Updating the Playlist. Please Wait. Do not Minimize or Exit the App</string>
+    <string name="updating_playlist_message">Update the Songs with the Missing Album ID</string>
 </resources>
