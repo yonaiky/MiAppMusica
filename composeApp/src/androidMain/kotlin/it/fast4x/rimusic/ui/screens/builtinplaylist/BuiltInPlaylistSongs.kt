@@ -43,7 +43,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -151,7 +150,6 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.utils.formatAsDuration
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -411,65 +409,42 @@ fun BuiltInPlaylistSongs(
         mutableStateOf("")
     }
 
-    val coroutineScope = rememberCoroutineScope()
-
     val exportLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
             if (uri == null) return@rememberLauncherForActivityResult
-            coroutineScope.launch (Dispatchers.IO){
-                context.applicationContext.contentResolver.openOutputStream(uri)
-                    ?.use { outputStream ->
-                        csvWriter().open(outputStream) {
-                            writeRow(
-                                "PlaylistBrowseId",
-                                "PlaylistName",
-                                "MediaId",
-                                "Title",
-                                "Artists",
-                                "Duration",
-                                "ThumbnailUrl",
-                                "AlbumId",
-                                "AlbumTitle",
-                                "ArtistIds"
-                            )
-                            if (listMediaItems.isEmpty()) {
-                                songs.forEach {
-                                    val artistInfos = Database.songArtistInfo(it.asMediaItem.mediaId)
-                                    val albumInfo = Database.songAlbumInfo(it.asMediaItem.mediaId)
-                                    writeRow(
-                                        "",
-                                        plistName,
-                                        it.id,
-                                        it.title,
-                                        artistInfos.joinToString(",") { it.name ?: "" },
-                                        it.durationText,
-                                        it.thumbnailUrl,
-                                        albumInfo?.id,
-                                        albumInfo?.name,
-                                        artistInfos.joinToString(",") { it.id }
-                                    )
-                                }
-                            } else {
-                                listMediaItems.forEach {
-                                    val artistInfos = Database.songArtistInfo(it.mediaId)
-                                    val albumInfo = Database.songAlbumInfo(it.mediaId)
-                                    writeRow(
-                                        "",
-                                        plistName,
-                                        it.mediaId,
-                                        it.mediaMetadata.title,
-                                        artistInfos.joinToString(",") { it.name ?: "" },
-                                        formatAsDuration(it.mediaMetadata.durationMs ?: 0),
-                                        it.mediaMetadata.artworkUri,
-                                        albumInfo?.id,
-                                        albumInfo?.name,
-                                        artistInfos.joinToString(",") { it.id }
-                                    )
-                                }
+
+            context.applicationContext.contentResolver.openOutputStream(uri)
+                ?.use { outputStream ->
+                    csvWriter().open(outputStream){
+                        writeRow("PlaylistBrowseId", "PlaylistName", "MediaId", "Title", "Artists", "Duration", "ThumbnailUrl")
+                        if (listMediaItems.isEmpty()) {
+                            songs.forEach {
+                                writeRow(
+                                    "",
+                                    plistName,
+                                    it.id,
+                                    it.title,
+                                    it.artistsText,
+                                    it.durationText,
+                                    it.thumbnailUrl
+                                )
+                            }
+                        } else {
+                            listMediaItems.forEach {
+                                writeRow(
+                                    "",
+                                    plistName,
+                                    it.mediaId,
+                                    it.mediaMetadata.title,
+                                    it.mediaMetadata.artist,
+                                    "",
+                                    it.mediaMetadata.artworkUri
+                                )
                             }
                         }
                     }
-            }
+                }
+
         }
 
     var isExporting by rememberSaveable {
