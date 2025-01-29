@@ -85,8 +85,6 @@ import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.DelSongDialog
-import it.fast4x.rimusic.ui.components.tab.DeleteHiddenSongsDialog
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -158,6 +156,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
+import me.knighthat.component.tab.DeleteHiddenSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HideSongDialog
@@ -265,7 +264,7 @@ fun HomeSongs(
     val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog { getMediaItems().map( MediaItem::asSong ) }
     val deleteSongDialog =  DelSongDialog.init()
     val hideSongDialog = HideSongDialog()
-    val deleteHiddenSongs = DeleteHiddenSongsDialog.init()
+    val deleteHiddenSongs = DeleteHiddenSongsDialog()
 
     val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
 

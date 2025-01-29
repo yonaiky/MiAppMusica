@@ -1,9 +1,9 @@
-package it.fast4x.rimusic.ui.components.tab
+package me.knighthat.component.tab
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
@@ -15,18 +15,17 @@ import it.fast4x.rimusic.ui.components.MenuState
 
 @UnstableApi
 class DeleteHiddenSongsDialog private constructor(
-    private val binder: PlayerServiceModern.Binder?,
     activeState: MutableState<Boolean>,
-    menuState: MenuState
-): DelSongDialog(binder, activeState, menuState) {
+    menuState: MenuState,
+    binder: PlayerServiceModern.Binder?
+): DeleteSongDialog(activeState, menuState, binder) {
 
     companion object {
-        @JvmStatic
         @Composable
-        fun init() = DeleteHiddenSongsDialog(
-            LocalPlayerServiceBinder.current,
-            rememberSaveable { mutableStateOf( false ) },
-            LocalMenuState.current
+        operator fun invoke() = DeleteHiddenSongsDialog(
+            remember { mutableStateOf(false) },
+            LocalMenuState.current,
+            LocalPlayerServiceBinder.current
         )
     }
 
@@ -37,14 +36,13 @@ class DeleteHiddenSongsDialog private constructor(
         get() = stringResource( R.string.delete_hidden_songs )
 
     override fun onConfirm() {
-
-            Database.asyncTransaction {
-                menuState.hide()
-                deleteHiddenSongs()
-                cleanSongArtistMap()
-                cleanSongAlbumMap()
-                cleanSongPlaylistMap()
-            }
+        Database.asyncTransaction {
+            menuState.hide()
+            deleteHiddenSongs()
+            cleanSongArtistMap()
+            cleanSongAlbumMap()
+            cleanSongPlaylistMap()
+        }
 
         onDismiss()
     }
