@@ -893,6 +893,6 @@
     <string name="online_songs">Онлайн песни</string>
     <string name="explicit">18+</string>
     <string name="filter_by">Фильтровать по</string>
-    <string name="updating_playlist">Updating the Playlist. Please Wait. Do not Minimize or Exit the App</string>
-    <string name="updating_playlist_message">Update the Songs with the Missing Album ID</string>
+    <string name="updating_playlist">Обновление плейлиста. Пожалуйста, подождите. Не сворачивайте и не выходите из приложения</string>
+    <string name="updating_playlist_message">Обновить песни с отсутствующим идентификатором альбома</string>
 </resources>
