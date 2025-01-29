@@ -660,7 +660,7 @@ fun LocalPlaylistSongsModern(
                                         it.mediaId,
                                         it.mediaMetadata.title,
                                         artistInfos.joinToString(",") { it.name ?: "" },
-                                        formatAsDuration(it.mediaMetadata.durationMs ?: 0),
+                                        it.asSong.durationText,
                                         it.mediaMetadata.artworkUri,
                                         albumInfo?.id,
                                         albumInfo?.name,

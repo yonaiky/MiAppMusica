@@ -195,6 +195,7 @@ import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isNowPlaying
@@ -734,7 +735,7 @@ fun HomeSongsModern(
                                         it.mediaId,
                                         it.mediaMetadata.title,
                                         artistInfos.joinToString(",") { it.name ?: "" },
-                                        formatAsDuration(it.mediaMetadata.durationMs ?: 0),
+                                        it.asSong.durationText,
                                         it.mediaMetadata.artworkUri,
                                         albumInfo?.id,
                                         albumInfo?.name,

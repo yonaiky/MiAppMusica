@@ -143,6 +143,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.formatAsDuration
 import kotlinx.coroutines.Dispatchers
@@ -318,7 +319,7 @@ fun Queue(
                                             it.mediaItem.mediaId,
                                             it.mediaItem.mediaMetadata.title,
                                             artistInfos.joinToString(",") { it.name ?: "" },
-                                            formatAsDuration(it.mediaItem.mediaMetadata.durationMs ?: 0),
+                                            it.mediaItem.asSong.durationText,
                                             it.mediaItem.mediaMetadata.artworkUri,
                                             albumInfo?.id,
                                             albumInfo?.name,
@@ -335,7 +336,7 @@ fun Queue(
                                             it.mediaId,
                                             it.mediaMetadata.title,
                                             artistInfos.joinToString(",") { it.name ?: "" },
-                                            formatAsDuration(it.mediaMetadata.durationMs ?: 0),
+                                            it.asSong.durationText,
                                             it.mediaMetadata.artworkUri,
                                             albumInfo?.id,
                                             albumInfo?.name,
