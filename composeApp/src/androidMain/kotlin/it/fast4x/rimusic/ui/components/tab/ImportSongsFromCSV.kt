@@ -67,19 +67,19 @@ class ImportSongsFromCSV private constructor(
                                          val artistNames = row["Artists"]?.split(",")
                                          val artistIds = row["ArtistIds"]?.split(",")
                                          val artists = mutableListOf<Artist>()
-                                         if (artistIds != null) {
-                                           for(idx in artistIds.indices){
-                                            val artistName = artistNames?.getOrNull(idx)
-                                            val artistId = artistIds.getOrNull(idx)
-                                            if(artistId!=null){
-                                                val artist = Artist(
+                                         if (artistIds != null && (artistNames?.size == artistIds.size)) {
+                                            for(idx in artistIds.indices){
+                                                val artistName = artistNames.getOrNull(idx)
+                                                val artistId = artistIds.getOrNull(idx)
+                                                if(artistId!=null){
+                                                    val artist = Artist(
                                                     id = artistId,
                                                     name = artistName
-                                                )
-                                                artists.add(artist)
+                                                    )
+                                                    artists.add(artist)
+                                                }
                                             }
-                                    }
-                                }
+                                         }
 
                                 afterTransaction( index, song, album, artists )
                             }
