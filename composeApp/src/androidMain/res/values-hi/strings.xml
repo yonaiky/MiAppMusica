@@ -516,7 +516,7 @@
     <string name="enable_monthly_playlists_creation">Enable monthly playlists creation</string>
     <string name="info_no_singles_yet">No singles yet</string>
     <string name="info_no_albums_yet">No albums yet</string>
-    <string name="info_no_songs_yet">No songs yet</string>
+    <string name="info_no_songs_yet">कोई गाना नहीं</string>
     <string name="theme_customized">Customized</string>
     <string name="do_you_really_want_to_reset_the_custom_light_theme_colors">Do you really want to reset the custom light theme colors?</string>
     <string name="do_you_really_want_to_reset_the_custom_dark_theme_colors">Do you really want to reset the custom dark theme colors</string>
