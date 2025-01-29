@@ -20,6 +20,8 @@ enum class MaxTopPlaylistItems {
     `200`;
 
     fun toInt(): Int = this.name.toInt()
+
+    fun toLong(): Long = this.name.toLong()
 }
 
 enum class TopPlaylistPeriod(
