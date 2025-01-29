@@ -891,4 +891,6 @@
     <string name="online_songs">Онлайн пісні</string>
     <string name="explicit">18+</string>
     <string name="filter_by">Фільтрувати по</string>
+    <string name="updating_playlist">Updating the Playlist. Please Wait. Do not Minimize or Exit the App</string>
+    <string name="updating_playlist_message">Update the Songs with the Missing Album ID</string>
 </resources>
