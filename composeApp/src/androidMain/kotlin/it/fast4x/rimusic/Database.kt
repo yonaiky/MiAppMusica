@@ -1344,9 +1344,6 @@ interface Database {
     @Query("SELECT likedAt FROM Song WHERE id = :songId")
     fun getLikedAt(songId: String): Long?
 
-    @Query("SELECT totalPlayTimeMs FROM Song WHERE id = :songId")
-    fun getTotalPlaytime(songId: String): Long?
-
     @Query("UPDATE Album SET bookmarkedAt = :bookmarkedAt WHERE id = :id")
     fun bookmarkAlbum(id: String, bookmarkedAt: Long?): Int
 
@@ -1480,9 +1477,6 @@ interface Database {
 
     @Query("SELECT bookmarkedAt FROM Album WHERE id = :id")
     fun albumBookmarkedAt(id: String): Flow<Long?>
-
-    @Query("SELECT bookmarkedAt FROM Album WHERE id = :id")
-    fun albumBookmarkedAtLong(id: String): Long?
 
     @Query("SELECT count(id) FROM Album WHERE id = :id and bookmarkedAt IS NOT NULL")
     fun albumBookmarked(id: String): Int
@@ -2239,11 +2233,8 @@ interface Database {
     @Query("SELECT * FROM Song WHERE title LIKE :query OR artistsText LIKE :query")
     fun search(query: String): Flow<List<Song>>
 
-    @Query("SELECT albumId AS id, NULL AS name, 0 AS size FROM SongAlbumMap WHERE songId = :songId")
+    @Query("SELECT albumId AS id, Album.title AS name, 0 AS size FROM SongAlbumMap LEFT JOIN Album ON id=albumId WHERE songId = :songId")
     fun songAlbumInfo(songId: String): Info?
-
-    @Query("SELECT albumId AS id FROM SongAlbumMap WHERE songId = :songId")
-    fun songAlbumId(songId: String): String?
 
     @Query("SELECT id, name, 0 AS size FROM Artist LEFT JOIN SongArtistMap ON id = artistId WHERE songId = :songId")
     fun songArtistInfo(songId: String): List<Info>
