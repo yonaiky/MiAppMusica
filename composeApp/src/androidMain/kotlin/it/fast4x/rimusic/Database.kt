@@ -2246,7 +2246,7 @@ interface Database {
     @Query("SELECT * FROM Song WHERE title LIKE :query OR artistsText LIKE :query")
     fun search(query: String): Flow<List<Song>>
 
-    @Query("SELECT albumId AS id, NULL AS name, 0 AS size FROM SongAlbumMap WHERE songId = :songId")
+    @Query("SELECT albumId AS id, Album.title AS name, 0 AS size FROM SongAlbumMap LEFT JOIN Album ON id=albumId WHERE songId = :songId")
     fun songAlbumInfo(songId: String): Info?
 
     @Query("SELECT id, name, 0 AS size FROM Artist LEFT JOIN SongArtistMap ON id = artistId WHERE songId = :songId")

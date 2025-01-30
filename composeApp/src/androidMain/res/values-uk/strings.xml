@@ -891,4 +891,6 @@
     <string name="online_songs">Онлайн пісні</string>
     <string name="explicit">18+</string>
     <string name="filter_by">Фільтрувати по</string>
+    <string name="updating_playlist">Оновлення плейлиста. Зачекайте, будь ласка. Не звертайтеся та не виходьте з програми</string>
+    <string name="updating_playlist_message">Оновити пісні з відсутнім ідентифікатором альбому</string>
 </resources>

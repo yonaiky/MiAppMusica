@@ -888,7 +888,9 @@
     <string name="songsnotfound">Mahnılar Tapılmadı</string>
     <string name="swipe_Animation_No_Thumbnail">Sürüşdürmə Animasiyası</string>
     <string name="do_you_really_want_to_match_all">Həqiqətən bütün videoları/uyuşmayan mahnıları uyğun mahnılarla əvəz etmək istəyirsiniz? Bu fəaliyyət dəyişməzdir</string>
-    <string name="online_songs">Online Songs</string>
-    <string name="explicit">Explicit</string>
-    <string name="filter_by">Filter By</string>
+    <string name="online_songs">Onlayn Mahnılar</string>
+    <string name="explicit">Dəqiq</string>
+    <string name="filter_by">Sırala</string>
+    <string name="updating_playlist">Updating the Playlist. Please Wait. Do not Minimize or Exit the App</string>
+    <string name="updating_playlist_message">Update the Songs with the Missing Album ID</string>
 </resources>

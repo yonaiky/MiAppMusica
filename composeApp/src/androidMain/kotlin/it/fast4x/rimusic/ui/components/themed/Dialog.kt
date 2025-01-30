@@ -146,7 +146,10 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.thumbnailSpacingKey
 import kotlinx.coroutines.delay
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongAlbumMap
+import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -1828,6 +1831,7 @@ fun InProgressDialog(
     }
 }
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 fun SongMatchingDialog(
     songToRematch : Song,
@@ -1863,6 +1867,7 @@ fun SongMatchingDialog(
             var songsList by remember { mutableStateOf<List<Innertube.SongItem?>>(emptyList()) }
             var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}"))}
             var startSearch by remember { mutableStateOf(false) }
+
             LaunchedEffect(Unit,startSearch) {
                 runBlocking(Dispatchers.IO) {
                     val searchQuery = Innertube.searchPage(
@@ -1999,6 +2004,8 @@ fun SongMatchingDialog(
             if (songsList.isNotEmpty()) {
                 LazyColumn {
                     itemsIndexed(songsList) { _, song ->
+                        val artistsNames = song?.authors?.filter { it.endpoint != null }?.map { it.name }
+                        val artistsIds = song?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
                         if (song != null) {
                             Row(horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically,
@@ -2009,7 +2016,9 @@ fun SongMatchingDialog(
                                     .clickable(onClick = {
                                         Database.asyncTransaction {
                                             deleteSongFromPlaylist(songToRematch.id, playlistId)
-                                            Database.insert(song.asSong)
+                                            if (songExist(song.asSong.id) == 0) {
+                                                Database.insert(song.asSong)
+                                            }
                                             insert(
                                                 SongPlaylistMap(
                                                     songId = song.asMediaItem.mediaId,
@@ -2017,6 +2026,29 @@ fun SongMatchingDialog(
                                                     position = position
                                                 )
                                             )
+                                            insert(
+                                                Album(id = song.album?.endpoint?.browseId ?: "", title = song.asMediaItem.mediaMetadata.albumTitle?.toString()),
+                                                SongAlbumMap(songId = song.asMediaItem.mediaId, albumId = song.album?.endpoint?.browseId ?: "", position = null)
+                                            )
+                                            if ((artistsNames != null) && (artistsIds != null)) {
+                                                artistsNames.let { artistNames ->
+                                                    artistsIds.let { artistIds ->
+                                                        if (artistNames.size == artistIds.size) {
+                                                            insert(
+                                                                artistNames.mapIndexed { index, artistName ->
+                                                                    Artist(id = (artistIds[index]) ?: "", name = artistName)
+                                                                },
+                                                                artistIds.map { artistId ->
+                                                                    SongArtistMap(
+                                                                        songId = song.asMediaItem.mediaId,
+                                                                        artistId = (artistId) ?: ""
+                                                                    )
+                                                                }
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                         onDismiss()
                                     }
