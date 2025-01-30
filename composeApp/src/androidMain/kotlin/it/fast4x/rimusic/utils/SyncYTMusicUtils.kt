@@ -60,11 +60,11 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                     }
 
                     Database.playlistWithSongsByBrowseId(playlistIdChecked).firstOrNull()?.let {
-                        if (it.songs.isEmpty())
-                            localPlaylist?.id?.let { it1 ->
+                        if (it.playlist.id != 0L && it.songs.isEmpty())
+                            it.playlist.id.let { id ->
                                 ytmPrivatePlaylistSync(
                                     it.playlist,
-                                    it1
+                                    id
                                 )
                             }
                     }
@@ -93,18 +93,20 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                     }
                 }
             }?.getOrNull()?.let { remotePlaylist ->
-                Database.clearPlaylist(playlistId)
+                if (remotePlaylist.songs.isNotEmpty()) {
+                    Database.clearPlaylist(playlistId)
 
-                remotePlaylist.songs
-                    .map(Innertube.SongItem::asMediaItem)
-                    .onEach(Database::insert)
-                    .mapIndexed { position, mediaItem ->
-                        SongPlaylistMap(
-                            songId = mediaItem.mediaId,
-                            playlistId = playlistId,
-                            position = position
-                        )
-                    }.let(Database::insertSongPlaylistMaps)
+                    remotePlaylist.songs
+                        .map(Innertube.SongItem::asMediaItem)
+                        .onEach(Database::insert)
+                        .mapIndexed { position, mediaItem ->
+                            SongPlaylistMap(
+                                songId = mediaItem.mediaId,
+                                playlistId = playlistId,
+                                position = position
+                            )
+                        }.let(Database::insertSongPlaylistMaps)
+                }
             }
         }
 
