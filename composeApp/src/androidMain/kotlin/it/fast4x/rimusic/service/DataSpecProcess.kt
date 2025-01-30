@@ -126,7 +126,7 @@ internal suspend fun MyDownloadHelper.dataSpecProcess(
     try {
         runBlocking(Dispatchers.IO) {
             val format = getInnerTubeStream(videoId, audioQualityFormat, connectionMetered)
-            dataSpecReturn = dataSpec.withUri(Uri.parse(format?.url)) //.subrange(dataSpec.uriPositionOffset, chunkLength)
+            dataSpecReturn = dataSpec.withUri(Uri.parse(format?.url))
         }
         return dataSpecReturn
 
