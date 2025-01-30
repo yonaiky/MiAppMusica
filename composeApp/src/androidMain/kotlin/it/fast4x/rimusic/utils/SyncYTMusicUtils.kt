@@ -28,7 +28,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 suspend fun importYTMPrivatePlaylists(): Boolean {
-    if (!isYouTubeSyncEnabled() && !isAutoSyncEnabled()) {
+    if (isYouTubeSyncEnabled() && isAutoSyncEnabled()) {
 
         SmartMessage(
             message = appContext().resources.getString(R.string.syncing),

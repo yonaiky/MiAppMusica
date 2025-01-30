@@ -156,7 +156,7 @@ fun AlbumScreen(
                                     currentAlbumPage
                                         .songs.distinct()
                                         .map(Innertube.SongItem::asSong)
-                                        .onEach(Database::upsert)
+                                        .onEach(Database::insert)
                                         .mapIndexed { position, song ->
                                             SongAlbumMap(
                                                 songId = song.id,

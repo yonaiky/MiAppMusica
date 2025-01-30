@@ -788,9 +788,9 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                         }
                     }
                 }
-                if (isExtPlaylist) Database.delete(song)
+                if (song.thumbnailUrl == "") Database.delete(song)
             }
-        } else if (isExtPlaylist && (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()}))){
+        } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
             songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
             Database.delete(song)
             Database.insert(songNotFound)
