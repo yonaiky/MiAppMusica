@@ -805,7 +805,7 @@ fun LocalPlaylistSongs(
     val playlistNotPipedType =
         playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX, 0, true) == false
     val hapticFeedback = LocalHapticFeedback.current
-    var unmatchedSongsCount = playlistSongs.filter { it.song.thumbnailUrl == "" }.size
+    val unmatchedSongsCount = playlistSongs.filter { it.song.thumbnailUrl == "" }.size
 
     val editThumbnailLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
@@ -1052,7 +1052,7 @@ fun LocalPlaylistSongs(
                             title = playlistSongs.size.toString(),
                             icon = painterResource(R.drawable.musical_notes)
                         )
-                        if (unmatchedSongsCount != 0) {
+                        if (unmatchedSongsCount > 0) {
                             Spacer(modifier = Modifier.height(5.dp))
                             IconInfo(
                                 title = "($unmatchedSongsCount)",
