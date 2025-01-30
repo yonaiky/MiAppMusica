@@ -893,4 +893,6 @@
     <string name="filter_by">Фільтрувати по</string>
     <string name="updating_playlist">Оновлення плейлиста. Зачекайте, будь ласка. Не звертайтеся та не виходьте з програми</string>
     <string name="updating_playlist_message">Оновити пісні з відсутнім ідентифікатором альбому</string>
+    <string name="syncing">Syncing...</string>
+    <string name="autosync_channels">Auto Sync Subscribed Channels</string>
 </resources>
