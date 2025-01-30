@@ -405,70 +405,7 @@ jobs:
             
             ## Changelogs
             
-            <details>
-            <summary>October 30th 2024</summary>
-              <ul>
-                <li>About tab make-over</li>
-              </ul>
-            </details>
-            <details>
-            <summary>October 31st 2024</summary>
-              <ul>
-                <li>Special characters are now searchable</li>
-              </ul>
-            </details>
-            <details>
-            <summary>December 8th 2024</summary>
-              <ul>
-                <li>"minified" version is introduced</li>
-              </ul>
-            </details>
-            <details>
-            <summary>December 17th 2024</summary>
-              <ul>
-              <li>
-                <details>
-                <summary>New song card (experimental)</summary>
-                  <blockquote>
-                  <img alt="reorder" src="https://i.ibb.co/t2C7g2M/20250104-125612.jpg" />
-                  <img alt="select" src="https://i.ibb.co/JsKDj6H/20250104-125527.jpg" />
-                  </blockquote>
-                </details>
-                </li>
-              </ul>
-            </details>
-            <details>
-            <summary>December 19th 2024</summary>
-              <ul>
-                <li>New update system</li>
-              </ul>
-            </details>
-            <details>
-            <summary>December 24th 2024</summary>
-              <ul>
-                <li>Bottom search box in queue</li>
-                <li>
-                <details>
-                <summary>Dynamic ellipsis menu in queue</summary>
-                  <blockquote>
-                  Buttons are only shown when there's enough space,
-                  the rest are packed inside a menu.
-                  </blockquote>
-                </details>
-                </li>
-              </ul>
-            </details>
-            <details>
-            <summary>December 26th 2024</summary>
-              <ul>
-                <li>Album screen rework, single update on open</li>
-              </ul>
-            </details>
-            <summary>January 20th 2025</summary>
-              <ul>
-                <li>Reduce load time on shuffle</li>
-              </ul>
-            </details>
+            Please visit [wiki/changelogs](https://github.com/knighthat/RiMusic/wiki/Changelogs) for details.
 
           token: ${{ secrets.RELEASE_TOKEN }}
           generate_release_notes: true
