@@ -119,14 +119,14 @@ internal suspend fun MyDownloadHelper.dataSpecProcess(
         downloadCache.isCached(videoId, dataSpec.position, length)
     ) {
         println("MyDownloadHelper DataSpecProcess download song ${videoId} from cached or local file")
-        return dataSpec //.withUri(Uri.parse(dataSpec.uri.toString()))
+        return dataSpec.withUri(Uri.parse(dataSpec.uri.toString()))
     }
 
     var dataSpecReturn: DataSpec = dataSpec
     try {
         runBlocking(Dispatchers.IO) {
             val format = getInnerTubeStream(videoId, audioQualityFormat, connectionMetered)
-            dataSpecReturn = dataSpec.withUri(Uri.parse(format?.url)).subrange(dataSpec.uriPositionOffset, chunkLength)
+            dataSpecReturn = dataSpec.withUri(Uri.parse(format?.url)) //.subrange(dataSpec.uriPositionOffset, chunkLength)
         }
         return dataSpecReturn
 

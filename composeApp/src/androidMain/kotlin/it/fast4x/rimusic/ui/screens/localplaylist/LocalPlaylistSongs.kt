@@ -92,6 +92,8 @@ import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion.songAlbumInfo
+import it.fast4x.rimusic.Database.Companion.songArtistInfo
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.MaxSongs
@@ -197,6 +199,7 @@ import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.playlistSongsTypeFilterKey
+import it.fast4x.rimusic.utils.updateLocalPlaylist
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
@@ -924,6 +927,45 @@ fun LocalPlaylistSongs(
         }
     }
 
+    var playlistUpdateDialog by remember { mutableStateOf(false) }
+    var songsUpdated by remember { mutableIntStateOf(0) }
+    var totalSongsToUpdate by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(Unit,playlistUpdateDialog){
+        Database.asyncTransaction {
+            totalSongsToUpdate = playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true && ((songAlbumInfo(it.asMediaItem.mediaId)?.id == null) || songArtistInfo(it.asMediaItem.mediaId).isEmpty()) }.size
+        }
+    }
+
+    if (playlistUpdateDialog){
+        InProgressDialog(
+            total = totalSongsToUpdate,
+            done = songsUpdated,
+            text = stringResource(R.string.updating_playlist)
+        )
+    }
+
+    LaunchedEffect(playlistUpdateDialog) {
+        withContext(Dispatchers.IO) {
+            songsUpdated = 0
+            val jobs = mutableListOf<Job>()
+            playlistAllSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true && ((songAlbumInfo(it.asMediaItem.mediaId)?.id == null) || songArtistInfo(it.asMediaItem.mediaId).isEmpty()) }.forEach { song ->
+                jobs.add(coroutineScope.launch(Dispatchers.IO) {
+                    updateLocalPlaylist(song.song)
+                }
+                )
+            }
+            while(jobs.isNotEmpty()){
+                val oldSize = jobs.size
+                jobs.removeIf{it.isCompleted}
+                songsUpdated += oldSize - jobs.size
+                delay(10)
+            }
+            playlistUpdateDialog = false
+        }
+    }
+
+
     Box(
         modifier = Modifier
             .background(colorPalette.background0)
@@ -1244,26 +1286,27 @@ fun LocalPlaylistSongs(
                                 }
                             )
                     )
-                    if (playlistPreview?.playlist?.browseId?.startsWith(YTP_PREFIX) == false)
-                        HeaderIconButton(
-                            icon = R.drawable.random,
-                            enabled = playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))},
-                            color = if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) colorPalette.text else colorPalette.textDisabled,
-                            onClick = {},
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) {
-                                            showConfirmMatchAllDialog = true
-                                        } else {
-                                            SmartMessage(context.resources.getString(R.string.no_videos_found), context = context)
-                                        }
-                                    },
-                                    onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.get_album_version), context = context)
+
+
+                    HeaderIconButton(
+                        icon = R.drawable.random,
+                        enabled = playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))},
+                        color = if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) colorPalette.text else colorPalette.textDisabled,
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {
+                                    if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) {
+                                        showConfirmMatchAllDialog = true
+                                    } else {
+                                        SmartMessage(context.resources.getString(R.string.no_videos_found), context = context)
                                     }
-                                )
-                        )
+                                },
+                                onLongClick = {
+                                    SmartMessage(context.resources.getString(R.string.get_album_version), context = context)
+                                }
+                            )
+                    )
 
                     if (showConfirmDeleteDownloadDialog) {
                         ConfirmationDialog(
@@ -1338,6 +1381,24 @@ fun LocalPlaylistSongs(
                         }
                     )
                     */
+
+                    HeaderIconButton(
+                        icon = R.drawable.update,
+                        color = colorPalette.text,
+                        onClick = {},
+                        modifier = Modifier
+                            .combinedClickable(
+                                onClick = {playlistUpdateDialog = true},
+                                onLongClick = {
+                                    SmartMessage(
+                                        context.resources.getString(R.string.updating_playlist_message),
+                                        context = context
+                                    )
+                                }
+                            )
+                    )
+
+
                     HeaderIconButton(
                         icon = R.drawable.ellipsis_horizontal,
                         color = colorPalette.text, //if (playlistWithSongs?.songs?.isNotEmpty() == true) colorPalette.text else colorPalette.textDisabled,
