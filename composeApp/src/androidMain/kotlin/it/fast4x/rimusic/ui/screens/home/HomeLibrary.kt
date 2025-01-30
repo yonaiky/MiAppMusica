@@ -74,6 +74,8 @@ import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import kotlinx.coroutines.flow.map
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.models.SongAlbumMap
+import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
@@ -219,7 +221,7 @@ fun HomeLibrary(
                     Database.insert( Playlist( plistId, it, row["PlaylistBrowseId"] ) )
                 }
         },
-        afterTransaction = { index, song ->
+        afterTransaction = { index, song, album, artists ->
             if (song.id.isBlank()) return@init
 
             Database.insert(song)
@@ -230,6 +232,28 @@ fun HomeLibrary(
                     position = index
                 )
             )
+
+            if(album.id !=""){
+                Database.insert(
+                    album,
+                    SongAlbumMap(
+                        songId = song.id,
+                        albumId = album.id,
+                        position = null
+                    )
+                )
+            }
+            if(artists.isNotEmpty()){
+                Database.insert(
+                    artists,
+                    artists.map{ artist->
+                        SongArtistMap(
+                            songId = song.id,
+                            artistId = artist.id
+                        )
+                    }
+                )
+            }
         }
     )
     val sync = autoSyncToolbutton(R.string.autosync)
