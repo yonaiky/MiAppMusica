@@ -740,6 +740,7 @@
     <string name="social_reddit_info">Připojit se k komunitě na Redditu</string>
     <string name="sleep_timer_ended">Časovač spánku ukončen</string>
     <string name="social_discord">Discord</string>
+    <string name="social_discord_info">Join the community on Discord</string>
     <string name="discord_enable_rich_presence">Povolit Discord Rich Presence</string>
     <string name="discord_disconnect">Odpojit</string>
     <string name="discord_connect">Připojit</string>
