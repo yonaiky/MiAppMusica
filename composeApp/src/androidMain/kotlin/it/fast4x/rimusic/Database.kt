@@ -2333,9 +2333,13 @@ interface Database {
 
     @Transaction
     fun insert(mediaItem: MediaItem, block: (Song) -> Song = { it }) {
+        var title = mediaItem.mediaMetadata.title!!.toString()
+        if(!title.startsWith(EXPLICIT_PREFIX, true) && mediaItem.isExplicit){
+            title = EXPLICIT_PREFIX + title
+        }
         val song = Song(
             id = mediaItem.mediaId,
-            title = mediaItem.mediaMetadata.title!!.toString(),
+            title = title,
             artistsText = mediaItem.mediaMetadata.artist?.toString(),
             durationText = mediaItem.mediaMetadata.extras?.getString("durationText"),
             thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString()
