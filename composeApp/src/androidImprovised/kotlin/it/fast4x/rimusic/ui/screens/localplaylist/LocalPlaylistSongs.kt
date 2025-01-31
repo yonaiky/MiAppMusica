@@ -768,7 +768,7 @@ fun LocalPlaylistSongs(
                         Box(
                             modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
                                                .size( 24.dp )
-                                               .zIndex(2f)
+                                               .zIndex( 2f )
                                                .align( Alignment.CenterEnd ),
                             contentAlignment = Alignment.Center
                         ) {
@@ -837,7 +837,6 @@ fun LocalPlaylistSongs(
                                 context
                             )
                         },
-                        modifier = Modifier.zIndex(2f)
                     ) {
                         me.knighthat.component.SongItem(
                             song = song,
