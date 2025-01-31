@@ -529,7 +529,7 @@ class MainActivity :
                 )
                 //TODO Manage login
             if (preferences.getBoolean(enableYouTubeLoginKey, false)) {
-                    var visitorData by rememberEncryptedPreference(
+                    var visitorData by rememberPreference(
                         key = ytVisitorDataKey,
                         defaultValue = Innertube.DEFAULT_VISITOR_DATA
                     )
