@@ -514,6 +514,25 @@ fun CheckAvailableNewVersion(
     }
 }
 
+fun isNetworkConnected(context: Context): Boolean {
+    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val networkInfo = cm.getNetworkCapabilities(cm.activeNetwork)
+        return networkInfo?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true &&
+                networkInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+    } else {
+        return try {
+            if (cm.activeNetworkInfo == null) {
+                false
+            } else {
+                cm.activeNetworkInfo?.isConnected!!
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+}
+
 fun isNetworkAvailable(context: Context): Boolean {
     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         ?: return false
@@ -844,7 +863,7 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                 .collect { currentLyrics ->
                     if (currentLyrics?.synced == null) {
                         lyrics = null
-                        kotlin.runCatching {
+                        runCatching {
                             LrcLib.lyrics(
                                 artist = it.song.artistsText
                                     ?: "",
@@ -863,7 +882,7 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                                     )
                                 )
                             }?.onFailure { lyrics ->
-                                kotlin.runCatching {
+                                runCatching {
                                     KuGou.lyrics(
                                         artist = it.song.artistsText
                                             ?: "",
