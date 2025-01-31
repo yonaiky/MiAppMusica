@@ -740,6 +740,7 @@
     <string name="social_reddit_info">Únete a la comunidad de Reddit</string>
     <string name="sleep_timer_ended">El temporizador de apagado ha finalizado</string>
     <string name="social_discord">Discord</string>
+    <string name="social_discord_info">Join the community on Discord</string>
     <string name="discord_enable_rich_presence">Habilitar Rich Presence</string>
     <string name="discord_disconnect">Desconectar</string>
     <string name="discord_connect">Conectar</string>
