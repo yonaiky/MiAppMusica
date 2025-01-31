@@ -740,6 +740,7 @@
     <string name="social_reddit_info">Redditのコミュニティに参加</string>
     <string name="sleep_timer_ended">スリープタイマー終了</string>
     <string name="social_discord">Discord</string>
+    <string name="social_discord_info">Join the community on Discord</string>
     <string name="discord_enable_rich_presence">Rich Presenceを有効にする</string>
     <string name="discord_disconnect">切断する</string>
     <string name="discord_connect">接続する</string>

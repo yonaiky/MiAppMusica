@@ -891,8 +891,8 @@
     <string name="online_songs">Çevrimiçi Şarkılar</string>
     <string name="explicit">Müstehcen</string>
     <string name="filter_by">Filtrele</string>
-    <string name="updating_playlist">Updating the Playlist. Please Wait. Do not Minimize or Exit the App</string>
-    <string name="updating_playlist_message">Update the Songs with the Missing Album ID</string>
+    <string name="updating_playlist">Oynatma Listesi Güncelleniyor. Lütfen Bekleyin. Uygulamayı Küçültmeyin veya Uygulamadan Çıkmayın</string>
+    <string name="updating_playlist_message">Eksik Albüm Kimliğine Sahip Şarkıları Güncelleyin</string>
     <string name="syncing">Syncing...</string>
     <string name="autosync_channels">Auto Sync Subscribed Channels</string>
 </resources>

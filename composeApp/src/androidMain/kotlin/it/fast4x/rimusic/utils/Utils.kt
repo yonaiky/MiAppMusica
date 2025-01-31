@@ -536,6 +536,25 @@ fun CheckAvailableNewVersion(
     }
 }
 
+fun isNetworkConnected(context: Context): Boolean {
+    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (isAtLeastAndroid6) {
+        val networkInfo = cm.getNetworkCapabilities(cm.activeNetwork)
+        return networkInfo?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true &&
+                networkInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
+    } else {
+        return try {
+            if (cm.activeNetworkInfo == null) {
+                false
+            } else {
+                cm.activeNetworkInfo?.isConnected!!
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+}
+
 fun isNetworkAvailable(context: Context): Boolean {
     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         ?: return false
@@ -759,7 +778,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
             deleteSongFromPlaylist(song.id, playlistId)
             if (matchedSong != null) {
                 if (songExist(matchedSong.asSong.id) == 0) {
-                    Database.insert(matchedSong.asSong)
+                    Database.insert(matchedSong.asMediaItem)
                 }
                 insert(
                     SongPlaylistMap(
@@ -866,7 +885,7 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                 .collect { currentLyrics ->
                     if (currentLyrics?.synced == null) {
                         lyrics = null
-                        kotlin.runCatching {
+                        runCatching {
                             LrcLib.lyrics(
                                 artist = it.song.artistsText
                                     ?: "",
@@ -885,7 +904,7 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                                     )
                                 )
                             }?.onFailure { lyrics ->
-                                kotlin.runCatching {
+                                runCatching {
                                     KuGou.lyrics(
                                         artist = it.song.artistsText
                                             ?: "",

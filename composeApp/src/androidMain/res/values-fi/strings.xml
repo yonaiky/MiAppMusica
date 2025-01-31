@@ -740,6 +740,7 @@
     <string name="social_reddit_info">Liity yhteisöön Redditissä</string>
     <string name="sleep_timer_ended">Uniajastin päättyi</string>
     <string name="social_discord">Discord</string>
+    <string name="social_discord_info">Join the community on Discord</string>
     <string name="discord_enable_rich_presence">Aktivoi Rich Presence</string>
     <string name="discord_disconnect">Katkaise yhteys</string>
     <string name="discord_connect">Yhdistä</string>
