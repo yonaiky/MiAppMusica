@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,7 +28,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -455,6 +452,7 @@ fun HomeSongs( navController: NavController ) {
                         var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = song,
+                            itemSelector = itemSelector,
                             navController = navController,
                             modifier = Modifier
                                 .combinedClickable(
@@ -491,30 +489,6 @@ fun HomeSongs( navController: NavController ) {
                                     }
                                 )
                                 .animateItem(),
-                            trailingContent = {
-                                // It must watch for [selectedItems.size] for changes
-                                // Otherwise, state will stay the same
-                                val checkedState = remember( itemSelector.size ) {
-                                    mutableStateOf( song in itemSelector )
-                                }
-
-                                if( itemSelector.isActive )
-                                    Checkbox(
-                                        checked = checkedState.value,
-                                        onCheckedChange = {
-                                            checkedState.value = it
-                                            if ( it )
-                                                itemSelector.add( song )
-                                            else
-                                                itemSelector.remove( song )
-                                        },
-                                        colors = CheckboxDefaults.colors(
-                                            checkedColor = colorPalette().accent,
-                                            uncheckedColor = colorPalette().text
-                                        ),
-                                        modifier = Modifier.scale( 0.7f )
-                                    )
-                            },
                             thumbnailOverlay = {
                                 if ( songSort.sortBy == SongSortBy.PlayTime || builtInPlaylist == BuiltInPlaylist.Top ) {
                                     var text = song.formattedTotalPlayTime

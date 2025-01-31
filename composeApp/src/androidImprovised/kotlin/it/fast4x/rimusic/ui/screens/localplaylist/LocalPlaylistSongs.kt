@@ -23,8 +23,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -39,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -158,6 +155,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.component.SongItem
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
@@ -838,8 +836,9 @@ fun LocalPlaylistSongs(
                             )
                         },
                     ) {
-                        me.knighthat.component.SongItem(
+                        SongItem(
                             song = song,
+                            itemSelector = itemSelector,
                             navController = navController,
                             isRecommended = song in relatedSongs,
                             modifier = Modifier
@@ -875,37 +874,9 @@ fun LocalPlaylistSongs(
                                 )
                                 .background(color = colorPalette().background0),
                             trailingContent = {
-                                // It must watch for [selectedItems.size] for changes
-                                // Otherwise, state will stay the same
-                                val checkedState = remember( itemSelector.size ) {
-                                    mutableStateOf( song in itemSelector )
-                                }
-
-                                if( itemSelector.isActive || !positionLock.isLocked() )
-                                // Create a fake box to store drag anchor and checkbox
-                                    Box( Modifier.width( 24.dp ) ) {
-
-                                        if( itemSelector.isActive )
-                                            Checkbox(
-                                                checked = checkedState.value,
-                                                onCheckedChange = {
-                                                    checkedState.value = it
-                                                    if ( it )
-                                                        itemSelector.add( song )
-                                                    else
-                                                        itemSelector.remove( song )
-                                                },
-                                                colors = CheckboxDefaults.colors(
-                                                    checkedColor = colorPalette().accent,
-                                                    uncheckedColor = colorPalette().text
-                                                ),
-                                                modifier = Modifier.scale( .7f )
-                                                                   .size( 24.dp )
-                                                                   .padding( all = 0.dp )
-                                            )
-                                    }
-                                else if( !itemSelector.isActive )
-                                    checkedState.value = false
+                                if( !positionLock.isLocked() )
+                                    // Create a fake box to store drag anchor and checkbox
+                                    Box( Modifier.width( 24.dp ) )
                             },
                             thumbnailOverlay = {
                                 if (sort.sortBy == PlaylistSongSortBy.PlayTime) {

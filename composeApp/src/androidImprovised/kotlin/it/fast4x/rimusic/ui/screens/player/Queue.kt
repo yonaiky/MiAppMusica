@@ -28,8 +28,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -315,6 +312,7 @@ fun Queue(
                             ) {
                                 SongItem(
                                     song = song,
+                                    itemSelector = itemSelector,
                                     navController = navController,
                                     modifier = Modifier
                                         .combinedClickable(
@@ -362,37 +360,9 @@ fun Queue(
                                         )
                                         .background( bgColor ),
                                     trailingContent = {
-                                        // It must watch for [selectedItems.size] for changes
-                                        // Otherwise, state will stay the same
-                                        val checkedState = remember( itemSelector.size ) {
-                                            mutableStateOf( song in itemSelector )
-                                        }
-
-                                        if( itemSelector.isActive || !positionLock.isLocked() )
+                                        if( !positionLock.isLocked() )
                                         // Create a fake box to store drag anchor and checkbox
-                                            Box( Modifier.width( 24.dp ) ) {
-
-                                                if( itemSelector.isActive )
-                                                    Checkbox(
-                                                        checked = checkedState.value,
-                                                        onCheckedChange = {
-                                                            checkedState.value = it
-                                                            if ( it )
-                                                                itemSelector.add( song )
-                                                            else
-                                                                itemSelector.remove( song )
-                                                        },
-                                                        colors = CheckboxDefaults.colors(
-                                                            checkedColor = colorPalette().accent,
-                                                            uncheckedColor = colorPalette().text
-                                                        ),
-                                                        modifier = Modifier.scale( .7f )
-                                                                           .size( 24.dp )
-                                                                           .padding( all = 0.dp )
-                                                    )
-                                            }
-                                        else if( !itemSelector.isActive )
-                                            checkedState.value = false
+                                            Box( Modifier.width( 24.dp ) )
                                     }
                                 )
                             }

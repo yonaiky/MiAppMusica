@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -77,6 +80,7 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
+import me.knighthat.component.tab.ItemSelector
 
 private interface SongIndicator: Icon {
     override val sizeDp: Dp
@@ -143,6 +147,7 @@ fun SongText(
 @Composable
 fun SongItem(
     song: Song,
+    itemSelector: ItemSelector<Song>? = null,
     navController: NavController? = null,
     isRecommended: Boolean = false,
     modifier: Modifier = Modifier,
@@ -354,6 +359,31 @@ fun SongItem(
                     )
                 }
             }
+        }
+
+        if( itemSelector != null ) {
+            // It must watch for [selectedItems.size] for changes
+            // Otherwise, state will stay the same
+            val checkedState = remember( itemSelector.size ) {
+                mutableStateOf( song in itemSelector )
+            }
+
+            if( itemSelector.isActive )
+                Checkbox(
+                    checked = checkedState.value,
+                    onCheckedChange = {
+                        checkedState.value = it
+                        if ( it )
+                            itemSelector.add( song )
+                        else
+                            itemSelector.remove( song )
+                    },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = colorPalette().accent,
+                        uncheckedColor = colorPalette().text
+                    ),
+                    modifier = Modifier.scale( 0.7f )
+                )
         }
 
         trailingContent?.invoke( this )

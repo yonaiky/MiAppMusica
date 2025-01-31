@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -400,6 +399,7 @@ fun AlbumDetails(
 
                         SongItem(
                             song = song,
+                            itemSelector = itemSelector,
                             navController = navController,
                             showThumbnail = false,
                             modifier = Modifier
@@ -431,30 +431,6 @@ fun AlbumDetails(
                                          */
                                     }
                                 ),
-                            trailingContent = {
-                                // It must watch for [selectedItems.size] for changes
-                                // Otherwise, state will stay the same
-                                val checkedState = remember( itemSelector.size ) {
-                                    mutableStateOf( song in itemSelector )
-                                }
-
-                                if( itemSelector.isActive )
-                                    androidx.compose.material3.Checkbox(
-                                        checked = checkedState.value,
-                                        onCheckedChange = {
-                                            checkedState.value = it
-                                            if (it)
-                                                itemSelector.add(song)
-                                            else
-                                                itemSelector.remove(song)
-                                        },
-                                        colors = androidx.compose.material3.CheckboxDefaults.colors(
-                                            checkedColor = colorPalette().accent,
-                                            uncheckedColor = colorPalette().text
-                                        ),
-                                        modifier = Modifier.scale(0.7f)
-                                    )
-                            },
                             thumbnailOverlay = {
                                 BasicText(
                                     text = "${index + 1}",
