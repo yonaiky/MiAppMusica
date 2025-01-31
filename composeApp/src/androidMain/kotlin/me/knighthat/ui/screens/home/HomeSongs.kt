@@ -29,9 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -140,7 +138,6 @@ fun HomeSongs( navController: NavController ) {
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val context = LocalContext.current
-    val hapticFeedback = LocalHapticFeedback.current
     val lazyListState = rememberLazyListState()
 
     //<editor-fold defaultstate="collapsed" desc="Settings">
@@ -516,7 +513,6 @@ fun HomeSongs( navController: NavController ) {
                                         disableScrollingText = disableScrollingText
                                     )
                                 }
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
                     }

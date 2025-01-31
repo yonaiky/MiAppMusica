@@ -40,9 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
@@ -119,7 +117,6 @@ fun Queue(
 ) {
     // Essentials
     val context = LocalContext.current
-    val hapticFeedback = LocalHapticFeedback.current
     val windowInsets = WindowInsets.systemBars
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
@@ -358,7 +355,6 @@ fun Queue(
                                                 disableScrollingText = disableScrollingText
                                             )
                                         }
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     }
                                 )
                             }

@@ -39,9 +39,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -553,7 +551,6 @@ fun LocalPlaylistSongs(
         playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX, 0, true) == false
     val playlistNotPipedType =
         playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX, 0, true) == false
-    val hapticFeedback = LocalHapticFeedback.current
 
 
     Box(
@@ -897,7 +894,6 @@ fun LocalPlaylistSongs(
                                         disableScrollingText = disableScrollingText
                                     )
                                 }
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
                     }
