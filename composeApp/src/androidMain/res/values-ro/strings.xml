@@ -740,6 +740,7 @@
     <string name="social_reddit_info">Alătură-te comunității pe Reddit</string>
     <string name="sleep_timer_ended">Temporizatorul de somn s-a încheiat</string>
     <string name="social_discord">Discord</string>
+    <string name="social_discord_info">Join the community on Discord</string>
     <string name="discord_enable_rich_presence">Activează Rich Presence</string>
     <string name="discord_disconnect">Deconectează</string>
     <string name="discord_connect">Conectează</string>
