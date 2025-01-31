@@ -516,7 +516,7 @@ fun CheckAvailableNewVersion(
 
 fun isNetworkConnected(context: Context): Boolean {
     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    if (isAtLeastAndroid6) {
         val networkInfo = cm.getNetworkCapabilities(cm.activeNetwork)
         return networkInfo?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true &&
                 networkInfo.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == true
