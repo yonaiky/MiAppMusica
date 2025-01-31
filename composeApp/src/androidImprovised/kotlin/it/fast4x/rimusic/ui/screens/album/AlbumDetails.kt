@@ -64,7 +64,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
-import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -153,7 +153,7 @@ fun AlbumDetails(
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    var items by persistList<SongEntity>( "album/${browseId}/songs" )
+    var items by persistList<Song>( "album/${browseId}/songs" )
     LaunchedEffect( album ) {
         // [album] goes from null to not-null after it's inserted to the database
         if( album == null ) return@LaunchedEffect
@@ -163,23 +163,24 @@ fun AlbumDetails(
                 .distinctUntilChanged()
                 .collect { list ->
                     items = list.filter {
-                        !parentalControlEnabled || !it.song.title.contains( EXPLICIT_PREFIX, true )
+                        !parentalControlEnabled || !it.title.contains( EXPLICIT_PREFIX, true )
                     }
                 }
     }
 
-    val itemSelector = ItemSelector<SongEntity>()
+    val itemSelector = ItemSelector<Song>()
 
-    fun getMediaItems() = itemSelector.ifEmpty { items }.map( SongEntity::asMediaItem )
+    fun getSongs() = itemSelector.ifEmpty { items }
+    fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
     val bookmark = AlbumBookmark( browseId )
-    val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog { getMediaItems().map( MediaItem::asSong ) }
-    val downloadALlDialog = DownloadAllSongsDialog { getMediaItems().map( MediaItem::asSong ) }
+    val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog( ::getSongs )
+    val downloadALlDialog = DownloadAllSongsDialog( ::getSongs )
     val shuffle = SongShuffler {
         getMediaItems().map( MediaItem::asSong )
     }
-    val radio = Radio { getMediaItems().map( MediaItem::asSong ) }
-    val locator = Locator( lazyListState ) { getMediaItems().map( MediaItem::asSong ) }
+    val radio = Radio( ::getSongs )
+    val locator = Locator( lazyListState, ::getSongs )
     val playNext = PlayNext {
         getMediaItems().let {
             binder?.player?.addNext( it, appContext() )
@@ -330,10 +331,9 @@ fun AlbumDetails(
                     ) {
                         val year = album?.year ?: "0000"
                         val songCount = "${items.size} ${stringResource( R.string.songs )}"
-                        val totalDuration = items.mapNotNull{ it.song.durationText }
-                            .map( ::durationTextToMillis )
-                            .sum()
-                            .let( ::formatAsTime )
+                        val totalDuration = items.sumOf {
+                            durationTextToMillis(it.durationText ?: "")
+                        }.let( ::formatAsTime )
 
                         BasicText(
                             text = "$year - $songCount - $totalDuration",
@@ -387,7 +387,7 @@ fun AlbumDetails(
                     ) { SongItemPlaceholder() }
                 itemsIndexed(
                     items = items,
-                    key = { _, song -> song.song.id }
+                    key = { _, song -> song.id }
                 ) { index, song ->
 
                     SwipeablePlaylistItem(
@@ -399,7 +399,7 @@ fun AlbumDetails(
                         var forceRecompose by remember { mutableStateOf(false) }
 
                         SongItem(
-                            song = song.song,
+                            song = song,
                             navController = navController,
                             showThumbnail = false,
                             modifier = Modifier
@@ -421,7 +421,7 @@ fun AlbumDetails(
                                     onClick = {
                                         binder?.stopRadio()
                                         binder?.player?.forcePlayAtIndex(
-                                            items.map( SongEntity::asMediaItem ),
+                                            getMediaItems(),
                                             index
                                         )
 
