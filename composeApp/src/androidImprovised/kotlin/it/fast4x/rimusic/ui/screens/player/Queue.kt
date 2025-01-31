@@ -7,7 +7,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -314,55 +313,52 @@ fun Queue(
                                     song = song,
                                     itemSelector = itemSelector,
                                     navController = navController,
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onLongClick = {
-                                                menuState.display {
-                                                    QueuedMediaItemMenu(
-                                                        navController = navController,
-                                                        mediaItem = mediaItem,
-                                                        indexInQueue = if( player.isNowPlaying(song.id) ) null else index,
-                                                        onDismiss = {
-                                                            menuState.hide()
-                                                            forceRecompose = true
-                                                        },
-                                                        onDownload = {
-                                                            manageDownload(
-                                                                context = context,
-                                                                mediaItem = mediaItem,
-                                                                downloadState = isDownloaded
-                                                            )
-                                                        },
-                                                        disableScrollingText = disableScrollingText
-                                                    )
-                                                }
-                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            },
-                                            onClick = {
-                                                if( player.isNowPlaying(song.id) ) {
-                                                    if(player.shouldBePlaying)
-                                                        player.pause()
-                                                    else
-                                                        player.play()
-                                                } else {
-                                                    player.seekToDefaultPosition(index)
-                                                    player.prepare()
-                                                    player.playWhenReady = true
-                                                }
-
-                                                /*
-                                                    Due to the small size of checkboxes,
-                                                    we shouldn't disable [itemSelector]
-                                                 */
-
-                                                search.onItemSelected()
-                                            }
-                                        )
-                                        .background( bgColor ),
+                                    modifier = Modifier.background( bgColor ),
                                     trailingContent = {
                                         if( !positionLock.isLocked() )
                                         // Create a fake box to store drag anchor and checkbox
                                             Box( Modifier.width( 24.dp ) )
+                                    },
+                                    onClick = {
+                                        if( player.isNowPlaying(song.id) ) {
+                                            if(player.shouldBePlaying)
+                                                player.pause()
+                                            else
+                                                player.play()
+                                        } else {
+                                            player.seekToDefaultPosition(index)
+                                            player.prepare()
+                                            player.playWhenReady = true
+                                        }
+
+                                        /*
+                                            Due to the small size of checkboxes,
+                                            we shouldn't disable [itemSelector]
+                                         */
+
+                                        search.onItemSelected()
+                                    },
+                                    onLongClick = {
+                                        menuState.display {
+                                            QueuedMediaItemMenu(
+                                                navController = navController,
+                                                mediaItem = mediaItem,
+                                                indexInQueue = if( player.isNowPlaying(song.id) ) null else index,
+                                                onDismiss = {
+                                                    menuState.hide()
+                                                    forceRecompose = true
+                                                },
+                                                onDownload = {
+                                                    manageDownload(
+                                                        context = context,
+                                                        mediaItem = mediaItem,
+                                                        downloadState = isDownloaded
+                                                    )
+                                                },
+                                                disableScrollingText = disableScrollingText
+                                            )
+                                        }
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     }
                                 )
                             }

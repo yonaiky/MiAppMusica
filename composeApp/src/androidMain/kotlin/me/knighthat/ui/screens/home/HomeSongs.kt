@@ -3,7 +3,6 @@ package me.knighthat.ui.screens.home
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -454,41 +453,7 @@ fun HomeSongs( navController: NavController ) {
                             song = song,
                             itemSelector = itemSelector,
                             navController = navController,
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        val hideAction =
-                                            if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
-                                                {
-                                                    hideSongDialog.song = Optional.of(song)
-                                                    hideSongDialog.onShortClick()
-                                                }
-                                            } else null
-
-                                        menuState.display {
-                                            InHistoryMediaItemMenu(
-                                                navController = navController,
-                                                song = song,
-                                                onDismiss = {
-                                                    menuState.hide()
-                                                    forceRecompose = true
-                                                },
-                                                onHideFromDatabase = hideAction,
-                                                onDeleteFromDatabase = {
-                                                },
-                                                disableScrollingText = disableScrollingText
-                                            )
-                                        }
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    },
-                                    onClick = {
-                                        search.onItemSelected()
-
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex( getMediaItems(), index )
-                                    }
-                                )
-                                .animateItem(),
+                            modifier = Modifier.animateItem(),
                             thumbnailOverlay = {
                                 if ( songSort.sortBy == SongSortBy.PlayTime || builtInPlaylist == BuiltInPlaylist.Top ) {
                                     var text = song.formattedTotalPlayTime
@@ -521,6 +486,37 @@ fun HomeSongs( navController: NavController ) {
                                             )
                                     )
                                 }
+                            },
+                            onClick = {
+                                search.onItemSelected()
+
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayAtIndex( getMediaItems(), index )
+                            },
+                            onLongClick = {
+                                val hideAction =
+                                    if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
+                                        {
+                                            hideSongDialog.song = Optional.of(song)
+                                            hideSongDialog.onShortClick()
+                                        }
+                                    } else null
+
+                                menuState.display {
+                                    InHistoryMediaItemMenu(
+                                        navController = navController,
+                                        song = song,
+                                        onDismiss = {
+                                            menuState.hide()
+                                            forceRecompose = true
+                                        },
+                                        onHideFromDatabase = hideAction,
+                                        onDeleteFromDatabase = {
+                                        },
+                                        disableScrollingText = disableScrollingText
+                                    )
+                                }
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
                     }

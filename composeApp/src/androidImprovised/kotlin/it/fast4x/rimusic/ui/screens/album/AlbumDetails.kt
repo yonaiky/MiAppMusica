@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -402,35 +401,6 @@ fun AlbumDetails(
                             itemSelector = itemSelector,
                             navController = navController,
                             showThumbnail = false,
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            NonQueuedMediaItemMenu(
-                                                navController = navController,
-                                                onDismiss = {
-                                                    menuState.hide()
-                                                    forceRecompose = true
-                                                },
-                                                mediaItem = song.asMediaItem,
-                                                disableScrollingText = disableScrollingText
-                                            )
-                                        }
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    },
-                                    onClick = {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            getMediaItems(),
-                                            index
-                                        )
-
-                                        /*
-                                            Due to the small size of checkboxes,
-                                            we shouldn't disable [itemSelector]
-                                         */
-                                    }
-                                ),
                             thumbnailOverlay = {
                                 BasicText(
                                     text = "${index + 1}",
@@ -447,6 +417,32 @@ fun AlbumDetails(
                                         .width(thumbnailSizeDp)
                                         .align(Alignment.Center)
                                 )
+                            },
+                            onClick = {
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayAtIndex(
+                                    getMediaItems(),
+                                    index
+                                )
+
+                                /*
+                                    Due to the small size of checkboxes,
+                                    we shouldn't disable [itemSelector]
+                                 */
+                            },
+                            onLongClick = {
+                                menuState.display {
+                                    NonQueuedMediaItemMenu(
+                                        navController = navController,
+                                        onDismiss = {
+                                            menuState.hide()
+                                            forceRecompose = true
+                                        },
+                                        mediaItem = song.asMediaItem,
+                                        disableScrollingText = disableScrollingText
+                                    )
+                                }
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
                     }

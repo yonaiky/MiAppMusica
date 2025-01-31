@@ -841,38 +841,7 @@ fun LocalPlaylistSongs(
                             itemSelector = itemSelector,
                             navController = navController,
                             isRecommended = song in relatedSongs,
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            InPlaylistMediaItemMenu(
-                                                navController = navController,
-                                                playlist = playlistPreview,
-                                                playlistId = playlistId,
-                                                positionInPlaylist = index,
-                                                song = song,
-                                                onDismiss = menuState::hide,
-                                                disableScrollingText = disableScrollingText
-                                            )
-                                        }
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    },
-                                    onClick = {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            itemsOnDisplay.map( Song::asMediaItem ),
-                                            index
-                                        )
-
-                                        /*
-                                            Due to the small size of checkboxes,
-                                            we shouldn't disable [itemSelector]
-                                         */
-
-                                        search.onItemSelected()
-                                    }
-                                )
-                                .background(color = colorPalette().background0),
+                            modifier = Modifier.background(color = colorPalette().background0),
                             trailingContent = {
                                 if( !positionLock.isLocked() )
                                     // Create a fake box to store drag anchor and checkbox
@@ -901,6 +870,34 @@ fun LocalPlaylistSongs(
                                                            .align( Alignment.BottomCenter )
                                     )
                                 }
+                            },
+                            onClick = {
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayAtIndex(
+                                    itemsOnDisplay.map( Song::asMediaItem ),
+                                    index
+                                )
+
+                                /*
+                                    Due to the small size of checkboxes,
+                                    we shouldn't disable [itemSelector]
+                                 */
+
+                                search.onItemSelected()
+                            },
+                            onLongClick = {
+                                menuState.display {
+                                    InPlaylistMediaItemMenu(
+                                        navController = navController,
+                                        playlist = playlistPreview,
+                                        playlistId = playlistId,
+                                        positionInPlaylist = index,
+                                        song = song,
+                                        onDismiss = menuState::hide,
+                                        disableScrollingText = disableScrollingText
+                                    )
+                                }
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
                     }

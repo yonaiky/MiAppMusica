@@ -153,7 +153,9 @@ fun SongItem(
     modifier: Modifier = Modifier,
     showThumbnail: Boolean = true,
     trailingContent: @Composable (RowScope.() -> Unit)? = null,
-    thumbnailOverlay: @Composable BoxScope.() -> Unit = {}
+    thumbnailOverlay: @Composable BoxScope.() -> Unit = {},
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
 ) {
     // Essentials
     val context = LocalContext.current
@@ -171,6 +173,15 @@ fun SongItem(
                            .conditional( isPlaying ) {
                                background( colorPalette.favoritesOverlay )
                            }
+                           // This component must be placed before padding to prevent
+                           // ripple effect to only highlight padded area
+                           .combinedClickable(
+                               onClick = onClick,
+                               onLongClick = {
+                                   hapticFeedback.performHapticFeedback( HapticFeedbackType.LongPress )
+                                   onLongClick()
+                               }
+                           )
                            .padding(
                                vertical = Dimensions.itemsVerticalPadding,
                                horizontal = 16.dp
