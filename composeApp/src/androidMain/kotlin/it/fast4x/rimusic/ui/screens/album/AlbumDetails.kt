@@ -1096,7 +1096,7 @@ fun AlbumDetails(
                         var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             mediaItem = song.asMediaItem,
-                            downloadState = downloadState,
+                            downloadState = getDownloadState(song.asMediaItem.mediaId),
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 Database.asyncTransaction {
