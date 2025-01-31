@@ -26,7 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -37,7 +37,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,11 +51,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.navigation.NavController
 import com.valentinilk.shimmer.shimmer
+import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.compose.reordering.draggedItem
 import it.fast4x.compose.reordering.rememberReorderingState
@@ -68,6 +67,7 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SortOrder
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
@@ -86,6 +86,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.PositionLock
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enqueue
@@ -139,48 +140,48 @@ fun Queue(
     val rippleIndication = ripple(bounded = false)
 
     Box( Modifier.fillMaxSize() ) {
-        var windows by remember {
-            mutableStateOf(player.currentTimeline.windows)
-        }
-        var itemsOnDisplay by persistList<Timeline.Window>( "queue/on_display" )
-
+        var items by persist(
+            tag = "queue/songs",
+            player.currentTimeline.windows.map { it.mediaItem.asSong }
+        )
         player.DisposableListener {
             object : Player.Listener {
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
-                    windows = timeline.windows
+                    items = timeline.windows.map { it.mediaItem.asSong }
                 }
             }
         }
+        var itemsOnDisplay by persistList<Song>( "queue/on_display" )
 
         val lazyListState = rememberLazyListState()
         val reorderingState = rememberReorderingState(
             lazyListState = lazyListState,
-            key = windows,
+            key = items,
             onDragEnd = player::moveMediaItem,
             extraItemCount = 0
         )
 
         val positionLock = PositionLock.init( SortOrder.Ascending )
 
-        val itemSelector = ItemSelector<Timeline.Window>()
+        val itemSelector = ItemSelector<Song>()
         LaunchedEffect( itemSelector.isActive ) {
             // Setting this field to true means disable it
             if( itemSelector.isActive )
                 positionLock.isFirstIcon = true
         }
 
-        fun getMediaItems() = itemSelector.ifEmpty { windows }.map( Timeline.Window::mediaItem )
+        fun getSongs() = itemSelector.ifEmpty { items }
 
         val search = Search.init()
-        LaunchedEffect( windows, search.input ) {
-            windows.filter {
-                val metadata = it.mediaItem.mediaMetadata
+        LaunchedEffect( items, search.input ) {
+            items.filter {
+                    // Without cleaning, user can search explicit songs with "e:"
+                    // I kinda want this to be a feature, but it seems unnecessary
+                    val containsTitle = it.cleanTitle().contains( search.input, true )
+                    val containsArtist = it.artistsText?.contains( search.input, true ) ?: false
 
-                fun contains( attr: CharSequence? ): Boolean =
-                    attr?.contains( search.input, true ) ?: false
-
-                contains( metadata.title ) || contains( metadata.artist ) || contains( metadata.albumTitle ) || contains( metadata.albumArtist )
-            }
+                    containsTitle || containsArtist
+                }
                 .let {
                     itemsOnDisplay = it
 
@@ -193,7 +194,7 @@ fun Queue(
         val exportDialog = ExportSongsToCSVDialog(
             playlistId = -1,        // Doesn't belong to any playlist
             playlistName = plistName.value,
-            songs = { getMediaItems().map( MediaItem::asSong ) }
+            songs = ::getSongs
         )
         val shuffle = ShuffleQueue( player, reorderingState )
         val discover = Discover( onDiscoverClick )
@@ -204,13 +205,13 @@ fun Queue(
                 player.clearMediaItems()
                 player.release()
             } else
-                itemSelector.map( windows::indexOf )
-                             .sorted()
-                             // Goes backward to prevent item from being skipped
-                             // due to the previous element is removed and the indices
-                             // are updated.
-                             .reversed()
-                             .forEach( player::removeMediaItem )
+                itemSelector.map( items::indexOf )
+                            .sorted()
+                            // Goes backward to prevent item from being skipped
+                            // due to the previous element is removed and the indices
+                            // are updated.
+                            .reversed()
+                            .forEach( player::removeMediaItem )
 
             itemSelector.isActive = false
 
@@ -218,7 +219,7 @@ fun Queue(
         }
         val addToPlaylist = PlaylistsMenu.init(
             navController = navController,
-            mediaItems = { getMediaItems() },
+            mediaItems = { getSongs().map( Song::asMediaItem ) },
             onFailure = { throwable, preview ->
                 Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on HomeSongs" )
                 throwable.printStackTrace()
@@ -244,22 +245,20 @@ fun Queue(
                         .add( WindowInsets(bottom = Dimensions.bottomSpacer) )
                         .asPaddingValues()
                 ) {
-                    items(
+                    itemsIndexed(
                         items = itemsOnDisplay,
-                        key = { it.uid.hashCode() }
-                    ) { window ->
+                        key = { _, song -> song.id }
+                    ) { index, song ->
 
-                        val currentItem by rememberUpdatedState(window)
-                        val isLocal by remember { derivedStateOf { window.mediaItem.isLocal } }
-                        val isDownloaded =
-                            if (!isLocal) isDownloadedSong(window.mediaItem.mediaId) else true
+                        val isLocal by remember { derivedStateOf { song.isLocal } }
+                        val isDownloaded = isLocal || isDownloadedSong(song.id)
                         var forceRecompose by remember { mutableStateOf(false) }
 
                         Box(
                             modifier = Modifier.fillMaxWidth()
                                                .draggedItem(
                                                    reorderingState = reorderingState,
-                                                   index = window.firstPeriodIndex
+                                                   index = index
                                                )
                         ) {
                             // Drag anchor
@@ -279,42 +278,43 @@ fun Queue(
                                         onClick = {},
                                         modifier = Modifier.reorder(
                                             reorderingState = reorderingState,
-                                            index = window.firstPeriodIndex
+                                            index = index
                                         )
                                     )
                                 }
                             }
 
+                            val mediaItem = song.asMediaItem
                             SwipeableQueueItem(
-                                mediaItem = window.mediaItem,
+                                mediaItem = mediaItem,
                                 onPlayNext = {
                                     binder.player.addNext(
-                                        window.mediaItem,
+                                        mediaItem,
                                         context
                                     )
                                 },
                                 onDownload = {
-                                    binder.cache.removeResource(window.mediaItem.mediaId)
+                                    binder.cache.removeResource(song.id)
                                     if (!isLocal)
                                         manageDownload(
                                             context = context,
-                                            mediaItem = window.mediaItem,
+                                            mediaItem = mediaItem,
                                             downloadState = isDownloaded
                                         )
                                 },
                                 onRemoveFromQueue = {
-                                    player.removeMediaItem(currentItem.firstPeriodIndex)
-                                    SmartMessage("${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
+                                    player.removeMediaItem(index)
+                                    SmartMessage("${context.resources.getString(R.string.deleted)} ${song.title}", type = PopupType.Warning, context = context)
                                 },
                                 onEnqueue = {
                                     binder.player.enqueue(
-                                        window.mediaItem,
+                                        mediaItem,
                                         context
                                     )
                                 }
                             ) {
                                 SongItem(
-                                    song = window.mediaItem.asSong,
+                                    song = song,
                                     navController = navController,
                                     modifier = Modifier
                                         .combinedClickable(
@@ -322,8 +322,8 @@ fun Queue(
                                                 menuState.display {
                                                     QueuedMediaItemMenu(
                                                         navController = navController,
-                                                        mediaItem = window.mediaItem,
-                                                        indexInQueue = if( player.isNowPlaying(window.mediaItem.mediaId) ) null else window.firstPeriodIndex,
+                                                        mediaItem = mediaItem,
+                                                        indexInQueue = if( player.isNowPlaying(song.id) ) null else index,
                                                         onDismiss = {
                                                             menuState.hide()
                                                             forceRecompose = true
@@ -331,7 +331,7 @@ fun Queue(
                                                         onDownload = {
                                                             manageDownload(
                                                                 context = context,
-                                                                mediaItem = window.mediaItem,
+                                                                mediaItem = mediaItem,
                                                                 downloadState = isDownloaded
                                                             )
                                                         },
@@ -341,13 +341,13 @@ fun Queue(
                                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                             },
                                             onClick = {
-                                                if( player.isNowPlaying(window.mediaItem.mediaId) ) {
+                                                if( player.isNowPlaying(song.id) ) {
                                                     if(player.shouldBePlaying)
                                                         player.pause()
                                                     else
                                                         player.play()
                                                 } else {
-                                                    player.seekToDefaultPosition(window.firstPeriodIndex)
+                                                    player.seekToDefaultPosition(index)
                                                     player.prepare()
                                                     player.playWhenReady = true
                                                 }
@@ -365,7 +365,7 @@ fun Queue(
                                         // It must watch for [selectedItems.size] for changes
                                         // Otherwise, state will stay the same
                                         val checkedState = remember( itemSelector.size ) {
-                                            mutableStateOf( window in itemSelector )
+                                            mutableStateOf( song in itemSelector )
                                         }
 
                                         if( itemSelector.isActive || !positionLock.isLocked() )
@@ -378,9 +378,9 @@ fun Queue(
                                                         onCheckedChange = {
                                                             checkedState.value = it
                                                             if ( it )
-                                                                itemSelector.add( window )
+                                                                itemSelector.add( song )
                                                             else
-                                                                itemSelector.remove( window )
+                                                                itemSelector.remove( song )
                                                         },
                                                         colors = CheckboxDefaults.colors(
                                                             checkedColor = colorPalette().accent,
