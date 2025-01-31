@@ -247,7 +247,8 @@ fun AlbumDetails(
                 )
 
                 albumSongsStateList.forEach { albumSongsState ->
-                    if (songExist(albumSongsState.song.id) == 0) {
+                    if ((albumSongsState.songExists || albumSongsState.likedAt != null || albumSongsState.playtime != null)
+                        && songExist(albumSongsState.song.id) == 0) {
                         insert(albumSongsState.song)
                     }
                     if (albumSongsState.songExists) {
