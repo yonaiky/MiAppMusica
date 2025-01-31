@@ -740,6 +740,7 @@
     <string name="social_reddit_info">加入Reddit上的社区</string>
     <string name="sleep_timer_ended">睡眠计时器已结束</string>
     <string name="social_discord">Discord</string>
+    <string name="social_discord_info">Join the community on Discord</string>
     <string name="discord_enable_rich_presence">启用Rich Presence</string>
     <string name="discord_disconnect">断开连接</string>
     <string name="discord_connect">连接</string>
