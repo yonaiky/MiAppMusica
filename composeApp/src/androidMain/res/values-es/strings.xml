@@ -888,9 +888,9 @@
     <string name="songsnotfound">Canciones no encontradas</string>
     <string name="swipe_Animation_No_Thumbnail">Animación de deslizamiento</string>
     <string name="do_you_really_want_to_match_all">Do you really want to replace all the videos/unmatched songs with the matched songs? This action is irreversible</string>
-    <string name="online_songs">Online Songs</string>
-    <string name="explicit">Explicit</string>
-    <string name="filter_by">Filter By</string>
-    <string name="updating_playlist">Updating the Playlist. Please Wait. Do not Minimize or Exit the App</string>
+    <string name="online_songs">Canciones en línea</string>
+    <string name="explicit">Explícito</string>
+    <string name="filter_by">Filtrar Por</string>
+    <string name="updating_playlist">Actualizando la lista de reproducción. Por favor espere. No reduzca o cierre la aplicación</string>
     <string name="updating_playlist_message">Update the Songs with the Missing Album ID</string>
 </resources>
