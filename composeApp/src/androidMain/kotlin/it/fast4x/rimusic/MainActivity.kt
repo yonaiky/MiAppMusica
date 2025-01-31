@@ -542,7 +542,7 @@ class MainActivity :
 
                     YoutubePreferences.preference =
                         YoutubePreferenceItem(
-                            cookie = encryptedPreferences.getString(ytCookieKey, ""),
+                            cookie = preferences.getString(ytCookieKey, ""),
                             visitordata = visitorData
                                 .takeIf { it != "null" }
                                 ?: Innertube.DEFAULT_VISITOR_DATA

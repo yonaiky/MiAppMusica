@@ -663,7 +663,7 @@ fun isYouTubeSyncEnabled(): Boolean {
 }
 
 fun isYouTubeLoggedIn(): Boolean {
-    val cookie = appContext().encryptedPreferences.getString(ytCookieKey, "")
+    val cookie = appContext().preferences.getString(ytCookieKey, "")
     val isLoggedIn = cookie?.let { parseCookieString(it) }?.contains("SAPISID") == true
     return isLoggedIn
 }
