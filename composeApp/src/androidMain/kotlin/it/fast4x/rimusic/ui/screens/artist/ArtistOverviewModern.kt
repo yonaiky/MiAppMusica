@@ -62,6 +62,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -329,6 +330,9 @@ fun ArtistOverviewModern(
                                             artistPage.artist.channelId.let {
                                                 if (it != null) {
                                                     YtMusic.subscribeChannel(it)
+                                                    if (artist != null) {
+                                                        Database.insert(artist!!.copy(name = YTP_PREFIX + artist?.name))
+                                                    }
                                                 }
                                             }
                                     }

@@ -10,6 +10,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.appContext
@@ -142,7 +143,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
 
                     localArtist = Artist(
                         id = remoteArtist.key,
-                        name = remoteArtist.title ?: "",
+                        name = (YTP_PREFIX + remoteArtist.title),
                         thumbnailUrl = remoteArtist.thumbnail?.url,
                         bookmarkedAt = System.currentTimeMillis()
                     )
@@ -151,7 +152,12 @@ suspend fun importYTMSubscribedChannels(): Boolean {
 
                 }
             }
-
+            val favArtists = preferitesArtistsByName().firstOrNull()
+            Database.asyncTransaction {
+                favArtists?.filter {artist -> artist.name?.startsWith(YTP_PREFIX) == true && artist.id !in ytmArtists.map { it.key } }?.forEach { artist ->
+                    delete(artist)
+                }
+            }
         }
             .onFailure {
                 println("Error importing YTM subscribed artists channels: ${it.stackTraceToString()}")
