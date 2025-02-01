@@ -407,7 +407,7 @@ fun HomeSongs( navController: NavController ) {
             LazyColumn(
                 state = lazyListState,
                 userScrollEnabled = !isLoading,
-                contentPadding = PaddingValues( start = 8.dp, bottom = Dimensions.bottomSpacer )
+                contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
             ) {
                 if( isLoading )
                     items(
