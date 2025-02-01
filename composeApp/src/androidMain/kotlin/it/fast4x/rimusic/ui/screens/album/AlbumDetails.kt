@@ -747,7 +747,7 @@ fun AlbumDetails(
                                                             YtMusic.likePlaylistOrAlbum(it)
                                                             if (album != null) {
                                                                 Database.asyncTransaction {
-                                                                    insert(album!!.copy(title = YTP_PREFIX + album?.title))
+                                                                    updateAlbumTitle(browseId, YTP_PREFIX + album?.title)
                                                                 }
                                                             }
                                                         }
