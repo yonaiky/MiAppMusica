@@ -11,6 +11,7 @@ import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.models.Album
@@ -53,7 +54,7 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                     println("Remote playlist: $remotePlaylist")
                     if (localPlaylist == null && playlistIdChecked.isNotEmpty()) {
                         localPlaylist = Playlist(
-                            name = remotePlaylist.title ?: "",
+                            name = (YTP_PREFIX + remotePlaylist.title) ?: "",
                             browseId = playlistIdChecked,
                         )
                         Database.insert(localPlaylist.copy(browseId = playlistIdChecked))
@@ -69,6 +70,9 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                             }
                     }
                 }
+            }
+            (localPlaylists?.filter { playlist -> playlist?.browseId !in ytmPrivatePlaylists.map { if (it.key.startsWith("VL")) it.key.substringAfter("VL") else it.key }  })?.forEach { playlist ->
+                if (playlist != null) Database.asyncTransaction{ delete(playlist) }
             }
 
         }.onFailure {

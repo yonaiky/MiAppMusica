@@ -9,7 +9,7 @@ const val MONTHLY_PREFIX = "monthly:"
 const val PIPED_PREFIX = "piped:"
 const val EXPLICIT_PREFIX = "e:"
 const val LOCAL_KEY_PREFIX = "local:"
-const val YTP_PREFIX = "PL"
+const val YTP_PREFIX = "account:"
 
 fun cleanPrefix(text: String): String {
     val cleanText = text.replace(PINNED_PREFIX, "", true)
