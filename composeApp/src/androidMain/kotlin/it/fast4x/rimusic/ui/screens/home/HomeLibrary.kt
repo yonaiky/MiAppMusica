@@ -176,7 +176,7 @@ fun HomeLibrary(
                         .also {
                             println("Innertube YtMusic createPlaylist: $it")
                             Database.asyncTransaction {
-                                insert(Playlist(name = newValue, browseId = it))
+                                insert(Playlist(name = YTP_PREFIX+newValue, browseId = it))
                             }
                         }
 
