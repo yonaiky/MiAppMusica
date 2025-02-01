@@ -10,6 +10,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion.albumsByTitleAsc
 import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.YTP_PREFIX
@@ -193,7 +194,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
 
                     localAlbum = Album(
                         id = remoteAlbum.key,
-                        title = remoteAlbum.title ?: "",
+                        title = (YTP_PREFIX + remoteAlbum.title) ?: "",
                         thumbnailUrl = remoteAlbum.thumbnail?.url,
                         bookmarkedAt = System.currentTimeMillis(),
                         year = remoteAlbum.year,
@@ -203,7 +204,12 @@ suspend fun importYTMLikedAlbums(): Boolean {
 
                 }
             }
-
+            val favAlbums = albumsByTitleAsc().firstOrNull()
+            Database.asyncTransaction {
+                favAlbums?.filter {album -> album.title?.startsWith(YTP_PREFIX) == true && album.id !in ytmAlbums.map { it.key } }?.forEach { album->
+                    delete(album)
+                }
+            }
         }
             .onFailure {
                 println("Error importing YTM liked albums: ${it.stackTraceToString()}")

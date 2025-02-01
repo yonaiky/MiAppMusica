@@ -76,6 +76,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
@@ -744,6 +745,11 @@ fun AlbumDetails(
                                                     albumPage?.album?.playlistId.let {
                                                         if (it != null) {
                                                             YtMusic.likePlaylistOrAlbum(it)
+                                                            if (album != null) {
+                                                                Database.asyncTransaction {
+                                                                    insert(album!!.copy(title = YTP_PREFIX + album?.title))
+                                                                }
+                                                            }
                                                         }
                                                     }
                                             }
