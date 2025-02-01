@@ -377,7 +377,8 @@ fun AlbumDetails(
             setValue = {
                 if (it.isNotEmpty()) {
                     Database.asyncTransaction {
-                        updateAlbumTitle(browseId, it)
+                        updateAlbumTitle(browseId,
+                            if (album?.title?.startsWith(YTP_PREFIX) == true) YTP_PREFIX+it else it)
                     }
                 }
             },

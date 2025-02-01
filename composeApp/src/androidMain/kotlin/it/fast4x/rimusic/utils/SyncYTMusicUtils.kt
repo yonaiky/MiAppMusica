@@ -11,6 +11,8 @@ import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.Database.Companion.albumsByTitleAsc
+import it.fast4x.rimusic.Database.Companion.getAlbumsList
+import it.fast4x.rimusic.Database.Companion.getArtistsList
 import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.YTP_PREFIX
@@ -153,10 +155,10 @@ suspend fun importYTMSubscribedChannels(): Boolean {
 
                 }
             }
-            val favArtists = preferitesArtistsByName().firstOrNull()
+            val Artists = getArtistsList().firstOrNull()
             Database.asyncTransaction {
-                favArtists?.filter {artist -> artist.name?.startsWith(YTP_PREFIX) == true && artist.id !in ytmArtists.map { it.key } }?.forEach { artist ->
-                    delete(artist)
+                Artists?.filter {artist -> artist?.name?.startsWith(YTP_PREFIX) == true && artist.id !in ytmArtists.map { it.key } }?.forEach { artist ->
+                    if (artist != null) delete(artist)
                 }
             }
         }
@@ -204,10 +206,10 @@ suspend fun importYTMLikedAlbums(): Boolean {
 
                 }
             }
-            val favAlbums = albumsByTitleAsc().firstOrNull()
+            val Albums = getAlbumsList().firstOrNull()
             Database.asyncTransaction {
-                favAlbums?.filter {album -> album.title?.startsWith(YTP_PREFIX) == true && album.id !in ytmAlbums.map { it.key } }?.forEach { album->
-                    delete(album)
+                Albums?.filter {album -> album?.title?.startsWith(YTP_PREFIX) == true && album.id !in ytmAlbums.map { it.key } }?.forEach { album->
+                    if (album != null) delete(album)
                 }
             }
         }

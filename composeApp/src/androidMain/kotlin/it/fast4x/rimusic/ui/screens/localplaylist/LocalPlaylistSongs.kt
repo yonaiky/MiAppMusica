@@ -440,6 +440,9 @@ fun LocalPlaylistSongs(
             onConfirm = {
                 CoroutineScope(Dispatchers.IO).launch {
                     if (isYouTubeSyncEnabled()) {
+                        if (playlistPreview?.playlist?.name?.contains(YTP_PREFIX) == true && playlistPreview?.playlist?.browseId?.startsWith("RD") == true){
+                            playlistPreview?.playlist?.browseId?.let { YtMusic.removelikePlaylistOrAlbum(it) }
+                        } else
                         playlistPreview?.playlist?.browseId?.let { YtMusic.deletePlaylist(it) }
                         println("Innertube YtMusic deletetePlaylist")
                     }
@@ -761,7 +764,9 @@ fun LocalPlaylistSongs(
                             YtMusic.renamePlaylist(it, text)
                         }
                         Database.asyncTransaction {
-                            playlistPreview?.playlist?.copy(name = text)?.let(Database::update)
+                            playlistPreview?.playlist?.copy(
+                                name = if (playlistPreview?.playlist?.name?.contains(YTP_PREFIX) == true) YTP_PREFIX+text else text)
+                                ?.let(Database::update)
                         }
                     }
 

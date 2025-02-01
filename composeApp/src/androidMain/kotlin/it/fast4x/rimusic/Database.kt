@@ -624,6 +624,11 @@ interface Database {
     fun getArtistsList(idsList: List<String>): Flow<List<Artist?>>
 
     @Transaction
+    @Query("SELECT * FROM Artist")
+    @RewriteQueriesToDropUnusedColumns
+    fun getArtistsList(): Flow<List<Artist?>>
+
+    @Transaction
     @Query("SELECT * FROM Song WHERE id in (:idsList) ")
     @RewriteQueriesToDropUnusedColumns
     fun getSongsList(idsList: List<String>): Flow<List<Song>>
@@ -1480,6 +1485,9 @@ interface Database {
 
     @Query("SELECT * FROM Album WHERE id = :id")
     fun album(id: String): Flow<Album?>
+
+    @Query("SELECT * FROM Album")
+    fun getAlbumsList(): Flow<List<Album?>>
 
     @Query("SELECT timestamp FROM Album WHERE id = :id")
     fun albumTimestamp(id: String): Long?
