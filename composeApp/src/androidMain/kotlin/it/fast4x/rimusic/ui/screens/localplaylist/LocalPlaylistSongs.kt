@@ -440,9 +440,10 @@ fun LocalPlaylistSongs(
             onConfirm = {
                 CoroutineScope(Dispatchers.IO).launch {
                     if (isYouTubeSyncEnabled()) {
-                        if (playlistPreview?.playlist?.name?.contains(YTP_PREFIX) == true && playlistPreview?.playlist?.browseId?.startsWith("RD") == true){
+                        /*if (playlistPreview?.playlist?.name?.contains(YTP_PREFIX) == true && playlistPreview?.playlist?.browseId?.startsWith("RD") == true){
                             playlistPreview?.playlist?.browseId?.let { YtMusic.removelikePlaylistOrAlbum(it) }
-                        } else
+                        } else*/ //when we can figure out how to recognize an editable playlist
+                        playlistPreview?.playlist?.browseId?.let { YtMusic.removelikePlaylistOrAlbum(it) }
                         playlistPreview?.playlist?.browseId?.let { YtMusic.deletePlaylist(it) }
                         println("Innertube YtMusic deletetePlaylist")
                     }
