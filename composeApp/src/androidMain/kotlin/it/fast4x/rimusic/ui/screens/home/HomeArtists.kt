@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -32,11 +35,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.ArtistsType
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -58,6 +64,8 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.flow.map
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.FilterBy
+import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
@@ -66,10 +74,15 @@ import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
 import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
+import it.fast4x.rimusic.ui.components.themed.FilterMenu
+import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.Preference.HOME_ARTIST_ITEM_SIZE
 import it.fast4x.rimusic.utils.autoSyncToolbutton
 import it.fast4x.rimusic.utils.autosyncKey
+import it.fast4x.rimusic.utils.filterByKey
 import it.fast4x.rimusic.utils.importYTMSubscribedChannels
+import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -90,7 +103,8 @@ fun HomeArtists(
     // Essentials
     val lazyGridState = rememberLazyGridState()
 
-    var items by persistList<Artist>( "home/artists" )
+    var items by persistList<Artist>( "")
+    var itemsToFilter by persistList<Artist>( "home/artists" )
 
     var itemsOnDisplay by persistList<Artist>( "home/artists/on_display" )
 
@@ -118,12 +132,23 @@ fun HomeArtists(
     var artistType by rememberPreference(artistTypeKey, ArtistsType.Favorites )
     val buttonsList = ArtistsType.entries.map { it to it.textName }
 
+    var filterBy by rememberPreference(filterByKey, FilterBy.All)
+    val (colorPalette, typography) = LocalAppearance.current
+    val menuState = LocalMenuState.current
 
-    LaunchedEffect( sort.sortBy, sort.sortOrder, artistType ) {
+    LaunchedEffect( Unit, sort.sortBy, sort.sortOrder, artistType ) {
         when( artistType ) {
-            ArtistsType.Favorites -> Database.artists( sort.sortBy, sort.sortOrder ).collect { items = it }
-            ArtistsType.Library -> Database.artistsInLibrary( sort.sortBy, sort.sortOrder ).collect { items = it }
+            ArtistsType.Favorites -> Database.artists( sort.sortBy, sort.sortOrder ).collect { itemsToFilter = it }
+            ArtistsType.Library -> Database.artistsInLibrary( sort.sortBy, sort.sortOrder ).collect { itemsToFilter = it }
             //ArtistsType.All -> Database.artistsWithSongsSaved( sort.sortBy, sort.sortOrder ).collect { items = it }
+        }
+
+    }
+    LaunchedEffect( Unit, itemsToFilter, filterBy ) {
+        items = when(filterBy) {
+            FilterBy.All -> itemsToFilter
+            FilterBy.YoutubeLibrary -> itemsToFilter.filter { it.name?.startsWith(YTP_PREFIX) == true }
+            FilterBy.Local -> itemsToFilter.filterNot { it.name?.startsWith(YTP_PREFIX) == true }
         }
 
     }
@@ -195,12 +220,56 @@ fun HomeArtists(
                         .padding(bottom = 8.dp)
                         .fillMaxWidth()
                 ) {
-                    ButtonsRow(
-                        chips = buttonsList,
-                        currentValue = artistType,
-                        onValueUpdate = { artistType = it } ,
-                        modifier = Modifier.padding(end = 12.dp)
-                    )
+                    Box {
+                        ButtonsRow(
+                            chips = buttonsList,
+                            currentValue = artistType,
+                            onValueUpdate = { artistType = it },
+                            modifier = Modifier.padding(end = 12.dp)
+                        )
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                        ){
+                            BasicText(
+                                text = when (filterBy) {
+                                    FilterBy.All -> stringResource(R.string.all)
+                                    FilterBy.Local -> stringResource(R.string.on_device)
+                                    FilterBy.YoutubeLibrary -> stringResource(R.string.ytm_library)
+                                },
+                                style = typography.xs.semiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(end = 5.dp)
+                                    .clickable {
+                                        menuState.display {
+                                            FilterMenu(
+                                                title = stringResource(R.string.filter_by),
+                                                onDismiss = menuState::hide,
+                                                onAll = {filterBy = FilterBy.All},
+                                                onYoutubeLibrary = {filterBy = FilterBy.YoutubeLibrary},
+                                                onLocal = {filterBy = FilterBy.Local}
+                                            )
+                                        }
+
+                                    }
+                            )
+                            HeaderIconButton(
+                                icon = R.drawable.playlist,
+                                color = colorPalette.text,
+                                onClick = {},
+                                modifier = Modifier
+                                    .offset(0.dp, 2.5.dp)
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
+                                        onClick = {}
+                                    )
+                            )
+                        }
+                    }
                 }
 
                 // Sticky search bar

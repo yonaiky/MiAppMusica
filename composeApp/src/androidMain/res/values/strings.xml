@@ -899,4 +899,5 @@
     <string name="autosync_albums">Auto Sync Saved Albums</string>
     <string name="save_youtube_library">Save in the Youtube Library</string>
     <string name="cant_rename_Saved_albums">Cannot Rename Albums saved in the Youtube Music Library</string>
+    <string name="ytm_library">YTM Library</string>
 </resources>
