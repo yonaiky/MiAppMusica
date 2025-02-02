@@ -17,12 +17,7 @@ fun cleanPrefix(text: String): String {
         .replace(PIPED_PREFIX, "", true)
         .replace(EXPLICIT_PREFIX, "", true)
         .replace(MODIFIED_PREFIX, "", true)
-        .replace(YTP_PREFIX, "", true)
-//    var cleanText = text.substringAfter(PINNED_PREFIX)
-//    cleanText = cleanText.substringAfter(MONTHLY_PREFIX)
-//    cleanText = cleanText.substringAfter(PIPED_PREFIX)
-//    cleanText = cleanText.substringAfter(EXPLICIT_PREFIX)
-//    cleanText = cleanText.substringAfter(MODIFIED_PREFIX)
+
     return cleanText
 }
 

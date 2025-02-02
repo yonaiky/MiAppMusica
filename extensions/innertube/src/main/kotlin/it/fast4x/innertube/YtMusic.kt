@@ -1,6 +1,7 @@
 package it.fast4x.innertube
 
 import io.ktor.client.call.body
+import io.ktor.client.statement.bodyAsText
 import it.fast4x.innertube.Innertube.getBestQuality
 import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.models.BrowseResponse
@@ -11,6 +12,7 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.getContinuation
 import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.requests.AlbumPage
+import it.fast4x.innertube.requests.ArtistItemsContinuationPage
 import it.fast4x.innertube.requests.ArtistItemsPage
 import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.HistoryPage
@@ -383,6 +385,35 @@ object YtMusic {
 
     }.onFailure {
         println("YtMusic getPlaylistContinuation error: ${it.stackTraceToString()}")
+    }
+
+    suspend fun getArtistItemsContinuation(continuation: String) = runCatching {
+        val response = Innertube.browse(
+            continuation = continuation,
+            setLogin = true
+        ).body<BrowseResponse>()
+
+        response.onResponseReceivedActions?.map {
+            it.appendContinuationItemsAction?.continuationItems?.mapNotNull { it1 ->
+                it1.musicResponsiveListItemRenderer?.let { it2 ->
+                    ArtistItemsPage.fromMusicResponsiveListItemRenderer(
+                        it2
+                    )
+                }
+            }
+        }?.let {
+            it.firstOrNull()?.let { it1 ->
+                ArtistItemsContinuationPage(
+                    items = it1,
+                    continuation = response.onResponseReceivedActions.firstOrNull()
+                        ?.appendContinuationItemsAction?.continuationItems?.lastOrNull()
+                        ?.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token
+                )
+            }
+        }
+
+    }.onFailure {
+        println("YtMusic getArtistItemsContinuation error: ${it.stackTraceToString()}")
     }
 
     suspend fun getAlbum(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
