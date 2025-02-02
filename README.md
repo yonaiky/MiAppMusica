@@ -16,6 +16,7 @@ Since `January 5th 2025`, this project is split into 2 parts, **_upstream_** and
 |------------------------|------------------------------|
 | Bleeding-edge features | Optimized for performance    |
 | Contains minor changes | Contains significant changes |
+| Fast to deliver        | Takes a while to implement   |
 
 ## What is KBuild
 
