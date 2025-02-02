@@ -33,7 +33,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 suspend fun importYTMPrivatePlaylists(): Boolean {
-    if (isYouTubeSyncEnabled() && isAutoSyncEnabled()) {
+    if (isYouTubeSyncEnabled()) {
 
         SmartMessage(
             message = appContext().resources.getString(R.string.syncing),
@@ -123,7 +123,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
 
 suspend fun importYTMSubscribedChannels(): Boolean {
     println("importYTMSubscribedChannels isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
-    if (isYouTubeSyncEnabled() && isAutoSyncEnabled()) {
+    if (isYouTubeSyncEnabled()) {
 
         SmartMessage(
             message = appContext().resources.getString(R.string.syncing),
@@ -173,7 +173,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
 
 suspend fun importYTMLikedAlbums(): Boolean {
     println("importYTMLikedAlbums isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
-    if (isYouTubeSyncEnabled() && isAutoSyncEnabled()) {
+    if (isYouTubeSyncEnabled()) {
 
         SmartMessage(
             message = appContext().resources.getString(R.string.syncing),

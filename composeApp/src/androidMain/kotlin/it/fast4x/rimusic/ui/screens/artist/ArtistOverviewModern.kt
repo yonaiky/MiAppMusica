@@ -330,8 +330,8 @@ fun ArtistOverviewModern(
                                             artistPage.artist.channelId.let {
                                                 if (it != null) {
                                                     YtMusic.subscribeChannel(it)
-                                                    if (artist != null) {
-                                                        Database.insert(artist!!.copy(name = YTP_PREFIX + artist?.name))
+                                                    if (artist != null && browseId != null) {
+                                                        Database.updateArtistName(browseId, YTP_PREFIX + artist?.name)
                                                     }
                                                 }
                                             }

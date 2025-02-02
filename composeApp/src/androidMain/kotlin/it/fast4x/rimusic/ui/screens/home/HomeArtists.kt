@@ -25,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,6 +58,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.flow.map
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.ui.components.PullToRefreshBox
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.ItemSize
@@ -65,7 +68,11 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
 import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.utils.Preference.HOME_ARTIST_ITEM_SIZE
 import it.fast4x.rimusic.utils.autoSyncToolbutton
+import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.importYTMSubscribedChannels
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -133,87 +140,106 @@ fun HomeArtists(
 
     val sync = autoSyncToolbutton(R.string.autosync_channels)
 
-    var justSynced by rememberSaveable { mutableStateOf(false) }
+    val doAutoSync by rememberPreference(autosyncKey, false)
+    var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
+
+    var refreshing by remember { mutableStateOf(false) }
+    val refreshScope = rememberCoroutineScope()
+
+    fun refresh() {
+        if (refreshing) return
+        refreshScope.launch(Dispatchers.IO) {
+            refreshing = true
+            justSynced = false
+            delay(500)
+            refreshing = false
+        }
+    }
 
     // START: Import YTM subscribed channels
-    LaunchedEffect(Unit) {
+    LaunchedEffect(justSynced, doAutoSync) {
         if (!justSynced && importYTMSubscribedChannels())
                 justSynced = true
     }
 
-    Box (
-        modifier = Modifier
-            .background(colorPalette().background0)
-            .fillMaxHeight()
-            .fillMaxWidth(
-                if( NavigationBarPosition.Right.isCurrent() )
-                    Dimensions.contentWidthRightBar
-                else
-                    1f
-            )
+    PullToRefreshBox(
+        refreshing = refreshing,
+        onRefresh = { refresh() }
     ) {
-        Column( Modifier.fillMaxSize() ) {
-            // Sticky tab's title
-            TabHeader( R.string.artists ) {
-                HeaderInfo(items.size.toString(), R.drawable.artists)
-            }
-
-            // Sticky tab's tool bar
-            TabToolBar.Buttons( sort, sync, search, randomizer, shuffle, itemSize )
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    //.padding(vertical = 4.dp)
-                    .padding(bottom = 8.dp)
-                    .fillMaxWidth()
-            ) {
-                ButtonsRow(
-                    chips = buttonsList,
-                    currentValue = artistType,
-                    onValueUpdate = { artistType = it } ,
-                    modifier = Modifier.padding(end = 12.dp)
+        Box (
+            modifier = Modifier
+                .background(colorPalette().background0)
+                .fillMaxHeight()
+                .fillMaxWidth(
+                    if( NavigationBarPosition.Right.isCurrent() )
+                        Dimensions.contentWidthRightBar
+                    else
+                        1f
                 )
-            }
+        ) {
+            Column( Modifier.fillMaxSize() ) {
+                // Sticky tab's title
+                TabHeader( R.string.artists ) {
+                    HeaderInfo(items.size.toString(), R.drawable.artists)
+                }
 
-            // Sticky search bar
-            search.SearchBar( this )
+                // Sticky tab's tool bar
+                TabToolBar.Buttons( sort, sync, search, randomizer, shuffle, itemSize )
 
-            LazyVerticalGrid(
-                state = lazyGridState,
-                columns = GridCells.Adaptive( itemSize.size.dp ),
-                modifier = Modifier.background( colorPalette().background0 )
-                                   .fillMaxSize(),
-                contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
-            ) {
-                items(items = itemsOnDisplay, key = Artist::id) { artist ->
-                    ArtistItem(
-                        artist = artist,
-                        thumbnailSizeDp = itemSize.size.dp,
-                        thumbnailSizePx = itemSize.size.px,
-                        alternative = true,
-                        modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
-                                           .clickable(onClick = {
-                                               search.onItemSelected()
-                                               onArtistClick( artist )
-                                           }),
-                        disableScrollingText = disableScrollingText
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        //.padding(vertical = 4.dp)
+                        .padding(bottom = 8.dp)
+                        .fillMaxWidth()
+                ) {
+                    ButtonsRow(
+                        chips = buttonsList,
+                        currentValue = artistType,
+                        onValueUpdate = { artistType = it } ,
+                        modifier = Modifier.padding(end = 12.dp)
                     )
                 }
+
+                // Sticky search bar
+                search.SearchBar( this )
+
+                LazyVerticalGrid(
+                    state = lazyGridState,
+                    columns = GridCells.Adaptive( itemSize.size.dp ),
+                    modifier = Modifier.background( colorPalette().background0 )
+                                       .fillMaxSize(),
+                    contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
+                ) {
+                    items(items = itemsOnDisplay, key = Artist::id) { artist ->
+                        ArtistItem(
+                            artist = artist,
+                            thumbnailSizeDp = itemSize.size.dp,
+                            thumbnailSizePx = itemSize.size.px,
+                            alternative = true,
+                            modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
+                                               .clickable(onClick = {
+                                                   search.onItemSelected()
+                                                   onArtistClick( artist )
+                                               }),
+                            disableScrollingText = disableScrollingText
+                        )
+                    }
+                }
             }
+
+            FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
+
+            val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
+            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
+                MultiFloatingActionsContainer(
+                    iconId = R.drawable.search,
+                    onClick = onSearchClick,
+                    onClickSettings = onSettingsClick,
+                    onClickSearch = onSearchClick
+                )
         }
-
-        FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
-
-        val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
-            MultiFloatingActionsContainer(
-                iconId = R.drawable.search,
-                onClick = onSearchClick,
-                onClickSettings = onSettingsClick,
-                onClickSearch = onSearchClick
-            )
     }
 }

@@ -618,6 +618,9 @@ interface Database {
     @Query("UPDATE Album SET title = :title WHERE id = :id")
     fun updateAlbumTitle(id: String, title: String): Int
 
+    @Query("UPDATE Artist SET name = :name WHERE id = :id")
+    fun updateArtistName(id: String, name: String): Int
+
     @Transaction
     @Query("SELECT * FROM Artist WHERE id in (:idsList)")
     @RewriteQueriesToDropUnusedColumns
