@@ -579,7 +579,7 @@
     <string name="info_prevent_play_songs_with_age_limitation">Запобігти відтворення пісень з обмеженням віку</string>
     <string name="cache_location_private">Приватний</string>
     <string name="cache_location_system">Система</string>
-    <string name="info_cannot_rename_a_monthly_or_piped_playlist">Не вдається перейменувати місячний або piped плейлист</string>
+    <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or online or piped playlist</string>
     <string name="debug">НАЛАГОДЖЕННЯ</string>
     <string name="enable_log_debug">Увімкнути налагодження журналу</string>
     <string name="if_enabled_create_a_log_file_to_highlight_errors">Якщо увімкнено, створіть файл журналу щоб виділити помилки</string>
@@ -896,4 +896,8 @@
     <string name="updating_playlist_message">Оновити пісні з відсутнім ідентифікатором альбому</string>
     <string name="syncing">Синхронізація...</string>
     <string name="autosync_channels">Автосинхронізація підписаних каналів</string>
+    <string name="autosync_albums">Auto Sync Saved Albums</string>
+    <string name="save_youtube_library">Save in the Youtube Library</string>
+    <string name="cant_rename_Saved_albums">Cannot Rename Albums saved in the Youtube Music Library</string>
+    <string name="ytm_library">YTM Library</string>
 </resources>
