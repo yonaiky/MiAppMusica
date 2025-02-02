@@ -897,4 +897,5 @@
     <string name="syncing">Syncing...</string>
     <string name="autosync_channels">Auto Sync Subscribed Channels</string>
     <string name="autosync_albums">Auto Sync Saved Albums</string>
+    <string name="save_youtube_library">Save in the Youtube Library</string>
 </resources>
