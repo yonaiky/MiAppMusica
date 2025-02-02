@@ -306,6 +306,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.LayoutDirection
+import it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
 import kotlin.math.sqrt
 
 
@@ -1735,7 +1736,7 @@ fun Player(
                                     else colorPalette().accent,
                                 onClick = {
                                     menuState.display {
-                                        MiniPlayerMenu(
+                                        AddToPlaylistPlayerMenu(
                                             navController = navController,
                                             onDismiss = {
                                                 menuState.hide()
@@ -1748,7 +1749,6 @@ fun Player(
                                             onClosePlayer = {
                                                 onDismiss()
                                             },
-                                            disableScrollingText = disableScrollingText
                                         )
                                     }
                                 },

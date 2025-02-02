@@ -5,15 +5,42 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.*
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults.colors
 import androidx.compose.material3.ripple
@@ -24,6 +51,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -38,7 +66,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -56,20 +87,61 @@ import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.reordering.draggedItem
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
-import it.fast4x.rimusic.*
+import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.*
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.QueueLoopType
+import it.fast4x.rimusic.enums.QueueType
+import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
-import it.fast4x.rimusic.ui.components.themed.*
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
+import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
+import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
+import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
+import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
+import it.fast4x.rimusic.ui.components.themed.QueuedMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.utils.DisposableListener
+import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.discoverKey
+import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNowPlaying
+import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.medium
+import it.fast4x.rimusic.utils.queueLoopTypeKey
+import it.fast4x.rimusic.utils.queueTypeKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.reorderInQueueEnabledKey
+import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.shouldBePlaying
+import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
+import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
+import it.fast4x.rimusic.utils.shuffleQueue
+import it.fast4x.rimusic.utils.smoothScrollToTop
+import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import it.fast4x.rimusic.utils.windows
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -212,51 +284,68 @@ fun Queue(
             mutableStateOf("")
         }
 
+        val coroutineScope = rememberCoroutineScope()
+
         val exportLauncher =
             rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
                 if (uri == null) return@rememberLauncherForActivityResult
-
-                context.applicationContext.contentResolver.openOutputStream(uri)
-                    ?.use { outputStream ->
-                        csvWriter().open(outputStream) {
-                            writeRow(
-                                "PlaylistBrowseId",
-                                "PlaylistName",
-                                "MediaId",
-                                "Title",
-                                "Artists",
-                                "Duration",
-                                "ThumbnailUrl"
-                            )
-                            if (listMediaItems.isEmpty()) {
-                                windows.forEach {
-                                    writeRow(
-                                        "",
-                                        plistName,
-                                        it.mediaItem.mediaId,
-                                        it.mediaItem.mediaMetadata.title,
-                                        it.mediaItem.mediaMetadata.artist,
-                                        "",
-                                        it.mediaItem.mediaMetadata.artworkUri
-                                    )
-                                }
-                            } else {
-                                listMediaItems.forEach {
-                                    writeRow(
-                                        "",
-                                        plistName,
-                                        it.mediaId,
-                                        it.mediaMetadata.title,
-                                        it.mediaMetadata.artist,
-                                        "",
-                                        it.mediaMetadata.artworkUri
-                                    )
+                coroutineScope.launch (Dispatchers.IO){
+                    context.applicationContext.contentResolver.openOutputStream(uri)
+                        ?.use { outputStream ->
+                            csvWriter().open(outputStream) {
+                                writeRow(
+                                    "PlaylistBrowseId",
+                                    "PlaylistName",
+                                    "MediaId",
+                                    "Title",
+                                    "Artists",
+                                    "Duration",
+                                    "ThumbnailUrl",
+                                    "AlbumId",
+                                    "AlbumTitle",
+                                    "ArtistIds"
+                                )
+                                if (listMediaItems.isEmpty()) {
+                                    windows.forEach {
+                                        val artistInfos = Database.songArtistInfo(it.mediaItem.mediaId)
+                                        val albumInfo = Database.songAlbumInfo(it.mediaItem.mediaId)
+                                        writeRow(
+                                            "",
+                                            plistName,
+                                            it.mediaItem.mediaId,
+                                            it.mediaItem.mediaMetadata.title,
+                                            artistInfos.joinToString(",") { it.name ?: "" },
+                                            it.mediaItem.asSong.durationText,
+                                            it.mediaItem.mediaMetadata.artworkUri,
+                                            albumInfo?.id,
+                                            albumInfo?.name,
+                                            artistInfos.joinToString(",") { it.id }
+                                        )
+                                    }
+                                } else {
+                                    listMediaItems.forEach {
+                                        val artistInfos = Database.songArtistInfo(it.mediaId)
+                                        val albumInfo = Database.songAlbumInfo(it.mediaId)
+                                        writeRow(
+                                            "",
+                                            plistName,
+                                            it.mediaId,
+                                            it.mediaMetadata.title,
+                                            artistInfos.joinToString(",") { it.name ?: "" },
+                                            it.asSong.durationText,
+                                            it.mediaMetadata.artworkUri,
+                                            albumInfo?.id,
+                                            albumInfo?.name,
+                                            artistInfos.joinToString(",") { it.id }
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-
+                }
             }
+
+
 
         var isExporting by rememberSaveable {
             mutableStateOf(false)

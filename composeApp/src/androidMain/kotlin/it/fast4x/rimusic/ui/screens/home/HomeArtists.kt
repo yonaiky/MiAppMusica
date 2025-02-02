@@ -24,6 +24,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -55,7 +57,9 @@ import it.fast4x.rimusic.utils.Preference.HOME_ARTIST_ITEM_SIZE
 import it.fast4x.rimusic.utils.artistSortByKey
 import it.fast4x.rimusic.utils.artistSortOrderKey
 import it.fast4x.rimusic.utils.artistTypeKey
+import it.fast4x.rimusic.utils.autoSyncToolbutton
 import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.importYTMSubscribedChannels
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import me.knighthat.component.tab.SongShuffler
@@ -122,6 +126,16 @@ fun HomeArtists(
         lazyGridState.scrollToItem( scrollIndex, scrollOffset )
     }
 
+    val sync = autoSyncToolbutton(R.string.autosync_channels)
+
+    var justSynced by rememberSaveable { mutableStateOf(false) }
+
+    // START: Import YTM subscribed channels
+    LaunchedEffect(Unit) {
+        if (!justSynced && importYTMSubscribedChannels())
+                justSynced = true
+    }
+
     Box (
         modifier = Modifier
             .background(colorPalette().background0)
@@ -140,7 +154,7 @@ fun HomeArtists(
             }
 
             // Sticky tab's tool bar
-            TabToolBar.Buttons( sort, search, randomizer, shuffle, itemSize )
+            TabToolBar.Buttons( sort, sync, search, randomizer, shuffle, itemSize )
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,

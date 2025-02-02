@@ -129,6 +129,7 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
@@ -167,6 +168,7 @@ fun AlbumDetails(
 
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
+    val context = LocalContext.current
 
     var songs by persistList<Song>("album/$browseId/songs")
     var album by persist<Album?>("album/$browseId")
@@ -185,10 +187,24 @@ fun AlbumDetails(
     var playTime by remember {
         mutableStateOf<Long?>(null)
     }
+
+    data class AlbumSongsState(
+        val song : Song,
+        val likedAt : Long? = null,
+        val playtime : Long? = null,
+        val songExists : Boolean = false,
+        val playlistsList : List<Database.PlayListIdPosition>? = emptyList(),
+    )
+
     LaunchedEffect(startSync) {
+        if(!startSync || !isNetworkConnected(context)) {
+            startSync = false
+            return@LaunchedEffect
+        }
         withContext(Dispatchers.IO) {
-            songs.forEach {song ->
-                Database.asyncTransaction {
+            Database.asyncTransaction {
+                val albumSongsStateList = mutableListOf<AlbumSongsState>()
+                songs.forEach { song ->
                     songPlaylist = Database.songUsedInPlaylists(song.id)
                     if (songPlaylist > 0) songExists = true
                     playlistsList = Database.playlistsUsedForSong(song.id)
@@ -196,9 +212,12 @@ fun AlbumDetails(
                     playTime = song.totalPlayTimeMs
                     binder?.cache?.removeResource(song.id)
                     binder?.downloadCache?.removeResource(song.id)
+                    val songState = AlbumSongsState(song, likedAt, playTime, songExists, playlistsList)
+                    albumSongsStateList.add(songState)
                     Database.delete(song)
+                }
 
-                  Database.upsert(
+                Database.upsert(
                     Album(
                         id = browseId,
                         title = if (album?.title?.startsWith(MODIFIED_PREFIX) == true) album?.title else albumPage?.album?.title,
@@ -221,26 +240,33 @@ fun AlbumDetails(
                                 position = position
                             )
                         } ?: emptyList()
-                  )
+                )
 
-                    if (songExists){
-                        insert(song)
-                        playlistsList?.forEach{item ->
+                albumSongsStateList.forEach { albumSongsState ->
+                    if ((albumSongsState.songExists || albumSongsState.likedAt != null || albumSongsState.playtime != null)
+                        && songExist(albumSongsState.song.id) == 0) {
+                        insert(albumSongsState.song)
+                    }
+                    if (albumSongsState.songExists) {
+                        albumSongsState.playlistsList?.forEach { item ->
                             insert(
                                 SongPlaylistMap(
-                                    songId = song.id,
+                                    songId = albumSongsState.song.id,
                                     playlistId = item.playlistId,
                                     position = item.position
                                 )
                             )
                         }
                     }
-                    if (likedAt != null){
-                        Database.like(song.id,likedAt)
+                    if (albumSongsState.likedAt != null) {
+                        Database.like(albumSongsState.song.id, albumSongsState.likedAt)
                     }
-                    Database.incrementTotalPlayTimeMs(song.id,playTime ?: 0)
-                    startSync = false
+                    Database.incrementTotalPlayTimeMs(
+                        albumSongsState.song.id,
+                        albumSongsState.playtime ?: 0
+                    )
                 }
+                startSync = false
             }
         }
     }
@@ -281,7 +307,6 @@ fun AlbumDetails(
 
     val lazyListState = rememberLazyListState()
 
-    val context = LocalContext.current
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
     }
@@ -702,6 +727,22 @@ fun AlbumDetails(
                                                 context,
                                                 songs.map { it.asMediaItem })
                                         }
+
+                                        if (isYouTubeSyncEnabled())
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                if (bookmarkedAt == null)
+                                                    albumPage?.album?.playlistId.let {
+                                                        if (it != null) {
+                                                            YtMusic.removelikePlaylistOrAlbum(it)
+                                                        }
+                                                    }
+                                                else
+                                                    albumPage?.album?.playlistId.let {
+                                                        if (it != null) {
+                                                            YtMusic.likePlaylistOrAlbum(it)
+                                                        }
+                                                    }
+                                            }
                                     },
                                     onLongClick = {
                                         SmartMessage(
@@ -1067,7 +1108,7 @@ fun AlbumDetails(
                         var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             mediaItem = song.asMediaItem,
-                            downloadState = downloadState,
+                            downloadState = getDownloadState(song.asMediaItem.mediaId),
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
                                 Database.asyncTransaction {
