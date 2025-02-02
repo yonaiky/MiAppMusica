@@ -69,6 +69,7 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.YTP_PREFIX
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -749,7 +750,7 @@ fun ArtistOverviewModern(
         ) {
             ArtistOverviewItems(
                 navController,
-                artistName = artist?.name,
+                artistName = cleanPrefix(artist?.name ?: ""),
                 sectionName = itemsSectionName,
                 browseId = itemsBrowseId,
                 params = itemsParams,

@@ -14,6 +14,7 @@ import it.fast4x.rimusic.Database.Companion.albumsByTitleAsc
 import it.fast4x.rimusic.Database.Companion.getAlbumsList
 import it.fast4x.rimusic.Database.Companion.getArtistsList
 import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
+import it.fast4x.rimusic.Database.Companion.update
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.appContext
@@ -144,13 +145,21 @@ suspend fun importYTMSubscribedChannels(): Boolean {
                     println("Local artist: $localArtist")
                     println("Remote artist: $remoteArtist")
 
-                    localArtist = Artist(
-                        id = remoteArtist.key,
-                        name = (YTP_PREFIX + remoteArtist.title),
-                        thumbnailUrl = remoteArtist.thumbnail?.url,
-                        bookmarkedAt = System.currentTimeMillis()
-                    )
-                    Database.insert(localArtist)
+                    if (localArtist == null) {
+                        localArtist = Artist(
+                            id = remoteArtist.key,
+                            name = (YTP_PREFIX + remoteArtist.title),
+                            thumbnailUrl = remoteArtist.thumbnail?.url,
+                            bookmarkedAt = System.currentTimeMillis()
+                        )
+                        Database.insert(localArtist)
+                    } else {
+                        localArtist.copy(
+                            name = (YTP_PREFIX + remoteArtist.title),
+                            bookmarkedAt = localArtist.bookmarkedAt ?: System.currentTimeMillis(),
+                            thumbnailUrl = remoteArtist.thumbnail?.url
+                        ).let(::update)
+                    }
 
 
                 }
@@ -194,15 +203,23 @@ suspend fun importYTMLikedAlbums(): Boolean {
                     println("Local album: $localAlbum")
                     println("Remote album: $remoteAlbum")
 
-                    localAlbum = Album(
-                        id = remoteAlbum.key,
-                        title = (YTP_PREFIX + remoteAlbum.title) ?: "",
-                        thumbnailUrl = remoteAlbum.thumbnail?.url,
-                        bookmarkedAt = System.currentTimeMillis(),
-                        year = remoteAlbum.year,
-                        authorsText = remoteAlbum.authors?.getOrNull(1)?.name
-                    )
-                    Database.insert(localAlbum)
+                    if (localAlbum == null) {
+                        localAlbum = Album(
+                            id = remoteAlbum.key,
+                            title = (YTP_PREFIX + remoteAlbum.title) ?: "",
+                            thumbnailUrl = remoteAlbum.thumbnail?.url,
+                            bookmarkedAt = System.currentTimeMillis(),
+                            year = remoteAlbum.year,
+                            authorsText = remoteAlbum.authors?.getOrNull(1)?.name
+                        )
+                        Database.insert(localAlbum)
+                    } else {
+                        localAlbum.copy(
+                            title = YTP_PREFIX + localAlbum.title,
+                            bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
+                            thumbnailUrl = remoteAlbum.thumbnail?.url)
+                            .let(::update)
+                    }
 
                 }
             }

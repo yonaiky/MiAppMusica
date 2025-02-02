@@ -49,6 +49,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.YTP_PREFIX
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
@@ -202,7 +203,7 @@ fun ArtistScreenModern(
                                 .shimmer()
                         )
                     } else {
-                        Header(title = artist?.name ?: "Unknown", actionsContent = {
+                        Header(title = cleanPrefix(artist?.name ?: "Unknown"), actionsContent = {
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                                     verticalAlignment = Alignment.CenterVertically,

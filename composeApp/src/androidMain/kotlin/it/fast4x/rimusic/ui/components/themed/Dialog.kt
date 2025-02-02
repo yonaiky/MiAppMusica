@@ -106,6 +106,7 @@ import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion.update
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.ColorPaletteMode
@@ -559,7 +560,6 @@ inline fun SelectorArtistsDialog(
                     HorizontalPager(state = pagerState) { idArtist ->
                         val browseId = values[idArtist].id
                         var artist by persist<Artist?>("artist/$browseId/artist")
-                        var artistPage by persist<ArtistPage?>("artist/$browseId/artistPage")
                         LaunchedEffect(browseId) {
                             Database.artist(values[idArtist].id).collect{artist = it}
                         }
@@ -568,16 +568,9 @@ inline fun SelectorArtistsDialog(
                                 withContext(Dispatchers.IO) {
                                     YtMusic.getArtistPage(browseId = browseId)
                                         .onSuccess { currentArtistPage ->
-                                            artistPage = currentArtistPage
-                                            Database.upsert(
-                                                Artist(
-                                                    id = browseId,
-                                                    name = currentArtistPage.artist.info?.name,
-                                                    thumbnailUrl = currentArtistPage.artist.thumbnail?.url,
-                                                    timestamp = artist?.timestamp,
-                                                    bookmarkedAt = artist?.bookmarkedAt
-                                                )
-                                            )
+                                            artist?.copy(
+                                                thumbnailUrl = currentArtistPage.artist.thumbnail?.url
+                                            )?.let(::update)
                                             Database.artist(values[idArtist].id).collect{artist = it}
                                         }
                                 }
@@ -603,7 +596,7 @@ inline fun SelectorArtistsDialog(
                             )
                             values[idArtist].name?.let { it1 ->
                                 BasicText(
-                                    text = it1,
+                                    text = cleanPrefix(it1),
                                     maxLines = 3,
                                     overflow = TextOverflow.Ellipsis,
                                     style = typography().xs.medium,
@@ -612,7 +605,7 @@ inline fun SelectorArtistsDialog(
                                         .align(Alignment.BottomCenter)
                                 )
                                 BasicText(
-                                    text = it1,
+                                    text = cleanPrefix(it1),
                                     style = typography().xs.medium.merge(TextStyle(
                                         drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
                                         color = if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
