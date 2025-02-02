@@ -81,6 +81,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
@@ -172,6 +173,19 @@ fun PlaylistSongList(
     var isLiked by remember {
         mutableStateOf(0)
     }
+    var playlistNameInDatabase by remember { mutableStateOf("") }
+    Database.asyncTransaction {
+        playlistNameInDatabase = Database.playlistWithBrowseId(browseId.substringAfter("VL"))?.name ?: ""
+        }
+    var saveCheck by remember { mutableStateOf(false) }
+    var isSavedInYoutube by remember { mutableStateOf(false) }
+
+    LaunchedEffect(saveCheck) {
+        Database.asyncTransaction {
+            if (Database.playlistWithBrowseId(browseId.substringAfter("VL"))?.name?.contains(YTP_PREFIX) == true) isSavedInYoutube = true
+        }
+    }
+
     @Composable
     fun checkLike(mediaId : String, song: Innertube. SongItem) : Boolean {
         LaunchedEffect(Unit, mediaId) {
@@ -663,6 +677,58 @@ fun PlaylistSongList(
                                         }
                                     )
                             )
+                            if (isYouTubeSyncEnabled()) {
+                                HeaderIconButton(
+                                    icon = if (isSavedInYoutube) R.drawable.bookmark else R.drawable.bookmark_outline,
+                                    color = colorPalette().text,
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .padding(horizontal = 5.dp)
+                                        .combinedClickable(
+                                            onClick = {
+                                                if (playlistNameInDatabase.contains(YTP_PREFIX)) {
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                        YtMusic.removelikePlaylistOrAlbum(browseId.substringAfter("VL"))
+                                                    }
+                                                    Database.asyncTransaction {
+                                                        Database.playlistWithBrowseId(browseId.substringAfter("VL"))
+                                                            ?.let { delete(it) }
+                                                    }
+                                                } else {
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                        YtMusic.likePlaylistOrAlbum(browseId.substringAfter("VL"))
+                                                    }
+                                                    Database.asyncTransaction {
+                                                        val playlistId = insert(Playlist(name = (YTP_PREFIX + playlistPage?.playlist?.title) , browseId = browseId.substringAfter("VL")))
+
+                                                        playlistPage?.songs
+                                                            ?.map(Innertube.SongItem::asMediaItem)
+                                                            ?.onEach(::insert)
+                                                            ?.mapIndexed { index, mediaItem ->
+                                                                SongPlaylistMap(
+                                                                    songId = mediaItem.mediaId,
+                                                                    playlistId = playlistId,
+                                                                    position = index
+                                                                )
+                                                            }
+                                                            ?.let(::insertSongPlaylistMaps)
+                                                    }
+                                                }
+                                                SmartMessage(
+                                                    context.resources.getString(R.string.done),
+                                                    context = context
+                                                )
+                                                saveCheck = !saveCheck
+                                            },
+                                            onLongClick = {
+                                                SmartMessage(
+                                                    context.resources.getString(R.string.add_to_favorites),
+                                                    context = context
+                                                )
+                                            }
+                                        )
+                                )
+                            }
 
 
                             /*

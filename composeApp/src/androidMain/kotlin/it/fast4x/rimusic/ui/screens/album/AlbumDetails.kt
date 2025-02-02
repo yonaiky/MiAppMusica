@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -48,9 +49,14 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
@@ -76,6 +82,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
@@ -224,7 +231,7 @@ fun AlbumDetails(
                 Database.upsert(
                     Album(
                         id = browseId,
-                        title = if (album?.title?.startsWith(MODIFIED_PREFIX) == true) album?.title else albumPage?.album?.title,
+                        title = if (album?.title?.startsWith(YTP_PREFIX) == true) YTP_PREFIX+albumPage?.album?.title else albumPage?.album?.title,
                         thumbnailUrl = if (album?.thumbnailUrl?.startsWith(MODIFIED_PREFIX) == true) album?.thumbnailUrl else albumPage?.album?.thumbnail?.url,
                         year = albumPage?.album?.year,
                         authorsText = if (album?.authorsText?.startsWith(MODIFIED_PREFIX) == true) album?.authorsText else albumPage?.album?.authors
@@ -376,7 +383,8 @@ fun AlbumDetails(
             setValue = {
                 if (it.isNotEmpty()) {
                     Database.asyncTransaction {
-                        updateAlbumTitle(browseId, it)
+                        updateAlbumTitle(browseId,
+                            if (album?.title?.startsWith(YTP_PREFIX) == true) YTP_PREFIX+it else it)
                     }
                 }
             },
@@ -588,19 +596,33 @@ fun AlbumDetails(
                     ) {
                         if (album != null) {
                             if (!isLandscape)
-                                AsyncImage(
-                                    model = album?.thumbnailUrl?.resize(1200, 900),
-                                    contentDescription = "loading...",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.Center)
-                                        .fadingEdge(
-                                            top = WindowInsets.systemBars
-                                                .asPaddingValues()
-                                                .calculateTopPadding() + Dimensions.fadeSpacingTop,
-                                            bottom = Dimensions.fadeSpacingBottom
+                                Box {
+                                    AsyncImage(
+                                        model = album?.thumbnailUrl?.resize(1200, 900),
+                                        contentDescription = "loading...",
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .align(Alignment.Center)
+                                            .fadingEdge(
+                                                top = WindowInsets.systemBars
+                                                    .asPaddingValues()
+                                                    .calculateTopPadding() + Dimensions.fadeSpacingTop,
+                                                bottom = Dimensions.fadeSpacingBottom
+                                            )
+                                    )
+                                    if (album?.title?.startsWith(YTP_PREFIX) == true){
+                                        Image(
+                                            painter = painterResource(R.drawable.ytmusic),
+                                            colorFilter = ColorFilter.tint(Color.Red.copy(0.75f).compositeOver(Color.White)),
+                                            modifier = Modifier
+                                                .size(40.dp)
+                                                .padding(all = 5.dp)
+                                                .offset(10.dp,10.dp),
+                                            contentDescription = "Background Image",
+                                            contentScale = ContentScale.Fit
                                         )
-                                )
+                                    }
+                                }
 
                             AutoResizeText(
                                 text = cleanPrefix(album?.title ?: ""),
@@ -744,6 +766,11 @@ fun AlbumDetails(
                                                     albumPage?.album?.playlistId.let {
                                                         if (it != null) {
                                                             YtMusic.likePlaylistOrAlbum(it)
+                                                            if (album != null) {
+                                                                Database.asyncTransaction {
+                                                                    updateAlbumTitle(browseId, YTP_PREFIX + album?.title)
+                                                                }
+                                                            }
                                                         }
                                                     }
                                             }
@@ -958,6 +985,9 @@ fun AlbumDetails(
                                         },
                                          */
                                             onChangeAlbumTitle = {
+                                                if (album?.title?.startsWith(YTP_PREFIX) == true){
+                                                    SmartMessage(context.resources.getString(R.string.cant_rename_Saved_albums),type = PopupType.Error, context = context)
+                                                } else
                                                 showDialogChangeAlbumTitle = true
                                             },
                                             onChangeAlbumAuthors = {
