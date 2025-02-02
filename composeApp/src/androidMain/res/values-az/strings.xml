@@ -894,6 +894,6 @@
     <string name="filter_by">Sırala</string>
     <string name="updating_playlist">Pleylist yenilənir. Xahiş olunur, gözləyin. Tətbiqi kiçiltmə və ya çıxma</string>
     <string name="updating_playlist_message">Mahnıları Olmayan Albom ID ilə yenilə</string>
-    <string name="syncing">Syncing...</string>
-    <string name="autosync_channels">Auto Sync Subscribed Channels</string>
+    <string name="syncing">Sinxronlaşdırılır...</string>
+    <string name="autosync_channels">Abunə olunan kanalları avtomatik sinxronizasiya et</string>
 </resources>
