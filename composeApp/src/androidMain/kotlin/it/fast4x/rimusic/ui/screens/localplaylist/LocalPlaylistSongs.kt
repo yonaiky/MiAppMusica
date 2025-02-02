@@ -1513,8 +1513,10 @@ fun LocalPlaylistSongs(
                                         */
                                         onSyncronize = {sync();SmartMessage(context.resources.getString(R.string.done), context = context) },
                                         onRename = {
-                                            if (playlistNotMonthlyType || playlistNotPipedType)
+                                            //if (playlistPreview.playlist.browseId == null || playlistNotMonthlyType || playlistNotPipedType)
+                                            if ((playlistPreview.playlist.browseId == null) && playlistNotMonthlyType) {
                                                 isRenaming = true
+                                            }
                                             else
                                             /*
                                             SmartToast(context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist))
