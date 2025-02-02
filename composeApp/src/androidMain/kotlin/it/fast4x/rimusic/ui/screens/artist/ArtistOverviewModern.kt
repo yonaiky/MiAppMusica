@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -39,8 +41,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
@@ -213,22 +219,38 @@ fun ArtistOverviewModern(
                     ) {
                         //if (artistPage != null) {
                         if (!isLandscape)
-                            AsyncImage(
-                                model = artistPage.artist.thumbnail?.url?.resize(
-                                    1200,
-                                    900
-                                ),
-                                contentDescription = "loading...",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.Center)
-                                    .fadingEdge(
-                                        top = WindowInsets.systemBars
-                                            .asPaddingValues()
-                                            .calculateTopPadding() + Dimensions.fadeSpacingTop,
-                                        bottom = Dimensions.fadeSpacingBottom
+                            Box {
+                                AsyncImage(
+                                    model = artistPage.artist.thumbnail?.url?.resize(
+                                        1200,
+                                        900
+                                    ),
+                                    contentDescription = "loading...",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.Center)
+                                        .fadingEdge(
+                                            top = WindowInsets.systemBars
+                                                .asPaddingValues()
+                                                .calculateTopPadding() + Dimensions.fadeSpacingTop,
+                                            bottom = Dimensions.fadeSpacingBottom
+                                        )
+                                )
+                                if (artist?.name?.startsWith(YTP_PREFIX) == true) {
+                                    Image(
+                                        painter = painterResource(R.drawable.ytmusic),
+                                        colorFilter = ColorFilter.tint(
+                                            Color.Red.copy(0.75f).compositeOver(Color.White)
+                                        ),
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .padding(all = 5.dp)
+                                            .offset(10.dp,10.dp),
+                                        contentDescription = "Background Image",
+                                        contentScale = ContentScale.Fit
                                     )
-                            )
+                                }
+                            }
 
                         AutoResizeText(
                             text = artistPage.artist.info?.name ?: "",
