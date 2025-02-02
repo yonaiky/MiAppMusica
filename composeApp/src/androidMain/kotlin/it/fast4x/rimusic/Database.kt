@@ -560,7 +560,7 @@ interface Database {
     fun eventWithSongByPeriod(date: Long, limit:Long = Long.MAX_VALUE): Flow<List<EventWithSong>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist WHERE browseId LIKE '${YTP_PREFIX}' || '%'")
+    @Query("SELECT * FROM Playlist WHERE name LIKE '${YTP_PREFIX}' || '%'")
     fun ytmPrivatePlaylists(): Flow<List<Playlist?>>
 
     @Transaction
@@ -618,10 +618,18 @@ interface Database {
     @Query("UPDATE Album SET title = :title WHERE id = :id")
     fun updateAlbumTitle(id: String, title: String): Int
 
+    @Query("UPDATE Artist SET name = :name WHERE id = :id")
+    fun updateArtistName(id: String, name: String): Int
+
     @Transaction
     @Query("SELECT * FROM Artist WHERE id in (:idsList)")
     @RewriteQueriesToDropUnusedColumns
     fun getArtistsList(idsList: List<String>): Flow<List<Artist?>>
+
+    @Transaction
+    @Query("SELECT * FROM Artist")
+    @RewriteQueriesToDropUnusedColumns
+    fun getArtistsList(): Flow<List<Artist?>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id in (:idsList) ")
@@ -1481,6 +1489,9 @@ interface Database {
     @Query("SELECT * FROM Album WHERE id = :id")
     fun album(id: String): Flow<Album?>
 
+    @Query("SELECT * FROM Album")
+    fun getAlbumsList(): Flow<List<Album?>>
+
     @Query("SELECT timestamp FROM Album WHERE id = :id")
     fun albumTimestamp(id: String): Long?
 
@@ -1817,6 +1828,10 @@ interface Database {
     @Transaction
     @Query("SELECT * FROM Playlist WHERE id = :id")
     fun playlistWithSongs(id: Long): Flow<PlaylistWithSongs?>
+
+    @Transaction
+    @Query("SELECT * FROM Playlist WHERE browseId = :browseId")
+    fun playlistWithBrowseId(browseId: String): Playlist?
 
     @Transaction
     @Query("SELECT * FROM Playlist WHERE trim(name) COLLATE NOCASE = trim(:name) COLLATE NOCASE")
@@ -2443,6 +2458,9 @@ interface Database {
 
     @Delete
     fun delete(album: Album)
+
+    @Delete
+    fun delete(artist: Artist)
 
     /**
      * Reset [Format.contentLength] of provided song.
