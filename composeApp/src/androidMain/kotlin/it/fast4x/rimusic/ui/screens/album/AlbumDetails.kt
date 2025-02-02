@@ -985,6 +985,9 @@ fun AlbumDetails(
                                         },
                                          */
                                             onChangeAlbumTitle = {
+                                                if (album?.title?.startsWith(YTP_PREFIX) == true){
+                                                    SmartMessage(context.resources.getString(R.string.cant_rename_Saved_albums),type = PopupType.Error, context = context)
+                                                } else
                                                 showDialogChangeAlbumTitle = true
                                             },
                                             onChangeAlbumAuthors = {
