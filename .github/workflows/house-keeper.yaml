@@ -37,7 +37,7 @@ jobs:
         run: echo "${{ secrets.HOUSE_KEEPER_WORKFLOW }}" | gh auth login --with-token
 
       - name: Get all workflows
-        run: gh api repos/$GITHUB_REPOSITORY/actions/runs --paginate > workflows.json
+        run: gh api repos/"$GITHUB_REPOSITORY"/actions/runs --paginate > workflows.json
 
       - name: Filter success workflows
         # What workflows eligible to be deleted:
@@ -63,7 +63,7 @@ jobs:
             if [ "$count" -eq 60 ]; then
               break
             else
-              gh api -X DELETE repos/$GITHUB_REPOSITORY/actions/runs/$run --silent
+              gh api -X DELETE repos/"$GITHUB_REPOSITORY"/actions/runs/$line --silent
               ((count++))
             fi
           done < success_workflows.txt
