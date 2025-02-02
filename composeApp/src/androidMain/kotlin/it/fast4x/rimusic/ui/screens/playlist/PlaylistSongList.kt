@@ -175,25 +175,13 @@ fun PlaylistSongList(
     Database.asyncTransaction {
         playlistNameInDatabase = Database.playlistWithBrowseId(browseId.substringAfter("VL"))?.name ?: ""
         }
+    var saveCheck by remember { mutableStateOf(false) }
     var isSavedInYoutube by remember { mutableStateOf(false) }
 
-    @Composable
-    fun getBookmarkIcon(): Int {
-        var saved by remember {
-            mutableStateOf(false)
+    LaunchedEffect(saveCheck) {
+        Database.asyncTransaction {
+            if (Database.playlistWithBrowseId(browseId.substringAfter("VL"))?.name?.contains(YTP_PREFIX) == true) isSavedInYoutube = true
         }
-
-        LaunchedEffect(isSavedInYoutube) {
-            Database.asyncTransaction {
-                if (Database.playlistWithBrowseId(browseId.substringAfter("VL"))?.name?.contains(YTP_PREFIX) == true) saved = true
-            }
-        }
-
-        return when (saved) {
-            false -> R.drawable.bookmark_outline
-            else -> R.drawable.bookmark
-        }
-
     }
 
     @Composable
@@ -689,7 +677,7 @@ fun PlaylistSongList(
                             )
                             if (isYouTubeSyncEnabled()) {
                                 HeaderIconButton(
-                                    icon = getBookmarkIcon(),
+                                    icon = if (isSavedInYoutube) R.drawable.bookmark else R.drawable.bookmark_outline,
                                     color = colorPalette().text,
                                     onClick = {},
                                     modifier = Modifier
@@ -728,7 +716,7 @@ fun PlaylistSongList(
                                                     context.resources.getString(R.string.done),
                                                     context = context
                                                 )
-                                                isSavedInYoutube = !isSavedInYoutube
+                                                saveCheck = !saveCheck
                                             },
                                             onLongClick = {
                                                 SmartMessage(
