@@ -225,7 +225,7 @@ fun AlbumDetails(
                 Database.upsert(
                     Album(
                         id = browseId,
-                        title = if (album?.title?.startsWith(MODIFIED_PREFIX) == true) album?.title else albumPage?.album?.title,
+                        title = if (album?.title?.startsWith(YTP_PREFIX) == true) YTP_PREFIX+albumPage?.album?.title else albumPage?.album?.title,
                         thumbnailUrl = if (album?.thumbnailUrl?.startsWith(MODIFIED_PREFIX) == true) album?.thumbnailUrl else albumPage?.album?.thumbnail?.url,
                         year = albumPage?.album?.year,
                         authorsText = if (album?.authorsText?.startsWith(MODIFIED_PREFIX) == true) album?.authorsText else albumPage?.album?.authors
