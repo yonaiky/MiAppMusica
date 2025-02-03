@@ -177,6 +177,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
+import it.fast4x.rimusic.YTEDITABLEPLAYLIST_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
@@ -443,8 +444,8 @@ fun LocalPlaylistSongs(
                         /*if (playlistPreview?.playlist?.name?.contains(YTP_PREFIX) == true && playlistPreview?.playlist?.browseId?.startsWith("RD") == true){
                             playlistPreview?.playlist?.browseId?.let { YtMusic.removelikePlaylistOrAlbum(it) }
                         } else*/ //when we can figure out how to recognize an editable playlist
-                        playlistPreview?.playlist?.browseId?.let { YtMusic.removelikePlaylistOrAlbum(it) }
-                        playlistPreview?.playlist?.browseId?.let { YtMusic.deletePlaylist(it) }
+                        playlistPreview?.playlist?.browseId?.let { YtMusic.removelikePlaylistOrAlbum(cleanPrefix(it)) }
+                        playlistPreview?.playlist?.browseId?.let { YtMusic.deletePlaylist(cleanPrefix(it)) }
                         println("Innertube YtMusic deletetePlaylist")
                     }
                     Database.asyncTransaction {
@@ -457,7 +458,7 @@ fun LocalPlaylistSongs(
                         context = context,
                         coroutineScope = coroutineScope,
                         pipedSession = pipedSession.toApiSession(),
-                        id = UUID.fromString(playlistPreview?.playlist?.browseId)
+                        id = UUID.fromString(cleanPrefix(playlistPreview?.playlist?.browseId ?: ""))
                     )
 
 
@@ -504,11 +505,17 @@ fun LocalPlaylistSongs(
                         withContext(Dispatchers.IO) {
                             playlistPreview.playlist.browseId?.let {
                                 YtMusic.getPlaylist(
-                                    playlistId = it
+                                    playlistId = cleanPrefix(it)
                                 ).completed()
                             }
                         }
                     }?.getOrNull()?.let { remotePlaylist ->
+                        val playlistIdChecked =
+                            if (remotePlaylist.playlist.key.startsWith("VL")) remotePlaylist.playlist.key.substringAfter("VL") else remotePlaylist.playlist.key
+//                        // If remote playlist is editable, it update local playlist key with editable prefix
+                        if (remotePlaylist.isEditable == true && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == false)
+                            Database.update(playlistPreview.playlist.copy(browseId = "$YTEDITABLEPLAYLIST_PREFIX$playlistIdChecked"))
+
                         Database.clearPlaylist(playlistId)
 
                         remotePlaylist.songs
@@ -529,7 +536,7 @@ fun LocalPlaylistSongs(
                     coroutineScope = coroutineScope,
                     pipedSession = pipedSession.toApiSession(),
                     idPipedPlaylist = UUID.fromString(
-                        playlistPreview.playlist.browseId
+                        cleanPrefix(playlistPreview.playlist.browseId ?: "")
                     ),
                     playlistId = playlistPreview.playlist.id
 
@@ -762,7 +769,7 @@ fun LocalPlaylistSongs(
                         println("Innertube YtMusic try to rename Playlist with browseId: ${playlistPreview?.playlist?.browseId}, name: $text")
                         playlistPreview?.playlist?.browseId?.let {
                             println("Innertube YtMusic renamePlaylist with id: $it, name: $text")
-                            YtMusic.renamePlaylist(it, text)
+                            YtMusic.renamePlaylist(cleanPrefix(it), text)
                         }
                         Database.asyncTransaction {
                             playlistPreview?.playlist?.copy(
@@ -777,7 +784,7 @@ fun LocalPlaylistSongs(
                             context = context,
                             coroutineScope = coroutineScope,
                             pipedSession = pipedSession.toApiSession(),
-                            id = UUID.fromString(playlistPreview?.playlist?.browseId),
+                            id = UUID.fromString(cleanPrefix(playlistPreview?.playlist?.browseId ?: "")),
                             name = text
                         )
 
@@ -971,6 +978,8 @@ fun LocalPlaylistSongs(
         }
     }
 
+
+    println("LocalPlaylistSongs playlist browseId ${playlistPreview?.playlist?.browseId}")
 
     Box(
         modifier = Modifier
@@ -1553,7 +1562,7 @@ fun LocalPlaylistSongs(
                                                         context = context,
                                                         coroutineScope = coroutineScope,
                                                         pipedSession = pipedSession.toApiSession(),
-                                                        id = UUID.fromString(playlistPreview.playlist.browseId),
+                                                        id = UUID.fromString(cleanPrefix(playlistPreview.playlist.browseId ?: "")),
                                                         videos = listMediaItems.map { it.mediaId }
                                                             .toList()
                                                     )
@@ -1582,7 +1591,7 @@ fun LocalPlaylistSongs(
                                                         context = context,
                                                         coroutineScope = coroutineScope,
                                                         pipedSession = pipedSession.toApiSession(),
-                                                        id = UUID.fromString(playlistPreview.playlist.browseId),
+                                                        id = UUID.fromString(cleanPrefix(playlistPreview.playlist.browseId ?: "")),
                                                         videos = listMediaItems.map { it.mediaId }
                                                             .toList()
                                                     )
@@ -1614,9 +1623,9 @@ fun LocalPlaylistSongs(
                                             binder?.player?.pause()
                                             uriHandler.openUri(
                                                 "https://youtube.com/playlist?list=${
-                                                    playlistPreview?.playlist?.browseId?.removePrefix(
-                                                        "VL"
-                                                    )
+                                                    playlistPreview.playlist.browseId?.let { 
+                                                        cleanPrefix(it).removePrefix("VL")
+                                                    }
                                                 }"
                                             )
                                         },
@@ -2022,7 +2031,7 @@ fun LocalPlaylistSongs(
                             if(isYouTubeSyncEnabled() && playlistNotPipedType && playlistNotMonthlyType && playlistPreview?.playlist?.browseId != null)
                                 CoroutineScope(Dispatchers.IO).launch {
                                     playlistPreview?.playlist?.browseId?.let { YtMusic.removeFromPlaylist(
-                                        it, song.song.id
+                                        cleanPrefix(it), song.song.id
                                     ) }
                                 }
 
@@ -2031,7 +2040,7 @@ fun LocalPlaylistSongs(
                                     context = context,
                                     coroutineScope = coroutineScope,
                                     pipedSession = pipedSession.toApiSession(),
-                                    id = UUID.fromString(playlistPreview?.playlist?.browseId),
+                                    id = UUID.fromString(cleanPrefix(playlistPreview?.playlist?.browseId ?: "")),
                                     positionInPlaylist
                                 )
                             }

@@ -251,7 +251,7 @@ object YtMusic {
             response.header?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicDetailHeaderRenderer
 
 
-        //val editable = response.header?.musicEditablePlaylistDetailHeaderRenderer != null
+        val editable = response.header?.musicEditablePlaylistDetailHeaderRenderer != null
 
         return PlaylistPage(
             playlist = Innertube.PlaylistItem(
@@ -264,6 +264,7 @@ object YtMusic {
                 songCount = 0, //header.secondSubtitle.runs?.firstOrNull()?.text,
                 thumbnail = header.thumbnail.croppedSquareThumbnailRenderer?.thumbnail?.thumbnails?.getBestQuality(),
                 channel = null,
+                isEditable = editable,
 //                playEndpoint = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
 //                    ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
 //                    ?.musicPlaylistShelfRenderer?.contents?.firstOrNull()?.musicResponsiveListItemRenderer
@@ -272,8 +273,11 @@ object YtMusic {
 //                radioEndpoint = header.menu.menuRenderer.items?.find {
 //                    it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
 //                }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint!!,
-//                isEditable = editable
+
             ),
+            description = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer
+                ?.description?.musicDescriptionShelfRenderer?.description?.text,
             songs = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
                 ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
                 ?.musicPlaylistShelfRenderer?.contents?.mapNotNull {
@@ -298,11 +302,14 @@ object YtMusic {
                 ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
                 ?.musicEditablePlaylistDetailHeaderRenderer?.header?.musicResponsiveHeaderRenderer
 
-        println("getPlaylist new mode")
+        val isEditable = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?.musicEditablePlaylistDetailHeaderRenderer != null
 
-//        val editable = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-//            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
-//            ?.musicEditablePlaylistDetailHeaderRenderer != null
+        println("getPlaylist new mode editable : ${isEditable}")
+
+//        println("getPlaylist new mode description: ${response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+//            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.description?.musicDescriptionShelfRenderer?.description}")
 
         return PlaylistPage(
             playlist = Innertube.PlaylistItem(
@@ -312,10 +319,10 @@ object YtMusic {
                         browseId = playlistId,
                     )
                 ),
-                //TODO: add description IN PLAYLISTPAGE
                 songCount = 0,//header.secondSubtitle?.runs?.firstOrNull()?.text,
                 thumbnail = response.background?.musicThumbnailRenderer?.thumbnail?.thumbnails?.getBestQuality(),
-                channel = null
+                channel = null,
+                isEditable = isEditable,
 //                playEndpoint = header.buttons.getOrNull(1)?.musicPlayButtonRenderer
 //                    ?.playNavigationEndpoint?.watchEndpoint,
 //                shuffleEndpoint = header.buttons.getOrNull(2)?.menuRenderer?.items?.find {
@@ -324,8 +331,10 @@ object YtMusic {
 //                radioEndpoint = header.buttons.getOrNull(2)?.menuRenderer?.items?.find {
 //                    it.menuNavigationItemRenderer?.icon?.iconType == "MIX"
 //                }?.menuNavigationItemRenderer?.navigationEndpoint?.watchPlaylistEndpoint,
-//                isEditable = editable
             ),
+            description = response.contents?.twoColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer
+                ?.description?.musicDescriptionShelfRenderer?.description?.text,
             songs = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
                 ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents?.mapNotNull {
                     it.musicResponsiveListItemRenderer?.let { it1 ->
@@ -341,7 +350,8 @@ object YtMusic {
                     ?.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token
                 ,
             continuation = response.contents.twoColumnBrowseResultsRenderer.secondaryContents.sectionListRenderer
-                .continuations?.getContinuation()
+                .continuations?.getContinuation(),
+            isEditable = isEditable
         )
     }
 

@@ -29,7 +29,9 @@ suspend fun Result<PlaylistPage>.completed(): Result<PlaylistPage> = runCatching
         playlist = page.playlist,
         songs = songs,
         songsContinuation = null,
-        continuation = page.continuation
+        continuation = page.continuation,
+        description = page.description,
+        isEditable = page.isEditable,
     )
 }
 

@@ -16,8 +16,10 @@ import it.fast4x.rimusic.Database.Companion.getArtistsList
 import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
 import it.fast4x.rimusic.Database.Companion.update
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTEDITABLEPLAYLIST_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
@@ -53,16 +55,19 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                 withContext(Dispatchers.IO) {
                     val playlistIdChecked =
                         if (remotePlaylist.key.startsWith("VL")) remotePlaylist.key.substringAfter("VL") else remotePlaylist.key
+                    println("Playlist ${localPlaylists?.map { it?.browseId }}")
                     var localPlaylist =
-                        localPlaylists?.find { it?.browseId == playlistIdChecked }
+                        localPlaylists
+                            ?.find { cleanPrefix(it?.browseId ?: "") == playlistIdChecked }
+
                     println("Local playlist: $localPlaylist")
                     println("Remote playlist: $remotePlaylist")
                     if (localPlaylist == null && playlistIdChecked.isNotEmpty()) {
                         localPlaylist = Playlist(
-                            name = (YTP_PREFIX + remotePlaylist.title) ?: "",
+                            name = "$YTP_PREFIX${remotePlaylist.title}",
                             browseId = playlistIdChecked,
                         )
-                        Database.insert(localPlaylist.copy(browseId = playlistIdChecked))
+                        Database.insert(localPlaylist)
                     }
 
                     Database.playlistWithSongsByBrowseId(playlistIdChecked).firstOrNull()?.let {
@@ -76,7 +81,7 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                     }
                 }
             }
-            (localPlaylists?.filter { playlist -> playlist?.browseId !in ytmPrivatePlaylists.map { if (it.key.startsWith("VL")) it.key.substringAfter("VL") else it.key }  })?.forEach { playlist ->
+            (localPlaylists?.filter { playlist -> cleanPrefix(playlist?.browseId ?: "") !in ytmPrivatePlaylists.map { if (it.key.startsWith("VL")) it.key.substringAfter("VL") else it.key }  })?.forEach { playlist ->
                 if (playlist != null) Database.asyncTransaction{ delete(playlist) }
             }
 
@@ -102,6 +107,14 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                     }
                 }
             }?.getOrNull()?.let { remotePlaylist ->
+
+                println("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
+                val playlistIdChecked =
+                    if (remotePlaylist.playlist.key.startsWith("VL")) remotePlaylist.playlist.key.substringAfter("VL") else remotePlaylist.playlist.key
+
+                if (remotePlaylist.isEditable == true)
+                    Database.update(playlist.copy(browseId = YTEDITABLEPLAYLIST_PREFIX + playlistIdChecked))
+
                 if (remotePlaylist.songs.isNotEmpty()) {
                     Database.clearPlaylist(playlistId)
 
