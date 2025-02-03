@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -142,8 +143,14 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.align
+import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.getHttpClient
+import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.setLikeState
 import kotlinx.coroutines.flow.filterNotNull
+import me.bush.translator.Language
+import me.bush.translator.Translator
 import timber.log.Timber
 import java.io.File
 
@@ -179,6 +186,17 @@ fun PlaylistSongList(
         }
     var saveCheck by remember { mutableStateOf(false) }
     var isSavedInYoutube by remember { mutableStateOf(false) }
+
+    val sectionTextModifier = Modifier
+        .padding(horizontal = 16.dp)
+        .padding(top = 24.dp, bottom = 8.dp)
+
+    var translateEnabled by remember {
+        mutableStateOf(false)
+    }
+
+    val translator = Translator(getHttpClient())
+    val languageDestination = languageDestination()
 
     LaunchedEffect(saveCheck) {
         Database.asyncTransaction {
@@ -842,6 +860,122 @@ fun PlaylistSongList(
                                     }
                             )
                         }
+                    }
+                }
+
+                playlistPage?.description?.let { description ->
+                    item(
+                        key = "playlistInfo"
+                    ) {
+
+                        val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
+
+                        BasicText(
+                            text = stringResource(R.string.information),
+                            style = typography().m.semiBold.align(TextAlign.Start),
+                            modifier = sectionTextModifier
+                                .fillMaxWidth()
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                //.padding(top = 16.dp)
+                                .padding(vertical = 16.dp, horizontal = 8.dp)
+                            //.padding(endPaddingValues)
+                            //.padding(end = Dimensions.bottomSpacer)
+                        ) {
+                            IconButton(
+                                icon = R.drawable.translate,
+                                color = if (translateEnabled == true) colorPalette()
+                                    .text else colorPalette()
+                                    .textDisabled,
+                                enabled = true,
+                                onClick = {},
+                                modifier = Modifier
+                                    .padding(all = 8.dp)
+                                    .size(18.dp)
+                                    .combinedClickable(
+                                        onClick = {
+                                            translateEnabled = !translateEnabled
+                                        },
+                                        onLongClick = {
+                                            SmartMessage(
+                                                context.resources.getString(R.string.info_translation),
+                                                context = context
+                                            )
+                                        }
+                                    )
+                            )
+                            BasicText(
+                                text = "“",
+                                style = typography().xxl.semiBold,
+                                modifier = Modifier
+                                    .offset(y = (-8).dp)
+                                    .align(Alignment.Top)
+                            )
+
+                            var translatedText by remember { mutableStateOf("") }
+                            val nonTranslatedText by remember {
+                                mutableStateOf(
+                                    if (attributionsIndex == -1) {
+                                        description
+                                    } else {
+                                        description.substring(0, attributionsIndex)
+                                    }
+                                )
+                            }
+
+
+                            if (translateEnabled == true) {
+                                LaunchedEffect(Unit) {
+                                    val result = withContext(Dispatchers.IO) {
+                                        try {
+                                            translator.translate(
+                                                nonTranslatedText,
+                                                languageDestination,
+                                                Language.AUTO
+                                            ).translatedText
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
+                                    }
+                                    translatedText =
+                                        if (result.toString() == "kotlin.Unit") "" else result.toString()
+                                }
+                            } else translatedText = nonTranslatedText
+
+                            BasicText(
+                                text = translatedText,
+                                style = typography().xxs.secondary.align(TextAlign.Justify),
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .weight(1f)
+                            )
+
+                            BasicText(
+                                text = "„",
+                                style = typography().xxl.semiBold,
+                                modifier = Modifier
+                                    .offset(y = 4.dp)
+                                    .align(Alignment.Bottom)
+                            )
+                        }
+
+                        if (attributionsIndex != -1) {
+                            BasicText(
+                                text = stringResource(R.string.from_wikipedia_cca),
+                                style = typography().xxs.color(
+                                    colorPalette()
+                                        .textDisabled).align(
+                                    TextAlign.Start
+                                ),
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .padding(bottom = 16.dp)
+                                //.padding(endPaddingValues)
+                            )
+                        }
+
                     }
                 }
 
