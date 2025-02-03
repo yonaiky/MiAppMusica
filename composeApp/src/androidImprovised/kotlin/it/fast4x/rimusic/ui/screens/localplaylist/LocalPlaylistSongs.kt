@@ -477,14 +477,14 @@ fun LocalPlaylistSongs(
                  }
              }
              .distinctBy( Song::id )
+             .filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX ) }
              .filter { song ->
                  // Without cleaning, user can search explicit songs with "e:"
                  // I kinda want this to be a feature, but it seems unnecessary
                  val containsName = song.cleanTitle().contains(search.input, true)
                  val containsArtist = song.artistsText?.contains(search.input, true) ?: false
-                 val isExplicit = !parentalControlEnabled || !song.title.startsWith( EXPLICIT_PREFIX )
 
-                 containsName || containsArtist || isExplicit
+                 containsName || containsArtist
              }
             .let { itemsOnDisplay = it }
     }
