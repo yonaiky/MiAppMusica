@@ -47,6 +47,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTEDITABLEPLAYLIST_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AlbumSortBy
@@ -445,13 +446,11 @@ fun HomeAlbums(
                                                                 )
                                                             )
                                                         }
-
-                                                    if(isYouTubeSyncEnabled())
+                                                    }
+                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
                                                         CoroutineScope(Dispatchers.IO).launch {
-                                                            playlistPreview.playlist.browseId?.let { it ->
-                                                                YtMusic.addToPlaylist(cleanPrefix(it), song.id) }
+                                                            cleanPrefix(playlistPreview.playlist.browseId).let { id -> YtMusic.addToPlaylist(id, songs.map{it.asMediaItem.mediaId})}
                                                         }
-
                                                     }
 
                                                 },

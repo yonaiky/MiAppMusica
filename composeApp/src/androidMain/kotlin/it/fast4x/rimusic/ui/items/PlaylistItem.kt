@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -332,13 +333,15 @@ fun PlaylistItem(
                 )
             }
 
-            if (browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true){
+            if (name?.contains(YTP_PREFIX) == true && browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == false){
                 Image(
-                    painter = painterResource(R.drawable.cover_edit),
-                    colorFilter = ColorFilter.tint(colorPalette().text),
+                    painter = painterResource(R.drawable.locked),
+                    colorFilter = ColorFilter.tint(Color.Red),
                     modifier = Modifier
-                        .size(40.dp)
                         .padding(all = 5.dp)
+                        .background(colorPalette().text, CircleShape)
+                        .padding(all = 5.dp)
+                        .size(18.dp)
                         .align(Alignment.BottomStart),
                     contentDescription = "Background Image",
                     contentScale = ContentScale.Fit

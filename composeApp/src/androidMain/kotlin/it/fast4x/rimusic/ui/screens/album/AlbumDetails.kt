@@ -82,6 +82,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTEDITABLEPLAYLIST_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.NavRoutes
@@ -1067,12 +1068,17 @@ fun AlbumDetails(
                                                                 )
                                                             )
                                                         }
-
-                                                        if(isYouTubeSyncEnabled())
-                                                            CoroutineScope(Dispatchers.IO).launch {
-                                                                playlistPreview.playlist.browseId?.let { it -> YtMusic.addToPlaylist(cleanPrefix(it), song.id) }
-                                                            }
                                                     }
+
+                                                if (isYouTubeSyncEnabled() && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            YtMusic.addPlaylistToPlaylist(
+                                                                cleanPrefix(playlistPreview.playlist.browseId),
+                                                                cleanPrefix(albumPage?.album?.playlistId ?: "")
+
+                                                            )
+                                                        }
+                                                }
                                                 } else {
                                                     listMediaItems.forEachIndexed { index, song ->
                                                         //Log.d("mediaItemMaxPos", position.toString())
@@ -1086,10 +1092,15 @@ fun AlbumDetails(
                                                                 )
                                                             )
                                                         }
-                                                        if(isYouTubeSyncEnabled())
-                                                            CoroutineScope(Dispatchers.IO).launch {
-                                                                playlistPreview.playlist.browseId?.let { it ->  YtMusic.addToPlaylist(cleanPrefix(it), song.mediaId) }
-                                                            }
+                                                    }
+                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            YtMusic.addToPlaylist(
+                                                                cleanPrefix(playlistPreview.playlist.browseId),
+                                                                listMediaItems.map { it.mediaId }
+
+                                                            )
+                                                        }
                                                     }
                                                     listMediaItems.clear()
                                                     selectItems = false
