@@ -1610,10 +1610,10 @@ fun LocalPlaylistSongs(
 
                                                 if (isYouTubeSyncEnabled() && toPlaylistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        if (playlistPreview.playlist.browseId != null && !playlistPreview.playlist.name.startsWith(PIPED_PREFIX)) {
+                                                        if (playlistPreview.playlist.name.contains(YTP_PREFIX)) {
                                                             YtMusic.addPlaylistToPlaylist(
                                                                 cleanPrefix(toPlaylistPreview.playlist.browseId),
-                                                                cleanPrefix(playlistPreview.playlist.browseId)
+                                                                cleanPrefix(playlistPreview.playlist.browseId ?: "")
 
                                                             )
                                                         } else {
