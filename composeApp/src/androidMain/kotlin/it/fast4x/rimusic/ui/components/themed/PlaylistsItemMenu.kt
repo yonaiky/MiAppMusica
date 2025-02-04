@@ -558,7 +558,7 @@ fun PlaylistsItemMenu(
                     if (showLinkUnlink) onLinkUnlink?.let { onLinkUnlink ->
                         MenuEntry(
                             icon = R.drawable.link,
-                            text = stringResource(R.string.unlink_from_ytm),
+                            text = if (playlist?.playlist?.name?.contains(YTP_PREFIX) == true) stringResource(R.string.unlink_from_ytm) else stringResource(R.string.unlink_from_yt),
                             onClick = {
                                 onDismiss()
                                 onLinkUnlink()

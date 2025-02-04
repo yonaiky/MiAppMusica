@@ -1493,7 +1493,7 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         showOnSyncronize = !playlistPreview.playlist.browseId.isNullOrBlank(),
-                                        showLinkUnlink = isNetworkConnected(context) && playlistPreview.playlist.name.contains(YTP_PREFIX),
+                                        showLinkUnlink = isNetworkConnected(context) && (playlistPreview.playlist.browseId != null),
                                         /*
                                         onSyncronize = {
                                             if (!playlistPreview.playlist.name.startsWith(
@@ -1549,7 +1549,7 @@ fun LocalPlaylistSongs(
                                         */
                                         onSyncronize = {sync();SmartMessage(context.resources.getString(R.string.done), context = context) },
                                         onLinkUnlink = {
-                                            if (!isNetworkConnected(context)){
+                                            if (!isNetworkConnected(context) && playlistPreview.playlist.name.contains(YTP_PREFIX) && isYouTubeSyncEnabled()){
                                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                             } else if (playlistPreview.playlist.name.contains(YTP_PREFIX)){
                                                 CoroutineScope(Dispatchers.IO).launch {
@@ -1564,6 +1564,14 @@ fun LocalPlaylistSongs(
                                                             browseId = null
                                                         )
                                                     )
+                                                }
+                                            } else {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                Database.update(
+                                                    playlistPreview.playlist.copy(
+                                                        browseId = null
+                                                    )
+                                                )
                                                 }
                                             }
                                         },

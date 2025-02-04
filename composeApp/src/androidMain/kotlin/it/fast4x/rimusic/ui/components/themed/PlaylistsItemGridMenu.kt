@@ -43,6 +43,7 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
@@ -398,7 +399,7 @@ fun PlaylistsItemGridMenu(
                 if (showLinkUnlink) onLinkUnlink?.let { onLinkUnlink ->
                     GridMenuItem(
                         icon = R.drawable.link,
-                        title = R.string.unlink_from_ytm,
+                        title = if (playlist?.playlist?.name?.contains(YTP_PREFIX) == true) R.string.unlink_from_ytm else R.string.unlink_from_yt,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
                         onClick = {
