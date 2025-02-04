@@ -39,4 +39,4 @@ jobs:
         run: echo "${{ secrets.HOUSE_KEEPER_WORKFLOW }}" | gh auth login --with-token
 
       - name: Run script
-        run: curl -sL "https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$GITHUB_REF/.github/delete_success_workflow.sh" | bash
+        run: curl -sL "https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$GITHUB_REF/.github/delete_success_workflows.sh" | bash
