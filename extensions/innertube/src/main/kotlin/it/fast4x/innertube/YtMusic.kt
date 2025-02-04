@@ -54,6 +54,12 @@ object YtMusic {
         println("YtMusic removeFromPlaylist error: ${it.stackTraceToString()}")
     }
 
+    suspend fun addPlaylistToPlaylist(playlistId: String, videoId: String) = runCatching {
+        Innertube.addPlaylistToPlaylist(Context.DefaultWeb.client, playlistId, videoId)
+    }.onFailure {
+        println("YtMusic addPlaylistToPlaylist error: ${it.stackTraceToString()}")
+    }
+
     suspend fun subscribeChannel(channelId: String) = runCatching {
         println("YtMusic subscribeChannel channelId: $channelId")
         Innertube.subscribeChannel(channelId)
