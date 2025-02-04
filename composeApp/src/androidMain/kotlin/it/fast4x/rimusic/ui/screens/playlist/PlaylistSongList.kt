@@ -715,16 +715,15 @@ fun PlaylistSongList(
                                                             }.onFailure {
                                                                 Timber.e("Failed onAddToPlaylist in PlaylistSongListModern  ${it.stackTraceToString()}")
                                                             }
+                                                        }
+                                                        if (isYouTubeSyncEnabled() && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                YtMusic.addPlaylistToPlaylist(
+                                                                    cleanPrefix(playlistPreview.playlist.browseId),
+                                                                    browseId.substringAfter("VL")
 
-                                                            if (isYouTubeSyncEnabled())
-                                                                CoroutineScope(Dispatchers.IO).launch {
-                                                                    playlistPreview.playlist.browseId?.let {
-                                                                        YtMusic.addToPlaylist(
-                                                                            cleanPrefix(it),
-                                                                            song.asMediaItem.mediaId
-                                                                        )
-                                                                    }
-                                                                }
+                                                                )
+                                                            }
                                                         }
                                                         CoroutineScope(Dispatchers.Main).launch {
                                                             SmartMessage(
