@@ -1325,7 +1325,7 @@ fun LocalPlaylistSongs(
                                 .combinedClickable(
                                     onClick = {
                                         if (!isNetworkConnected(context) && (playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) && isYouTubeSyncEnabled()){
-                                            SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                            SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                         } else if (playlistSongs.any {
                                                 (it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(
                                                     LOCAL_KEY_PREFIX
@@ -1550,7 +1550,7 @@ fun LocalPlaylistSongs(
                                         onSyncronize = {sync();SmartMessage(context.resources.getString(R.string.done), context = context) },
                                         onLinkUnlink = {
                                             if (!isNetworkConnected(context)){
-                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                             } else if (playlistPreview.playlist.name.contains(YTP_PREFIX)){
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     if (playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
@@ -1569,7 +1569,7 @@ fun LocalPlaylistSongs(
                                         },
                                         onRename = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true && isYouTubeSyncEnabled()){
-                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                             } else if ((((playlistPreview.playlist.browseId == null) && playlistNotMonthlyType)
                                                         || (playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true))
                                                 || !playlistPreview.playlist.name.contains(YTP_PREFIX)
@@ -1663,7 +1663,7 @@ fun LocalPlaylistSongs(
                                         },
                                         onDelete = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.name.contains(YTP_PREFIX) && isYouTubeSyncEnabled()){
-                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                             } else isDeleting = true
                                         },
                                         showonListenToYT = !playlistPreview.playlist.browseId.isNullOrBlank(),
@@ -2072,7 +2072,7 @@ fun LocalPlaylistSongs(
                         mediaItem = song.asMediaItem,
                         onRemoveFromQueue = {
                             if (!isNetworkConnected(context) && (playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) && isYouTubeSyncEnabled()){
-                                SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                             } else if ((playlistPreview?.playlist?.browseId == null)
                                 || playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true
                                 || (playlistPreview?.playlist?.name?.contains(YTP_PREFIX) == false)) {
@@ -2257,7 +2257,7 @@ fun LocalPlaylistSongs(
                                             InPlaylistMediaItemMenu(
                                                 onMatchingSong = {
                                                     if (!isNetworkConnected(context) && (playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) && isYouTubeSyncEnabled()){
-                                                        SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                                        SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                                     } else if (((playlistPreview?.playlist?.browseId == null)
                                                                 || (playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true))
                                                         || (playlistPreview?.playlist?.name?.contains(YTP_PREFIX) == false)

@@ -73,6 +73,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
@@ -336,7 +337,7 @@ fun ArtistOverviewModern(
                             ),
                             onClick = {
                                 if (isYouTubeSyncEnabled() && !isNetworkConnected(context)){
-                                    SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                 } else {
                                     val bookmarkedAt =
                                         if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null

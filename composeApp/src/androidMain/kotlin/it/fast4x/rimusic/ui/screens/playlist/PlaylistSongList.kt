@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,12 +50,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.ImeAction
@@ -148,6 +153,7 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.getHttpClient
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.setLikeState
 import kotlinx.coroutines.flow.filterNotNull
@@ -183,9 +189,11 @@ fun PlaylistSongList(
         mutableStateOf(0)
     }
     var playlistNameInDatabase by remember { mutableStateOf("") }
+
     Database.asyncTransaction {
         playlistNameInDatabase = Database.playlistWithBrowseId(browseId.substringAfter("VL"))?.name ?: ""
         }
+
     var saveCheck by remember { mutableStateOf(false) }
     var isSavedInYoutube by remember { mutableStateOf(false) }
 
@@ -356,19 +364,36 @@ fun PlaylistSongList(
                     ) {
                         if (playlistPage != null) {
                             if(!isLandscape)
-                                AsyncImage(
-                                    model = playlistPage!!.playlist.thumbnail?.url?.resize(1200, 900),
-                                    contentDescription = "loading...",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.Center)
-                                        .fadingEdge(
-                                            top = WindowInsets.systemBars
-                                                .asPaddingValues()
-                                                .calculateTopPadding() + Dimensions.fadeSpacingTop,
-                                            bottom = Dimensions.fadeSpacingBottom
-                                        )
-                                )
+                                Box {
+                                    AsyncImage(
+                                        model = playlistPage!!.playlist.thumbnail?.url?.resize(
+                                            1200,
+                                            900
+                                        ),
+                                        contentDescription = "loading...",
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .align(Alignment.Center)
+                                            .fadingEdge(
+                                                top = WindowInsets.systemBars
+                                                    .asPaddingValues()
+                                                    .calculateTopPadding() + Dimensions.fadeSpacingTop,
+                                                bottom = Dimensions.fadeSpacingBottom
+                                            )
+                                    )
+                                }
+                                if (playlistNameInDatabase.contains(YTP_PREFIX)) {
+                                   Image(
+                                        painter = painterResource(R.drawable.ytmusic),
+                                        contentDescription = null,
+                                        colorFilter = ColorFilter.tint(
+                                        Color.Red.copy(0.75f).compositeOver(Color.White)
+                                        ),
+                                        modifier = Modifier
+                                           .size(40.dp)
+                                           .offset(5.dp,5.dp)
+                                   )
+                                }
 
                             AutoResizeText(
                                 text = playlistPage?.playlist?.title ?: "",
@@ -762,67 +787,71 @@ fun PlaylistSongList(
                             )
                             if (isYouTubeSyncEnabled()) {
                                 HeaderIconButton(
-                                    icon = if (isSavedInYoutube) R.drawable.bookmark else R.drawable.bookmark_outline,
+                                    icon = if (playlistNameInDatabase.contains(YTP_PREFIX)) R.drawable.bookmark else R.drawable.bookmark_outline,
                                     color = colorPalette().text,
                                     onClick = {},
                                     modifier = Modifier
                                         .padding(horizontal = 5.dp)
                                         .combinedClickable(
                                             onClick = {
-                                                if (playlistNameInDatabase.contains(YTP_PREFIX)) {
-                                                    CoroutineScope(Dispatchers.IO).launch {
-                                                        YtMusic.removelikePlaylistOrAlbum(
-                                                            browseId.substringAfter(
-                                                                "VL"
+                                                if (isNetworkConnected(context)) {
+                                                    if (playlistNameInDatabase.contains(YTP_PREFIX)) {
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            YtMusic.removelikePlaylistOrAlbum(
+                                                                browseId.substringAfter("VL")
                                                             )
-                                                        )
-                                                    }
-                                                    Database.asyncTransaction {
-                                                        Database.playlistWithBrowseId(
-                                                            browseId.substringAfter(
-                                                                "VL"
-                                                            )
-                                                        )
-                                                            ?.let { delete(it) }
-                                                    }
-                                                } else {
-                                                    CoroutineScope(Dispatchers.IO).launch {
-                                                        YtMusic.likePlaylistOrAlbum(
-                                                            browseId.substringAfter(
-                                                                "VL"
-                                                            )
-                                                        )
-                                                    }
-                                                    Database.asyncTransaction {
-                                                        val playlistId = insert(
-                                                            Playlist(
-                                                                name = (YTP_PREFIX + playlistPage?.playlist?.title),
-                                                                browseId = browseId.substringAfter("VL")
-                                                            )
-                                                        )
-
-                                                        playlistPage?.songs
-                                                            ?.map(Innertube.SongItem::asMediaItem)
-                                                            ?.onEach(::insert)
-                                                            ?.mapIndexed { index, mediaItem ->
-                                                                SongPlaylistMap(
-                                                                    songId = mediaItem.mediaId,
-                                                                    playlistId = playlistId,
-                                                                    position = index
+                                                        }
+                                                        Database.asyncTransaction {
+                                                            Database.playlistWithBrowseId(
+                                                                browseId.substringAfter(
+                                                                    "VL"
                                                                 )
-                                                            }
-                                                            ?.let(::insertSongPlaylistMaps)
+                                                            )
+                                                                ?.let { delete(it) }
+                                                        }
+                                                    } else {
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            YtMusic.likePlaylistOrAlbum(
+                                                                browseId.substringAfter(
+                                                                    "VL"
+                                                                )
+                                                            )
+                                                        }
+                                                        Database.asyncTransaction {
+                                                            val playlistId = insert(
+                                                                Playlist(
+                                                                    name = (YTP_PREFIX + playlistPage?.playlist?.title),
+                                                                    browseId = browseId.substringAfter(
+                                                                        "VL"
+                                                                    )
+                                                                )
+                                                            )
+
+                                                            playlistPage?.songs
+                                                                ?.map(Innertube.SongItem::asMediaItem)
+                                                                ?.onEach(::insert)
+                                                                ?.mapIndexed { index, mediaItem ->
+                                                                    SongPlaylistMap(
+                                                                        songId = mediaItem.mediaId,
+                                                                        playlistId = playlistId,
+                                                                        position = index
+                                                                    )
+                                                                }
+                                                                ?.let(::insertSongPlaylistMaps)
+                                                        }
                                                     }
+                                                    SmartMessage(
+                                                        context.resources.getString(R.string.done),
+                                                        context = context
+                                                    )
+                                                    saveCheck = !saveCheck
+                                                } else {
+                                                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                                 }
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.done),
-                                                    context = context
-                                                )
-                                                saveCheck = !saveCheck
                                             },
                                             onLongClick = {
                                                 SmartMessage(
-                                                    context.resources.getString(R.string.add_to_favorites),
+                                                    context.resources.getString(R.string.save_youtube_library),
                                                     context = context
                                                 )
                                             }
