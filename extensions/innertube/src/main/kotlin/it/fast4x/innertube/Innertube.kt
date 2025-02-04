@@ -656,6 +656,23 @@ object Innertube {
         )
     }
 
+    suspend fun addPlaylistToPlaylist(
+        ytClient: Client,
+        playlistId: String,
+        addPlaylistId: String,
+    ) = client.post(playlistEdit) {
+        setLogin(ytClient, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = Context.DefaultWebWithLocale,
+                playlistId = playlistId.removePrefix("VL"),
+                actions = listOf(
+                    Action.AddPlaylistAction(addedFullListId = addPlaylistId)
+                )
+            )
+        )
+    }
+
     suspend fun subscribeChannel(
         channelId: String,
     ) = client.post(subscribe) {
