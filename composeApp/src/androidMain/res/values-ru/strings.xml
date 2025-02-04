@@ -902,4 +902,8 @@
     <string name="save_youtube_library">Сохранить в библиотеке YouTube</string>
     <string name="cant_rename_Saved_albums">Невозможно переименовать альбомы, сохраненные в библиотеке Youtube</string>
     <string name="ytm_library">Библиотека YTM</string>
+    <string name="cannot_delete_from_online_playlists">Cannot Delete Songs from an Online Playlist</string>
+    <string name="ytm_playlists">YTM Playlists</string>
+    <string name="no_connection">No Connection</string>
+    <string name="unlink_from_ytm">Unlink from Youtube Library</string>
 </resources>
