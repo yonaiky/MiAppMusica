@@ -188,7 +188,7 @@ fun InPlaylistMediaItemMenu(
         onDismiss = onDismiss,
         onRemoveFromPlaylist = {
             if (!isNetworkConnected(context) && playlist?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true && isYouTubeSyncEnabled()){
-                SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
             } else if ((playlist?.playlist?.browseId == null)
                 || playlist.playlist.browseId.startsWith(YTEDITABLEPLAYLIST_PREFIX)
                 || !(playlist.playlist.name.contains(YTP_PREFIX))) {
