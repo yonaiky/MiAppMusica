@@ -899,7 +899,7 @@
     <string name="syncing">Синхронизация...</string>
     <string name="autosync_channels">Автосинхронизация подписанных каналов</string>
     <string name="autosync_albums">Автосинхронизация сохраненных альбомов</string>
-    <string name="save_youtube_library">Сохранить в библиотеке YouTube</string>
+    <string name="save_youtube_library">Save playlist to the Youtube Library</string>
     <string name="cant_rename_Saved_albums">Невозможно переименовать альбомы, сохраненные в библиотеке Youtube</string>
     <string name="ytm_library">Библиотека YTM</string>
     <string name="cannot_delete_from_online_playlists">Cannot Delete Songs from an Online Playlist</string>
