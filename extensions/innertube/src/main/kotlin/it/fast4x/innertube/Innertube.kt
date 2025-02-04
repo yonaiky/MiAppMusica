@@ -262,7 +262,8 @@ object Innertube {
         val album: Info<NavigationEndpoint.Endpoint.Browse>?,
         val durationText: String?,
         override val thumbnail: Thumbnail?,
-        val explicit: Boolean = false
+        val explicit: Boolean = false,
+        val setVideoId: String? = null
     ) : Item() {
         //override val key get() = info!!.endpoint!!.videoId!!
         override val key get() = info?.endpoint?.videoId ?: ""
