@@ -897,7 +897,7 @@
     <string name="syncing">Senkronize ediliyor...</string>
     <string name="autosync_channels">Abone Olunan Kanalları Otomatik Senkronize Et</string>
     <string name="autosync_albums">Kayıtlı Albümleri Otomatik Senkronize Et</string>
-    <string name="save_youtube_library">Save playlist to the Youtube Library</string>
+    <string name="save_youtube_library">Youtube Kitaplığına Kaydet</string>
     <string name="cant_rename_Saved_albums">Youtube Müzik Kütüphanesinde Kayıtlı Albümler Yeniden Adlandırılamıyor</string>
     <string name="ytm_library">YTM Kütüphanesi</string>
     <string name="cannot_delete_from_online_playlists">Cannot Delete Songs from an Online Playlist</string>
