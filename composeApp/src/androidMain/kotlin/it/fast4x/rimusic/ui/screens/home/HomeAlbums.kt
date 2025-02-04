@@ -102,6 +102,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -150,6 +151,11 @@ fun HomeAlbums(
 
     var albumType by rememberPreference(albumTypeKey, AlbumsType.Favorites )
     val buttonsList = AlbumsType.entries.map { it to it.textName }
+    val coroutineScope = rememberCoroutineScope()
+
+    if (!isYouTubeSyncEnabled()) {
+        filterBy = FilterBy.All
+    }
 
     LaunchedEffect( sort.sortBy, sort.sortOrder, albumType ) {
         when ( albumType ) {
@@ -178,6 +184,23 @@ fun HomeAlbums(
         }
 
         lazyGridState.scrollToItem( scrollIndex, scrollOffset )
+    }
+
+    if (albumType == AlbumsType.Library) {
+        if (items.any{it.thumbnailUrl == null}) {
+            LaunchedEffect(Unit) {
+                withContext(Dispatchers.IO) {
+                    items.filter { it.thumbnailUrl == null }.forEach { album ->
+                        coroutineScope.launch(Dispatchers.IO) {
+                            Database.asyncTransaction {
+                                val albumThumbnail = albumThumbnailFromSong(album.id)
+                                update(album.copy(thumbnailUrl = albumThumbnail))
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     val sync = autoSyncToolbutton(R.string.autosync_albums)
@@ -244,47 +267,51 @@ fun HomeAlbums(
                             onValueUpdate = { albumType = it },
                             modifier = Modifier.padding(end = 12.dp)
                         )
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                        ){
-                            BasicText(
-                                text = when (filterBy) {
-                                    FilterBy.All -> stringResource(R.string.all)
-                                    FilterBy.Local -> stringResource(R.string.on_device)
-                                    FilterBy.YoutubeLibrary -> stringResource(R.string.ytm_library)
-                                },
-                                style = typography.xs.semiBold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
+                        if (isYouTubeSyncEnabled()) {
+                            Row(
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .padding(end = 5.dp)
-                                    .clickable {
-                                        menuState.display {
-                                            FilterMenu(
-                                                title = stringResource(R.string.filter_by),
-                                                onDismiss = menuState::hide,
-                                                onAll = {filterBy = FilterBy.All},
-                                                onYoutubeLibrary = {filterBy = FilterBy.YoutubeLibrary},
-                                                onLocal = {filterBy = FilterBy.Local}
-                                            )
-                                        }
+                                    .align(Alignment.CenterEnd)
+                            ) {
+                                BasicText(
+                                    text = when (filterBy) {
+                                        FilterBy.All -> stringResource(R.string.all)
+                                        FilterBy.Local -> stringResource(R.string.on_device)
+                                        FilterBy.YoutubeLibrary -> stringResource(R.string.ytm_library)
+                                    },
+                                    style = typography.xs.semiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .align(Alignment.CenterVertically)
+                                        .padding(end = 5.dp)
+                                        .clickable {
+                                            menuState.display {
+                                                FilterMenu(
+                                                    title = stringResource(R.string.filter_by),
+                                                    onDismiss = menuState::hide,
+                                                    onAll = { filterBy = FilterBy.All },
+                                                    onYoutubeLibrary = {
+                                                        filterBy = FilterBy.YoutubeLibrary
+                                                    },
+                                                    onLocal = { filterBy = FilterBy.Local }
+                                                )
+                                            }
 
-                                    }
-                            )
-                            HeaderIconButton(
-                                icon = R.drawable.playlist,
-                                color = colorPalette.text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .offset(0.dp, 2.5.dp)
-                                    .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null,
-                                        onClick = {}
-                                    )
-                            )
+                                        }
+                                )
+                                HeaderIconButton(
+                                    icon = R.drawable.playlist,
+                                    color = colorPalette.text,
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .offset(0.dp, 2.5.dp)
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null,
+                                            onClick = {}
+                                        )
+                                )
+                            }
                         }
                     }
                 }
