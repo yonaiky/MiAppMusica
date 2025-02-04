@@ -1306,25 +1306,48 @@ fun LocalPlaylistSongs(
                     )
 
 
-                    HeaderIconButton(
-                        icon = R.drawable.random,
-                        enabled = playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))},
-                        color = if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) colorPalette.text else colorPalette.textDisabled,
-                        onClick = {},
-                        modifier = Modifier
-                            .combinedClickable(
-                                onClick = {
-                                    if (playlistSongs.any {(it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(LOCAL_KEY_PREFIX))}) {
-                                        showConfirmMatchAllDialog = true
-                                    } else {
-                                        SmartMessage(context.resources.getString(R.string.no_videos_found), context = context)
+
+                    if ((playlistPreview?.playlist?.browseId == null) || (playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true)) {
+                        HeaderIconButton(
+                            icon = R.drawable.random,
+                            enabled = playlistSongs.any {
+                                (it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(
+                                    LOCAL_KEY_PREFIX
+                                ))
+                            },
+                            color = if (playlistSongs.any {
+                                    (it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(
+                                        LOCAL_KEY_PREFIX
+                                    ))
+                                }) colorPalette.text else colorPalette.textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        if (!isNetworkConnected(context) && (playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) && isYouTubeSyncEnabled()){
+                                            SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                        } else if (playlistSongs.any {
+                                                (it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(
+                                                    LOCAL_KEY_PREFIX
+                                                ))
+                                            }) {
+                                            showConfirmMatchAllDialog = true
+                                        } else {
+                                            SmartMessage(
+                                                context.resources.getString(R.string.no_videos_found),
+                                                context = context
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.get_album_version),
+                                            context = context
+                                        )
                                     }
-                                },
-                                onLongClick = {
-                                    SmartMessage(context.resources.getString(R.string.get_album_version), context = context)
-                                }
-                            )
-                    )
+                                )
+                        )
+                    }
 
                     if (showConfirmDeleteDownloadDialog) {
                         ConfirmationDialog(
@@ -2233,8 +2256,18 @@ fun LocalPlaylistSongs(
                                         menuState.display {
                                             InPlaylistMediaItemMenu(
                                                 onMatchingSong = {
-                                                    songMatchingDialogEnable = true
-                                                    matchingSongEntity = song
+                                                    if (!isNetworkConnected(context) && (playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) && isYouTubeSyncEnabled()){
+                                                        SmartMessage(context.resources.getString(R.string.no_connection), context = context)
+                                                    } else if (((playlistPreview?.playlist?.browseId == null)
+                                                                || (playlistPreview?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true))
+                                                        || (playlistPreview?.playlist?.name?.contains(YTP_PREFIX) == false)
+                                                    ){
+                                                        songMatchingDialogEnable = true
+                                                        matchingSongEntity = song
+                                                    } else {
+                                                        SmartMessage(
+                                                            context.resources.getString(R.string.cannot_delete_from_online_playlists),type = PopupType.Warning, context = context)
+                                                        }
                                                 },
                                                 navController = navController,
                                                 playlist = playlistPreview,
