@@ -900,7 +900,7 @@ Volume BAS : titre précédent</string>
     <string name="syncing">Synchronisation...</string>
     <string name="autosync_channels">Synchronisation automatique des chaînes souscrites</string>
     <string name="autosync_albums">Synchronisation automatique des albums enregistrés</string>
-    <string name="save_youtube_library">Save playlist to the Youtube Library</string>
+    <string name="save_youtube_library">Enregistrer dans la bibliothèque YouTube</string>
     <string name="cant_rename_Saved_albums">Impossible de renommer les albums enregistrés dans la bibliothèque YouTube Music</string>
     <string name="ytm_library">Bibliothèque YouTube Music</string>
     <string name="cannot_delete_from_online_playlists">Cannot Delete Songs from an Online Playlist</string>
