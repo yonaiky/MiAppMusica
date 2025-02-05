@@ -16,8 +16,6 @@ import it.fast4x.rimusic.Database.Companion.getArtistsList
 import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
 import it.fast4x.rimusic.Database.Companion.update
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.YTEDITABLEPLAYLIST_PREFIX
-import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
@@ -191,8 +189,8 @@ suspend fun importYTMSubscribedChannels(): Boolean {
             }
             val Artists = getArtistsList().firstOrNull()
             Database.asyncTransaction {
-                Artists?.filter {artist -> artist?.name?.startsWith(YTP_PREFIX) == true && artist.id !in ytmArtists.map { it.key } }?.forEach { artist ->
-                    if (artist != null) delete(artist)
+                Artists?.filter {artist -> artist?.isYoutubeArtist == true && artist.id !in ytmArtists.map { it.key } }?.forEach { artist ->
+                    if (artist != null) update(artist.copy(isYoutubeArtist = false, bookmarkedAt = null))
                 }
             }
         }
@@ -231,16 +229,17 @@ suspend fun importYTMLikedAlbums(): Boolean {
                     if (localAlbum == null) {
                         localAlbum = Album(
                             id = remoteAlbum.key,
-                            title = (YTP_PREFIX + remoteAlbum.title) ?: "",
+                            title = remoteAlbum.title,
                             thumbnailUrl = remoteAlbum.thumbnail?.url,
                             bookmarkedAt = System.currentTimeMillis(),
                             year = remoteAlbum.year,
-                            authorsText = remoteAlbum.authors?.getOrNull(1)?.name
+                            authorsText = remoteAlbum.authors?.getOrNull(1)?.name,
+                            isYoutubeAlbum = true
                         )
                         Database.insert(localAlbum)
                     } else {
                         localAlbum.copy(
-                            title = YTP_PREFIX + localAlbum.title,
+                            isYoutubeAlbum = true,
                             bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
                             thumbnailUrl = remoteAlbum.thumbnail?.url)
                             .let(::update)
@@ -250,8 +249,8 @@ suspend fun importYTMLikedAlbums(): Boolean {
             }
             val Albums = getAlbumsList().firstOrNull()
             Database.asyncTransaction {
-                Albums?.filter {album -> album?.title?.startsWith(YTP_PREFIX) == true && album.id !in ytmAlbums.map { it.key } }?.forEach { album->
-                    if (album != null) delete(album)
+                Albums?.filter {album -> album?.isYoutubeAlbum == true && album.id !in ytmAlbums.map { it.key } }?.forEach { album->
+                    if (album != null) update(album.copy(isYoutubeAlbum = false, bookmarkedAt = null))
                 }
             }
         }

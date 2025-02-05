@@ -151,7 +151,8 @@ fun AlbumScreen(
                                             ?.joinToString(", ") { it.name ?: "" },
                                         shareUrl = currentAlbumPage.url,
                                         timestamp = System.currentTimeMillis(),
-                                        bookmarkedAt = album?.bookmarkedAt
+                                        bookmarkedAt = album?.bookmarkedAt,
+                                        isYoutubeAlbum = album?.isYoutubeAlbum == true
                                     ),
                                     currentAlbumPage
                                         .songs.distinct()
