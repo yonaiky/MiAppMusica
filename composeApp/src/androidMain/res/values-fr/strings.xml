@@ -907,5 +907,5 @@ Volume BAS : titre précédent</string>
     <string name="ytm_playlists">Playlists YouTube Music</string>
     <string name="no_connection">Pas de connexion</string>
     <string name="unlink_from_ytm">Supprimer le lien de la bibliothèque YouTube</string>
-    <string name="unlink_from_yt">Unlink from Youtube</string>
+    <string name="unlink_from_yt">Se déconnecter de YouTube</string>
 </resources>
