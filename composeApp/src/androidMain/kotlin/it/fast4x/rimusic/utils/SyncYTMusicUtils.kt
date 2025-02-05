@@ -63,9 +63,9 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                 withContext(Dispatchers.IO) {
                     val playlistIdChecked =
                         if (remotePlaylist.key.startsWith("VL")) remotePlaylist.key.substringAfter("VL") else remotePlaylist.key
-                    println("Playlist ${localPlaylists?.map { it?.browseId }}")
+                    println("Playlist ${localPlaylists?.map { it.browseId }}")
                     var localPlaylist =
-                        localPlaylists?.find { it?.browseId == playlistIdChecked }
+                        localPlaylists?.find { it.browseId == playlistIdChecked }
 
                     println("Local playlist: $localPlaylist")
                     println("Remote playlist: $remotePlaylist")
@@ -115,11 +115,10 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
             }?.getOrNull()?.let { remotePlaylist ->
 
                 println("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
-                val playlistIdChecked =
-                    if (remotePlaylist.playlist.key.startsWith("VL")) remotePlaylist.playlist.key.substringAfter("VL") else remotePlaylist.playlist.key
 
+                // Update here playlist isEditable flag because library contain playlists but isEditable isn't always available
                 if (remotePlaylist.isEditable == true)
-                    Database.update(playlist.copy(browseId = playlistIdChecked))
+                    Database.update(playlist.copy(isEditable = true))
 
                 if (remotePlaylist.songs.isNotEmpty()) {
                     //Database.clearPlaylist(playlistId)
