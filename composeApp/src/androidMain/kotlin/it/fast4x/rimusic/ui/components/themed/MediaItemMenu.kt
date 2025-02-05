@@ -126,6 +126,7 @@ import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.isNetworkConnected
+import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import timber.log.Timber
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
@@ -190,21 +191,30 @@ fun InPlaylistMediaItemMenu(
             if (!isNetworkConnected(context) && playlist?.playlist?.isYoutubePlaylist == true && playlist.playlist.isEditable && isYouTubeSyncEnabled()){
                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
             } else if (playlist?.playlist?.isEditable == true) {
-                Database.asyncTransaction {
-                    deleteSongFromPlaylist(song.id, playlistId)
-                }
 
                 if (isYouTubeSyncEnabled() && playlist.playlist.browseId != null && !playlist.playlist.name.startsWith(
                         PIPED_PREFIX
                     )
                 )
-                    CoroutineScope(Dispatchers.IO).launch {
-                        playlist.playlist.browseId.let {
-                            YtMusic.removeFromPlaylist(
-                                cleanPrefix(it), song.id
-                            )
+                    Database.asyncTransaction {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            playlist.playlist.browseId.let {
+                                println("InPlaylistMediaItemMenu isYoutubePlaylist ${playlist.playlist.isYoutubePlaylist} isEditable ${playlist.playlist.isEditable} songId ${song.id} browseId ${playlist.playlist.browseId} playlistId $playlistId")
+                                if (isYouTubeSyncEnabled() && playlist.playlist.isYoutubePlaylist && playlist.playlist.isEditable) {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        if (removeYTSongFromPlaylist(
+                                                song.id,
+                                                playlist.playlist.browseId,
+                                                playlistId
+                                            )
+                                        )
+                                            deleteSongFromPlaylist(song.id, playlistId)
+                                    }
+                                }
+                            }
                         }
                     }
+
 
                 if (playlist.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                     Timber.d("MediaItemMenu InPlaylistMediaItemMenu onRemoveFromPlaylist browseId ${playlist.playlist.browseId}")

@@ -36,6 +36,7 @@ import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
+import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import it.fast4x.rimusic.utils.seamlessPlay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -271,10 +272,17 @@ fun AddToPlaylistPlayerMenu(
                 }
             }
             if(isYouTubeSyncEnabled() && playlist.browseId != null && !playlist.name.startsWith(PIPED_PREFIX))
-                CoroutineScope(Dispatchers.IO).launch {
-                    playlist.browseId.let { YtMusic.removeFromPlaylist(
-                        cleanPrefix(it), mediaItem.mediaId
-                    ) }
+                Database.asyncTransaction {
+                    CoroutineScope(Dispatchers.IO).launch {
+                            if (removeYTSongFromPlaylist(
+                                    mediaItem.mediaId,
+                                    playlist.browseId,
+                                    playlist.id
+                                )
+                            )
+                                deleteSongFromPlaylist(mediaItem.mediaId, playlist.id)
+
+                    }
                 }
         },
         onDismiss = onDismiss,

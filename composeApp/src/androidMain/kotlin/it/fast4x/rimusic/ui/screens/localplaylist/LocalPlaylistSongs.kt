@@ -200,6 +200,7 @@ import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.playlistSongsTypeFilterKey
+import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import it.fast4x.rimusic.utils.updateLocalPlaylist
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -523,7 +524,9 @@ fun LocalPlaylistSongs(
                                 SongPlaylistMap(
                                     songId = mediaItem.mediaId,
                                     playlistId = playlistId,
-                                    position = position
+                                    position = position,
+                                    setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
+                                    dateAdded = System.currentTimeMillis(),
                                 )
                             }.let(Database::insertSongPlaylistMaps)
                     }
@@ -2114,11 +2117,12 @@ fun LocalPlaylistSongs(
                                     )
                                 }
                                 if (isYouTubeSyncEnabled() && playlistNotPipedType && playlistNotMonthlyType && playlistPreview?.playlist?.browseId != null)
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        playlistPreview?.playlist?.browseId?.let {
-                                            YtMusic.removeFromPlaylist(it, song.song.id)
+                                    Database.asyncTransaction {
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            deleteSongFromPlaylist(song.song.id, playlistPreview?.playlist!!.id)
                                         }
                                     }
+
 
                                 if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                                     removeFromPipedPlaylist(

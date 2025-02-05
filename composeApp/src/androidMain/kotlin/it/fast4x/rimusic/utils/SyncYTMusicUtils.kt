@@ -32,8 +32,10 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -129,7 +131,9 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                             SongPlaylistMap(
                                 songId = mediaItem.mediaId,
                                 playlistId = playlistId,
-                                position = position
+                                position = position,
+                                setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
+                                dateAdded = System.currentTimeMillis(),
                             )
                         }.let(Database::insertSongPlaylistMaps)
                 }
@@ -262,6 +266,30 @@ suspend fun importYTMLikedAlbums(): Boolean {
     } else
         return false
 }
+
+suspend fun removeYTSongFromPlaylist(
+    songId: String,
+    playlistBrowseId: String,
+    playlistId: Long,
+): Boolean {
+
+    println("removeYTSongFromPlaylist removeSongFromPlaylist params songId = $songId, playlistBrowseId = $playlistBrowseId, playlistId = $playlistId")
+
+    if (isYouTubeSyncEnabled()) {
+        Database.asyncTransaction {
+            CoroutineScope(Dispatchers.IO).launch {
+                val songSetVideoId = Database.getSetVideoIdFromPlaylist(songId, playlistId).firstOrNull()
+                println("removeYTSongFromPlaylist removeSongFromPlaylist songSetVideoId = $songSetVideoId")
+                if (songSetVideoId != null)
+                    YtMusic.removeFromPlaylist(playlistId = playlistBrowseId, videoId =  songId, setVideoId = songSetVideoId)
+            }
+        }
+
+        return true
+    } else
+        return false
+}
+
 
 @Composable
 fun autoSyncToolbutton(messageId: Int): MenuIcon = object : MenuIcon, DynamicColor, Descriptive {
