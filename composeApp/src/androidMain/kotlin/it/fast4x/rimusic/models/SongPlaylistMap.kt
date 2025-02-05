@@ -28,4 +28,5 @@ data class SongPlaylistMap(
     @ColumnInfo(index = true) val playlistId: Long,
     val position: Int,
     val setVideoId: String? = null,
+    val dateAdded: Long? = null
 )
