@@ -447,9 +447,9 @@ fun HomeAlbums(
                                                             )
                                                         }
                                                     }
-                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable == true) {
                                                         CoroutineScope(Dispatchers.IO).launch {
-                                                            cleanPrefix(playlistPreview.playlist.browseId).let { id -> YtMusic.addToPlaylist(id, songs.map{it.asMediaItem.mediaId})}
+                                                            cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id -> YtMusic.addToPlaylist(id, songs.map{it.asMediaItem.mediaId})}
                                                         }
                                                     }
 

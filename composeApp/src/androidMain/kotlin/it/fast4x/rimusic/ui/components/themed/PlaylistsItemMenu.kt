@@ -170,20 +170,15 @@ fun PlaylistsItemMenu(
 
                 val pinnedPlaylists = playlistPreviews.filter {
                     it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
-                            && if (isNetworkConnected(context)) !(it.playlist.name.contains(
-                        YTP_PREFIX
-                    ) && (it.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == false)) else !it.playlist.name.contains(
-                        YTP_PREFIX
-                    )
+                            && if (isNetworkConnected(context)) !(it.playlist.isYoutubePlaylist && !it.playlist.isEditable) else !it.playlist.isYoutubePlaylist
                 }
 
-                val youtubePlaylists = playlistPreviews.filter { it.playlist.browseId?.startsWith(
-                    YTEDITABLEPLAYLIST_PREFIX) == true && !it.playlist.name.startsWith(PINNED_PREFIX)}
+                val youtubePlaylists = playlistPreviews.filter { it.playlist.isEditable && !it.playlist.name.startsWith(PINNED_PREFIX) }
 
                 val unpinnedPlaylists = playlistPreviews.filter {
                     !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
                             !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
-                            !it.playlist.name.contains(YTP_PREFIX)
+                            !it.playlist.isYoutubePlaylist
                 }
 
                 var isCreatingNewPlaylist by rememberSaveable {
@@ -284,7 +279,7 @@ fun PlaylistsItemMenu(
                                                 modifier = Modifier
                                                     .size(18.dp)
                                             )
-                                        if (playlistPreview.playlist.name.contains(YTP_PREFIX)) {
+                                        if (playlistPreview.playlist.isYoutubePlaylist) {
                                             Image(
                                                 painter = painterResource(R.drawable.ytmusic),
                                                 contentDescription = null,
@@ -435,7 +430,9 @@ fun PlaylistsItemMenu(
                                 playlist = playlist,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
-                                disableScrollingText = disableScrollingText
+                                disableScrollingText = disableScrollingText,
+                                isEditable =  playlist.playlist.isEditable,
+                                isYoutubePlaylist = playlist.playlist.isYoutubePlaylist
                             )
                         }
 
@@ -558,7 +555,7 @@ fun PlaylistsItemMenu(
                     if (showLinkUnlink) onLinkUnlink?.let { onLinkUnlink ->
                         MenuEntry(
                             icon = R.drawable.link,
-                            text = if (playlist?.playlist?.name?.contains(YTP_PREFIX) == true) stringResource(R.string.unlink_from_ytm) else stringResource(R.string.unlink_from_yt),
+                            text = if (playlist?.playlist?.isYoutubePlaylist == true) stringResource(R.string.unlink_from_ytm) else stringResource(R.string.unlink_from_yt),
                             onClick = {
                                 onDismiss()
                                 onLinkUnlink()

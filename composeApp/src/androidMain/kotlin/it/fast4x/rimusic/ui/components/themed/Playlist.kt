@@ -99,7 +99,7 @@ fun Playlist(
             ) {
                 Image(
                     painter = painterResource(R.drawable.ytmusic),
-                    colorFilter = ColorFilter.tint(if (playlist.playlist.name.contains(YTP_PREFIX)) Color.Red.copy(0.75f).compositeOver(
+                    colorFilter = ColorFilter.tint(if (playlist.playlist.isYoutubePlaylist) Color.Red.copy(0.75f).compositeOver(
                         Color.White) else colorPalette().text),
                     modifier = Modifier
                         .size(40.dp)
@@ -108,7 +108,7 @@ fun Playlist(
                     contentScale = ContentScale.Fit
                 )
             }
-            if (playlist.playlist.name.contains(YTP_PREFIX) && playlist.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == false){
+            if (playlist.playlist.isYoutubePlaylist && !playlist.playlist.isEditable){
                 Image(
                     painter = painterResource(R.drawable.locked),
                     colorFilter = ColorFilter.tint(Color.Red),

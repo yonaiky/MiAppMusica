@@ -1385,11 +1385,10 @@ fun HomeSongsModern(
                                                     println("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
                                                 }
                                             }
-                                            if(isYouTubeSyncEnabled()
-                                                && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                            if(isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable) {
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     playlistPreview.playlist.browseId.let { id ->
-                                                        YtMusic.addToPlaylist(cleanPrefix(id),items
+                                                        YtMusic.addToPlaylist(cleanPrefix(id ?: ""),items
                                                             .filterNot {it.song.id.startsWith(LOCAL_KEY_PREFIX)}
                                                             .map { it.asMediaItem.mediaId })
                                                     }

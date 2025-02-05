@@ -560,8 +560,8 @@ interface Database {
     fun eventWithSongByPeriod(date: Long, limit:Long = Long.MAX_VALUE): Flow<List<EventWithSong>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist WHERE name LIKE '%' || '${YTP_PREFIX}' || '%'")
-    fun ytmPrivatePlaylists(): Flow<List<Playlist?>>
+    @Query("SELECT * FROM Playlist WHERE isYoutubePlaylist = 1")
+    fun ytmPrivatePlaylists(): Flow<List<Playlist>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC LIMIT :count")
@@ -1894,7 +1894,7 @@ interface Database {
 
     @Transaction
     @Query("SELECT DISTINCT S.* FROM Song S INNER JOIN songplaylistmap SM ON S.id=SM.songId " +
-            "INNER JOIN Playlist P ON P.id=SM.playlistId WHERE P.browseId LIKE '${YTP_PREFIX}' || '%'")
+            "INNER JOIN Playlist P ON P.id=SM.playlistId WHERE P.isYoutubePlaylist = 1")
     fun songsInAllYTPrivatePlaylists(): Flow<List<Song>>
 
     @Transaction
