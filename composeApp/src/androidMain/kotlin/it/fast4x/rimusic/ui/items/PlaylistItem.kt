@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -72,7 +73,9 @@ fun PlaylistItem(
     alternative: Boolean = false,
     showName: Boolean = true,
     iconSize: Dp = 34.dp,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isYoutubePlaylist : Boolean = false,
+    isEditable : Boolean = false
 ) {
     PlaylistItem(
         thumbnailContent = {
@@ -92,7 +95,9 @@ fun PlaylistItem(
         modifier = modifier,
         alternative = alternative,
         showName = showName,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isYoutubePlaylist = isYoutubePlaylist,
+        isEditable = isEditable
     )
 }
 
@@ -104,7 +109,9 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showName: Boolean = true,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isYoutubePlaylist: Boolean,
+    isEditable: Boolean
 ) {
     val context = LocalContext.current
 
@@ -189,7 +196,9 @@ fun PlaylistItem(
         modifier = modifier,
         alternative = alternative,
         showName = showName,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isYoutubePlaylist = isYoutubePlaylist,
+        isEditable = isEditable
     )
 }
 
@@ -201,7 +210,9 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showSongsCount: Boolean = true,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isYoutubePlaylist : Boolean = false,
+    isEditable : Boolean = false
 ) {
     PlaylistItem(
         thumbnailUrl = playlist.thumbnail?.url,
@@ -213,7 +224,9 @@ fun PlaylistItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isYoutubePlaylist = isYoutubePlaylist,
+        isEditable = isEditable
     )
 }
 
@@ -228,7 +241,9 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showSongsCount: Boolean = true,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isYoutubePlaylist : Boolean = false,
+    isEditable : Boolean = false
 ) {
     PlaylistItem(
         thumbnailContent = {
@@ -245,7 +260,9 @@ fun PlaylistItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isYoutubePlaylist = isYoutubePlaylist,
+        isEditable = isEditable
     )
 }
 
@@ -261,7 +278,9 @@ fun PlaylistItem(
     alternative: Boolean = false,
     showName: Boolean = true,
     showSongsCount: Boolean = true,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    isYoutubePlaylist : Boolean = false,
+    isEditable : Boolean = false
 ) {
     ItemContainer(
         alternative = alternative,
@@ -323,7 +342,7 @@ fun PlaylistItem(
             ) {
                 Image(
                     painter = painterResource(R.drawable.ytmusic),
-                    colorFilter = ColorFilter.tint(if (name.contains(YTP_PREFIX)) Color.Red.copy(0.75f).compositeOver(Color.White) else colorPalette().text),
+                    colorFilter = ColorFilter.tint(if (isYoutubePlaylist) Color.Red.copy(0.75f).compositeOver(Color.White) else colorPalette().text),
                     modifier = Modifier
                         .size(40.dp)
                         .padding(all = 5.dp),
@@ -332,13 +351,15 @@ fun PlaylistItem(
                 )
             }
 
-            if (browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true){
+            if (isYoutubePlaylist && !isEditable){
                 Image(
-                    painter = painterResource(R.drawable.cover_edit),
-                    colorFilter = ColorFilter.tint(colorPalette().text),
+                    painter = painterResource(R.drawable.locked),
+                    colorFilter = ColorFilter.tint(Color.Red),
                     modifier = Modifier
-                        .size(40.dp)
                         .padding(all = 5.dp)
+                        .background(colorPalette().text, CircleShape)
+                        .padding(all = 5.dp)
+                        .size(18.dp)
                         .align(Alignment.BottomStart),
                     contentDescription = "Background Image",
                     contentScale = ContentScale.Fit
