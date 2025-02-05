@@ -1573,8 +1573,7 @@ fun LocalPlaylistSongs(
                                         onRename = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()){
                                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
-                                            } else if ((((playlistPreview.playlist.browseId == null) && playlistNotMonthlyType) || playlistPreview.playlist.isEditable) || !playlistPreview.playlist.isYoutubePlaylist
-                                            ){
+                                            } else if ((((playlistPreview.playlist.browseId == null) && playlistNotMonthlyType) || playlistPreview.playlist.isEditable) ){
                                                 isRenaming = true
                                             }
                                             else SmartMessage(context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist), context = context)
@@ -2105,8 +2104,7 @@ fun LocalPlaylistSongs(
                             if (!isNetworkConnected(context) && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                             } else if ((playlistPreview?.playlist?.browseId == null)
-                                || playlistPreview?.playlist?.isEditable == true
-                                || (playlistPreview?.playlist?.isYoutubePlaylist == false)) {
+                                || playlistPreview?.playlist?.isEditable == true) {
                                 Database.asyncTransaction {
                                     Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
                                     Database.delete(

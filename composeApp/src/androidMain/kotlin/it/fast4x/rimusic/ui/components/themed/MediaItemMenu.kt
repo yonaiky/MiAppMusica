@@ -190,8 +190,7 @@ fun InPlaylistMediaItemMenu(
             if (!isNetworkConnected(context) && playlist?.playlist?.isEditable == true && isYouTubeSyncEnabled()){
                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
             } else if ((playlist?.playlist?.browseId == null)
-                || playlist.playlist.isEditable
-                || !(playlist.playlist.isYoutubePlaylist)) {
+                || playlist.playlist.isEditable) {
                 Database.asyncTransaction {
                     deleteSongFromPlaylist(song.id, playlistId)
                 }
