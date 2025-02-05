@@ -177,7 +177,6 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
-import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
@@ -526,8 +525,7 @@ fun LocalPlaylistSongs(
                                     playlistId = playlistId,
                                     position = position,
                                     setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
-                                    dateAdded = System.currentTimeMillis(),
-                                )
+                                ).default()
                             }.let(Database::insertSongPlaylistMaps)
                     }
                 }
@@ -731,7 +729,7 @@ fun LocalPlaylistSongs(
                                                         songId = song.id,
                                                         playlistId = plistId,
                                                         position = index
-                                                    )
+                                                    ).default()
                                                 )
                                             }
                                         }
@@ -1599,7 +1597,7 @@ fun LocalPlaylistSongs(
                                                                 songId = song.asMediaItem.mediaId,
                                                                 playlistId = toPlaylistPreview.playlist.id,
                                                                 position = position + index
-                                                            )
+                                                            ).default()
                                                         )
                                                     }
                                                     //Log.d("mediaItemPos", "added position ${position + index}")
@@ -1643,7 +1641,7 @@ fun LocalPlaylistSongs(
                                                                 songId = song.mediaId,
                                                                 playlistId = toPlaylistPreview.playlist.id,
                                                                 position = position + index
-                                                            )
+                                                            ).default()
                                                         )
                                                     }
                                                 }
@@ -2111,10 +2109,7 @@ fun LocalPlaylistSongs(
                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                             } else if (playlistPreview?.playlist?.isEditable == true) {
                                 Database.asyncTransaction {
-                                    Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                                    Database.delete(
-                                        SongPlaylistMap(song.song.id, playlistId, Int.MAX_VALUE)
-                                    )
+                                    deleteSongFromPlaylist(song.asMediaItem.mediaId,playlistId)
                                 }
                                 if (isYouTubeSyncEnabled() && playlistNotPipedType && playlistNotMonthlyType && playlistPreview?.playlist?.browseId != null)
                                     Database.asyncTransaction {

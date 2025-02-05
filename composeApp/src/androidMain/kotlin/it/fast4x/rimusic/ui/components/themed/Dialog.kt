@@ -2031,7 +2031,7 @@ fun SongMatchingDialog(
                                                     songId = song.asMediaItem.mediaId,
                                                     playlistId = playlistId,
                                                     position = position
-                                                )
+                                                ).default()
                                             )
                                             insert(
                                                 Album(id = song.album?.endpoint?.browseId ?: "", title = song.asMediaItem.mediaMetadata.albumTitle?.toString()),

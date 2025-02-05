@@ -804,7 +804,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                         songId = matchedSong.asMediaItem.mediaId,
                         playlistId = playlistId,
                         position = position
-                    )
+                    ).default()
                 )
                 insert(
                     Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
@@ -845,7 +845,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     songId = songNotFound.id,
                     playlistId = playlistId,
                     position = position
-                )
+                ).default()
             )
         }
     }

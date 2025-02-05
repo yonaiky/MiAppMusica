@@ -72,8 +72,6 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.YTEDITABLEPLAYLIST_PREFIX
-import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
@@ -599,7 +597,7 @@ fun BaseMediaItemMenu(
                         songId = mediaItem.mediaId,
                         playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
                         position = position
-                    )
+                    ).default()
                 )
             }
 
@@ -686,7 +684,7 @@ fun MiniMediaItemMenu(
                         songId = mediaItem.mediaId,
                         playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
                         position = position
-                    )
+                    ).default()
                 )
             }
 

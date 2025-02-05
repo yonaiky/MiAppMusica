@@ -239,7 +239,7 @@ fun AddToPlaylistPlayerMenu(
                         songId = mediaItem.mediaId,
                         playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
                         position = position
-                    )
+                    ).default()
                 )
             }
 
