@@ -153,6 +153,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
@@ -370,6 +371,7 @@ fun LocalPlaylistSongs(
         binder?.player?.pause()
         uriHandler.openUri( "https://youtube.com/playlist?list=$browseId" )
     }
+    val resetCache = ResetCache( ::getSongs )
 
     fun openEditThumbnailPicker() {
         editThumbnailLauncher.launch("image/*")
@@ -710,6 +712,7 @@ fun LocalPlaylistSongs(
                         this.add( exportDialog )
                         this.add( thumbnailPicker )
                         this.add( resetThumbnail )
+                        this.add( resetCache )
                     }
                 )
 

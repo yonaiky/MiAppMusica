@@ -110,6 +110,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DeleteHiddenSongsDialog
@@ -227,6 +228,7 @@ fun HomeSongs( navController: NavController ) {
         }
     )
     val import = ImportSongsFromCSV()
+    val resetCache = ResetCache( ::getSongs )
     //</editor-fold>
 
     /**
@@ -365,6 +367,7 @@ fun HomeSongs( navController: NavController ) {
                     this.add( exportDialog )
                     this.add( import )
                     this.add( deleteHiddenSongs )
+                    this.add( resetCache )
                 }
             )
 
