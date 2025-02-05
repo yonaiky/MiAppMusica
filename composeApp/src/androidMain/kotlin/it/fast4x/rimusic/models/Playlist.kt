@@ -10,6 +10,6 @@ data class Playlist(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val browseId: String? = null,
-    val isEditable: Boolean = false,
+    val isEditable: Boolean = true,
     val isYoutubePlaylist: Boolean = false,
 )
