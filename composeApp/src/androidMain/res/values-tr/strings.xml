@@ -904,4 +904,5 @@
     <string name="ytm_playlists">YTM Çalma Listeleri</string>
     <string name="no_connection">Bağlantı yok</string>
     <string name="unlink_from_ytm">Youtube Kitaplığından Bağlantıyı Kaldır</string>
+    <string name="unlink_from_yt">Unlink from Youtube</string>
 </resources>
