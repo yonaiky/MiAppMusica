@@ -172,16 +172,17 @@ suspend fun importYTMSubscribedChannels(): Boolean {
                     if (localArtist == null) {
                         localArtist = Artist(
                             id = remoteArtist.key,
-                            name = (YTP_PREFIX + remoteArtist.title),
+                            name = remoteArtist.title,
                             thumbnailUrl = remoteArtist.thumbnail?.url,
-                            bookmarkedAt = System.currentTimeMillis()
+                            bookmarkedAt = System.currentTimeMillis(),
+                            isYoutubeArtist = true
                         )
                         Database.insert(localArtist)
                     } else {
                         localArtist.copy(
-                            name = (YTP_PREFIX + remoteArtist.title),
                             bookmarkedAt = localArtist.bookmarkedAt ?: System.currentTimeMillis(),
-                            thumbnailUrl = remoteArtist.thumbnail?.url
+                            thumbnailUrl = remoteArtist.thumbnail?.url,
+                            isYoutubeArtist = true
                         ).let(::update)
                     }
 
