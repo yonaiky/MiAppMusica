@@ -212,9 +212,7 @@ fun ArtistOverviewModern(
             ) {
 
                 item {
-                    val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(4f / 3)
+                    val modifierArt = Modifier.fillMaxWidth()
 
                     Box(
                         modifier = modifierArt
@@ -225,7 +223,7 @@ fun ArtistOverviewModern(
                                 AsyncImage(
                                     model = artistPage.artist.thumbnail?.url?.resize(
                                         1200,
-                                        900
+                                        1200
                                     ),
                                     contentDescription = "loading...",
                                     modifier = Modifier

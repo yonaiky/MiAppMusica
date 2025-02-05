@@ -349,9 +349,7 @@ fun PlaylistSongList(
                     key = "header"
                 ) {
 
-                    val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(4f / 3)
+                    val modifierArt = Modifier.fillMaxWidth()
 
                     Box(
                         modifier = modifierArt
@@ -362,7 +360,7 @@ fun PlaylistSongList(
                                     AsyncImage(
                                         model = playlistPage!!.playlist.thumbnail?.url?.resize(
                                             1200,
-                                            900
+                                            1200
                                         ),
                                         contentDescription = "loading...",
                                         modifier = Modifier

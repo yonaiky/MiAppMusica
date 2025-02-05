@@ -585,10 +585,7 @@ fun AlbumDetails(
                     key = "header"
                 ) {
 
-                    val modifierArt =
-                        if (isLandscape) Modifier.fillMaxWidth() else Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(4f / 3)
+                    val modifierArt = Modifier.fillMaxWidth()
 
                     Box(
                         modifier = modifierArt
@@ -597,7 +594,7 @@ fun AlbumDetails(
                             if (!isLandscape)
                                 Box {
                                     AsyncImage(
-                                        model = album?.thumbnailUrl?.resize(1200, 900),
+                                        model = album?.thumbnailUrl?.resize(1200, 1200),
                                         contentDescription = "loading...",
                                         modifier = Modifier
                                             .fillMaxWidth()
