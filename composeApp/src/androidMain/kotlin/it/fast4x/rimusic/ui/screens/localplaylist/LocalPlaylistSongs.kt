@@ -430,6 +430,7 @@ fun LocalPlaylistSongs(
             songToRematch = matchingSongEntity.song,
             playlistId = playlistId,
             position = playlistSongsSortByPosition.indexOf(matchingSongEntity),
+            playlist = playlistPreview?.playlist,
             onDismiss = {songMatchingDialogEnable = false}
         )
     }
@@ -888,7 +889,8 @@ fun LocalPlaylistSongs(
                             getAlbumVersionFromVideo(
                                 song = video.song,
                                 playlistId = playlistId,
-                                position = index
+                                position = index,
+                                playlist = playlistPreview?.playlist
                             )
                           }
                         )
@@ -919,7 +921,8 @@ fun LocalPlaylistSongs(
                         getAlbumVersionFromVideo(
                             song = video.song,
                             playlistId = playlistId,
-                            position = index
+                            position = index,
+                            playlist = playlistPreview?.playlist
                         )
                       }
                     )
