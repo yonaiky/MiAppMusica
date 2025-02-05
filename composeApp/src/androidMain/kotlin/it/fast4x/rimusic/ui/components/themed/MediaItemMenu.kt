@@ -187,15 +187,14 @@ fun InPlaylistMediaItemMenu(
         mediaItem = song.asMediaItem,
         onDismiss = onDismiss,
         onRemoveFromPlaylist = {
-            if (!isNetworkConnected(context) && playlist?.playlist?.isEditable == true && isYouTubeSyncEnabled()){
+            if (!isNetworkConnected(context) && playlist?.playlist?.isYoutubePlaylist == true && playlist.playlist.isEditable && isYouTubeSyncEnabled()){
                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
-            } else if ((playlist?.playlist?.browseId == null)
-                || playlist.playlist.isEditable) {
+            } else if (playlist?.playlist?.isEditable == true) {
                 Database.asyncTransaction {
                     deleteSongFromPlaylist(song.id, playlistId)
                 }
 
-                if (isYouTubeSyncEnabled() && playlist?.playlist?.browseId != null && !playlist.playlist.name.startsWith(
+                if (isYouTubeSyncEnabled() && playlist.playlist.browseId != null && !playlist.playlist.name.startsWith(
                         PIPED_PREFIX
                     )
                 )
@@ -207,7 +206,7 @@ fun InPlaylistMediaItemMenu(
                         }
                     }
 
-                if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                if (playlist.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                     Timber.d("MediaItemMenu InPlaylistMediaItemMenu onRemoveFromPlaylist browseId ${playlist.playlist.browseId}")
                     removeFromPipedPlaylist(
                         context = context,

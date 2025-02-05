@@ -1318,7 +1318,7 @@ fun LocalPlaylistSongs(
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
-                                        if (!isNetworkConnected(context) && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
+                                        if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
                                             SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                         } else if (playlistSongs.any {
                                                 (it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(
@@ -1543,7 +1543,7 @@ fun LocalPlaylistSongs(
                                         */
                                         onSyncronize = {sync();SmartMessage(context.resources.getString(R.string.done), context = context) },
                                         onLinkUnlink = {
-                                            if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
+                                            if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()){
                                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                             } else if (playlistPreview.playlist.isYoutubePlaylist){
                                                 CoroutineScope(Dispatchers.IO).launch {
@@ -1571,9 +1571,9 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         onRename = {
-                                            if (!isNetworkConnected(context) && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()){
+                                            if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && (playlistPreview.playlist.isEditable) && isYouTubeSyncEnabled()){
                                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
-                                            } else if ((((playlistPreview.playlist.browseId == null) && playlistNotMonthlyType) || playlistPreview.playlist.isEditable) ){
+                                            } else if (playlistPreview.playlist.isEditable && playlistNotMonthlyType){
                                                 isRenaming = true
                                             }
                                             else SmartMessage(context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist), context = context)
@@ -2101,10 +2101,9 @@ fun LocalPlaylistSongs(
                     SwipeableQueueItem(
                         mediaItem = song.asMediaItem,
                         onRemoveFromQueue = {
-                            if (!isNetworkConnected(context) && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
+                            if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
-                            } else if ((playlistPreview?.playlist?.browseId == null)
-                                || playlistPreview?.playlist?.isEditable == true) {
+                            } else if (playlistPreview?.playlist?.isEditable == true) {
                                 Database.asyncTransaction {
                                     Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
                                     Database.delete(
@@ -2285,7 +2284,7 @@ fun LocalPlaylistSongs(
                                         menuState.display {
                                             InPlaylistMediaItemMenu(
                                                 onMatchingSong = {
-                                                    if (!isNetworkConnected(context) && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
+                                                    if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
                                                         SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                                                     } else if (((playlistPreview?.playlist?.browseId == null)
                                                                 || (playlistPreview?.playlist?.isEditable == true))
