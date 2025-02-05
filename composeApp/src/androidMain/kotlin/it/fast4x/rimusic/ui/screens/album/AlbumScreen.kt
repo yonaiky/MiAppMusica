@@ -156,11 +156,11 @@ fun AlbumScreen(
                                     ),
                                     currentAlbumPage
                                         .songs.distinct()
-                                        .map(Innertube.SongItem::asSong)
+                                        .map(Innertube.SongItem::asMediaItem)
                                         .onEach(Database::insert)
-                                        .mapIndexed { position, song ->
+                                        .mapIndexed { position, mediaItem ->
                                             SongAlbumMap(
-                                                songId = song.id,
+                                                songId = mediaItem.mediaId,
                                                 albumId = browseId,
                                                 position = position
                                             )
