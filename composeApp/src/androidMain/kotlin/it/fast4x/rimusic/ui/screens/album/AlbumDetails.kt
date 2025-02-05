@@ -1070,10 +1070,10 @@ fun AlbumDetails(
                                                         }
                                                     }
 
-                                                if (isYouTubeSyncEnabled() && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                                if (isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable) {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             YtMusic.addPlaylistToPlaylist(
-                                                                cleanPrefix(playlistPreview.playlist.browseId),
+                                                                cleanPrefix(playlistPreview.playlist.browseId ?: ""),
                                                                 cleanPrefix(albumPage?.album?.playlistId ?: "")
 
                                                             )
@@ -1093,10 +1093,10 @@ fun AlbumDetails(
                                                             )
                                                         }
                                                     }
-                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable) {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             YtMusic.addToPlaylist(
-                                                                cleanPrefix(playlistPreview.playlist.browseId),
+                                                                cleanPrefix(playlistPreview.playlist.browseId ?: ""),
                                                                 listMediaItems.map { it.mediaId }
 
                                                             )

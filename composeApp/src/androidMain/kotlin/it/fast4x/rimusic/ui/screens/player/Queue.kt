@@ -1020,11 +1020,11 @@ fun Queue(
                                                 }
                                             }
                                             if(isYouTubeSyncEnabled()
-                                                && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                                && playlistPreview.playlist.isEditable == true) {
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     playlistPreview.playlist.browseId.let { id ->
                                                         YtMusic.addToPlaylist(
-                                                            cleanPrefix(id),windows
+                                                            cleanPrefix(id ?: ""),windows
                                                             .filterNot {it.mediaItem.mediaId.startsWith(LOCAL_KEY_PREFIX)}
                                                             .map { it.mediaItem.mediaId })
                                                     }
@@ -1045,10 +1045,10 @@ fun Queue(
                                                 }
                                                 //Log.d("mediaItemPos", "add position $position")
                                             }
-                                            if (isYouTubeSyncEnabled() && playlistPreview.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true) {
+                                            if (isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable == true) {
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     YtMusic.addToPlaylist(
-                                                        cleanPrefix(playlistPreview.playlist.browseId),
+                                                        cleanPrefix(playlistPreview.playlist.browseId ?: ""),
                                                         listMediaItems.map { it.mediaId }
 
                                                     )

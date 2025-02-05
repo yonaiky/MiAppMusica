@@ -187,16 +187,14 @@ fun InPlaylistMediaItemMenu(
         mediaItem = song.asMediaItem,
         onDismiss = onDismiss,
         onRemoveFromPlaylist = {
-            if (!isNetworkConnected(context) && playlist?.playlist?.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == true && isYouTubeSyncEnabled()){
+            if (!isNetworkConnected(context) && playlist?.playlist?.isYoutubePlaylist == true && playlist.playlist.isEditable && isYouTubeSyncEnabled()){
                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
-            } else if ((playlist?.playlist?.browseId == null)
-                || playlist.playlist.browseId.startsWith(YTEDITABLEPLAYLIST_PREFIX)
-                || !(playlist.playlist.name.contains(YTP_PREFIX))) {
+            } else if (playlist?.playlist?.isEditable == true) {
                 Database.asyncTransaction {
                     deleteSongFromPlaylist(song.id, playlistId)
                 }
 
-                if (isYouTubeSyncEnabled() && playlist?.playlist?.browseId != null && !playlist.playlist.name.startsWith(
+                if (isYouTubeSyncEnabled() && playlist.playlist.browseId != null && !playlist.playlist.name.startsWith(
                         PIPED_PREFIX
                     )
                 )
@@ -208,7 +206,7 @@ fun InPlaylistMediaItemMenu(
                         }
                     }
 
-                if (playlist?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                if (playlist.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                     Timber.d("MediaItemMenu InPlaylistMediaItemMenu onRemoveFromPlaylist browseId ${playlist.playlist.browseId}")
                     removeFromPipedPlaylist(
                         context = context,
@@ -952,15 +950,15 @@ fun MediaItemMenu(
 
             val pinnedPlaylists = playlistPreviews.filter {
                 it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
-                        && if (isNetworkConnected(context)) !(it.playlist.name.contains(YTP_PREFIX) && (it.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == false)) else !it.playlist.name.contains(YTP_PREFIX)
+                        && if (isNetworkConnected(context)) !(it.playlist.isYoutubePlaylist && !it.playlist.isEditable) else !it.playlist.isYoutubePlaylist
             }
-            val youtubePlaylists = playlistPreviews.filter { it.playlist.browseId?.startsWith(
-                YTEDITABLEPLAYLIST_PREFIX) == true && !it.playlist.name.startsWith(PINNED_PREFIX)}
+            val youtubePlaylists = playlistPreviews.filter { it.playlist.isEditable
+                    && !it.playlist.name.startsWith(PINNED_PREFIX)}
 
             val unpinnedPlaylists = playlistPreviews.filter {
                 !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
                 !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
-                        !it.playlist.name.contains(YTP_PREFIX) //&&
+                        !it.playlist.isYoutubePlaylist //&&
                 //!it.playlist.name.startsWith(PIPED_PREFIX, 0, true)
             }
 
@@ -1050,7 +1048,7 @@ fun MediaItemMenu(
                                             modifier = Modifier
                                                 .size(18.dp)
                                         )
-                                    if (playlistPreview.playlist.name.contains(YTP_PREFIX)) {
+                                    if (playlistPreview.playlist.isYoutubePlaylist) {
                                         Image(
                                             painter = painterResource(R.drawable.ytmusic),
                                             contentDescription = null,
@@ -1823,16 +1821,16 @@ fun AddToPlaylistItemMenu(
 
     val pinnedPlaylists = playlistPreviews.filter {
         it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
-                && if (isNetworkConnected(context)) !(it.playlist.name.contains(YTP_PREFIX) && (it.playlist.browseId?.startsWith(YTEDITABLEPLAYLIST_PREFIX) == false)) else !it.playlist.name.contains(YTP_PREFIX)
+                && if (isNetworkConnected(context)) !(it.playlist.isYoutubePlaylist && !it.playlist.isEditable) else !it.playlist.isYoutubePlaylist
     }
 
-    val youtubePlaylists = playlistPreviews.filter { it.playlist.browseId?.startsWith(
-        YTEDITABLEPLAYLIST_PREFIX) == true && !it.playlist.name.startsWith(PINNED_PREFIX)}
+    val youtubePlaylists = playlistPreviews.filter { it.playlist.isEditable
+            && !it.playlist.name.startsWith(PINNED_PREFIX)}
 
     val unpinnedPlaylists = playlistPreviews.filter {
         !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
                 !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
-                !it.playlist.name.contains(YTP_PREFIX)
+                !it.playlist.isYoutubePlaylist
     }
 
     Menu(
@@ -1889,7 +1887,7 @@ fun AddToPlaylistItemMenu(
                                     modifier = Modifier
                                         .size(18.dp)
                                 )
-                            if (playlistPreview.playlist.name.contains(YTP_PREFIX)) {
+                            if (playlistPreview.playlist.isYoutubePlaylist) {
                                 Image(
                                     painter = painterResource(R.drawable.ytmusic),
                                     contentDescription = null,

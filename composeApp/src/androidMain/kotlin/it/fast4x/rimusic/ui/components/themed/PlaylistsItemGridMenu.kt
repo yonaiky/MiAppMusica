@@ -324,7 +324,9 @@ fun PlaylistsItemGridMenu(
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
                             modifier = Modifier.height(90.dp),
-                            disableScrollingText = disableScrollingText
+                            disableScrollingText = disableScrollingText,
+                            isYoutubePlaylist = playlist.playlist.isYoutubePlaylist,
+                            isEditable = playlist.playlist.isEditable
                         )
                     }
                 }
@@ -399,7 +401,7 @@ fun PlaylistsItemGridMenu(
                 if (showLinkUnlink) onLinkUnlink?.let { onLinkUnlink ->
                     GridMenuItem(
                         icon = R.drawable.link,
-                        title = if (playlist?.playlist?.name?.contains(YTP_PREFIX) == true) R.string.unlink_from_ytm else R.string.unlink_from_yt,
+                        title = if (playlist?.playlist?.isYoutubePlaylist == true) R.string.unlink_from_ytm else R.string.unlink_from_yt,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
                         onClick = {
