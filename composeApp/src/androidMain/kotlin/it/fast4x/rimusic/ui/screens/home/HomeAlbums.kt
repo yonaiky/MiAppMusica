@@ -441,7 +441,7 @@ fun HomeAlbums(
                                                                     songId = song.asMediaItem.mediaId,
                                                                     playlistId = playlistPreview.playlist.id,
                                                                     position = position + index
-                                                                )
+                                                                ).default()
                                                             )
                                                         }
                                                     }

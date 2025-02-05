@@ -1376,7 +1376,7 @@ fun HomeSongsModern(
                                                                 songId = song.song.asMediaItem.mediaId,
                                                                 playlistId = playlistPreview.playlist.id,
                                                                 position = position + index
-                                                            )
+                                                            ).default()
                                                         )
                                                     }
                                                 }.onFailure {

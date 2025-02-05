@@ -523,7 +523,7 @@ fun LocalPlaylistSongs(
                                     songId = mediaItem.mediaId,
                                     playlistId = playlistId,
                                     position = position
-                                )
+                                ).default()
                             }.let(Database::insertSongPlaylistMaps)
                     }
                 }
@@ -727,7 +727,7 @@ fun LocalPlaylistSongs(
                                                         songId = song.id,
                                                         playlistId = plistId,
                                                         position = index
-                                                    )
+                                                    ).default()
                                                 )
                                             }
                                         }
@@ -1595,7 +1595,7 @@ fun LocalPlaylistSongs(
                                                                 songId = song.asMediaItem.mediaId,
                                                                 playlistId = toPlaylistPreview.playlist.id,
                                                                 position = position + index
-                                                            )
+                                                            ).default()
                                                         )
                                                     }
                                                     //Log.d("mediaItemPos", "added position ${position + index}")
@@ -1639,7 +1639,7 @@ fun LocalPlaylistSongs(
                                                                 songId = song.mediaId,
                                                                 playlistId = toPlaylistPreview.playlist.id,
                                                                 position = position + index
-                                                            )
+                                                            ).default()
                                                         )
                                                     }
                                                 }
@@ -2107,10 +2107,7 @@ fun LocalPlaylistSongs(
                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
                             } else if (playlistPreview?.playlist?.isEditable == true) {
                                 Database.asyncTransaction {
-                                    Database.move(playlistId, positionInPlaylist, Int.MAX_VALUE)
-                                    Database.delete(
-                                        SongPlaylistMap(song.song.id, playlistId, Int.MAX_VALUE)
-                                    )
+                                    deleteSongFromPlaylist(song.asMediaItem.mediaId,playlistId)
                                 }
                                 if (isYouTubeSyncEnabled() && playlistNotPipedType && playlistNotMonthlyType && playlistPreview?.playlist?.browseId != null)
                                     CoroutineScope(Dispatchers.IO).launch {

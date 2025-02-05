@@ -1014,7 +1014,7 @@ fun Queue(
                                                             songId = song.mediaItem.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
                                                             position = position + index
-                                                        )
+                                                        ).default()
                                                     )
                                                 }
                                             }
@@ -1039,7 +1039,7 @@ fun Queue(
                                                             songId = song.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
                                                             position = position + index
-                                                        )
+                                                        ).default()
                                                     )
                                                 }
                                                 //Log.d("mediaItemPos", "add position $position")

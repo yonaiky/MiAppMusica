@@ -587,7 +587,7 @@ fun BaseMediaItemMenu(
                         songId = mediaItem.mediaId,
                         playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
                         position = position
-                    )
+                    ).default()
                 )
             }
 
@@ -674,7 +674,7 @@ fun MiniMediaItemMenu(
                         songId = mediaItem.mediaId,
                         playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
                         position = position
-                    )
+                    ).default()
                 )
             }
 

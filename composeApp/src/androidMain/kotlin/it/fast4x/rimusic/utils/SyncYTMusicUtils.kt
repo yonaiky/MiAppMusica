@@ -128,7 +128,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                                 songId = mediaItem.mediaId,
                                 playlistId = playlistId,
                                 position = position
-                            )
+                            ).default()
                         }.let(Database::insertSongPlaylistMaps)
                 }
                 runBlocking(Dispatchers.IO) {

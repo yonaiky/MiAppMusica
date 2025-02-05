@@ -304,7 +304,7 @@ fun PlaylistSongList(
                                         songId = mediaItem.mediaId,
                                         playlistId = playlistId,
                                         position = index
-                                    )
+                                    ).default()
                                 }
                                 ?.let( ::insertSongPlaylistMaps )
                 }
@@ -703,7 +703,7 @@ fun PlaylistSongList(
                                                                             songId = song.asMediaItem.mediaId,
                                                                             playlistId = playlistPreview.playlist.id,
                                                                             position = position + index
-                                                                        )
+                                                                        ).default()
                                                                     )
                                                                 }
                                                             }.onFailure {
@@ -828,7 +828,7 @@ fun PlaylistSongList(
                                                                         songId = mediaItem.mediaId,
                                                                         playlistId = playlistId,
                                                                         position = index
-                                                                    )
+                                                                    ).default()
                                                                 }
                                                                 ?.let(::insertSongPlaylistMaps)
                                                         }

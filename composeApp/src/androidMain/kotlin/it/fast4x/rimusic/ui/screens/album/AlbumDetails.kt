@@ -265,7 +265,7 @@ fun AlbumDetails(
                                     songId = albumSongsState.song.id,
                                     playlistId = item.playlistId,
                                     position = item.position
-                                )
+                                ).default()
                             )
                         }
                     }
@@ -1052,7 +1052,7 @@ fun AlbumDetails(
                                                                     songId = song.asMediaItem.mediaId,
                                                                     playlistId = playlistPreview.playlist.id,
                                                                     position = position + index
-                                                                )
+                                                                ).default()
                                                             )
                                                         }
                                                     }
@@ -1076,7 +1076,7 @@ fun AlbumDetails(
                                                                     songId = song.mediaId,
                                                                     playlistId = playlistPreview.playlist.id,
                                                                     position = position + index
-                                                                )
+                                                                ).default()
                                                             )
                                                         }
                                                     }
