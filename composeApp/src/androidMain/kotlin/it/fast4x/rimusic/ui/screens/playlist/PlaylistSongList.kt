@@ -189,7 +189,6 @@ fun PlaylistSongList(
     }
 
     var saveCheck by remember { mutableStateOf(false) }
-    var isSavedInYoutube by remember { mutableStateOf(false) }
 
     val sectionTextModifier = Modifier
         .padding(horizontal = 16.dp)
