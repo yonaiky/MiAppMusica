@@ -904,4 +904,5 @@
     <string name="ytm_playlists">Playlist-uri YTM</string>
     <string name="no_connection">Nici o conexiune</string>
     <string name="unlink_from_ytm">Deconectează biblioteca Youtube</string>
+    <string name="unlink_from_yt">Unlink from Youtube</string>
 </resources>
