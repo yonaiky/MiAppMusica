@@ -23,7 +23,7 @@ class EllipsisMenuComponent private constructor(
     private val buttons: () -> List<Button>,
     override val menuState: MenuState,
     override val styleState: MutableState<MenuStyle>
-) : Menu {
+) : Menu, Icon {
 
     companion object {
         @JvmStatic
@@ -41,6 +41,8 @@ class EllipsisMenuComponent private constructor(
             field = value
         }
     override val iconId: Int = R.drawable.ellipsis_horizontal
+
+    override fun onShortClick() = openMenu()
 
     @Composable
     override fun ListMenu() {

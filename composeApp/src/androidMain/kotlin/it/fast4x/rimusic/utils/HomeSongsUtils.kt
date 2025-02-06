@@ -104,5 +104,5 @@ class PeriodSelector private constructor(
     @Composable
     override fun MenuComponent() = PeriodMenu(::onDismiss)
 
-    override fun onShortClick() = super.onShortClick()
+    override fun onShortClick() = openMenu()
 }

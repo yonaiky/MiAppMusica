@@ -149,7 +149,7 @@ open class Sort<T: Enum<T>> protected constructor(
     /** Flip oder. */
     override fun onShortClick() { sortOrder = !sortOrder }
 
-    override fun onLongClick() = menuState.display { MenuComponent() }
+    override fun onLongClick() = openMenu()
 
     @Composable
     override fun ToolBarButton() {

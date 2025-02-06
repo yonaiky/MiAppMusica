@@ -5,7 +5,7 @@ import androidx.compose.runtime.MutableState
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.ui.components.MenuState
 
-interface Menu: Icon {
+interface Menu {
 
     val menuState: MenuState
     val styleState: MutableState<MenuStyle>
@@ -19,5 +19,7 @@ interface Menu: Icon {
     @Composable
     fun MenuComponent()
 
-    override fun onShortClick() = menuState.display { MenuComponent() }
+    fun openMenu() = menuState.display { MenuComponent() }
+
+    fun closeMenu() = menuState.hide()
 }

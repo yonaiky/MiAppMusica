@@ -147,7 +147,7 @@ class PlaylistsMenu private constructor(
 
     override fun onShortClick() {
         menuState.hide()
-        super.onShortClick()
+        openMenu()
     }
 
     @Composable
