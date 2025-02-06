@@ -1392,21 +1392,21 @@ fun HomeSongsModern(
                                                 }
                                                 if (playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        if (filteredItems.size <= 1500) {
+                                                        if (filteredItems.size <= 500) {
                                                             cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id ->
                                                                 YtMusic.addToPlaylist(id,filteredItems.map { it.asMediaItem.mediaId })
                                                             }
                                                         } else {
                                                             val browseId = playlistPreview.playlist.browseId ?: ""
 
-                                                            val filteredListMediaItemsChunks = filteredItems.chunked(1500)
+                                                            val filteredListMediaItemsChunks = filteredItems.chunked(500)
                                                             filteredListMediaItemsChunks.forEachIndexed { index, list ->
                                                                 if (index != 0) { delay(10000) }
                                                                 runBlocking {
                                                                     YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
                                                                 }
-                                                                val messageId = if (list.size == 1500) {
-                                                                    R.string.fifteen_hundered_songs_added
+                                                                val messageId = if (list.size == 500) {
+                                                                    R.string.five_hundered_songs_added
                                                                 } else {
                                                                     R.string.all_songs_Added
                                                                 }

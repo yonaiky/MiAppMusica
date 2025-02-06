@@ -1617,21 +1617,21 @@ fun LocalPlaylistSongs(
                                                                     cleanPrefix(playlistPreview.playlist.browseId ?: "")
                                                                 )
                                                             } else {
-                                                                if (filteredPLSongs.size <= 1500) {
+                                                                if (filteredPLSongs.size <= 500) {
                                                                     cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id ->
                                                                         YtMusic.addToPlaylist(id,filteredPLSongs.map { it.asMediaItem.mediaId })
                                                                     }
                                                                 } else {
                                                                     val browseId = toPlaylistPreview.playlist.browseId ?: ""
 
-                                                                    val filteredPLSongsChunks = filteredPLSongs.chunked(1500)
+                                                                    val filteredPLSongsChunks = filteredPLSongs.chunked(500)
                                                                     filteredPLSongsChunks.forEachIndexed { index, list ->
                                                                         if (index != 0) { delay(10000) }
                                                                         runBlocking {
                                                                             YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
                                                                         }
-                                                                        val messageId = if (list.size == 1500) {
-                                                                            R.string.fifteen_hundered_songs_added
+                                                                        val messageId = if (list.size == 500) {
+                                                                            R.string.five_hundered_songs_added
                                                                         } else {
                                                                             R.string.all_songs_Added
                                                                         }
@@ -1681,21 +1681,21 @@ fun LocalPlaylistSongs(
                                                                     cleanPrefix(playlistPreview.playlist.browseId ?: "")
                                                                 )
                                                             } else {
-                                                                if (filteredListMediaItems.size <= 1500) {
+                                                                if (filteredListMediaItems.size <= 500) {
                                                                     cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id ->
                                                                         YtMusic.addToPlaylist(id,filteredListMediaItems.map { it.mediaId })
                                                                     }
                                                                 } else {
                                                                     val browseId = toPlaylistPreview.playlist.browseId ?: ""
 
-                                                                    val filteredListMediaItemsChunks = filteredListMediaItems.chunked(1500)
+                                                                    val filteredListMediaItemsChunks = filteredListMediaItems.chunked(500)
                                                                     filteredListMediaItemsChunks.forEachIndexed { index, list ->
                                                                         if (index != 0) { delay(10000) }
                                                                         runBlocking {
                                                                             YtMusic.addToPlaylist(browseId, list.map { it.mediaId })
                                                                         }
-                                                                        val messageId = if (list.size == 1500) {
-                                                                            R.string.fifteen_hundered_songs_added
+                                                                        val messageId = if (list.size == 500) {
+                                                                            R.string.five_hundered_songs_added
                                                                         } else {
                                                                             R.string.all_songs_Added
                                                                         }
