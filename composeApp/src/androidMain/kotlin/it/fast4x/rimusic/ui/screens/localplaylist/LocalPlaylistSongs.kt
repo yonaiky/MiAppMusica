@@ -1604,7 +1604,7 @@ fun LocalPlaylistSongs(
                                                 }
                                                 //println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
-                                                if (isYouTubeSyncEnabled() && toPlaylistPreview.playlist.isEditable) {
+                                                if (isYouTubeSyncEnabled() && toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable) {
                                                     CoroutineScope(Dispatchers.IO).launch {
                                                         if (playlistPreview.playlist.isYoutubePlaylist) {
                                                             YtMusic.addPlaylistToPlaylist(
@@ -1613,7 +1613,23 @@ fun LocalPlaylistSongs(
 
                                                             )
                                                         } else {
-                                                            cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id -> YtMusic.addToPlaylist(id, playlistSongs.map{it.asMediaItem.mediaId})}
+                                                            val filteredPLSongs = playlistSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true }
+                                                            if (filteredPLSongs.size <= 1500) {
+                                                                cleanPrefix(toPlaylistPreview.playlist.browseId?: "").let { id ->
+                                                                    YtMusic.addToPlaylist(id,filteredPLSongs.map { it.asMediaItem.mediaId })
+                                                                }
+                                                            } else {
+                                                                val filteredPLSongsChunks = filteredPLSongs.chunked(1500)
+                                                                filteredPLSongsChunks.forEachIndexed { index, list ->
+                                                                    YtMusic.addToPlaylist(toPlaylistPreview.playlist.browseId ?: "",list.map { it.asMediaItem.mediaId })
+                                                                    if (list.size == 1500){
+                                                                        SmartMessage(context.resources.getString(R.string.fifteen_hundered_songs_added), context = context)
+                                                                        delay(10000)
+                                                                    } else {
+                                                                        SmartMessage(context.resources.getString(R.string.all_songs_Added), context = context)
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
 
