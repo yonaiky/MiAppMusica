@@ -190,29 +190,21 @@ fun InPlaylistMediaItemMenu(
                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
             } else if (playlist?.playlist?.isEditable == true) {
 
-                if (isYouTubeSyncEnabled() && playlist.playlist.browseId != null && !playlist.playlist.name.startsWith(
-                        PIPED_PREFIX
-                    )
-                )
-                    Database.asyncTransaction {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            playlist.playlist.browseId.let {
-                                println("InPlaylistMediaItemMenu isYoutubePlaylist ${playlist.playlist.isYoutubePlaylist} isEditable ${playlist.playlist.isEditable} songId ${song.id} browseId ${playlist.playlist.browseId} playlistId $playlistId")
-                                if (isYouTubeSyncEnabled() && playlist.playlist.isYoutubePlaylist && playlist.playlist.isEditable) {
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        if (removeYTSongFromPlaylist(
-                                                song.id,
-                                                playlist.playlist.browseId,
-                                                playlistId
-                                            )
-                                        )
-                                            deleteSongFromPlaylist(song.id, playlistId)
-                                    }
+                Database.asyncTransaction {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        playlist.playlist.browseId.let {
+                            println("InPlaylistMediaItemMenu isYoutubePlaylist ${playlist.playlist.isYoutubePlaylist} isEditable ${playlist.playlist.isEditable} songId ${song.id} browseId ${playlist.playlist.browseId} playlistId $playlistId")
+                            if (isYouTubeSyncEnabled() && playlist.playlist.isYoutubePlaylist && playlist.playlist.isEditable) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    if (removeYTSongFromPlaylist(song.id,playlist.playlist.browseId ?: "",playlistId))
+                                        deleteSongFromPlaylist(song.id, playlistId)
                                 }
+                            } else {
+                                deleteSongFromPlaylist(song.id, playlistId)
                             }
                         }
                     }
-
+                }
 
                 if (playlist.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                     Timber.d("MediaItemMenu InPlaylistMediaItemMenu onRemoveFromPlaylist browseId ${playlist.playlist.browseId}")
