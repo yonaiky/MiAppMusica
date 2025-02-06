@@ -1609,7 +1609,7 @@ fun LocalPlaylistSongs(
                                                     }
                                                     //println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
-                                                    if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable) {
+                                                    if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             if (playlistPreview.playlist.isYoutubePlaylist) {
                                                                 YtMusic.addPlaylistToPlaylist(
@@ -1673,7 +1673,7 @@ fun LocalPlaylistSongs(
                                                             )
                                                         }
                                                     }
-                                                    if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable) {
+                                                    if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             if (playlistPreview.playlist.isYoutubePlaylist) {
                                                                 YtMusic.addPlaylistToPlaylist(

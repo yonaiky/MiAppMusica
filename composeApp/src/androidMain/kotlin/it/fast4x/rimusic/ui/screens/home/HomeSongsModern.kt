@@ -1390,7 +1390,7 @@ fun HomeSongsModern(
                                                         println("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
                                                     }
                                                 }
-                                                if (playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
+                                                if (playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
                                                     CoroutineScope(Dispatchers.IO).launch {
                                                         if (filteredItems.size <= 500) {
                                                             cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id ->
