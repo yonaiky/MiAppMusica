@@ -601,7 +601,7 @@ fun BaseMediaItemMenu(
                 )
             }
 
-            if(isYouTubeSyncEnabled())
+            if(isYouTubeSyncEnabled() && playlist.isYoutubePlaylist && playlist.isEditable)
                 CoroutineScope(Dispatchers.IO).launch {
                     playlist.browseId?.let { YtMusic.addToPlaylist(cleanPrefix(it), mediaItem.mediaId) }
                 }
@@ -688,7 +688,7 @@ fun MiniMediaItemMenu(
                 )
             }
 
-            if(isYouTubeSyncEnabled())
+            if(isYouTubeSyncEnabled() && playlist.isYoutubePlaylist && playlist.isEditable)
                 CoroutineScope(Dispatchers.IO).launch {
                     playlist.browseId?.let { YtMusic.addToPlaylist(cleanPrefix(it), mediaItem.mediaId) }
                 }

@@ -1384,7 +1384,7 @@ fun HomeSongsModern(
                                                     println("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
                                                 }
                                             }
-                                            if(isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable) {
+                                            if(isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist &&  playlistPreview.playlist.isEditable) {
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     playlistPreview.playlist.browseId.let { id ->
                                                         YtMusic.addToPlaylist(cleanPrefix(id ?: ""),items

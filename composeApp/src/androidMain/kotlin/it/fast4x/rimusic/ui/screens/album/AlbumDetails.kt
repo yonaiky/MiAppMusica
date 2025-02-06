@@ -1054,7 +1054,7 @@ fun AlbumDetails(
                                                         }
                                                     }
 
-                                                if (isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable) {
+                                                if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             YtMusic.addPlaylistToPlaylist(
                                                                 cleanPrefix(playlistPreview.playlist.browseId ?: ""),
@@ -1077,7 +1077,7 @@ fun AlbumDetails(
                                                             )
                                                         }
                                                     }
-                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable) {
+                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             YtMusic.addToPlaylist(
                                                                 cleanPrefix(playlistPreview.playlist.browseId ?: ""),

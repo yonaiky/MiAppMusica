@@ -243,7 +243,7 @@ fun AddToPlaylistPlayerMenu(
                 )
             }
 
-            if(isYouTubeSyncEnabled())
+            if(isYouTubeSyncEnabled() && playlist.isYoutubePlaylist && playlist.isEditable)
                 CoroutineScope(Dispatchers.IO).launch {
                     playlist.browseId?.let { YtMusic.addToPlaylist(cleanPrefix(it), mediaItem.mediaId) }
                 }

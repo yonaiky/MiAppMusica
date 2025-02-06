@@ -445,7 +445,7 @@ fun HomeAlbums(
                                                             )
                                                         }
                                                     }
-                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable == true) {
+                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id -> YtMusic.addToPlaylist(id, songs.map{it.asMediaItem.mediaId})}
                                                         }

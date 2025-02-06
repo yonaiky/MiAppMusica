@@ -200,6 +200,7 @@ import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.playlistSongsTypeFilterKey
 import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
+import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.updateLocalPlaylist
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -1613,7 +1614,7 @@ fun LocalPlaylistSongs(
 
                                                             )
                                                         } else {
-                                                            val filteredPLSongs = playlistSongs.filter { it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com/") == true }
+                                                            val filteredPLSongs = playlistSongs.filterNot {it.asMediaItem.mediaId.startsWith(LOCAL_KEY_PREFIX)}
                                                             if (filteredPLSongs.size <= 1500) {
                                                                 cleanPrefix(toPlaylistPreview.playlist.browseId?: "").let { id ->
                                                                     YtMusic.addToPlaylist(id,filteredPLSongs.map { it.asMediaItem.mediaId })
@@ -1661,23 +1662,28 @@ fun LocalPlaylistSongs(
                                                         )
                                                     }
                                                 }
-                                                if (isYouTubeSyncEnabled() && toPlaylistPreview.playlist.isEditable) {
+                                                if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable) {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        YtMusic.addToPlaylist(
-                                                            cleanPrefix(toPlaylistPreview.playlist.browseId ?: ""),
-                                                            listMediaItems.map { it.mediaId }
-
-                                                        )
+                                                        val filteredListMediaItems = listMediaItems.filterNot {it.mediaId.startsWith(LOCAL_KEY_PREFIX)}
+                                                        if (filteredListMediaItems.size <= 1500) {
+                                                            cleanPrefix(toPlaylistPreview.playlist.browseId?: "").let { id ->
+                                                                YtMusic.addToPlaylist(id,filteredListMediaItems.map { it.mediaId })
+                                                            }
+                                                        } else {
+                                                            val filteredListMediaItemsChunks = filteredListMediaItems.chunked(1500)
+                                                            filteredListMediaItemsChunks.forEachIndexed { index, list ->
+                                                                YtMusic.addToPlaylist(toPlaylistPreview.playlist.browseId ?: "",list.map { it.mediaId })
+                                                                if (list.size == 1500){
+                                                                    SmartMessage(context.resources.getString(R.string.fifteen_hundered_songs_added), context = context)
+                                                                    delay(10000)
+                                                                } else {
+                                                                    SmartMessage(context.resources.getString(R.string.all_songs_Added), context = context)
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
-
-                                                if (isYouTubeSyncEnabled() && toPlaylistPreview.playlist.isEditable) {
-                                                    CoroutineScope(Dispatchers.IO).launch {
-                                                        YtMusic.addToPlaylist(cleanPrefix(toPlaylistPreview.playlist.browseId ?: ""), listMediaItems.map { it.mediaId })
-                                                    }
-
-                                                }
 
                                                 if (toPlaylistPreview.playlist.name.startsWith(
                                                         PIPED_PREFIX
