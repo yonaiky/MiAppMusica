@@ -883,10 +883,10 @@ fun GeneralSettings(
             }
         }
 
-        if (search.input.isBlank() || "Bass boost".contains(search.input,true)) {
+        if (search.input.isBlank() || stringResource(R.string.settings_audio_bass_boost).contains(search.input,true)) {
             SwitchSettingEntry(
-                title = "Bass boost",
-                text = "Bass boost info",
+                title = stringResource(R.string.settings_audio_bass_boost),
+                text = "",
                 isChecked = bassboostEnabled,
                 onCheckedChange = {
                     bassboostEnabled = it
@@ -901,8 +901,8 @@ fun GeneralSettings(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
                     SliderSettingsEntry(
-                        title = "Bass boost level",
-                        text = "Bass boost level info",
+                        title = stringResource(R.string.settings_bass_boost_level),
+                        text = "",
                         state = newValue,
                         onSlide = { newValue = it },
                         onSlideComplete = {
@@ -915,10 +915,10 @@ fun GeneralSettings(
             }
         }
 
-        if (search.input.isBlank() || "Audio reverb".contains(search.input,true)) {
+        if (search.input.isBlank() || stringResource(R.string.settings_audio_reverb).contains(search.input,true)) {
             EnumValueSelectorSettingsEntry(
-                title = "Audio Reverb",
-                text = "Apply a depth effect to the audio",
+                title = stringResource(R.string.settings_audio_reverb),
+                text = stringResource(R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio),
                 selectedValue = audioReverb,
                 onValueSelected = {
                     audioReverb = it
@@ -931,10 +931,10 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
-        if (search.input.isBlank() || "Audio focus".contains(search.input,true)) {
+        if (search.input.isBlank() || stringResource(R.string.settings_audio_focus).contains(search.input,true)) {
             SwitchSettingEntry(
-                title = "Audio focus",
-                text = "Allows automatic pause and resume playback after a call for example",
+                title = stringResource(R.string.settings_audio_focus),
+                text = stringResource(R.string.settings_audio_focus_info),
                 isChecked = audioFocusEnabled,
                 onCheckedChange = {
                     audioFocusEnabled = it
