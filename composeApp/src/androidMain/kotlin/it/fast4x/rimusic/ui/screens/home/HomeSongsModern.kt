@@ -1392,21 +1392,21 @@ fun HomeSongsModern(
                                                 }
                                                 if (playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        if (filteredItems.size <= 500) {
+                                                        if (filteredItems.size <= 1000) {
                                                             cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id ->
                                                                 YtMusic.addToPlaylist(id,filteredItems.map { it.asMediaItem.mediaId })
                                                             }
                                                         } else {
                                                             val browseId = playlistPreview.playlist.browseId ?: ""
 
-                                                            val filteredListMediaItemsChunks = filteredItems.chunked(500)
+                                                            val filteredListMediaItemsChunks = filteredItems.chunked(1000)
                                                             filteredListMediaItemsChunks.forEachIndexed { index, list ->
                                                                 if (index != 0) { delay(10000) }
-                                                                runBlocking {
+                                                                withContext(Dispatchers.IO) {
                                                                     YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
                                                                 }
-                                                                val messageId = if (list.size == 500) {
-                                                                    R.string.five_hundered_songs_added
+                                                                val messageId = if (list.size == 1000) {
+                                                                    R.string.thousand_songs_added
                                                                 } else {
                                                                     R.string.all_songs_Added
                                                                 }
