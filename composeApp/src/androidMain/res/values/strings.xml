@@ -905,8 +905,7 @@
     <string name="no_connection">No Connection</string>
     <string name="unlink_from_ytm">Unlink from Youtube Library</string>
     <string name="unlink_from_yt">Unlink from Youtube</string>
-    <string name="thousand_songs_added">1000 Songs added to the Youtube Playlist. Remaining Songs will be added after 10 seconds</string>
-    <string name="all_songs_Added">All the songs are added</string>
     <string name="yt_playlist_limited">Youtube Playlists are Limited to 5000 songs</string>
     <string name="songs_added_in_yt">songs are added in the YouTube Playlist</string>
+    <string name="songs_adding_in_yt">songs will be added in the YTM playlist</string>
 </resources>

@@ -1392,25 +1392,21 @@ fun HomeSongsModern(
                                                 }
                                                 if (playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        if (filteredItems.size <= 1000) {
+                                                        if (filteredItems.size <= 50) {
                                                             cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id ->
                                                                 YtMusic.addToPlaylist(id,filteredItems.map { it.asMediaItem.mediaId })
                                                             }
+                                                            SmartMessage("${filteredItems.size} "+ context.resources.getString(R.string.songs_added_in_yt), context = context)
                                                         } else {
+                                                            SmartMessage("${filteredItems.size} "+ context.resources.getString(R.string.songs_adding_in_yt), context = context)
                                                             val browseId = playlistPreview.playlist.browseId ?: ""
 
-                                                            val filteredListMediaItemsChunks = filteredItems.chunked(1000)
+                                                            val filteredListMediaItemsChunks = filteredItems.chunked(50)
                                                             filteredListMediaItemsChunks.forEachIndexed { index, list ->
-                                                                if (index != 0) { delay(10000) }
+                                                                if (index != 0) { delay(1000) }
                                                                 withContext(Dispatchers.IO) {
                                                                     YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
                                                                 }
-                                                                val messageId = if (list.size == 1000) {
-                                                                    R.string.thousand_songs_added
-                                                                } else {
-                                                                    R.string.all_songs_Added
-                                                                }
-                                                                SmartMessage(context.resources.getString(messageId), context = context)
                                                             }
                                                         }
                                                     }
