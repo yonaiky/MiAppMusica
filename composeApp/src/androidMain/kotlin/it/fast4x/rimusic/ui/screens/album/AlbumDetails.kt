@@ -973,6 +973,7 @@ fun AlbumDetails(
                                 menuState.display {
                                     album?.let {
                                         AlbumsItemMenu(
+                                            navController = navController,
                                             onDismiss = menuState::hide,
                                             onSelectUnselect = {
                                                 selectItems = !selectItems
@@ -1098,6 +1099,9 @@ fun AlbumDetails(
                                                             mediaItemToggleLike(song.asMediaItem)
                                                         }
                                                   }
+                                            },
+                                            onGoToPlaylist = {
+                                                navController.navigate("${NavRoutes.localPlaylist.name}/$it")
                                             },
                                             disableScrollingText = disableScrollingText
                                         )
