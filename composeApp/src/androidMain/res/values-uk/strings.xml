@@ -900,9 +900,9 @@
     <string name="save_youtube_library">Зберегти у бібліотеці YouTube</string>
     <string name="cant_rename_Saved_albums">Неможливо перейменувати альбоми, збережені в бібліотеці Youtube</string>
     <string name="ytm_library">Бібліотека YTM</string>
-    <string name="cannot_delete_from_online_playlists">Cannot Delete Songs from an Online Playlist</string>
-    <string name="ytm_playlists">YTM Playlists</string>
-    <string name="no_connection">No Connection</string>
-    <string name="unlink_from_ytm">Unlink from Youtube Library</string>
-    <string name="unlink_from_yt">Unlink from Youtube</string>
+    <string name="cannot_delete_from_online_playlists">Неможливо видалити пісні з онлайн плейлиста</string>
+    <string name="ytm_playlists">Плейлисти YTM</string>
+    <string name="no_connection">Відсутнє підключення</string>
+    <string name="unlink_from_ytm">Видалити посилання з бібліотеки Youtube</string>
+    <string name="unlink_from_yt">Видалити посилання з Youtube</string>
 </resources>
