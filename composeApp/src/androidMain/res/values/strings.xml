@@ -906,6 +906,6 @@
     <string name="unlink_from_ytm">Unlink from Youtube Library</string>
     <string name="unlink_from_yt">Unlink from Youtube</string>
     <string name="yt_playlist_limited">Youtube Playlists are Limited to 5000 songs</string>
-    <string name="songs_added_in_yt">songs are added in the YouTube Playlist</string>
+    <string name="songs_added_in_yt">songs are added in the YouTube Playlist. Repeat the process if there are any Missing Songs</string>
     <string name="songs_adding_in_yt">songs will be added in the YTM playlist</string>
 </resources>

@@ -1396,19 +1396,22 @@ fun HomeSongsModern(
                                                             cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id ->
                                                                 YtMusic.addToPlaylist(id,filteredItems.map { it.asMediaItem.mediaId })
                                                             }
-                                                            SmartMessage("${filteredItems.size} "+ context.resources.getString(R.string.songs_added_in_yt), context = context)
                                                         } else {
-                                                            SmartMessage("${filteredItems.size} "+ context.resources.getString(R.string.songs_adding_in_yt), context = context)
+                                                            SmartMessage("${filteredItems.size} "+context.resources.getString(R.string.songs_adding_in_yt), context = context)
                                                             val browseId = playlistPreview.playlist.browseId ?: ""
 
-                                                            val filteredListMediaItemsChunks = filteredItems.chunked(50)
-                                                            filteredListMediaItemsChunks.forEachIndexed { index, list ->
-                                                                if (index != 0) { delay(1000) }
+                                                            val distinctSongsChunks = filteredItems.chunked(50)
+                                                            distinctSongsChunks.forEachIndexed { index, list ->
+                                                                if (index != 0) {
+                                                                    delay(2000)
+                                                                    SmartMessage("${filteredItems.size - index*50} Songs Remaining", context = context)
+                                                                }
                                                                 withContext(Dispatchers.IO) {
                                                                     YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
                                                                 }
                                                             }
                                                         }
+                                                        SmartMessage("${filteredItems.size} "+ context.resources.getString(R.string.songs_added_in_yt), context = context, durationLong = true)
                                                     }
                                                 }
 
