@@ -227,6 +227,7 @@ fun LocalPlaylistSongs(
     val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
 
     var playlistAllSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
+    var songsInTheToPlaylist by persistList<SongEntity>("")
     var downloadedPlaylistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var cachedPlaylistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
     var playlistSongs by persistList<SongEntity>("localPlaylist/$playlistId/songs")
@@ -1584,143 +1585,155 @@ fun LocalPlaylistSongs(
                                             else SmartMessage(context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist), context = context)
                                         },
                                         onAddToPlaylist = { toPlaylistPreview ->
-                                            position =
-                                                toPlaylistPreview.songCount.minus(1) ?: 0
+                                            position = toPlaylistPreview.songCount.minus(1)
                                             //Log.d("mediaItem", " maxPos in Playlist $it ${position}")
                                             if (position > 0) position++ else position = 0
                                             //Log.d("mediaItem", "next initial pos ${position}")
                                             if (listMediaItems.isEmpty()) {
                                                 val filteredPLSongs = playlistSongs.filterNot {it.asMediaItem.mediaId.startsWith(LOCAL_KEY_PREFIX) || it.song.thumbnailUrl == ""}
-                                                if ((filteredPLSongs.size + toPlaylistPreview.songCount) > 5000 && toPlaylistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
-                                                    SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
-                                                } else {
-                                                    playlistSongs.forEachIndexed { index, song ->
-                                                        Database.asyncTransaction {
-                                                            Database.insert(song.asMediaItem)
-                                                            Database.insert(
-                                                                SongPlaylistMap(
-                                                                    songId = song.asMediaItem.mediaId,
-                                                                    playlistId = toPlaylistPreview.playlist.id,
-                                                                    position = position + index
-                                                                ).default()
-                                                            )
-                                                        }
-                                                        //Log.d("mediaItemPos", "added position ${position + index}")
-                                                    }
-                                                    //println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    songsInTheToPlaylist = withContext(Dispatchers.IO) { Database.sortSongsPlaylistByPositionNoFlow(toPlaylistPreview.playlist.id) }
+                                                    val distinctSongs = filteredPLSongs.filterNot { it in songsInTheToPlaylist }
 
-                                                    if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
-                                                        CoroutineScope(Dispatchers.IO).launch {
-                                                            if (playlistPreview.playlist.isYoutubePlaylist) {
-                                                                YtMusic.addPlaylistToPlaylist(
-                                                                    cleanPrefix(toPlaylistPreview.playlist.browseId ?: ""),
-                                                                    cleanPrefix(playlistPreview.playlist.browseId ?: "")
+                                                    if ((distinctSongs.size + toPlaylistPreview.songCount) > 5000 && toPlaylistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
+                                                        SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
+                                                    } else {
+                                                        playlistSongs.forEachIndexed { index, song ->
+                                                            Database.asyncTransaction {
+                                                                Database.insert(song.asMediaItem)
+                                                                Database.insert(
+                                                                    SongPlaylistMap(
+                                                                        songId = song.asMediaItem.mediaId,
+                                                                        playlistId = toPlaylistPreview.playlist.id,
+                                                                        position = position + index
+                                                                    ).default()
                                                                 )
-                                                            } else {
-                                                                if (filteredPLSongs.size <= 500) {
-                                                                    cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id ->
-                                                                        YtMusic.addToPlaylist(id,filteredPLSongs.map { it.asMediaItem.mediaId })
-                                                                    }
-                                                                } else {
-                                                                    val browseId = toPlaylistPreview.playlist.browseId ?: ""
+                                                            }
+                                                            //Log.d("mediaItemPos", "added position ${position + index}")
+                                                        }
+                                                        //println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
-                                                                    val filteredPLSongsChunks = filteredPLSongs.chunked(500)
-                                                                    filteredPLSongsChunks.forEachIndexed { index, list ->
-                                                                        if (index != 0) { delay(10000) }
-                                                                        runBlocking {
-                                                                            YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
+                                                        if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && distinctSongs.isNotEmpty() && isYouTubeSyncEnabled()) {
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                if (playlistPreview.playlist.isYoutubePlaylist) {
+                                                                    YtMusic.addPlaylistToPlaylist(
+                                                                        cleanPrefix(toPlaylistPreview.playlist.browseId ?: ""),
+                                                                        cleanPrefix(playlistPreview.playlist.browseId ?: "")
+                                                                    )
+                                                                } else {
+                                                                    if (distinctSongs.size <= 1000) {
+                                                                        cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id ->
+                                                                            YtMusic.addToPlaylist(id,distinctSongs.map { it.asMediaItem.mediaId })
                                                                         }
-                                                                        val messageId = if (list.size == 500) {
-                                                                            R.string.five_hundered_songs_added
-                                                                        } else {
-                                                                            R.string.all_songs_Added
+                                                                        SmartMessage("${distinctSongs.size} "+ context.resources.getString(R.string.songs_added_in_yt), context = context)
+                                                                    } else {
+                                                                        val browseId = toPlaylistPreview.playlist.browseId ?: ""
+
+                                                                        val distinctSongsChunks = distinctSongs.chunked(1000)
+                                                                        distinctSongsChunks.forEachIndexed { index, list ->
+                                                                            if (index != 0) { delay(10000) }
+                                                                            withContext(Dispatchers.IO) {
+                                                                                YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
+                                                                            }
+                                                                            val messageId = if (list.size == 500) {
+                                                                                R.string.thousand_songs_added
+                                                                            } else {
+                                                                                R.string.all_songs_Added
+                                                                            }
+                                                                            SmartMessage(context.resources.getString(messageId), context = context)
                                                                         }
-                                                                        SmartMessage(context.resources.getString(messageId), context = context)
                                                                     }
                                                                 }
                                                             }
+
                                                         }
 
-                                                    }
-
-                                                    if (toPlaylistPreview.playlist.name.startsWith(
-                                                            PIPED_PREFIX
-                                                        ) && isPipedEnabled && pipedSession.token.isNotEmpty()
-                                                    )
-                                                        addToPipedPlaylist(
-                                                            context = context,
-                                                            coroutineScope = coroutineScope,
-                                                            pipedSession = pipedSession.toApiSession(),
-                                                            id = UUID.fromString(cleanPrefix(toPlaylistPreview.playlist.browseId ?: "")),
-                                                            videos = playlistSongs.map { it.asMediaItem.mediaId }
-                                                                .toList()
+                                                        if (toPlaylistPreview.playlist.name.startsWith(
+                                                                PIPED_PREFIX
+                                                            ) && isPipedEnabled && pipedSession.token.isNotEmpty()
                                                         )
+                                                            addToPipedPlaylist(
+                                                                context = context,
+                                                                coroutineScope = coroutineScope,
+                                                                pipedSession = pipedSession.toApiSession(),
+                                                                id = UUID.fromString(cleanPrefix(toPlaylistPreview.playlist.browseId ?: "")),
+                                                                videos = playlistSongs.map { it.asMediaItem.mediaId }
+                                                                    .toList()
+                                                            )
+                                                    }
                                                 }
-                                            } else {
-                                                val filteredListMediaItems = listMediaItems.filterNot {it.mediaId.startsWith(LOCAL_KEY_PREFIX) || it.mediaMetadata.artworkUri.toString() == ""}
-                                                if ((filteredListMediaItems.size + toPlaylistPreview.songCount) > 5000 && toPlaylistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
-                                                    SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
-                                                } else {
-                                                    listMediaItems.forEachIndexed { index, song ->
-                                                        Database.asyncTransaction {
-                                                            Database.insert(song)
-                                                            Database.insert(
-                                                                SongPlaylistMap(
-                                                                    songId = song.mediaId,
-                                                                    playlistId = toPlaylistPreview.playlist.id,
-                                                                    position = position + index
-                                                                ).default()
-                                                            )
-                                                        }
-                                                    }
-                                                    if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
-                                                        CoroutineScope(Dispatchers.IO).launch {
-                                                            if (playlistPreview.playlist.isYoutubePlaylist) {
-                                                                YtMusic.addPlaylistToPlaylist(
-                                                                    cleanPrefix(toPlaylistPreview.playlist.browseId ?: ""),
-                                                                    cleanPrefix(playlistPreview.playlist.browseId ?: "")
-                                                                )
-                                                            } else {
-                                                                if (filteredListMediaItems.size <= 500) {
-                                                                    cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id ->
-                                                                        YtMusic.addToPlaylist(id,filteredListMediaItems.map { it.mediaId })
-                                                                    }
-                                                                } else {
-                                                                    val browseId = toPlaylistPreview.playlist.browseId ?: ""
+                                            }
+                                            else {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    val filteredListMediaItems = listMediaItems.filterNot {it.mediaId.startsWith(LOCAL_KEY_PREFIX) || it.mediaMetadata.artworkUri.toString() == ""}
+                                                    songsInTheToPlaylist = withContext(Dispatchers.IO){ Database.sortSongsPlaylistByPositionNoFlow(toPlaylistPreview.playlist.id) }
 
-                                                                    val filteredListMediaItemsChunks = filteredListMediaItems.chunked(500)
-                                                                    filteredListMediaItemsChunks.forEachIndexed { index, list ->
-                                                                        if (index != 0) { delay(10000) }
-                                                                        runBlocking {
-                                                                            YtMusic.addToPlaylist(browseId, list.map { it.mediaId })
+                                                    val distinctSongs = filteredListMediaItems.filter { item -> item !in songsInTheToPlaylist.map { it.asMediaItem } }
+                                                    if ((distinctSongs.size + toPlaylistPreview.songCount) > 5000 && toPlaylistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
+                                                        SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
+                                                    } else {
+                                                        listMediaItems.forEachIndexed { index, song ->
+                                                            Database.asyncTransaction {
+                                                                Database.insert(song)
+                                                                Database.insert(
+                                                                    SongPlaylistMap(
+                                                                        songId = song.mediaId,
+                                                                        playlistId = toPlaylistPreview.playlist.id,
+                                                                        position = position + index
+                                                                    ).default()
+                                                                )
+                                                            }
+                                                        }
+                                                        if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && distinctSongs.isNotEmpty() && isYouTubeSyncEnabled()) {
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                if (playlistPreview.playlist.isYoutubePlaylist) {
+                                                                    YtMusic.addPlaylistToPlaylist(
+                                                                        cleanPrefix(toPlaylistPreview.playlist.browseId ?: ""),
+                                                                        cleanPrefix(playlistPreview.playlist.browseId ?: "")
+                                                                    )
+                                                                } else {
+                                                                    if (distinctSongs.size <= 1000) {
+                                                                        cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id ->
+                                                                            YtMusic.addToPlaylist(id,distinctSongs.map { it.mediaId })
                                                                         }
-                                                                        val messageId = if (list.size == 500) {
-                                                                            R.string.five_hundered_songs_added
-                                                                        } else {
-                                                                            R.string.all_songs_Added
+                                                                        SmartMessage("${distinctSongs.size} "+ context.resources.getString(R.string.songs_added_in_yt), context = context)
+                                                                    } else {
+                                                                        val browseId = toPlaylistPreview.playlist.browseId ?: ""
+
+                                                                        val distinctSongsChunks = distinctSongs.chunked(1000)
+                                                                        distinctSongsChunks.forEachIndexed { index, list ->
+                                                                            if (index != 0) { delay(10000) }
+                                                                            withContext(Dispatchers.IO) {
+                                                                                YtMusic.addToPlaylist(browseId, list.map { it.mediaId })
+                                                                            }
+                                                                            val messageId = if (list.size == 1000) {
+                                                                                R.string.thousand_songs_added
+                                                                            } else {
+                                                                                R.string.all_songs_Added
+                                                                            }
+                                                                            SmartMessage(context.resources.getString(messageId), context = context)
                                                                         }
-                                                                        SmartMessage(context.resources.getString(messageId), context = context)
                                                                     }
                                                                 }
                                                             }
                                                         }
-                                                    }
-                                                    println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
+                                                        println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
 
-                                                    if (toPlaylistPreview.playlist.name.startsWith(
-                                                            PIPED_PREFIX
-                                                        ) && isPipedEnabled && pipedSession.token.isNotEmpty()
-                                                    )
-                                                        addToPipedPlaylist(
-                                                            context = context,
-                                                            coroutineScope = coroutineScope,
-                                                            pipedSession = pipedSession.toApiSession(),
-                                                            id = UUID.fromString(cleanPrefix(toPlaylistPreview.playlist.browseId ?: "")),
-                                                            videos = listMediaItems.map { it.mediaId }
-                                                                .toList()
+                                                        if (toPlaylistPreview.playlist.name.startsWith(
+                                                                PIPED_PREFIX
+                                                            ) && isPipedEnabled && pipedSession.token.isNotEmpty()
                                                         )
-                                                    listMediaItems.clear()
-                                                    selectItems = false
+                                                            addToPipedPlaylist(
+                                                                context = context,
+                                                                coroutineScope = coroutineScope,
+                                                                pipedSession = pipedSession.toApiSession(),
+                                                                id = UUID.fromString(cleanPrefix(toPlaylistPreview.playlist.browseId ?: "")),
+                                                                videos = listMediaItems.map { it.mediaId }
+                                                                    .toList()
+                                                            )
+                                                        listMediaItems.clear()
+                                                        selectItems = false
+                                                    }
                                                 }
                                             }
                                         },
