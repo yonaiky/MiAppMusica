@@ -905,7 +905,7 @@
     <string name="no_connection">Ei yhteyttä</string>
     <string name="unlink_from_ytm">Katkaise yhteys Youtube-kirjastoon</string>
     <string name="unlink_from_yt">Katkaise yhteys Youtubeen</string>
-    <string name="yt_playlist_limited">Youtube Playlists are Limited to 5000 songs</string>
+    <string name="yt_playlist_limited">YouTube-soittolistat on rajoitettu 5000 kappaleeseen</string>
     <string name="songs_added_in_yt">songs are added in the YouTube Playlist. Repeat the process if there are any Missing Songs</string>
     <string name="songs_adding_in_yt">songs will be added in the YTM playlist</string>
     <string name="settings_audio_bass_boost">Audio bass boost</string>
@@ -913,5 +913,5 @@
     <string name="settings_audio_reverb">Audio reverb</string>
     <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Apply a depth effect to the audio</string>
     <string name="settings_audio_focus">Audio focus</string>
-    <string name="settings_audio_focus_info">Allows automatic pause and resume playback after a call for example</string>
+    <string name="settings_audio_focus_info">Mahdollistaa automaattisen tauon esimerkiksi puhelun ajaksi</string>
 </resources>
