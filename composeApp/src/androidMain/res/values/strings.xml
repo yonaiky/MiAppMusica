@@ -908,4 +908,7 @@
     <string name="yt_playlist_limited">Youtube Playlists are Limited to 5000 songs</string>
     <string name="songs_added_in_yt">songs are added in the YouTube Playlist. Repeat the process if there are any Missing Songs</string>
     <string name="songs_adding_in_yt">songs will be added in the YTM playlist</string>
+    <string name="to_be_synced">Playlists to be synced</string>
+    <string name="is_being_synced">is being synced</string>
+    <string name="synced">synced</string>
 </resources>

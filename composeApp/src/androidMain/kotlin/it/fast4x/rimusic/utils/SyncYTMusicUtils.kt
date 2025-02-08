@@ -60,7 +60,7 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
 
 
             SmartMessage(
-                message = "${ytmPrivatePlaylists.size} to be synced",
+                message = "${ytmPrivatePlaylists.size }"+appContext().resources.getString(R.string.syncing),
                 durationLong = false,
                 context = appContext(),
             )
@@ -132,7 +132,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                         }
 
                         SmartMessage(
-                            message = "${remotePlaylist.playlist.title} (${newSongs.size} New Songs) is being synced",
+                            message = "${remotePlaylist.playlist.title} (${newSongs.size } new songs)"+appContext().resources.getString(R.string.is_being_synced),
                             durationLong = false,
                             context = appContext(),
                         )
@@ -164,7 +164,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                                 deleteSongFromPlaylist(song.asMediaItem.mediaId, playlistId)
                             }
                         SmartMessage(
-                            message = "${remotePlaylist.playlist.title} synced",
+                            message = "${remotePlaylist.playlist.title} "+appContext().resources.getString(R.string.synced),
                             durationLong = false,
                             context = appContext(),
                         )
