@@ -1008,7 +1008,7 @@ object Innertube {
                     ?.params
                     ?.find { it.key == "logged_in" }
                     ?.value == "1"
-            println("Logged In $loggedIn")
+            println("Innertube getVisitorData Logged In $loggedIn")
             val visitorData =
                 ytInitialPlayerResponse.responseContext.serviceTrackingParams
                     ?.find { it.service == "GFEEDBACK" }
@@ -1018,9 +1018,9 @@ object Innertube {
                     ?: ytInitialData.responseContext.webResponseContextExtensionData
                         ?.ytConfigData
                         ?.visitorData
-            println("Visitor Data $visitorData")
-            println("New Cookie $cookie")
-            println("Playback Tracking $playbackTracking")
+            println("Innertube getVisitorData Visitor Data $visitorData")
+            println("Innertube getVisitorData New Cookie $cookie")
+            println("Innertube getVisitorData Playback Tracking $playbackTracking")
             if (!visitorData.isNullOrEmpty()) this@Innertube.visitorData = visitorData
             return Triple(cookie, visitorData ?: this@Innertube.visitorData, playbackTracking)
         } catch (e: Exception) {
