@@ -196,6 +196,7 @@ import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.isDownloadedSong
@@ -1392,29 +1393,9 @@ fun HomeSongsModern(
                                                 }
                                                 if (playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
                                                     CoroutineScope(Dispatchers.IO).launch {
-                                                        if (filteredItems.size <= 50) {
-                                                            cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id ->
-                                                                YtMusic.addToPlaylist(id,filteredItems.map { it.asMediaItem.mediaId })
-                                                            }
-                                                        } else {
-                                                            SmartMessage("${filteredItems.size} "+context.resources.getString(R.string.songs_adding_in_yt), context = context)
-                                                            val browseId = playlistPreview.playlist.browseId ?: ""
-
-                                                            val distinctSongsChunks = filteredItems.chunked(50)
-                                                            distinctSongsChunks.forEachIndexed { index, list ->
-                                                                if (index != 0) {
-                                                                    delay(2000)
-                                                                    SmartMessage("${filteredItems.size - index*50} Songs Remaining", context = context)
-                                                                }
-                                                                withContext(Dispatchers.IO) {
-                                                                    YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
-                                                                }
-                                                            }
-                                                        }
-                                                        SmartMessage("${filteredItems.size} "+ context.resources.getString(R.string.songs_added_in_yt), context = context, durationLong = true)
+                                                        addToYtPlaylist(playlistPreview.playlist.browseId ?: "",filteredItems.map { it.asMediaItem.mediaId })
                                                     }
                                                 }
-
                                                 CoroutineScope(Dispatchers.Main).launch {
                                                     SmartMessage(context.resources.getString(R.string.done), type = PopupType.Success, context = context)
                                                 }

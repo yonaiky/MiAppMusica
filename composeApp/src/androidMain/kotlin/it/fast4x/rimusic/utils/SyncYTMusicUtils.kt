@@ -3,6 +3,7 @@ package it.fast4x.rimusic.utils
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
@@ -56,6 +57,13 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
             (localPlaylists?.filter { playlist -> playlist.browseId !in ytmPrivatePlaylists.map { if (it.key.startsWith("VL")) it.key.substringAfter("VL") else it.key }  })?.forEach { playlist ->
                 Database.asyncTransaction{ delete(playlist) }
             }
+
+
+            SmartMessage(
+                message = "${ytmPrivatePlaylists.size} to be synced",
+                durationLong = false,
+                context = appContext(),
+            )
 
             ytmPrivatePlaylists.forEach { remotePlaylist ->
                 withContext(Dispatchers.IO) {
@@ -111,38 +119,59 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                     }
                 }
             }?.getOrNull()?.let { remotePlaylist ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.IO) {
+                        val localPlaylistSongs = withContext(Dispatchers.IO) {
+                            Database.sortSongsPlaylistByPositionNoFlow(playlistId)
+                        }
 
-                println("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
+                        val newSongs = withContext(Dispatchers.IO) {
+                            remotePlaylist.songs.filter {
+                                it.asMediaItem.mediaId !in localPlaylistSongs.map { it.asMediaItem.mediaId }
+                            }
+                        }
 
-                // Update here playlist isEditable flag because library contain playlists but isEditable isn't always available
-                if (remotePlaylist.isEditable == true)
-                    Database.update(playlist.copy(isEditable = true))
+                        SmartMessage(
+                            message = "${remotePlaylist.playlist.title} (${newSongs.size} New Songs) is being synced",
+                            durationLong = false,
+                            context = appContext(),
+                        )
 
-                if (remotePlaylist.songs.isNotEmpty()) {
-                    //Database.clearPlaylist(playlistId)
+                        println("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
 
-                    remotePlaylist.songs
-                        .map(Innertube.SongItem::asMediaItem)
-                        .onEach(Database::insert)
-                        .mapIndexed { position, mediaItem ->
-                            SongPlaylistMap(
-                                songId = mediaItem.mediaId,
-                                playlistId = playlistId,
-                                position = position,
-                                setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
-                            ).default()
-                        }.let(Database::insertSongPlaylistMaps)
-                }
-                runBlocking(Dispatchers.IO) {
-                    val localPlaylistSongs = Database.songsPlaylist(playlistId,PlaylistSongSortBy.Position, SortOrder.Ascending).firstOrNull()
+                        // Update here playlist isEditable flag because library contain playlists but isEditable isn't always available
+                        if (remotePlaylist.isEditable == true)
+                            Database.update(playlist.copy(isEditable = true))
 
-                    localPlaylistSongs?.filter {it.asMediaItem.mediaId !in remotePlaylist.songs.map { it.asMediaItem.mediaId }}?.forEach { song ->
-                        deleteSongFromPlaylist(song.asMediaItem.mediaId,playlistId)
+                        if (newSongs.isNotEmpty()) {
+                            //Database.clearPlaylist(playlistId)
+
+                            newSongs
+                                .map(Innertube.SongItem::asMediaItem)
+                                .onEach(Database::insert)
+                                .mapIndexed { position, mediaItem ->
+                                    SongPlaylistMap(
+                                        songId = mediaItem.mediaId,
+                                        playlistId = playlistId,
+                                        position = position,
+                                        setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
+                                    ).default()
+                                }.let(Database::insertSongPlaylistMaps)
+                        }
+
+                        localPlaylistSongs.filter { it.asMediaItem.mediaId !in remotePlaylist.songs.map { it.asMediaItem.mediaId } }
+                            .forEach { song ->
+                                deleteSongFromPlaylist(song.asMediaItem.mediaId, playlistId)
+                            }
+                        SmartMessage(
+                            message = "${remotePlaylist.playlist.title} synced",
+                            durationLong = false,
+                            context = appContext(),
+                        )
                     }
                 }
             }
         }
-
     }
 }
 

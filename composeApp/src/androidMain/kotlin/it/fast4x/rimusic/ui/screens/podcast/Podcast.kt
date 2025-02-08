@@ -129,6 +129,7 @@ import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import timber.log.Timber
 
 
@@ -562,7 +563,7 @@ fun Podcast(
                                                         if(isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
                                                             CoroutineScope(Dispatchers.IO).launch {
                                                                 playlistPreview.playlist.browseId?.let { id ->
-                                                                    YtMusic.addToPlaylist(id, podcastPage?.listEpisode?.map { it.asMediaItem.mediaId } ?: emptyList())
+                                                                    addToYtPlaylist(id, podcastPage?.listEpisode?.map { it.asMediaItem.mediaId } ?: emptyList())
                                                                 }
                                                             }
                                                         }

@@ -26,9 +26,12 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import com.zionhuang.innertube.pages.LibraryPage
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.UserAgent
+import io.ktor.http.HttpStatusCode
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.YtMusic.addToPlaylist
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.playlistPage
@@ -40,6 +43,8 @@ import it.fast4x.kugou.KuGou
 import it.fast4x.lrclib.LrcLib
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
@@ -54,9 +59,11 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -964,5 +971,49 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                 }
         }
     }
+}
+
+suspend fun addToYtPlaylist(playlistId: String, videoIds: List<String>){
+    val requestedVideoIds = videoIds.take(5000)
+    val difference = videoIds.size - requestedVideoIds.size
+    if (difference > 0) {
+        println("YtMusic addToPlaylist warning: only adding (at most) 500 ids, (surpassed limit by $difference)")
+    }
+    val videoIdChunks = videoIds.chunked(50)
+    videoIdChunks.forEachIndexed { index, ids ->
+        runCatching {
+            if (videoIds.size <= 50) {}
+            else if (index == 0) {
+                SmartMessage(
+                    "${videoIds.size} "+appContext().resources.getString(R.string.songs_adding_in_yt),
+                    context = appContext(),
+                    durationLong = true
+                )
+            } else {
+                delay(2000)
+                SmartMessage(
+                    "${videoIds.size - index*50} Songs Remaining",
+                    context = appContext(),
+                    durationLong = false
+                )
+            }
+            Innertube.addToPlaylist(it.fast4x.innertube.models.Context.DefaultWeb.client, playlistId, ids)
+        }.onFailure {
+            println("YtMusic addToPlaylist (list of size ${ids.size}) error: ${it.stackTraceToString()}")
+            if(it is ClientRequestException && it.response.status == HttpStatusCode.BadRequest) {
+                ids.forEach { id ->
+                    delay(500)
+                    addToPlaylist(playlistId, id).onFailure {
+                        println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
+                    }
+                }
+            }
+        }
+    }
+    SmartMessage(
+        "${videoIds.size} "+ appContext().resources.getString(R.string.songs_added_in_yt),
+        context = appContext(),
+        durationLong = true
+    )
 }
 

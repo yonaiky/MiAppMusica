@@ -153,6 +153,7 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asAlbum
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.mediaItemToggleLike
@@ -1080,10 +1081,9 @@ fun AlbumDetails(
                                                     }
                                                     if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
                                                         CoroutineScope(Dispatchers.IO).launch {
-                                                            YtMusic.addToPlaylist(
+                                                            addToYtPlaylist(
                                                                 cleanPrefix(playlistPreview.playlist.browseId ?: ""),
                                                                 listMediaItems.map { it.mediaId }
-
                                                             )
                                                         }
                                                     }

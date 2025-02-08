@@ -193,6 +193,7 @@ import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.isExplicit
@@ -1621,27 +1622,8 @@ fun LocalPlaylistSongs(
                                                                         cleanPrefix(playlistPreview.playlist.browseId ?: "")
                                                                     )
                                                                 } else {
-                                                                    if (distinctSongs.size <= 50) {
-                                                                        cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id ->
-                                                                            YtMusic.addToPlaylist(id,distinctSongs.map { it.asMediaItem.mediaId })
-                                                                        }
-                                                                    } else {
-                                                                        SmartMessage("${distinctSongs.size} "+ context.resources.getString(R.string.songs_adding_in_yt), context = context)
-                                                                        val browseId = toPlaylistPreview.playlist.browseId ?: ""
-
-                                                                        val distinctSongsChunks = distinctSongs.chunked(50)
-                                                                        distinctSongsChunks.forEachIndexed { index, list ->
-                                                                            if (index != 0) {
-                                                                                delay(2000)
-                                                                                SmartMessage("${distinctSongs.size - index*50} Songs Remaining", context = context)
-                                                                            }
-                                                                            withContext(Dispatchers.IO) {
-                                                                                YtMusic.addToPlaylist(browseId, list.map { it.asMediaItem.mediaId })
-                                                                            }
-                                                                        }
-                                                                    }
+                                                                    addToYtPlaylist(toPlaylistPreview.playlist.browseId ?: "",distinctSongs.map { it.asMediaItem.mediaId })
                                                                 }
-                                                                SmartMessage("${distinctSongs.size} "+ context.resources.getString(R.string.songs_added_in_yt), context = context, durationLong = true)
                                                             }
 
                                                         }
@@ -1684,27 +1666,7 @@ fun LocalPlaylistSongs(
                                                         }
                                                         if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && distinctSongs.isNotEmpty() && isYouTubeSyncEnabled()) {
                                                             CoroutineScope(Dispatchers.IO).launch {
-                                                                if (distinctSongs.size <= 50) {
-                                                                    cleanPrefix(toPlaylistPreview.playlist.browseId ?: "").let { id ->
-                                                                        YtMusic.addToPlaylist(id,distinctSongs.map { it.mediaId })
-                                                                    }
-                                                                    SmartMessage("${distinctSongs.size} "+context.resources.getString(R.string.songs_added_in_yt), context = context)
-                                                                } else {
-                                                                    SmartMessage("${distinctSongs.size} "+context.resources.getString(R.string.songs_adding_in_yt), context = context)
-                                                                    val browseId = toPlaylistPreview.playlist.browseId ?: ""
-
-                                                                    val distinctSongsChunks = distinctSongs.chunked(50)
-                                                                    distinctSongsChunks.forEachIndexed { index, list ->
-                                                                        if (index != 0) {
-                                                                            delay(2000)
-                                                                            SmartMessage("${distinctSongs.size - index*50} Songs Remaining", context = context)
-                                                                        }
-                                                                        withContext(Dispatchers.IO) {
-                                                                            YtMusic.addToPlaylist(browseId, list.map { it.mediaId })
-                                                                        }
-                                                                    }
-                                                                }
-                                                                SmartMessage("${distinctSongs.size} "+ context.resources.getString(R.string.songs_added_in_yt), context = context, durationLong = true)
+                                                                addToYtPlaylist(toPlaylistPreview.playlist.browseId ?: "",distinctSongs.map { it.mediaId })
                                                             }
                                                         }
                                                         println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")

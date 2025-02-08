@@ -146,6 +146,7 @@ import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.enqueue
@@ -1021,7 +1022,7 @@ fun Queue(
                                             if(isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     playlistPreview.playlist.browseId.let { id ->
-                                                        YtMusic.addToPlaylist(
+                                                        addToYtPlaylist(
                                                             cleanPrefix(id ?: ""),windows
                                                             .filterNot {it.mediaItem.mediaId.startsWith(LOCAL_KEY_PREFIX)}
                                                             .map { it.mediaItem.mediaId })
@@ -1045,7 +1046,7 @@ fun Queue(
                                             }
                                             if(isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
                                                 CoroutineScope(Dispatchers.IO).launch {
-                                                    YtMusic.addToPlaylist(
+                                                    addToYtPlaylist(
                                                         cleanPrefix(playlistPreview.playlist.browseId ?: ""),
                                                         listMediaItems.filterNot {it.mediaId.startsWith(LOCAL_KEY_PREFIX)}.map { it.mediaId }
 
