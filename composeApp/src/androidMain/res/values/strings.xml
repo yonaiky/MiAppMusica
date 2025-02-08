@@ -911,4 +911,10 @@
     <string name="to_be_synced">Playlists to be synced</string>
     <string name="is_being_synced">is being synced</string>
     <string name="synced">synced</string>
+    <string name="settings_audio_bass_boost">Audio bass boost</string>
+    <string name="settings_bass_boost_level">Bass boost level</string>
+    <string name="settings_audio_reverb">Audio reverb</string>
+    <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Apply a depth effect to the audio</string>
+    <string name="settings_audio_focus">Audio focus</string>
+    <string name="settings_audio_focus_info">Allows automatic pause and resume playback after a call for example</string>
 </resources>
