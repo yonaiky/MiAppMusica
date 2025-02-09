@@ -814,7 +814,7 @@
     <string name="title_youtube_music">YOUTUBE MUSIK</string>
     <string name="enable_youtube_music_login">Aktiver Youtube Musik-login</string>
     <string name="show_cover_thumbnail_animation">Vis animation af coverminiaturebillede</string>
-    <string name="cover_thumbnail_animation_type">Cover animation type</string>
+    <string name="cover_thumbnail_animation_type">Cover animationstype</string>
     <string name="jump_previous">Forrige knap genstarter den aktuelle sang, når de følgende sekunder er gået</string>
     <string name="jump_previous_blank">Leave it Blank or 0 for Previous Button to Always Play the Previous Song</string>
     <string name="delete_hidden_songs">Vil du virkelig slette alle skjulte sange fra databasen? Denne handling er irreversibel.</string>
