@@ -1564,6 +1564,7 @@ fun Player(
                                             horizontalAlignment = Alignment.CenterHorizontally,
                                             modifier = Modifier
                                                 .height(40.dp)
+                                                .fillMaxWidth()
                                         ) {
                                             Box(
 
