@@ -1411,6 +1411,17 @@ fun HomeSongsModern(
                                                 }
                                             }
                                         },
+                                        onAddToPreferitesYoutube = {
+                                            if (listMediaItems.isNotEmpty()) {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    addToYtLikedSongs(listMediaItems.filter { Database.getLikedAt(it.mediaId) !in listOf(-1L,null) }.map { it.mediaId })
+                                                }
+                                            } else {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    addToYtLikedSongs(items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }.map { it.asMediaItem.mediaId })
+                                                }
+                                            }
+                                        },
                                         onAddToPlaylist = { playlistPreview ->
                                             if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
                                                 filteredSongs
