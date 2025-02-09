@@ -355,6 +355,7 @@ const val ytVisitorDataKey = "ytVisitorData"
 const val ytCookieKey = "ytCookie"
 const val ytAccountChannelHandleKey = "ytAccountChannelHandle"
 const val ytAccountThumbnailKey = "ytAccountThumbnail"
+const val ytDataSyncIdKey = "ytDataSyncId"
 const val filterByKey = "filterBy"
 
 const val bassboostEnabledKey = "bassboostEnabled"

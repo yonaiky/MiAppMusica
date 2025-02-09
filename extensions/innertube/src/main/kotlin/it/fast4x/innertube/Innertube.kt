@@ -155,6 +155,8 @@ object Innertube {
         //hl = LocalePreferences.preference?.hl ?: "en"
     )
     var visitorData: String = YoutubePreferences.preference?.visitordata.toString()
+    var dataSyncId: String? = YoutubePreferences.preference?.dataSyncId.toString()
+
     var cookieMap = emptyMap<String, String>()
     //var cookie: String? = YoutubePreferences.preference?.cookie
     var cookie: String? = YoutubePreferences.preference?.cookie
