@@ -910,8 +910,8 @@
     <string name="songs_adding_in_yt">mahnılar YTM pleylistinə əlavə olunacaq</string>
     <string name="settings_audio_bass_boost">Səs bass (bəm) sürətləndirilməsi</string>
     <string name="settings_bass_boost_level">Bass (bəm) sürətləndirmə səviyyəsi</string>
-    <string name="settings_audio_reverb">Audio reverb</string>
-    <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Apply a depth effect to the audio</string>
-    <string name="settings_audio_focus">Audio focus</string>
-    <string name="settings_audio_focus_info">Allows automatic pause and resume playback after a call for example</string>
+    <string name="settings_audio_reverb">Səs əks-sədası</string>
+    <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Səsə dərinlik təsiri tətbiq et</string>
+    <string name="settings_audio_focus">Səs cəmlənməsi</string>
+    <string name="settings_audio_focus_info">Məsələn, zəng sonrası birbaşa fasilə və səslənməni davam etdirməyə imkan verir</string>
 </resources>
