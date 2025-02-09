@@ -26,6 +26,7 @@ import java.util.TimeZone
 data class Context(
     val client: Client,
     val thirdParty: ThirdParty? = null,
+    val user: User? = User()
 ) {
 
     @Serializable

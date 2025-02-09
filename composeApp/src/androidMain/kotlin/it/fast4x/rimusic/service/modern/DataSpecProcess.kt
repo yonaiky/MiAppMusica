@@ -115,7 +115,7 @@ suspend fun getInnerTubeStream(
     ).fold(
         { playerResponse ->
             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream playabilityStatus ${playerResponse.second?.playabilityStatus?.status} for song $videoId from adaptiveFormats itag ${playerResponse.second?.streamingData?.adaptiveFormats?.map { it.itag }}")
-            println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream playabilityStatus ${playerResponse.second?.playabilityStatus?.status} for song $videoId from formats itag ${playerResponse.second?.streamingData?.formats?.map { it.itag }}")
+            //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream playabilityStatus ${playerResponse.second?.playabilityStatus?.status} for song $videoId from formats itag ${playerResponse.second?.streamingData?.formats?.map { it.itag }}")
             when(playerResponse.second?.playabilityStatus?.status) {
                 "OK" -> {
                     // SELECT FORMAT BY ITAG
