@@ -957,7 +957,6 @@ class PlayerServiceModern : MediaLibraryService(),
             loudnessEnhancer?.release()
             loudnessEnhancer = null
             volumeNormalizationJob?.cancel()
-            player.volume = 1f
             return
         }
 
