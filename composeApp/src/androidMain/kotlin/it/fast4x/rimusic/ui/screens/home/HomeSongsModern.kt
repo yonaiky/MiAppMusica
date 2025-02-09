@@ -200,6 +200,7 @@ import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isNowPlaying
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -322,6 +323,10 @@ fun HomeSongsModern(
     }
 
     var deleteProgressDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var checkCheck by remember {
         mutableStateOf(false)
     }
 
@@ -1122,14 +1127,50 @@ fun HomeSongsModern(
                         if (deleteProgressDialog){
                             InProgressDialog(total = totalSongsToDelete, done = songsDeleted, text = stringResource(R.string.delete_in_process))
                         }
-
-                        Database.asyncTransaction {
-                            totalSongsToDelete = (itemsAll.filter {
-                                !it.song.id.startsWith(LOCAL_KEY_PREFIX)
-                                        && it.song.likedAt == null
-                                        && songUsedInPlaylists(it.song.id) == 0
-                                        && albumBookmarked(songAlbumInfo(it.song.id)?.id ?: "") == 0
-                            }).size
+                        LaunchedEffect(checkCheck) {
+                            if(!checkCheck) {
+                                return@LaunchedEffect
+                            }
+                            SmartMessage(
+                                context.resources.getString(R.string.please_wait),
+                                type = PopupType.Info, context = context, durationLong = true
+                            )
+                            deleteProgressDialog = true
+                            withContext(Dispatchers.IO) {
+                                Database.asyncTransaction {
+                                    totalSongsToDelete = (itemsAll.filter {
+                                        !it.song.id.startsWith(LOCAL_KEY_PREFIX)
+                                                && it.song.likedAt == null
+                                                && songUsedInPlaylists(it.song.id) == 0
+                                                && albumBookmarked(
+                                            songAlbumInfo(it.song.id)?.id ?: "" ) == 0
+                                    }).size
+                                    if (totalSongsToDelete == 0) {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.nothing_to_delete),
+                                            type = PopupType.Info, context = context
+                                        )
+                                        deleteProgressDialog = false
+                                    } else {
+                                        songsDeleted = 0
+                                        itemsAll.filter {!it.song.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
+                                            Database.asyncTransaction {
+                                                if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id?: "") == 0)) {
+                                                    binder?.cache?.removeResource(song.song.id)
+                                                    binder?.downloadCache?.removeResource(song.song.id)
+                                                    Database.delete(song.song)
+                                                    songsDeleted++
+                                                    if (songsDeleted == totalSongsToDelete) {
+                                                        deleteProgressDialog = false
+                                                        exitProcess(0)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    checkCheck = false
+                                }
+                            }
                         }
 
                         if (builtInPlaylist == BuiltInPlaylist.Favorites || builtInPlaylist == BuiltInPlaylist.Downloaded) {
@@ -1402,29 +1443,7 @@ fun HomeSongsModern(
                                             }
                                         },
                                         onDeleteSongsNotInLibrary = {
-                                            if (totalSongsToDelete == 0) {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.nothing_to_delete),
-                                                    type = PopupType.Info, context = context
-                                                )
-                                            } else {
-                                                songsDeleted = 0
-                                                deleteProgressDialog = true
-                                                itemsAll.filter {!it.song.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
-                                                    Database.asyncTransaction {
-                                                        if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id?: "") == 0)) {
-                                                            binder?.cache?.removeResource(song.song.id)
-                                                            binder?.downloadCache?.removeResource(song.song.id)
-                                                            Database.delete(song.song)
-                                                            songsDeleted++
-                                                            if (songsDeleted == totalSongsToDelete) {
-                                                                deleteProgressDialog = false
-                                                                exitProcess(0)
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            checkCheck = true
                                         },
                                         onExport = {
                                             isExporting = true

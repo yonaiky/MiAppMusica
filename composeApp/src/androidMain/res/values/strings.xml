@@ -917,4 +917,5 @@
     <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Apply a depth effect to the audio</string>
     <string name="settings_audio_focus">Audio focus</string>
     <string name="settings_audio_focus_info">Allows automatic pause and resume playback after a call for example</string>
+    <string name="please_wait">Please Wait</string>
 </resources>
