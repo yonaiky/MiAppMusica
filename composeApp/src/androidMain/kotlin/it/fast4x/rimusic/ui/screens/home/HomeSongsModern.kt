@@ -1133,7 +1133,7 @@ fun HomeSongsModern(
                             }
                             SmartMessage(
                                 context.resources.getString(R.string.please_wait),
-                                type = PopupType.Info, context = context, durationLong = true
+                                type = PopupType.Info, context = context
                             )
                             deleteProgressDialog = true
                             withContext(Dispatchers.IO) {
