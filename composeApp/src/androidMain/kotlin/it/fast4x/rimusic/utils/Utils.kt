@@ -32,6 +32,8 @@ import io.ktor.http.HttpStatusCode
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.YtMusic.addToPlaylist
+import it.fast4x.innertube.YtMusic.likeVideoOrSong
+import it.fast4x.innertube.YtMusic.removelikeVideoOrSong
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.playlistPage
@@ -42,6 +44,7 @@ import it.fast4x.innertube.utils.getProxy
 import it.fast4x.kugou.KuGou
 import it.fast4x.lrclib.LrcLib
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion.getLikedAt
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
@@ -129,6 +132,9 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
                 null
             )
         //}
+        CoroutineScope(Dispatchers.IO).launch {
+            addToYtLikedSong(mediaItem.mediaId)
+        }
     }
 }
 
@@ -1019,5 +1025,39 @@ suspend fun addToYtPlaylist(playlistId: String, videoIds: List<String>){
         context = appContext(),
         durationLong = true
     )
+}
+
+suspend fun addToYtLikedSong(videoId: String){
+    if (isYouTubeSyncEnabled()) {
+        if (getLikedAt(videoId) !in listOf(-1L, null)) {
+            likeVideoOrSong(videoId)
+            SmartMessage(
+                appContext().resources.getString(R.string.song_liked_yt),
+                context = appContext(),
+                durationLong = false
+            )
+        } else {
+            removelikeVideoOrSong(videoId)
+            SmartMessage(
+                appContext().resources.getString(R.string.song_unliked_yt),
+                context = appContext(),
+                durationLong = false
+            )
+        }
+    }
+}
+
+suspend fun addToYtLikedSongs(videoIds: List<String>){
+    if (isYouTubeSyncEnabled()) {
+        videoIds.forEachIndexed { index, id ->
+            delay(1000)
+            likeVideoOrSong(id)
+            SmartMessage(
+                "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt),
+                context = appContext(),
+                durationLong = false
+            )
+        }
+    }
 }
 

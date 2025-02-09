@@ -48,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import it.fast4x.innertube.YtMusic.likeVideoOrSong
+import it.fast4x.innertube.YtMusic.removelikeVideoOrSong
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
@@ -69,7 +71,9 @@ import it.fast4x.rimusic.ui.components.themed.CustomElevatedButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.ui.screens.player.bounceClick
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.colorPaletteModeKey
 import it.fast4x.rimusic.utils.doubleShadowDrop
@@ -89,6 +93,9 @@ import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.textoutlineKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @UnstableApi
@@ -235,15 +242,21 @@ fun InfoAlbumAndArtistModern(
                         onClick = {
                             val currentMediaItem = binder.player.currentMediaItem
                             Database.asyncTransaction {
-                                if ( like( mediaId, setLikeState(likedAt) ) == 0 ) {
-                                    currentMediaItem
-                                        ?.takeIf { it.mediaId == mediaId }
-                                        ?.let {
-                                            insert(currentMediaItem, Song::toggleLike)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    if (like(mediaId, setLikeState(likedAt)) == 0) {
+                                        currentMediaItem
+                                            ?.takeIf { it.mediaId == mediaId }
+                                            ?.let {
+                                                insert(currentMediaItem, Song::toggleLike)
+                                            }
+                                        if (currentMediaItem != null) {
+                                            MyDownloadHelper.autoDownloadWhenLiked(
+                                                context(),
+                                                currentMediaItem
+                                            )
                                         }
-                                    if (currentMediaItem != null) {
-                                        MyDownloadHelper.autoDownloadWhenLiked(context(),currentMediaItem)
                                     }
+                                    addToYtLikedSong(mediaId)
                                 }
                             }
                             if (effectRotationEnabled) isRotated = !isRotated

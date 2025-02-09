@@ -918,4 +918,7 @@
     <string name="settings_audio_focus">Audio focus</string>
     <string name="settings_audio_focus_info">Allows automatic pause and resume playback after a call for example</string>
     <string name="please_wait">Please Wait</string>
+    <string name="songs_liked_yt">Songs are Liked in YouTube</string>
+    <string name="song_liked_yt">Song is Liked in YouTube</string>
+    <string name="song_unliked_yt">Song is Unliked in YouTube</string>
 </resources>

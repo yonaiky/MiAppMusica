@@ -88,6 +88,8 @@ import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.YtMusic.likeVideoOrSong
+import it.fast4x.innertube.YtMusic.removelikeVideoOrSong
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.innertube.utils.completed
@@ -193,6 +195,7 @@ import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
+import it.fast4x.rimusic.utils.addToYtLikedSongs
 import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
@@ -1690,10 +1693,14 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         onAddToPreferites = {
-                                            playlistSongs.forEachIndexed { _, song ->
-                                                if(song.song.likedAt == null) {
+                                            val totalSongsToLike = playlistSongs.filter { it.song.likedAt in listOf(-1L, null) }
+                                            playlistSongs.forEachIndexed { index, song ->
+                                                if(song.song.likedAt in listOf(-1L, null)) {
                                                     mediaItemToggleLike(song.asMediaItem)
                                                 }
+                                            }
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                addToYtLikedSongs(totalSongsToLike.map { it.asMediaItem.mediaId })
                                             }
                                         },
                                         onRenumberPositions = {

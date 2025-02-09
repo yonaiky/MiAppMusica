@@ -148,6 +148,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtLikedSongs
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.getHttpClient
@@ -758,21 +759,25 @@ fun PlaylistSongList(
                                     .padding(horizontal = 5.dp)
                                     .combinedClickable(
                                         onClick = {
-                                            playlistPage!!.songs.forEachIndexed { _, song ->
-                                                Database.asyncTransaction {
-                                                    if (like(
-                                                            song.asMediaItem.mediaId,
-                                                            setLikeState(song.asSong.likedAt)
-                                                        ) == 0
-                                                    ) {
-                                                        insert(song.asMediaItem, Song::toggleLike)
+                                            Database.asyncTransaction {
+                                                val totalSongsToLike = playlistPage!!.songs.filter {
+                                                    getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null)
+                                                }
+                                                playlistPage!!.songs.forEachIndexed { _, song ->
+                                                    Database.asyncTransaction {
+                                                        if (like(song.asMediaItem.mediaId,setLikeState(song.asSong.likedAt)) == 0) {
+                                                            insert(song.asMediaItem,Song::toggleLike)
+                                                        }
                                                     }
                                                 }
+                                                SmartMessage(
+                                                    context.resources.getString(R.string.done),
+                                                    context = context
+                                                )
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    addToYtLikedSongs(totalSongsToLike.map { it.asMediaItem.mediaId })
+                                                }
                                             }
-                                            SmartMessage(
-                                                context.resources.getString(R.string.done),
-                                                context = context
-                                            )
                                         },
                                         onLongClick = {
                                             SmartMessage(

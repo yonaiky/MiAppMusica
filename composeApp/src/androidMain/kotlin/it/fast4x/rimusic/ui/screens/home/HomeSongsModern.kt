@@ -196,6 +196,7 @@ import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtLikedSongs
 import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.formatAsDuration
@@ -1393,6 +1394,9 @@ fun HomeSongsModern(
                                                         )
                                                     }
                                                 }
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    addToYtLikedSongs(listMediaItems.map { it.mediaId })
+                                                }
                                             } else {
                                                 items.map {
                                                     Database.asyncTransaction {
@@ -1401,6 +1405,9 @@ fun HomeSongsModern(
                                                             System.currentTimeMillis()
                                                         )
                                                     }
+                                                }
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    addToYtLikedSongs(items.map { it.asMediaItem.mediaId })
                                                 }
                                             }
                                         },

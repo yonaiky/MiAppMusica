@@ -153,6 +153,7 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtLikedSongs
 import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asAlbum
 import it.fast4x.rimusic.utils.isNetworkConnected
@@ -972,7 +973,7 @@ fun AlbumDetails(
 .textDisabled,
                             onClick = {
                                 menuState.display {
-                                    album?.let {
+                                    album?.let { it ->
                                         AlbumsItemMenu(
                                             navController = navController,
                                             onDismiss = menuState::hide,
@@ -1092,13 +1093,16 @@ fun AlbumDetails(
                                                 }
                                             },
                                             onAddToFavourites = {
+                                                val totalSongsToLike = songs.filter { it.likedAt in listOf(-1L, null) }
                                                 songs.forEach { song ->
-
                                                       val likedAt: Long? = song.likedAt
                                                         if(likedAt == null) {
                                                             mediaItemToggleLike(song.asMediaItem)
                                                         }
-                                                  }
+                                                }
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    addToYtLikedSongs(totalSongsToLike.map { it.asMediaItem.mediaId })
+                                                }
                                             },
                                             onGoToPlaylist = {
                                                 navController.navigate("${NavRoutes.localPlaylist.name}/$it")
