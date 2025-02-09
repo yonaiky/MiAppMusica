@@ -876,9 +876,9 @@
     <string name="disliked_this_song">Tätä toimintoa ei voi suorittaa inhokkikappaleilla</string>
     <string name="removed_from_disliked">Poistettu inhokeista</string>
     <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
-    <string name="toggle_controls_landscape">Toggle On-screen Controls</string>
-    <string name="delete_songs_not_in_library">Delete Songs not in the Library</string>
-    <string name="delete_in_process">Deleting the Songs which are not in your Library. The App will Close After the Process is Over</string>
+    <string name="toggle_controls_landscape">Ota käyttöön/poista käytöstä näytön säätimet</string>
+    <string name="delete_songs_not_in_library">Poista kappaleet, jotka eivät ole kirjastossa</string>
+    <string name="delete_in_process">Poistetaan kappaleita, jotka eivät ole kirjastossasi. Sovellus sulkeutuu, kun poisto on valmis.</string>
     <string name="nothing_to_delete">Ei poistettavaa</string>
     <string name="get_album_version">Match the Album/Audio Version of the Songs</string>
     <string name="no_videos_found">No Songs Found to Match</string>
@@ -908,10 +908,10 @@
     <string name="yt_playlist_limited">YouTube-soittolistat on rajoitettu 5000 kappaleeseen</string>
     <string name="songs_added_in_yt">songs are added in the YouTube Playlist. Repeat the process if there are any Missing Songs</string>
     <string name="songs_adding_in_yt">songs will be added in the YTM playlist</string>
-    <string name="settings_audio_bass_boost">Audio bass boost</string>
-    <string name="settings_bass_boost_level">Bass boost level</string>
-    <string name="settings_audio_reverb">Audio reverb</string>
-    <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Apply a depth effect to the audio</string>
+    <string name="settings_audio_bass_boost">Basson korostus</string>
+    <string name="settings_bass_boost_level">Basson korostustaso</string>
+    <string name="settings_audio_reverb">Kaiku</string>
+    <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Käytä syvyystehostetta</string>
     <string name="settings_audio_focus">Audio focus</string>
     <string name="settings_audio_focus_info">Mahdollistaa automaattisen tauon esimerkiksi puhelun ajaksi</string>
 </resources>
