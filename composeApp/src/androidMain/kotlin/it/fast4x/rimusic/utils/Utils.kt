@@ -783,6 +783,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
     val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
+    val artistNameString = matchedSong?.asMediaItem?.mediaMetadata?.artist?.toString() ?: ""
     val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
@@ -843,6 +844,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                         }
                     }
                 }
+                Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
                 if (song.thumbnailUrl == "") Database.delete(song)
             }
         } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
@@ -882,6 +884,7 @@ suspend fun updateLocalPlaylist(song: Song){
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
     val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
+    val artistNameString = matchedSong?.asMediaItem?.mediaMetadata?.artist?.toString() ?: ""
     val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
@@ -912,6 +915,7 @@ suspend fun updateLocalPlaylist(song: Song){
                         }
                     }
                 }
+                Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
             }
         }
     }
