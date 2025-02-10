@@ -168,7 +168,7 @@ fun MiniPlayer(
 
     LaunchedEffect(updateLike) {
         if (updateLike) {
-            mediaItemToggleLike(mediaItem)
+            mediaItemToggleLike(mediaItem, ytlike = true)
             updateLike = false
             if (likedAt == null)
                 SmartMessage(context.resources.getString(R.string.added_to_favorites), context = context)

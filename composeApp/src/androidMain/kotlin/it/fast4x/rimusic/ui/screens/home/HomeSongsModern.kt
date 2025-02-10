@@ -48,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -86,6 +87,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.BuiltInPlaylist
@@ -811,6 +813,7 @@ fun HomeSongsModern(
     var totalMinutesToLike by remember { mutableStateOf("") }
 
     val queueLimit by remember { mutableStateOf(QueueSelection.END_OF_QUEUE_WINDOWED) }
+    var songIdsToLike = remember { mutableStateListOf<String>() }
 
     Box(
         modifier = Modifier
@@ -1141,7 +1144,7 @@ fun HomeSongsModern(
                                 else (items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }).size)*1000.toLong())
                                 }
                             ConfirmationDialog(
-                                text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
+                                text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all_rimusictoytmusic),
                                 onDismiss = { showRiMusicLikeYoutubeLikeConfirmDialog = false },
                                 onConfirm = {
                                     showRiMusicLikeYoutubeLikeConfirmDialog = false
@@ -1160,24 +1163,30 @@ fun HomeSongsModern(
                         }
 
                         if (showYoutubeLikeConfirmDialog) {
-                            Database.asyncTransaction {
-                                totalMinutesToLike = formatAsDuration((if (listMediaItems.isNotEmpty()) (listMediaItems).size
-                                else (items.size))*1000.toLong())
+                            songIdsToLike.clear()
+                            if (listMediaItems.isEmpty()) {
+                                items.forEachIndexed { index, song ->
+                                    if (song.song.likedAt in listOf(-1L,null)) {
+                                        songIdsToLike.add(song.asMediaItem.mediaId)
+                                    }
+                                }
+                            } else {
+                                Database.asyncTransaction {
+                                    listMediaItems.forEachIndexed { index, song ->
+                                        if (Database.getLikedAt(song.mediaId) in listOf(-1L,null)) {
+                                            songIdsToLike.add(song.mediaId)
+                                        }
+                                    }
+                                }
                             }
+                            totalMinutesToLike = formatAsDuration(((songIdsToLike).size*1000).toLong())
                             ConfirmationDialog(
                                 text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
                                 onDismiss = { showYoutubeLikeConfirmDialog = false },
                                 onConfirm = {
                                     showYoutubeLikeConfirmDialog = false
-
-                                    if (listMediaItems.isNotEmpty()) {
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            addToYtLikedSongs(listMediaItems.map { it.mediaId })
-                                        }
-                                    } else {
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            addToYtLikedSongs(items.map { it.asMediaItem.mediaId })
-                                        }
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        addToYtLikedSongs(songIdsToLike)
                                     }
                                 }
                             )
@@ -1443,31 +1452,40 @@ fun HomeSongsModern(
                                             }
                                         },
                                         onAddToPreferites = {
-                                            if (listMediaItems.isNotEmpty()) {
-                                                listMediaItems.map {
+                                            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                            } else if (!isYouTubeSyncEnabled()){
+                                                if (listMediaItems.isNotEmpty()) {
                                                     Database.asyncTransaction {
-                                                        Database.like(
-                                                            it.mediaId,
-                                                            System.currentTimeMillis()
-                                                        )
+                                                        listMediaItems.filter{getLikedAt(it.mediaId) in listOf(-1L,null)}.map {
+                                                            Database.like(
+                                                                it.mediaId,
+                                                                System.currentTimeMillis()
+                                                            )
+                                                        }
+                                                    }
+                                                } else {
+                                                    Database.asyncTransaction {
+                                                        items.filter {
+                                                            getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null)
+                                                        }.map {
+                                                            Database.like(
+                                                                it.asMediaItem.mediaId,
+                                                                System.currentTimeMillis()
+                                                            )
+                                                        }
                                                     }
                                                 }
                                             } else {
-                                                items.map {
-                                                    Database.asyncTransaction {
-                                                        Database.like(
-                                                            it.asMediaItem.mediaId,
-                                                            System.currentTimeMillis()
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                            if (isYouTubeSyncEnabled()){
                                                 showYoutubeLikeConfirmDialog = true
                                             }
                                         },
                                         onAddToPreferitesYoutube = {
-                                            showRiMusicLikeYoutubeLikeConfirmDialog = true
+                                            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                            } else {
+                                                showRiMusicLikeYoutubeLikeConfirmDialog = true
+                                            }
                                         },
                                         onAddToPlaylist = { playlistPreview ->
                                             if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =

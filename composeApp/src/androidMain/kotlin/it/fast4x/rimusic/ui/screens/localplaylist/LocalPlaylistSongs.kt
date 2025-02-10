@@ -178,6 +178,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
@@ -889,9 +890,23 @@ fun LocalPlaylistSongs(
     }
 
     if (showYoutubeLikeConfirmDialog) {
-        Database.asyncTransaction {
-            totalMinutesToLike = formatAsDuration(((songIdsToLike).size*1000).toLong())
+        songIdsToLike.clear()
+        if (listMediaItems.isEmpty()) {
+            playlistSongs.forEachIndexed { index, song ->
+                if (song.song.likedAt in listOf(-1L,null)) {
+                    songIdsToLike.add(song.asMediaItem.mediaId)
+                }
+            }
+        } else {
+            Database.asyncTransaction {
+                listMediaItems.forEachIndexed { index, song ->
+                    if (Database.getLikedAt(song.mediaId) in listOf(-1L,null)) {
+                        songIdsToLike.add(song.mediaId)
+                    }
+                }
+            }
         }
+        totalMinutesToLike = formatAsDuration(((songIdsToLike).size*1000).toLong())
         ConfirmationDialog(
             text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
             onDismiss = { showYoutubeLikeConfirmDialog = false },
@@ -1717,25 +1732,27 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         onAddToPreferites = {
-                                            songIdsToLike.clear()
-                                            if (listMediaItems.isEmpty()) {
-                                                playlistSongs.forEachIndexed { index, song ->
-                                                    if (song.song.likedAt in listOf(-1L, null)) {
-                                                        mediaItemToggleLike(song.asMediaItem)
-                                                        songIdsToLike.add(song.asMediaItem.mediaId)
+                                            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                            } else if (!isYouTubeSyncEnabled()){
+                                                if (listMediaItems.isEmpty()) {
+                                                    playlistSongs.forEachIndexed { index, song ->
+                                                        if (song.song.likedAt in listOf(-1L,null)
+                                                        ) {
+                                                            mediaItemToggleLike(song.asMediaItem)
+                                                        }
                                                     }
-                                                }
-                                            } else {
-                                                Database.asyncTransaction {
-                                                    listMediaItems.forEachIndexed { index, song ->
-                                                        if (Database.getLikedAt(song.mediaId) !in listOf(-1L,null)) {
-                                                            mediaItemToggleLike(song)
-                                                            songIdsToLike.add(song.mediaId)
+                                                } else {
+                                                    Database.asyncTransaction {
+                                                        listMediaItems.forEachIndexed { index, song ->
+                                                            if (Database.getLikedAt(song.mediaId) !in listOf(-1L,null)
+                                                            ) {
+                                                                mediaItemToggleLike(song)
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
-                                            if (isYouTubeSyncEnabled()){
+                                            } else {
                                                 showYoutubeLikeConfirmDialog = true
                                             }
                                         },

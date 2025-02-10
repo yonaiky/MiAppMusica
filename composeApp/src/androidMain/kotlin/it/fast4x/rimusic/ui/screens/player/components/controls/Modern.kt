@@ -59,6 +59,7 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.UiMedia
@@ -68,6 +69,7 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.CustomElevatedButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.player.bounceClick
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -79,6 +81,7 @@ import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getUnlikedIcon
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.jumpPreviousKey
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
@@ -238,26 +241,30 @@ fun InfoAlbumAndArtistModern(
                         color = colorPalette().favoritesIcon,
                         icon = getLikeState(mediaId),
                         onClick = {
-                            val currentMediaItem = binder.player.currentMediaItem
-                            Database.asyncTransaction {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    if (like(mediaId, setLikeState(likedAt)) == 0) {
-                                        currentMediaItem
-                                            ?.takeIf { it.mediaId == mediaId }
-                                            ?.let {
-                                                insert(currentMediaItem, Song::toggleLike)
+                            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                            } else {
+                                val currentMediaItem = binder.player.currentMediaItem
+                                Database.asyncTransaction {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        if (like(mediaId, setLikeState(likedAt)) == 0) {
+                                            currentMediaItem
+                                                ?.takeIf { it.mediaId == mediaId }
+                                                ?.let {
+                                                    insert(currentMediaItem, Song::toggleLike)
+                                                }
+                                            if (currentMediaItem != null) {
+                                                MyDownloadHelper.autoDownloadWhenLiked(
+                                                    context(),
+                                                    currentMediaItem
+                                                )
                                             }
-                                        if (currentMediaItem != null) {
-                                            MyDownloadHelper.autoDownloadWhenLiked(
-                                                context(),
-                                                currentMediaItem
-                                            )
                                         }
+                                        addToYtLikedSong(mediaId)
                                     }
-                                    addToYtLikedSong(mediaId)
                                 }
+                                if (effectRotationEnabled) isRotated = !isRotated
                             }
-                            if (effectRotationEnabled) isRotated = !isRotated
                         },
                         modifier = Modifier
                             .padding(start = 5.dp)

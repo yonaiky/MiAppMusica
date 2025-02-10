@@ -60,6 +60,7 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
@@ -93,8 +94,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.isNetworkConnected
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -441,8 +444,12 @@ fun MediaItemGridMenu (
                     icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
                     color = colorPalette().favoritesIcon,
                     onClick = {
-                        mediaItemToggleLike(mediaItem)
-                        updateData = !updateData
+                        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                            SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                        } else {
+                            mediaItemToggleLike(mediaItem, ytlike = true)
+                            updateData = !updateData
+                        }
                     },
                     modifier = Modifier
                         .padding(all = 4.dp)

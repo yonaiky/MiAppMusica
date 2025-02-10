@@ -39,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -147,13 +148,16 @@ import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.addToYtLikedSongs
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.color
+import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.languageDestination
+import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.setLikeState
 import kotlinx.coroutines.flow.filterNotNull
 import me.bush.translator.Language
@@ -255,6 +259,7 @@ fun PlaylistSongList(
             }!!
     } else playlistPage?.songs = playlistSongs
 
+    var playlistNotLikedSongs by persistList<Innertube.SongItem>("")
 
     var searching by rememberSaveable { mutableStateOf(false) }
 
@@ -273,6 +278,28 @@ fun PlaylistSongList(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
     )
+
+    var showYoutubeLikeConfirmDialog by remember {
+        mutableStateOf(false)
+    }
+    var totalMinutesToLike by remember { mutableStateOf("") }
+
+    if (showYoutubeLikeConfirmDialog) {
+        Database.asyncTransaction {
+            playlistNotLikedSongs = playlistSongs.filter { getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null)}
+        }
+        totalMinutesToLike = formatAsDuration(playlistNotLikedSongs.size.toLong()*1000)
+        ConfirmationDialog(
+            text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
+            onDismiss = { showYoutubeLikeConfirmDialog = false },
+            onConfirm = {
+                showYoutubeLikeConfirmDialog = false
+                CoroutineScope(Dispatchers.IO).launch {
+                    addToYtLikedSongs(playlistNotLikedSongs.map {it.asMediaItem.mediaId})
+                }
+            }
+        )
+    }
 
     var totalPlayTimes = 0L
     playlistPage?.songs?.forEach {
@@ -759,24 +786,25 @@ fun PlaylistSongList(
                                     .padding(horizontal = 5.dp)
                                     .combinedClickable(
                                         onClick = {
-                                            Database.asyncTransaction {
-                                                val totalSongsToLike = playlistPage!!.songs.filter {
-                                                    getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null)
-                                                }
-                                                playlistPage!!.songs.forEachIndexed { _, song ->
-                                                    Database.asyncTransaction {
-                                                        if (like(song.asMediaItem.mediaId,setLikeState(song.asSong.likedAt)) == 0) {
-                                                            insert(song.asMediaItem,Song::toggleLike)
+                                            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                            } else if (!isYouTubeSyncEnabled()){
+                                                Database.asyncTransaction {
+                                                    playlistPage!!.songs.filter { getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null) }.forEachIndexed { _, song ->
+                                                        Database.asyncTransaction {
+                                                            if (like(song.asMediaItem.mediaId, setLikeState(song.asSong.likedAt)) == 0
+                                                            ) {
+                                                                insert(song.asMediaItem, Song::toggleLike)
+                                                            }
                                                         }
                                                     }
+                                                    SmartMessage(
+                                                        context.resources.getString(R.string.done),
+                                                        context = context
+                                                    )
                                                 }
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.done),
-                                                    context = context
-                                                )
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    addToYtLikedSongs(totalSongsToLike.map { it.asMediaItem.mediaId })
-                                                }
+                                            } else {
+                                                showYoutubeLikeConfirmDialog = true
                                             }
                                         },
                                         onLongClick = {

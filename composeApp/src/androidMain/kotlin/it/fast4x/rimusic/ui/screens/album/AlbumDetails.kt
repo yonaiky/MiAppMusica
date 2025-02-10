@@ -82,6 +82,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
@@ -1093,15 +1094,23 @@ fun AlbumDetails(
                                                 }
                                             },
                                             onAddToFavourites = {
-                                                val totalSongsToLike = songs.filter { it.likedAt in listOf(-1L, null) }
-                                                songs.forEach { song ->
-                                                      val likedAt: Long? = song.likedAt
-                                                        if(likedAt == null) {
+                                                if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                                    SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                                } else if (!isYouTubeSyncEnabled()){
+                                                    songs.forEach { song ->
+                                                        val likedAt: Long? = song.likedAt
+                                                        if (likedAt == null) {
                                                             mediaItemToggleLike(song.asMediaItem)
                                                         }
-                                                }
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    addToYtLikedSongs(totalSongsToLike.map { it.asMediaItem.mediaId })
+                                                    }
+
+                                                } else {
+                                                    val totalSongsToLike = songs.filter {
+                                                        it.likedAt in listOf(-1L,null)
+                                                    }
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                        addToYtLikedSongs(totalSongsToLike.map { it.asMediaItem.mediaId })
+                                                    }
                                                 }
                                             },
                                             onGoToPlaylist = {

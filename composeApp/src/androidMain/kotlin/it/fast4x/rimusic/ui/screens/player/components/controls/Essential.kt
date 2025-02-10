@@ -64,6 +64,7 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Song
@@ -261,26 +262,30 @@ fun InfoAlbumAndArtistEssential(
                         color = colorPalette().favoritesIcon,
                         icon = getLikeState(mediaId),
                         onClick = {
-                            val currentMediaItem = binder.player.currentMediaItem
-                            Database.asyncTransaction {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    if (like(mediaId, setLikeState(likedAt)) == 0) {
-                                        currentMediaItem
-                                            ?.takeIf { it.mediaId == mediaId }
-                                            ?.let {
-                                                insert(currentMediaItem, Song::toggleLike)
+                            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                            } else {
+                                val currentMediaItem = binder.player.currentMediaItem
+                                Database.asyncTransaction {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        if (like(mediaId, setLikeState(likedAt)) == 0) {
+                                            currentMediaItem
+                                                ?.takeIf { it.mediaId == mediaId }
+                                                ?.let {
+                                                    insert(currentMediaItem, Song::toggleLike)
+                                                }
+                                            if (currentMediaItem != null) {
+                                                MyDownloadHelper.autoDownloadWhenLiked(
+                                                    context(),
+                                                    currentMediaItem
+                                                )
                                             }
-                                        if (currentMediaItem != null) {
-                                            MyDownloadHelper.autoDownloadWhenLiked(
-                                                context(),
-                                                currentMediaItem
-                                            )
                                         }
+                                        addToYtLikedSong(mediaId)
                                     }
-                                    addToYtLikedSong(mediaId)
                                 }
+                                if (effectRotationEnabled) isRotated = !isRotated
                             }
-                            if (effectRotationEnabled) isRotated = !isRotated
                         },
                         modifier = Modifier
                             .padding(start = 5.dp)
@@ -433,26 +438,30 @@ fun ControlsEssential(
             color = colorPalette().favoritesIcon,
             icon = getLikeState(mediaId),
             onClick = {
-                val currentMediaItem = binder.player.currentMediaItem
-                Database.asyncTransaction {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (like(mediaId, setLikeState(likedAt)) == 0) {
-                            currentMediaItem
-                                ?.takeIf { it.mediaId == mediaId }
-                                ?.let {
-                                    insert(currentMediaItem, Song::toggleLike)
+                if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                    SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                } else {
+                    val currentMediaItem = binder.player.currentMediaItem
+                    Database.asyncTransaction {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            if (like(mediaId, setLikeState(likedAt)) == 0) {
+                                currentMediaItem
+                                    ?.takeIf { it.mediaId == mediaId }
+                                    ?.let {
+                                        insert(currentMediaItem, Song::toggleLike)
+                                    }
+                                if (currentMediaItem != null) {
+                                    MyDownloadHelper.autoDownloadWhenLiked(
+                                        context(),
+                                        currentMediaItem
+                                    )
                                 }
-                            if (currentMediaItem != null) {
-                                MyDownloadHelper.autoDownloadWhenLiked(
-                                    context(),
-                                    currentMediaItem
-                                )
                             }
+                            addToYtLikedSong(mediaId)
                         }
-                        addToYtLikedSong(mediaId)
                     }
+                    if (effectRotationEnabled) isRotated = !isRotated
                 }
-                if (effectRotationEnabled) isRotated = !isRotated
             },
             modifier = Modifier
                 //.padding(10.dp)

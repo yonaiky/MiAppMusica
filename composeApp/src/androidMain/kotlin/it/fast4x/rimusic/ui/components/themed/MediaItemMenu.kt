@@ -72,6 +72,7 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
@@ -123,6 +124,7 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import timber.log.Timber
@@ -1225,12 +1227,19 @@ fun MediaItemMenu(
                             color = colorPalette().favoritesIcon,
                             //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
                             onClick = {
-                                Database.asyncTransaction {
-                                    if ( like( mediaItem.mediaId, setLikeState(likedAt) ) == 0 ) {
-                                        insert(mediaItem, Song::toggleLike)
+                                if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                    SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                } else {
+                                    Database.asyncTransaction {
+                                        if (like(mediaItem.mediaId, setLikeState(likedAt)) == 0) {
+                                            insert(mediaItem, Song::toggleLike)
+                                        }
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            addToYtLikedSong(mediaItem.mediaId)
+                                        }
                                     }
+                                    MyDownloadHelper.autoDownloadWhenLiked(context(), mediaItem)
                                 }
-                                MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                             },
                             modifier = Modifier
                                 .padding(all = 4.dp)

@@ -54,6 +54,7 @@ import it.fast4x.rimusic.utils.queueSwipeLeftActionKey
 import it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.addToYtLikedSong
@@ -181,27 +182,26 @@ fun SwipeableQueueItem(
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
     }
     val onFavourite: () -> Unit = {
-        mediaItemToggleLike(mediaItem, swipe = true)
-        val message: String
-        val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
-        val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
-        if(likedAt == -1L) {
-            message = "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_disliked)}"
-        } else if( likedAt != null ) {
-            message = "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_favorites)}"
-        } else
-            message = context.resources.getString(R.string.added_to_favorites)
+        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+            SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+        } else {
+            mediaItemToggleLike(mediaItem, ytlike = true)
+            val message: String
+            val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
+            val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
+            if (likedAt == -1L) {
+                message =
+                    "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_disliked)}"
+            } else if (likedAt != null) {
+                message =
+                    "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_favorites)}"
+            } else
+                message = context.resources.getString(R.string.added_to_favorites)
 
-        SmartMessage(
-            message,
-            durationLong = likedAt != null,
-            context = context
-        )
-        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()){
             SmartMessage(
-                appContext().resources.getString(R.string.failed_to_like_unlike),
-                context = appContext(),
-                durationLong = true
+                message,
+                durationLong = likedAt != null,
+                context = context
             )
         }
     }
@@ -264,22 +264,28 @@ fun SwipeablePlaylistItem(
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
     }
     val onFavourite: () -> Unit = {
-        mediaItemToggleLike(mediaItem, swipe = true)
-        val message: String
-        val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
-        val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
-        if(likedAt == -1L) {
-            message = "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_disliked)}"
-        } else if ( likedAt != null ) {
-            message = "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_favorites)}"
-        } else
-            message = context.resources.getString(R.string.added_to_favorites)
+        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+            SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+        } else {
+            mediaItemToggleLike(mediaItem, ytlike = true)
+            val message: String
+            val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
+            val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
+            if (likedAt == -1L) {
+                message =
+                    "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_disliked)}"
+            } else if (likedAt != null) {
+                message =
+                    "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_favorites)}"
+            } else
+                message = context.resources.getString(R.string.added_to_favorites)
 
-        SmartMessage(
-            message,
-            durationLong = likedAt != null,
-            context = context
-        )
+            SmartMessage(
+                message,
+                durationLong = likedAt != null,
+                context = context
+            )
+        }
     }
 
     val playlistSwipeLeftAction by rememberPreference(playlistSwipeLeftActionKey, PlaylistSwipeAction.Favourite)
