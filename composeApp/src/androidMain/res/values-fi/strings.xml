@@ -861,7 +861,7 @@
     <string name="random">Satunnainen</string>
     <string name="colorpalette">Väripaletti</string>
     <string name="customcolor">Mukautettu väri</string>
-    <string name="lyricsanimate">Animate Lyrics Size</string>
+    <string name="lyricsanimate">Animoitujen sanoitusten koko</string>
     <string name="yt_playlists">YouTube / YouTube Music</string>
     <string name="lyricsSizeSecondary">Paina pitkään vaihtaaksesi kokoa</string>
     <string name="home">Koti</string>
@@ -880,8 +880,8 @@
     <string name="delete_songs_not_in_library">Poista kappaleet, jotka eivät ole kirjastossa</string>
     <string name="delete_in_process">Poistetaan kappaleita, jotka eivät ole kirjastossasi. Sovellus sulkeutuu, kun poisto on valmis.</string>
     <string name="nothing_to_delete">Ei poistettavaa</string>
-    <string name="get_album_version">Match the Album/Audio Version of the Songs</string>
-    <string name="no_videos_found">No Songs Found to Match</string>
+    <string name="get_album_version">Yhdistä kappaleiden albumi-/ääniversio</string>
+    <string name="no_videos_found">Vastaavia kappaleita ei löytynyt</string>
     <string name="matching_songs">Matching Songs. Please Wait. Do not Minimize or Exit the App</string>
     <string name="unmatched">Unmatched Songs</string>
     <string name="match_song">Rematch this Song</string>
