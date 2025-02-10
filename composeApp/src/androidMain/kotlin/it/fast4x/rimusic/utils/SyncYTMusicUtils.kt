@@ -60,7 +60,7 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
 
 
             SmartMessage(
-                message = "${ytmPrivatePlaylists.size }"+appContext().resources.getString(R.string.syncing),
+                message = "${ytmPrivatePlaylists.size} "+appContext().resources.getString(R.string.to_be_synced),
                 durationLong = false,
                 context = appContext(),
             )
