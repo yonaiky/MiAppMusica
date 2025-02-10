@@ -294,7 +294,7 @@ fun PlaylistSongList(
             onConfirm = {
                 showYoutubeLikeConfirmDialog = false
                 CoroutineScope(Dispatchers.IO).launch {
-                    addToYtLikedSongs(playlistNotLikedSongs.map {it.asMediaItem.mediaId})
+                    addToYtLikedSongs(playlistNotLikedSongs.map {it.asMediaItem})
                 }
             }
         )

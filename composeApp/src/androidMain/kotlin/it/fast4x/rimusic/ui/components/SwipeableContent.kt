@@ -207,7 +207,7 @@ fun SwipeableQueueItem(
             )
         } else {
             CoroutineScope(Dispatchers.IO).launch {
-                addToYtLikedSong(mediaItem.mediaId)
+                addToYtLikedSong(mediaItem)
             }
         }
     }
@@ -293,7 +293,7 @@ fun SwipeablePlaylistItem(
             )
         } else {
             CoroutineScope(Dispatchers.IO).launch {
-                addToYtLikedSong(mediaItem.mediaId)
+                addToYtLikedSong(mediaItem)
             }
         }
     }

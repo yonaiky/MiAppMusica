@@ -586,7 +586,7 @@ fun LocalPlaylistSongs(
 
     var totalMinutesToLike by remember { mutableStateOf("") }
 
-    var songIdsToLike = remember { mutableStateListOf<String>() }
+    var songItemsToLike = remember { mutableStateListOf<MediaItem>() }
 
     var scrollToNowPlaying by remember {
         mutableStateOf(false)
@@ -890,30 +890,30 @@ fun LocalPlaylistSongs(
     }
 
     if (showYoutubeLikeConfirmDialog) {
-        songIdsToLike.clear()
+        songItemsToLike.clear()
         if (listMediaItems.isEmpty()) {
             playlistSongs.forEachIndexed { index, song ->
                 if (song.song.likedAt in listOf(-1L,null)) {
-                    songIdsToLike.add(song.asMediaItem.mediaId)
+                    songItemsToLike.add(song.asMediaItem)
                 }
             }
         } else {
             Database.asyncTransaction {
                 listMediaItems.forEachIndexed { index, song ->
                     if (Database.getLikedAt(song.mediaId) in listOf(-1L,null)) {
-                        songIdsToLike.add(song.mediaId)
+                        songItemsToLike.add(song)
                     }
                 }
             }
         }
-        totalMinutesToLike = formatAsDuration(((songIdsToLike).size*1000).toLong())
+        totalMinutesToLike = formatAsDuration(((songItemsToLike).size*1000).toLong())
         ConfirmationDialog(
             text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
             onDismiss = { showYoutubeLikeConfirmDialog = false },
             onConfirm = {
                 showYoutubeLikeConfirmDialog = false
                 CoroutineScope(Dispatchers.IO).launch {
-                    addToYtLikedSongs(songIdsToLike)
+                    addToYtLikedSongs(songItemsToLike)
                 }
             }
         )

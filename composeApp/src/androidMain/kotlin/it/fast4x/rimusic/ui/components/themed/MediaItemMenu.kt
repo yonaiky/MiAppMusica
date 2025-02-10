@@ -243,7 +243,7 @@ fun InPlaylistMediaItemMenu(
             }
             else {
                 CoroutineScope(Dispatchers.IO).launch {
-                    addToYtLikedSong(song.asMediaItem.mediaId)
+                    addToYtLikedSong(song.asMediaItem)
                 }
             }
         },
@@ -516,7 +516,7 @@ fun QueuedMediaItemMenu(
                 }
                 else {
                     CoroutineScope(Dispatchers.IO).launch {
-                        addToYtLikedSong(mediaItem.mediaId)
+                        addToYtLikedSong(mediaItem)
                     }
                 }
             },
@@ -560,7 +560,7 @@ fun QueuedMediaItemMenu(
                 }
                 else {
                     CoroutineScope(Dispatchers.IO).launch {
-                        addToYtLikedSong(mediaItem.mediaId)
+                        addToYtLikedSong(mediaItem)
                     }
                 }
             },
@@ -1271,7 +1271,7 @@ fun MediaItemMenu(
                                     }
                                 } else {
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        addToYtLikedSong(mediaItem.mediaId)
+                                        addToYtLikedSong(mediaItem)
                                     }
                                 }
                             },

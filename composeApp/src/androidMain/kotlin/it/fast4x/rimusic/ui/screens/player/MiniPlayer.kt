@@ -188,7 +188,7 @@ fun MiniPlayer(
                     SmartMessage(context.resources.getString(R.string.removed_from_favorites), context = context)
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
-                    addToYtLikedSong(mediaItem.mediaId)
+                    addToYtLikedSong(mediaItem)
                 }
             }
             updateLike = false

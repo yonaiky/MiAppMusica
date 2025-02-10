@@ -454,7 +454,7 @@ fun MediaItemGridMenu (
                             updateData = !updateData
                         } else {
                             CoroutineScope(Dispatchers.IO).launch {
-                                addToYtLikedSong(mediaItem.mediaId)
+                                addToYtLikedSong(mediaItem)
                             }
                         }
                     },

@@ -813,7 +813,7 @@ fun HomeSongsModern(
     var totalMinutesToLike by remember { mutableStateOf("") }
 
     val queueLimit by remember { mutableStateOf(QueueSelection.END_OF_QUEUE_WINDOWED) }
-    var songIdsToLike = remember { mutableStateListOf<String>() }
+    var songItemsToLike = remember { mutableStateListOf<MediaItem>() }
 
     Box(
         modifier = Modifier
@@ -1151,11 +1151,11 @@ fun HomeSongsModern(
 
                                     if (listMediaItems.isNotEmpty()) {
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            addToYtLikedSongs(listMediaItems.filter { Database.getLikedAt(it.mediaId) !in listOf(-1L,null) }.map { it.mediaId })
+                                            addToYtLikedSongs(listMediaItems.filter { Database.getLikedAt(it.mediaId) !in listOf(-1L,null) }.map { it })
                                         }
                                     } else {
                                         CoroutineScope(Dispatchers.IO).launch {
-                                            addToYtLikedSongs(items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }.map { it.asMediaItem.mediaId })
+                                            addToYtLikedSongs(items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }.map { it.asMediaItem })
                                         }
                                     }
                                 }
@@ -1163,30 +1163,30 @@ fun HomeSongsModern(
                         }
 
                         if (showYoutubeLikeConfirmDialog) {
-                            songIdsToLike.clear()
+                            songItemsToLike.clear()
                             if (listMediaItems.isEmpty()) {
                                 items.forEachIndexed { index, song ->
                                     if (song.song.likedAt in listOf(-1L,null)) {
-                                        songIdsToLike.add(song.asMediaItem.mediaId)
+                                        songItemsToLike.add(song.asMediaItem)
                                     }
                                 }
                             } else {
                                 Database.asyncTransaction {
                                     listMediaItems.forEachIndexed { index, song ->
                                         if (Database.getLikedAt(song.mediaId) in listOf(-1L,null)) {
-                                            songIdsToLike.add(song.mediaId)
+                                            songItemsToLike.add(song)
                                         }
                                     }
                                 }
                             }
-                            totalMinutesToLike = formatAsDuration(((songIdsToLike).size*1000).toLong())
+                            totalMinutesToLike = formatAsDuration(((songItemsToLike).size*1000).toLong())
                             ConfirmationDialog(
                                 text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
                                 onDismiss = { showYoutubeLikeConfirmDialog = false },
                                 onConfirm = {
                                     showYoutubeLikeConfirmDialog = false
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        addToYtLikedSongs(songIdsToLike)
+                                        addToYtLikedSongs(songItemsToLike)
                                     }
                                 }
                             )

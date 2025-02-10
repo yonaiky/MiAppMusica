@@ -258,7 +258,9 @@ fun InfoAlbumAndArtistModern(
                                 }
                             } else {
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    addToYtLikedSong(mediaId)
+                                    if (currentMediaItem != null) {
+                                        addToYtLikedSong(currentMediaItem)
+                                    }
                                 }
                             }
                             if (currentMediaItem != null) {

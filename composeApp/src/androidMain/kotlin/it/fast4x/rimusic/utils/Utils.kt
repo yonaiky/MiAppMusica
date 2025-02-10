@@ -1032,16 +1032,19 @@ suspend fun addToYtPlaylist(playlistId: String, videoIds: List<String>){
 }
 
 @OptIn(UnstableApi::class)
-suspend fun addToYtLikedSong(videoId: String){
+suspend fun addToYtLikedSong(mediaItem: MediaItem){
     if (isYouTubeSyncEnabled()) {
-        if (getLikedAt(videoId) in listOf(-1L, null)) {
-            likeVideoOrSong(videoId)
+        if (getLikedAt(mediaItem.mediaId) in listOf(-1L, null)) {
+            likeVideoOrSong(mediaItem.mediaId)
                 .onSuccess {
                     Database.asyncTransaction {
-                        like(videoId, System.currentTimeMillis())
+                        if (songExist(mediaItem.mediaId) == 0) {
+                            Database.insert(mediaItem)
+                        }
+                        like(mediaItem.mediaId, System.currentTimeMillis())
                         MyDownloadHelper.autoDownloadWhenLiked(
                             context(),
-                            songById(videoId).asMediaItem
+                            mediaItem
                         )
                     }
                     SmartMessage(
@@ -1058,13 +1061,13 @@ suspend fun addToYtLikedSong(videoId: String){
                     )
                 }
         } else {
-            removelikeVideoOrSong(videoId)
+            removelikeVideoOrSong(mediaItem.mediaId)
                 .onSuccess {
                     Database.asyncTransaction {
-                        like(videoId, null)
+                        like(mediaItem.mediaId, null)
                         MyDownloadHelper.autoDownloadWhenLiked(
                             context(),
-                            songById(videoId).asMediaItem
+                            mediaItem
                         )
                     }
                     SmartMessage(
@@ -1085,26 +1088,29 @@ suspend fun addToYtLikedSong(videoId: String){
 }
 
 @OptIn(UnstableApi::class)
-suspend fun addToYtLikedSongs(videoIds: List<String>){
+suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
     if (isYouTubeSyncEnabled()) {
-        videoIds.forEachIndexed { index, id ->
+        mediaItems.forEachIndexed { index, item ->
             delay(1000)
-            likeVideoOrSong(id).onSuccess {
+            likeVideoOrSong(item.mediaId).onSuccess {
                 Database.asyncTransaction {
-                    like(id, System.currentTimeMillis())
+                    if (songExist(item.mediaId) == 0) {
+                        Database.insert(item)
+                    }
+                    like(item.mediaId, System.currentTimeMillis())
                     MyDownloadHelper.autoDownloadWhenLiked(
                         context(),
-                        songById(id).asMediaItem
+                        songById(item.mediaId).asMediaItem
                     )
                 }
                 SmartMessage(
-                    "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt),
+                    "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt),
                     context = appContext(),
                     durationLong = false
                 )
             }.onFailure {
                 SmartMessage(
-                    "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt_failed),
+                    "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt_failed),
                     context = appContext(),
                     durationLong = false
                 )
