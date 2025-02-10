@@ -457,10 +457,6 @@ fun MediaItemGridMenu (
                                 addToYtLikedSong(mediaItem.mediaId)
                             }
                         }
-                        MyDownloadHelper.autoDownloadWhenLiked(
-                            context(),
-                            mediaItem
-                        )
                     },
                     modifier = Modifier
                         .padding(all = 4.dp)

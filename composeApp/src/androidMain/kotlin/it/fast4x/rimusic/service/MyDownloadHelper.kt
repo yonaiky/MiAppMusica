@@ -303,6 +303,8 @@ object MyDownloadHelper {
             Database.asyncQuery {
                 if (getLikedAt(mediaItem.mediaId) !in listOf(-1L,null)) {
                     autoDownload(context, mediaItem)
+                } else {
+                    removeDownload(context, mediaItem)
                 }
             }
         }

@@ -49,6 +49,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.context
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
@@ -60,6 +61,7 @@ import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -117,6 +119,7 @@ fun songToggleLike( song: Song ) {
     }
 }
 
+@OptIn(UnstableApi::class)
 fun mediaItemToggleLike( mediaItem: MediaItem) {
     Database.asyncTransaction {
         if (songExist(mediaItem.mediaId) == 0)
@@ -132,6 +135,10 @@ fun mediaItemToggleLike( mediaItem: MediaItem) {
                 null
             )
         //}
+        MyDownloadHelper.autoDownloadWhenLiked(
+            context(),
+            mediaItem
+        )
     }
 }
 
@@ -1024,12 +1031,19 @@ suspend fun addToYtPlaylist(playlistId: String, videoIds: List<String>){
     )
 }
 
+@OptIn(UnstableApi::class)
 suspend fun addToYtLikedSong(videoId: String){
     if (isYouTubeSyncEnabled()) {
         if (getLikedAt(videoId) in listOf(-1L, null)) {
             likeVideoOrSong(videoId)
                 .onSuccess {
-                    Database.like(videoId, System.currentTimeMillis())
+                    Database.asyncTransaction {
+                        like(videoId, System.currentTimeMillis())
+                        MyDownloadHelper.autoDownloadWhenLiked(
+                            context(),
+                            songById(videoId).asMediaItem
+                        )
+                    }
                     SmartMessage(
                         appContext().resources.getString(R.string.songs_liked_yt),
                         context = appContext(),
@@ -1046,7 +1060,13 @@ suspend fun addToYtLikedSong(videoId: String){
         } else {
             removelikeVideoOrSong(videoId)
                 .onSuccess {
-                    Database.like(videoId, null)
+                    Database.asyncTransaction {
+                        like(videoId, null)
+                        MyDownloadHelper.autoDownloadWhenLiked(
+                            context(),
+                            songById(videoId).asMediaItem
+                        )
+                    }
                     SmartMessage(
                         appContext().resources.getString(R.string.song_unliked_yt),
                         context = appContext(),
@@ -1064,12 +1084,19 @@ suspend fun addToYtLikedSong(videoId: String){
     }
 }
 
+@OptIn(UnstableApi::class)
 suspend fun addToYtLikedSongs(videoIds: List<String>){
     if (isYouTubeSyncEnabled()) {
         videoIds.forEachIndexed { index, id ->
             delay(1000)
             likeVideoOrSong(id).onSuccess {
-                Database.like(id, System.currentTimeMillis())
+                Database.asyncTransaction {
+                    like(id, System.currentTimeMillis())
+                    MyDownloadHelper.autoDownloadWhenLiked(
+                        context(),
+                        songById(id).asMediaItem
+                    )
+                }
                 SmartMessage(
                     "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt),
                     context = appContext(),

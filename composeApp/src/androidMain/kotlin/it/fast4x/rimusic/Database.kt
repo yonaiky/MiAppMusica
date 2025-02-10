@@ -80,6 +80,9 @@ interface Database {
     @Query("SELECT * FROM Song")
     fun listAllSongsAsFlow(): Flow<List<SongEntity>>
 
+    @Query("SELECT * FROM Song WHERE id = :id")
+    fun songById(id: String): SongEntity
+
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
     @Query("SELECT Song.*, contentLength FROM Song INNER JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs")

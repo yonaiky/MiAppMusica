@@ -191,10 +191,6 @@ fun MiniPlayer(
                     addToYtLikedSong(mediaItem.mediaId)
                 }
             }
-            MyDownloadHelper.autoDownloadWhenLiked(
-                context(),
-                mediaItem
-            )
             updateLike = false
         }
     }

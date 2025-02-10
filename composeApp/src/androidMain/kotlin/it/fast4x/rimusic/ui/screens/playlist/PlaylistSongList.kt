@@ -157,7 +157,6 @@ import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.languageDestination
-import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.setLikeState
 import kotlinx.coroutines.flow.filterNotNull
 import me.bush.translator.Language

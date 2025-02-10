@@ -210,10 +210,6 @@ fun SwipeableQueueItem(
                 addToYtLikedSong(mediaItem.mediaId)
             }
         }
-        MyDownloadHelper.autoDownloadWhenLiked(
-            context(),
-            mediaItem
-        )
     }
 
     val queueSwipeLeftAction by rememberPreference(queueSwipeLeftActionKey, QueueSwipeAction.RemoveFromQueue)
@@ -276,7 +272,7 @@ fun SwipeablePlaylistItem(
     val onFavourite: () -> Unit = {
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
             SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
-        } else {
+        } else if (!isYouTubeSyncEnabled()){
             mediaItemToggleLike(mediaItem)
             val message: String
             val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
@@ -295,6 +291,10 @@ fun SwipeablePlaylistItem(
                 durationLong = likedAt != null,
                 context = context
             )
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                addToYtLikedSong(mediaItem.mediaId)
+            }
         }
     }
 
