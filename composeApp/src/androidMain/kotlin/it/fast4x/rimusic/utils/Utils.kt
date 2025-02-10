@@ -117,7 +117,7 @@ fun songToggleLike( song: Song ) {
     }
 }
 
-fun mediaItemToggleLike( mediaItem: MediaItem ) {
+fun mediaItemToggleLike( mediaItem: MediaItem, swipe: Boolean = false ) {
     Database.asyncTransaction {
         if (songExist(mediaItem.mediaId) == 0)
             insert(mediaItem, Song::toggleLike)
@@ -132,6 +132,11 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
                 null
             )
         //}
+        if (swipe) {
+            CoroutineScope(Dispatchers.IO).launch {
+                addToYtLikedSong(mediaItem.mediaId)
+            }
+        }
     }
 }
 

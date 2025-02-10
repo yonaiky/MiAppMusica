@@ -45,6 +45,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -196,6 +197,7 @@ import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
 import it.fast4x.rimusic.utils.addToYtLikedSongs
 import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getAlbumVersionFromVideo
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isNetworkConnected
@@ -577,6 +579,14 @@ fun LocalPlaylistSongs(
         mutableStateOf(false)
     }
 
+    var showYoutubeLikeConfirmDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var totalMinutesToLike by remember { mutableStateOf("") }
+
+    var songIdsToLike = remember { mutableStateListOf<String>() }
+
     var scrollToNowPlaying by remember {
         mutableStateOf(false)
     }
@@ -875,6 +885,22 @@ fun LocalPlaylistSongs(
             done = songsMatched,
             text = stringResource(R.string.matching_songs),
             onDismiss = {showGetAlbumVersionDialogueExt = false}
+        )
+    }
+
+    if (showYoutubeLikeConfirmDialog) {
+        Database.asyncTransaction {
+            totalMinutesToLike = formatAsDuration(((songIdsToLike).size*1000).toLong())
+        }
+        ConfirmationDialog(
+            text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
+            onDismiss = { showYoutubeLikeConfirmDialog = false },
+            onConfirm = {
+                showYoutubeLikeConfirmDialog = false
+                CoroutineScope(Dispatchers.IO).launch {
+                    addToYtLikedSongs(songIdsToLike)
+                }
+            }
         )
     }
 
@@ -1691,14 +1717,26 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         onAddToPreferites = {
-                                            val totalSongsToLike = playlistSongs.filter { it.song.likedAt in listOf(-1L, null) }
-                                            playlistSongs.forEachIndexed { index, song ->
-                                                if(song.song.likedAt in listOf(-1L, null)) {
-                                                    mediaItemToggleLike(song.asMediaItem)
+                                            songIdsToLike.clear()
+                                            if (listMediaItems.isEmpty()) {
+                                                playlistSongs.forEachIndexed { index, song ->
+                                                    if (song.song.likedAt in listOf(-1L, null)) {
+                                                        mediaItemToggleLike(song.asMediaItem)
+                                                        songIdsToLike.add(song.asMediaItem.mediaId)
+                                                    }
+                                                }
+                                            } else {
+                                                Database.asyncTransaction {
+                                                    listMediaItems.forEachIndexed { index, song ->
+                                                        if (Database.getLikedAt(song.mediaId) !in listOf(-1L,null)) {
+                                                            mediaItemToggleLike(song)
+                                                            songIdsToLike.add(song.mediaId)
+                                                        }
+                                                    }
                                                 }
                                             }
-                                            CoroutineScope(Dispatchers.IO).launch {
-                                                addToYtLikedSongs(totalSongsToLike.map { it.asMediaItem.mediaId })
+                                            if (isYouTubeSyncEnabled()){
+                                                showYoutubeLikeConfirmDialog = true
                                             }
                                         },
                                         onRenumberPositions = {

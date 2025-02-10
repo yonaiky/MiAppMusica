@@ -34,6 +34,7 @@ import androidx.media3.exoplayer.offline.DownloadService
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AlbumSwipeAction
 import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.enums.PlaylistSwipeAction
@@ -54,7 +55,9 @@ import it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.service.MyDownloadService
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.addToYtLikedSong
+import it.fast4x.rimusic.utils.isNetworkConnected
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -178,7 +181,7 @@ fun SwipeableQueueItem(
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
     }
     val onFavourite: () -> Unit = {
-        mediaItemToggleLike(mediaItem)
+        mediaItemToggleLike(mediaItem, swipe = true)
         val message: String
         val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
         val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
@@ -194,8 +197,12 @@ fun SwipeableQueueItem(
             durationLong = likedAt != null,
             context = context
         )
-        CoroutineScope(Dispatchers.IO).launch {
-            addToYtLikedSong(mediaItem.mediaId)
+        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()){
+            SmartMessage(
+                appContext().resources.getString(R.string.failed_to_like_unlike),
+                context = appContext(),
+                durationLong = true
+            )
         }
     }
 
@@ -257,7 +264,7 @@ fun SwipeablePlaylistItem(
         Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
     }
     val onFavourite: () -> Unit = {
-        mediaItemToggleLike(mediaItem)
+        mediaItemToggleLike(mediaItem, swipe = true)
         val message: String
         val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
         val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
@@ -273,9 +280,6 @@ fun SwipeablePlaylistItem(
             durationLong = likedAt != null,
             context = context
         )
-        CoroutineScope(Dispatchers.IO).launch {
-            addToYtLikedSong(mediaItem.mediaId)
-        }
     }
 
     val playlistSwipeLeftAction by rememberPreference(playlistSwipeLeftActionKey, PlaylistSwipeAction.Favourite)
