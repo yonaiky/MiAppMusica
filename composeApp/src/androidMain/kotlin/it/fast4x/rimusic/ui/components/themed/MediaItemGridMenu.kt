@@ -94,9 +94,12 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.isNetworkConnected
 
 @OptIn(UnstableApi::class)
@@ -446,10 +449,18 @@ fun MediaItemGridMenu (
                     onClick = {
                         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
                             SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
-                        } else {
-                            mediaItemToggleLike(mediaItem, ytlike = true)
+                        } else if (!isYouTubeSyncEnabled()){
+                            mediaItemToggleLike(mediaItem)
                             updateData = !updateData
+                        } else {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                addToYtLikedSong(mediaItem.mediaId)
+                            }
                         }
+                        MyDownloadHelper.autoDownloadWhenLiked(
+                            context(),
+                            mediaItem
+                        )
                     },
                     modifier = Modifier
                         .padding(all = 4.dp)

@@ -54,7 +54,9 @@ import it.fast4x.rimusic.utils.queueSwipeLeftActionKey
 import it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.addToYtLikedSong
@@ -184,8 +186,8 @@ fun SwipeableQueueItem(
     val onFavourite: () -> Unit = {
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
             SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
-        } else {
-            mediaItemToggleLike(mediaItem, ytlike = true)
+        } else if (!isYouTubeSyncEnabled()){
+            mediaItemToggleLike(mediaItem)
             val message: String
             val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
             val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
@@ -203,7 +205,15 @@ fun SwipeableQueueItem(
                 durationLong = likedAt != null,
                 context = context
             )
+        } else {
+            CoroutineScope(Dispatchers.IO).launch {
+                addToYtLikedSong(mediaItem.mediaId)
+            }
         }
+        MyDownloadHelper.autoDownloadWhenLiked(
+            context(),
+            mediaItem
+        )
     }
 
     val queueSwipeLeftAction by rememberPreference(queueSwipeLeftActionKey, QueueSwipeAction.RemoveFromQueue)
@@ -267,7 +277,7 @@ fun SwipeablePlaylistItem(
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
             SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
         } else {
-            mediaItemToggleLike(mediaItem, ytlike = true)
+            mediaItemToggleLike(mediaItem)
             val message: String
             val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
             val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""

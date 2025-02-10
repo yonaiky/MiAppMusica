@@ -1229,17 +1229,18 @@ fun MediaItemMenu(
                             onClick = {
                                 if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
                                     SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
-                                } else {
+                                } else if (!isYouTubeSyncEnabled()){
                                     Database.asyncTransaction {
                                         if (like(mediaItem.mediaId, setLikeState(likedAt)) == 0) {
                                             insert(mediaItem, Song::toggleLike)
                                         }
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            addToYtLikedSong(mediaItem.mediaId)
-                                        }
                                     }
-                                    MyDownloadHelper.autoDownloadWhenLiked(context(), mediaItem)
+                                } else {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        addToYtLikedSong(mediaItem.mediaId)
+                                    }
                                 }
+                                MyDownloadHelper.autoDownloadWhenLiked(context(), mediaItem)
                             },
                             modifier = Modifier
                                 .padding(all = 4.dp)

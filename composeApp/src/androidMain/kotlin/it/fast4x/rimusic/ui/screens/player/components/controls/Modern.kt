@@ -124,6 +124,7 @@ fun InfoAlbumAndArtistModern(
     var showSelectDialog by remember { mutableStateOf(false) }
     val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey,PlayerBackgroundColors.BlurredCoverColor)
     val playerInfoShowIcon by rememberPreference(playerInfoShowIconsKey, true)
+    val currentMediaItem = binder.player.currentMediaItem
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -243,8 +244,7 @@ fun InfoAlbumAndArtistModern(
                         onClick = {
                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
                                 SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
-                            } else {
-                                val currentMediaItem = binder.player.currentMediaItem
+                            } else if (!isYouTubeSyncEnabled()){
                                 Database.asyncTransaction {
                                     CoroutineScope(Dispatchers.IO).launch {
                                         if (like(mediaId, setLikeState(likedAt)) == 0) {
@@ -253,18 +253,21 @@ fun InfoAlbumAndArtistModern(
                                                 ?.let {
                                                     insert(currentMediaItem, Song::toggleLike)
                                                 }
-                                            if (currentMediaItem != null) {
-                                                MyDownloadHelper.autoDownloadWhenLiked(
-                                                    context(),
-                                                    currentMediaItem
-                                                )
-                                            }
                                         }
-                                        addToYtLikedSong(mediaId)
                                     }
                                 }
-                                if (effectRotationEnabled) isRotated = !isRotated
+                            } else {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    addToYtLikedSong(mediaId)
+                                }
                             }
+                            if (currentMediaItem != null) {
+                                MyDownloadHelper.autoDownloadWhenLiked(
+                                    context(),
+                                    currentMediaItem
+                                )
+                            }
+                            if (effectRotationEnabled) isRotated = !isRotated
                         },
                         modifier = Modifier
                             .padding(start = 5.dp)

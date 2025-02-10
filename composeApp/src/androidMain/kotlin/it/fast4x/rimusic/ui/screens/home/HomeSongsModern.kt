@@ -1480,8 +1480,9 @@ fun HomeSongsModern(
                                                 showYoutubeLikeConfirmDialog = true
                                             }
                                         },
+                                        showonAddToPreferitesYoutube = isYouTubeSyncEnabled(),
                                         onAddToPreferitesYoutube = {
-                                            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                            if (!isNetworkConnected(appContext())) {
                                                 SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
                                             } else {
                                                 showRiMusicLikeYoutubeLikeConfirmDialog = true

@@ -84,6 +84,7 @@ fun PlaylistsItemMenu(
     onImportOnlinePlaylist: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)? = null,
+    showonAddToPreferitesYoutube: Boolean = false,
     onAddToPreferitesYoutube: (() -> Unit)? = null,
     showOnSyncronize: Boolean = false,
     showLinkUnlink: Boolean = false,
@@ -584,15 +585,17 @@ fun PlaylistsItemMenu(
                             }
                         )
 
-                    if (onAddToPreferitesYoutube != null)
-                        MenuEntry(
-                            icon = R.drawable.ytmusic,
-                            text = stringResource(R.string.add_rimusic_to_ytm_favorites),
-                            onClick = {
-                                onDismiss()
-                                onAddToPreferitesYoutube()
-                            }
-                        )
+                    if (showonAddToPreferitesYoutube) {
+                        if (onAddToPreferitesYoutube != null)
+                            MenuEntry(
+                                icon = R.drawable.ytmusic,
+                                text = stringResource(R.string.add_rimusic_to_ytm_favorites),
+                                onClick = {
+                                    onDismiss()
+                                    onAddToPreferitesYoutube()
+                                }
+                            )
+                    }
 
                     if (onAddToPlaylist != null) {
                         MenuEntry(

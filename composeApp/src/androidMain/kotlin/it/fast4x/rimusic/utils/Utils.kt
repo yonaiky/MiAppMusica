@@ -117,7 +117,7 @@ fun songToggleLike( song: Song ) {
     }
 }
 
-fun mediaItemToggleLike( mediaItem: MediaItem, ytlike: Boolean = false ) {
+fun mediaItemToggleLike( mediaItem: MediaItem) {
     Database.asyncTransaction {
         if (songExist(mediaItem.mediaId) == 0)
             insert(mediaItem, Song::toggleLike)
@@ -132,11 +132,6 @@ fun mediaItemToggleLike( mediaItem: MediaItem, ytlike: Boolean = false ) {
                 null
             )
         //}
-        if (ytlike) {
-            CoroutineScope(Dispatchers.IO).launch {
-                addToYtLikedSong(mediaItem.mediaId)
-            }
-        }
     }
 }
 
@@ -1031,20 +1026,40 @@ suspend fun addToYtPlaylist(playlistId: String, videoIds: List<String>){
 
 suspend fun addToYtLikedSong(videoId: String){
     if (isYouTubeSyncEnabled()) {
-        if (getLikedAt(videoId) !in listOf(-1L, null)) {
+        if (getLikedAt(videoId) in listOf(-1L, null)) {
             likeVideoOrSong(videoId)
-            SmartMessage(
-                appContext().resources.getString(R.string.songs_liked_yt),
-                context = appContext(),
-                durationLong = false
-            )
+                .onSuccess {
+                    Database.like(videoId, System.currentTimeMillis())
+                    SmartMessage(
+                        appContext().resources.getString(R.string.songs_liked_yt),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
+                .onFailure {
+                    SmartMessage(
+                        appContext().resources.getString(R.string.songs_liked_yt_failed),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
         } else {
             removelikeVideoOrSong(videoId)
-            SmartMessage(
-                appContext().resources.getString(R.string.song_unliked_yt),
-                context = appContext(),
-                durationLong = false
-            )
+                .onSuccess {
+                    Database.like(videoId, null)
+                    SmartMessage(
+                        appContext().resources.getString(R.string.song_unliked_yt),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
+                .onFailure {
+                    SmartMessage(
+                        appContext().resources.getString(R.string.songs_unliked_yt_failed),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
         }
     }
 }
@@ -1053,13 +1068,20 @@ suspend fun addToYtLikedSongs(videoIds: List<String>){
     if (isYouTubeSyncEnabled()) {
         videoIds.forEachIndexed { index, id ->
             delay(1000)
-            likeVideoOrSong(id)
-            Database.like(id, System.currentTimeMillis())
-            SmartMessage(
-                "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt),
-                context = appContext(),
-                durationLong = false
-            )
+            likeVideoOrSong(id).onSuccess {
+                Database.like(id, System.currentTimeMillis())
+                SmartMessage(
+                    "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt),
+                    context = appContext(),
+                    durationLong = false
+                )
+            }.onFailure {
+                SmartMessage(
+                    "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt_failed),
+                    context = appContext(),
+                    durationLong = false
+                )
+            }
         }
     }
 }
