@@ -620,7 +620,7 @@ fun Queue(
                                                 downloadState = isDownloaded
                                             )
                                     },
-                                    downloadState = downloadState,
+                                    downloadState = getDownloadState(window.mediaItem.mediaId),
                                     thumbnailSizePx = thumbnailSizePx,
                                     thumbnailSizeDp = thumbnailSizeDp,
                                     onThumbnailContent = {

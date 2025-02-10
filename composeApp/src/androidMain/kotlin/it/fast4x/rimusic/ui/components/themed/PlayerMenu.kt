@@ -139,6 +139,7 @@ fun PlayerMenu(
                         mediaItem.mediaId,
                         System.currentTimeMillis()
                     )
+                    MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                 }
             },
             onClosePlayer = onClosePlayer,
@@ -181,8 +182,8 @@ fun MiniPlayerMenu(
                         mediaItem.mediaId,
                         System.currentTimeMillis()
                     )
+                    MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
             },
             onDismiss = onDismiss,
             disableScrollingText = disableScrollingText
@@ -200,8 +201,8 @@ fun MiniPlayerMenu(
                         mediaItem.mediaId,
                         System.currentTimeMillis()
                     )
+                    MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
             },
             onDismiss = onDismiss,
             disableScrollingText = disableScrollingText

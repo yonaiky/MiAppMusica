@@ -154,9 +154,12 @@ fun InHistoryMediaItemMenu(
         onDeleteFromDatabase = onDeleteFromDatabase,
         onAddToPreferites = {
             Database.asyncTransaction {
-                like(song.id, System.currentTimeMillis())
+                like(
+                    song.asMediaItem.mediaId,
+                    System.currentTimeMillis()
+                )
+                MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
             }
-            MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
         },
         modifier = modifier,
         disableScrollingText = disableScrollingText
@@ -228,9 +231,12 @@ fun InPlaylistMediaItemMenu(
         },
         onAddToPreferites = {
             Database.asyncTransaction {
-                like(song.id, System.currentTimeMillis())
+                like(
+                    song.asMediaItem.mediaId,
+                    System.currentTimeMillis()
+                )
+                MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
             }
-            MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
         },
         onMatchingSong = { if (onMatchingSong != null) {onMatchingSong()}
             onDismiss() },
@@ -311,8 +317,8 @@ fun NonQueuedMediaItemMenuLibrary(
                         mediaItem.mediaId,
                         System.currentTimeMillis()
                     )
+                    MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
             },
             modifier = modifier,
             disableScrollingText = disableScrollingText
@@ -345,8 +351,8 @@ fun NonQueuedMediaItemMenuLibrary(
                         mediaItem.mediaId,
                         System.currentTimeMillis()
                     )
+                    MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
             },
             onMatchingSong = onMatchingSong,
             modifier = modifier,
@@ -493,8 +499,8 @@ fun QueuedMediaItemMenu(
                         mediaItem.mediaId,
                         System.currentTimeMillis()
                     )
+                    MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
             },
             disableScrollingText = disableScrollingText
         )
@@ -528,8 +534,8 @@ fun QueuedMediaItemMenu(
                         mediaItem.mediaId,
                         System.currentTimeMillis()
                     )
+                    MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
             },
             onMatchingSong = onMatchingSong,
             disableScrollingText = disableScrollingText
