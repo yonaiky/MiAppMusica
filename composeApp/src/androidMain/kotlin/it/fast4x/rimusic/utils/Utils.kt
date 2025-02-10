@@ -132,9 +132,6 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
                 null
             )
         //}
-        CoroutineScope(Dispatchers.IO).launch {
-            addToYtLikedSong(mediaItem.mediaId)
-        }
     }
 }
 
@@ -1029,19 +1026,27 @@ suspend fun addToYtPlaylist(playlistId: String, videoIds: List<String>){
 
 suspend fun addToYtLikedSong(videoId: String){
     if (isYouTubeSyncEnabled()) {
-        if (getLikedAt(videoId) !in listOf(-1L, null)) {
-            likeVideoOrSong(videoId)
-            SmartMessage(
-                appContext().resources.getString(R.string.song_liked_yt),
-                context = appContext(),
-                durationLong = false
-            )
+        if (isNetworkConnected(appContext())) {
+            if (getLikedAt(videoId) !in listOf(-1L, null)) {
+                likeVideoOrSong(videoId)
+                SmartMessage(
+                    appContext().resources.getString(R.string.songs_liked_yt),
+                    context = appContext(),
+                    durationLong = false
+                )
+            } else {
+                removelikeVideoOrSong(videoId)
+                SmartMessage(
+                    appContext().resources.getString(R.string.song_unliked_yt),
+                    context = appContext(),
+                    durationLong = false
+                )
+            }
         } else {
-            removelikeVideoOrSong(videoId)
             SmartMessage(
-                appContext().resources.getString(R.string.song_unliked_yt),
+                appContext().resources.getString(R.string.failed_to_like_unlike),
                 context = appContext(),
-                durationLong = false
+                durationLong = true
             )
         }
     }
@@ -1049,13 +1054,21 @@ suspend fun addToYtLikedSong(videoId: String){
 
 suspend fun addToYtLikedSongs(videoIds: List<String>){
     if (isYouTubeSyncEnabled()) {
-        videoIds.forEachIndexed { index, id ->
-            delay(1000)
-            likeVideoOrSong(id)
+        if (isNetworkConnected(appContext())) {
+            videoIds.forEachIndexed { index, id ->
+                delay(1000)
+                likeVideoOrSong(id)
+                SmartMessage(
+                    "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt),
+                    context = appContext(),
+                    durationLong = false
+                )
+            }
+        } else {
             SmartMessage(
-                "${index + 1}/${videoIds.size} " + appContext().resources.getString(R.string.songs_liked_yt),
+                appContext().resources.getString(R.string.failed_to_like_unlike),
                 context = appContext(),
-                durationLong = false
+                durationLong = true
             )
         }
     }

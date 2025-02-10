@@ -54,6 +54,10 @@ import it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.service.MyDownloadService
+import it.fast4x.rimusic.utils.addToYtLikedSong
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun SwipeableContent(
@@ -190,6 +194,9 @@ fun SwipeableQueueItem(
             durationLong = likedAt != null,
             context = context
         )
+        CoroutineScope(Dispatchers.IO).launch {
+            addToYtLikedSong(mediaItem.mediaId)
+        }
     }
 
     val queueSwipeLeftAction by rememberPreference(queueSwipeLeftActionKey, QueueSwipeAction.RemoveFromQueue)
@@ -266,6 +273,9 @@ fun SwipeablePlaylistItem(
             durationLong = likedAt != null,
             context = context
         )
+        CoroutineScope(Dispatchers.IO).launch {
+            addToYtLikedSong(mediaItem.mediaId)
+        }
     }
 
     val playlistSwipeLeftAction by rememberPreference(playlistSwipeLeftActionKey, PlaylistSwipeAction.Favourite)

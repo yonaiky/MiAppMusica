@@ -800,6 +800,16 @@ fun HomeSongsModern(
         mutableStateOf(false)
     }
 
+    var showRiMusicLikeYoutubeLikeConfirmDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var showYoutubeLikeConfirmDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var totalMinutesToLike by remember { mutableStateOf("") }
+
     val queueLimit by remember { mutableStateOf(QueueSelection.END_OF_QUEUE_WINDOWED) }
 
     Box(
@@ -1125,6 +1135,54 @@ fun HomeSongsModern(
                             )
                         }
 
+                        if (showRiMusicLikeYoutubeLikeConfirmDialog) {
+                            Database.asyncTransaction {
+                            totalMinutesToLike = formatAsDuration((if (listMediaItems.isNotEmpty()) (listMediaItems.filter { Database.getLikedAt(it.mediaId) !in listOf(-1L,null)}).size
+                                else (items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }).size)*1000.toLong())
+                                }
+                            ConfirmationDialog(
+                                text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
+                                onDismiss = { showRiMusicLikeYoutubeLikeConfirmDialog = false },
+                                onConfirm = {
+                                    showRiMusicLikeYoutubeLikeConfirmDialog = false
+
+                                    if (listMediaItems.isNotEmpty()) {
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            addToYtLikedSongs(listMediaItems.filter { Database.getLikedAt(it.mediaId) !in listOf(-1L,null) }.map { it.mediaId })
+                                        }
+                                    } else {
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            addToYtLikedSongs(items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }.map { it.asMediaItem.mediaId })
+                                        }
+                                    }
+                                }
+                            )
+                        }
+
+                        if (showYoutubeLikeConfirmDialog) {
+                            Database.asyncTransaction {
+                                totalMinutesToLike = formatAsDuration((if (listMediaItems.isNotEmpty()) (listMediaItems).size
+                                else (items.size))*1000.toLong())
+                            }
+                            ConfirmationDialog(
+                                text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
+                                onDismiss = { showYoutubeLikeConfirmDialog = false },
+                                onConfirm = {
+                                    showYoutubeLikeConfirmDialog = false
+
+                                    if (listMediaItems.isNotEmpty()) {
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            addToYtLikedSongs(listMediaItems.map { it.mediaId })
+                                        }
+                                    } else {
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            addToYtLikedSongs(items.map { it.asMediaItem.mediaId })
+                                        }
+                                    }
+                                }
+                            )
+                        }
+
                         if (deleteProgressDialog){
                             InProgressDialog(total = totalSongsToDelete, done = songsDeleted, text = stringResource(R.string.delete_in_process))
                         }
@@ -1394,9 +1452,6 @@ fun HomeSongsModern(
                                                         )
                                                     }
                                                 }
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    addToYtLikedSongs(listMediaItems.map { it.mediaId })
-                                                }
                                             } else {
                                                 items.map {
                                                     Database.asyncTransaction {
@@ -1406,21 +1461,13 @@ fun HomeSongsModern(
                                                         )
                                                     }
                                                 }
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    addToYtLikedSongs(items.map { it.asMediaItem.mediaId })
-                                                }
+                                            }
+                                            if (isYouTubeSyncEnabled()){
+                                                showYoutubeLikeConfirmDialog = true
                                             }
                                         },
                                         onAddToPreferitesYoutube = {
-                                            if (listMediaItems.isNotEmpty()) {
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    addToYtLikedSongs(listMediaItems.filter { Database.getLikedAt(it.mediaId) !in listOf(-1L,null) }.map { it.mediaId })
-                                                }
-                                            } else {
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    addToYtLikedSongs(items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }.map { it.asMediaItem.mediaId })
-                                                }
-                                            }
+                                            showRiMusicLikeYoutubeLikeConfirmDialog = true
                                         },
                                         onAddToPlaylist = { playlistPreview ->
                                             if (builtInPlaylist == BuiltInPlaylist.OnDevice) items =
