@@ -1640,7 +1640,7 @@ fun LocalPlaylistSongs(
 
                                                     if ((distinctSongs.size + toPlaylistPreview.songCount) > 5000 && toPlaylistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
                                                         SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
-                                                    } else {
+                                                    } else if (!isYouTubeSyncEnabled() || !toPlaylistPreview.playlist.isYoutubePlaylist) {
                                                         playlistSongs.forEachIndexed { index, song ->
                                                             Database.asyncTransaction {
                                                                 Database.insert(song.asMediaItem)
@@ -1652,37 +1652,47 @@ fun LocalPlaylistSongs(
                                                                     ).default()
                                                                 )
                                                             }
-                                                            //Log.d("mediaItemPos", "added position ${position + index}")
                                                         }
-                                                        //println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
-
-                                                        if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && distinctSongs.isNotEmpty() && isYouTubeSyncEnabled()) {
-                                                            CoroutineScope(Dispatchers.IO).launch {
-                                                                if (playlistPreview.playlist.isYoutubePlaylist) {
-                                                                    YtMusic.addPlaylistToPlaylist(
-                                                                        cleanPrefix(toPlaylistPreview.playlist.browseId ?: ""),
-                                                                        cleanPrefix(playlistPreview.playlist.browseId ?: "")
-                                                                    )
-                                                                } else {
-                                                                    addToYtPlaylist(toPlaylistPreview.playlist.browseId ?: "",distinctSongs.map { it.asMediaItem.mediaId })
+                                                    } else {
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            if (playlistPreview.playlist.isYoutubePlaylist) {
+                                                                YtMusic.addPlaylistToPlaylist(
+                                                                    cleanPrefix(toPlaylistPreview.playlist.browseId ?: ""),
+                                                                    cleanPrefix(playlistPreview.playlist.browseId ?: "")
+                                                                ).onSuccess {
+                                                                    playlistSongs.forEachIndexed { index, song ->
+                                                                        Database.asyncTransaction {
+                                                                            Database.insert(song.asMediaItem)
+                                                                            Database.insert(
+                                                                                SongPlaylistMap(
+                                                                                    songId = song.asMediaItem.mediaId,
+                                                                                    playlistId = toPlaylistPreview.playlist.id,
+                                                                                    position = position + index
+                                                                                ).default()
+                                                                            )
+                                                                        }
+                                                                    }
                                                                 }
+                                                            } else if (distinctSongs.isNotEmpty()) {
+                                                                addToYtPlaylist(toPlaylistPreview.playlist.id,
+                                                                    position,
+                                                                    toPlaylistPreview.playlist.browseId ?: "",
+                                                                    distinctSongs.map { it.asMediaItem })
                                                             }
-
                                                         }
-
-                                                        if (toPlaylistPreview.playlist.name.startsWith(
-                                                                PIPED_PREFIX
-                                                            ) && isPipedEnabled && pipedSession.token.isNotEmpty()
-                                                        )
-                                                            addToPipedPlaylist(
-                                                                context = context,
-                                                                coroutineScope = coroutineScope,
-                                                                pipedSession = pipedSession.toApiSession(),
-                                                                id = UUID.fromString(cleanPrefix(toPlaylistPreview.playlist.browseId ?: "")),
-                                                                videos = playlistSongs.map { it.asMediaItem.mediaId }
-                                                                    .toList()
-                                                            )
                                                     }
+                                                    if (toPlaylistPreview.playlist.name.startsWith(
+                                                            PIPED_PREFIX
+                                                        ) && isPipedEnabled && pipedSession.token.isNotEmpty()
+                                                    )
+                                                        addToPipedPlaylist(
+                                                            context = context,
+                                                            coroutineScope = coroutineScope,
+                                                            pipedSession = pipedSession.toApiSession(),
+                                                            id = UUID.fromString(cleanPrefix(toPlaylistPreview.playlist.browseId ?: "")),
+                                                            videos = playlistSongs.map { it.asMediaItem.mediaId }
+                                                                .toList()
+                                                        )
                                                 }
                                             }
                                             else {
@@ -1693,7 +1703,7 @@ fun LocalPlaylistSongs(
                                                     val distinctSongs = filteredListMediaItems.filter { item -> item !in songsInTheToPlaylist.map { it.asMediaItem } }
                                                     if ((distinctSongs.size + toPlaylistPreview.songCount) > 5000 && toPlaylistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
                                                         SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
-                                                    } else {
+                                                    } else if (!isYouTubeSyncEnabled() || !toPlaylistPreview.playlist.isYoutubePlaylist) {
                                                         listMediaItems.forEachIndexed { index, song ->
                                                             Database.asyncTransaction {
                                                                 Database.insert(song)
@@ -1706,28 +1716,30 @@ fun LocalPlaylistSongs(
                                                                 )
                                                             }
                                                         }
-                                                        if (toPlaylistPreview.playlist.isYoutubePlaylist && toPlaylistPreview.playlist.isEditable && distinctSongs.isNotEmpty() && isYouTubeSyncEnabled()) {
-                                                            CoroutineScope(Dispatchers.IO).launch {
-                                                                addToYtPlaylist(toPlaylistPreview.playlist.browseId ?: "",distinctSongs.map { it.mediaId })
-                                                            }
+                                                    } else if (distinctSongs.isNotEmpty()){
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            addToYtPlaylist(toPlaylistPreview.playlist.id,
+                                                                position,
+                                                                toPlaylistPreview.playlist.browseId ?: "",
+                                                                distinctSongs)
                                                         }
-                                                        println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
-
-                                                        if (toPlaylistPreview.playlist.name.startsWith(
-                                                                PIPED_PREFIX
-                                                            ) && isPipedEnabled && pipedSession.token.isNotEmpty()
-                                                        )
-                                                            addToPipedPlaylist(
-                                                                context = context,
-                                                                coroutineScope = coroutineScope,
-                                                                pipedSession = pipedSession.toApiSession(),
-                                                                id = UUID.fromString(cleanPrefix(toPlaylistPreview.playlist.browseId ?: "")),
-                                                                videos = listMediaItems.map { it.mediaId }
-                                                                    .toList()
-                                                            )
-                                                        listMediaItems.clear()
-                                                        selectItems = false
                                                     }
+                                                    println("pipedInfo mediaitemmenu uuid ${playlistPreview.playlist.browseId}")
+
+                                                    if (toPlaylistPreview.playlist.name.startsWith(
+                                                            PIPED_PREFIX
+                                                        ) && isPipedEnabled && pipedSession.token.isNotEmpty()
+                                                    )
+                                                        addToPipedPlaylist(
+                                                            context = context,
+                                                            coroutineScope = coroutineScope,
+                                                            pipedSession = pipedSession.toApiSession(),
+                                                            id = UUID.fromString(cleanPrefix(toPlaylistPreview.playlist.browseId ?: "")),
+                                                            videos = listMediaItems.map { it.mediaId }
+                                                                .toList()
+                                                        )
+                                                    listMediaItems.clear()
+                                                    selectItems = false
                                                 }
                                             }
                                         },

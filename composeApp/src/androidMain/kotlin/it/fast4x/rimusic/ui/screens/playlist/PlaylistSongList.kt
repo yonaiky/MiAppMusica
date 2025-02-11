@@ -723,7 +723,7 @@ fun PlaylistSongList(
 
                                                         if ((playlistSize + playlistPreview.songCount) > 5000 && playlistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
                                                             SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
-                                                        } else {
+                                                        } else if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
                                                             playlistPage!!.songs.forEachIndexed { index, song ->
                                                                 runCatching {
                                                                     coroutineScope.launch(Dispatchers.IO) {
@@ -739,28 +739,22 @@ fun PlaylistSongList(
                                                                 }.onFailure {
                                                                     Timber.e("Failed onAddToPlaylist in PlaylistSongListModern  ${it.stackTraceToString()}")
                                                                 }
-                                                            }
-                                                            if (isYouTubeSyncEnabled() && playlistPreview.playlist.isEditable) {
-                                                                CoroutineScope(Dispatchers.IO).launch {
-                                                                    YtMusic.addPlaylistToPlaylist(
-                                                                        cleanPrefix(playlistPreview.playlist.browseId ?: ""),
-                                                                        browseId.substringAfter("VL")
+                                                              }
+                                                        } else {
+                                                            CoroutineScope(Dispatchers.IO).launch {
+                                                                YtMusic.addPlaylistToPlaylist(
+                                                                    cleanPrefix(playlistPreview.playlist.browseId ?: ""),
+                                                                    browseId.substringAfter("VL")
 
                                                                     )
                                                                 }
-                                                            }
-                                                            CoroutineScope(Dispatchers.Main).launch {
-                                                                SmartMessage(
-                                                                    context.resources.getString(
+                                                        }
+                                                        CoroutineScope(Dispatchers.Main).launch {
+                                                            SmartMessage(context.resources.getString(
                                                                         R.string.done
-                                                                    ),
-                                                                    type = PopupType.Success,
-                                                                    context = context
-                                                                )
-                                                            }
+                                                                    ), type = PopupType.Success, context = context)
                                                         }
                                                     },
-
                                                     onGoToPlaylist = {
                                                         navController.navigate("${NavRoutes.localPlaylist.name}/$it")
                                                     },

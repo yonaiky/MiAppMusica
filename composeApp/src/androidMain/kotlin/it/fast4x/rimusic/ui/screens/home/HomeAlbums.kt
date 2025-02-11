@@ -438,23 +438,28 @@ fun HomeAlbums(
                                                     if (position > 0) position++ else position =
                                                         0
 
-                                                    songs.forEachIndexed { index, song ->
-                                                        Database.asyncTransaction {
-                                                            insert(song.asMediaItem)
-                                                            insert(
-                                                                SongPlaylistMap(
-                                                                    songId = song.asMediaItem.mediaId,
-                                                                    playlistId = playlistPreview.playlist.id,
-                                                                    position = position + index
-                                                                ).default()
-                                                            )
+                                                    if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
+                                                        songs.forEachIndexed { index, song ->
+                                                            Database.asyncTransaction {
+                                                                insert(song.asMediaItem)
+                                                                insert(
+                                                                    SongPlaylistMap(
+                                                                        songId = song.asMediaItem.mediaId,
+                                                                        playlistId = playlistPreview.playlist.id,
+                                                                        position = position + index
+                                                                    ).default()
+                                                                )
+                                                            }
                                                         }
-                                                    }
-                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
+                                                    } else {
                                                         CoroutineScope(Dispatchers.IO).launch {
-                                                            addToYtPlaylist(playlistPreview.playlist.browseId ?: "", songs.map{it.asMediaItem.mediaId})
+                                                            addToYtPlaylist(playlistPreview.playlist.id,
+                                                                position,
+                                                                playlistPreview.playlist.browseId ?: "",
+                                                                songs.map{it.asMediaItem})
                                                         }
                                                     }
+
 
                                                 },
                                                 onGoToPlaylist = {

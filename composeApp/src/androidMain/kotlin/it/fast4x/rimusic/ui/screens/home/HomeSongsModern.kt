@@ -1498,7 +1498,7 @@ fun HomeSongsModern(
                                             val filteredItems = items.filterNot {it.asMediaItem.mediaId.startsWith(LOCAL_KEY_PREFIX) || it.song.thumbnailUrl == ""}
                                             if ((filteredItems.size + playlistPreview.songCount) > 5000 && playlistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
                                                 SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
-                                            } else {
+                                            } else if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
                                                 items.forEachIndexed { index, song ->
                                                     runCatching {
                                                         CoroutineScope(Dispatchers.IO).launch {
@@ -1516,13 +1516,15 @@ fun HomeSongsModern(
                                                         println("Failed addToPlaylist in HomeSongsModern ${it.stackTraceToString()}")
                                                     }
                                                 }
-                                                if (playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()) {
-                                                    CoroutineScope(Dispatchers.IO).launch {
-                                                        addToYtPlaylist(playlistPreview.playlist.browseId ?: "",filteredItems.map { it.asMediaItem.mediaId })
-                                                    }
-                                                }
                                                 CoroutineScope(Dispatchers.Main).launch {
                                                     SmartMessage(context.resources.getString(R.string.done), type = PopupType.Success, context = context)
+                                                }
+                                            } else {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    addToYtPlaylist(playlistPreview.playlist.id,
+                                                        position,
+                                                        playlistPreview.playlist.browseId ?: "",
+                                                        filteredItems.map { it.asMediaItem })
                                                 }
                                             }
                                         },

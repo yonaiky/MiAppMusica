@@ -987,45 +987,81 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
     }
 }
 
-suspend fun addToYtPlaylist(playlistId: String, videoIds: List<String>){
-    val requestedVideoIds = videoIds.take(5000)
-    val difference = videoIds.size - requestedVideoIds.size
-    if (difference > 0) {
-        println("YtMusic addToPlaylist warning: only adding (at most) 500 ids, (surpassed limit by $difference)")
-    }
-    val videoIdChunks = videoIds.chunked(50)
-    videoIdChunks.forEachIndexed { index, ids ->
-        runCatching {
-            if (videoIds.size <= 50) {}
-            else if (index == 0) {
-                SmartMessage(
-                    "${videoIds.size} "+appContext().resources.getString(R.string.songs_adding_in_yt),
-                    context = appContext(),
-                    durationLong = true
-                )
-            } else {
-                delay(2000)
-                SmartMessage(
-                    "${videoIds.size - index*50} Songs Remaining",
-                    context = appContext(),
-                    durationLong = false
-                )
+suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: String, mediaItems: List<MediaItem>){
+    val mediaItemsChunks = mediaItems.chunked(50)
+    mediaItemsChunks.forEachIndexed { index, items ->
+        if (mediaItems.size <= 50) {}
+        else if (index == 0) {
+            SmartMessage(
+                "${mediaItems.size} "+appContext().resources.getString(R.string.songs_adding_in_yt),
+                context = appContext(),
+                durationLong = true
+            )
+        } else {
+            delay(2000)
+        }
+        addToPlaylist(ytplaylistId, items.map { it.mediaId })
+            .onSuccess {
+                items.forEachIndexed { index, item ->
+                    Database.asyncTransaction {
+                        if (songExist(item.mediaId) == 0){
+                            Database.insert(item)
+                        }
+                        Database.insert(
+                            SongPlaylistMap(
+                                songId = item.mediaId,
+                                playlistId = localPlaylistId,
+                                position = position + index
+                            ).default()
+                        )
+                    }
+                }
+                if (index != 0) {
+                    SmartMessage(
+                        "${mediaItems.size - index * 50} Songs Remaining",
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
             }
-            Innertube.addToPlaylist(it.fast4x.innertube.models.Context.DefaultWeb.client, playlistId, ids)
-        }.onFailure {
-            println("YtMusic addToPlaylist (list of size ${ids.size}) error: ${it.stackTraceToString()}")
-            if(it is ClientRequestException && it.response.status == HttpStatusCode.BadRequest) {
-                ids.forEach { id ->
-                    delay(500)
-                    addToPlaylist(playlistId, id).onFailure {
-                        println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
+            .onFailure {
+                println("YtMusic addToPlaylist (list of size ${items.size}) error: ${it.stackTraceToString()}")
+                if(it is ClientRequestException && it.response.status == HttpStatusCode.BadRequest) {
+                    SmartMessage(
+                        appContext().resources.getString(R.string.adding_yt_to_pl_failed),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                    items.forEach { item ->
+                        delay(500)
+                        addToPlaylist(ytplaylistId, item.mediaId)
+                            .onFailure {
+                            println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
+                            }.onSuccess {
+                                Database.asyncTransaction {
+                                    if (songExist(item.mediaId) == 0){
+                                       Database.insert(item)
+                                   }
+                                   insert(
+                                      SongPlaylistMap(
+                                        songId = item.mediaId,
+                                        playlistId = localPlaylistId,
+                                        position = position
+                                      ).default()
+                                  )
+                                }
+                                SmartMessage(
+                                    "${items.size - index*50} Songs Remaining",
+                                    context = appContext(),
+                                    durationLong = false
+                                )
+                            }
                     }
                 }
             }
-        }
     }
     SmartMessage(
-        "${videoIds.size} "+ appContext().resources.getString(R.string.songs_added_in_yt),
+        "${mediaItems.size} "+ appContext().resources.getString(R.string.songs_added_in_yt),
         context = appContext(),
         durationLong = true
     )

@@ -1007,50 +1007,56 @@ fun Queue(
                                         if (position > 0) position++ else position = 0
                                         //Log.d("mediaItem", "next initial pos ${position}")
                                         if (listMediaItems.isEmpty()) {
-                                            windows.forEachIndexed { index, song ->
-                                                Database.asyncTransaction {
-                                                    insert(song.mediaItem)
-                                                    insert(
-                                                        SongPlaylistMap(
-                                                            songId = song.mediaItem.mediaId,
-                                                            playlistId = playlistPreview.playlist.id,
-                                                            position = position + index
-                                                        ).default()
-                                                    )
+                                            if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
+                                                windows.forEachIndexed { index, song ->
+                                                    Database.asyncTransaction {
+                                                        insert(song.mediaItem)
+                                                        insert(
+                                                            SongPlaylistMap(
+                                                                songId = song.mediaItem.mediaId,
+                                                                playlistId = playlistPreview.playlist.id,
+                                                                position = position + index
+                                                            ).default()
+                                                        )
+                                                    }
                                                 }
-                                            }
-                                            if(isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
+                                            } else {
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     playlistPreview.playlist.browseId.let { id ->
                                                         addToYtPlaylist(
+                                                            playlistPreview.playlist.id,
+                                                            position,
                                                             cleanPrefix(id ?: ""),windows
-                                                            .filterNot {it.mediaItem.mediaId.startsWith(LOCAL_KEY_PREFIX)}
-                                                            .map { it.mediaItem.mediaId })
+                                                                .filterNot {it.mediaItem.mediaId.startsWith(LOCAL_KEY_PREFIX)}
+                                                                .map { it.mediaItem })
                                                     }
                                                 }
                                             }
                                         } else {
-                                            listMediaItems.forEachIndexed { index, song ->
-                                                //Log.d("mediaItemMaxPos", position.toString())
-                                                Database.asyncTransaction {
-                                                    insert(song)
-                                                    insert(
-                                                        SongPlaylistMap(
-                                                            songId = song.mediaId,
-                                                            playlistId = playlistPreview.playlist.id,
-                                                            position = position + index
-                                                        ).default()
-                                                    )
+                                            if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
+                                                listMediaItems.forEachIndexed { index, song ->
+                                                    //Log.d("mediaItemMaxPos", position.toString())
+                                                    Database.asyncTransaction {
+                                                        insert(song)
+                                                        insert(
+                                                            SongPlaylistMap(
+                                                                songId = song.mediaId,
+                                                                playlistId = playlistPreview.playlist.id,
+                                                                position = position + index
+                                                            ).default()
+                                                        )
+                                                    }
+                                                    //Log.d("mediaItemPos", "add position $position")
                                                 }
-                                                //Log.d("mediaItemPos", "add position $position")
-                                            }
-                                            if(isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
+                                            } else {
                                                 CoroutineScope(Dispatchers.IO).launch {
-                                                    addToYtPlaylist(
-                                                        cleanPrefix(playlistPreview.playlist.browseId ?: ""),
-                                                        listMediaItems.filterNot {it.mediaId.startsWith(LOCAL_KEY_PREFIX)}.map { it.mediaId }
-
-                                                    )
+                                                    playlistPreview.playlist.browseId.let { id ->
+                                                        addToYtPlaylist(
+                                                            playlistPreview.playlist.id,
+                                                            position,
+                                                            cleanPrefix(id ?: ""),
+                                                            listMediaItems.filterNot {it.mediaId.startsWith(LOCAL_KEY_PREFIX)})
+                                                    }
                                                 }
                                             }
                                             listMediaItems.clear()
