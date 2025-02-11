@@ -3,6 +3,7 @@ package it.fast4x.rimusic.utils
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
@@ -16,6 +17,7 @@ import it.fast4x.rimusic.Database.Companion.getArtistsList
 import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
 import it.fast4x.rimusic.Database.Companion.update
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
@@ -69,16 +71,18 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                     println("Remote playlist: $remotePlaylist")
                     if (localPlaylist == null && playlistIdChecked.isNotEmpty()) {
                         localPlaylist = Playlist(
-                            name = remotePlaylist.title ?: "",
+                            name = (remotePlaylist.title) ?: "",
                             browseId = playlistIdChecked,
                             isYoutubePlaylist = true,
                             isEditable = (remotePlaylist.isEditable == true)
                         )
                         Database.insert(localPlaylist.copy(browseId = playlistIdChecked))
+                    } else {
+                        Database.updatePlaylistName(YTP_PREFIX+remotePlaylist.title, localPlaylist?.id ?: 0L)
                     }
 
                     Database.playlistWithSongsByBrowseId(playlistIdChecked).firstOrNull()?.let {
-                          if (it.playlist.id != 0L)
+                          if (it.playlist.id != 0L && it.songs.isEmpty())
                             it.playlist.id.let { id ->
                                 ytmPrivatePlaylistSync(
                                     it.playlist,
@@ -111,38 +115,39 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                     }
                 }
             }?.getOrNull()?.let { remotePlaylist ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.IO) {
 
-                println("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
+                        println("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
 
-                // Update here playlist isEditable flag because library contain playlists but isEditable isn't always available
-                if (remotePlaylist.isEditable == true)
-                    Database.update(playlist.copy(isEditable = true))
+                        // Update here playlist isEditable flag because library contain playlists but isEditable isn't always available
+                        if (remotePlaylist.isEditable == true)
+                            Database.update(playlist.copy(isEditable = true))
 
-                if (remotePlaylist.songs.isNotEmpty()) {
-                    //Database.clearPlaylist(playlistId)
+                        if (remotePlaylist.songs.isNotEmpty()) {
+                            //Database.clearPlaylist(playlistId)
 
-                    remotePlaylist.songs
-                        .map(Innertube.SongItem::asMediaItem)
-                        .onEach(Database::insert)
-                        .mapIndexed { position, mediaItem ->
-                            SongPlaylistMap(
-                                songId = mediaItem.mediaId,
-                                playlistId = playlistId,
-                                position = position,
-                                setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
-                            ).default()
-                        }.let(Database::insertSongPlaylistMaps)
-                }
-                runBlocking(Dispatchers.IO) {
-                    val localPlaylistSongs = Database.songsPlaylist(playlistId,PlaylistSongSortBy.Position, SortOrder.Ascending).firstOrNull()
+                            remotePlaylist.songs
+                                .map(Innertube.SongItem::asMediaItem)
+                                .onEach(Database::insert)
+                                .mapIndexed { position, mediaItem ->
+                                    SongPlaylistMap(
+                                        songId = mediaItem.mediaId,
+                                        playlistId = playlistId,
+                                        position = position,
+                                        setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
+                                    ).default()
+                                }.let(Database::insertSongPlaylistMaps)
+                        }
 
-                    localPlaylistSongs?.filter {it.asMediaItem.mediaId !in remotePlaylist.songs.map { it.asMediaItem.mediaId }}?.forEach { song ->
-                        deleteSongFromPlaylist(song.asMediaItem.mediaId,playlistId)
+                        /*localPlaylistSongs.filter { it.asMediaItem.mediaId !in remotePlaylist.songs.map { it.asMediaItem.mediaId } }
+                            .forEach { song ->
+                                deleteSongFromPlaylist(song.asMediaItem.mediaId, playlistId)
+                            }*/
                     }
                 }
             }
         }
-
     }
 }
 

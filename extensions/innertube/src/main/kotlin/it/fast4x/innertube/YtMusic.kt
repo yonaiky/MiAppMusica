@@ -62,17 +62,6 @@ object YtMusic {
         Innertube.addToPlaylist(Context.DefaultWeb.client, playlistId, requestedVideoIds)
     }.onFailure {
         println("YtMusic addToPlaylist (list of size ${videoIds.size}) error: ${it.stackTraceToString()}")
-        if(it is ClientRequestException && it.response.status == HttpStatusCode.BadRequest) {
-            val videoIdsChunks = videoIds.chunked(50)
-            videoIdsChunks.forEach { ids ->
-                ids.forEach { id ->
-                    delay(500)
-                    addToPlaylist(playlistId, id).onFailure {
-                        println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
-                    }
-                }
-            }
-        }
     }
 
     suspend fun removeFromPlaylist(playlistId: String, videoId: String, setVideoId: String? = null) = runCatching {

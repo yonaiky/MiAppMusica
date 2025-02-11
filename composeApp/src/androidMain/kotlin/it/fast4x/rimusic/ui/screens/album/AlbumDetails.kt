@@ -82,6 +82,7 @@ import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.UiType
@@ -153,6 +154,8 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtLikedSongs
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asAlbum
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.mediaItemToggleLike
@@ -971,7 +974,7 @@ fun AlbumDetails(
 .textDisabled,
                             onClick = {
                                 menuState.display {
-                                    album?.let {
+                                    album?.let { it ->
                                         AlbumsItemMenu(
                                             navController = navController,
                                             onDismiss = menuState::hide,
@@ -1042,48 +1045,62 @@ fun AlbumDetails(
                                                     0
                                                 //Log.d("mediaItem", "next initial pos ${position}")
                                                 if (listMediaItems.isEmpty()) {
-                                                    songs.forEachIndexed { index, song ->
-                                                        Database.asyncTransaction {
-                                                            insert(song.asMediaItem)
-                                                            insert(
-                                                                SongPlaylistMap(
-                                                                    songId = song.asMediaItem.mediaId,
-                                                                    playlistId = playlistPreview.playlist.id,
-                                                                    position = position + index
-                                                                ).default()
-                                                            )
+                                                    if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
+                                                        songs.forEachIndexed { index, song ->
+                                                            Database.asyncTransaction {
+                                                                insert(song.asMediaItem)
+                                                                insert(
+                                                                    SongPlaylistMap(
+                                                                        songId = song.asMediaItem.mediaId,
+                                                                        playlistId = playlistPreview.playlist.id,
+                                                                        position = position + index
+                                                                    ).default()
+                                                                )
+                                                            }
                                                         }
-                                                    }
-
-                                                if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
+                                                    } else {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             YtMusic.addPlaylistToPlaylist(
                                                                 cleanPrefix(playlistPreview.playlist.browseId ?: ""),
                                                                 cleanPrefix(albumPage?.album?.playlistId ?: "")
-
-                                                            )
-                                                        }
-                                                }
-                                                } else {
-                                                    listMediaItems.forEachIndexed { index, song ->
-                                                        //Log.d("mediaItemMaxPos", position.toString())
-                                                        Database.asyncTransaction {
-                                                            insert(song)
-                                                            insert(
-                                                                SongPlaylistMap(
-                                                                    songId = song.mediaId,
-                                                                    playlistId = playlistPreview.playlist.id,
-                                                                    position = position + index
-                                                                ).default()
-                                                            )
+                                                            ).onSuccess {
+                                                                songs.forEachIndexed { index, song ->
+                                                                    Database.asyncTransaction {
+                                                                        insert(song.asMediaItem)
+                                                                        insert(
+                                                                            SongPlaylistMap(
+                                                                                songId = song.asMediaItem.mediaId,
+                                                                                playlistId = playlistPreview.playlist.id,
+                                                                                position = position + index
+                                                                            ).default()
+                                                                        )
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
+                                                } else {
+                                                    if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
+                                                        listMediaItems.forEachIndexed { index, song ->
+                                                            //Log.d("mediaItemMaxPos", position.toString())
+                                                            Database.asyncTransaction {
+                                                                insert(song)
+                                                                insert(
+                                                                    SongPlaylistMap(
+                                                                        songId = song.mediaId,
+                                                                        playlistId = playlistPreview.playlist.id,
+                                                                        position = position + index
+                                                                    ).default()
+                                                                )
+                                                            }
+                                                        }
+                                                    } else {
                                                         CoroutineScope(Dispatchers.IO).launch {
-                                                            YtMusic.addToPlaylist(
+                                                            addToYtPlaylist(
+                                                                playlistPreview.playlist.id,
+                                                                position,
                                                                 cleanPrefix(playlistPreview.playlist.browseId ?: ""),
-                                                                listMediaItems.map { it.mediaId }
-
+                                                                listMediaItems
                                                             )
                                                         }
                                                     }
@@ -1092,13 +1109,24 @@ fun AlbumDetails(
                                                 }
                                             },
                                             onAddToFavourites = {
-                                                songs.forEach { song ->
-
-                                                      val likedAt: Long? = song.likedAt
-                                                        if(likedAt == null) {
+                                                if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                                    SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                                } else if (!isYouTubeSyncEnabled()){
+                                                    songs.forEach { song ->
+                                                        val likedAt: Long? = song.likedAt
+                                                        if (likedAt == null) {
                                                             mediaItemToggleLike(song.asMediaItem)
                                                         }
-                                                  }
+                                                    }
+
+                                                } else {
+                                                    val totalSongsToLike = songs.filter {
+                                                        it.likedAt in listOf(-1L,null)
+                                                    }
+                                                    CoroutineScope(Dispatchers.IO).launch {
+                                                        addToYtLikedSongs(totalSongsToLike.map { it.asMediaItem })
+                                                    }
+                                                }
                                             },
                                             onGoToPlaylist = {
                                                 navController.navigate("${NavRoutes.localPlaylist.name}/$it")
