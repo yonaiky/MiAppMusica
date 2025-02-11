@@ -17,6 +17,7 @@ import it.fast4x.rimusic.Database.Companion.getArtistsList
 import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
 import it.fast4x.rimusic.Database.Companion.update
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
@@ -58,13 +59,6 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                 Database.asyncTransaction{ delete(playlist) }
             }
 
-
-            SmartMessage(
-                message = "${ytmPrivatePlaylists.size} "+appContext().resources.getString(R.string.to_be_synced),
-                durationLong = false,
-                context = appContext(),
-            )
-
             ytmPrivatePlaylists.forEach { remotePlaylist ->
                 withContext(Dispatchers.IO) {
                     val playlistIdChecked =
@@ -77,16 +71,18 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                     println("Remote playlist: $remotePlaylist")
                     if (localPlaylist == null && playlistIdChecked.isNotEmpty()) {
                         localPlaylist = Playlist(
-                            name = remotePlaylist.title ?: "",
+                            name = (remotePlaylist.title) ?: "",
                             browseId = playlistIdChecked,
                             isYoutubePlaylist = true,
                             isEditable = (remotePlaylist.isEditable == true)
                         )
                         Database.insert(localPlaylist.copy(browseId = playlistIdChecked))
+                    } else {
+                        Database.updatePlaylistName(YTP_PREFIX+remotePlaylist.title, localPlaylist?.id ?: 0L)
                     }
 
                     Database.playlistWithSongsByBrowseId(playlistIdChecked).firstOrNull()?.let {
-                          if (it.playlist.id != 0L)
+                          if (it.playlist.id != 0L && it.songs.isEmpty())
                             it.playlist.id.let { id ->
                                 ytmPrivatePlaylistSync(
                                     it.playlist,
@@ -121,21 +117,6 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
             }?.getOrNull()?.let { remotePlaylist ->
                 CoroutineScope(Dispatchers.IO).launch {
                     withContext(Dispatchers.IO) {
-                        val localPlaylistSongs = withContext(Dispatchers.IO) {
-                            Database.sortSongsPlaylistByPositionNoFlow(playlistId)
-                        }
-
-                        val newSongs = withContext(Dispatchers.IO) {
-                            remotePlaylist.songs.filter {
-                                it.asMediaItem.mediaId !in localPlaylistSongs.map { it.asMediaItem.mediaId }
-                            }
-                        }
-
-                        SmartMessage(
-                            message = "${remotePlaylist.playlist.title} (${newSongs.size } new songs)"+appContext().resources.getString(R.string.is_being_synced),
-                            durationLong = false,
-                            context = appContext(),
-                        )
 
                         println("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
 
@@ -143,10 +124,10 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                         if (remotePlaylist.isEditable == true)
                             Database.update(playlist.copy(isEditable = true))
 
-                        if (newSongs.isNotEmpty()) {
+                        if (remotePlaylist.songs.isNotEmpty()) {
                             //Database.clearPlaylist(playlistId)
 
-                            newSongs
+                            remotePlaylist.songs
                                 .map(Innertube.SongItem::asMediaItem)
                                 .onEach(Database::insert)
                                 .mapIndexed { position, mediaItem ->
@@ -159,15 +140,10 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                                 }.let(Database::insertSongPlaylistMaps)
                         }
 
-                        localPlaylistSongs.filter { it.asMediaItem.mediaId !in remotePlaylist.songs.map { it.asMediaItem.mediaId } }
+                        /*localPlaylistSongs.filter { it.asMediaItem.mediaId !in remotePlaylist.songs.map { it.asMediaItem.mediaId } }
                             .forEach { song ->
                                 deleteSongFromPlaylist(song.asMediaItem.mediaId, playlistId)
-                            }
-                        SmartMessage(
-                            message = "${remotePlaylist.playlist.title} "+appContext().resources.getString(R.string.synced),
-                            durationLong = false,
-                            context = appContext(),
-                        )
+                            }*/
                     }
                 }
             }

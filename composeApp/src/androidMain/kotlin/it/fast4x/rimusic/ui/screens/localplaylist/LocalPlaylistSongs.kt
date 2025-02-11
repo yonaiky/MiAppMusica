@@ -178,6 +178,7 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
+import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
@@ -547,6 +548,22 @@ fun LocalPlaylistSongs(
                     playlistId = playlistPreview.playlist.id
 
                 )
+            }
+        }
+    }
+
+    val shouldSync = remember(playlistPreview?.playlist?.name) {
+        playlistPreview?.playlist?.name?.startsWith(YTP_PREFIX) == true
+    }
+
+    LaunchedEffect(shouldSync) {
+        if (!shouldSync || !isNetworkConnected(context)) {
+            return@LaunchedEffect
+        }
+        coroutineScope.launch {
+            sync()
+            Database.asyncTransaction {
+                updatePlaylistName(cleanPrefix(playlistPreview!!.playlist.name), playlistId)
             }
         }
     }
