@@ -1067,6 +1067,40 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
     )
 }
 
+suspend fun addSongToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: String, mediaItem: MediaItem){
+    if (isYouTubeSyncEnabled()) {
+        addToPlaylist(ytplaylistId,mediaItem.mediaId)
+            .onSuccess {
+                Database.asyncTransaction {
+                    if (songExist(mediaItem.mediaId) == 0) {
+                        Database.insert(mediaItem)
+                    }
+                    insert(
+                        SongPlaylistMap(
+                            songId = mediaItem.mediaId,
+                            playlistId = localPlaylistId,
+                            position = position
+                        ).default()
+                    )
+                }
+                SmartMessage(
+                    appContext().resources.getString(R.string.songs_add_yt_success),
+                    context = appContext(),
+                    durationLong = true
+                )
+            }
+            .onFailure {
+                SmartMessage(
+                    appContext().resources.getString(R.string.songs_add_yt_failed),
+                    context = appContext(),
+                    durationLong = true
+                )
+            }
+
+    }
+}
+
+
 @OptIn(UnstableApi::class)
 suspend fun addToYtLikedSong(mediaItem: MediaItem){
     if (isYouTubeSyncEnabled()) {

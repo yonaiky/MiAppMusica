@@ -124,6 +124,7 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
@@ -617,22 +618,22 @@ fun BaseMediaItemMenu(
         onAddToPreferites = onAddToPreferites,
         onMatchingSong =  onMatchingSong,
         onAddToPlaylist = { playlist, position ->
-            Database.asyncTransaction {
-                insert(mediaItem)
-                insert(
-                    SongPlaylistMap(
-                        songId = mediaItem.mediaId,
-                        playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
-                        position = position
-                    ).default()
-                )
-            }
-
-            if(isYouTubeSyncEnabled() && playlist.isYoutubePlaylist && playlist.isEditable)
-                CoroutineScope(Dispatchers.IO).launch {
-                    playlist.browseId?.let { YtMusic.addToPlaylist(cleanPrefix(it), mediaItem.mediaId) }
+            if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
+                Database.asyncTransaction {
+                    insert(mediaItem)
+                    insert(
+                        SongPlaylistMap(
+                            songId = mediaItem.mediaId,
+                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            position = position
+                        ).default()
+                    )
                 }
-
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    addSongToYtPlaylist(playlist.id, position, playlist.browseId ?: "", mediaItem)
+                }
+            }
             if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                 Timber.d("BaseMediaItemMenu onAddToPlaylist mediaItem ${mediaItem.mediaId}")
                 addToPipedPlaylist(
@@ -704,22 +705,22 @@ fun MiniMediaItemMenu(
         mediaItem = mediaItem,
         onDismiss = onDismiss,
         onAddToPlaylist = { playlist, position ->
-            Database.asyncTransaction {
-                insert(mediaItem)
-                insert(
-                    SongPlaylistMap(
-                        songId = mediaItem.mediaId,
-                        playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
-                        position = position
-                    ).default()
-                )
-            }
-
-            if(isYouTubeSyncEnabled() && playlist.isYoutubePlaylist && playlist.isEditable)
-                CoroutineScope(Dispatchers.IO).launch {
-                    playlist.browseId?.let { YtMusic.addToPlaylist(cleanPrefix(it), mediaItem.mediaId) }
+            if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
+                Database.asyncTransaction {
+                    insert(mediaItem)
+                    insert(
+                        SongPlaylistMap(
+                            songId = mediaItem.mediaId,
+                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            position = position
+                        ).default()
+                    )
                 }
-
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    addSongToYtPlaylist(playlist.id, position, playlist.browseId ?: "", mediaItem)
+                }
+            }
             onDismiss()
         },
         onGoToPlaylist = {

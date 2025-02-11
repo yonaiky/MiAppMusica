@@ -1350,7 +1350,7 @@ fun LocalPlaylistSongs(
 
 
 
-                    if ((playlistPreview?.playlist?.browseId == null) || (playlistPreview?.playlist?.isEditable == true)) {
+                    if ((playlistPreview?.playlist?.isYoutubePlaylist) == false) {
                         HeaderIconButton(
                             icon = R.drawable.random,
                             enabled = playlistSongs.any {
@@ -2373,8 +2373,7 @@ fun LocalPlaylistSongs(
                                                 onMatchingSong = {
                                                     if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
                                                         SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
-                                                    } else if ((playlistPreview?.playlist?.browseId == null)
-                                                                || (playlistPreview?.playlist?.isEditable == true)){
+                                                    } else if ((playlistPreview?.playlist?.isYoutubePlaylist) == false){
                                                         songMatchingDialogEnable = true
                                                         matchingSongEntity = song
                                                     } else {
