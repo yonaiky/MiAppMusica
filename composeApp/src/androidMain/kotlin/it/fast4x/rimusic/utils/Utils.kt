@@ -1016,9 +1016,9 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                         )
                     }
                 }
-                if (index != 0) {
+                if (items.size == 50) {
                     SmartMessage(
-                        "${mediaItems.size - index * 50} Songs Remaining",
+                        "${mediaItems.size - (index + 1) * 50} Songs Remaining",
                         context = appContext(),
                         durationLong = false
                     )
@@ -1051,7 +1051,7 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                                   )
                                 }
                                 SmartMessage(
-                                    "${items.size - index*50} Songs Remaining",
+                                    "${items.size - (index + 1)} Songs Remaining",
                                     context = appContext(),
                                     durationLong = false
                                 )
