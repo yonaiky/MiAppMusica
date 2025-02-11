@@ -72,6 +72,7 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
@@ -123,6 +124,8 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addSongToYtPlaylist
+import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import timber.log.Timber
@@ -151,10 +154,22 @@ fun InHistoryMediaItemMenu(
         onHideFromDatabase = onHideFromDatabase,
         onDeleteFromDatabase = onDeleteFromDatabase,
         onAddToPreferites = {
-            Database.asyncTransaction {
-                like(song.id, System.currentTimeMillis())
+            if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
+                SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+            } else if (!isYouTubeSyncEnabled()){
+                Database.asyncTransaction {
+                    like(
+                        song.asMediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                    MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
+                }
             }
-            MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
+            else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    addToYtLikedSong(song.asMediaItem)
+                }
+            }
         },
         modifier = modifier,
         disableScrollingText = disableScrollingText
@@ -225,10 +240,22 @@ fun InPlaylistMediaItemMenu(
             }
         },
         onAddToPreferites = {
-            Database.asyncTransaction {
-                like(song.id, System.currentTimeMillis())
+            if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
+                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+            } else if (!isYouTubeSyncEnabled()){
+                Database.asyncTransaction {
+                    like(
+                        song.asMediaItem.mediaId,
+                        System.currentTimeMillis()
+                    )
+                    MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
+                }
             }
-            MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
+            else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    addToYtLikedSong(song.asMediaItem)
+                }
+            }
         },
         onMatchingSong = { if (onMatchingSong != null) {onMatchingSong()}
             onDismiss() },
@@ -304,13 +331,22 @@ fun NonQueuedMediaItemMenuLibrary(
             onHideFromDatabase = { isHiding = true },
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = {
-                Database.asyncTransaction {
-                    like(
-                        mediaItem.mediaId,
-                        System.currentTimeMillis()
-                    )
+                if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
+                    SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+                } else if (!isYouTubeSyncEnabled()){
+                    Database.asyncTransaction {
+                        like(
+                            mediaItem.mediaId,
+                            System.currentTimeMillis()
+                        )
+                        MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
+                    }
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
+                else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        addToYtLikedSong(mediaItem)
+                    }
+                }
             },
             modifier = modifier,
             disableScrollingText = disableScrollingText
@@ -338,13 +374,22 @@ fun NonQueuedMediaItemMenuLibrary(
             onHideFromDatabase = { isHiding = true },
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = {
-                Database.asyncTransaction {
-                    like(
-                        mediaItem.mediaId,
-                        System.currentTimeMillis()
-                    )
+                if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
+                    SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+                } else if (!isYouTubeSyncEnabled()){
+                    Database.asyncTransaction {
+                        like(
+                            mediaItem.mediaId,
+                            System.currentTimeMillis()
+                        )
+                        MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
+                    }
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
+                else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        addToYtLikedSong(mediaItem)
+                    }
+                }
             },
             onMatchingSong = onMatchingSong,
             modifier = modifier,
@@ -486,13 +531,22 @@ fun QueuedMediaItemMenu(
                 navController.navigate(route = "${NavRoutes.localPlaylist.name}/$it")
             },
             onAddToPreferites = {
-                Database.asyncTransaction {
-                    like(
-                        mediaItem.mediaId,
-                        System.currentTimeMillis()
-                    )
+                if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
+                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                } else if (!isYouTubeSyncEnabled()){
+                    Database.asyncTransaction {
+                        like(
+                            mediaItem.mediaId,
+                            System.currentTimeMillis()
+                        )
+                        MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
+                    }
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
+                else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        addToYtLikedSong(mediaItem)
+                    }
+                }
             },
             disableScrollingText = disableScrollingText
         )
@@ -521,13 +575,22 @@ fun QueuedMediaItemMenu(
                 navController.navigate(route = "${NavRoutes.playlist.name}/$it")
             },
             onAddToPreferites = {
-                Database.asyncTransaction {
-                    like(
-                        mediaItem.mediaId,
-                        System.currentTimeMillis()
-                    )
+                if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
+                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                } else if (!isYouTubeSyncEnabled()){
+                    Database.asyncTransaction {
+                        like(
+                            mediaItem.mediaId,
+                            System.currentTimeMillis()
+                        )
+                        MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
+                    }
                 }
-                MyDownloadHelper.autoDownloadWhenLiked(context,mediaItem)
+                else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        addToYtLikedSong(mediaItem)
+                    }
+                }
             },
             onMatchingSong = onMatchingSong,
             disableScrollingText = disableScrollingText
@@ -582,22 +645,22 @@ fun BaseMediaItemMenu(
         onAddToPreferites = onAddToPreferites,
         onMatchingSong =  onMatchingSong,
         onAddToPlaylist = { playlist, position ->
-            Database.asyncTransaction {
-                insert(mediaItem)
-                insert(
-                    SongPlaylistMap(
-                        songId = mediaItem.mediaId,
-                        playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
-                        position = position
-                    ).default()
-                )
-            }
-
-            if(isYouTubeSyncEnabled() && playlist.isYoutubePlaylist && playlist.isEditable)
-                CoroutineScope(Dispatchers.IO).launch {
-                    playlist.browseId?.let { YtMusic.addToPlaylist(cleanPrefix(it), mediaItem.mediaId) }
+            if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
+                Database.asyncTransaction {
+                    insert(mediaItem)
+                    insert(
+                        SongPlaylistMap(
+                            songId = mediaItem.mediaId,
+                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            position = position
+                        ).default()
+                    )
                 }
-
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    addSongToYtPlaylist(playlist.id, position, playlist.browseId ?: "", mediaItem)
+                }
+            }
             if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                 Timber.d("BaseMediaItemMenu onAddToPlaylist mediaItem ${mediaItem.mediaId}")
                 addToPipedPlaylist(
@@ -669,22 +732,22 @@ fun MiniMediaItemMenu(
         mediaItem = mediaItem,
         onDismiss = onDismiss,
         onAddToPlaylist = { playlist, position ->
-            Database.asyncTransaction {
-                insert(mediaItem)
-                insert(
-                    SongPlaylistMap(
-                        songId = mediaItem.mediaId,
-                        playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
-                        position = position
-                    ).default()
-                )
-            }
-
-            if(isYouTubeSyncEnabled() && playlist.isYoutubePlaylist && playlist.isEditable)
-                CoroutineScope(Dispatchers.IO).launch {
-                    playlist.browseId?.let { YtMusic.addToPlaylist(cleanPrefix(it), mediaItem.mediaId) }
+            if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
+                Database.asyncTransaction {
+                    insert(mediaItem)
+                    insert(
+                        SongPlaylistMap(
+                            songId = mediaItem.mediaId,
+                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            position = position
+                        ).default()
+                    )
                 }
-
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                    addSongToYtPlaylist(playlist.id, position, playlist.browseId ?: "", mediaItem)
+                }
+            }
             onDismiss()
         },
         onGoToPlaylist = {
@@ -1225,12 +1288,20 @@ fun MediaItemMenu(
                             color = colorPalette().favoritesIcon,
                             //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
                             onClick = {
-                                Database.asyncTransaction {
-                                    if ( like( mediaItem.mediaId, setLikeState(likedAt) ) == 0 ) {
-                                        insert(mediaItem, Song::toggleLike)
+                                if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                    SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                } else if (!isYouTubeSyncEnabled()){
+                                    Database.asyncTransaction {
+                                        if (like(mediaItem.mediaId, setLikeState(likedAt)) == 0) {
+                                            insert(mediaItem, Song::toggleLike)
+                                        }
+                                        MyDownloadHelper.autoDownloadWhenLiked(context(), mediaItem)
+                                    }
+                                } else {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        addToYtLikedSong(mediaItem)
                                     }
                                 }
-                                MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                             },
                             modifier = Modifier
                                 .padding(all = 4.dp)

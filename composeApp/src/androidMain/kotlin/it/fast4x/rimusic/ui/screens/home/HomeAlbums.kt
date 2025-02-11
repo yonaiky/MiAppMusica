@@ -93,6 +93,7 @@ import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.autoSyncToolbutton
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.filterByKey
@@ -437,23 +438,28 @@ fun HomeAlbums(
                                                     if (position > 0) position++ else position =
                                                         0
 
-                                                    songs.forEachIndexed { index, song ->
-                                                        Database.asyncTransaction {
-                                                            insert(song.asMediaItem)
-                                                            insert(
-                                                                SongPlaylistMap(
-                                                                    songId = song.asMediaItem.mediaId,
-                                                                    playlistId = playlistPreview.playlist.id,
-                                                                    position = position + index
-                                                                ).default()
-                                                            )
+                                                    if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
+                                                        songs.forEachIndexed { index, song ->
+                                                            Database.asyncTransaction {
+                                                                insert(song.asMediaItem)
+                                                                insert(
+                                                                    SongPlaylistMap(
+                                                                        songId = song.asMediaItem.mediaId,
+                                                                        playlistId = playlistPreview.playlist.id,
+                                                                        position = position + index
+                                                                    ).default()
+                                                                )
+                                                            }
                                                         }
-                                                    }
-                                                    if (isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
+                                                    } else {
                                                         CoroutineScope(Dispatchers.IO).launch {
-                                                            cleanPrefix(playlistPreview.playlist.browseId ?: "").let { id -> YtMusic.addToPlaylist(id, songs.map{it.asMediaItem.mediaId})}
+                                                            addToYtPlaylist(playlistPreview.playlist.id,
+                                                                position,
+                                                                playlistPreview.playlist.browseId ?: "",
+                                                                songs.map{it.asMediaItem})
                                                         }
                                                     }
+
 
                                                 },
                                                 onGoToPlaylist = {
