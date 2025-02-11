@@ -129,6 +129,7 @@ import kotlinx.coroutines.withContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import timber.log.Timber
 
 
@@ -545,27 +546,32 @@ fun Podcast(
                                                             playlistPreview.songCount.minus(1) ?: 0
                                                         if (position > 0) position++ else position = 0
 
-                                                        podcastPage?.listEpisode?.forEachIndexed { index, song ->
-                                                            runCatching {
-                                                                Database.insert(song.asMediaItem)
-                                                                Database.insert(
-                                                                    SongPlaylistMap(
-                                                                        songId = song.asMediaItem.mediaId,
-                                                                        playlistId = playlistPreview.playlist.id,
-                                                                        position = position + index
-                                                                    ).default()
-                                                                )
-                                                            }.onFailure {
-                                                                Timber.e("Failed onAddToPlaylist in PlaylistSongListModern  ${it.stackTraceToString()}")
+                                                        if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
+                                                            podcastPage?.listEpisode?.forEachIndexed { index, song ->
+                                                                runCatching {
+                                                                    Database.insert(song.asMediaItem)
+                                                                    Database.insert(
+                                                                        SongPlaylistMap(
+                                                                            songId = song.asMediaItem.mediaId,
+                                                                            playlistId = playlistPreview.playlist.id,
+                                                                            position = position + index
+                                                                        ).default()
+                                                                    )
+                                                                }.onFailure {
+                                                                    Timber.e("Failed onAddToPlaylist in PlaylistSongListModern  ${it.stackTraceToString()}")
+                                                                }
                                                             }
-                                                        }
-                                                        if(isYouTubeSyncEnabled() && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable) {
+                                                        } else {
                                                             CoroutineScope(Dispatchers.IO).launch {
                                                                 playlistPreview.playlist.browseId?.let { id ->
-                                                                    YtMusic.addToPlaylist(id, podcastPage?.listEpisode?.map { it.asMediaItem.mediaId } ?: emptyList())
+                                                                    addToYtPlaylist(playlistPreview.playlist.id,
+                                                                        position,
+                                                                        id,
+                                                                        podcastPage?.listEpisode?.map { it.asMediaItem } ?: emptyList())
                                                                 }
                                                             }
                                                         }
+
                                                         CoroutineScope(Dispatchers.Main).launch {
                                                             SmartMessage(context.resources.getString(R.string.done), type = PopupType.Success, context = context)
                                                         }

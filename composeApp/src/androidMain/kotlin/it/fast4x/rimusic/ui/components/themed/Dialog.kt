@@ -2006,6 +2006,7 @@ fun SongMatchingDialog(
                     itemsIndexed(songsList) { _, song ->
                         val artistsNames = song?.authors?.filter { it.endpoint != null }?.map { it.name }
                         val artistsIds = song?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
+                        val artistNameString = song?.asMediaItem?.mediaMetadata?.artist?.toString() ?: ""
                         if (song != null) {
                             Row(horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically,
@@ -2066,6 +2067,7 @@ fun SongMatchingDialog(
                                                     }
                                                 }
                                             }
+                                            Database.updateSongArtist(song.asMediaItem.mediaId, artistNameString)
                                         }
                                         onDismiss()
                                     }

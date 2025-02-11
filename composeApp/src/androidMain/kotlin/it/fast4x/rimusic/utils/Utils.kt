@@ -26,9 +26,14 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import com.zionhuang.innertube.pages.LibraryPage
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.UserAgent
+import io.ktor.http.HttpStatusCode
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.YtMusic.addToPlaylist
+import it.fast4x.innertube.YtMusic.likeVideoOrSong
+import it.fast4x.innertube.YtMusic.removelikeVideoOrSong
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.playlistPage
@@ -39,8 +44,13 @@ import it.fast4x.innertube.utils.getProxy
 import it.fast4x.kugou.KuGou
 import it.fast4x.lrclib.LrcLib
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion.getLikedAt
 import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.context
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
@@ -52,11 +62,14 @@ import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -107,7 +120,8 @@ fun songToggleLike( song: Song ) {
     }
 }
 
-fun mediaItemToggleLike( mediaItem: MediaItem ) {
+@OptIn(UnstableApi::class)
+fun mediaItemToggleLike( mediaItem: MediaItem) {
     Database.asyncTransaction {
         if (songExist(mediaItem.mediaId) == 0)
             insert(mediaItem, Song::toggleLike)
@@ -122,6 +136,10 @@ fun mediaItemToggleLike( mediaItem: MediaItem ) {
                 null
             )
         //}
+        MyDownloadHelper.autoDownloadWhenLiked(
+            context(),
+            mediaItem
+        )
     }
 }
 
@@ -776,6 +794,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
     val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
+    val artistNameString = matchedSong?.asMediaItem?.mediaMetadata?.artist?.toString() ?: ""
     val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
@@ -836,6 +855,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                         }
                     }
                 }
+                Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
                 if (song.thumbnailUrl == "") Database.delete(song)
             }
         } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
@@ -875,6 +895,7 @@ suspend fun updateLocalPlaylist(song: Song){
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
     val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
+    val artistNameString = matchedSong?.asMediaItem?.mediaMetadata?.artist?.toString() ?: ""
     val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
@@ -905,6 +926,7 @@ suspend fun updateLocalPlaylist(song: Song){
                         }
                     }
                 }
+                Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
             }
         }
     }
@@ -962,6 +984,214 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                         }.onFailure {}
                     }
                 }
+        }
+    }
+}
+
+suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: String, mediaItems: List<MediaItem>){
+    val mediaItemsChunks = mediaItems.chunked(50)
+    mediaItemsChunks.forEachIndexed { index, items ->
+        if (mediaItems.size <= 50) {}
+        else if (index == 0) {
+            SmartMessage(
+                "${mediaItems.size} "+appContext().resources.getString(R.string.songs_adding_in_yt),
+                context = appContext(),
+                durationLong = true
+            )
+        } else {
+            delay(2000)
+        }
+        addToPlaylist(ytplaylistId, items.map { it.mediaId })
+            .onSuccess {
+                items.forEachIndexed { index, item ->
+                    Database.asyncTransaction {
+                        if (songExist(item.mediaId) == 0){
+                            Database.insert(item)
+                        }
+                        Database.insert(
+                            SongPlaylistMap(
+                                songId = item.mediaId,
+                                playlistId = localPlaylistId,
+                                position = position + index
+                            ).default()
+                        )
+                    }
+                }
+                if (items.size == 50) {
+                    SmartMessage(
+                        "${mediaItems.size - (index + 1) * 50} Songs Remaining",
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
+            }
+            .onFailure {
+                println("YtMusic addToPlaylist (list of size ${items.size}) error: ${it.stackTraceToString()}")
+                if(it is ClientRequestException && it.response.status == HttpStatusCode.BadRequest) {
+                    SmartMessage(
+                        appContext().resources.getString(R.string.adding_yt_to_pl_failed),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                    items.forEach { item ->
+                        delay(500)
+                        addToPlaylist(ytplaylistId, item.mediaId)
+                            .onFailure {
+                            println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
+                                SmartMessage(
+                                    appContext().resources.getString(R.string.songs_add_yt_failed)+"${item.mediaMetadata.title} - ${item.mediaMetadata.artist}",
+                                    type = PopupType.Error,
+                                    context = appContext(),
+                                    durationLong = false
+                                )
+                            }.onSuccess {
+                                Database.asyncTransaction {
+                                    if (songExist(item.mediaId) == 0){
+                                       Database.insert(item)
+                                   }
+                                   insert(
+                                      SongPlaylistMap(
+                                        songId = item.mediaId,
+                                        playlistId = localPlaylistId,
+                                        position = position
+                                      ).default()
+                                  )
+                                }
+                                SmartMessage(
+                                    "${items.size - (index + 1)} Songs Remaining",
+                                    context = appContext(),
+                                    durationLong = false
+                                )
+                            }
+                    }
+                }
+            }
+    }
+    SmartMessage(
+        "${mediaItems.size} "+ appContext().resources.getString(R.string.songs_added_in_yt),
+        context = appContext(),
+        durationLong = true
+    )
+}
+
+suspend fun addSongToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: String, mediaItem: MediaItem){
+    if (isYouTubeSyncEnabled()) {
+        addToPlaylist(ytplaylistId,mediaItem.mediaId)
+            .onSuccess {
+                Database.asyncTransaction {
+                    if (songExist(mediaItem.mediaId) == 0) {
+                        Database.insert(mediaItem)
+                    }
+                    insert(
+                        SongPlaylistMap(
+                            songId = mediaItem.mediaId,
+                            playlistId = localPlaylistId,
+                            position = position
+                        ).default()
+                    )
+                }
+                SmartMessage(
+                    appContext().resources.getString(R.string.songs_add_yt_success),
+                    context = appContext(),
+                    durationLong = true
+                )
+            }
+            .onFailure {
+                SmartMessage(
+                    appContext().resources.getString(R.string.songs_add_yt_failed),
+                    context = appContext(),
+                    durationLong = true
+                )
+            }
+
+    }
+}
+
+
+@OptIn(UnstableApi::class)
+suspend fun addToYtLikedSong(mediaItem: MediaItem){
+    if (isYouTubeSyncEnabled()) {
+        if (getLikedAt(mediaItem.mediaId) in listOf(-1L, null)) {
+            likeVideoOrSong(mediaItem.mediaId)
+                .onSuccess {
+                    Database.asyncTransaction {
+                        if (songExist(mediaItem.mediaId) == 0) {
+                            Database.insert(mediaItem)
+                        }
+                        like(mediaItem.mediaId, System.currentTimeMillis())
+                        MyDownloadHelper.autoDownloadWhenLiked(
+                            context(),
+                            mediaItem
+                        )
+                    }
+                    SmartMessage(
+                        appContext().resources.getString(R.string.songs_liked_yt),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
+                .onFailure {
+                    SmartMessage(
+                        appContext().resources.getString(R.string.songs_liked_yt_failed),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
+        } else {
+            removelikeVideoOrSong(mediaItem.mediaId)
+                .onSuccess {
+                    Database.asyncTransaction {
+                        like(mediaItem.mediaId, null)
+                        MyDownloadHelper.autoDownloadWhenLiked(
+                            context(),
+                            mediaItem
+                        )
+                    }
+                    SmartMessage(
+                        appContext().resources.getString(R.string.song_unliked_yt),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
+                .onFailure {
+                    SmartMessage(
+                        appContext().resources.getString(R.string.songs_unliked_yt_failed),
+                        context = appContext(),
+                        durationLong = false
+                    )
+                }
+        }
+    }
+}
+
+@OptIn(UnstableApi::class)
+suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
+    if (isYouTubeSyncEnabled()) {
+        mediaItems.forEachIndexed { index, item ->
+            delay(1000)
+            likeVideoOrSong(item.mediaId).onSuccess {
+                Database.asyncTransaction {
+                    if (songExist(item.mediaId) == 0) {
+                        Database.insert(item)
+                    }
+                    like(item.mediaId, System.currentTimeMillis())
+                    MyDownloadHelper.autoDownloadWhenLiked(
+                        context(),
+                        item
+                    )
+                }
+                SmartMessage(
+                    "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt),
+                    context = appContext(),
+                    durationLong = false
+                )
+            }.onFailure {
+                SmartMessage(
+                    "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt_failed),
+                    context = appContext(),
+                    durationLong = false
+                )
+            }
         }
     }
 }
