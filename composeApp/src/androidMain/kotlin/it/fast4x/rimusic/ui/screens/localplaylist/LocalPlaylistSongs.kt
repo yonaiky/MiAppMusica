@@ -535,6 +535,7 @@ fun LocalPlaylistSongs(
                                     setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
                                 ).default()
                             }.let(Database::insertSongPlaylistMaps)
+                            .also { SmartMessage(context.resources.getString(R.string.done), context = context) }
                     }
                 }
             } else {
@@ -1607,7 +1608,7 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         */
-                                        onSyncronize = {sync();SmartMessage(context.resources.getString(R.string.done), context = context) },
+                                        onSyncronize = {sync()},
                                         onLinkUnlink = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()){
                                                 SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
