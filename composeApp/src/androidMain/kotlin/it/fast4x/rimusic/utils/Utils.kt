@@ -1170,7 +1170,7 @@ suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
                     like(item.mediaId, System.currentTimeMillis())
                     MyDownloadHelper.autoDownloadWhenLiked(
                         context(),
-                        songById(item.mediaId).asMediaItem
+                        item
                     )
                 }
                 SmartMessage(
