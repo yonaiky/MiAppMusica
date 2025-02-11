@@ -50,6 +50,7 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.context
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
@@ -1037,6 +1038,12 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                         addToPlaylist(ytplaylistId, item.mediaId)
                             .onFailure {
                             println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
+                                SmartMessage(
+                                    appContext().resources.getString(R.string.songs_add_yt_failed)+"${item.mediaMetadata.title} - ${item.mediaMetadata.artist}",
+                                    type = PopupType.Error,
+                                    context = appContext(),
+                                    durationLong = false
+                                )
                             }.onSuccess {
                                 Database.asyncTransaction {
                                     if (songExist(item.mediaId) == 0){
