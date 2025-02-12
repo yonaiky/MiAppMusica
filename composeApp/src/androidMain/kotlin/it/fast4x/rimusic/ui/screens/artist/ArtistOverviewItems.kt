@@ -133,6 +133,7 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
@@ -423,95 +424,91 @@ fun ArtistOverviewItems(
                         )
                     }
                 }
-                items(artistItemsPage?.items!!) { item ->
+                items(artistSongs) { item ->
 
                     println("ArtistOverviewItems item: ${item}")
 
-                    when (item) {
-                        is Innertube.SongItem -> {
-                            if (parentalControlEnabled && item.explicit) return@items
+                    if (parentalControlEnabled && item.isExplicit) return@items
 
-                            downloadState = getDownloadState(item.asMediaItem.mediaId)
-                            val isDownloaded = isDownloadedSong(item.asMediaItem.mediaId)
+                    downloadState = getDownloadState(item.mediaId)
+                    val isDownloaded = isDownloadedSong(item.mediaId)
 
-                            SwipeablePlaylistItem(
-                                mediaItem = item.asMediaItem,
-                                onPlayNext = {
-                                    binder?.player?.addNext(item.asMediaItem)
-                                },
-                                onDownload = {
-                                    binder?.cache?.removeResource(item.asMediaItem.mediaId)
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        Database.resetContentLength( item.asMediaItem.mediaId )
-                                    }
+                    SwipeablePlaylistItem(
+                        mediaItem = item,
+                        onPlayNext = {
+                            binder?.player?.addNext(item)
+                        },
+                        onDownload = {
+                            binder?.cache?.removeResource(item.mediaId)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                Database.resetContentLength( item.mediaId )
+                            }
 
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = item.asMediaItem,
-                                        downloadState = isDownloaded
-                                    )
-                                },
-                                onEnqueue = {
-                                    binder?.player?.enqueue(item.asMediaItem)
+                            manageDownload(
+                                context = context,
+                                mediaItem = item,
+                                downloadState = isDownloaded
+                            )
+                        },
+                        onEnqueue = {
+                            binder?.player?.enqueue(item)
+                        }
+                    ) {
+                        var forceRecompose by remember { mutableStateOf(false) }
+                        SongItem(
+                            song = item,
+                            onDownloadClick = {
+                                binder?.cache?.removeResource(item.mediaId)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    Database.deleteFormat( item.mediaId )
                                 }
-                            ) {
-                                listMediaItems.add(item.asMediaItem)
-                                var forceRecompose by remember { mutableStateOf(false) }
-                                SongItem(
-                                    song = item,
-                                    onDownloadClick = {
-                                        binder?.cache?.removeResource(item.asMediaItem.mediaId)
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            Database.deleteFormat( item.asMediaItem.mediaId )
-                                        }
 
-                                        manageDownload(
-                                            context = context,
-                                            mediaItem = item.asMediaItem,
-                                            downloadState = isDownloaded
+                                manageDownload(
+                                    context = context,
+                                    mediaItem = item,
+                                    downloadState = isDownloaded
+                                )
+                            },
+                            onThumbnailContent = {
+                                NowPlayingSongIndicator(item.mediaId, binder?.player)
+                            },
+                            downloadState = getDownloadState(item.mediaId),
+                            thumbnailSizeDp = songThumbnailSizeDp,
+                            thumbnailSizePx = songThumbnailSizePx,
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onLongClick = {
+                                        menuState.display {
+                                            NonQueuedMediaItemMenu(
+                                                navController = navController,
+                                                onDismiss = {
+                                                    menuState.hide()
+                                                    forceRecompose = true
+                                                },
+                                                mediaItem = item,
+                                                disableScrollingText = disableScrollingText
+                                            )
+                                        };
+                                        hapticFeedback.performHapticFeedback(
+                                            HapticFeedbackType.LongPress
                                         )
                                     },
-                                    thumbnailContent = {
-                                        NowPlayingSongIndicator(item.asMediaItem.mediaId, binder?.player)
-                                    },
-                                    downloadState = getDownloadState(item.asMediaItem.mediaId),
-                                    thumbnailSizeDp = songThumbnailSizeDp,
-                                    thumbnailSizePx = songThumbnailSizePx,
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onLongClick = {
-                                                menuState.display {
-                                                    NonQueuedMediaItemMenu(
-                                                        navController = navController,
-                                                        onDismiss = {
-                                                            menuState.hide()
-                                                            forceRecompose = true
-                                                        },
-                                                        mediaItem = item.asMediaItem,
-                                                        disableScrollingText = disableScrollingText
-                                                    )
-                                                };
-                                                hapticFeedback.performHapticFeedback(
-                                                    HapticFeedbackType.LongPress
-                                                )
-                                            },
-                                            onClick = {
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    withContext(Dispatchers.Main) {
-                                                        binder?.stopRadio()
-                                                        binder?.player?.forcePlayAtIndex(artistSongs, artistSongs.indexOf(item.asMediaItem))
-                                                    }
-                                                }
-
+                                    onClick = {
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            withContext(Dispatchers.Main) {
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlayAtIndex(artistSongs, artistSongs.indexOf(item))
                                             }
-                                        ),
-                                    disableScrollingText = disableScrollingText,
-                                    isNowPlaying = binder?.player?.isNowPlaying(item.key) ?: false,
-                                    forceRecompose = forceRecompose
-                                )
-                            }
-                        }
-                        else -> {}
+                                        }
+
+                                    }
+                                ),
+                            disableScrollingText = disableScrollingText,
+                            isNowPlaying = binder?.player?.isNowPlaying(item.mediaId) ?: false,
+                            forceRecompose = forceRecompose
+                        )
+                    }
+                    /*else -> {}
 //                        is Innertube.AlbumItem -> {
 //                            AlbumItem(
 //                                album = item,
@@ -563,11 +560,7 @@ fun ArtistOverviewItems(
 //                                    navController.navigate("${NavRoutes.artist.name}/${item.key}")
 //                                })
 //                            )
-//                        }
-
-                    }
-
-
+//                        }*/
 
                 }
 
