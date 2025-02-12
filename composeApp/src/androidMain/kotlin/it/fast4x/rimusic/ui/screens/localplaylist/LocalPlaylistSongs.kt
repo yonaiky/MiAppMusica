@@ -555,6 +555,8 @@ fun LocalPlaylistSongs(
 
     val shouldSync = remember(playlistPreview?.playlist?.name) {
         playlistPreview?.playlist?.name?.startsWith(YTP_PREFIX) == true
+    } || remember(playlistPreview?.playlist?.browseId) {
+        playlistPreview?.playlist?.browseId?.startsWith("RDTMAK5uy") == true
     }
 
     LaunchedEffect(shouldSync) {

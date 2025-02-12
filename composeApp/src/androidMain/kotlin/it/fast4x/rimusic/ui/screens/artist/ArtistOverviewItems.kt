@@ -112,9 +112,14 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.MaxSongs
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.isVideoEnabled
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
@@ -122,11 +127,15 @@ import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.forcePlayAtIndex
+import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.playVideo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -201,6 +210,7 @@ fun ArtistOverviewItems(
 
     val thumbnailSizeDp = Dimensions.thumbnails.album //+ 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
+    val maxSongsInQueue by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
     LaunchedEffect(Unit) {
         artistItemsPage = YtMusic.getArtistItemsPage(
@@ -229,6 +239,63 @@ fun ArtistOverviewItems(
     ) {
 
         if (artistItemsPage?.items?.firstOrNull() is Innertube.SongItem) {
+            val artistSongs = artistItemsPage!!.items
+                .map{it as Innertube.SongItem}
+                .map { it.asMediaItem }
+
+            if (showConfirmDownloadAllDialog) {
+                ConfirmationDialog(
+                    text = stringResource(R.string.do_you_really_want_to_download_all),
+                    onDismiss = { showConfirmDownloadAllDialog = false },
+                    onConfirm = {
+                        showConfirmDownloadAllDialog = false
+                        downloadState = Download.STATE_DOWNLOADING
+                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
+                            artistSongs.filter { it.asSong.thumbnailUrl != "" }.forEach {
+                                binder?.cache?.removeResource(it.mediaId)
+                                Database.asyncTransaction {
+                                    Database.insert(
+                                        Song(
+                                            id = it.mediaId,
+                                            title = it.mediaMetadata.title.toString(),
+                                            artistsText = it.mediaMetadata.artist.toString(),
+                                            thumbnailUrl = it.asSong.thumbnailUrl,
+                                            durationText = null
+                                        )
+                                    )
+                                }
+                                manageDownload(
+                                    context = context,
+                                    mediaItem = it,
+                                    downloadState = false
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+
+            if (showConfirmDeleteDownloadDialog) {
+                ConfirmationDialog(
+                    text = stringResource(R.string.do_you_really_want_to_delete_download),
+                    onDismiss = { showConfirmDeleteDownloadDialog = false },
+                    onConfirm = {
+                        showConfirmDeleteDownloadDialog = false
+                        downloadState = Download.STATE_DOWNLOADING
+                        if (artistSongs.isNotEmpty()) {
+                            artistSongs.forEach {
+                                binder?.cache?.removeResource(it.mediaId)
+                                manageDownload(
+                                    context = context,
+                                    mediaItem = it,
+                                    downloadState = true
+                                )
+                            }
+                        }
+                    }
+                )
+            }
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = WindowInsets.systemBars.asPaddingValues()
@@ -246,6 +313,115 @@ fun ArtistOverviewItems(
                             .padding(bottom = 16.dp)
                             .padding(horizontal = 16.dp)
                     )
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .padding(vertical = 10.dp)
+                            .fillMaxWidth()){
+                        HeaderIconButton(
+                            icon = R.drawable.shuffle,
+                            //enabled = artistSongs.any { it.mediaMetadata.artworkUri.toString() != "" && it.song.likedAt != -1L },
+                            color = if (artistSongs.any { it.asSong.thumbnailUrl != "" }) colorPalette().text else colorPalette().textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
+                                            artistSongs.filter { it.asSong.thumbnailUrl != "" }
+                                                .let { songs ->
+                                                    if (songs.isNotEmpty()) {
+                                                        val itemsLimited =
+                                                            if (artistSongs.size > maxSongsInQueue.number) songs.shuffled()
+                                                                .take(maxSongsInQueue.number.toInt()) else songs
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlayFromBeginning(
+                                                            itemsLimited.shuffled()
+                                                        )
+                                                    }
+                                                }
+                                        } else {
+                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                    }
+                                )
+                        )
+                        HeaderIconButton(
+                            icon = R.drawable.enqueue,
+                            //enabled = artistSongs.any { it.mediaMetadata.artworkUri.toString() != "" && it.song.likedAt != -1L },
+                            color = if (artistSongs.any { it.asSong.thumbnailUrl != "" }) colorPalette().text else colorPalette().textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
+                                            binder?.player?.enqueue(artistSongs, context)
+                                        } else {
+                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
+                                    }
+                                )
+                        )
+                        HeaderIconButton(
+                            icon = R.drawable.play_skip_forward,
+                            //enabled = artistSongs.any { it.mediaMetadata.artworkUri.toString() != "" && it.song.likedAt != -1L },
+                            color = if (artistSongs.any { it.asSong.thumbnailUrl != "" }) colorPalette().text else colorPalette().textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
+                                            binder?.player?.addNext(artistSongs, context)
+                                        } else {
+                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
+                                    }
+                                )
+                        )
+                        HeaderIconButton(
+                            icon = R.drawable.downloaded,
+                            //enabled = playlistSongs.any { it.song.likedAt != -1L },
+                            color = if (artistSongs.any { it.asSong.thumbnailUrl != "" }) colorPalette().text else colorPalette().textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        showConfirmDownloadAllDialog = true
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
+                                    }
+                                )
+                        )
+                        HeaderIconButton(
+                            icon = R.drawable.download,
+                            //enabled = playlistSongs.any { it.song.likedAt != -1L },
+                            color = if (artistSongs.any { it.asSong.thumbnailUrl != "" }) colorPalette().text else colorPalette().textDisabled,
+                            onClick = {},
+                            modifier = Modifier
+                                .combinedClickable(
+                                    onClick = {
+                                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
+                                            showConfirmDeleteDownloadDialog = true
+                                        } else {
+                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                    }
+                                )
+                        )
+                    }
                 }
                 items(artistItemsPage?.items!!) { item ->
 
@@ -323,15 +499,7 @@ fun ArtistOverviewItems(
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     withContext(Dispatchers.Main) {
                                                         binder?.stopRadio()
-                                                        binder?.player?.forcePlay(item.asMediaItem)
-                                                        binder?.player?.addMediaItems(
-                                                            artistItemsPage!!.items
-                                                                .map{it as Innertube.SongItem}
-                                                                .map { it.asMediaItem }
-                                                                .filterNot { it.mediaId == item.key }
-                                                                //.toMutableList()
-
-                                                        )
+                                                        binder?.player?.forcePlayAtIndex(artistSongs, artistSongs.indexOf(item.asMediaItem))
                                                     }
                                                 }
 
