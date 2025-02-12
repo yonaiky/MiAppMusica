@@ -41,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -121,6 +122,7 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.themed.AddToPlaylistArtistSongs
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
@@ -226,6 +228,8 @@ fun ArtistOverviewItems(
     val thumbnailSizeDp = Dimensions.thumbnails.album //+ 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
     val maxSongsInQueue by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
+    var forceRecompose by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         artistItemsPage = YtMusic.getArtistItemsPage(
@@ -265,26 +269,26 @@ fun ArtistOverviewItems(
                     onConfirm = {
                         showConfirmDownloadAllDialog = false
                         downloadState = Download.STATE_DOWNLOADING
-                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
-                            artistSongs.filter { it.asSong.thumbnailUrl != "" }.forEach {
+                        Database.asyncTransaction {
+                        if (artistSongs.any { getLikedAt(it.mediaId) != -1L }) {
+                            artistSongs.filter { getLikedAt(it.mediaId) != -1L }.forEach {
                                 binder?.cache?.removeResource(it.mediaId)
-                                Database.asyncTransaction {
-                                    Database.insert(
-                                        Song(
-                                            id = it.mediaId,
-                                            title = it.mediaMetadata.title.toString(),
-                                            artistsText = it.mediaMetadata.artist.toString(),
-                                            thumbnailUrl = it.asSong.thumbnailUrl,
-                                            durationText = null
-                                        )
+                                Database.insert(
+                                    Song(
+                                        id = it.mediaId,
+                                        title = it.mediaMetadata.title.toString(),
+                                        artistsText = it.mediaMetadata.artist.toString(),
+                                        thumbnailUrl = it.asSong.thumbnailUrl,
+                                        durationText = null
                                     )
-                                }
+                                )
                                 manageDownload(
                                     context = context,
                                     mediaItem = it,
                                     downloadState = false
                                 )
                             }
+                        }
                         }
                     }
                 )
@@ -359,21 +363,29 @@ fun ArtistOverviewItems(
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
-                                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
-                                            artistSongs.filter { it.asSong.thumbnailUrl != "" }
-                                                .let { songs ->
-                                                    if (songs.isNotEmpty()) {
-                                                        val itemsLimited =
-                                                            if (artistSongs.size > maxSongsInQueue.number) songs.shuffled()
-                                                                .take(maxSongsInQueue.number.toInt()) else songs
-                                                        binder?.stopRadio()
-                                                        binder?.player?.forcePlayFromBeginning(
-                                                            itemsLimited.shuffled()
-                                                        )
+                                        coroutineScope.launch(Dispatchers.IO) {
+                                            if (artistSongs.any { Database.getLikedAt(it.mediaId) != -1L }) {
+                                                artistSongs.filter { Database.getLikedAt(it.mediaId) != -1L }
+                                                    .let { songs ->
+                                                        if (songs.isNotEmpty()) {
+                                                            val itemsLimited =
+                                                                if (songs.size > maxSongsInQueue.number) songs.shuffled()
+                                                                    .take(maxSongsInQueue.number.toInt()) else songs
+                                                            withContext(Dispatchers.Main){
+                                                                binder?.stopRadio()
+                                                                binder?.player?.forcePlayFromBeginning(
+                                                                    itemsLimited.shuffled()
+                                                                )
+                                                            }
+                                                        }
                                                     }
-                                                }
-                                        } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                            } else {
+                                                SmartMessage(
+                                                    context.resources.getString(R.string.disliked_this_collection),
+                                                    type = PopupType.Error,
+                                                    context = context
+                                                )
+                                            }
                                         }
                                     },
                                     onLongClick = {
@@ -389,10 +401,15 @@ fun ArtistOverviewItems(
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
-                                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
-                                            binder?.player?.enqueue(artistSongs, context)
-                                        } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                        coroutineScope.launch(Dispatchers.IO) {
+                                            if (artistSongs.any { Database.getLikedAt(it.mediaId) != -1L }) {
+                                                val filteredArtistSongs = artistSongs.filter {Database.getLikedAt(it.mediaId) != -1L}
+                                                withContext(Dispatchers.Main) {
+                                                    binder?.player?.enqueue(filteredArtistSongs, context)
+                                                }
+                                            } else {
+                                                SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                            }
                                         }
                                     },
                                     onLongClick = {
@@ -408,14 +425,19 @@ fun ArtistOverviewItems(
                             modifier = Modifier
                                 .combinedClickable(
                                     onClick = {
-                                        if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
-                                            binder?.player?.addNext(artistSongs, context)
-                                        } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                        coroutineScope.launch(Dispatchers.IO) {
+                                            if (artistSongs.any { Database.getLikedAt(it.mediaId) != -1L }) {
+                                                val filteredArtistSongs = artistSongs.filter {Database.getLikedAt(it.mediaId) != -1L}
+                                                withContext(Dispatchers.Main) {
+                                                    binder?.player?.addNext(filteredArtistSongs, context)
+                                                }
+                                            } else {
+                                                SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                            }
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
+                                        SmartMessage(context.resources.getString(R.string.play_next), context = context)
                                     }
                                 )
                         )
@@ -454,6 +476,36 @@ fun ArtistOverviewItems(
                                 )
                         )
                         HeaderIconButton(
+                            icon = R.drawable.add_in_playlist,
+                            color = colorPalette().text,
+                            onClick = {},
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                                .combinedClickable(
+                                    onClick = {
+                                        menuState.display {
+                                            AddToPlaylistArtistSongs(
+                                                navController = navController,
+                                                onDismiss = {
+                                                    menuState.hide()
+                                                    forceRecompose = true
+                                                },
+                                                mediaItems = artistSongs,
+                                                onClosePlayer = {
+                                                    onDismiss()
+                                                },
+                                            )
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.info_add_in_playlist),
+                                            context = context
+                                        )
+                                    }
+                                )
+                        )
+                        HeaderIconButton(
                             icon = R.drawable.heart,
                             enabled = artistSongs.isNotEmpty(),
                             color = colorPalette().text,
@@ -465,20 +517,18 @@ fun ArtistOverviewItems(
                                         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
                                             SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
                                         } else if (!isYouTubeSyncEnabled()){
-                                            Database.asyncTransaction {
-                                                artistSongs.filter { getLikedAt(it.mediaId) in listOf(-1L,null) }.forEachIndexed { _, song ->
-                                                    Database.asyncTransaction {
-                                                        if (like(song.mediaId, setLikeState(song.asSong.likedAt)) == 0
-                                                        ) {
-                                                            insert(song, Song::toggleLike)
-                                                        }
+                                            artistSongs.forEachIndexed { _, song ->
+                                                Database.asyncTransaction {
+                                                    if (like(song.mediaId, setLikeState(song.asSong.likedAt)) == 0
+                                                    ) {
+                                                        insert(song, Song::toggleLike)
                                                     }
                                                 }
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.done),
-                                                    context = context
-                                                )
                                             }
+                                            SmartMessage(
+                                                context.resources.getString(R.string.done),
+                                                context = context
+                                            )
                                         } else {
                                             showYoutubeLikeConfirmDialog = true
                                         }
@@ -523,7 +573,6 @@ fun ArtistOverviewItems(
                             binder?.player?.enqueue(item)
                         }
                     ) {
-                        var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = item,
                             onDownloadClick = {
@@ -566,7 +615,10 @@ fun ArtistOverviewItems(
                                         CoroutineScope(Dispatchers.IO).launch {
                                             withContext(Dispatchers.Main) {
                                                 binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(artistSongs, artistSongs.indexOf(item))
+                                                binder?.player?.forcePlayAtIndex(
+                                                    artistSongs.filter { Database.getLikedAt(it.mediaId)  != -1L},
+                                                    artistSongs.filter { Database.getLikedAt(it.mediaId)  != -1L}.indexOf(item)
+                                                )
                                             }
                                         }
 
