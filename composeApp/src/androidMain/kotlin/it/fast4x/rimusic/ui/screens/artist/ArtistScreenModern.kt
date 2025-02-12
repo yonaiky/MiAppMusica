@@ -96,6 +96,7 @@ import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -162,7 +163,7 @@ fun ArtistScreenModern(
                 artist = currentArtist
 
                 if (artistPage == null && (currentArtist?.timestamp == null || mustFetch)) {
-                    withContext(Dispatchers.IO) {
+                    runBlocking(Dispatchers.IO) {
                         YtMusic.getArtistPage(browseId = browseId)
                             .onSuccess { currentArtistPage ->
                                 artistPage = currentArtistPage
