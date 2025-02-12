@@ -73,6 +73,7 @@ fun AlbumItem(
     alternative: Boolean = false,
     yearCentered: Boolean? = true,
     showAuthors: Boolean? = false,
+    isYoutubeAlbum: Boolean = false,
     disableScrollingText: Boolean
 ) {
     AlbumItem(
@@ -85,7 +86,8 @@ fun AlbumItem(
         thumbnailSizeDp = thumbnailSizeDp,
         alternative = alternative,
         modifier = modifier,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        isYoutubeAlbum = isYoutubeAlbum
     )
 }
 
