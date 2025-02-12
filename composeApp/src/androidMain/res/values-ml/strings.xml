@@ -123,7 +123,7 @@
     <string name="delete_playback_events">%1$s പ്ലേബാക്ക് ഇവന്റുകൾ നീക്കം ചെയ്യുക</string>
     <string name="existing_data_will_be_overwritten">Existing data will be overwritten. %1$s will automatically close itself after restoring the database.</string>
     <string name="folder_cache">ഫോൾഡർ കാഷെ</string>
-    <string name="cache_reset_by_clicking_button">Attention by clicking on the button below, the cache location folder will be reset to the default</string>
+    <string name="cache_reset_by_clicking_button"></string>
     <string name="cache_location_folder">സ്ഥലം ഫോൾഡർ</string>
     <string name="custom_cache_from_android_10_may_not_be_available">ആൻഡ്രോയിഡ് 10 മുതൽ ഈ സവിശേഷത ലഭ്യമല്ലാവും</string>
     <string name="reset_cache_location_folder">കാഷെ ലൊക്കേഷൻ ഫോൾഡർ പുന: ക്രമീകരിക്കുക</string>
@@ -914,4 +914,15 @@
     <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Apply a depth effect to the audio</string>
     <string name="settings_audio_focus">Audio focus</string>
     <string name="settings_audio_focus_info">Allows automatic pause and resume playback after a call for example</string>
+    <string name="please_wait">Please Wait</string>
+    <string name="songs_liked_yt">Song(s) are Liked in YouTube</string>
+    <string name="song_unliked_yt">Song is Unliked in YouTube</string>
+    <string name="add_rimusic_to_ytm_favorites">Like RiMusic Liked songs in Youtube</string>
+    <string name="do_you_really_want_to_like_all_rimusictoytmusic">(estimated time) is required to like all the songs. This action cannot be resumed if cancelled in between. You need to close the app to cancel this process. Do you want to continue?</string>
+    <string name="do_you_really_want_to_like_all">(estimated time) is required to like all the songs. You need to close the app to cancel this process. Do you want to continue?</string>
+    <string name="songs_liked_yt_failed">Failed to like the song in YouTube</string>
+    <string name="songs_unliked_yt_failed">Failed to unlike the song in YouTube</string>
+    <string name="adding_yt_to_pl_failed">Error occurred for the next 50 songs. Adding songs to the playlist one by one</string>
+    <string name="songs_add_yt_success">Added the song in the YouTube Playlist</string>
+    <string name="songs_add_yt_failed">Failed to add the song in the YouTube Playlist</string>
 </resources>
