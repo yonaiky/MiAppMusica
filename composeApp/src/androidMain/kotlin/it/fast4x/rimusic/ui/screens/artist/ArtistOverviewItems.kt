@@ -612,16 +612,20 @@ fun ArtistOverviewItems(
                                         )
                                     },
                                     onClick = {
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            withContext(Dispatchers.Main) {
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(
-                                                    artistSongs.filter { Database.getLikedAt(it.mediaId)  != -1L},
-                                                    artistSongs.filter { Database.getLikedAt(it.mediaId)  != -1L}.indexOf(item)
-                                                )
+                                        coroutineScope.launch(Dispatchers.IO) {
+                                            val filteredArtistSongs = artistSongs.filter {Database.getLikedAt(it.mediaId) != -1L}
+                                            if (item in filteredArtistSongs){
+                                                withContext(Dispatchers.Main) {
+                                                    binder?.player?.forcePlayAtIndex(
+                                                        filteredArtistSongs,
+                                                        filteredArtistSongs.indexOf(item)
+                                                    )
+                                                }
+                                            } else {
+                                                SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
                                             }
-                                        }
 
+                                        }
                                     }
                                 ),
                             disableScrollingText = disableScrollingText,
