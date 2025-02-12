@@ -59,6 +59,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
+import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.BrowseEndpoint
@@ -73,6 +74,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
@@ -126,18 +128,23 @@ import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.VideoItem
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.addToYtLikedSongs
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
+import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isExplicit
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.playVideo
+import it.fast4x.rimusic.utils.setLikeState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -193,6 +200,13 @@ fun ArtistOverviewItems(
     var showConfirmDownloadAllDialog by remember {
         mutableStateOf(false)
     }
+
+    var showYoutubeLikeConfirmDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var notLikedSongs by persistList<MediaItem>("")
+    var totalMinutesToLike by remember { mutableStateOf("") }
 
     var translateEnabled by remember {
         mutableStateOf(false)
@@ -292,6 +306,23 @@ fun ArtistOverviewItems(
                                     downloadState = true
                                 )
                             }
+                        }
+                    }
+                )
+            }
+
+            if (showYoutubeLikeConfirmDialog) {
+                Database.asyncTransaction {
+                    notLikedSongs = artistSongs.filter { getLikedAt(it.mediaId) in listOf(-1L,null)}
+                }
+                totalMinutesToLike = formatAsDuration(notLikedSongs.size.toLong()*1000)
+                ConfirmationDialog(
+                    text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
+                    onDismiss = { showYoutubeLikeConfirmDialog = false },
+                    onConfirm = {
+                        showYoutubeLikeConfirmDialog = false
+                        CoroutineScope(Dispatchers.IO).launch {
+                            addToYtLikedSongs(notLikedSongs)
                         }
                     }
                 )
@@ -419,6 +450,44 @@ fun ArtistOverviewItems(
                                     },
                                     onLongClick = {
                                         SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                    }
+                                )
+                        )
+                        HeaderIconButton(
+                            icon = R.drawable.heart,
+                            enabled = artistSongs.isNotEmpty(),
+                            color = colorPalette().text,
+                            onClick = {},
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                                .combinedClickable(
+                                    onClick = {
+                                        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
+                                            SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                        } else if (!isYouTubeSyncEnabled()){
+                                            Database.asyncTransaction {
+                                                artistSongs.filter { getLikedAt(it.mediaId) in listOf(-1L,null) }.forEachIndexed { _, song ->
+                                                    Database.asyncTransaction {
+                                                        if (like(song.mediaId, setLikeState(song.asSong.likedAt)) == 0
+                                                        ) {
+                                                            insert(song, Song::toggleLike)
+                                                        }
+                                                    }
+                                                }
+                                                SmartMessage(
+                                                    context.resources.getString(R.string.done),
+                                                    context = context
+                                                )
+                                            }
+                                        } else {
+                                            showYoutubeLikeConfirmDialog = true
+                                        }
+                                    },
+                                    onLongClick = {
+                                        SmartMessage(
+                                            context.resources.getString(R.string.add_to_favorites),
+                                            context = context
+                                        )
                                     }
                                 )
                         )
