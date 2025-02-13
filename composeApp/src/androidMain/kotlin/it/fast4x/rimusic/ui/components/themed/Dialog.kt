@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
@@ -608,8 +609,9 @@ inline fun SelectorArtistsDialog(
                                         Color.Red.copy(0.75f).compositeOver(Color.White)
                                     ),
                                     modifier = Modifier
-                                        .size(60.dp)
-                                        .padding(all = 10.dp),
+                                        .size(40.dp)
+                                        .padding(all = 5.dp)
+                                        .offset(10.dp,10.dp),
                                     contentDescription = "Background Image",
                                     contentScale = ContentScale.Fit
                                 )
