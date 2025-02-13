@@ -928,4 +928,8 @@ Volume BAS : titre précédent</string>
     <string name="adding_yt_to_pl_failed">Une erreur s\'est produite pour les 50 titres suivants. Ajout des titres à la playlist un par un.</string>
     <string name="songs_add_yt_success">Ajout du titre à la playlist YouTube</string>
     <string name="songs_add_yt_failed">Impossible d\'ajouter le titre à la playlist YouTube</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="title_reset_cache">Reset cache</string>
+    <string name="playing_song_not_found_on_current_list">Could not find playing song on current list</string>
+    <string name="no_songs_playing">No song is playing at the moment</string>
 </resources>

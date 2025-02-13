@@ -74,8 +74,7 @@ class Locator private constructor(
 
             if( position == -1 )      // Playing song isn't inside [songs()]
                 SmartMessage(
-                    // TODO Add this string to strings.xml
-                    message = "Couldn't find playing song on current list",
+                    message = appContext().resources.getString( R.string.playing_song_not_found_on_current_list ),
                     context = appContext(),
                     type = PopupType.Warning
                 )
@@ -88,8 +87,7 @@ class Locator private constructor(
                 }
         } else
             SmartMessage(
-                // TODO Add this string to strings.xml
-                message = "No song is playing at the moment",
+                message = appContext().resources.getString( R.string.no_songs_playing ),
                 context = appContext(),
                 type = PopupType.Warning
             )

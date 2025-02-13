@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -35,18 +36,14 @@ class ResetCache private constructor(
             )
     }
 
-    override val iconId: Int
-        get() = R.drawable.refresh_circle
-    // TODO Insert custom message to strings.xml
+    override val iconId: Int = R.drawable.refresh_circle
     override val messageId: Int = R.string.info_clean_cached_congs
     override val menuIconTitle: String
         @Composable
-        // TODO Insert custom message to strings.xml
-        get() = "Reset cache"
+        get() = stringResource( R.string.title_reset_cache )
     override val dialogTitle: String
         @Composable
-        // TODO Insert custom message to strings.xml
-        get() = "Are you sure"
+        get() = stringResource( R.string.are_you_sure )
 
     override var isActive: Boolean by activeState
 
