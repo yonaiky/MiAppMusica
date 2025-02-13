@@ -75,6 +75,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -600,6 +601,19 @@ inline fun SelectorArtistsDialog(
                                     )
                                     .align(Alignment.Center)
                             )
+                            if (artist?.isYoutubeArtist == true) {
+                                Image(
+                                    painter = painterResource(R.drawable.ytmusic),
+                                    colorFilter = ColorFilter.tint(
+                                        Color.Red.copy(0.75f).compositeOver(Color.White)
+                                    ),
+                                    modifier = Modifier
+                                        .size(80.dp)
+                                        .padding(all = 10.dp),
+                                    contentDescription = "Background Image",
+                                    contentScale = ContentScale.Fit
+                                )
+                            }
                             values[idArtist].name?.let { it1 ->
                                 BasicText(
                                     text = cleanPrefix(it1),
