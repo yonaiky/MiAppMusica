@@ -608,7 +608,7 @@ inline fun SelectorArtistsDialog(
                                         Color.Red.copy(0.75f).compositeOver(Color.White)
                                     ),
                                     modifier = Modifier
-                                        .size(80.dp)
+                                        .size(60.dp)
                                         .padding(all = 10.dp),
                                     contentDescription = "Background Image",
                                     contentScale = ContentScale.Fit
