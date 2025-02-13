@@ -6,9 +6,14 @@ import android.app.PendingIntent
 import android.app.WallpaperManager
 import android.app.WallpaperManager.FLAG_LOCK
 import android.app.WallpaperManager.FLAG_SYSTEM
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.SQLException
 import android.graphics.Bitmap
@@ -17,7 +22,9 @@ import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
+import android.media.audiofx.BassBoost
 import android.media.audiofx.LoudnessEnhancer
+import android.media.audiofx.PresetReverb
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -29,28 +36,50 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.text.isDigitsOnly
-import androidx.media3.common.*
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.AuxEffectInfo
+import androidx.media3.common.C
+import androidx.media3.common.ForwardingPlayer
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.Player
 import androidx.media3.common.Player.STATE_IDLE
+import androidx.media3.common.Timeline
 import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DataSpec
-import androidx.media3.datasource.cache.*
+import androidx.media3.datasource.cache.Cache
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
+import androidx.media3.datasource.cache.NoOpCacheEvictor
+import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.analytics.PlaybackStats
 import androidx.media3.exoplayer.analytics.PlaybackStatsListener
-import androidx.media3.exoplayer.audio.*
+import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.audio.DefaultAudioOffloadSupportProvider
+import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink.DefaultAudioProcessorChain
+import androidx.media3.exoplayer.audio.SilenceSkippingAudioProcessor
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
-import androidx.media3.session.*
+import androidx.media3.session.CommandButton
+import androidx.media3.session.DefaultMediaNotificationProvider
+import androidx.media3.session.MediaController
+import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaNotification
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaStyleNotificationHelper
+import androidx.media3.session.SessionToken
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.Innertube
@@ -63,11 +92,27 @@ import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.enums.*
+import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.DurationInMilliseconds
+import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
+import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
+import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
+import it.fast4x.rimusic.enums.NotificationButtons
+import it.fast4x.rimusic.enums.NotificationType
+import it.fast4x.rimusic.enums.PopupType
+import it.fast4x.rimusic.enums.PresetsReverb
+import it.fast4x.rimusic.enums.QueueLoopType
+import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import it.fast4x.rimusic.extensions.discord.sendDiscordPresence
-import it.fast4x.rimusic.models.*
+import it.fast4x.rimusic.isHandleAudioFocusEnabled
+import it.fast4x.rimusic.models.Event
+import it.fast4x.rimusic.models.PersistentQueue
+import it.fast4x.rimusic.models.PersistentSong
+import it.fast4x.rimusic.models.QueuedMediaItem
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.service.BitmapProvider
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
@@ -78,8 +123,12 @@ import it.fast4x.rimusic.utils.CoilBitmapLoader
 import it.fast4x.rimusic.utils.TimerJob
 import it.fast4x.rimusic.utils.YouTubeRadio
 import it.fast4x.rimusic.utils.activityPendingIntent
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.audioReverbPresetKey
 import it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
+import it.fast4x.rimusic.utils.bassboostEnabledKey
+import it.fast4x.rimusic.utils.bassboostLevelKey
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.collect
@@ -152,9 +201,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.autoDownloadSongWhenLikedKey
 import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream
@@ -200,6 +246,8 @@ class PlayerServiceModern : MediaLibraryService(),
 
     var loudnessEnhancer: LoudnessEnhancer? = null
     private var binder = Binder()
+    private var bassBoost: BassBoost? = null
+    private var reverbPreset: PresetReverb? = null
     private var showLikeButton = true
     private var showDownloadButton = true
 
@@ -211,15 +259,14 @@ class PlayerServiceModern : MediaLibraryService(),
     val currentMediaItem = MutableStateFlow<MediaItem?>(null)
 
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-
     private val currentSong = currentMediaItem.flatMapLatest { mediaItem ->
         Database.song(mediaItem?.mediaId)
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-    private val currentFormat = currentMediaItem.flatMapLatest { mediaItem ->
-        mediaItem?.mediaId?.let { Database.format(it) }!!
-    }
+//    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+//    private val currentFormat = currentMediaItem.flatMapLatest { mediaItem ->
+//        mediaItem?.mediaId?.let { Database.format(it) }!!
+//    }
 
     var currentSongStateDownload = MutableStateFlow(Download.STATE_STOPPED)
 
@@ -355,8 +402,10 @@ class PlayerServiceModern : MediaLibraryService(),
                 AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
                     .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                    .build(), true
+                    .build(),
+                isHandleAudioFocusEnabled()
             )
+            .setUsePlatformDiagnostics(false)
             .setSeekBackIncrementMs(5000)
             .setSeekForwardIncrementMs(5000)
             .build()
@@ -488,6 +537,10 @@ class PlayerServiceModern : MediaLibraryService(),
         maybeRestorePlayerQueue()
 
         maybeResumePlaybackWhenDeviceConnected()
+
+        maybeBassBoost()
+
+        maybeReverb()
 
         /* Queue is saved in events without scheduling it (remove this in future)*/
         // Load persistent queue when start activity and save periodically in background
@@ -639,6 +692,9 @@ class PlayerServiceModern : MediaLibraryService(),
                     sharedPreferences?.getEnum(queueLoopTypeKey, QueueLoopType.Default)?.type
                         ?: QueueLoopType.Default.type
             }
+
+            bassboostLevelKey, bassboostEnabledKey -> maybeBassBoost()
+            audioReverbPresetKey -> maybeReverb()
         }
     }
 
@@ -843,6 +899,56 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     }
 
+    private fun maybeBassBoost() {
+        if (!preferences.getBoolean(bassboostEnabledKey, false)) {
+            runCatching {
+                bassBoost?.enabled = false
+                bassBoost?.release()
+            }
+            bassBoost = null
+            maybeNormalizeVolume()
+            return
+        }
+
+        runCatching {
+            if (bassBoost == null) bassBoost = BassBoost(0, player.audioSessionId)
+            val bassboostLevel =
+                (preferences.getFloat(bassboostLevelKey, 0.5f) * 1000f).toInt().toShort()
+            println("PlayerServiceModern maybeBassBoost bassboostLevel $bassboostLevel")
+            bassBoost?.enabled = false
+            bassBoost?.setStrength(bassboostLevel)
+            bassBoost?.enabled = true
+        }.onFailure {
+            SmartMessage(
+                "Can't enable bass boost",
+                context = this@PlayerServiceModern
+            )
+        }
+    }
+
+    private fun maybeReverb() {
+        val presetType = preferences.getEnum(audioReverbPresetKey, PresetsReverb.NONE)
+        println("PlayerServiceModern maybeReverb presetType $presetType")
+        if (presetType == PresetsReverb.NONE) {
+            runCatching {
+                reverbPreset?.enabled = false
+                player.clearAuxEffectInfo()
+                reverbPreset?.release()
+            }
+                reverbPreset = null
+            return
+        }
+
+        runCatching {
+            if (reverbPreset == null) reverbPreset = PresetReverb(1, player.audioSessionId)
+
+            reverbPreset?.enabled = false
+            reverbPreset?.preset = presetType.preset
+            reverbPreset?.enabled = true
+            reverbPreset?.id?.let { player.setAuxEffectInfo(AuxEffectInfo(it, 1f)) }
+        }
+    }
+
     @UnstableApi
     private fun maybeNormalizeVolume() {
         if (!preferences.getBoolean(volumeNormalizationKey, false)) {
@@ -850,7 +956,6 @@ class PlayerServiceModern : MediaLibraryService(),
             loudnessEnhancer?.release()
             loudnessEnhancer = null
             volumeNormalizationJob?.cancel()
-            player.volume = 1f
             return
         }
 

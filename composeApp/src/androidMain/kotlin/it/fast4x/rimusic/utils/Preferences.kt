@@ -355,6 +355,12 @@ const val ytVisitorDataKey = "ytVisitorData"
 const val ytCookieKey = "ytCookie"
 const val ytAccountChannelHandleKey = "ytAccountChannelHandle"
 const val ytAccountThumbnailKey = "ytAccountThumbnail"
+const val filterByKey = "filterBy"
+
+const val bassboostEnabledKey = "bassboostEnabled"
+const val bassboostLevelKey = "bassboostLevel"
+const val audioReverbPresetKey = "audioReverbPreset"
+const val handleAudioFocusEnabledKey = "handleAudioFocusEnabled"
 
 /*
 @PublishedApi

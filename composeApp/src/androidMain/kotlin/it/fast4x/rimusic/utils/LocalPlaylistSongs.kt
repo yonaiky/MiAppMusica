@@ -3,8 +3,12 @@ package it.fast4x.rimusic.utils
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -13,6 +17,7 @@ import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.SortOrder
@@ -23,8 +28,15 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.tab.Sort
-import it.fast4x.rimusic.ui.components.tab.toolbar.*
-import it.fast4x.rimusic.ui.components.themed.*
+import it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
+import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import it.fast4x.rimusic.ui.components.tab.toolbar.DualIcon
+import it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
+import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import it.fast4x.rimusic.ui.components.themed.DeleteDialog
+import it.fast4x.rimusic.ui.components.themed.IDialog
+import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import java.util.UUID
@@ -285,7 +297,7 @@ class RenameDialog private constructor(
                 context = appContext(),
                 coroutineScope = coroutineScope,
                 pipedSession = pipedSession.toApiSession(),
-                id = UUID.fromString( playlist.browseId ),
+                id = UUID.fromString( cleanPrefix(playlist.browseId ?: "") ),
                 name = "$PIPED_PREFIX$newValue"
             )
 

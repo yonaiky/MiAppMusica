@@ -925,7 +925,7 @@ fun BuiltInPlaylistSongs(
                                                             songId = song.asMediaItem.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
                                                             position = position + index
-                                                        )
+                                                        ).default()
                                                     )
                                                 }
                                                 //Log.d("mediaItemPos", "added position ${position + index}")
@@ -940,7 +940,7 @@ fun BuiltInPlaylistSongs(
                                                             songId = song.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
                                                             position = position + index
-                                                        )
+                                                        ).default()
                                                     )
                                                 }
                                                 //Log.d("mediaItemPos", "add position $position")

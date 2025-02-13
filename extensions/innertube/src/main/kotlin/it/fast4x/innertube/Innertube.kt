@@ -246,7 +246,8 @@ object Innertube {
         val album: Info<NavigationEndpoint.Endpoint.Browse>?,
         val durationText: String?,
         override val thumbnail: Thumbnail?,
-        val explicit: Boolean = false
+        val explicit: Boolean = false,
+        val setVideoId: String? = null
     ) : Item() {
         //override val key get() = info!!.endpoint!!.videoId!!
         override val key get() = info?.endpoint?.videoId ?: ""
@@ -315,6 +316,7 @@ object Innertube {
         val info: Info<NavigationEndpoint.Endpoint.Browse>?,
         val channel: Info<NavigationEndpoint.Endpoint.Browse>?,
         val songCount: Int?,
+        val isEditable: Boolean?,
         override val thumbnail: Thumbnail?
     ) : Item() {
         override val key get() = info!!.endpoint!!.browseId!!
@@ -605,15 +607,19 @@ object Innertube {
         ytClient: Client,
         playlistId: String,
         videoId: String,
+    ) = addToPlaylist(ytClient, playlistId, listOf(videoId))
+
+    suspend fun addToPlaylist(
+        ytClient: Client,
+        playlistId: String,
+        videoIds: List<String>,
     ) = client.post(playlistEdit) {
         setLogin(ytClient, setLogin = true)
         setBody(
             EditPlaylistBody(
                 context = Context.DefaultWebWithLocale,
                 playlistId = playlistId.removePrefix("VL"),
-                actions = listOf(
-                    Action.AddVideoAction(addedVideoId = videoId)
-                )
+                actions = videoIds.map{ Action.AddVideoAction(addedVideoId = it)}
             )
         )
     }
@@ -623,6 +629,33 @@ object Innertube {
         playlistId: String,
         videoId: String,
         setVideoId: String? = null,
+    ) = removeFromPlaylist(ytClient, playlistId, videoId, listOf(setVideoId))
+
+    suspend fun removeFromPlaylist(
+        ytClient: Client,
+        playlistId: String,
+        videoId: String,
+        setVideoIds: List<String?>,
+    ) = client.post(playlistEdit) {
+        setLogin(ytClient, setLogin = true)
+        setBody(
+            EditPlaylistBody(
+                context = Context.DefaultWebWithLocale,
+                playlistId = playlistId.removePrefix("VL"),
+                actions = setVideoIds.map {
+                    Action.RemoveVideoAction(
+                        removedVideoId = videoId,
+                        setVideoId = it,
+                    )
+                }
+            )
+        )
+    }
+
+    suspend fun addPlaylistToPlaylist(
+        ytClient: Client,
+        playlistId: String,
+        addPlaylistId: String,
     ) = client.post(playlistEdit) {
         setLogin(ytClient, setLogin = true)
         setBody(
@@ -630,10 +663,7 @@ object Innertube {
                 context = Context.DefaultWebWithLocale,
                 playlistId = playlistId.removePrefix("VL"),
                 actions = listOf(
-                    Action.RemoveVideoAction(
-                        removedVideoId = videoId,
-                        setVideoId = setVideoId,
-                    )
+                    Action.AddPlaylistAction(addedFullListId = addPlaylistId)
                 )
             )
         )

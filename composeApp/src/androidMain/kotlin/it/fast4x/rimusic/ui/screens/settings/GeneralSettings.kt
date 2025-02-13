@@ -46,6 +46,7 @@ import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.NotificationType
 import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PipModule
+import it.fast4x.rimusic.enums.PresetsReverb
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -56,10 +57,13 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartActivity
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.audioQualityFormatKey
+import it.fast4x.rimusic.utils.audioReverbPresetKey
 import it.fast4x.rimusic.utils.autoDownloadSongKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenAlbumBookmarkedKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenLikedKey
 import it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
+import it.fast4x.rimusic.utils.bassboostEnabledKey
+import it.fast4x.rimusic.utils.bassboostLevelKey
 import it.fast4x.rimusic.utils.closeWithBackButtonKey
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.customThemeDark_Background0Key
@@ -88,6 +92,7 @@ import it.fast4x.rimusic.utils.enablePictureInPictureAutoKey
 import it.fast4x.rimusic.utils.enablePictureInPictureKey
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
+import it.fast4x.rimusic.utils.handleAudioFocusEnabledKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isConnectionMeteredEnabledKey
@@ -210,6 +215,11 @@ fun GeneralSettings(
     var loudnessBaseGain by rememberPreference(loudnessBaseGainKey, 5.00f)
     var autoLoadSongsInQueue by rememberPreference(autoLoadSongsInQueueKey, true)
 
+    var bassboostEnabled by rememberPreference(bassboostEnabledKey,false)
+    var bassboostLevel by rememberPreference(bassboostLevelKey, 0.5f)
+    var audioReverb by rememberPreference(audioReverbPresetKey,   PresetsReverb.NONE)
+    var audioFocusEnabled by rememberPreference(handleAudioFocusEnabledKey, true)
+
     var enablePictureInPicture by rememberPreference(enablePictureInPictureKey, false)
     var enablePictureInPictureAuto by rememberPreference(enablePictureInPictureAutoKey, false)
     var pipModule by rememberPreference(pipModuleKey, PipModule.Cover)
@@ -218,6 +228,8 @@ fun GeneralSettings(
     var autoDownloadSong by rememberPreference(autoDownloadSongKey, false)
     var autoDownloadSongWhenLiked by rememberPreference(autoDownloadSongWhenLikedKey, false)
     var autoDownloadSongWhenAlbumBookmarked by rememberPreference(autoDownloadSongWhenAlbumBookmarkedKey, false)
+
+
 
     Column(
         modifier = Modifier
@@ -605,6 +617,21 @@ fun GeneralSettings(
                 valueText = { it.text }
             )
 
+        if (search.input.isBlank() || stringResource(R.string.resume_playback).contains(search.input,true)) {
+            if (isAtLeastAndroid6) {
+                SwitchSettingEntry(
+                    title = stringResource(R.string.resume_playback),
+                    text = stringResource(R.string.when_device_is_connected),
+                    isChecked = resumePlaybackWhenDeviceConnected,
+                    onCheckedChange = {
+                        resumePlaybackWhenDeviceConnected = it
+                        restartService = true
+                    }
+                )
+                RestartPlayerService(restartService, onRestart = { restartService = false })
+            }
+        }
+
         if (search.input.isBlank() || stringResource(R.string.persistent_queue).contains(search.input,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.persistent_queue),
@@ -632,22 +659,6 @@ fun GeneralSettings(
                     )
                     RestartPlayerService(restartService, onRestart = { restartService = false } )
                 }
-            }
-        }
-
-
-        if (search.input.isBlank() || stringResource(R.string.resume_playback).contains(search.input,true)) {
-            if (isAtLeastAndroid6) {
-                SwitchSettingEntry(
-                    title = stringResource(R.string.resume_playback),
-                    text = stringResource(R.string.when_device_is_connected),
-                    isChecked = resumePlaybackWhenDeviceConnected,
-                    onCheckedChange = {
-                        resumePlaybackWhenDeviceConnected = it
-                        restartService = true
-                    }
-                )
-                RestartPlayerService(restartService, onRestart = { restartService = false })
             }
         }
 
@@ -763,6 +774,64 @@ fun GeneralSettings(
             }
         }
 
+        if (search.input.isBlank() || stringResource(R.string.settings_audio_bass_boost).contains(search.input,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.settings_audio_bass_boost),
+                text = "",
+                isChecked = bassboostEnabled,
+                onCheckedChange = {
+                    bassboostEnabled = it
+                }
+            )
+            AnimatedVisibility(visible = bassboostEnabled) {
+                val initialValue by remember { derivedStateOf { bassboostLevel } }
+                var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
+
+
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
+                ) {
+                    SliderSettingsEntry(
+                        title = stringResource(R.string.settings_bass_boost_level),
+                        text = "",
+                        state = newValue,
+                        onSlide = { newValue = it },
+                        onSlideComplete = {
+                            bassboostLevel = newValue
+                        },
+                        toDisplay = { "%.1f".format(bassboostLevel).replace(",", ".") },
+                        range = 0f..1f
+                    )
+                }
+            }
+        }
+
+        if (search.input.isBlank() || stringResource(R.string.settings_audio_reverb).contains(search.input,true)) {
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.settings_audio_reverb),
+                text = stringResource(R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio),
+                selectedValue = audioReverb,
+                onValueSelected = {
+                    audioReverb = it
+                    restartService = true
+                },
+                valueText = {
+                    it.textName
+                }
+            )
+            RestartPlayerService(restartService, onRestart = { restartService = false } )
+        }
+
+        if (search.input.isBlank() || stringResource(R.string.settings_audio_focus).contains(search.input,true)) {
+            SwitchSettingEntry(
+                title = stringResource(R.string.settings_audio_focus),
+                text = stringResource(R.string.settings_audio_focus_info),
+                isChecked = audioFocusEnabled,
+                onCheckedChange = {
+                    audioFocusEnabled = it
+                }
+            )
+        }
 
         if (search.input.isBlank() || stringResource(R.string.event_volumekeys).contains(search.input,true)) {
             SwitchSettingEntry(

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -11,16 +12,18 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -38,8 +41,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
@@ -60,9 +68,11 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
@@ -96,6 +106,7 @@ import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -199,31 +210,45 @@ fun ArtistOverviewModern(
             ) {
 
                 item {
-                    val modifierArt = if (isLandscape) Modifier.fillMaxWidth() else Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(4f / 3)
+                    val modifierArt = Modifier.fillMaxWidth()
 
                     Box(
                         modifier = modifierArt
                     ) {
                         //if (artistPage != null) {
                         if (!isLandscape)
-                            AsyncImage(
-                                model = artistPage.artist.thumbnail?.url?.resize(
-                                    1200,
-                                    900
-                                ),
-                                contentDescription = "loading...",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.Center)
-                                    .fadingEdge(
-                                        top = WindowInsets.systemBars
-                                            .asPaddingValues()
-                                            .calculateTopPadding() + Dimensions.fadeSpacingTop,
-                                        bottom = Dimensions.fadeSpacingBottom
+                            Box {
+                                AsyncImage(
+                                    model = artistPage.artist.thumbnail?.url?.resize(
+                                        1200,
+                                        1200
+                                    ),
+                                    contentDescription = "loading...",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.Center)
+                                        .fadingEdge(
+                                            top = WindowInsets.systemBars
+                                                .asPaddingValues()
+                                                .calculateTopPadding() + Dimensions.fadeSpacingTop,
+                                            bottom = Dimensions.fadeSpacingBottom
+                                        )
+                                )
+                                if (artist?.isYoutubeArtist == true) {
+                                    Image(
+                                        painter = painterResource(R.drawable.ytmusic),
+                                        colorFilter = ColorFilter.tint(
+                                            Color.Red.copy(0.75f).compositeOver(Color.White)
+                                        ),
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .padding(all = 5.dp)
+                                            .offset(10.dp,10.dp),
+                                        contentDescription = "Background Image",
+                                        contentScale = ContentScale.Fit
                                     )
-                            )
+                                }
+                            }
 
                         AutoResizeText(
                             text = artistPage.artist.info?.name ?: "",
@@ -306,28 +331,38 @@ fun ArtistOverviewModern(
                                 R.string.following
                             ),
                             onClick = {
-                                val bookmarkedAt =
-                                    if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
+                                if (isYouTubeSyncEnabled() && !isNetworkConnected(context)){
+                                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                } else {
+                                    val bookmarkedAt =
+                                        if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
 
-                                Database.asyncTransaction {
-                                    artist?.copy(bookmarkedAt = bookmarkedAt)
-                                        ?.let(::update)
-                                }
-                                if (isYouTubeSyncEnabled())
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        if (bookmarkedAt == null)
-                                            artistPage.artist.channelId.let {
-                                                if (it != null) {
-                                                    YtMusic.unsubscribeChannel(it)
-                                                }
-                                            }
-                                        else
-                                            artistPage.artist.channelId.let {
-                                                if (it != null) {
-                                                    YtMusic.subscribeChannel(it)
-                                                }
-                                            }
+                                    Database.asyncTransaction {
+                                        artist?.copy(bookmarkedAt = bookmarkedAt)
+                                            ?.let(::update)
                                     }
+                                    if (isYouTubeSyncEnabled())
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            if (bookmarkedAt == null)
+                                                artistPage.artist.channelId.let {
+                                                    if (it != null) {
+                                                        YtMusic.unsubscribeChannel(it)
+                                                        if (artist != null && browseId != null) {
+                                                            Database.update(artist!!.copy(isYoutubeArtist = false))
+                                                        }
+                                                    }
+                                                }
+                                            else
+                                                artistPage.artist.channelId.let {
+                                                    if (it != null) {
+                                                        YtMusic.subscribeChannel(it)
+                                                        if (artist != null && browseId != null) {
+                                                            Database.update(artist!!.copy(isYoutubeArtist = true))
+                                                        }
+                                                    }
+                                                }
+                                        }
+                                }
 
                             },
                             alternative = artist?.bookmarkedAt == null,
@@ -461,6 +496,64 @@ fun ArtistOverviewModern(
                     }
                 }
 
+                item {
+                    artistPage.description?.let { description ->
+                        val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
+
+                        BasicText(
+                            text = stringResource(R.string.information),
+                            style = typography().m.semiBold.align(TextAlign.Start),
+                            modifier = sectionTextModifier
+                                .fillMaxWidth()
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .padding(vertical = 16.dp, horizontal = 8.dp)
+                        ) {
+                            BasicText(
+                                text = "“",
+                                style = typography().xxl.semiBold,
+                                modifier = Modifier
+                                    .offset(y = (-8).dp)
+                                    .align(Alignment.Top)
+                            )
+
+                            BasicText(
+                                text = if (attributionsIndex == -1) {
+                                    description
+                                } else {
+                                    description.substring(0, attributionsIndex)
+                                },
+                                style = typography().xxs.secondary.align(TextAlign.Justify),
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .weight(1f)
+                            )
+
+                            BasicText(
+                                text = "„",
+                                style = typography().xxl.semiBold,
+                                modifier = Modifier
+                                    .offset(y = 4.dp)
+                                    .align(Alignment.Bottom)
+                            )
+                        }
+
+                        if (attributionsIndex != -1) {
+                            BasicText(
+                                text = stringResource(R.string.from_wikipedia_cca),
+                                style = typography().xxs.color(colorPalette().textDisabled)
+                                    .align(TextAlign.Start),
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .padding(bottom = 16.dp)
+                            )
+                        }
+
+                    }
+                }
+
                 artistPage.sections.forEach() {
                     //println("ArtistOverviewModern title: ${it.title} browseId: ${it.moreEndpoint?.browseId} params: ${it.moreEndpoint?.params}")
                     item {
@@ -557,6 +650,7 @@ fun ArtistOverviewModern(
                                                 thumbnailSizePx = artistThumbnailSizePx,
                                                 thumbnailSizeDp = artistThumbnailSizeDp,
                                                 disableScrollingText = disableScrollingText,
+                                                isYoutubeArtist = artist?.isYoutubeArtist == true,
                                                 modifier = Modifier.clickable(onClick = {
                                                     navController.navigate("${NavRoutes.artist.name}/${item.key}")
                                                 })
@@ -594,62 +688,8 @@ fun ArtistOverviewModern(
                     }
                 }
 
-                item {
-                    artistPage.description?.let { description ->
-                        val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
-
-                        BasicText(
-                            text = stringResource(R.string.information),
-                            style = typography().m.semiBold.align(TextAlign.Start),
-                            modifier = sectionTextModifier
-                                .fillMaxWidth()
-                        )
-
-                        Row(
-                            modifier = Modifier
-                                .padding(vertical = 16.dp, horizontal = 8.dp)
-                        ) {
-                            BasicText(
-                                text = "“",
-                                style = typography().xxl.semiBold,
-                                modifier = Modifier
-                                    .offset(y = (-8).dp)
-                                    .align(Alignment.Top)
-                            )
-
-                            BasicText(
-                                text = if (attributionsIndex == -1) {
-                                    description
-                                } else {
-                                    description.substring(0, attributionsIndex)
-                                },
-                                style = typography().xxs.secondary.align(TextAlign.Justify),
-                                modifier = Modifier
-                                    .padding(horizontal = 8.dp)
-                                    .weight(1f)
-                            )
-
-                            BasicText(
-                                text = "„",
-                                style = typography().xxl.semiBold,
-                                modifier = Modifier
-                                    .offset(y = 4.dp)
-                                    .align(Alignment.Bottom)
-                            )
-                        }
-
-                        if (attributionsIndex != -1) {
-                            BasicText(
-                                text = stringResource(R.string.from_wikipedia_cca),
-                                style = typography().xxs.color(colorPalette().textDisabled)
-                                    .align(TextAlign.Start),
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .padding(bottom = 16.dp)
-                            )
-                        }
-
-                    }
+                item(key = "bottom") {
+                    Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
                 }
 
             } else {
@@ -717,7 +757,7 @@ fun ArtistOverviewModern(
         ) {
             ArtistOverviewItems(
                 navController,
-                artistName = artist?.name,
+                artistName = cleanPrefix(artist?.name ?: ""),
                 sectionName = itemsSectionName,
                 browseId = itemsBrowseId,
                 params = itemsParams,

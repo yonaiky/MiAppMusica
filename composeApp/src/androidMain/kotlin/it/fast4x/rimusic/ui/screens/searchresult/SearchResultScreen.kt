@@ -240,7 +240,7 @@ fun SearchResultScreen(
                                             thumbnailContent = {
                                                 NowPlayingSongIndicator(song.asMediaItem.mediaId, binder?.player)
                                             },
-                                            downloadState = downloadState,
+                                            downloadState = getDownloadState(song.asMediaItem.mediaId),
                                             thumbnailSizePx = thumbnailSizePx,
                                             thumbnailSizeDp = thumbnailSizeDp,
                                             modifier = Modifier
