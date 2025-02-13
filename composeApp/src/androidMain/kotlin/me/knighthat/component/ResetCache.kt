@@ -6,9 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.cache.Cache
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -56,18 +54,19 @@ class ResetCache private constructor(
 
     override fun onConfirm() {
         getSongs().forEach { song ->
-            binder?.cache?.removeResource( song.id )
-
+            // Transaction is placed inside the loop
+            // so when ONE song fails, the other won't be affected
             Database.asyncTransaction {
                 binder?.cache?.removeResource( song.id )
                 binder?.downloadCache?.removeResource( song.id )
                 deleteFormat( song.id )
                 resetContentLength( song.id )
             }
-            SmartMessage(
-                message = appContext().resources.getString(R.string.done),
-                context = appContext()
-            )
         }
+
+        SmartMessage(
+            message = appContext().resources.getString( R.string.done ),
+            context = appContext()
+        )
     }
 }

@@ -324,6 +324,7 @@ fun HomeSongs( navController: NavController ) {
     deleteSongDialog.Render()
     hideSongDialog.Render()
     deleteHiddenSongs.Render()
+    resetCache.Render()
     //</editor-fold>
 
     Box(
