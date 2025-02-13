@@ -50,6 +50,7 @@ import it.fast4x.rimusic.enums.FilterBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
@@ -58,6 +59,7 @@ import it.fast4x.rimusic.ui.components.tab.ItemSize
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
+import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -72,6 +74,7 @@ import it.fast4x.rimusic.utils.Preference.HOME_ARTIST_ITEM_SIZE
 import it.fast4x.rimusic.utils.artistSortByKey
 import it.fast4x.rimusic.utils.artistSortOrderKey
 import it.fast4x.rimusic.utils.artistTypeKey
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autoSyncToolbutton
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -82,9 +85,9 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.component.tab.SongShuffler
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -124,7 +127,9 @@ fun HomeArtists(
         override fun onClick(index: Int) = onArtistClick(itemsOnDisplay[index])
 
     }
-    val shuffle = SongShuffler( Database::songsInAllFollowedArtists )
+    val shuffle = SongsShuffle.init {
+        Database.songsInAllFollowedArtists().map{ it.map( Song::asMediaItem ) }
+    }
 
     var artistType by rememberPreference(artistTypeKey, ArtistsType.Favorites )
     val buttonsList = ArtistsType.entries.map { it to it.text }
@@ -200,7 +205,7 @@ fun HomeArtists(
     // START: Import YTM subscribed channels
     LaunchedEffect(justSynced, doAutoSync) {
         if (!justSynced && importYTMSubscribedChannels())
-                justSynced = true
+            justSynced = true
     }
 
     PullToRefreshBox(
@@ -299,7 +304,7 @@ fun HomeArtists(
                     state = lazyGridState,
                     columns = GridCells.Adaptive( itemSize.size.dp ),
                     modifier = Modifier.background( colorPalette().background0 )
-                                       .fillMaxSize(),
+                        .fillMaxSize(),
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
                 ) {
                     items(items = itemsOnDisplay, key = Artist::id) { artist ->
@@ -309,10 +314,10 @@ fun HomeArtists(
                             thumbnailSizePx = itemSize.size.px,
                             alternative = true,
                             modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
-                                               .clickable(onClick = {
-                                                   search.onItemSelected()
-                                                   onArtistClick( artist )
-                                               }),
+                                .clickable(onClick = {
+                                    search.onItemSelected()
+                                    onArtistClick( artist )
+                                }),
                             disableScrollingText = disableScrollingText,
                             isYoutubeArtist = artist.isYoutubeArtist
                         )

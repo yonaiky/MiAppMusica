@@ -49,14 +49,20 @@ import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongAlbumMap
+import it.fast4x.rimusic.models.SongArtistMap
+import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
+import it.fast4x.rimusic.ui.components.tab.ImportSongsFromCSV
 import it.fast4x.rimusic.ui.components.tab.ItemSize
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.IDialog
@@ -66,13 +72,16 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
+import it.fast4x.rimusic.utils.ImportPipedPlaylists
 import it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autoSyncToolbutton
 import it.fast4x.rimusic.utils.autosyncKey
 import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.getPipedSession
+import it.fast4x.rimusic.utils.importYTMPrivatePlaylists
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
@@ -85,9 +94,10 @@ import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import me.knighthat.component.tab.ImportSongsFromCSV
-import me.knighthat.component.tab.SongShuffler
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @ExperimentalMaterial3Api
@@ -131,26 +141,15 @@ fun HomeLibrary(
 
     val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
 
-    //<editor-fold desc="Songs shuffler">
-    /**
-     * Previous implementation calls this every time shuffle button is clicked.
-     * It is extremely slow since the database needs some time to look for and
-     * sort songs before it can go through and start playing.
-     *
-     * This implementation will make sure that new list is fetched when [PlaylistsType]
-     * is changed, but this process happens in the background, therefore, there's no
-     * visible penalty. Furthermore, this will reduce load time significantly.
-     */
-    val shuffle = SongShuffler(
+    val shuffle = SongsShuffle.init {
         when( playlistType ) {
-            PlaylistsType.Playlist -> Database::songsInAllPlaylists
-            PlaylistsType.PinnedPlaylist -> Database::songsInAllPinnedPlaylists
-            PlaylistsType.MonthlyPlaylist -> Database::songsInAllMonthlyPlaylists
-            PlaylistsType.PipedPlaylist -> Database::songsInAllPipedPlaylists
-            PlaylistsType.YTPlaylist -> Database::songsInAllYTPrivatePlaylists
-        }
-    )
-    //</editor-fold>
+            PlaylistsType.Playlist -> Database.songsInAllPlaylists()
+            PlaylistsType.PinnedPlaylist -> Database.songsInAllPinnedPlaylists()
+            PlaylistsType.MonthlyPlaylist -> Database.songsInAllMonthlyPlaylists()
+            PlaylistsType.PipedPlaylist -> Database.songsInAllPipedPlaylists()
+            PlaylistsType.YTPlaylist -> Database.songsInAllYTPrivatePlaylists()
+        }.map { it.map( Song::asMediaItem ) }
+    }
     //<editor-fold desc="New playlist dialog">
     val newPlaylistDialog = object: IDialog, Descriptive, MenuIcon {
 
@@ -207,9 +206,86 @@ fun HomeLibrary(
         }
 
     }
+    val currentDateTime = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss")
+    var time by remember {mutableStateOf("")}
+    val formattedDate = currentDateTime.format(formatter)
     //</editor-fold>
-    val importPlaylistDialog = ImportSongsFromCSV()
+    val importPlaylistDialog = ImportSongsFromCSV.init(
+        beforeTransaction = { _, row ->
+            time = formattedDate
+            val playlistName = row["PlaylistName"] ?: "New Playlist $time"
+            plistId = playlistName.let {
+                Database.playlistExistByName( it )
+            }
+
+            if (plistId == 0L)
+                plistId = playlistName.let {
+                    Database.insert( Playlist( plistId, it, row["PlaylistBrowseId"] ) )
+                }
+        },
+        afterTransaction = { index, song, album, artists ->
+            if (song.id.isBlank()) return@init
+
+            Database.insert(song)
+            Database.insert(
+                SongPlaylistMap(
+                    songId = song.id,
+                    playlistId = plistId,
+                    position = index
+                ).default()
+            )
+
+            if(album.id !=""){
+                Database.insert(
+                    album,
+                    SongAlbumMap(
+                        songId = song.id,
+                        albumId = album.id,
+                        position = null
+                    )
+                )
+            }
+            if(artists.isNotEmpty()){
+                Database.insert(
+                    artists,
+                    artists.map{ artist->
+                        SongArtistMap(
+                            songId = song.id,
+                            artistId = artist.id
+                        )
+                    }
+                )
+            }
+        }
+    )
     val sync = autoSyncToolbutton(R.string.autosync)
+
+    val doAutoSync by rememberPreference(autosyncKey, false)
+    var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
+
+    var refreshing by remember { mutableStateOf(false) }
+    val refreshScope = rememberCoroutineScope()
+
+    fun refresh() {
+        if (refreshing) return
+        refreshScope.launch(Dispatchers.IO) {
+            refreshing = true
+            justSynced = false
+            delay(500)
+            refreshing = false
+        }
+    }
+
+    // START: Import YTM private playlists
+    LaunchedEffect(justSynced, doAutoSync) {
+        if ((!justSynced) && importYTMPrivatePlaylists())
+            justSynced = true
+    }
+
+    // START: Import Piped playlists
+    if (isPipedEnabled)
+        ImportPipedPlaylists()
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.playlistPreviews(sort.sortBy, sort.sortOrder).collect { items = it }
@@ -250,22 +326,6 @@ fun HomeLibrary(
     if (enableCreateMonthlyPlaylists)
         CheckMonthlyPlaylist()
     // END - Monthly playlist
-
-    val doAutoSync by rememberPreference(autosyncKey, false)
-    var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
-
-    var refreshing by remember { mutableStateOf(false) }
-    val refreshScope = rememberCoroutineScope()
-
-    fun refresh() {
-        if (refreshing) return
-        refreshScope.launch(Dispatchers.IO) {
-            refreshing = true
-            justSynced = false
-            delay(500)
-            refreshing = false
-        }
-    }
 
     PullToRefreshBox(
         refreshing = refreshing,

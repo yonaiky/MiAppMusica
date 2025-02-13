@@ -66,6 +66,7 @@ import it.fast4x.rimusic.ui.components.tab.ItemSize
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
+import it.fast4x.rimusic.ui.components.tab.toolbar.SongsShuffle
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
 import it.fast4x.rimusic.ui.components.themed.FilterMenu
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -97,9 +98,9 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.component.tab.SongShuffler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -143,7 +144,9 @@ fun HomeAlbums(
         override fun getItems(): List<Album> = itemsOnDisplay
         override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
     }
-    val shuffle = SongShuffler( Database::songsInAllBookmarkedAlbums )
+    val shuffle = SongsShuffle.init {
+        Database.songsInAllBookmarkedAlbums().map { it.map( Song::asMediaItem ) }
+    }
 
     var albumType by rememberPreference(albumTypeKey, AlbumsType.Favorites )
     val buttonsList = AlbumsType.entries.map { it to it.text }
@@ -320,7 +323,7 @@ fun HomeAlbums(
                     columns = GridCells.Adaptive( itemSize.size.dp ),
                     //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                     modifier = Modifier.background( colorPalette().background0 )
-                                       .fillMaxSize(),
+                        .fillMaxSize(),
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
                 ) {
                     items(
