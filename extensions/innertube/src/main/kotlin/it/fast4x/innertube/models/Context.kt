@@ -26,6 +26,7 @@ import java.util.TimeZone
 data class Context(
     val client: Client,
     val thirdParty: ThirdParty? = null,
+    private val request: Request = Request(),
     val user: User? = User()
 ) {
 
@@ -86,7 +87,8 @@ data class Context(
 
     @Serializable
     data class Request(
-        val useSsl: Boolean = true
+        val internalExperimentFlags: Array<String> = emptyArray(),
+        val useSsl: Boolean = true,
     )
 
     fun apply() {

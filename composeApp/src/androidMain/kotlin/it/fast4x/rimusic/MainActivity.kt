@@ -529,7 +529,7 @@ class MainActivity :
                     //gl = "US" // US IMPORTANT
                 )
                 //TODO Manage login
-            if (preferences.getBoolean(enableYouTubeLoginKey, false)) {
+            //if (preferences.getBoolean(enableYouTubeLoginKey, false)) {
                     var visitorData by rememberPreference(
                         key = ytVisitorDataKey,
                         defaultValue = Innertube.DEFAULT_VISITOR_DATA
@@ -550,7 +550,7 @@ class MainActivity :
                             dataSyncId = preferences.getString(ytDataSyncIdKey, "")
 
                         )
-            }
+            //}
 
             preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
 

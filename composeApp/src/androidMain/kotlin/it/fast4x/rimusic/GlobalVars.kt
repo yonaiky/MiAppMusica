@@ -11,6 +11,7 @@ import it.fast4x.rimusic.utils.bassboostLevelKey
 import it.fast4x.rimusic.utils.handleAudioFocusEnabledKey
 import it.fast4x.rimusic.utils.isConnectionMetered
 import it.fast4x.rimusic.utils.isConnectionMeteredEnabledKey
+import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
@@ -52,3 +53,4 @@ fun isConnectionMeteredEnabled() = appContext().preferences.getBoolean(isConnect
 fun isAutoSyncEnabled() = appContext().preferences.getBoolean(autosyncKey, false)
 fun isHandleAudioFocusEnabled() = appContext().preferences.getBoolean(handleAudioFocusEnabledKey, true)
 fun isBassBoostEnabled() = appContext().preferences.getBoolean(bassboostEnabledKey, false)
+fun isDebugModeEnabled() = appContext().preferences.getBoolean(logDebugEnabledKey, false)

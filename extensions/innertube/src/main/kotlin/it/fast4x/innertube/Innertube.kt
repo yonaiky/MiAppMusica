@@ -813,6 +813,30 @@ object Innertube {
         )
     }
 
+    suspend fun playerWithWebPoToken(
+        videoId: String,
+        playlistId: String?,
+        signatureTimestamp: Int?,
+        webPlayerPot: String? = null
+    ) = client.post(player) {
+        setLogin(setLogin = true)
+        setBody(
+            PlayerBody(
+                videoId = videoId,
+                playlistId = playlistId,
+                playbackContext =
+                if (signatureTimestamp != null) {
+                    PlayerBody.PlaybackContext(PlayerBody.PlaybackContext.ContentPlaybackContext(
+                        signatureTimestamp = signatureTimestamp
+                    ))
+                } else null,
+                serviceIntegrityDimensions = if (webPlayerPot != null) {
+                    PlayerBody.ServiceIntegrityDimensions(webPlayerPot)
+                } else null
+            ),
+        )
+    }
+
     suspend fun playerWithPotoken(
         videoId: String,
         playlistId: String?,
