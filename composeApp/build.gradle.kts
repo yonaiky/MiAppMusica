@@ -345,4 +345,6 @@ dependencies {
 //    coreLibraryDesugaring(libs.desugaring)
     coreLibraryDesugaring(libs.desugaring.nio)
 
+    // Debug only
+    debugImplementation(libs.ui.tooling.preview.android)
 }
