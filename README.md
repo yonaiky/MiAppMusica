@@ -221,10 +221,10 @@ WARNING, the custom version is not an official release, download only if invited
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
-        <a href=https://github.com/coolcarp>
-            <img src=https://avatars.githubusercontent.com/u/76832747?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=coolcarp/>
+        <a href=https://github.com/S0nter>
+            <img src=https://avatars.githubusercontent.com/u/108224581?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sonter/>
             <br />
-            <sub style="font-size:14px"><b>coolcarp</b></sub>
+            <sub style="font-size:14px"><b>Sonter</b></sub>
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
@@ -235,12 +235,21 @@ WARNING, the custom version is not an official release, download only if invited
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
+        <a href=https://github.com/coolcarp>
+            <img src=https://avatars.githubusercontent.com/u/76832747?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=coolcarp/>
+            <br />
+            <sub style="font-size:14px"><b>coolcarp</b></sub>
+        </a>
+    </td>
+    <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/AnnNaserNabil>
             <img src=https://avatars.githubusercontent.com/u/16422192?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Ann Naser Nabil/>
             <br />
             <sub style="font-size:14px"><b>Ann Naser Nabil</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/DarkCrypt>
             <img src=https://avatars.githubusercontent.com/u/121076677?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=DarkCrypt/>
@@ -248,8 +257,6 @@ WARNING, the custom version is not an official release, download only if invited
             <sub style="font-size:14px"><b>DarkCrypt</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/muhaaliss>
             <img src=https://avatars.githubusercontent.com/u/102979224?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Muha Aliss/>
@@ -262,13 +269,6 @@ WARNING, the custom version is not an official release, download only if invited
             <img src=https://avatars.githubusercontent.com/u/78584556?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sayyid/>
             <br />
             <sub style="font-size:14px"><b>Sayyid</b></sub>
-        </a>
-    </td>
-    <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
-        <a href=https://github.com/S0nter>
-            <img src=https://avatars.githubusercontent.com/u/108224581?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sonter/>
-            <br />
-            <sub style="font-size:14px"><b>Sonter</b></sub>
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
