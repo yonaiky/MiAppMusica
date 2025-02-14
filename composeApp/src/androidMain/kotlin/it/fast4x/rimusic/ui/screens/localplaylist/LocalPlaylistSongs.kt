@@ -1554,7 +1554,7 @@ fun LocalPlaylistSongs(
                                             }
                                         },
                                         showOnSyncronize = !playlistPreview.playlist.browseId.isNullOrBlank(),
-                                        showLinkUnlink = isNetworkConnected(context) && (playlistPreview.playlist.browseId != null),
+                                        showLinkUnlink = isNetworkConnected(context) && (!playlistPreview.playlist.browseId.isNullOrBlank()),
                                         /*
                                         onSyncronize = {
                                             if (!playlistPreview.playlist.name.startsWith(
