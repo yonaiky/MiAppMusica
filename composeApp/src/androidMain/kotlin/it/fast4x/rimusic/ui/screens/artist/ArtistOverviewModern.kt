@@ -79,7 +79,9 @@ import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
@@ -130,6 +132,7 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -691,12 +694,19 @@ fun ArtistOverviewModern(
 
                                         is Innertube.AlbumItem -> {
                                             println("Innertube artistmodern AlbumItem: ${item.info?.name}")
+                                            var albumById by remember { mutableStateOf<Album?>(null) }
+                                            LaunchedEffect(item) {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    albumById = Database.album(item.key).firstOrNull()
+                                                }
+                                            }
                                             AlbumItem(
                                                 album = item,
                                                 alternative = true,
                                                 thumbnailSizePx = albumThumbnailSizePx,
                                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                                 disableScrollingText = disableScrollingText,
+                                                isYoutubeAlbum = albumById?.isYoutubeAlbum == true,
                                                 modifier = Modifier.clickable(onClick = {
                                                     navController.navigate("${NavRoutes.album.name}/${item.key}")
                                                 })
@@ -706,12 +716,18 @@ fun ArtistOverviewModern(
 
                                         is Innertube.ArtistItem -> {
                                             println("Innertube v ArtistItem: ${item.info?.name}")
+                                            var artistById by remember { mutableStateOf<Artist?>(null) }
+                                            LaunchedEffect(item) {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    artistById = Database.artist(item.key).firstOrNull()
+                                                }
+                                            }
                                             ArtistItem(
                                                 artist = item,
                                                 thumbnailSizePx = artistThumbnailSizePx,
                                                 thumbnailSizeDp = artistThumbnailSizeDp,
                                                 disableScrollingText = disableScrollingText,
-                                                isYoutubeArtist = artist?.isYoutubeArtist == true,
+                                                isYoutubeArtist = artistById?.isYoutubeArtist == true,
                                                 modifier = Modifier.clickable(onClick = {
                                                     navController.navigate("${NavRoutes.artist.name}/${item.key}")
                                                 })
@@ -720,12 +736,19 @@ fun ArtistOverviewModern(
 
                                         is Innertube.PlaylistItem -> {
                                             println("Innertube v PlaylistItem: ${item.info?.name}")
+                                            var playlistById by remember { mutableStateOf<Playlist?>(null) }
+                                            LaunchedEffect(item) {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    playlistById = Database.playlist(item.key.substringAfter("VL")).firstOrNull()
+                                                }
+                                            }
                                             PlaylistItem(
                                                 playlist = item,
                                                 alternative = true,
                                                 thumbnailSizePx = playlistThumbnailSizePx,
                                                 thumbnailSizeDp = playlistThumbnailSizeDp,
                                                 disableScrollingText = disableScrollingText,
+                                                isYoutubePlaylist = playlistById?.isYoutubePlaylist == true,
                                                 modifier = Modifier.clickable(onClick = {
                                                     navController.navigate("${NavRoutes.playlist.name}/${item.key}")
                                                 })

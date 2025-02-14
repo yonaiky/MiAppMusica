@@ -224,7 +224,7 @@
     <string name="listen_on_piped">האזינו ב Piped</string>
     <string name="listen_on_invidious">האזינו ב Invidious</string>
     <string name="disable_horizontal_swipe">השבת החלקה אופקית</string>
-    <string name="disable_vertical_swipe">Disable song switching via Vertical swipe</string>
+    <string name="disable_vertical_swipe">השבת את החלפת השיר באמצעות החלקה</string>
     <string name="disable_vertical_swipe_secondary">It affects only when the Expanded Player is off</string>
     <string name="disable_song_switching_via_swipe">השבת את החלפת השיר באמצעות החלקה</string>
     <string name="interface_in_use">ממשק בשימוש</string>
