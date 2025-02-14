@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -84,11 +85,14 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
+import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
+import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
@@ -105,14 +109,19 @@ import it.fast4x.rimusic.ui.screens.player.Queue
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isNetworkConnected
+import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -190,6 +199,7 @@ fun ArtistOverviewModern(
 
     val hapticFeedback = LocalHapticFeedback.current
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    val menuState = LocalMenuState.current
 
     LaunchedEffect(Unit) {
         if (browseId != null) {
@@ -610,19 +620,66 @@ fun ArtistOverviewModern(
                         items(it.items) { item ->
                             when (item) {
                                 is Innertube.SongItem -> {
+                                    if (parentalControlEnabled && item.explicit) return@items
+
+                                    downloadState = getDownloadState(item.asMediaItem.mediaId)
+                                    val isDownloaded = isDownloadedSong(item.asMediaItem.mediaId)
                                     println("Innertube artistmodern SongItem: ${item.info?.name}")
-                                    SongItem(
-                                        song = item,
-                                        thumbnailSizePx = songThumbnailSizePx,
-                                        thumbnailSizeDp = songThumbnailSizeDp,
-                                        onDownloadClick = {},
-                                        downloadState = Download.STATE_STOPPED,
-                                        disableScrollingText = disableScrollingText,
-                                        isNowPlaying = false,
-                                        modifier = Modifier.clickable(onClick = {
-                                            binder?.player?.forcePlay(item.asMediaItem)
-                                        })
-                                    )
+                                    SwipeablePlaylistItem(
+                                        mediaItem = item.asMediaItem,
+                                        onPlayNext = {
+                                            binder?.player?.addNext(item.asMediaItem)
+                                        },
+                                        onDownload = {
+                                            binder?.cache?.removeResource(item.asMediaItem.mediaId)
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                Database.resetContentLength( item.asMediaItem.mediaId )
+                                            }
+
+                                            manageDownload(
+                                                context = context,
+                                                mediaItem = item.asMediaItem,
+                                                downloadState = isDownloaded
+                                            )
+                                        },
+                                        onEnqueue = {
+                                            binder?.player?.enqueue(item.asMediaItem)
+                                        }
+                                    ) {
+                                        var forceRecompose by remember { mutableStateOf(false) }
+                                        SongItem(
+                                            song = item,
+                                            thumbnailSizePx = songThumbnailSizePx,
+                                            thumbnailSizeDp = songThumbnailSizeDp,
+                                            onDownloadClick = {},
+                                            downloadState = Download.STATE_STOPPED,
+                                            disableScrollingText = disableScrollingText,
+                                            isNowPlaying = false,
+                                            forceRecompose = forceRecompose,
+                                            modifier = Modifier
+                                                .combinedClickable(
+                                                    onLongClick = {
+                                                        menuState.display {
+                                                            NonQueuedMediaItemMenu(
+                                                                navController = navController,
+                                                                onDismiss = {
+                                                                    menuState.hide()
+                                                                    forceRecompose = true
+                                                                },
+                                                                mediaItem = item.asMediaItem,
+                                                                disableScrollingText = disableScrollingText
+                                                            )
+                                                        };
+                                                        hapticFeedback.performHapticFeedback(
+                                                            HapticFeedbackType.LongPress
+                                                        )
+                                                    },
+                                                    onClick = {
+                                                        binder?.player?.forcePlay(item.asMediaItem)
+                                                    }
+                                                )
+                                        )
+                                    }
                                 }
 
                                 else -> {}

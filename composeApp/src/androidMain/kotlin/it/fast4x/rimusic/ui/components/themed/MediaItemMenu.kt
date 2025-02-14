@@ -2073,3 +2073,247 @@ fun AddToPlaylistItemMenu(
         }
     }
 }
+
+@ExperimentalTextApi
+@SuppressLint("SuspiciousIndentation")
+@UnstableApi
+@ExperimentalAnimationApi
+@Composable
+fun AddToPlaylistArtistSongsMenu(
+    navController: NavController,
+    onDismiss: () -> Unit,
+    onAddToPlaylist: ((PlaylistPreview) -> Unit),
+    onGoToPlaylist: ((Long) -> Unit)? = null,
+) {
+    var isCreatingNewPlaylist by rememberSaveable {
+        mutableStateOf(false)
+    }
+    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+
+    val screenHeight = configuration.screenHeightDp.dp
+
+    if (isCreatingNewPlaylist) {
+        InputTextDialog(
+            onDismiss = { isCreatingNewPlaylist = false },
+            title = stringResource(R.string.enter_the_playlist_name),
+            value = "",
+            placeholder = stringResource(R.string.enter_the_playlist_name),
+            setValue = { text ->
+                onDismiss()
+                Database.asyncTransaction {
+                    val playlistId = insert(Playlist(name = text))
+                    onAddToPlaylist(
+                        PlaylistPreview(
+                            Playlist(
+                                id = playlistId,
+                                name = text
+                            ), 0
+                        )
+                    )
+                }
+            }
+        )
+    }
+    val sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
+    val sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
+    val playlistPreviews by remember {
+        Database.playlistPreviews(sortBy, sortOrder)
+    }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+
+    val pinnedPlaylists = playlistPreviews.filter {
+        it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
+                && if (isNetworkConnected(context)) !(it.playlist.isYoutubePlaylist && !it.playlist.isEditable) else !it.playlist.isYoutubePlaylist
+    }
+
+    val youtubePlaylists = playlistPreviews.filter { it.playlist.isEditable && it.playlist.isYoutubePlaylist && !it.playlist.name.startsWith(PINNED_PREFIX) }
+
+    val unpinnedPlaylists = playlistPreviews.filter {
+        !it.playlist.name.startsWith(PINNED_PREFIX, 0, true) &&
+                !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true) &&
+                !it.playlist.isYoutubePlaylist
+    }
+
+    Menu(
+        modifier = Modifier
+            .requiredHeight(0.75*screenHeight)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = onDismiss,
+                icon = R.drawable.chevron_back,
+                color = colorPalette().textSecondary,
+                modifier = Modifier
+                    .padding(all = 4.dp)
+                    .size(20.dp)
+            )
+
+            SecondaryTextButton(
+                text = stringResource(R.string.new_playlist),
+                onClick = { isCreatingNewPlaylist = true },
+                alternative = true
+            )
+        }
+
+        if (pinnedPlaylists.isNotEmpty()) {
+            BasicText(
+                text = stringResource(R.string.pinned_playlists),
+                style = typography().m.semiBold,
+                modifier = Modifier.padding(start = 20.dp, top = 5.dp)
+            )
+
+            onAddToPlaylist.let { onAddToPlaylist ->
+                pinnedPlaylists.forEach { playlistPreview ->
+                    MenuEntry(
+                        icon = R.drawable.add_in_playlist,
+                        text = cleanPrefix(playlistPreview.playlist.name),
+                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        onClick = {
+                            onDismiss()
+                            onAddToPlaylist(
+                                PlaylistPreview(
+                                    playlistPreview.playlist,
+                                    playlistPreview.songCount
+                                )
+                            )
+                        },
+                        trailingContent = {
+                            if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
+                                Image(
+                                    painter = painterResource(R.drawable.piped_logo),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(colorPalette().red),
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                )
+                            if (playlistPreview.playlist.isYoutubePlaylist) {
+                                Image(
+                                    painter = painterResource(R.drawable.ytmusic),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(
+                                        Color.Red.copy(0.75f).compositeOver(Color.White)
+                                    ),
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                )
+                            }
+                            IconButton(
+                                icon = R.drawable.open,
+                                color = colorPalette().text,
+                                onClick = {
+                                    if (onGoToPlaylist != null) {
+                                        onGoToPlaylist(playlistPreview.playlist.id)
+                                        onDismiss()
+                                    }
+                                    navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
+                                },
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                        }
+                    )
+                }
+            }
+        }
+
+        if (youtubePlaylists.isNotEmpty() && isNetworkConnected(context)) {
+            BasicText(
+                text = stringResource(R.string.ytm_playlists),
+                style = typography().m.semiBold,
+                modifier = Modifier.padding(start = 20.dp, top = 5.dp)
+            )
+
+            onAddToPlaylist.let { onAddToPlaylist ->
+                youtubePlaylists.forEach { playlistPreview ->
+                    MenuEntry(
+                        icon = R.drawable.add_in_playlist,
+                        text = cleanPrefix(playlistPreview.playlist.name),
+                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        onClick = {
+                            onDismiss()
+                            onAddToPlaylist(
+                                PlaylistPreview(
+                                    playlistPreview.playlist,
+                                    playlistPreview.songCount
+                                )
+                            )
+                        },
+                        trailingContent = {
+                            IconButton(
+                                icon = R.drawable.open,
+                                color = colorPalette().text,
+                                onClick = {
+                                    if (onGoToPlaylist != null) {
+                                        onGoToPlaylist(playlistPreview.playlist.id)
+                                        onDismiss()
+                                    }
+                                    navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
+                                },
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+                        }
+                    )
+                }
+            }
+        }
+
+        if (unpinnedPlaylists.isNotEmpty()) {
+            BasicText(
+                text = stringResource(R.string.playlists),
+                style = typography().m.semiBold,
+                modifier = Modifier.padding(start = 20.dp, top = 5.dp)
+            )
+
+            onAddToPlaylist.let { onAddToPlaylist ->
+                unpinnedPlaylists.forEach { playlistPreview ->
+                    MenuEntry(
+                        icon = R.drawable.add_in_playlist,
+                        text = cleanPrefix(playlistPreview.playlist.name),
+                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        onClick = {
+                            onDismiss()
+                            onAddToPlaylist(
+                                PlaylistPreview(
+                                    playlistPreview.playlist,
+                                    playlistPreview.songCount
+                                )
+                            )
+                        },
+                        trailingContent = {
+                            if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
+                                Image(
+                                    painter = painterResource(R.drawable.piped_logo),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(colorPalette().red),
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                )
+
+                            IconButton(
+                                icon = R.drawable.open,
+                                color = colorPalette().text,
+                                onClick = {
+                                    if (onGoToPlaylist != null) {
+                                        onGoToPlaylist(playlistPreview.playlist.id)
+                                        onDismiss()
+                                    }
+                                    navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
+                                },
+                                modifier = Modifier
+                                    .size(24.dp)
+                            )
+
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
