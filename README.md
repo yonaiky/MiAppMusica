@@ -222,10 +222,10 @@ WARNING, the custom version is **not** an official release, download only if inv
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
-        <a href=https://github.com/S0nter>
-            <img src=https://avatars.githubusercontent.com/u/108224581?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sonter/>
+        <a href=https://github.com/coolcarp>
+            <img src=https://avatars.githubusercontent.com/u/76832747?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=coolcarp/>
             <br />
-            <sub style="font-size:14px"><b>Sonter</b></sub>
+            <sub style="font-size:14px"><b>coolcarp</b></sub>
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
@@ -236,10 +236,10 @@ WARNING, the custom version is **not** an official release, download only if inv
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
-        <a href=https://github.com/coolcarp>
-            <img src=https://avatars.githubusercontent.com/u/76832747?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=coolcarp/>
+        <a href=https://github.com/S0nter>
+            <img src=https://avatars.githubusercontent.com/u/108224581?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sonter/>
             <br />
-            <sub style="font-size:14px"><b>coolcarp</b></sub>
+            <sub style="font-size:14px"><b>Sonter</b></sub>
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
@@ -287,14 +287,21 @@ WARNING, the custom version is **not** an official release, download only if inv
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
+        <a href=https://github.com/leoheitmannruiz>
+            <img src=https://avatars.githubusercontent.com/u/148111793?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Leo Heitmann Ruiz/>
+            <br />
+            <sub style="font-size:14px"><b>Leo Heitmann Ruiz</b></sub>
+        </a>
+    </td>
+</tr>
+<tr>
+    <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/KalyaSc>
             <img src=https://avatars.githubusercontent.com/u/95717211?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=KalyaSc/>
             <br />
             <sub style="font-size:14px"><b>KalyaSc</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/Bnyro>
             <img src=https://avatars.githubusercontent.com/u/82752168?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Bnyro/>
@@ -330,6 +337,8 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>offa</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/lrusso96>
             <img src=https://avatars.githubusercontent.com/u/26090639?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Luigi Russo/>
@@ -337,8 +346,6 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>Luigi Russo</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/locxter>
             <img src=https://avatars.githubusercontent.com/u/54595101?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Luca Schultz/>
@@ -374,6 +381,8 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>Sylvain Rio</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/0x5h31d0n>
             <img src=https://avatars.githubusercontent.com/u/63775224?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sheldon Menezes/>
@@ -381,8 +390,6 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>Sheldon Menezes</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/roklc>
             <img src=https://avatars.githubusercontent.com/u/142526268?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Rokic/>
@@ -418,11 +425,20 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>Iscle</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/TheRedCyclops>
             <img src=https://avatars.githubusercontent.com/u/76230780?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=TheRedCyclops/>
             <br />
             <sub style="font-size:14px"><b>TheRedCyclops</b></sub>
+        </a>
+    </td>
+    <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
+        <a href=https://github.com/eddisch>
+            <img src=https://avatars.githubusercontent.com/u/73175017?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Ed/>
+            <br />
+            <sub style="font-size:14px"><b>Ed</b></sub>
         </a>
     </td>
 </tr>
