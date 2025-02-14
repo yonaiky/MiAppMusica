@@ -65,8 +65,10 @@ import dev.chrisbanes.haze.hazeChild
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.ArtistSection
+import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -134,6 +136,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -196,6 +199,7 @@ fun ArtistOverviewModern(
     var itemsParams by remember { mutableStateOf("") }
     var itemsSectionName by remember { mutableStateOf("") }
     var showArtistItems by rememberSaveable { mutableStateOf(false) }
+    var songsParams by remember { mutableStateOf("") }
 
     val hapticFeedback = LocalHapticFeedback.current
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
@@ -575,6 +579,7 @@ fun ArtistOverviewModern(
                     //println("ArtistOverviewModern title: ${it.title} browseId: ${it.moreEndpoint?.browseId} params: ${it.moreEndpoint?.params}")
                     item {
                         if (it.items.firstOrNull() is Innertube.SongItem) {
+                            songsParams = it.moreEndpoint!!.params.toString()
                             Title(
                                 title = it.title,
                                 enableClick = it.moreEndpoint?.browseId != null,
@@ -675,7 +680,32 @@ fun ArtistOverviewModern(
                                                         )
                                                     },
                                                     onClick = {
+                                                        //binder?.stopRadio()
                                                         binder?.player?.forcePlay(item.asMediaItem)
+                                                        //TODO add songs from artist in queue
+//                                                        CoroutineScope(Dispatchers.IO).launch {
+//                                                            browseId?.let { bId ->
+//                                                                BrowseEndpoint(
+//                                                                    browseId = bId,
+//                                                                    params = songsParams
+//                                                                )
+//                                                            }?.let { endpoint ->
+//                                                                YtMusic.getArtistItemsPage(
+//                                                                    endpoint
+//                                                                ).completed().getOrNull()
+//                                                                    ?.items
+//                                                                    ?.map{ it as Innertube.SongItem }
+//                                                                    ?.map { it.asMediaItem }
+//                                                                    ?.let {
+//                                                                        println("ArtistOverviewModern SongItem onClick: $it")
+//                                                                        withContext(Dispatchers.Main) {
+//                                                                            binder?.player?.addMediaItems(
+//                                                                                it.filterNot { it.mediaId == item.key }
+//                                                                            )
+//                                                                        }
+//                                                                    }
+//                                                            }
+//                                                        }
                                                     }
                                                 )
                                         )
