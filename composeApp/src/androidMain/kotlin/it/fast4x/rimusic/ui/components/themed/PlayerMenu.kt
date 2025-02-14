@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,6 +32,7 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.addToYtLikedSong
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getPipedSession
@@ -321,6 +323,65 @@ fun AddToPlaylistPlayerMenu(
                     deleteSongFromPlaylist(mediaItem.mediaId, playlist.id)
                 }
             }
+        },
+        onDismiss = onDismiss,
+    )
+}
+
+@ExperimentalTextApi
+@ExperimentalAnimationApi
+@UnstableApi
+@Composable
+fun AddToPlaylistArtistSongs(
+    navController: NavController,
+    mediaItems: List<MediaItem>,
+    onDismiss: () -> Unit,
+    onClosePlayer: () -> Unit,
+) {
+    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
+    val pipedSession = getPipedSession()
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var position by remember {
+        mutableIntStateOf(0)
+    }
+    AddToPlaylistArtistSongsMenu(
+        navController = navController,
+        onGoToPlaylist = {
+            onClosePlayer()
+        },
+        onAddToPlaylist = { playlistPreview ->
+            position = playlistPreview.songCount.minus(1)
+            if (position > 0) position++ else position = 0
+            mediaItems.forEachIndexed { index, mediaItem ->
+                if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist){
+                    Database.asyncTransaction {
+                        insert(mediaItem)
+                        insert(
+                            SongPlaylistMap(
+                                songId = mediaItem.mediaId,
+                                playlistId = playlistPreview.playlist.id,
+                                position = position + index
+                            ).default()
+                        )
+                    }
+                } else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        addToYtPlaylist(playlistPreview.playlist.id, position, playlistPreview.playlist.browseId ?: "", mediaItems)
+                    }
+                }
+                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                    Timber.d("BaseMediaItemMenu onAddToPlaylist mediaItem ${mediaItem.mediaId}")
+                    addToPipedPlaylist(
+                        context = context,
+                        coroutineScope = coroutineScope,
+                        pipedSession = pipedSession.toApiSession(),
+                        id = UUID.fromString(playlistPreview.playlist.browseId),
+                        videos = listOf(mediaItem.mediaId)
+                    )
+                }
+            }
+            onDismiss()
         },
         onDismiss = onDismiss,
     )
