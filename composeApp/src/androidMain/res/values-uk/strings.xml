@@ -918,11 +918,11 @@
     <string name="songs_liked_yt">Пісня(і) подобається у YouTube</string>
     <string name="song_unliked_yt">Пісня не подобається у YouTube</string>
     <string name="add_rimusic_to_ytm_favorites">Вподобані пісні RiMusic в Youtube</string>
-    <string name="do_you_really_want_to_like_all_rimusictoytmusic">(estimated time) is required to like all the songs. This action cannot be resumed if cancelled in between. You need to close the app to cancel this process. Do you want to continue?</string>
-    <string name="do_you_really_want_to_like_all">(estimated time) is required to like all the songs. You need to close the app to cancel this process. Do you want to continue?</string>
-    <string name="songs_liked_yt_failed">Failed to like the song in YouTube</string>
-    <string name="songs_unliked_yt_failed">Failed to unlike the song in YouTube</string>
-    <string name="adding_yt_to_pl_failed">Error occurred for the next 50 songs. Adding songs to the playlist one by one</string>
-    <string name="songs_add_yt_success">Added the song in the YouTube Playlist</string>
-    <string name="songs_add_yt_failed">Failed to add the song in the YouTube Playlist</string>
+    <string name="do_you_really_want_to_like_all_rimusictoytmusic">(розрахунковий час) необхідно, щоб поставити позначку \"Подобається\" всім пісням. Ця дія не може бути відновлена, якщо скасовано у процесі. Щоб скасувати цей процес, необхідно закрити програму. Бажаєте продовжити?</string>
+    <string name="do_you_really_want_to_like_all">(розрахунковий час) необхідно, щоб поставити позначку \"Подобається\" всім пісням. Щоб скасувати цей процес, необхідно закрити програму. Бажаєте продовжити?</string>
+    <string name="songs_liked_yt_failed">Не вдалося поставити відмітку «Подобається» під піснею на YouTube</string>
+    <string name="songs_unliked_yt_failed">Не вдалося прибрати відмітку «Подобається» під піснею на YouTube</string>
+    <string name="adding_yt_to_pl_failed">Виникла помилка для наступних 50 пісень. Додавання пісень до плейлисту по одній. Додайте пісні в плейлист по одній</string>
+    <string name="songs_add_yt_success">Додано пісню до плейлисту YouTube</string>
+    <string name="songs_add_yt_failed">Не вдалося додати пісню до плейлисту YouTube</string>
 </resources>
