@@ -32,49 +32,8 @@ jobs:
         # Output of "October 2 2024" will be "20241002"
         run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
-  build-cache:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: "21"
-          distribution: "corretto"
-
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          # Continue using cache, unless gradle build file(s) or wrapper's property is changed
-          key: gradle-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-dependencies-
-
-      - name: Cache Gradle build outputs
-        uses: actions/cache@v4
-        with:
-          path: build
-          key: gradle-build-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-build-
-
-      - name: Build without APK
-        run: |
-          ./gradlew assembleUpstreamFull --exclude-task packageUpstreamFull
-          ./gradlew assembleImprovisedFull --exclude-task packageImprovisedFull
-          ./gradlew assembleUpstreamMinified --exclude-task packageUpstreamMinified
-          ./gradlew assembleImprovisedMinified --exclude-task packageImprovisedMinified
-
   build-upstream-full:
     name: Build upstream flavor (full)
-    needs: build-cache
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
@@ -82,28 +41,22 @@ jobs:
       - uses: actions/checkout@v4.2.1
 
       - name: Setup Java 21
-        uses: actions/setup-java@v4.4.0
+        uses: actions/setup-java@v4.7.0
         with:
           java-version: "21"
           distribution: "corretto"
 
-      - name: Restore Gradle dependencies
-        uses: actions/cache@v4
+      - name: Restore Gradle dependencies & build cache
+        uses: actions/cache@v4.2.0
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-dependencies-
-
-      - name: Restore Gradle build outputs
-        uses: actions/cache@v4
-        with:
-          path: build
-          key: gradle-build-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-build-
+            ./build
+            ./composeApp/build
+          # Cache key has flavor's name to prevent override each other
+          key: gradle-${{ runner.os }}-upstream-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-upstream-
 
       - name: Build with Gradle
         run: ./gradlew assembleupstreamFull
@@ -117,7 +70,6 @@ jobs:
 
   build-upstream-minified:
     name: Build upstream flavor (minified)
-    needs: build-cache
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
@@ -125,28 +77,22 @@ jobs:
       - uses: actions/checkout@v4.2.1
 
       - name: Setup Java 21
-        uses: actions/setup-java@v4.4.0
+        uses: actions/setup-java@v4.7.0
         with:
           java-version: "21"
           distribution: "corretto"
 
-      - name: Restore Gradle dependencies
-        uses: actions/cache@v4
+      - name: Restore Gradle dependencies & build cache
+        uses: actions/cache@v4.2.0
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-dependencies-
-
-      - name: Restore Gradle build outputs
-        uses: actions/cache@v4
-        with:
-          path: build
-          key: gradle-build-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-build-
+            ./build
+            ./composeApp/build
+          # Cache key has flavor's name to prevent override each other
+          key: gradle-${{ runner.os }}-upstream-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-upstream-
 
       - name: Build with Gradle
         run: ./gradlew assembleupstreamMinified
@@ -160,7 +106,6 @@ jobs:
 
   build-improvised-full:
     name: Build improvised flavor (full)
-    needs: build-cache
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
@@ -168,28 +113,22 @@ jobs:
       - uses: actions/checkout@v4.2.1
 
       - name: Setup Java 21
-        uses: actions/setup-java@v4.4.0
+        uses: actions/setup-java@v4.7.0
         with:
           java-version: "21"
           distribution: "corretto"
 
-      - name: Restore Gradle dependencies
-        uses: actions/cache@v4
+      - name: Restore Gradle dependencies & build cache
+        uses: actions/cache@v4.2.0
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-dependencies-
-
-      - name: Restore Gradle build outputs
-        uses: actions/cache@v4
-        with:
-          path: build
-          key: gradle-build-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-build-
+            ./build
+            ./composeApp/build
+          # Cache key has flavor's name to prevent override each other
+          key: gradle-${{ runner.os }}-improvised-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-improvised-
 
       - name: Build with Gradle
         run: ./gradlew assembleimprovisedFull
@@ -203,7 +142,6 @@ jobs:
 
   build-improvised-minified:
     name: Build improvised flavor (minified)
-    needs: build-cache
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
@@ -211,28 +149,22 @@ jobs:
       - uses: actions/checkout@v4.2.1
 
       - name: Setup Java 21
-        uses: actions/setup-java@v4.4.0
+        uses: actions/setup-java@v4.7.0
         with:
           java-version: "21"
           distribution: "corretto"
 
-      - name: Restore Gradle dependencies
-        uses: actions/cache@v4
+      - name: Restore Gradle dependencies & build cache
+        uses: actions/cache@v4.2.0
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-dependencies-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-dependencies-
-
-      - name: Restore Gradle build outputs
-        uses: actions/cache@v4
-        with:
-          path: build
-          key: gradle-build-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-build-
+            ./build
+            ./composeApp/build
+          # Cache key has flavor's name to prevent override each other
+          key: gradle-${{ runner.os }}-upstream-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-upstream-
 
       - name: Build with Gradle
         run: ./gradlew assembleimprovisedMinified
