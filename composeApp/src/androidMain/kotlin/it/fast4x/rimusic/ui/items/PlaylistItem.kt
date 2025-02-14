@@ -335,9 +335,7 @@ fun PlaylistItem(
                 }
 
             }
-            if (browseId?.isNotEmpty() == true && name?.startsWith(
-                    PIPED_PREFIX) == false
-            ) {
+            if ((browseId?.isNotEmpty() == true && name?.startsWith(PIPED_PREFIX) == false) || isYoutubePlaylist) {
                 Image(
                     painter = painterResource(R.drawable.ytmusic),
                     colorFilter = ColorFilter.tint(if (isYoutubePlaylist) Color.Red.copy(0.75f).compositeOver(Color.White) else colorPalette().text),
