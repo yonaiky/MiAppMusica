@@ -10,6 +10,9 @@
   <a href="https://github.com/fast4x/RiMusic/releases/latest"><img src="https://img.shields.io/github/v/release/fast4x/RiMusic?label=Release"></a>
 </div>
 
+## 📲 BE CAREFUL!
+## RiMusic is not present on Google Play Store, do not search and download RiMusic on Google Play Store because they are fake clones to steal your money and personal information.
+
 ## ✨ Features
 - **Multilingual:** English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions for other languages are welcome
 - UI Mode, swtich from RiMusic to classic ViMusic style, viceversa
