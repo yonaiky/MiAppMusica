@@ -310,10 +310,10 @@ fun SongItem(
 
                 /*
                     Song's duration
-                    If it's "null", show 0:00 instead of leaving it empty
+                    If it's "null", show --:-- instead of leaving it empty
                  */
                 SongText(
-                    text = song.durationText ?: "0:00",
+                    text = song.durationText ?: "--:--",
                     style = typography().xxs.secondary.medium,
                     modifier = Modifier.padding( top = 4.dp, start = 5.dp  )
                 )
