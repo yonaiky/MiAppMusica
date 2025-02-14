@@ -113,6 +113,7 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import me.bush.translator.Translator
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.isVideoEnabled
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
@@ -130,6 +131,7 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.playVideo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -526,6 +528,12 @@ fun ArtistOverviewItems(
 ////                            }
 //                        }
                         is Innertube.AlbumItem -> {
+                            var albumById by remember { mutableStateOf<Album?>(null) }
+                            LaunchedEffect(item) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    albumById = Database.album(item.key).firstOrNull()
+                                }
+                            }
                             AlbumItem(
                                 album = item,
                                 thumbnailSizePx = thumbnailSizePx,
@@ -533,6 +541,7 @@ fun ArtistOverviewItems(
                                 alternative = true,
                                 yearCentered = true,
                                 showAuthors = true,
+                                isYoutubeAlbum = albumById?.isYoutubeAlbum == true,
                                 modifier = Modifier.clickable(onClick = {
                                     navController.navigate(route = "${NavRoutes.album.name}/${item.key}")
                                 }),

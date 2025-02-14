@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
@@ -74,6 +75,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -601,6 +603,20 @@ inline fun SelectorArtistsDialog(
                                     )
                                     .align(Alignment.Center)
                             )
+                            if (artist?.isYoutubeArtist == true) {
+                                Image(
+                                    painter = painterResource(R.drawable.ytmusic),
+                                    colorFilter = ColorFilter.tint(
+                                        Color.Red.copy(0.75f).compositeOver(Color.White)
+                                    ),
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .padding(all = 5.dp)
+                                        .offset(10.dp,10.dp),
+                                    contentDescription = "Background Image",
+                                    contentScale = ContentScale.Fit
+                                )
+                            }
                             values[idArtist].name?.let { it1 ->
                                 BasicText(
                                     text = cleanPrefix(it1),
