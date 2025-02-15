@@ -10,6 +10,9 @@
   <a href="https://github.com/fast4x/RiMusic/releases/latest"><img src="https://img.shields.io/github/v/release/fast4x/RiMusic?label=Release"></a>
 </div>
 
+## 📲 BE CAREFUL!
+## RiMusic is not present on Google Play Store, do not search and download RiMusic on Google Play Store because they are fake clones to steal your money and personal information.
+
 ## ✨ Features
 - **Multilingual:** English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions for other languages are welcome
 - UI Mode, swtich from RiMusic to classic ViMusic style, viceversa
@@ -90,7 +93,7 @@
 ## 📲 Installation
 [<img src="./assets/images/getItGithub.png" alt="GitHub" height="80">](https://github.com/fast4x/RiMusic/releases/latest)
 [<img src="./assets/images/getItIzzyOnDroid.png" alt="IzzyOnDroid" height="80">](https://apt.izzysoft.de/fdroid/index/apk/it.fast4x.rimusic/)
-[<img src="./assets/images/getItf-droid.png" alt="F-Droid" height="80">](https://f-droid.org/it/packages/it.fast4x.rimusic/)
+[<img src="./assets/images/getItf-droid.png" alt="F-Droid" height="80">](https://f-droid.org/packages/it.fast4x.rimusic/)
 [<img src="./assets/images/getItOpenapk.png" alt="OpenAPK" height="80">](https://www.openapk.net/rimusic/it.fast4x.rimusic/)
 [<img src="./assets/images/getItAccrescent.png" alt="Accrescent" height="80">](https://accrescent.app/app/it.fast4x.rimusic)
 [<img src="./assets/images/getItObtainium.png" alt="Obtainium" height="80">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22it.fast4x.rimusic%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Ffast4x%2Frimusic%22%2C%22author%22%3A%22fast4x%22%2C%22name%22%3A%22RiMusic%22%2C%22preferredApkIndex%22%3A0%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Afalse%2C%5C%22fallbackToOlderReleases%5C%22%3Atrue%2C%5C%22filterReleaseTitlesByRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22filterReleaseNotesByRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22verifyLatestTag%5C%22%3Afalse%2C%5C%22dontSortReleasesList%5C%22%3Afalse%2C%5C%22useLatestAssetDateAsReleaseDate%5C%22%3Afalse%2C%5C%22trackOnly%5C%22%3Afalse%2C%5C%22versionExtractionRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22matchGroupToUse%5C%22%3A%5C%22%5C%22%2C%5C%22versionDetection%5C%22%3Atrue%2C%5C%22releaseDateAsVersion%5C%22%3Afalse%2C%5C%22useVersionCodeAsOSVersion%5C%22%3Afalse%2C%5C%22apkFilterRegEx%5C%22%3A%5C%22%5C%22%2C%5C%22invertAPKFilter%5C%22%3Afalse%2C%5C%22autoApkFilterByArch%5C%22%3Atrue%2C%5C%22appName%5C%22%3A%5C%22%5C%22%2C%5C%22shizukuPretendToBeGooglePlay%5C%22%3Afalse%2C%5C%22allowInsecure%5C%22%3Afalse%2C%5C%22exemptFromBackgroundUpdates%5C%22%3Afalse%2C%5C%22skipUpdateNotifications%5C%22%3Afalse%2C%5C%22about%5C%22%3A%5C%22RiMusic%20is%20a%20multilingual%20Android%20application%20for%20streaming%20music%20from%20YouTube%20Music.%20It%20began%20as%20an%20extension%20of%20ViMusic%2C%20then%20acquired%20its%20own%20identity.%20It%20allowing%20the%20user%20to%20customize%20it%20at%20will.%5C%22%7D%22%2C%22overrideSource%22%3Anull%7D)
@@ -222,10 +225,10 @@ WARNING, the custom version is **not** an official release, download only if inv
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
-        <a href=https://github.com/S0nter>
-            <img src=https://avatars.githubusercontent.com/u/108224581?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sonter/>
+        <a href=https://github.com/coolcarp>
+            <img src=https://avatars.githubusercontent.com/u/76832747?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=coolcarp/>
             <br />
-            <sub style="font-size:14px"><b>Sonter</b></sub>
+            <sub style="font-size:14px"><b>coolcarp</b></sub>
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
@@ -236,10 +239,10 @@ WARNING, the custom version is **not** an official release, download only if inv
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
-        <a href=https://github.com/coolcarp>
-            <img src=https://avatars.githubusercontent.com/u/76832747?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=coolcarp/>
+        <a href=https://github.com/S0nter>
+            <img src=https://avatars.githubusercontent.com/u/108224581?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sonter/>
             <br />
-            <sub style="font-size:14px"><b>coolcarp</b></sub>
+            <sub style="font-size:14px"><b>Sonter</b></sub>
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
@@ -287,14 +290,21 @@ WARNING, the custom version is **not** an official release, download only if inv
         </a>
     </td>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
+        <a href=https://github.com/leoheitmannruiz>
+            <img src=https://avatars.githubusercontent.com/u/148111793?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Leo Heitmann Ruiz/>
+            <br />
+            <sub style="font-size:14px"><b>Leo Heitmann Ruiz</b></sub>
+        </a>
+    </td>
+</tr>
+<tr>
+    <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/KalyaSc>
             <img src=https://avatars.githubusercontent.com/u/95717211?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=KalyaSc/>
             <br />
             <sub style="font-size:14px"><b>KalyaSc</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/Bnyro>
             <img src=https://avatars.githubusercontent.com/u/82752168?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Bnyro/>
@@ -330,6 +340,8 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>offa</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/lrusso96>
             <img src=https://avatars.githubusercontent.com/u/26090639?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Luigi Russo/>
@@ -337,8 +349,6 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>Luigi Russo</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/locxter>
             <img src=https://avatars.githubusercontent.com/u/54595101?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Luca Schultz/>
@@ -374,6 +384,8 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>Sylvain Rio</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/0x5h31d0n>
             <img src=https://avatars.githubusercontent.com/u/63775224?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Sheldon Menezes/>
@@ -381,8 +393,6 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>Sheldon Menezes</b></sub>
         </a>
     </td>
-</tr>
-<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/roklc>
             <img src=https://avatars.githubusercontent.com/u/142526268?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Rokic/>
@@ -418,11 +428,20 @@ WARNING, the custom version is **not** an official release, download only if inv
             <sub style="font-size:14px"><b>Iscle</b></sub>
         </a>
     </td>
+</tr>
+<tr>
     <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
         <a href=https://github.com/TheRedCyclops>
             <img src=https://avatars.githubusercontent.com/u/76230780?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=TheRedCyclops/>
             <br />
             <sub style="font-size:14px"><b>TheRedCyclops</b></sub>
+        </a>
+    </td>
+    <td align="center" style="word-wrap: break-word; width: 90.0; height: 90.0">
+        <a href=https://github.com/eddisch>
+            <img src=https://avatars.githubusercontent.com/u/73175017?v=4 width="60;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=Ed/>
+            <br />
+            <sub style="font-size:14px"><b>Ed</b></sub>
         </a>
     </td>
 </tr>
