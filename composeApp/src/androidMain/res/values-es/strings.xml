@@ -917,7 +917,7 @@
     <string name="please_wait">Por favor espere</string>
     <string name="songs_liked_yt">La canción o canciones tienen un \"Me gusta\" en YouTube</string>
     <string name="song_unliked_yt">La canción tiene un \"No me gusta\" en YouTube</string>
-    <string name="add_rimusic_to_ytm_favorites">Like RiMusic Liked songs in Youtube</string>
+    <string name="add_rimusic_to_ytm_favorites">Dar un \"Me gusta\" a las canciones con \"Me gusta\" de RiMusic en YouTube</string>
     <string name="do_you_really_want_to_like_all_rimusictoytmusic">(tiempo estimado) es necesario para darle un \"Me gusta\" a todas las canciones. Esta acción no se puede reanudar si se cancela intermediamente. Necesita cerrar la aplicación para cancelar este proceso. ¿Desea continuar?</string>
     <string name="do_you_really_want_to_like_all">(tiempo estimado) es necesario para darle un \"Me gusta\" a todas las canciones. Necesita cerrar la aplicación para cancelar este proceso. ¿Desea continuar?</string>
     <string name="songs_liked_yt_failed">No se pudo dar un \"Me gusta\" a la canción en YouTube</string>
