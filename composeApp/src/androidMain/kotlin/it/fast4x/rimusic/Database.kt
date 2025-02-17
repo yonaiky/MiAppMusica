@@ -658,6 +658,15 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun fakeSongsList(): Flow<List<Song>>
 
+    @Query("""
+        SELECT Album.*
+        FROM Album
+        JOIN SongAlbumMap ON SongAlbumMap.albumId = Album.id
+        JOIN Song ON Song.id = SongAlbumMap.songId = Song.id
+        WHERE Song.id = :songId
+    """)
+    fun findAlbumOfSong( songId: String ): Flow<Album?>
+
     @Transaction
     //@Query("SELECT Playlist.*, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = Playlist.id) as songCount " +
     //        "FROM Song JOIN SongPlaylistMap ON Song.id = SongPlaylistMap.songId " +
