@@ -659,6 +659,15 @@ interface Database {
     fun fakeSongsList(): Flow<List<Song>>
 
     @Query("""
+        SELECT Artist.*
+        FROM Artist
+        JOIN SongArtistMap ON SongArtistMap.artistId = Artist.id
+        JOIN Song ON Song.id = SongArtistMap.songId
+        WHERE Song.id = :songId
+    """)
+    fun findArtistOfSong( songId: String ): Flow<Artist?>
+
+    @Query("""
         SELECT Album.*
         FROM Album
         JOIN SongAlbumMap ON SongAlbumMap.albumId = Album.id
