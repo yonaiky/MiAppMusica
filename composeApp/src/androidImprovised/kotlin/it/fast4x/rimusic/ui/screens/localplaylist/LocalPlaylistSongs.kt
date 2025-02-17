@@ -82,7 +82,6 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -93,7 +92,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.IconInfo
-import it.fast4x.rimusic.ui.components.themed.InPlaylistMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.ListenOnYouTube
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.Playlist
@@ -183,7 +181,6 @@ fun LocalPlaylistSongs(
     // Essentials
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
-    val menuState = LocalMenuState.current
     val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
@@ -884,19 +881,6 @@ fun LocalPlaylistSongs(
                                  */
 
                                 search.onItemSelected()
-                            },
-                            onLongClick = {
-                                menuState.display {
-                                    InPlaylistMediaItemMenu(
-                                        navController = navController,
-                                        playlist = playlistPreview,
-                                        playlistId = playlistId,
-                                        positionInPlaylist = index,
-                                        song = song,
-                                        onDismiss = menuState::hide,
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
                             }
                         )
                     }

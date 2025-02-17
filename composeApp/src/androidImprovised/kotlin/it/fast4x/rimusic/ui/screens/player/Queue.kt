@@ -63,7 +63,6 @@ import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -72,7 +71,6 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.IconInfo
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.components.themed.QueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -118,7 +116,6 @@ fun Queue(
     // Essentials
     val context = LocalContext.current
     val windowInsets = WindowInsets.systemBars
-    val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
     val player = binder?.player ?: return
 
@@ -334,27 +331,6 @@ fun Queue(
                                          */
 
                                         search.onItemSelected()
-                                    },
-                                    onLongClick = {
-                                        menuState.display {
-                                            QueuedMediaItemMenu(
-                                                navController = navController,
-                                                mediaItem = mediaItem,
-                                                indexInQueue = if( player.isNowPlaying(song.id) ) null else index,
-                                                onDismiss = {
-                                                    menuState.hide()
-                                                    forceRecompose = true
-                                                },
-                                                onDownload = {
-                                                    manageDownload(
-                                                        context = context,
-                                                        mediaItem = mediaItem,
-                                                        downloadState = isDownloaded
-                                                    )
-                                                },
-                                                disableScrollingText = disableScrollingText
-                                            )
-                                        }
                                     }
                                 )
                             }

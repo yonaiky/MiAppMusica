@@ -62,7 +62,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
@@ -71,7 +70,6 @@ import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.ItemsList
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -141,7 +139,6 @@ fun AlbumDetails(
     // Essentials
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
-    val menuState = LocalMenuState.current
     val lazyListState = rememberLazyListState()
 
     // Settings
@@ -391,8 +388,6 @@ fun AlbumDetails(
                             binder?.player?.addNext(song.asMediaItem)
                         }
                     ) {
-                        var forceRecompose by remember { mutableStateOf(false) }
-
                         SongItem(
                             song = song,
                             itemSelector = itemSelector,
@@ -426,19 +421,6 @@ fun AlbumDetails(
                                     Due to the small size of checkboxes,
                                     we shouldn't disable [itemSelector]
                                  */
-                            },
-                            onLongClick = {
-                                menuState.display {
-                                    NonQueuedMediaItemMenu(
-                                        navController = navController,
-                                        onDismiss = {
-                                            menuState.hide()
-                                            forceRecompose = true
-                                        },
-                                        mediaItem = song.asMediaItem,
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
                             }
                         )
                     }

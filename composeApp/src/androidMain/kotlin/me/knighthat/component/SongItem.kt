@@ -82,6 +82,7 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
+import me.knighthat.component.menu.song.SongItemMenu
 import me.knighthat.component.tab.ItemSelector
 
 private interface SongIndicator: Icon {
@@ -135,6 +136,8 @@ fun SongText(
 /**
  *  Displays information of a song.
  *
+ *  [onLongClick] overrides song's menu
+ *
  *  @param song record from database
  *  @param navController optional field to detect whether the
  *  current location is playlist to hide playlist indicator.
@@ -154,10 +157,10 @@ fun SongItem(
     isRecommended: Boolean = false,
     modifier: Modifier = Modifier,
     showThumbnail: Boolean = true,
+    onLongClick: (() -> Unit)? = null,
     trailingContent: @Composable (RowScope.() -> Unit)? = null,
     thumbnailOverlay: @Composable BoxScope.() -> Unit = {},
-    onClick: () -> Unit = {},
-    onLongClick: () -> Unit = {}
+    onClick: () -> Unit = {}
 ) {
     // Essentials
     val context = LocalContext.current
@@ -168,6 +171,7 @@ fun SongItem(
     val colorPalette = colorPalette()
     val isPlaying = binder?.player?.isNowPlaying( song.id ) ?: false
 
+    val menu = if( navController != null && onLongClick == null ) SongItemMenu( navController, song ) else null
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy( 12.dp ),
@@ -182,7 +186,9 @@ fun SongItem(
                                onClick = onClick,
                                onLongClick = {
                                    hapticFeedback.performHapticFeedback( HapticFeedbackType.LongPress )
-                                   onLongClick()
+
+                                   onLongClick?.invoke()
+                                   menu?.openMenu()
                                }
                            )
                            .padding(

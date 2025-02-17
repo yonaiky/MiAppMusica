@@ -58,7 +58,6 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.ButtonsRow
-import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.Sort
@@ -68,7 +67,6 @@ import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
@@ -124,7 +122,6 @@ import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
-import java.util.Optional
 
 @OptIn(
     ExperimentalAnimationApi::class,
@@ -137,7 +134,6 @@ import java.util.Optional
 fun HomeSongs( navController: NavController ) {
     // Essentials
     val binder = LocalPlayerServiceBinder.current
-    val menuState = LocalMenuState.current
     val context = LocalContext.current
     val lazyListState = rememberLazyListState()
 
@@ -449,7 +445,6 @@ fun HomeSongs( navController: NavController ) {
                             binder?.player?.enqueue(mediaItem)
                         }
                     ) {
-                        var forceRecompose by remember { mutableStateOf(false) }
                         SongItem(
                             song = song,
                             itemSelector = itemSelector,
@@ -493,30 +488,6 @@ fun HomeSongs( navController: NavController ) {
 
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex( getMediaItems(), index )
-                            },
-                            onLongClick = {
-                                val hideAction =
-                                    if (builtInPlaylist != BuiltInPlaylist.OnDevice) {
-                                        {
-                                            hideSongDialog.song = Optional.of(song)
-                                            hideSongDialog.onShortClick()
-                                        }
-                                    } else null
-
-                                menuState.display {
-                                    InHistoryMediaItemMenu(
-                                        navController = navController,
-                                        song = song,
-                                        onDismiss = {
-                                            menuState.hide()
-                                            forceRecompose = true
-                                        },
-                                        onHideFromDatabase = hideAction,
-                                        onDeleteFromDatabase = {
-                                        },
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
                             }
                         )
                     }
