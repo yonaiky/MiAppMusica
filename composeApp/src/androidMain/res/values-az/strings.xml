@@ -914,8 +914,8 @@
     <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Səsə dərinlik təsiri tətbiq et</string>
     <string name="settings_audio_focus">Səs cəmlənməsi</string>
     <string name="settings_audio_focus_info">Məsələn, zəng sonrası birbaşa fasilə və səslənməni davam etdirməyə imkan verir</string>
-    <string name="please_wait">Please Wait</string>
-    <string name="songs_liked_yt">Song(s) are Liked in YouTube</string>
+    <string name="please_wait">Xahiş olunur, gözləyin</string>
+    <string name="songs_liked_yt">Mahnı(lar) YouTube-da bəyənilib</string>
     <string name="song_unliked_yt">Song is Unliked in YouTube</string>
     <string name="add_rimusic_to_ytm_favorites">Like RiMusic Liked songs in Youtube</string>
     <string name="do_you_really_want_to_like_all_rimusictoytmusic">(estimated time) is required to like all the songs. This action cannot be resumed if cancelled in between. You need to close the app to cancel this process. Do you want to continue?</string>
