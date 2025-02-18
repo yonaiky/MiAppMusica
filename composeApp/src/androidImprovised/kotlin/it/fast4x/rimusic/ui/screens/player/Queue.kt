@@ -24,9 +24,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +45,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.media3.common.Player
@@ -62,13 +67,13 @@ import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.IconButton
-import it.fast4x.rimusic.ui.components.themed.IconInfo
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -384,12 +389,32 @@ fun Queue(
                     modifier = Modifier.padding( horizontal = 8.dp )
                                        .fillMaxWidth()
                 ) {
-                    // Number of songs
-                    IconInfo(
-                        title = player.mediaItemCount.toString(),
-                        icon = painterResource( R.drawable.musical_notes ),
-                        modifier = Modifier.width( 40.dp )
-                    )
+                    /* Number of songs
+                     *
+                     * Opted out of using [IconInfo] because it has [Modifier#fillMaxWidth]
+                     * which makes it harder to adopt flexible width.
+                     */
+                    Row(
+                        modifier = Modifier.height( TabToolBar.TOOLBAR_ICON_SIZE )
+                                           .wrapContentWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource( R.drawable.musical_notes ),
+                            contentDescription = "Number of songs in queue",
+                            tint = colorPalette().text,
+                            modifier = Modifier.padding( end = 2.dp )
+                        )
+                        BasicText(
+                            text = player.mediaItemCount.toString(),
+                            style = TextStyle(
+                                color = colorPalette().text,
+                                fontStyle = typography().l.fontStyle
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
 
                     TabToolBar.Buttons(
                         verticalAlignment = Alignment.CenterVertically,
