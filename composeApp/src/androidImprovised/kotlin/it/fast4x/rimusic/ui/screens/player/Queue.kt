@@ -38,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -121,11 +120,6 @@ fun Queue(
 
     // Settings
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-
-    val bgColor = when( rememberPreference(queueTypeKey, QueueType.Essential).value ) {
-        QueueType.Essential -> colorPalette().background0
-        QueueType.Modern    -> Color.Transparent
-    }
 
     val rippleIndication = ripple(bounded = false)
 
@@ -226,126 +220,130 @@ fun Queue(
         (deleteDialog as Dialog).Render()
 
         Column {
-            Box( Modifier.background( bgColor ).weight( 1f ) ) {
-                LazyColumn(
-                    state = reorderingState.lazyListState,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    contentPadding = windowInsets
-                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                        .add( WindowInsets(bottom = Dimensions.bottomSpacer) )
-                        .asPaddingValues()
-                ) {
-                    itemsIndexed(
-                        items = itemsOnDisplay,
-                        key = { _, song -> song.id }
-                    ) { index, song ->
+            val queueType by rememberPreference( queueTypeKey, QueueType.Essential )
+            val backgroundAlpha = if( queueType == QueueType.Modern ) .5f else 1f
 
-                        val isLocal by remember { derivedStateOf { song.isLocal } }
-                        val isDownloaded = isLocal || isDownloadedSong(song.id)
-                        var forceRecompose by remember { mutableStateOf(false) }
+            LazyColumn(
+                state = reorderingState.lazyListState,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = windowInsets
+                    .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                    .add( WindowInsets(bottom = Dimensions.bottomSpacer) )
+                    .asPaddingValues(),
+                modifier = Modifier.weight( 1f )
+                                   .background(
+                                       colorPalette().background0.copy( alpha = backgroundAlpha )
+                                   )
 
-                        Box(
-                            modifier = Modifier.fillMaxWidth()
-                                               .draggedItem(
-                                                   reorderingState = reorderingState,
-                                                   index = index
-                                               )
-                        ) {
-                            // Drag anchor
-                            if ( !positionLock.isLocked() ) {
-                                Box(
-                                    modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
-                                                       .size( 24.dp )
-                                                       .zIndex( 2f )
-                                                       .align( Alignment.CenterEnd ),
-                                    contentAlignment = Alignment.Center
-                                ) {
+            ) {
+                itemsIndexed(
+                    items = itemsOnDisplay,
+                    key = { _, song -> song.id }
+                ) { index, song ->
 
-                                    IconButton(
-                                        icon = R.drawable.reorder,
-                                        color = colorPalette().textDisabled,
-                                        indication = rippleIndication,
-                                        onClick = {},
-                                        modifier = Modifier.reorder(
-                                            reorderingState = reorderingState,
-                                            index = index
-                                        )
-                                    )
-                                }
-                            }
+                    val isLocal by remember { derivedStateOf { song.isLocal } }
+                    val isDownloaded = isLocal || isDownloadedSong(song.id)
 
-                            val mediaItem = song.asMediaItem
-                            SwipeableQueueItem(
-                                mediaItem = mediaItem,
-                                onPlayNext = {
-                                    binder.player.addNext(
-                                        mediaItem,
-                                        context
-                                    )
-                                },
-                                onDownload = {
-                                    binder.cache.removeResource(song.id)
-                                    if (!isLocal)
-                                        manageDownload(
-                                            context = context,
-                                            mediaItem = mediaItem,
-                                            downloadState = isDownloaded
-                                        )
-                                },
-                                onRemoveFromQueue = {
-                                    player.removeMediaItem(index)
-                                    SmartMessage("${context.resources.getString(R.string.deleted)} ${song.title}", type = PopupType.Warning, context = context)
-                                },
-                                onEnqueue = {
-                                    binder.player.enqueue(
-                                        mediaItem,
-                                        context
-                                    )
-                                }
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                                           .draggedItem(
+                                               reorderingState = reorderingState,
+                                               index = index
+                                           )
+                    ) {
+                        // Drag anchor
+                        if ( !positionLock.isLocked() ) {
+                            Box(
+                                modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
+                                    .size( 24.dp )
+                                    .zIndex( 2f )
+                                    .align( Alignment.CenterEnd ),
+                                contentAlignment = Alignment.Center
                             ) {
-                                SongItem(
-                                    song = song,
-                                    itemSelector = itemSelector,
-                                    navController = navController,
-                                    modifier = Modifier.background( bgColor ),
-                                    trailingContent = {
-                                        if( !positionLock.isLocked() )
-                                        // Create a fake box to store drag anchor and checkbox
-                                            Box( Modifier.width( 24.dp ) )
-                                    },
-                                    onClick = {
-                                        if( player.isNowPlaying(song.id) ) {
-                                            if(player.shouldBePlaying)
-                                                player.pause()
-                                            else
-                                                player.play()
-                                        } else {
-                                            player.seekToDefaultPosition(index)
-                                            player.prepare()
-                                            player.playWhenReady = true
-                                        }
 
-                                        /*
-                                            Due to the small size of checkboxes,
-                                            we shouldn't disable [itemSelector]
-                                         */
-
-                                        search.onItemSelected()
-                                    }
+                                IconButton(
+                                    icon = R.drawable.reorder,
+                                    color = colorPalette().textDisabled,
+                                    indication = rippleIndication,
+                                    onClick = {},
+                                    modifier = Modifier.reorder(
+                                        reorderingState = reorderingState,
+                                        index = index
+                                    )
                                 )
                             }
                         }
-                    }
 
-                    if( binder.isLoadingRadio )
-                        item {
-                            Column( Modifier.shimmer() ) {
-                                repeat(3) { index ->
-                                    SongItemPlaceholder( Modifier.alpha( 1f - index * 0.125f ) )
+                        val mediaItem = song.asMediaItem
+                        SwipeableQueueItem(
+                            mediaItem = mediaItem,
+                            onPlayNext = {
+                                binder.player.addNext(
+                                    mediaItem,
+                                    context
+                                )
+                            },
+                            onDownload = {
+                                binder.cache.removeResource(song.id)
+                                if (!isLocal)
+                                    manageDownload(
+                                        context = context,
+                                        mediaItem = mediaItem,
+                                        downloadState = isDownloaded
+                                    )
+                            },
+                            onRemoveFromQueue = {
+                                player.removeMediaItem(index)
+                                SmartMessage("${context.resources.getString(R.string.deleted)} ${song.title}", type = PopupType.Warning, context = context)
+                            },
+                            onEnqueue = {
+                                binder.player.enqueue(
+                                    mediaItem,
+                                    context
+                                )
+                            }
+                        ) {
+                            SongItem(
+                                song = song,
+                                itemSelector = itemSelector,
+                                navController = navController,
+                                trailingContent = {
+                                    if( !positionLock.isLocked() )
+                                    // Create a fake box to store drag anchor and checkbox
+                                        Box( Modifier.width( 24.dp ) )
+                                },
+                                onClick = {
+                                    if( player.isNowPlaying(song.id) ) {
+                                        if(player.shouldBePlaying)
+                                            player.pause()
+                                        else
+                                            player.play()
+                                    } else {
+                                        player.seekToDefaultPosition(index)
+                                        player.prepare()
+                                        player.playWhenReady = true
+                                    }
+
+                                    /*
+                                        Due to the small size of checkboxes,
+                                        we shouldn't disable [itemSelector]
+                                     */
+
+                                    search.onItemSelected()
                                 }
+                            )
+                        }
+                    }
+                }
+
+                if( binder.isLoadingRadio )
+                    item {
+                        Column( Modifier.shimmer() ) {
+                            repeat(3) { index ->
+                                SongItemPlaceholder( Modifier.alpha( 1f - index * 0.125f ) )
                             }
                         }
-                }
+                    }
             }
 
             // Search box
