@@ -119,6 +119,7 @@ import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
@@ -199,6 +200,7 @@ fun ArtistOverviewModern(
     var itemsParams by remember { mutableStateOf("") }
     var itemsSectionName by remember { mutableStateOf("") }
     var showArtistItems by rememberSaveable { mutableStateOf(false) }
+    var songsBrowseId by remember { mutableStateOf("") }
     var songsParams by remember { mutableStateOf("") }
 
     val hapticFeedback = LocalHapticFeedback.current
@@ -575,11 +577,10 @@ fun ArtistOverviewModern(
                     }
                 }
 
-                artistPage.sections.forEach() {
+                artistPage.sections.forEach() { it ->
                     //println("ArtistOverviewModern title: ${it.title} browseId: ${it.moreEndpoint?.browseId} params: ${it.moreEndpoint?.params}")
                     item {
                         if (it.items.firstOrNull() is Innertube.SongItem) {
-                            songsParams = it.moreEndpoint!!.params.toString()
                             Title(
                                 title = it.title,
                                 enableClick = it.moreEndpoint?.browseId != null,
@@ -680,32 +681,37 @@ fun ArtistOverviewModern(
                                                         )
                                                     },
                                                     onClick = {
-                                                        //binder?.stopRadio()
-                                                        binder?.player?.forcePlay(item.asMediaItem)
-                                                        //TODO add songs from artist in queue
-//                                                        CoroutineScope(Dispatchers.IO).launch {
-//                                                            browseId?.let { bId ->
-//                                                                BrowseEndpoint(
-//                                                                    browseId = bId,
-//                                                                    params = songsParams
-//                                                                )
-//                                                            }?.let { endpoint ->
-//                                                                YtMusic.getArtistItemsPage(
-//                                                                    endpoint
-//                                                                ).completed().getOrNull()
-//                                                                    ?.items
-//                                                                    ?.map{ it as Innertube.SongItem }
-//                                                                    ?.map { it.asMediaItem }
-//                                                                    ?.let {
-//                                                                        println("ArtistOverviewModern SongItem onClick: $it")
-//                                                                        withContext(Dispatchers.Main) {
-//                                                                            binder?.player?.addMediaItems(
-//                                                                                it.filterNot { it.mediaId == item.key }
-//                                                                            )
-//                                                                        }
-//                                                                    }
-//                                                            }
-//                                                        }
+                                                        binder?.stopRadio()
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            artistPage.sections.firstOrNull{sec -> sec.items.firstOrNull() is Innertube.SongItem}.let {
+                                                                songsBrowseId = it?.moreEndpoint!!.browseId!!
+                                                                songsParams = it.moreEndpoint!!.params.toString()
+                                                            }
+                                                            BrowseEndpoint(
+                                                                browseId = songsBrowseId,
+                                                                params = songsParams
+                                                            ).let { endpoint ->
+                                                                val artistSongs = YtMusic.getArtistItemsPage(endpoint)
+                                                                    .completed()
+                                                                    .getOrNull()
+                                                                    ?.items
+                                                                    ?.map{ it as Innertube.SongItem }
+                                                                    ?.map { it.asMediaItem }
+                                                                val filteredArtistSongs = artistSongs?.filter {Database.getLikedAt(it.mediaId) != -1L}
+                                                                if (filteredArtistSongs != null) {
+                                                                    if (item.asMediaItem in filteredArtistSongs){
+                                                                        withContext(Dispatchers.Main) {
+                                                                            binder?.player?.forcePlayAtIndex(
+                                                                                filteredArtistSongs,
+                                                                                filteredArtistSongs.indexOf(item.asMediaItem)
+                                                                            )
+                                                                        }
+                                                                    } else {
+                                                                        SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 )
                                         )
