@@ -188,7 +188,6 @@ fun HomeSongs( navController: NavController ) {
     val hideSongDialog = HideSongDialog()
     val itemSelector = ItemSelector<Song>()
     val exportDialog = ExportSongsToCSVDialog(
-        playlistId = -1,    // Doesn't belong to any playlist
         playlistName = builtInPlaylist.text,
         songs = ::getSongs
     )

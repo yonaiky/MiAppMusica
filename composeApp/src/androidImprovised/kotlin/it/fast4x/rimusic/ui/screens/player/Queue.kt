@@ -181,7 +181,6 @@ fun Queue(
 
         val plistName = remember { mutableStateOf("") }
         val exportDialog = ExportSongsToCSVDialog(
-            playlistId = -1,        // Doesn't belong to any playlist
             playlistName = plistName.value,
             songs = ::getSongs
         )

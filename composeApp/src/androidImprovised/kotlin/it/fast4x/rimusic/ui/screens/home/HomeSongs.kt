@@ -256,7 +256,6 @@ fun HomeSongs(
     }
     val import = ImportSongsFromCSV()
     val exportDialog = ExportSongsToCSVDialog(
-        playlistId = -1,    // Doesn't belong to any playlist
         playlistName = builtInPlaylist.text,
         songs = { getMediaItems().map( MediaItem::asSong ) }
     )

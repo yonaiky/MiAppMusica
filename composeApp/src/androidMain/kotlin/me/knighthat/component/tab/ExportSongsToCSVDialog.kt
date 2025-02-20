@@ -61,7 +61,7 @@ class ExportSongsToCSVDialog private constructor(
 
         @Composable
         operator fun invoke(
-            playlistId: Long,
+            playlistId: Long = -1,
             playlistName: String,
             songs: () -> List<Song>
         ) = ExportSongsToCSVDialog(
