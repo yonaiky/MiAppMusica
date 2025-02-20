@@ -217,6 +217,13 @@ class SongItemMenu private constructor(
         }
         //</editor-fold>
 
+        //<editor-fold desc="Dialog renders">
+        renameSong.Render()
+        changeAuthor.Render()
+        deleteSongDialog.Render()
+        resetCache.Render()
+        //</editor-fold>
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
