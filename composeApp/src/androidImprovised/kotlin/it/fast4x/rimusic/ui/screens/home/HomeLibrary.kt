@@ -23,19 +23,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.compose.persist.persistList
-import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
@@ -55,25 +52,18 @@ import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.ItemSize
 import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
-import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
-import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.items.PlaylistItem
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
 import it.fast4x.rimusic.utils.autoSyncToolbutton
 import it.fast4x.rimusic.utils.autosyncKey
-import it.fast4x.rimusic.utils.createPipedPlaylist
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enableCreateMonthlyPlaylistsKey
-import it.fast4x.rimusic.utils.getPipedSession
-import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.playlistTypeKey
@@ -82,10 +72,10 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.SongShuffler
 
@@ -103,23 +93,15 @@ fun HomeLibrary(
     onSettingsClick: () -> Unit
 ) {
     // Essentials
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val lazyGridState = rememberLazyGridState()
 
     // Non-vital
-    val pipedSession = getPipedSession()
-    var plistId by remember { mutableLongStateOf( 0L ) }
     var playlistType by rememberPreference(playlistTypeKey, PlaylistsType.Playlist)
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
     var itemsOnDisplay by persistList<PlaylistPreview>("home/playlists/on_display")
-
-    // Dialog states
-    val newPlaylistToggleState = remember { mutableStateOf( false ) }
 
     val search = Search.init()
 
@@ -152,61 +134,7 @@ fun HomeLibrary(
     )
     //</editor-fold>
     //<editor-fold desc="New playlist dialog">
-    val newPlaylistDialog = object: IDialog, Descriptive, MenuIcon {
-
-        override val messageId: Int = R.string.create_new_playlist
-        override val iconId: Int = R.drawable.add_in_playlist
-        override val dialogTitle: String
-            @Composable
-            get() = stringResource( R.string.enter_the_playlist_name )
-        override val menuIconTitle: String
-            @Composable
-            get() = stringResource( messageId )
-
-        override var isActive: Boolean = newPlaylistToggleState.value
-            set(value) {
-                newPlaylistToggleState.value = value
-                field = value
-            }
-
-        override var value: String = ""
-
-        override fun onShortClick() = super.onShortClick()
-
-        override fun onSet(newValue: String) {
-            if (isYouTubeSyncEnabled()) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    YtMusic.createPlaylist(newValue).getOrNull()
-                        .also {
-                            println("Innertube YtMusic createPlaylist: $it")
-                            Database.asyncTransaction {
-                                insert(Playlist(name = newValue, browseId = it, isYoutubePlaylist = true, isEditable = true))
-                            }
-                        }
-
-                }
-            } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    Database.asyncTransaction {
-                        insert(Playlist(name = newValue))
-                    }
-                }
-            }
-
-            if ( isPipedEnabled && pipedSession.token.isNotEmpty() )
-                createPipedPlaylist(
-                    context = context,
-                    coroutineScope = coroutineScope,
-                    pipedSession = pipedSession.toApiSession(),
-                    name = newValue
-                )
-
-
-
-            onDismiss()
-        }
-
-    }
+    val newPlaylistDialog = NewPlaylistDialog()
     //</editor-fold>
     val importPlaylistDialog = ImportSongsFromCSV()
     val sync = autoSyncToolbutton(R.string.autosync)

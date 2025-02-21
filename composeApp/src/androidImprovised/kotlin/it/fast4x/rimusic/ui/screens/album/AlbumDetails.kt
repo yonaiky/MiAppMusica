@@ -106,6 +106,7 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import me.knighthat.component.SongItem
+import me.knighthat.component.album.AlbumModifier
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ItemSelector
@@ -114,7 +115,6 @@ import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.component.ui.screens.DynamicOrientationLayout
 import me.knighthat.component.ui.screens.album.AlbumBookmark
-import me.knighthat.component.ui.screens.album.AlbumModifier
 import me.knighthat.component.ui.screens.album.Translate
 import timber.log.Timber
 
@@ -202,27 +202,27 @@ fun AlbumDetails(
         }
     )
     //<editor-fold defaultstate="collapsed" desc="Album modifiers">
-    val changeTitle = AlbumModifier.init(
-        { updateAlbumTitle(browseId, "$MODIFIED_PREFIX$it") },
-        R.drawable.title_edit,
-        R.string.update_title,
-        album?.title.toString(),
-        stringResource( R.string.title )
-    )
-    val changeAuthors = AlbumModifier.init(
-        { updateAlbumAuthors(browseId, "$MODIFIED_PREFIX$it") },
-        R.drawable.artists_edit,
-        R.string.update_authors,
-        album?.authorsText.toString(),
-        stringResource( R.string.authors )
-    )
-    val changeCover = AlbumModifier.init(
-        { updateAlbumCover(browseId, "$MODIFIED_PREFIX$it") },
-        R.drawable.cover_edit,
-        R.string.update_cover,
-        album?.thumbnailUrl.toString(),
-        stringResource( R.string.cover )
-    )
+    val changeTitle = AlbumModifier(
+        iconId = R.drawable.title_edit,
+        messageId = R.string.update_title,
+        getDefaultValue = { album?.title ?: "" },
+    ) {
+        Database.updateAlbumTitle( browseId, "$MODIFIED_PREFIX$it" )
+    }
+    val changeAuthors = AlbumModifier(
+        iconId = R.drawable.artists_edit,
+        messageId = R.string.update_authors,
+        getDefaultValue = { album?.authorsText ?: "" },
+    ) {
+        Database.updateAlbumAuthors( browseId, "$MODIFIED_PREFIX$it" )
+    }
+    val changeCover = AlbumModifier(
+        iconId = R.drawable.cover_edit,
+        messageId = R.string.update_cover,
+        getDefaultValue = { album?.thumbnailUrl ?: "" },
+    ) {
+        Database.updateAlbumCover( browseId, "$MODIFIED_PREFIX$it" )
+    }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Translator">
     val translate = Translate.init()

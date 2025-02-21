@@ -3,29 +3,36 @@ package me.knighthat.component
 import android.content.ActivityNotFoundException
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import me.knighthat.component.dialog.InputDialogConstraints
+import me.knighthat.component.dialog.TextInputDialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 abstract class ExportToFileDialog(
-    valueState: MutableState<String>,
+    valueState: MutableState<TextFieldValue>,
     activeState: MutableState<Boolean>,
     private val launcher: ManagedActivityResultLauncher<String, Uri?>
-): IDialog {
+): TextInputDialog(InputDialogConstraints.ALL, false) {
 
     abstract val extension: String
+    override val keyboardOption: KeyboardOptions = KeyboardOptions.Default
 
-    override var value: String by valueState
+    override var value: TextFieldValue by valueState
     override var isActive: Boolean by activeState
 
     override fun onSet( newValue: String ) {
+        super.onSet( newValue )
+        if( errorMessage.isNotEmpty() ) return
+
         /**
          *  Create another reference so any changes applied
          *  to this variable instead of [newValue].
@@ -50,6 +57,6 @@ abstract class ExportToFileDialog(
                 type = PopupType.Warning,
                 context = appContext()
             )
-        } finally { onDismiss() }
+        } finally { hideDialog() }
     }
 }

@@ -10,10 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,16 +21,21 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SortOrder
-import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.SongPlaylistMap
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
+import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import it.fast4x.rimusic.ui.components.tab.toolbar.Menu
+import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
@@ -41,13 +43,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.ui.components.tab.toolbar.Button
-import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
-import it.fast4x.rimusic.ui.components.tab.toolbar.Menu
-import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.typography
+import me.knighthat.component.playlist.NewPlaylistDialog
 
 class PlaylistsMenu private constructor(
     private val navController: NavController,
@@ -173,38 +169,7 @@ class PlaylistsMenu private constructor(
                     !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
         }
 
-        val newPlaylistButton = object : IDialog, Button {
-
-            override val dialogTitle: String
-                @Composable
-                get() = stringResource( R.string.enter_the_playlist_name )
-            override var isActive: Boolean by rememberSaveable { mutableStateOf( false ) }
-            // TODO: Add a random name generator
-            override var value: String = ""
-
-            override fun onSet( newValue: String ) {
-                Database.asyncTransaction {
-                    val playlistId = insert( Playlist(name = newValue) )
-                    onAdd(
-                        PlaylistPreview(
-                            Playlist(playlistId, newValue),
-                            0
-                        )
-                    )
-                }
-                onDismiss()
-                menuState.hide()
-            }
-
-            @Composable
-            override fun ToolBarButton() {
-                SecondaryTextButton(
-                    text = stringResource( R.string.new_playlist ),
-                    onClick = ::onShortClick,
-                    alternative = true
-                )
-            }
-        }
+        val newPlaylistButton = NewPlaylistDialog()
         newPlaylistButton.Render()
 
         Menu {

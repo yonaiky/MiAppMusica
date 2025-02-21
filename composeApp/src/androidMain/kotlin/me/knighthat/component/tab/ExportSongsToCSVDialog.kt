@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
@@ -36,7 +37,7 @@ import java.io.OutputStream
  * | 3 | New Songs | kPa7bsKwL-c | DWAS | Anonymous | 253 | https://... |
  */
 class ExportSongsToCSVDialog private constructor(
-    valueState: MutableState<String>,
+    valueState: MutableState<TextFieldValue>,
     activeState: MutableState<Boolean>,
     launcher: ManagedActivityResultLauncher<String, Uri?>
 ): ExportToFileDialog(valueState, activeState, launcher), MenuIcon, Descriptive {
@@ -68,7 +69,9 @@ class ExportSongsToCSVDialog private constructor(
             // [playlistName] is an mutable object. Therefore,
             // if it was changed externally, this "remembered"
             // state must be updated as well.
-            remember( playlistName ) { mutableStateOf(playlistName) },
+            remember( playlistName ) {
+                mutableStateOf( TextFieldValue(playlistName) )
+            },
             rememberSaveable { mutableStateOf(false) },
             rememberLauncherForActivityResult(
                 ActivityResultContracts.CreateDocument( "text/csv" )
@@ -107,7 +110,5 @@ class ExportSongsToCSVDialog private constructor(
         @Composable
         get() = stringResource( messageId )
 
-    // Both [IDialog] and [Descriptive] require this function,
-    // so it must be explicitly stated here to not confuse the compiler
-    override fun onShortClick() = super.onShortClick()
+    override fun onShortClick() = showDialog()
 }

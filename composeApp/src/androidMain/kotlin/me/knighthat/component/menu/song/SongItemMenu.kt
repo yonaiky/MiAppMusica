@@ -69,6 +69,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
+import me.knighthat.component.song.ChangeAuthorDialog
+import me.knighthat.component.song.RenameSongDialog
 import me.knighthat.component.tab.DeleteSongDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Radio
@@ -174,8 +176,8 @@ class SongItemMenu private constructor(
          * but the song(s) can be updated as we go
          */
         //<editor-fold defaultstate="collapsed" desc="Buttons">
-        val renameSong = RenameSongDialog( song )
-        val changeAuthor = ChangeAuthorDialog( song )
+        val renameSong = RenameSongDialog{ song }
+        val changeAuthor = ChangeAuthorDialog{ song }
         val startRadio = Radio { listOf(song) }
         val playNext = PlayNext {
             binder?.player?.addNext( listOf(song.asMediaItem), appContext() )

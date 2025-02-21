@@ -64,7 +64,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MONTHLY_PREFIX
-import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
@@ -108,7 +107,6 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DeletePlaylist
 import it.fast4x.rimusic.utils.PlaylistSongsSort
 import it.fast4x.rimusic.utils.PositionLock
-import it.fast4x.rimusic.utils.RenameDialog
 import it.fast4x.rimusic.utils.Reposition
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
@@ -127,7 +125,6 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getPipedSession
-import it.fast4x.rimusic.utils.getTitleMonthlyPlaylist
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
@@ -153,6 +150,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
+import me.knighthat.component.playlist.RenamePlaylistDialog
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
@@ -196,7 +194,6 @@ fun LocalPlaylistSongs(
     val pipedSession = getPipedSession()
     var isRecommendationEnabled by rememberPreference(isRecommendationEnabledKey, false)
     // Playlist non-vital
-    val playlistName = remember { mutableStateOf( "" ) }
     val thumbnailUrl = remember { mutableStateOf("") }
 
     val itemSelector = ItemSelector<Song>()
@@ -207,10 +204,10 @@ fun LocalPlaylistSongs(
     val search = Search.init()
     val sort = PlaylistSongsSort.init()
     val shuffle = SongShuffler ( ::getSongs )
-    val renameDialog = RenameDialog.init( pipedSession, coroutineScope, { isPipedEnabled }, playlistName, { playlistPreview } )
+    val renameDialog = RenamePlaylistDialog { playlistPreview?.playlist }
     val exportDialog = ExportSongsToCSVDialog(
         playlistId = playlistId,
-        playlistName = playlistName.value,
+        playlistName = playlistPreview?.playlist?.name ?: "",
         songs = ::getSongs
     )
     val deleteDialog = DeletePlaylist {
@@ -492,13 +489,13 @@ fun LocalPlaylistSongs(
             .collect { playlistPreview = it }
     }
     LaunchedEffect( playlistPreview?.playlist?.name ) {
-        renameDialog.playlistName = playlistPreview?.playlist?.name?.let { name ->
-            if( name.startsWith( MONTHLY_PREFIX, true ) )
-                getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
-            else
-                name.substringAfter( PINNED_PREFIX )
-                    .substringAfter( PIPED_PREFIX )
-        } ?: "Unknown"
+//        renameDialog.playlistName = playlistPreview?.playlist?.name?.let { name ->
+//            if( name.startsWith( MONTHLY_PREFIX, true ) )
+//                getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
+//            else
+//                name.substringAfter( PINNED_PREFIX )
+//                    .substringAfter( PIPED_PREFIX )
+//        } ?: "Unknown"
 
         val thumbnailName = "thumbnail/playlist_${playlistId}"
         val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
@@ -586,7 +583,7 @@ fun LocalPlaylistSongs(
                 ) {
 
                     HeaderWithIcon(
-                        title = cleanPrefix(playlistName.value),
+                        title = cleanPrefix( playlistPreview?.playlist?.name ?: "" ),
                         iconId = R.drawable.playlist,
                         enabled = true,
                         showIcon = false,
