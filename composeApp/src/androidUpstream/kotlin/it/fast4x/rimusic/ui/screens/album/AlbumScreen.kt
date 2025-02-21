@@ -64,6 +64,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.transitionEffectKey
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -108,8 +109,9 @@ fun AlbumScreen(
     LaunchedEffect(Unit) {
         Database
             .album(browseId).collect { currentAlbum ->
+                println("AlbumScreen collect ${currentAlbum?.title}")
                 album = currentAlbum
-                withContext(Dispatchers.IO) {
+                runBlocking(Dispatchers.IO) {
                     if (albumPage == null)
                         YtMusic.getAlbum(browseId)
                             .onSuccess { currentAlbumPage ->

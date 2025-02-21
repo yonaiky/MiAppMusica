@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -62,8 +63,10 @@ import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.ArtistSection
+import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -75,15 +78,20 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
+import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
+import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
+import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
@@ -99,14 +107,20 @@ import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlay
+import it.fast4x.rimusic.utils.forcePlayAtIndex
+import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isNetworkConnected
+import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -117,7 +131,9 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -180,9 +196,12 @@ fun ArtistOverviewModern(
     var itemsParams by remember { mutableStateOf("") }
     var itemsSectionName by remember { mutableStateOf("") }
     var showArtistItems by rememberSaveable { mutableStateOf(false) }
+    var songsBrowseId by remember { mutableStateOf("") }
+    var songsParams by remember { mutableStateOf("") }
 
     val hapticFeedback = LocalHapticFeedback.current
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    val menuState = LocalMenuState.current
 
     LaunchedEffect(Unit) {
         if (browseId != null) {
@@ -554,7 +573,7 @@ fun ArtistOverviewModern(
                     }
                 }
 
-                artistPage.sections.forEach() {
+                artistPage.sections.forEach() { it ->
                     //println("ArtistOverviewModern title: ${it.title} browseId: ${it.moreEndpoint?.browseId} params: ${it.moreEndpoint?.params}")
                     item {
                         if (it.items.firstOrNull() is Innertube.SongItem) {
@@ -603,19 +622,96 @@ fun ArtistOverviewModern(
                         items(it.items) { item ->
                             when (item) {
                                 is Innertube.SongItem -> {
+                                    if (parentalControlEnabled && item.explicit) return@items
+
+                                    downloadState = getDownloadState(item.asMediaItem.mediaId)
+                                    val isDownloaded = isDownloadedSong(item.asMediaItem.mediaId)
                                     println("Innertube artistmodern SongItem: ${item.info?.name}")
-                                    SongItem(
-                                        song = item,
-                                        thumbnailSizePx = songThumbnailSizePx,
-                                        thumbnailSizeDp = songThumbnailSizeDp,
-                                        onDownloadClick = {},
-                                        downloadState = Download.STATE_STOPPED,
-                                        disableScrollingText = disableScrollingText,
-                                        isNowPlaying = false,
-                                        modifier = Modifier.clickable(onClick = {
-                                            binder?.player?.forcePlay(item.asMediaItem)
-                                        })
-                                    )
+                                    SwipeablePlaylistItem(
+                                        mediaItem = item.asMediaItem,
+                                        onPlayNext = {
+                                            binder?.player?.addNext(item.asMediaItem)
+                                        },
+                                        onDownload = {
+                                            binder?.cache?.removeResource(item.asMediaItem.mediaId)
+                                            CoroutineScope(Dispatchers.IO).launch {
+                                                Database.resetContentLength( item.asMediaItem.mediaId )
+                                            }
+
+                                            manageDownload(
+                                                context = context,
+                                                mediaItem = item.asMediaItem,
+                                                downloadState = isDownloaded
+                                            )
+                                        },
+                                        onEnqueue = {
+                                            binder?.player?.enqueue(item.asMediaItem)
+                                        }
+                                    ) {
+                                        var forceRecompose by remember { mutableStateOf(false) }
+                                        SongItem(
+                                            song = item,
+                                            thumbnailSizePx = songThumbnailSizePx,
+                                            thumbnailSizeDp = songThumbnailSizeDp,
+                                            onDownloadClick = {},
+                                            downloadState = Download.STATE_STOPPED,
+                                            disableScrollingText = disableScrollingText,
+                                            isNowPlaying = false,
+                                            forceRecompose = forceRecompose,
+                                            modifier = Modifier
+                                                .combinedClickable(
+                                                    onLongClick = {
+                                                        menuState.display {
+                                                            NonQueuedMediaItemMenu(
+                                                                navController = navController,
+                                                                onDismiss = {
+                                                                    menuState.hide()
+                                                                    forceRecompose = true
+                                                                },
+                                                                mediaItem = item.asMediaItem,
+                                                                disableScrollingText = disableScrollingText
+                                                            )
+                                                        };
+                                                        hapticFeedback.performHapticFeedback(
+                                                            HapticFeedbackType.LongPress
+                                                        )
+                                                    },
+                                                    onClick = {
+                                                        binder?.stopRadio()
+                                                        CoroutineScope(Dispatchers.IO).launch {
+                                                            artistPage.sections.firstOrNull{sec -> sec.items.firstOrNull() is Innertube.SongItem}.let {
+                                                                songsBrowseId = it?.moreEndpoint!!.browseId!!
+                                                                songsParams = it.moreEndpoint!!.params.toString()
+                                                            }
+                                                            BrowseEndpoint(
+                                                                browseId = songsBrowseId,
+                                                                params = songsParams
+                                                            ).let { endpoint ->
+                                                                val artistSongs = YtMusic.getArtistItemsPage(endpoint)
+                                                                    .completed()
+                                                                    .getOrNull()
+                                                                    ?.items
+                                                                    ?.map{ it as Innertube.SongItem }
+                                                                    ?.map { it.asMediaItem }
+                                                                val filteredArtistSongs = artistSongs?.filter {Database.getLikedAt(it.mediaId) != -1L}
+                                                                if (filteredArtistSongs != null) {
+                                                                    if (item.asMediaItem in filteredArtistSongs){
+                                                                        withContext(Dispatchers.Main) {
+                                                                            binder?.player?.forcePlayAtIndex(
+                                                                                filteredArtistSongs,
+                                                                                filteredArtistSongs.indexOf(item.asMediaItem)
+                                                                            )
+                                                                        }
+                                                                    } else {
+                                                                        SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                )
+                                        )
+                                    }
                                 }
 
                                 else -> {}
@@ -630,12 +726,19 @@ fun ArtistOverviewModern(
 
                                         is Innertube.AlbumItem -> {
                                             println("Innertube artistmodern AlbumItem: ${item.info?.name}")
+                                            var albumById by remember { mutableStateOf<Album?>(null) }
+                                            LaunchedEffect(item) {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    albumById = Database.album(item.key).firstOrNull()
+                                                }
+                                            }
                                             AlbumItem(
                                                 album = item,
                                                 alternative = true,
                                                 thumbnailSizePx = albumThumbnailSizePx,
                                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                                 disableScrollingText = disableScrollingText,
+                                                isYoutubeAlbum = albumById?.isYoutubeAlbum == true,
                                                 modifier = Modifier.clickable(onClick = {
                                                     navController.navigate("${NavRoutes.album.name}/${item.key}")
                                                 })
@@ -645,12 +748,18 @@ fun ArtistOverviewModern(
 
                                         is Innertube.ArtistItem -> {
                                             println("Innertube v ArtistItem: ${item.info?.name}")
+                                            var artistById by remember { mutableStateOf<Artist?>(null) }
+                                            LaunchedEffect(item) {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    artistById = Database.artist(item.key).firstOrNull()
+                                                }
+                                            }
                                             ArtistItem(
                                                 artist = item,
                                                 thumbnailSizePx = artistThumbnailSizePx,
                                                 thumbnailSizeDp = artistThumbnailSizeDp,
                                                 disableScrollingText = disableScrollingText,
-                                                isYoutubeArtist = artist?.isYoutubeArtist == true,
+                                                isYoutubeArtist = artistById?.isYoutubeArtist == true,
                                                 modifier = Modifier.clickable(onClick = {
                                                     navController.navigate("${NavRoutes.artist.name}/${item.key}")
                                                 })
@@ -659,12 +768,19 @@ fun ArtistOverviewModern(
 
                                         is Innertube.PlaylistItem -> {
                                             println("Innertube v PlaylistItem: ${item.info?.name}")
+                                            var playlistById by remember { mutableStateOf<Playlist?>(null) }
+                                            LaunchedEffect(item) {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    playlistById = Database.playlist(item.key.substringAfter("VL")).firstOrNull()
+                                                }
+                                            }
                                             PlaylistItem(
                                                 playlist = item,
                                                 alternative = true,
                                                 thumbnailSizePx = playlistThumbnailSizePx,
                                                 thumbnailSizeDp = playlistThumbnailSizeDp,
                                                 disableScrollingText = disableScrollingText,
+                                                isYoutubePlaylist = playlistById?.isYoutubePlaylist == true,
                                                 modifier = Modifier.clickable(onClick = {
                                                     navController.navigate("${NavRoutes.playlist.name}/${item.key}")
                                                 })

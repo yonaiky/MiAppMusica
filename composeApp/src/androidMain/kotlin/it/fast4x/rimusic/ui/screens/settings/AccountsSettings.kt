@@ -88,6 +88,7 @@ import it.fast4x.rimusic.utils.ytAccountNameKey
 import it.fast4x.rimusic.utils.ytAccountThumbnailKey
 import it.fast4x.rimusic.utils.ytCookieKey
 import it.fast4x.rimusic.utils.ytVisitorDataKey
+import it.fast4x.rimusic.utils.ytDataSyncIdKey
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -146,6 +147,7 @@ fun AccountsSettings() {
         var isYouTubeSyncEnabled by rememberPreference(enableYouTubeSyncKey, false)
         var loginYouTube by remember { mutableStateOf(false) }
         var visitorData by rememberPreference(key = ytVisitorDataKey, defaultValue = "")
+        var dataSyncId by rememberPreference(key = ytDataSyncIdKey, defaultValue = "")
         var cookie by rememberPreference(key = ytCookieKey, defaultValue = "")
         var accountName by rememberPreference(key = ytAccountNameKey, defaultValue = "")
         var accountEmail by rememberPreference(key = ytAccountEmailKey, defaultValue = "")
@@ -172,6 +174,7 @@ fun AccountsSettings() {
                 isYouTubeLoginEnabled = it
                 if (!it) {
                     visitorData = ""
+                    dataSyncId = ""
                     cookie = ""
                     accountName = ""
                     accountChannelHandle = ""
@@ -217,6 +220,7 @@ fun AccountsSettings() {
                                         accountEmail = ""
                                         accountThumbnail = ""
                                         visitorData = ""
+                                        dataSyncId = ""
                                         loginYouTube = false
                                         //Delete cookies after logout
                                         val cookieManager = CookieManager.getInstance()

@@ -61,6 +61,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -127,7 +128,7 @@ fun ArtistScreenModern(
                 artist = currentArtist
 
                 if (artistPage == null && (currentArtist?.timestamp == null || mustFetch)) {
-                    withContext(Dispatchers.IO) {
+                    runBlocking(Dispatchers.IO) {
                         YtMusic.getArtistPage(browseId = browseId)
                             .onSuccess { currentArtistPage ->
                                 artistPage = currentArtistPage
