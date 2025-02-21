@@ -932,4 +932,7 @@ Volume BAS : titre précédent</string>
     <string name="title_reset_cache">Reset cache</string>
     <string name="playing_song_not_found_on_current_list">Could not find playing song on current list</string>
     <string name="no_songs_playing">No song is playing at the moment</string>
+    <string name="invalid_input">Invalid input!</string>
+    <string name="rename_playlist">Rename playlist</string>
+    <string name="no_song_to_shuffle">No song to shuffle</string>
 </resources>

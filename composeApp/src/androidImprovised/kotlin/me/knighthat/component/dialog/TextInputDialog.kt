@@ -15,6 +15,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import org.intellij.lang.annotations.MagicConstant
@@ -32,8 +34,7 @@ abstract class TextInputDialog(
     override fun onValueChanged(newValue: String): Boolean {
         val result = newValue.matches( constraintRegex )
         if( !result )
-            // TODO Add string to strings.xml
-            errorMessage = "Invalid input!"
+            errorMessage = appContext().resources.getString( R.string.invalid_input )
         else
             errorMessage = ""
 
@@ -42,7 +43,7 @@ abstract class TextInputDialog(
 
     override fun onSet( newValue: String ) {
         if( !allowEmpty && newValue.isEmpty() )
-            errorMessage = "Value cannot be empty!"
+            errorMessage = appContext().resources.getString( R.string.value_cannot_be_empty )
     }
 
     @Composable

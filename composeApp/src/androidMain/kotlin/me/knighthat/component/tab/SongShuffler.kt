@@ -58,9 +58,8 @@ class SongShuffler(
         ) {
             // Send message saying that there's no song to play
             if( songs.isEmpty() ) {
-                // TODO: add this string to R.string
                 SmartMessage(
-                    message = "There's no song to play",
+                    message = appContext().getString( R.string.no_song_to_shuffle ),
                     context = appContext()
                 )
                 return

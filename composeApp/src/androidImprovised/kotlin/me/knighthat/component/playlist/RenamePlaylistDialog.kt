@@ -43,15 +43,14 @@ class RenamePlaylistDialog private constructor(
     }
 
     override val iconId: Int = R.drawable.title_edit
-    override val messageId: Int = R.string.rename
+    override val messageId: Int = R.string.rename_playlist
     override val keyboardOption: KeyboardOptions = KeyboardOptions.Default
     override val dialogTitle: String
         @Composable
         get() = stringResource( R.string.enter_the_playlist_name )
     override val menuIconTitle: String
         @Composable
-        // TODO Add string to strings.xml
-        get() = "Rename playlist"
+        get() = stringResource( messageId )
 
     override fun hideDialog() {
         super.hideDialog()

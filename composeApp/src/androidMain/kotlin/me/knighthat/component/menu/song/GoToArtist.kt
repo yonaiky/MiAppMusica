@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
@@ -27,10 +28,9 @@ class GoToArtist private constructor(
     override val iconId: Int = R.drawable.artists
     // TODO: Add string "About this artist"
     override val messageId: Int = R.string.artists
-    // TODO: Add string "About this artist" to strings.xml
     override val menuIconTitle: String
         @Composable
-        get() = "About this artist"
+        get() = appContext().getString( R.string.about ) + " ${getSong().artistsText}"
 
     override fun onShortClick() {
         val song = getSong()
