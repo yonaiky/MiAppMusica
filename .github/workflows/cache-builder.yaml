@@ -120,7 +120,7 @@ jobs:
     needs: check-changes
     if: needs.check-changes.outputs.rebuild_improvised == 'true'
 
-    name: Build upstream
+    name: Build improvised
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
