@@ -7,16 +7,15 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.guava.future
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 class GoToArtist private constructor(
@@ -45,10 +44,7 @@ class GoToArtist private constructor(
 
             // If artist isn't stored inside database, attempt to fetch
             if( result == null ) {
-                SmartMessage(
-                    message = appContext().getString( R.string.looking_up_artist_online, song.artistsText ),
-                    context = appContext()
-                )
+                Toaster.n( R.string.looking_up_artist_online, song.artistsText )
 
                 Innertube.player(videoId = song.id)
                          .onSuccess { response ->
@@ -58,12 +54,7 @@ class GoToArtist private constructor(
                                      ?.let { result = Artist(it) }
                          }.onFailure {
                              Timber.tag("go_to_artist").e(it)
-
-                             SmartMessage(
-                                 message = appContext().getString( R.string.failed_to_fetch_artist ),
-                                 context = appContext(),
-                                 type = PopupType.Error
-                             )
+                             Toaster.e( R.string.failed_to_fetch_artist )
                          }
             }
 

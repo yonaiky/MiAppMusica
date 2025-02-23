@@ -13,15 +13,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.runBlocking
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 @UnstableApi
@@ -73,11 +71,7 @@ class Locator private constructor(
             Timber.tag("locator").d("LocateComponent.onShortClick songs ${songs.size} -> mediaItem ${mediaItem?.mediaId}")
 
             if( position == -1 )      // Playing song isn't inside [songs()]
-                SmartMessage(
-                    message = appContext().resources.getString( R.string.playing_song_not_found_on_current_list ),
-                    context = appContext(),
-                    type = PopupType.Warning
-                )
+                Toaster.i( R.string.playing_song_not_found_on_current_list )
             else
                 runBlocking {
                     when( scrollableState ) {
@@ -86,10 +80,6 @@ class Locator private constructor(
                     }
                 }
         } else
-            SmartMessage(
-                message = appContext().resources.getString( R.string.no_songs_playing ),
-                context = appContext(),
-                type = PopupType.Warning
-            )
+            Toaster.i( R.string.no_songs_playing )
     }
 }

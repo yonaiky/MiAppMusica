@@ -39,7 +39,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MenuStyle
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -52,7 +51,6 @@ import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.addNext
@@ -74,6 +72,7 @@ import me.knighthat.component.song.RenameSongDialog
 import me.knighthat.component.tab.DeleteSongDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Radio
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.Optional
 
@@ -261,7 +260,7 @@ class SongItemMenu private constructor(
                                 color = colorPalette().favoritesIcon,
                                 onClick = {
                                     if ( !isNetworkConnected( context ) && isYouTubeSyncEnabled() ) {
-                                        SmartMessage(appContext().resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                        Toaster.e( R.string.no_connection )
                                     } else if ( !isYouTubeSyncEnabled() ){
                                         mediaItemToggleLike( song.asMediaItem )
                                     } else {

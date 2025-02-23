@@ -16,12 +16,12 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.formatAsDuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.knighthat.component.ImportSongsFromFile
+import me.knighthat.utils.Toaster
 import me.knighthat.utils.csv.SongCSV
 import java.io.InputStream
 
@@ -91,10 +91,7 @@ class ImportSongsFromCSV(
                 }
 
                 // Show message when it's done
-                SmartMessage(
-                    message = appContext().resources.getString( R.string.done ),
-                    context = appContext()
-                )
+                Toaster.done()
             }
 
         @Composable

@@ -4,13 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import me.knighthat.utils.Toaster
 
 class LikeComponent private constructor(
     private val menuState: MenuState,
@@ -35,10 +34,7 @@ class LikeComponent private constructor(
                 like( it.id, System.currentTimeMillis() )
             }
 
-            SmartMessage(
-                message = appContext().resources.getString( R.string.done ),
-                context = appContext()
-            )
+            Toaster.done()
         }
 
         /*

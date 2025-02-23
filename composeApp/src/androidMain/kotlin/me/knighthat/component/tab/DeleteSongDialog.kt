@@ -9,13 +9,12 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.themed.DeleteDialog
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import me.knighthat.utils.Toaster
 import java.util.Optional
 
 @UnstableApi
@@ -57,10 +56,8 @@ open class DeleteSongDialog(
                 deleteFormat( it.id )
                 delete( it )
             }
-            SmartMessage(
-                message = appContext().resources.getString(R.string.deleted),
-                context = appContext()
-            )
+
+            Toaster.i( R.string.deleted )
         }
 
         onDismiss()

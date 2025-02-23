@@ -10,18 +10,16 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.guava.future
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 class GoToAlbum private constructor(
@@ -57,10 +55,7 @@ class GoToAlbum private constructor(
              * TBH, not the best way, but it gets the job done, for now!
              */
             if( result == null ) {
-                SmartMessage(
-                    message = appContext().getString( R.string.looking_up_album_from_the_internet ),
-                    context = appContext()
-                )
+                Toaster.n( R.string.looking_up_album_from_the_internet )
 
                 var songTitle = song.title
                 var songArtists = song.artistsText ?: ""
@@ -92,12 +87,7 @@ class GoToAlbum private constructor(
                              }
                              ?.onFailure {
                                  Timber.tag("go_to_album").e(it)
-
-                                 SmartMessage(
-                                     message = appContext().getString( R.string.failed_to_fetch_original_property ),
-                                     context = appContext(),
-                                     type = PopupType.Error
-                                 )
+                                 Toaster.e( R.string.failed_to_fetch_original_property )
                              }
 
                 // If this value remains unchanged after fetch, it means fetch failed
@@ -122,11 +112,7 @@ class GoToAlbum private constructor(
                              ?.onFailure {
                                  Timber.tag("go_to_album").e(it)
 
-                                 SmartMessage(
-                                     message = appContext().getString( R.string.failed_to_fetch_album ),
-                                     context = appContext(),
-                                     type = PopupType.Error
-                                 )
+                                 Toaster.e( R.string.failed_to_fetch_album )
                              }
             }
 

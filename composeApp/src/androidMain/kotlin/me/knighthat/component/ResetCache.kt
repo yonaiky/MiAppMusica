@@ -11,13 +11,12 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import me.knighthat.utils.Toaster
 
 @UnstableApi
 class ResetCache private constructor(
@@ -61,9 +60,6 @@ class ResetCache private constructor(
             }
         }
 
-        SmartMessage(
-            message = appContext().resources.getString( R.string.done ),
-            context = appContext()
-        )
+        Toaster.s( R.string.done )
     }
 }

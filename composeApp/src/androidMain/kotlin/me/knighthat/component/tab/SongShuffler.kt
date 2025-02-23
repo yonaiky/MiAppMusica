@@ -15,7 +15,6 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getEnum
@@ -25,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 
 @UnstableApi
 class SongShuffler(
@@ -58,10 +58,8 @@ class SongShuffler(
         ) {
             // Send message saying that there's no song to play
             if( songs.isEmpty() ) {
-                SmartMessage(
-                    message = appContext().getString( R.string.no_song_to_shuffle ),
-                    context = appContext()
-                )
+                // TODO: add string to strings.xml
+                Toaster.i( R.string.no_song_to_shuffle )
                 return
             }
 

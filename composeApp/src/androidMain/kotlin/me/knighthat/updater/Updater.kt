@@ -1,6 +1,10 @@
 package me.knighthat.updater
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,16 +19,18 @@ import it.fast4x.rimusic.BuildConfig
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.CheckUpdateState
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.EnumValueSelectorSettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.SettingsDescription
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.rememberPreference
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import me.knighthat.utils.Repository
+import me.knighthat.utils.Toaster
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
@@ -106,13 +112,7 @@ object Updater {
                 else -> e.message?.let { message = it }
             }
 
-            withContext( Dispatchers.Main ) {
-                SmartMessage(
-                    context = appContext(),
-                    message = message,
-                    type = PopupType.Error
-                )
-            }
+            withContext( Dispatchers.Main ) { Toaster.e( message ) }
 
             NewUpdateAvailableDialog.isCancelled = true
         }

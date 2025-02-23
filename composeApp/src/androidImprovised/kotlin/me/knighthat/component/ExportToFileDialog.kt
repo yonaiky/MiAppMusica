@@ -8,11 +8,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
-import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.R
 import me.knighthat.component.dialog.InputDialogConstraints
 import me.knighthat.component.dialog.TextInputDialog
+import me.knighthat.utils.Toaster
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -52,11 +51,7 @@ abstract class ExportToFileDialog(
         try {
             launcher.launch( fileName )
         } catch ( _: ActivityNotFoundException) {
-            SmartMessage(
-                "Couldn't find an application to create documents",
-                type = PopupType.Warning,
-                context = appContext()
-            )
+            Toaster.e( R.string.info_not_find_app_open_doc )
         } finally { hideDialog() }
     }
 }
