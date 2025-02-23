@@ -934,4 +934,6 @@
     <string name="invalid_input">Invalid input!</string>
     <string name="rename_playlist">Rename playlist</string>
     <string name="no_song_to_shuffle">No song to shuffle</string>
+    <string name="looking_up_artist_online">Looking up %s online...</string>
+    <string name="failed_to_fetch_artist">Failed to fetch aritst</string>
 </resources>
