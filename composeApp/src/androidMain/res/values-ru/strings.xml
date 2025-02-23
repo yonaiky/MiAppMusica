@@ -936,4 +936,7 @@
     <string name="no_song_to_shuffle">No song to shuffle</string>
     <string name="looking_up_artist_online">Looking up %s online...</string>
     <string name="failed_to_fetch_artist">Failed to fetch aritst</string>
+    <string name="looking_up_album_from_the_internet">Looking up album from the internet</string>
+    <string name="failed_to_fetch_original_property">Failed to fetch original property</string>
+    <string name="failed_to_fetch_album">Failed to fetch album</string>
 </resources>
