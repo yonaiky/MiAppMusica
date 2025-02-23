@@ -68,6 +68,8 @@ import kotlinx.coroutines.launch
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
 import me.knighthat.component.song.ChangeAuthorDialog
+import me.knighthat.component.song.GoToAlbum
+import me.knighthat.component.song.GoToArtist
 import me.knighthat.component.song.RenameSongDialog
 import me.knighthat.component.tab.DeleteSongDialog
 import me.knighthat.component.tab.LikeComponent

@@ -1,8 +1,12 @@
 package me.knighthat.component.ui.screens.player
 
 import android.annotation.SuppressLint
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -10,8 +14,17 @@ import androidx.media3.exoplayer.ExoPlayer
 import it.fast4x.compose.reordering.ReorderingState
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.QueueLoopType
-import it.fast4x.rimusic.ui.components.tab.toolbar.*
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
+import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
+import it.fast4x.rimusic.ui.components.tab.toolbar.Icon
+import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import it.fast4x.rimusic.utils.discoverKey
+import it.fast4x.rimusic.utils.queueLoopTypeKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
+import it.fast4x.rimusic.utils.shuffleQueue
+import it.fast4x.rimusic.utils.smoothScrollToTop
 import kotlinx.coroutines.launch
 
 @SuppressLint("ComposableNaming")

@@ -1,4 +1,4 @@
-package me.knighthat.component.menu.song
+package me.knighthat.component.song
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
