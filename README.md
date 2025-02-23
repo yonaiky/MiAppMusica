@@ -6,11 +6,11 @@
 <p><b>RiMusic does not collect any data.</b></p>
 </div>
 
-# IMPORTANT
+# ❗ IMPORTANT
 
 Since `January 5th 2025`, this project is split into 2 parts, **_upstream_** and **_improvised_**.
 
-### What's the different
+### ⇄ What's the different
 
 | Upstream               | Improvised                   |
 |------------------------|------------------------------|
@@ -18,7 +18,7 @@ Since `January 5th 2025`, this project is split into 2 parts, **_upstream_** and
 | Contains minor changes | Contains significant changes |
 | Fast to deliver        | Takes a while to implement   |
 
-## What is KBuild
+## 📖 What is KBuild
 
 KBuild started as an unstable branch of RiMusic with changes made before pushing to upstream branch.
 
@@ -453,32 +453,6 @@ letting me port some (or most) of new changes to legacy _kbuild_ flavor.
     </td>
 </tr>
 </table>
-<!--
-- [25huizengek1](https://github.com/25huizengek1)
-- [821938089](https://github.com/821938089)
-- [aneesh1122](https://github.com/aneesh1122)
-- [Abhinavreddy-B](https://github.com/Abhinavreddy-B)
-- [bbyeen](https://github.com/bbyeen)
-- [Craeckie](https://github.com/Craeckie)
-- [DanielSevillano](https://github.com/DanielSevillano)
-- [fast4x](https://github.com/fast4x)
-- [ikanakova](https://github.com/ikanakova)
-- [iscle](https://github.com/iscle)
-- [jaimtres](https://github.com/jaimtres)
-- [JZITNIK](https://github.com/jzitnik-dev)
-- [KyNarec](https://github.com/KyNarec)
-- [knighthat](https://github.com/knighthat)
-- [locxter](https://github.com/locxter)
-- [lrusso96](https://github.com/lrusso96)
-- [martkol](https://github.com/martkol)
-- [ov1d1u ](https://github.com/ov1d1u)
-- [roklc](https://github.com/roklc)
-- [sharunkumar](https://github.com/sharunkumar/sharunkumar)
-- [SuhasDissa](https://github.com/SuhasDissa)
-- [twistios](https://github.com/twistios)
-- [wispl](https://github.com/wispl)
--->  
-
 
 ## 🫂 Acknowledgements
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
@@ -495,7 +469,7 @@ letting me port some (or most) of new changes to legacy _kbuild_ flavor.
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): A shader modifier for Compose Multiplatform / Jetpack Compose
 
 
-## ❗ Disclaimer
+## ⚠️ Disclaimer
 This project, its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates, subsidiaries.
 
 Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
