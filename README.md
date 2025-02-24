@@ -456,6 +456,7 @@ letting me port some (or most) of new changes to legacy _kbuild_ flavor.
 
 ## 🫂 Acknowledgements
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
+- [**RiMusic** - Original](https://github.com/fast4x/RiMusic)
 - **RiMusic current Logo Design from** [jaimtres](https://github.com/jaimtres)
 - **RiMusic previous Logo, many current icons from** [@ikanakova](https://github.com/ikanakova)
 - **RiMusic Website, other features from** [JZITNIK-github](https://github.com/JZITNIK-github), [martkol](https://github.com/martkol)
