@@ -11,6 +11,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Song
 import me.knighthat.component.RenameDialog
+import me.knighthat.utils.Toaster
 
 class ChangeAuthorDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -54,6 +55,9 @@ class ChangeAuthorDialog private constructor(
         val song = getSong() ?: return
         Database.asyncTransaction {
             updateSongArtist( song.id, newValue )
+            Toaster.done()
         }
+
+        hideDialog()
     }
 }

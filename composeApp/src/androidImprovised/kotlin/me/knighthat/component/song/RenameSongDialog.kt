@@ -12,6 +12,7 @@ import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Song
 import me.knighthat.component.RenameDialog
+import me.knighthat.utils.Toaster
 
 class RenameSongDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -55,6 +56,7 @@ class RenameSongDialog private constructor(
         val song = getSong() ?: return
         Database.asyncTransaction {
             updateSongTitle( song.id, "$MODIFIED_PREFIX$newValue" )
+            Toaster.done()
         }
 
         hideDialog()
