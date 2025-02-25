@@ -2458,6 +2458,9 @@ interface Database {
     }
 
     @Update
+    fun update( song: Song )
+
+    @Update
     fun update(artist: Artist)
 
     @Update

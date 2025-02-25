@@ -937,4 +937,8 @@
     <string name="looking_up_album_from_the_internet">Looking up album from the internet</string>
     <string name="failed_to_fetch_original_property">Failed to fetch original property</string>
     <string name="failed_to_fetch_album">Failed to fetch album</string>
+    <string name="info_open_reset_dialog">Open reset dialog</string>
+    <string name="title_reset_title">Reset title</string>
+    <string name="title_reset_authors">Reset authors</string>
+    <string name="title_reset_total_play_time">Reset total play time</string>
 </resources>

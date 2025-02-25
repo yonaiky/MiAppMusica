@@ -65,12 +65,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
 import me.knighthat.component.song.ChangeAuthorDialog
 import me.knighthat.component.song.GoToAlbum
 import me.knighthat.component.song.GoToArtist
 import me.knighthat.component.song.RenameSongDialog
+import me.knighthat.component.song.ResetSongDialog
 import me.knighthat.component.tab.DeleteSongDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Radio
@@ -201,7 +201,7 @@ class SongItemMenu private constructor(
         }
         val goToArtist = GoToArtist( navController ) { song }
         val goToAlbum = GoToAlbum( navController ) { song }
-        val resetCache = ResetCache { listOf(song) }
+        val resetDialog = ResetSongDialog( song )
 
         buttons = mutableListOf<Button>().apply {
             add( renameSong )
@@ -214,7 +214,7 @@ class SongItemMenu private constructor(
             if( !song.isLocal ) {
                 add( goToAlbum )
                 add( goToArtist )
-                add( resetCache )
+                add( resetDialog )
             }
             add( deleteSongDialog )
         }
@@ -224,7 +224,7 @@ class SongItemMenu private constructor(
         renameSong.Render()
         changeAuthor.Render()
         deleteSongDialog.Render()
-        resetCache.Render()
+        resetDialog.Render()
         //</editor-fold>
 
         Column(
