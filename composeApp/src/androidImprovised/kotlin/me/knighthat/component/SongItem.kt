@@ -139,13 +139,16 @@ fun SongText(
  *  [onLongClick] overrides song's menu
  *
  *  @param song record from database
+ *  @param itemSelector optional field to enable select box
  *  @param navController optional field to detect whether the
  *  current location is playlist to hide playlist indicator.
  *  @param isRecommended whether this song is selected by algorithm
  *  @param modifier applied to the outermost layer but not its content
  *  @param showThumbnail whether to fetch/show thumbnail of this song.
- *  [thumbnailOverlay] will still being shown regardless the state of this value
+ *  [thumbnailOverlay] will still being shown regardless the state of this value.
+ *  @param onLongClick what happens when user holds this item for a short while
  *  @param trailingContent content being placed to the rightmost of the card
+ *  @param onClick what happens when user tap on this item
  */
 @UnstableApi
 @ExperimentalFoundationApi
@@ -222,19 +225,13 @@ fun SongItem(
                                        .clip( thumbnailShape() )
                 )
 
-            /*
-                To avoid the app from rendering components
-                on top of each other without showing the
-                previous, is condition is here to force it
-                to display either overlay.
-             */
             if( isPlaying )
                 NowPlayingSongIndicator(
                     mediaId = song.id,
                     player = binder?.player
                 )
-            else
-                thumbnailOverlay()
+
+            thumbnailOverlay()
 
             if( song.likedAt != null )
                 HeaderIconButton(
