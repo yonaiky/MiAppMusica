@@ -49,17 +49,15 @@ class ResetCache private constructor(
     override fun onShortClick() = super.onShortClick()
 
     override fun onConfirm() {
-        getSongs().forEach { song ->
-            // Transaction is placed inside the loop
-            // so when ONE song fails, the other won't be affected
-            Database.asyncTransaction {
+        Database.asyncTransaction {
+            getSongs().forEach { song ->
                 binder?.cache?.removeResource( song.id )
                 binder?.downloadCache?.removeResource( song.id )
                 deleteFormat( song.id )
                 resetContentLength( song.id )
             }
-        }
 
-        Toaster.s( R.string.done )
+            Toaster.done()
+        }
     }
 }
