@@ -214,8 +214,8 @@ class SongItemMenu private constructor(
             if( !song.isLocal ) {
                 add( goToAlbum )
                 add( goToArtist )
+                add( resetCache )
             }
-            add( resetCache )
             add( deleteSongDialog )
         }
         //</editor-fold>
