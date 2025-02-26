@@ -14,7 +14,7 @@ jq -r '
 select(
   .status == "completed" and
   .conclusion == "success" and
-  (now - (.updated_at | fromdate)) < (14 * 86400)
+  (now - (.updated_at | fromdate)) >= (14 * 86400)
 ) |
 .id' workflows.json > success_workflows.txt
 
