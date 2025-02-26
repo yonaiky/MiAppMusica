@@ -23,6 +23,9 @@ import kotlinx.coroutines.launch
 import me.knighthat.component.ExportToFileDialog
 import me.knighthat.utils.csv.SongCSV
 import java.io.OutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Create a custom CSV file with replicable information of
@@ -100,7 +103,6 @@ class ExportSongsToCSVDialog private constructor(
         )
     }
 
-    override val extension: String = ".csv"
     override val iconId: Int = R.drawable.export
     override val messageId: Int = R.string.export_playlist
     override val dialogTitle: String
@@ -111,4 +113,9 @@ class ExportSongsToCSVDialog private constructor(
         get() = stringResource( messageId )
 
     override fun onShortClick() = showDialog()
+
+    override fun defaultFileName(): String {
+        val dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault() )
+        return "RMPlaylist_${dateFormat.format( Date() )}"
+    }
 }

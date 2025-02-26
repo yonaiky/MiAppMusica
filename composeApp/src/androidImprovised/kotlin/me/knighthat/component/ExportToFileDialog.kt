@@ -12,9 +12,6 @@ import it.fast4x.rimusic.R
 import me.knighthat.component.dialog.InputDialogConstraints
 import me.knighthat.component.dialog.TextInputDialog
 import me.knighthat.utils.Toaster
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 abstract class ExportToFileDialog(
     valueState: MutableState<TextFieldValue>,
@@ -22,11 +19,15 @@ abstract class ExportToFileDialog(
     private val launcher: ManagedActivityResultLauncher<String, Uri?>
 ): TextInputDialog(InputDialogConstraints.ALL, false) {
 
-    abstract val extension: String
     override val keyboardOption: KeyboardOptions = KeyboardOptions.Default
 
     override var value: TextFieldValue by valueState
     override var isActive: Boolean by activeState
+
+    /**
+     * Called when input field is left empty.
+     */
+    abstract fun defaultFileName(): String
 
     override fun onSet( newValue: String ) {
         super.onSet( newValue )
@@ -37,16 +38,7 @@ abstract class ExportToFileDialog(
          *  to this variable instead of [newValue].
          *  So that [newValue] remains immutable
          */
-        var fileName = newValue
-
-        // If user didn't indicate a name, apply date as replacement
-        if( newValue.isBlank() ) {
-            val dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault() )
-            fileName = "RMPlaylist_${dateFormat.format( Date() )}"
-        }
-
-        // Add extension
-        fileName += this.extension
+        val fileName = newValue.ifBlank( ::defaultFileName )
 
         try {
             launcher.launch( fileName )
