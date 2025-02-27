@@ -86,18 +86,24 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
@@ -109,6 +115,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
@@ -124,8 +131,6 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.BlackCherryCosmos
 import com.mikepenz.hypnoticcanvas.shaders.GlossyGradients
@@ -169,13 +174,13 @@ import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.BlurParamsDialog
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
-import it.fast4x.rimusic.ui.components.themed.MiniPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.RotateThumbnailCoverAnimationModern
@@ -246,7 +251,6 @@ import it.fast4x.rimusic.utils.queueDurationExpandedKey
 import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
@@ -297,17 +301,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.coil.ImageCacheFactory
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.math.absoluteValue
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.center
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.unit.LayoutDirection
-import it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
-import it.fast4x.rimusic.utils.conditional
 import kotlin.math.sqrt
 
 
@@ -925,33 +921,12 @@ fun Player(
         it to (it - 64.dp).px
     }
 
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(
-                mediaItem.mediaMetadata.artworkUri.thumbnail(1200))
-            .size(coil.size.Size.ORIGINAL)
-            .transformations(
-                listOf(
-                  if (showthumbnail) {
-                      BlurTransformation(
-                          scale = 0.5f,
-                          radius = blurStrength.toInt(),
-                          //darkenFactor = blurDarkenFactor
-                      )
-
-                 } else
-                    BlurTransformation(
-                        scale = 0.5f,
-                        //radius = blurStrength2.toInt(),
-                        radius = if ((isShowingLyrics && !isShowingVisualizer) || !noblur) blurStrength.toInt() else 0,
-                        //darkenFactor = blurDarkenFactor
-                    )
-                )
-            )
-            .build()
-    )
-
-
+    val blurRadius =
+        if( showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur )
+            blurStrength.toInt()
+        else
+            0
+    val blurTransformation = BlurTransformation(blurRadius, .5f)
 
     var totalPlayTimes = 0L
     mediaItems.forEach {
@@ -1017,6 +992,11 @@ fun Player(
 
     if (!isGradientBackgroundEnabled) {
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || (showthumbnail && (!albumCoverRotation)))) {
+            val painter = ImageCacheFactory.Painter(
+                thumbnailUrl = mediaItem.mediaMetadata.artworkUri.toString(),
+                transformations = listOf( blurTransformation )
+            )
+
             containerModifier = containerModifier
                 .background(dynamicColorPalette.background1)
                 .paint(
@@ -1545,20 +1525,18 @@ fun Player(
                                     ) {
                                         if (showalbumcover) {
                                             Box(
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterVertically)
+                                                modifier = Modifier.align( Alignment.CenterVertically )
                                             ) {
-                                                AsyncImage(
-                                                    model = binder.player.getMediaItemAt(
-                                                        index
-                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                    ).mediaMetadata.artworkUri.thumbnail(1200),
-                                                    contentDescription = null,
-                                                    contentScale = ContentScale.Crop,
-                                                    modifier = Modifier
-                                                        .padding(end = 5.dp)
-                                                        .clip(RoundedCornerShape(5.dp))
-                                                        .size(30.dp)
+                                                ImageCacheFactory.Thumbnail(
+                                                    thumbnailUrl = binder.player
+                                                                         .getMediaItemAt( index )
+                                                                         .mediaMetadata
+                                                                         .artworkUri
+                                                                         .toString(),
+                                                    contentDescription = "song_pos_$index",
+                                                    modifier = Modifier.padding( end = 5.dp )
+                                                                       .clip( RoundedCornerShape(5.dp) )
+                                                                       .size( 30.dp )
                                                 )
                                             }
                                         }
@@ -2075,26 +2053,10 @@ fun Player(
                      }
 
                      AsyncImage(
-                         model = ImageRequest.Builder(LocalContext.current)
-                             .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.thumbnail(1200))
-                             .transformations(
-                                 listOf(
-                                     if (showthumbnail) {
-                                         BlurTransformation(
-                                             scale = 0.5f,
-                                             radius = blurStrength.toInt(),
-                                             //darkenFactor = blurDarkenFactor
-                                         )
-                                     } else
-                                         BlurTransformation(
-                                             scale = 0.5f,
-                                             //radius = blurStrength2.toInt(),
-                                             radius = if ((isShowingLyrics && !isShowingVisualizer) || !noblur) blurStrength.toInt() else 0,
-                                             //darkenFactor = blurDarkenFactor
-                                         )
-                                 )
-                             )
-                             .build(),
+                         model = ImageCacheFactory.Painter(
+                             thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString(),
+                             transformations = listOf( blurTransformation )
+                         ),
                          contentDescription = "",
                          contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
                          modifier = Modifier
@@ -2313,12 +2275,8 @@ fun Player(
                                          ) {
                                          it ->
 
-                                         val coverPainter = rememberAsyncImagePainter(
-                                             model = ImageRequest.Builder(LocalContext.current)
-                                                 .data(
-                                                     binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.thumbnail(1200)
-                                                 )
-                                                 .build()
+                                         val coverPainter = ImageCacheFactory.Painter(
+                                             binder.player.getMediaItemAt( it ).mediaMetadata.artworkUri.toString()
                                          )
 
                                          val coverModifier = Modifier
@@ -2688,27 +2646,10 @@ fun Player(
                                 }
                         ) {
                             AsyncImage(
-                              model = ImageRequest.Builder(LocalContext.current)
-                                .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.thumbnail(1200))
-                                .transformations(
-                                    listOf(
-                                        if (showthumbnail) {
-                                            BlurTransformation(
-                                                scale = 0.5f,
-                                                radius = blurStrength.toInt(),
-                                                //darkenFactor = blurDarkenFactor
-                                            )
-
-                                        } else
-                                            BlurTransformation(
-                                                scale = 0.5f,
-                                                //radius = blurStrength2.toInt(),
-                                                radius = if ((isShowingLyrics && !isShowingVisualizer) || !noblur) blurStrength.toInt() else 0,
-                                                //darkenFactor = blurDarkenFactor
-                                            )
-                                    )
-                                )
-                                .build(),
+                              model = ImageCacheFactory.Painter(
+                                  thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString(),
+                                  transformations = listOf( blurTransformation )
+                              ),
                                contentDescription = "",
                                contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
                                modifier = Modifier
@@ -3016,10 +2957,8 @@ fun Player(
                                          }
                                  ){ it ->
 
-                                     val coverPainter = rememberAsyncImagePainter(
-                                         model = ImageRequest.Builder(LocalContext.current)
-                                             .data(binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.thumbnail(1200))
-                                             .build()
+                                     val coverPainter = ImageCacheFactory.Painter(
+                                         binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
                                      )
 
                                      val coverModifier = Modifier

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
@@ -44,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -55,7 +52,6 @@ import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
@@ -66,7 +62,6 @@ import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
-import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -80,8 +75,8 @@ import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
+import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.menu.song.SongItemMenu
 import me.knighthat.component.tab.ItemSelector
 
@@ -203,27 +198,9 @@ fun SongItem(
         Box(
             Modifier.size( Dimensions.thumbnails.song )
         ) {
-            /*
-                Thumbnail size
-                It always fetches a fixed size to prevent cache
-                from storing multiple images.
-                Let the OS do the resizing for more efficient outcome.
-                TODO: Make a simple system to detect network speed and/or
-                TODO: data saver that automatically lower the quality to
-                TODO: reduce loading time and to preserve data usage.
-             */
-            val thumbnailSizePx = Dimensions.thumbnails.song.px
-
             // Actual thumbnail (from cache or fetch from url)
             if( showThumbnail )
-                AsyncImage(
-                    model = song.thumbnailUrl
-                                ?.thumbnail( thumbnailSizePx ),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                                       .clip( thumbnailShape() )
-                )
+                ImageCacheFactory.Thumbnail( song.thumbnailUrl )
 
             if( isPlaying )
                 NowPlayingSongIndicator(

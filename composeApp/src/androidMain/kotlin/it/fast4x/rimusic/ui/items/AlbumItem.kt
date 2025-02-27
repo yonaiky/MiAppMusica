@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
@@ -45,8 +43,8 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shimmerEffect
-import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import me.knighthat.coil.ImageCacheFactory
 
 @Composable
 fun AlbumItem(
@@ -125,14 +123,11 @@ fun AlbumItem(
         modifier = modifier
     ) {
         Box {
-            AsyncImage(
-                model = thumbnailUrl?.thumbnail(thumbnailSizePx)?.let { it1 -> cleanPrefix(it1) },
-                contentDescription = null,
-                //contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(thumbnailShape())
-                    .requiredSize(thumbnailSizeDp)
+            ImageCacheFactory.Thumbnail(
+                thumbnailUrl = thumbnailUrl,
+                contentScale = ContentScale.FillWidth
             )
+
             if (isYoutubeAlbum) {
                 Image(
                     painter = painterResource(R.drawable.ytmusic),

@@ -15,21 +15,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import coil.compose.AsyncImage
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
-import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.thumbnail
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.thumbnailShape
+import me.knighthat.coil.ImageCacheFactory
 
 
 @Composable
@@ -60,8 +57,6 @@ fun adaptiveThumbnailContent(
 ): @Composable () -> Unit = {
     BoxWithConstraints(contentAlignment = Alignment.Center) {
         val thumbnailSizeDp = if (isLandscape) (maxHeight - 128.dp) else (maxWidth - 64.dp)
-        val thumbnailSizePx = thumbnailSizeDp.px
-        val context = LocalContext.current
         val playerThumbnailSize by rememberPreference(playerThumbnailSizeKey, PlayerThumbnailSize.Medium)
 
         val modifier = Modifier
@@ -169,9 +164,8 @@ fun adaptiveThumbnailContent(
                     .background(colorPalette().shimmer)
             )
         } else {
-            AsyncImage(
-                model = url?.thumbnail(thumbnailSizePx),
-                contentDescription = null,
+            ImageCacheFactory.Thumbnail(
+                thumbnailUrl = url,
                 modifier = modifier
             )
             if(showIcon)

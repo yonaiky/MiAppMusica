@@ -42,8 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
@@ -52,7 +50,6 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MODIFIED_PREFIX
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerPosition
@@ -64,12 +61,12 @@ import it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.transitionEffectKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import me.knighthat.coil.ImageCacheFactory
 import org.jetbrains.annotations.Contract
 
 
@@ -159,12 +156,7 @@ fun AlbumScreen(
         }
     }
 
-    val thumbnailPainter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder( appContext() )
-            .data( album?.thumbnailUrl?.resize(1200, 1200) )
-            .diskCacheKey( browseId )
-            .build(),
-    )
+    val thumbnailPainter = ImageCacheFactory.Painter( album?.thumbnailUrl )
 
     androidx.compose.material3.Scaffold(
         modifier = Modifier,
