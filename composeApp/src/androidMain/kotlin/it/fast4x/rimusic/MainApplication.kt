@@ -3,16 +3,11 @@ package it.fast4x.rimusic
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import coil.disk.DiskCache
-import coil.request.CachePolicy
-import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.utils.CaptureCrash
 import it.fast4x.rimusic.utils.FileLoggingTree
-import it.fast4x.rimusic.utils.coilCustomDiskCacheKey
-import it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
-import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.logDebugEnabledKey
 import it.fast4x.rimusic.utils.preferences
+import me.knighthat.coil.ImageCacheFactory
 import timber.log.Timber
 import java.io.File
 
@@ -42,41 +37,7 @@ class MainApplication : Application(), ImageLoaderFactory {
         /**** LOG *********/
     }
 
-    override fun newImageLoader(): ImageLoader {
-        val coilCustomDiskCache = preferences.getInt(coilCustomDiskCacheKey, 128) * 1000 * 1000L
-        return ImageLoader.Builder(this)
-            .crossfade(true)
-            .networkCachePolicy(CachePolicy.ENABLED)
-            .respectCacheHeaders(false)
-            .placeholder(R.drawable.loader)
-            .error(R.drawable.noimage)
-            .fallback(R.drawable.noimage)
-            /*
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .memoryCache(
-                MemoryCache.Builder(this)
-                    .maxSizePercent(0.25)
-                    .build()
-            )
-             */
-            .diskCachePolicy(CachePolicy.ENABLED)
-            .diskCache(
-                DiskCache.Builder()
-                    .directory(filesDir.resolve("coil"))
-                    .maxSizeBytes(
-                        when (val size =
-                            preferences.getEnum(
-                                coilDiskCacheMaxSizeKey,
-                                CoilDiskCacheMaxSize.`128MB`
-                            )) {
-                            CoilDiskCacheMaxSize.Custom -> coilCustomDiskCache
-                            else -> size.bytes
-                        }
-                    )
-                    .build()
-            )
-            .build()
-    }
+    override fun newImageLoader(): ImageLoader = ImageCacheFactory.LOADER
 
 }
 
