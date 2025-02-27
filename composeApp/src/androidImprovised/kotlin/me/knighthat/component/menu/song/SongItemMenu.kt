@@ -67,6 +67,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.component.SongItem
 import me.knighthat.component.song.ChangeAuthorDialog
+import me.knighthat.component.song.ExportCacheDialog
 import me.knighthat.component.song.GoToAlbum
 import me.knighthat.component.song.GoToArtist
 import me.knighthat.component.song.RenameSongDialog
@@ -202,6 +203,7 @@ class SongItemMenu private constructor(
         val goToArtist = GoToArtist( navController ) { song }
         val goToAlbum = GoToAlbum( navController ) { song }
         val resetDialog = ResetSongDialog( song )
+        val exportCacheDialog = ExportCacheDialog( binder ) { song }
 
         buttons = mutableListOf<Button>().apply {
             add( renameSong )
@@ -217,6 +219,7 @@ class SongItemMenu private constructor(
                 add( resetDialog )
             }
             add( deleteSongDialog )
+            add( exportCacheDialog )
         }
         //</editor-fold>
 
@@ -225,6 +228,7 @@ class SongItemMenu private constructor(
         changeAuthor.Render()
         deleteSongDialog.Render()
         resetDialog.Render()
+        exportCacheDialog.Render()
         //</editor-fold>
 
         Column(

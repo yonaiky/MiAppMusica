@@ -942,4 +942,8 @@ CC-BY-SA 3.0</string>
     <string name="title_reset_title">Reset title</string>
     <string name="title_reset_authors">Reset authors</string>
     <string name="title_reset_total_play_time">Reset total play time</string>
+    <string name="title_name_your_export">Name your export</string>
+    <string name="export_cached">Export cached</string>
+    <string name="info_export_cached_or_downloaded_song">Export cached or downloaded song</string>
+    <string name="song_must_be_cached_or_downloaded_to_export">Song must be cached or downloaded to export</string>
 </resources>
