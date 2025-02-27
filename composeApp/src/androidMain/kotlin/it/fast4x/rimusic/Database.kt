@@ -1517,6 +1517,44 @@ interface Database {
         }
     }
 
+    @Query("""
+        SELECT DISTINCT Song.*
+        FROM Song
+        JOIN SongArtistMap ON SongArtistMap.songId = Song.id
+        WHERE SongArtistMap.artistId = :artistId
+        ORDER BY SongArtistMap.ROWID DESC
+        LIMIT :limit
+    """)
+    fun findLatestSongsOfArtist( artistId: String, limit: Long = 5L ): Flow<List<Song>>
+
+    @Query("""
+        UPDATE Artist
+        SET bookmarkedAt = CASE
+            WHEN bookmarkedAt IS NULL THEN strftime('%s', 'now') * 1000
+            ELSE NULL
+        END
+        WHERE id = :artistId
+    """)
+    fun toggleArtistFollow( artistId: String )
+
+    /**
+     * Keeps track [Artist.bookmarkedAt] of provided artist.
+     * When artist is not in database, returns `false`
+     */
+    @Query("""
+        SELECT COALESCE(
+            (
+                SELECT 1 
+                FROM Artist 
+                WHERE id = :artistId 
+                AND bookmarkedAt IS NOT NULL 
+                LIMIT 1
+            ),
+            0
+        )
+    """)
+    fun isArtistFollowed( artistId: String ): Flow<Boolean>
+
     @Query("SELECT * FROM Album WHERE id = :id")
     fun album(id: String): Flow<Album?>
 
@@ -2488,6 +2526,9 @@ interface Database {
 
     @Upsert
     fun upsert(songAlbumMap: SongAlbumMap)
+
+    @Upsert
+    fun upsert( songArtistMap: SongArtistMap )
 
     @Upsert
     fun upsert(artist: Artist)

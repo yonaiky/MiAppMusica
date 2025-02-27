@@ -53,7 +53,6 @@ import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
-import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
@@ -224,10 +223,9 @@ val Innertube.SongItem.asMediaItem: MediaItem
         .build()
 
 val Innertube.SongItem.asSong: Song
-    @UnstableApi
     get() = Song (
         id = key,
-        title = info?.name ?: "",
+        title = (if( explicit ) EXPLICIT_PREFIX else "").plus( info?.name ?: "" ),
         artistsText = authors?.joinToString(", ") { it.name ?: "" },
         durationText = durationText,
         thumbnailUrl = thumbnail?.url
