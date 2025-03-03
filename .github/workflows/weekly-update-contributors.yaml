@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11'
 
       - name: Install BeautifulSoup4 dependency
         run: pip install beautifulsoup4 requests
@@ -30,10 +30,10 @@ jobs:
         env:
           # Repo's path in format {OWNER}/{REPO}
           GITHUB_REPOSITORY: ${{ github.action_repository }}
-        run: python get_developers.py
+        run: python .github/get_developers.py
 
       - name: Copy generated contributors.json to its correct place
-        run: "mv contributors.json composeApp/src/androidMain/res/raw/contributors.json"
+        run: "mv .github/contributors.json composeApp/src/androidMain/res/raw/contributors.json"
 
       - name: Get current date
         id: date
