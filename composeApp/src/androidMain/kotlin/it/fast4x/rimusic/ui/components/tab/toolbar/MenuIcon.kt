@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.ui.components.tab.toolbar
 
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -11,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,6 +22,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.ui.components.themed.GridMenuItemHeight
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.rememberPreference
 
 interface MenuIcon: Icon {
 
@@ -28,6 +33,8 @@ interface MenuIcon: Icon {
 
     @Composable
     fun GridTextComponent() {
+        val isScrollingTextDisabled by rememberPreference( disableScrollingTextKey, false )
+
         Text(
             text = menuIconTitle,
             overflow = TextOverflow.Ellipsis,
@@ -36,6 +43,9 @@ interface MenuIcon: Icon {
             textAlign = TextAlign.Center,
             maxLines = 1,
             modifier = Modifier.fillMaxWidth()
+                               .conditional( !isScrollingTextDisabled ) {
+                                   basicMarquee( iterations = Int.MAX_VALUE )
+                               }
         )
     }
 
