@@ -47,6 +47,7 @@
         android:hardwareAccelerated="true"
         android:appCategory="audio"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="${appName}"
         android:supportsRtl="true"
         android:theme="@style/Theme.RiMusic"
