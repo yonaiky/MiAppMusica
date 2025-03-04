@@ -150,24 +150,17 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
-            manifestPlaceholders["appName"] = "RiMusic-Debug"
             versionNameSuffix = "-kbm"
         }
 
         create( "full" ) {
-            manifestPlaceholders += mapOf()
-
             // App's properties
-            manifestPlaceholders["appName"] = "RiMusic-KBuild"
             applicationIdSuffix = ".kbuild"
             versionNameSuffix = "-kbf"
         }
 
         create( "minified" ) {
-            manifestPlaceholders += mapOf()
-
             // App's properties
-            manifestPlaceholders["appName"] = "RiMusic-KBuild"
             applicationIdSuffix = ".kbuild"
             versionNameSuffix = "-kbm"
 
@@ -178,6 +171,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+
+        /**
+         * For convenience only.
+         * "Folkers" want to change app name across builds
+         * just need to change this variable
+         */
+        forEach {
+            it.manifestPlaceholders["appName"] = "Kreate"
         }
     }
 

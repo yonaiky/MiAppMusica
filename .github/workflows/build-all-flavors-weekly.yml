@@ -267,18 +267,21 @@ jobs:
       - name: Upload built APK to release
         uses: softprops/action-gh-release@v2
         with:
-          files: RiMusic-*.apk
+          files: '*.apk'
 
-          name: RiMusic Weekly Build | KBuild | ${{ needs.setup.outputs.BUILD_DATE }}
+          name: Weekly Build | ${{ needs.setup.outputs.BUILD_DATE }}
           tag_name: "weekly-kbuild"
           body: |
             <div align="center">
               <img alt="app-logo" src="/assets/design/latest/app_logo.svg" width="300" height="100" />
-              <p><b>RiMusic</b> - KBuild</p>
-              <p>Custom build by @knighthat</p>
+              <p><b>Kreate</b> - by @knighthat</p>
             </div>
             
             ## ATTENTION
+            
+            **NEW**: Since **March 9th, 2025** This project is now called "**_Kreate_**". However, app's ID
+            remains unchanged, therefore, all of your data remains intact. When it happens, a migration 
+            procedure will be introduced
             
             Since **January 5th, 2025**, KBuild is split into 2 main flavors, **_upstream_** and **_improvised_**.
             The main different is **_upstream_** contains the most up-to-date code to the actual [RiMusic](https://github.com/fast4x/RiMusic)
@@ -294,11 +297,11 @@ jobs:
             > **_improvised_** is your updated version. Download _minified_ or _full_ as you see fit.
             > Your app will be updated normally without losing any data in the process.
             > 
-            > **If Android says that data will be wiped, cancel and report it [HERE](https://github.com/knighthat/RiMusic/issues/new?assignees=&labels=bug&template=bug_report.yaml)**
+            > **If Android says that data will be wiped, cancel and report it [HERE](https://github.com/knighthat/Kreate/issues/new?assignees=&labels=bug&template=bug_report.yaml)**
             
             ## Verification
             
-            > Always check for signature before installing any app you downloaded from Github or any other APK distributor.
+            > Always check for signature before installing any app you downloaded from Github or any other APK distributors.
             
             ### My signature hashes
               
@@ -316,7 +319,7 @@ jobs:
             <details> 
             <summary>Q1: How do I download your build?</summary>
               <blockquote>
-                Right below this article, there are link(s) to prebuilt APK(s).<br>
+                Right below this article, there are links to prebuilt APKs.<br>
                 Select the one that fits your need to start the download.
               </blockquote>
             </details>
@@ -337,7 +340,7 @@ jobs:
             
             ## Changelogs
             
-            Please visit [wiki/changelogs](https://github.com/knighthat/RiMusic/wiki/Changelogs) for details.
+            Please visit [wiki/changelogs](https://github.com/knighthat/Kreate/wiki/Changelogs) for details.
 
           token: ${{ secrets.RELEASE_TOKEN }}
           generate_release_notes: true
