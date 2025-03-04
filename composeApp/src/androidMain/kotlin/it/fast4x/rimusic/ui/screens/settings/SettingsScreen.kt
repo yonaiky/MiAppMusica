@@ -44,8 +44,12 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ValidationType
+import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
+import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.SmartMessage
@@ -55,10 +59,6 @@ import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.ui.components.Skeleton
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.ui.components.themed.IDialog
-import it.fast4x.rimusic.typography
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -84,7 +84,7 @@ fun SettingsScreen(
                 onTabChanged,
                 miniPlayer,
                 navBarContent = { item ->
-                    item(0, stringResource(R.string.tab_general), R.drawable.app_icon)
+                    item(0, stringResource(R.string.tab_general), R.drawable.app_icon_monochrome_transparent)
                     item(1, stringResource(R.string.ui_tab), R.drawable.ui)
                     item(2, stringResource(R.string.player_appearance), R.drawable.color_palette)
                     item(3, if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)

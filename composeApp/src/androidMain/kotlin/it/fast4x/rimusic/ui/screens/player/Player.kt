@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.screens.player
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.RenderEffect
 import android.media.audiofx.AudioEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -99,6 +100,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asComposeRenderEffect
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
@@ -2837,20 +2839,19 @@ fun Player(
                             )
 
 
-                            Image(
-                                painter = painterResource(R.drawable.app_icon),
-                                contentDescription = null,
-                                colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
-                                modifier = Modifier
-                                    .clickable {
-                                        onDismiss()
-                                        navController.navigate(NavRoutes.home.name)
-                                    }
-                                    .rotate(rotationAngle)
-                                    //.padding(10.dp)
-                                    .size(24.dp)
-
-                            )
+                        val iconBitmap = remember {
+                            BitmapFactory.decodeResource( context.resources, R.drawable.app_icon_nodpi )
+                                         .asImageBitmap()
+                        }
+                        Image(
+                            bitmap = iconBitmap,
+                            contentDescription = "app icon in player",
+                            modifier = Modifier.size( 24.dp )
+                                               .clickable {
+                                                   onDismiss()
+                                                   navController.navigate(NavRoutes.home.name)
+                                               }
+                        )
 
                             if (!showButtonPlayerMenu)
                                 Image(

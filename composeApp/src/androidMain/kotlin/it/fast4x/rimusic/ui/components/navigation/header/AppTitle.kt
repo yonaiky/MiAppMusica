@@ -1,11 +1,14 @@
 package it.fast4x.rimusic.ui.components.navigation.header
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
@@ -13,18 +16,18 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.ui.components.themed.Button
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.themed.Button
+import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.utils.semiBold
 
 private fun appIconClickAction(
     navController: NavController,
@@ -77,13 +80,14 @@ private fun AppLogo(
         onLongClick = { appIconLongClickAction( navController, context ) }
     )
 
-    Button(
-        iconId = R.drawable.app_icon,
-        color = colorPalette().favoritesIcon,
-        padding = 0.dp,
-        size = 36.dp,
-        modifier = modifier
-    ).Draw()
+    Image(
+        // Due to the complexity of rasterized image, it must be converted into
+        // bitmap before rendering
+        bitmap = BitmapFactory.decodeResource( context.resources, R.drawable.app_icon_nodpi )
+                              .asImageBitmap(),
+        contentDescription = "App's icon",
+        modifier = modifier.size( 36.dp )
+    )
 }
 
 @Composable

@@ -308,7 +308,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 // DEFAULT NOTIFICATION PROVIDER MODDED
                 setMediaNotificationProvider(CustomMediaNotificationProvider(this)
                     .apply {
-                        setSmallIcon(R.drawable.app_icon)
+                        setSmallIcon(R.drawable.app_icon_monochrome_transparent)
                     }
                 )
             }
@@ -1200,7 +1200,7 @@ class PlayerServiceModern : MediaLibraryService(),
             .setOnlyAlertOnce(true)
             .setShowWhen(false)
             .setSmallIcon(player.playerError?.let { R.drawable.alert_circle }
-                ?: R.drawable.app_icon)
+                ?: R.drawable.app_icon_monochrome_transparent)
             .setOngoing(false)
             .setContentIntent(activityPendingIntent<MainActivity>(
                 flags = PendingIntent.FLAG_UPDATE_CURRENT
@@ -1722,7 +1722,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     .setAutoCancel(true)
                     .setOnlyAlertOnce(true)
                     .setShowWhen(true)
-                    .setSmallIcon(R.drawable.app_icon)
+                    .setSmallIcon(R.drawable.app_icon_monochrome_transparent)
                     .build()
 
                 notificationManager?.notify(SleepTimerNotificationId, notification)

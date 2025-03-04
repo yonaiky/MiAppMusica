@@ -3,6 +3,7 @@ package it.fast4x.rimusic.extensions.nextvisualizer
 import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.net.Uri
 import android.provider.Settings
@@ -33,13 +34,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.extensions.nextvisualizer.painters.Painter
 import it.fast4x.rimusic.extensions.nextvisualizer.painters.fft.FftBar
 import it.fast4x.rimusic.extensions.nextvisualizer.painters.fft.FftCBar
@@ -61,6 +61,7 @@ import it.fast4x.rimusic.extensions.nextvisualizer.painters.waveform.WfmAnalog
 import it.fast4x.rimusic.extensions.nextvisualizer.utils.Preset
 import it.fast4x.rimusic.extensions.nextvisualizer.utils.VisualizerHelper
 import it.fast4x.rimusic.extensions.nextvisualizer.views.VisualizerView
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.utils.DisposableListener
@@ -74,8 +75,6 @@ import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import kotlinx.coroutines.launch
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
 import timber.log.Timber
 
 @OptIn(UnstableApi::class)
@@ -238,7 +237,9 @@ fun getVisualizers(): List<Painter> {
     val ampR = 3f
     val yR = 0.2f
     val color = colorPalette().text.hashCode()
-    var logoBitmapCover by remember { mutableStateOf(ContextCompat.getDrawable(context, R.drawable.app_logo)?.toBitmap()!!) }
+    val logoBitmapCover = remember {
+        BitmapFactory.decodeResource( context.resources, R.drawable.app_icon_nodpi )
+    }
     var bitmapCover by remember { mutableStateOf(logoBitmapCover) }
     val binder = LocalPlayerServiceBinder.current
     val coroutineScope = rememberCoroutineScope()
