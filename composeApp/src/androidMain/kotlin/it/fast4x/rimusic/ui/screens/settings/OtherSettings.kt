@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
+import it.fast4x.rimusic.BuildConfig
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -256,7 +257,7 @@ fun OtherSettings() {
                         Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
                     )
                 } catch (e: ActivityNotFoundException) {
-                    Toaster.i( "$msgNoBatteryOptim Kreate" )
+                    Toaster.i( "$msgNoBatteryOptim ${BuildConfig.APP_NAME}" )
                 }
             }
         }

@@ -1174,7 +1174,7 @@ class MainActivity :
                 val uri = intentUriData ?: return@LaunchedEffect
 
                 Toaster.n(
-                    "Kreate ${this@MainActivity.resources.getString( R.string.opening_url )}",
+                    "${BuildConfig.APP_NAME} ${this@MainActivity.resources.getString( R.string.opening_url )}",
                     duration = Toast.LENGTH_LONG
                 )
 

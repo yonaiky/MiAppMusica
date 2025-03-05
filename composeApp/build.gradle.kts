@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.Instant
 
+val APP_NAME = "Kreate"
 
 plugins {
     alias(libs.plugins.android.application)
@@ -135,7 +136,9 @@ android {
                 UNIVERSAL VARIABLES
          */
         val buildTime = Instant.now().toString()
-        buildConfigField( "String", "BUILD_TIME", "\"$buildTime\"")
+        buildConfigField( "String", "BUILD_TIME", "\"$buildTime\"" )
+
+        buildConfigField( "String", "APP_NAME", "\"$APP_NAME\"" )
     }
 
     splits {
@@ -179,14 +182,14 @@ android {
          * just need to change this variable
          */
         forEach {
-            it.manifestPlaceholders["appName"] = "Kreate"
+            it.manifestPlaceholders["appName"] = APP_NAME
         }
     }
 
     applicationVariants.all {
         outputs.map { it as BaseVariantOutputImpl }
                .forEach { output ->
-                   output.outputFileName = "RiMusic-$flavorName-${buildType.name}-unsigned.apk"
+                   output.outputFileName = "$APP_NAME-$flavorName-${buildType.name}-unsigned.apk"
                }
     }
 
