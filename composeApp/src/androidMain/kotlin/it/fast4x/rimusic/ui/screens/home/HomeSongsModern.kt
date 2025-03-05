@@ -82,13 +82,11 @@ import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
-import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.CacheType
@@ -98,7 +96,6 @@ import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.OnDeviceFolderSortBy
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueSelection
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
@@ -118,6 +115,7 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FolderItemMenu
@@ -126,18 +124,19 @@ import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
+import it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PeriodMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.onOverlay
@@ -146,23 +145,29 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.OnDeviceOrganize
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.addToYtLikedSongs
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.autoShuffleKey
 import it.fast4x.rimusic.utils.builtInPlaylistKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
-import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
+import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.includeLocalSongsKey
 import it.fast4x.rimusic.utils.isCompositionLaunched
+import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isNetworkConnected
+import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.maxSongsInQueueKey
 import it.fast4x.rimusic.utils.onDeviceFolderSortByKey
@@ -188,27 +193,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.time.Duration
-import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
-import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
-import it.fast4x.rimusic.ui.components.themed.InProgressDialog
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.addToYtLikedSongs
-import it.fast4x.rimusic.utils.addToYtPlaylist
-import it.fast4x.rimusic.utils.asSong
-import it.fast4x.rimusic.utils.formatAsDuration
-import it.fast4x.rimusic.utils.isDownloadedSong
-import it.fast4x.rimusic.utils.isNetworkConnected
-import it.fast4x.rimusic.utils.isNowPlaying
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import kotlin.system.exitProcess
+import kotlin.time.Duration
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -788,8 +781,7 @@ fun HomeSongsModern(
                         Date()
                     )}")
                 } catch (e: ActivityNotFoundException) {
-                    SmartMessage("Couldn't find an application to create documents",
-                        type = PopupType.Warning, context = context)
+                    Toaster.e( R.string.info_not_find_app_create_doc )
                 }
             }
         )
@@ -1061,10 +1053,7 @@ fun HomeSongsModern(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_find_the_song_that_is_playing),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_find_the_song_that_is_playing )
                                     }
                                 ),
                             icon = R.drawable.locate,
@@ -1090,14 +1079,11 @@ fun HomeSongsModern(
                                             if (items.any { it.song.likedAt != -1L }) {
                                                 showConfirmDownloadAllDialog = true
                                             } else {
-                                                SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                Toaster.e( R.string.disliked_this_collection )
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_download_all_songs),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_download_all_songs )
                                         }
                                     )
                             )
@@ -1199,10 +1185,7 @@ fun HomeSongsModern(
                             if(!checkCheck) {
                                 return@LaunchedEffect
                             }
-                            SmartMessage(
-                                context.resources.getString(R.string.please_wait),
-                                type = PopupType.Info, context = context
-                            )
+                            Toaster.i( R.string.please_wait )
                             deleteProgressDialog = true
                             withContext(Dispatchers.IO) {
                                 Database.asyncTransaction {
@@ -1214,10 +1197,7 @@ fun HomeSongsModern(
                                             songAlbumInfo(it.song.id)?.id ?: "" ) == 0
                                     }).size
                                     if (totalSongsToDelete == 0) {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.nothing_to_delete),
-                                            type = PopupType.Info, context = context
-                                        )
+                                        Toaster.i( R.string.nothing_to_delete )
                                         deleteProgressDialog = false
                                     } else {
                                         songsDeleted = 0
@@ -1253,10 +1233,7 @@ fun HomeSongsModern(
                                             showConfirmDeleteDownloadDialog = true
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_remove_all_downloaded_songs),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_remove_all_downloaded_songs )
                                         }
                                     )
                             )
@@ -1306,10 +1283,7 @@ fun HomeSongsModern(
                                             showHiddenSongs = if (showHiddenSongs == 0) -1 else 0
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_show_hide_hidden_songs),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_show_hide_hidden_songs )
                                         }
                                     )
                             )
@@ -1337,14 +1311,11 @@ fun HomeSongsModern(
                                                     .map(SongEntity::asMediaItem)
                                             )
                                         } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                            Toaster.e( R.string.disliked_this_collection )
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_shuffle),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_shuffle )
                                     }
                                 )
                         )
@@ -1361,7 +1332,7 @@ fun HomeSongsModern(
                                             autoShuffle = !autoShuffle
                                         },
                                         onLongClick = {
-                                            SmartMessage("Random sorting", context = context)
+                                            Toaster.i( R.string.random_sorting )
                                         }
                                     )
                             )
@@ -1383,17 +1354,11 @@ fun HomeSongsModern(
                                                     )
                                                 )
                                             } catch (e: ActivityNotFoundException) {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.info_not_find_app_open_doc),
-                                                    type = PopupType.Warning, context = context
-                                                )
+                                                Toaster.e( R.string.info_not_find_app_open_doc )
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.import_favorites),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.import_favorites )
                                         }
                                     )
                             )
@@ -1423,9 +1388,9 @@ fun HomeSongsModern(
                                                             .map(SongEntity::asMediaItem),
                                                         context
                                                     )
-                                                } else {
-                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                                }
+                                                } else
+                                                    Toaster.e( R.string.disliked_this_collection )
+
                                             } else {
                                                 binder?.player?.addNext(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -1442,9 +1407,9 @@ fun HomeSongsModern(
                                                             .map(SongEntity::asMediaItem),
                                                         context
                                                     )
-                                                } else {
-                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                                }
+                                                } else
+                                                    Toaster.e( R.string.disliked_this_collection )
+
                                             } else {
                                                 binder?.player?.enqueue(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -1453,7 +1418,7 @@ fun HomeSongsModern(
                                         },
                                         onAddToPreferites = {
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                                Toaster.e( R.string.no_connection )
                                             } else if (!isYouTubeSyncEnabled()){
                                                 if (listMediaItems.isNotEmpty()) {
                                                     Database.asyncTransaction {
@@ -1483,7 +1448,7 @@ fun HomeSongsModern(
                                         showonAddToPreferitesYoutube = isYouTubeSyncEnabled(),
                                         onAddToPreferitesYoutube = {
                                             if (!isNetworkConnected(appContext())) {
-                                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                                Toaster.e( R.string.no_connection )
                                             } else {
                                                 showRiMusicLikeYoutubeLikeConfirmDialog = true
                                             }
@@ -1497,7 +1462,7 @@ fun HomeSongsModern(
 
                                             val filteredItems = items.filterNot {it.asMediaItem.mediaId.startsWith(LOCAL_KEY_PREFIX) || it.song.thumbnailUrl == ""}
                                             if ((filteredItems.size + playlistPreview.songCount) > 5000 && playlistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
-                                                SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
+                                                Toaster.e( R.string.yt_playlist_limited )
                                             } else if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
                                                 items.forEachIndexed { index, song ->
                                                     runCatching {
@@ -1517,7 +1482,7 @@ fun HomeSongsModern(
                                                     }
                                                 }
                                                 CoroutineScope(Dispatchers.Main).launch {
-                                                    SmartMessage(context.resources.getString(R.string.done), type = PopupType.Success, context = context)
+                                                    Toaster.done()
                                                 }
                                             } else {
                                                 CoroutineScope(Dispatchers.IO).launch {
@@ -1936,7 +1901,7 @@ fun HomeSongsModern(
                                     Database.delete(song.song)
                                     Database.deleteSongFromPlaylists(song.song.id)
                                 }
-                                SmartMessage(context.resources.getString(R.string.deleted), context = context)
+                                Toaster.s( R.string.deleted )
                             }
                         )
                     }
@@ -2149,11 +2114,8 @@ fun HomeSongsModern(
                                                 itemsLimited.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem),
                                                 itemsLimited.filter { it.song.likedAt != -1L }.map(SongEntity::asMediaItem).indexOf(song.asMediaItem)
                                             )
-                                        } else {
-                                            CoroutineScope(Dispatchers.Main).launch {
-                                                SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
-                                            }
-                                        }
+                                        } else
+                                            Toaster.e( R.string.disliked_this_song )
                                     }
                                 )
                                 .animateItem(),

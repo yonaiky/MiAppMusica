@@ -74,11 +74,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -104,7 +103,6 @@ import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
@@ -149,10 +147,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
@@ -488,7 +483,7 @@ fun DeviceListSongs(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                        Toaster.i( R.string.info_shuffle )
                                     }
                                 )
                         )
@@ -591,7 +586,7 @@ fun DeviceListSongs(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                    Toaster.i( R.string.info_find_the_song_that_is_playing )
                                 }
                             )
                     )

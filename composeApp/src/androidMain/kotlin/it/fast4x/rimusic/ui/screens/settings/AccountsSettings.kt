@@ -48,7 +48,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
 import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
@@ -59,13 +58,11 @@ import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.enableYouTubeSyncKey
-import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid81
 import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
@@ -81,15 +78,15 @@ import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import it.fast4x.rimusic.utils.useYtLoginOnlyForBrowseKey
 import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import it.fast4x.rimusic.utils.ytAccountEmailKey
 import it.fast4x.rimusic.utils.ytAccountNameKey
 import it.fast4x.rimusic.utils.ytAccountThumbnailKey
 import it.fast4x.rimusic.utils.ytCookieKey
-import it.fast4x.rimusic.utils.ytVisitorDataKey
 import it.fast4x.rimusic.utils.ytDataSyncIdKey
+import it.fast4x.rimusic.utils.ytVisitorDataKey
 import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -267,11 +264,7 @@ fun AccountsSettings() {
                                         if (cookieRetrieved.contains("SAPISID")) {
                                             isLoggedIn = true
                                             loginYouTube = false
-                                            SmartMessage(
-                                                "Login successful",
-                                                type = PopupType.Info,
-                                                context = context
-                                            )
+                                            Toaster.i( "Login successful" )
                                             restartService = true
                                         }
 
@@ -360,9 +353,8 @@ fun AccountsSettings() {
                 showInstances = true
             }
         }
-        if (noInstances) {
-            SmartMessage("No instances found", type = PopupType.Info, context = context)
-        }
+        if (noInstances)
+            Toaster.i( "No instances found" )
 
         if (executeLogin) {
             LaunchedEffect(Unit) {
@@ -375,11 +367,7 @@ fun AccountsSettings() {
                     )?.onFailure {
                         Timber.e("Failed piped login ${it.stackTraceToString()}")
                         isLoading = false
-                        SmartMessage(
-                            "Piped login failed",
-                            type = PopupType.Error,
-                            context = context
-                        )
+                        Toaster.e( "Piped login failed" )
                         loadInstances = false
                         session = null
                         executeLogin = false
@@ -387,11 +375,7 @@ fun AccountsSettings() {
                     if (session?.isSuccess == false)
                         return@launch
 
-                    SmartMessage(
-                        "Piped login successful",
-                        type = PopupType.Success,
-                        context = context
-                    )
+                    Toaster.s( "Piped login successful" )
                     Timber.i("Piped login successful")
 
                     session.let {
@@ -604,7 +588,7 @@ fun AccountsSettings() {
                         onGetToken = { token ->
                             loginDiscord = false
                             discordPersonalAccessToken = token
-                            SmartMessage(token, type = PopupType.Info, context = context)
+                            Toaster.i( token )
                         }
                     )
                 }

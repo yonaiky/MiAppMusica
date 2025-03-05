@@ -52,13 +52,13 @@ import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
 import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Slider
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.utils.Toaster
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -449,7 +449,7 @@ fun ColorSettingEntry(
         DialogColorPicker(onDismiss = { showColorPicker = false }) {
             onColorSelected(it)
             showColorPicker = false
-            SmartMessage(context.resources.getString(R.string.info_color_s_applied).format(title), context = context)
+            Toaster.n( R.string.info_color_s_applied, title )
         }
 
 }

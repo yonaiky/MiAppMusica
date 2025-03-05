@@ -10,10 +10,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 
@@ -23,11 +21,11 @@ fun textCopyToClipboard(textCopied:String, context: Context) {
         clipboardManager.setPrimaryClip(ClipData.newPlainText("", textCopied))
     }.onFailure {
         Timber.e(it.stackTraceToString())
-        SmartMessage("Failed to copy text to clipboard, try again", type = PopupType.Error, context = context)
+        Toaster.e( "Failed to copy text to clipboard, try again" )
     }
     // Only show a toast for Android 12 and lower.
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-        SmartMessage(context.resources.getString(R.string.value_copied), type = PopupType.Info, context = context)
+        Toaster.s( R.string.value_copied )
 }
 
 @Composable
@@ -38,11 +36,11 @@ fun textCopyFromClipboard(context: Context): String {
         textCopied = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context).toString()
     }.onFailure {
         Timber.e(it.stackTraceToString())
-        SmartMessage("Failed to copy text from clipboard, try again", type = PopupType.Error, context = context)
+        Toaster.e( "Failed to copy text to clipboard, try again" )
     }
     // Only show a toast for Android 12 and lower.
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-        SmartMessage(context.resources.getString(R.string.value_copied), type = PopupType.Info, context = context)
+        Toaster.i( R.string.value_copied )
 
     return textCopied
 }

@@ -16,12 +16,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import me.knighthat.utils.Toaster
 
 @Composable
 inline fun Player.DisposableListener(crossinline listenerProvider: () -> Player.Listener) {
@@ -107,7 +106,7 @@ fun rememberEqualizerLauncher(
                 }
             )
         } catch (e: ActivityNotFoundException) {
-            SmartMessage(context.resources.getString(R.string.info_not_find_application_audio), type = PopupType.Warning, context = context)
+            Toaster.w( R.string.info_not_find_application_audio )
         }
     }
 }

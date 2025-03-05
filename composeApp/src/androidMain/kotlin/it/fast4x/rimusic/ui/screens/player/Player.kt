@@ -161,7 +161,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerType
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SongsNumber
@@ -187,7 +186,6 @@ import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.components.themed.RotateThumbnailCoverAnimationModern
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.ThumbnailOffsetDialog
 import it.fast4x.rimusic.ui.components.themed.animateBrushRotation
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -304,6 +302,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.coil.ImageCacheFactory
+import me.knighthat.utils.Toaster
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.math.absoluteValue
 import kotlin.math.sqrt
@@ -519,7 +518,7 @@ fun Player(
             binder.cancelSleepTimer()
             binder.startSleepTimer(timeRemaining.toLong())
             delayedSleepTimer = true
-            SmartMessage(stringResource(R.string.info_sleep_timer_delayed_at_end_of_song), context = context)
+            Toaster.n( R.string.info_sleep_timer_delayed_at_end_of_song )
         }
 
     val windowInsets = WindowInsets.systemBars
@@ -1512,11 +1511,7 @@ fun Player(
                                                                 pagerStateQueue.scrollToPage(binder.player.currentMediaItemIndex + 1)
                                                             }
                                                         }
-                                                        SmartMessage(
-                                                            context.resources.getString(R.string.addednext),
-                                                            type = PopupType.Info,
-                                                            context = context
-                                                        )
+                                                        Toaster.s( R.string.addednext )
 //                                                        hapticFeedback.performHapticFeedback(
 //                                                            HapticFeedbackType.LongPress
 //                                                        )
@@ -1685,12 +1680,8 @@ fun Player(
                                     .combinedClickable(
                                         onClick = { discoverIsEnabled = !discoverIsEnabled },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.discoverinfo),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.discoverinfo )
                                         }
-
                                     )
                             )
 
@@ -1866,10 +1857,7 @@ fun Player(
                                             }
                                         )
                                     } catch (e: ActivityNotFoundException) {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_not_find_application_audio),
-                                            type = PopupType.Warning, context = context
-                                        )
+                                        Toaster.e( R.string.info_not_find_application_audio )
                                     }
                                 },
                                 modifier = Modifier

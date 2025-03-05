@@ -20,14 +20,14 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.toUiMood
+import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.utils.CheckAvailableNewVersion
 import it.fast4x.rimusic.utils.checkUpdateStateKey
 import it.fast4x.rimusic.utils.enableQuickPicksPageKey
@@ -40,8 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import it.fast4x.rimusic.ui.components.Skeleton
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
+import me.knighthat.utils.Toaster
 import kotlin.system.exitProcess
 
 
@@ -227,10 +226,7 @@ fun HomeScreen(
         }
 
         if( confirmCount == 0 ) {
-            SmartMessage(
-                context.resources.getString(R.string.press_once_again_to_exit),
-                context = context
-            )
+            Toaster.i( R.string.press_once_again_to_exit )
             confirmCount++
 
             // Reset confirmCount after 5s

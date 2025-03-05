@@ -16,8 +16,8 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.SettingsDescription
+import me.knighthat.utils.Toaster
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -38,7 +38,7 @@ fun RestartPlayerService(
                 text = stringResource(R.string.restart_service),
                 onClick = {
                     binder?.restartForegroundOrStop().let { onRestart() }
-                    SmartMessage(context.resources.getString(R.string.done), context = context )
+                    Toaster.done()
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -68,7 +68,7 @@ fun RestartActivity(
                 onClick = {
                     restartActivity = !restartActivity
                     onRestart()
-                    SmartMessage(context.resources.getString(R.string.done), context = context )
+                    Toaster.done()
                 },
                 modifier = Modifier
                     .weight(1f)

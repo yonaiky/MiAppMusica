@@ -56,7 +56,6 @@ import it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -80,6 +79,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.coil.ImageCacheFactory
+import me.knighthat.utils.Toaster
 
 
 @UnstableApi
@@ -471,10 +471,7 @@ fun SongItem(
                                         }
                                     }
                                 }, onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.playlistindicatorinfo2),
-                                        context = context
-                                    )
+                                    Toaster.i( R.string.playlistindicatorinfo2 )
                                 })
                         )
                         Spacer(modifier = Modifier.padding(horizontal = 3.dp))
@@ -587,10 +584,7 @@ fun SongItem(
                                     }
                                 }
                             }, onLongClick = {
-                                SmartMessage(
-                                    context.resources.getString(R.string.playlistindicatorinfo2),
-                                    context = context
-                                )
+                                Toaster.i( R.string.playlistindicatorinfo2 )
                             })
                     )
                 }

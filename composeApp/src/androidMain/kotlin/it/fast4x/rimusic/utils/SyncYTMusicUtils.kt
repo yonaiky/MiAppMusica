@@ -1,9 +1,9 @@
 package it.fast4x.rimusic.utils
 
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
@@ -11,17 +11,11 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.Database.Companion.albumsByTitleAsc
 import it.fast4x.rimusic.Database.Companion.getAlbumsList
 import it.fast4x.rimusic.Database.Companion.getArtistsList
-import it.fast4x.rimusic.Database.Companion.preferitesArtistsByName
 import it.fast4x.rimusic.Database.Companion.update
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.YTP_PREFIX
-import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.enums.PlaylistSongSortBy
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
@@ -30,7 +24,6 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,15 +31,12 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 
 suspend fun importYTMPrivatePlaylists(): Boolean {
     if (isYouTubeSyncEnabled()) {
 
-        SmartMessage(
-            message = appContext().resources.getString(R.string.syncing),
-            durationLong = true,
-            context = appContext(),
-        )
+        Toaster.n( R.string.syncing, Toast.LENGTH_LONG )
 
         Innertube.library("FEmusic_liked_playlists").completed().onSuccess { page ->
 
@@ -155,11 +145,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
     println("importYTMSubscribedChannels isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
     if (isYouTubeSyncEnabled()) {
 
-        SmartMessage(
-            message = appContext().resources.getString(R.string.syncing),
-            durationLong = true,
-            context = appContext(),
-        )
+        Toaster.n( R.string.syncing, Toast.LENGTH_LONG )
 
         Innertube.library("FEmusic_library_corpus_artists").completed().onSuccess { page ->
 
@@ -214,11 +200,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
     println("importYTMLikedAlbums isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
     if (isYouTubeSyncEnabled()) {
 
-        SmartMessage(
-            message = appContext().resources.getString(R.string.syncing),
-            durationLong = true,
-            context = appContext(),
-        )
+        Toaster.n( R.string.syncing, Toast.LENGTH_LONG )
 
         Innertube.library("FEmusic_liked_albums").completed().onSuccess { page ->
 

@@ -2,6 +2,7 @@ package it.fast4x.rimusic.ui.components.navigation.header
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,8 +27,8 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.Button
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.utils.Toaster
 
 private fun appIconClickAction(
     navController: NavController,
@@ -49,22 +50,14 @@ private fun appIconClickAction(
             else -> ""
         }
     if( message.isNotEmpty() )
-        SmartMessage(
-            message = message,
-            durationLong = true,
-            context = context
-        )
+        Toaster.n( message, Toast.LENGTH_LONG )
 }
 
 private fun appIconLongClickAction(
     navController: NavController,
     context: Context
 ) {
-    SmartMessage(
-        "You are a number one, click and enjoy the surprise",
-        durationLong = true,
-        context = context
-    )
+    Toaster.n( "You are a number one, click and enjoy the surprise", Toast.LENGTH_LONG )
     navController.navigate( NavRoutes.gameSnake.name )
 }
 
@@ -141,7 +134,7 @@ fun AppTitle(
                 ),
                 modifier = Modifier
                     .clickable {
-                        SmartMessage(context.resources.getString(R.string.info_debug_mode_is_enabled), durationLong = true, context = context)
+                        Toaster.s( R.string.info_debug_mode_is_enabled )
                         navController.navigate(NavRoutes.settings.name)
                     }
             )

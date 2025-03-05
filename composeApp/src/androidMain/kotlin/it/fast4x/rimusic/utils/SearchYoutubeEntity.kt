@@ -26,6 +26,7 @@ import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
@@ -33,8 +34,7 @@ import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import me.knighthat.utils.Toaster
 
 @ExperimentalAnimationApi
 @ExperimentalTextApi
@@ -101,13 +101,7 @@ fun SearchYoutubeEntity (
                             binder?.player?.addNext(video.asMediaItem)
                         },
                         onDownload = {
-                            val message = context.resources.getString(R.string.downloading_videos_not_supported)
-
-                            SmartMessage(
-                                message,
-                                durationLong = false,
-                                context = context
-                            )
+                            Toaster.w( R.string.downloading_videos_not_supported )
                         },
                         onEnqueue = {
                             binder?.player?.enqueue(video.asMediaItem)

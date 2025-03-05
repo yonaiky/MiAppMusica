@@ -81,7 +81,6 @@ import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
@@ -120,6 +119,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import me.knighthat.utils.Toaster
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -371,7 +371,7 @@ fun ArtistOverview(
                                     showConfirmDownloadAllDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
+                                    Toaster.i( R.string.info_download_all_songs )
                                 }
                             )
                     )
@@ -410,7 +410,7 @@ fun ArtistOverview(
                                     showConfirmDeleteDownloadDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                    Toaster.i( R.string.info_remove_all_downloaded_songs )
                                 }
                             )
                     )
@@ -452,7 +452,7 @@ fun ArtistOverview(
                                         binder?.playRadio(endpoint)
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                        Toaster.i( R.string.info_shuffle )
                                     }
                                 )
                         )
@@ -472,7 +472,7 @@ fun ArtistOverview(
                                         binder?.playRadio(endpoint)
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_start_radio), context = context)
+                                        Toaster.i( R.string.start_radio )
                                     }
                                 )
                         )
@@ -493,7 +493,7 @@ fun ArtistOverview(
                                         )
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
+                                        Toaster.i( R.string.info_enqueue_songs )
                                     }
                                 )
                         )
@@ -816,7 +816,7 @@ fun ArtistOverview(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_translation), context = context)
+                                            Toaster.i( R.string.info_translation )
                                         }
                                     )
                             )

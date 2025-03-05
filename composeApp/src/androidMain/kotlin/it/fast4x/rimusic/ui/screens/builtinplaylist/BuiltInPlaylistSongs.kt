@@ -86,7 +86,6 @@ import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
@@ -108,7 +107,6 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenuLibrary
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
@@ -149,6 +147,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -467,8 +466,7 @@ fun BuiltInPlaylistSongs(
                         Date()
                     )}")
                 } catch (e: ActivityNotFoundException) {
-                    SmartMessage("Couldn't find an application to create documents",
-                        type = PopupType.Warning, context = context)
+                    Toaster.e( R.string.info_not_find_app_create_doc )
                 }
             }
         )
@@ -627,7 +625,7 @@ fun BuiltInPlaylistSongs(
                                         isRecommendationEnabled = !isRecommendationEnabled
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_smart_recommendation), context = context)
+                                        Toaster.i( R.string.info_smart_recommendation )
                                     }
                                 )
                         )
@@ -651,7 +649,7 @@ fun BuiltInPlaylistSongs(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                            Toaster.i( R.string.info_shuffle )
                                         }
                                     )
                         )
@@ -689,7 +687,7 @@ fun BuiltInPlaylistSongs(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
+                                        Toaster.i( R.string.info_download_all_songs )
                                     }
                                 )
                         )
@@ -731,7 +729,7 @@ fun BuiltInPlaylistSongs(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        Toaster.i( R.string.info_remove_all_downloaded_songs )
                                     }
                                 )
                         )
@@ -797,7 +795,7 @@ fun BuiltInPlaylistSongs(
                                         cleanCacheOfflineSongs = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_clean_cached_congs), context = context)
+                                        Toaster.i( R.string.info_clean_cached_congs )
                                     }
                                 )
                         )
@@ -814,7 +812,7 @@ fun BuiltInPlaylistSongs(
                                         autoShuffle = !autoShuffle
                                     },
                                     onLongClick = {
-                                        SmartMessage("Random sorting", context = context)
+                                        Toaster.i( R.string.random_sorting )
                                     }
                                 )
                         )
@@ -854,7 +852,7 @@ fun BuiltInPlaylistSongs(
                                         scrollToNowPlaying = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.resources.getString(R.string.info_find_the_song_that_is_playing), context = context)
+                                    Toaster.i( R.string.info_find_the_song_that_is_playing )
                                 }
                             ),
                         icon = R.drawable.locate,

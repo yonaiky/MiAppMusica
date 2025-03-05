@@ -11,14 +11,13 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.formatAsDuration
+import me.knighthat.utils.Toaster
 
 class ImportSongsFromCSV private constructor(
     private val launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
@@ -114,10 +113,7 @@ class ImportSongsFromCSV private constructor(
         try {
             launcher.launch( arrayOf("text/csv", "text/comma-separated-values") )
         } catch (_: ActivityNotFoundException) {
-            SmartMessage(
-                appContext().resources.getString( R.string.info_not_find_app_open_doc ),
-                type = PopupType.Warning, context = appContext()
-            )
+            Toaster.e( R.string.info_not_find_app_open_doc )
         }
     }
 }

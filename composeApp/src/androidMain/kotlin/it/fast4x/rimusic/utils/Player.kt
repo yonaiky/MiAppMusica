@@ -14,10 +14,7 @@ import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.DurationInMinutes
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.ArrayDeque
 
@@ -263,9 +260,7 @@ fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): Lis
 
             val excludedSongs = mediaItems.size - filteredMediaItems.size
             if (excludedSongs > 0)
-                CoroutineScope(Dispatchers.Main).launch {
-                        SmartMessage(context.resources.getString(R.string.message_excluded_s_songs).format(excludedSongs), context = context)
-                }
+                Toaster.n( R.string.message_excluded_s_songs, arrayOf( excludedSongs ) )
         }
     }.onFailure {
         Timber.e(it.message)
@@ -284,9 +279,7 @@ fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
                 }!! <= excludeSongWithDurationLimit.asMillis
 
             if (excludedSong)
-                CoroutineScope(Dispatchers.Main).launch {
-                    SmartMessage(context.resources.getString(R.string.message_excluded_s_songs).format(1), context = context)
-                }
+                Toaster.n( R.string.message_excluded_s_songs, arrayOf( 1 ) )
 
             return excludedSong
         }

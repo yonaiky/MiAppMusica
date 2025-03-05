@@ -75,7 +75,6 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
@@ -93,7 +92,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
@@ -133,6 +131,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -350,7 +349,7 @@ fun ArtistOverviewModern(
                             ),
                             onClick = {
                                 if (isYouTubeSyncEnabled() && !isNetworkConnected(context)){
-                                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                    Toaster.e( R.string.no_connection )
                                 } else {
                                     val bookmarkedAt =
                                         if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
@@ -479,10 +478,7 @@ fun ArtistOverviewModern(
                                             binder?.playRadio(endpoint)
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_shuffle),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_shuffle )
                                         }
                                     )
                             )
@@ -502,10 +498,7 @@ fun ArtistOverviewModern(
                                             binder?.playRadio(endpoint)
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_start_radio),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.start_radio )
                                         }
                                     )
                             )
@@ -702,7 +695,7 @@ fun ArtistOverviewModern(
                                                                             )
                                                                         }
                                                                     } else {
-                                                                        SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
+                                                                        R.string.disliked_this_song
                                                                     }
                                                                 }
                                                             }

@@ -71,7 +71,6 @@ import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
@@ -97,7 +96,6 @@ import it.fast4x.rimusic.ui.components.themed.Playlist
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.components.themed.ResetThumbnail
 import it.fast4x.rimusic.ui.components.themed.Search
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.Synchronize
 import it.fast4x.rimusic.ui.components.themed.ThumbnailPicker
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -158,6 +156,7 @@ import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.UUID
 
@@ -248,7 +247,7 @@ fun LocalPlaylistSongs(
             val permaUri = saveImageToInternalStorage(context, uri, "thumbnail", thumbnailName)
             thumbnailUrl.value = permaUri.toString()
         } else {
-            SmartMessage(context.resources.getString(R.string.thumbnail_not_selected), context = context)
+            Toaster.w( R.string.thumbnail_not_selected )
         }
     }
     val pin = pin( playlistPreview, playlistId )
@@ -373,18 +372,17 @@ fun LocalPlaylistSongs(
     val thumbnailPicker = ThumbnailPicker { openEditThumbnailPicker() }
 
     fun resetThumbnail() {
-        if(thumbnailUrl.value == ""){
-            SmartMessage(context.resources.getString(R.string.no_thumbnail_present), context = context)
+        if(thumbnailUrl.value == "") {
+            Toaster.w( R.string.no_thumbnail_present )
             return
         }
         val thumbnailName = "thumbnail/playlist_${playlistPreview?.playlist?.id}"
         val retVal = deleteFileIfExists(context, thumbnailName)
         if(retVal == true){
-            SmartMessage(context.resources.getString(R.string.removed_thumbnail), context = context)
+            Toaster.s( R.string.removed_thumbnail )
             thumbnailUrl.value = ""
-        } else {
-            SmartMessage(context.resources.getString(R.string.failed_to_remove_thumbnail), context = context)
-        }
+        } else
+            Toaster.e( R.string.failed_to_remove_thumbnail )
     }
     val resetThumbnail = ResetThumbnail { resetThumbnail() }
 
@@ -666,10 +664,7 @@ fun LocalPlaylistSongs(
                                         isRecommendationEnabled = !isRecommendationEnabled
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_smart_recommendation),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_smart_recommendation )
                                     }
                                 )
                         )
@@ -800,14 +795,10 @@ fun LocalPlaylistSongs(
                                     index
                                 )
                             }
-                            coroutineScope.launch {
-                                SmartMessage(
-                                    context.resources.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
-                                    type = PopupType.Warning,
-                                    context = context,
-                                    durationLong = true
-                                )
-                            }
+
+                            Toaster.s(
+                                "${context.resources.getString( R.string.deleted )} \"${song.asMediaItem.mediaMetadata.title}\" - \"${song.asMediaItem.mediaMetadata.artist}\""
+                            )
                         },
                         onDownload = {
                             binder?.cache?.removeResource(song.asMediaItem.mediaId)

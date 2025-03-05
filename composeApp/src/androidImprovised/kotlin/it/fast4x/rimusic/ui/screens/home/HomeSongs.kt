@@ -100,7 +100,6 @@ import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -164,6 +163,7 @@ import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.Optional
 import kotlin.math.max
@@ -515,10 +515,7 @@ fun HomeSongs(
                     deleteFormat(songRif.id)
                     delete(songRif)
                 }
-                SmartMessage(
-                    message = appContext().resources.getString(R.string.deleted),
-                    context = appContext()
-                )
+                Toaster.s( R.string.deleted )
                 menuState.hide()
                 showDeleteDialog = false
             }

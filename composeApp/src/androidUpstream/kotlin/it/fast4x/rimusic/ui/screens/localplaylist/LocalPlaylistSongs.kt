@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.screens.localplaylist
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -108,7 +109,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.PlaylistSongsTypeFilter
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -136,7 +136,6 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.Playlist
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.SongMatchingDialog
 import it.fast4x.rimusic.ui.components.themed.SortMenu
 import it.fast4x.rimusic.ui.items.SongItem
@@ -206,6 +205,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.UUID
@@ -500,11 +500,8 @@ fun LocalPlaylistSongs(
         )
     }
     fun sync() {
-        SmartMessage(
-            message = context.resources.getString(R.string.syncing),
-            durationLong = true,
-            context = context,
-        )
+        Toaster.n( R.string.syncing, Toast.LENGTH_LONG )
+
         playlistPreview?.let { playlistPreview ->
             if (!playlistPreview.playlist.name.startsWith(
                     PIPED_PREFIX,
@@ -538,7 +535,7 @@ fun LocalPlaylistSongs(
                                     setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
                                 ).default()
                             }.let(Database::insertSongPlaylistMaps)
-                            .also { SmartMessage(context.resources.getString(R.string.done), context = context) }
+                            .also { Toaster.done() }
                     }
                 }
             } else {
@@ -833,10 +830,7 @@ fun LocalPlaylistSongs(
                         val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
                         exportLauncher.launch("RMPlaylist_${text.take(20)}_${dateFormat.format(Date())}")
                     } catch (e: ActivityNotFoundException) {
-                        SmartMessage(
-                            context.resources.getString(R.string.info_not_find_app_create_doc),
-                            type = PopupType.Warning, context = context
-                        )
+                        Toaster.e( R.string.info_not_find_app_create_doc )
                     }
                 }
 
@@ -866,9 +860,8 @@ fun LocalPlaylistSongs(
             val thumbnailName = "playlist_${playlistPreview?.playlist?.id}"
             val permaUri = saveImageToInternalStorage(context, uri, "thumbnail", thumbnailName)
             thumbnailUrl.value = permaUri.toString()
-        } else {
-            SmartMessage(context.resources.getString(R.string.thumbnail_not_selected), context = context)
-        }
+        } else
+            Toaster.i( R.string.thumbnail_not_selected )
     }
     fun openEditThumbnailPicker() {
         editThumbnailLauncher.launch("image/*")
@@ -876,17 +869,16 @@ fun LocalPlaylistSongs(
 
     fun resetThumbnail() {
         if(thumbnailUrl.value == ""){
-            SmartMessage(context.resources.getString(R.string.no_thumbnail_present), context = context)
+            Toaster.i( R.string.no_thumbnail_present )
             return
         }
         val thumbnailName = "thumbnail/playlist_${playlistPreview?.playlist?.id}"
         val retVal = deleteFileIfExists(context, thumbnailName)
         if(retVal == true){
-            SmartMessage(context.resources.getString(R.string.removed_thumbnail), context = context)
+            Toaster.s( R.string.removed_thumbnail )
             thumbnailUrl.value = ""
-        } else {
-            SmartMessage(context.resources.getString(R.string.failed_to_remove_thumbnail), context = context)
-        }
+        } else
+            Toaster.e( R.string.failed_to_remove_thumbnail )
     }
 
     var getAlbumVersion by remember { mutableStateOf(false) }
@@ -1173,7 +1165,7 @@ fun LocalPlaylistSongs(
                                         isRecommendationEnabled = !isRecommendationEnabled
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_smart_recommendation), context = context)
+                                        Toaster.i( R.string.info_smart_recommendation )
                                     }
                                 )
                         )
@@ -1201,11 +1193,11 @@ fun LocalPlaylistSongs(
                                                     }
                                                 }
                                         } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                            Toaster.e( R.string.disliked_this_collection )
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                        Toaster.i( R.string.info_shuffle )
                                     }
                                 )
                         )
@@ -1248,7 +1240,7 @@ fun LocalPlaylistSongs(
                                     }
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.resources.getString(R.string.info_pin_unpin_playlist), context = context)
+                                    Toaster.i( R.string.info_pin_unpin_playlist )
                                 }
                             )
                     )
@@ -1264,15 +1256,11 @@ fun LocalPlaylistSongs(
                                     onClick = {
                                         if (sortBy == PlaylistSongSortBy.Position && sortOrder == SortOrder.Ascending) {
                                             isReorderDisabled = !isReorderDisabled
-                                        } else {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_reorder_is_possible_only_in_ascending_sort),
-                                                type = PopupType.Warning, context = context
-                                            )
-                                        }
+                                        } else 
+                                            Toaster.i( R.string.info_reorder_is_possible_only_in_ascending_sort )
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_lock_unlock_reorder_songs), context = context)
+                                        Toaster.i( R.string.info_lock_unlock_reorder_songs )
                                     }
                                 )
                         )
@@ -1287,12 +1275,11 @@ fun LocalPlaylistSongs(
                                 onClick = {
                                     if (playlistSongs.any { it.song.likedAt != -1L }) {
                                         showConfirmDownloadAllDialog = true
-                                    } else {
-                                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                    }
+                                    } else
+                                        Toaster.e( R.string.disliked_this_collection )
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
+                                    Toaster.i( R.string.info_download_all_songs )
                                 }
                             )
                     )
@@ -1366,7 +1353,7 @@ fun LocalPlaylistSongs(
                                     showConfirmDeleteDownloadDialog = true
                                 },
                                 onLongClick = {
-                                    SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                    Toaster.i( R.string.info_remove_all_downloaded_songs )
                                 }
                             )
                     )
@@ -1391,25 +1378,18 @@ fun LocalPlaylistSongs(
                                 .combinedClickable(
                                     onClick = {
                                         if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
-                                            SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                            Toaster.e( R.string.no_connection )
                                         } else if (playlistSongs.any {
                                                 (it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(
                                                     LOCAL_KEY_PREFIX
                                                 ))
                                             }) {
                                             showConfirmMatchAllDialog = true
-                                        } else {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.no_videos_found),
-                                                context = context
-                                            )
-                                        }
+                                        } else
+                                            Toaster.i( R.string.no_videos_found )
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.get_album_version),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.get_album_version )
                                     }
                                 )
                         )
@@ -1497,10 +1477,7 @@ fun LocalPlaylistSongs(
                             .combinedClickable(
                                 onClick = {playlistUpdateDialog = true},
                                 onLongClick = {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.updating_playlist_message),
-                                        context = context
-                                    )
+                                    Toaster.i( R.string.updating_playlist_message )
                                 }
                             )
                     )
@@ -1536,9 +1513,8 @@ fun LocalPlaylistSongs(
                                             if (listMediaItems.isEmpty()) {
                                                 if (playlistSongs.any { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }) {
                                                     binder?.player?.enqueue(playlistSongs.filter { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }.map(SongEntity::asMediaItem),context)
-                                                } else {
-                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                                }
+                                                } else
+                                                    Toaster.e( R.string.disliked_this_collection )
                                             } else {
                                                 binder?.player?.enqueue(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -1549,9 +1525,8 @@ fun LocalPlaylistSongs(
                                             if (listMediaItems.isEmpty()) {
                                                 if (playlistSongs.any { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }) {
                                                     binder?.player?.addNext(playlistSongs.filter { it.song.thumbnailUrl != "" && it.song.likedAt != -1L }.map(SongEntity::asMediaItem),context)
-                                                } else {
-                                                    SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                                }
+                                                } else
+                                                    Toaster.e( R.string.disliked_this_collection )
                                             } else {
                                                 binder?.player?.addNext(listMediaItems, context)
                                                 listMediaItems.clear()
@@ -1616,7 +1591,7 @@ fun LocalPlaylistSongs(
                                         onSyncronize = {sync()},
                                         onLinkUnlink = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()){
-                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                                Toaster.e( R.string.no_connection )
                                             } else if (playlistPreview.playlist.isYoutubePlaylist){
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     if (playlistPreview.playlist.isEditable) {
@@ -1644,11 +1619,12 @@ fun LocalPlaylistSongs(
                                         },
                                         onRename = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && (playlistPreview.playlist.isEditable) && isYouTubeSyncEnabled()){
-                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                                Toaster.e( R.string.no_connection )
                                             } else if (playlistPreview.playlist.isEditable && playlistNotMonthlyType){
                                                 isRenaming = true
                                             }
-                                            else SmartMessage(context.resources.getString(R.string.info_cannot_rename_a_monthly_or_piped_playlist), context = context)
+                                            else
+                                                Toaster.w( R.string.info_cannot_rename_a_monthly_or_piped_playlist )
                                         },
                                         onAddToPlaylist = { toPlaylistPreview ->
                                             position = toPlaylistPreview.songCount.minus(1)
@@ -1662,7 +1638,7 @@ fun LocalPlaylistSongs(
                                                     var distinctSongs = filteredPLSongs.filterNot { it in songsInTheToPlaylist }
 
                                                     if ((distinctSongs.size + toPlaylistPreview.songCount) > 5000 && toPlaylistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
-                                                        SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
+                                                        Toaster.w( R.string.yt_playlist_limited )
                                                     } else if (!isYouTubeSyncEnabled() || !toPlaylistPreview.playlist.isYoutubePlaylist) {
                                                         playlistSongs.forEachIndexed { index, song ->
                                                             Database.asyncTransaction {
@@ -1725,7 +1701,7 @@ fun LocalPlaylistSongs(
 
                                                     val distinctSongs = filteredListMediaItems.filter { item -> item !in songsInTheToPlaylist.map { it.asMediaItem } }
                                                     if ((distinctSongs.size + toPlaylistPreview.songCount) > 5000 && toPlaylistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
-                                                        SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
+                                                        Toaster.w( R.string.yt_playlist_limited )
                                                     } else if (!isYouTubeSyncEnabled() || !toPlaylistPreview.playlist.isYoutubePlaylist) {
                                                         listMediaItems.forEachIndexed { index, song ->
                                                             Database.asyncTransaction {
@@ -1768,7 +1744,7 @@ fun LocalPlaylistSongs(
                                         },
                                         onAddToPreferites = {
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                                Toaster.e( R.string.no_connection )
                                             } else if (!isYouTubeSyncEnabled()){
                                                 if (listMediaItems.isEmpty()) {
                                                     playlistSongs.forEachIndexed { index, song ->
@@ -1798,11 +1774,11 @@ fun LocalPlaylistSongs(
                                             /*
                                             SmartToast(context.resources.getString(R.string.info_cannot_renumbering_a_monthly_playlist))
                                              */
-                                                SmartMessage(context.resources.getString(R.string.info_cannot_renumbering_a_monthly_playlist), context = context)
+                                                Toaster.w( R.string.info_cannot_renumbering_a_monthly_playlist )
                                         },
                                         onDelete = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
-                                                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                                Toaster.e( R.string.no_connection )
                                             } else isDeleting = true
                                         },
                                         showonListenToYT = !playlistPreview.playlist.browseId.isNullOrBlank(),
@@ -2017,10 +1993,7 @@ fun LocalPlaylistSongs(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_find_the_song_that_is_playing),
-                                            context = context
-                                        )
+                                        Toaster.i(R.string.info_find_the_song_that_is_playing)
                                     }
                                 ),
                             icon = R.drawable.locate,
@@ -2211,7 +2184,7 @@ fun LocalPlaylistSongs(
                         mediaItem = song.asMediaItem,
                         onRemoveFromQueue = {
                             if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
-                                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                Toaster.e( R.string.no_connection )
                             } else if (playlistPreview?.playlist?.isEditable == true) {
                                 if (isYouTubeSyncEnabled() && playlistPreview?.playlist?.isYoutubePlaylist == true && playlistPreview?.playlist?.isEditable == true) {
                                     Database.asyncTransaction {
@@ -2236,18 +2209,12 @@ fun LocalPlaylistSongs(
                                         positionInPlaylist
                                     )
                                 }
-                                coroutineScope.launch {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.deleted) + " \"" + song.asMediaItem.mediaMetadata.title.toString() + " - " + song.asMediaItem.mediaMetadata.artist.toString() + "\" ",
-                                        type = PopupType.Warning,
-                                        context = context,
-                                        durationLong = true
-                                    )
-                                }
-                            } else {
-                                SmartMessage(
-                                    context.resources.getString(R.string.cannot_delete_from_online_playlists),type = PopupType.Warning, context = context)
-                            }
+                                
+                                Toaster.s(
+                                    "${context.resources.getString( R.string.deleted )} \"${song.asMediaItem.mediaMetadata.title}\" - \"song.asMediaItem.mediaMetadata.artist\"",
+                                )
+                            } else
+                                Toaster.w( R.string.cannot_delete_from_online_playlists )
                         },
                         onPlayNext = {
                             binder?.player?.addNext(song.asMediaItem)
@@ -2394,15 +2361,13 @@ fun LocalPlaylistSongs(
                                         menuState.display {
                                             InPlaylistMediaItemMenu(
                                                 onMatchingSong = {
-                                                    if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
-                                                        SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
-                                                    } else if ((playlistPreview?.playlist?.isYoutubePlaylist) == false){
+                                                    if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()) {
+                                                        Toaster.e( R.string.no_connection )
+                                                    } else if ((playlistPreview?.playlist?.isYoutubePlaylist) == false) {
                                                         songMatchingDialogEnable = true
                                                         matchingSongEntity = song
-                                                    } else {
-                                                        SmartMessage(
-                                                            context.resources.getString(R.string.cannot_delete_from_online_playlists),type = PopupType.Warning, context = context)
-                                                        }
+                                                    } else
+                                                        Toaster.w(R.string.cannot_delete_from_online_playlists)
                                                 },
                                                 navController = navController,
                                                 playlist = playlistPreview,
@@ -2432,15 +2397,8 @@ fun LocalPlaylistSongs(
                                                             mediaItems.indexOf(song.asMediaItem)
                                                         )
                                                     }
-                                            } else {
-                                                CoroutineScope(Dispatchers.Main).launch {
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.disliked_this_song),
-                                                        type = PopupType.Error,
-                                                        context = context
-                                                    )
-                                                }
-                                            }
+                                            } else
+                                                Toaster.w(R.string.disliked_this_song)
                                         } else checkedState.value = !checkedState.value
                                     }
                                 )
@@ -2480,9 +2438,8 @@ fun LocalPlaylistSongs(
                                 )
                             }
                         }
-                    } else {
-                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                    }
+                    } else
+                        R.string.disliked_this_collection
                 }
             )
 

@@ -63,7 +63,6 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.isVideoEnabled
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
@@ -74,7 +73,6 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -113,6 +111,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Translator
+import me.knighthat.utils.Toaster
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -341,17 +340,12 @@ fun ArtistOverviewItems(
                                                             }
                                                         }
                                                     }
-                                            } else {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.disliked_this_collection),
-                                                    type = PopupType.Error,
-                                                    context = context
-                                                )
-                                            }
+                                            } else
+                                                Toaster.e( R.string.disliked_this_collection )
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                        Toaster.i( R.string.info_shuffle )
                                     }
                                 )
                         )
@@ -370,12 +364,12 @@ fun ArtistOverviewItems(
                                                     binder?.player?.enqueue(filteredArtistSongs, context)
                                                 }
                                             } else {
-                                                SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                Toaster.e( R.string.disliked_this_song )
                                             }
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
+                                        Toaster.i( R.string.info_enqueue_songs )
                                     }
                                 )
                         )
@@ -394,12 +388,12 @@ fun ArtistOverviewItems(
                                                     binder?.player?.addNext(filteredArtistSongs, context)
                                                 }
                                             } else {
-                                                SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                                Toaster.e( R.string.disliked_this_song )
                                             }
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.play_next), context = context)
+                                        Toaster.i( R.string.play_next )
                                     }
                                 )
                         )
@@ -414,7 +408,7 @@ fun ArtistOverviewItems(
                                         showConfirmDownloadAllDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
+                                        Toaster.i( R.string.info_download_all_songs )
                                     }
                                 )
                         )
@@ -429,11 +423,11 @@ fun ArtistOverviewItems(
                                         if (artistSongs.any { it.asSong.thumbnailUrl != "" }) {
                                             showConfirmDeleteDownloadDialog = true
                                         } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
+                                            Toaster.e( R.string.disliked_this_song )
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                        Toaster.i( R.string.info_remove_all_downloaded_songs )
                                     }
                                 )
                         )
@@ -460,10 +454,7 @@ fun ArtistOverviewItems(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_add_in_playlist),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_add_in_playlist )
                                     }
                                 )
                         )
@@ -477,7 +468,7 @@ fun ArtistOverviewItems(
                                 .combinedClickable(
                                     onClick = {
                                         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                            SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                            Toaster.e( R.string.no_connection )
                                         } else if (!isYouTubeSyncEnabled()){
                                             artistSongs.forEachIndexed { _, song ->
                                                 Database.asyncTransaction {
@@ -487,19 +478,13 @@ fun ArtistOverviewItems(
                                                     }
                                                 }
                                             }
-                                            SmartMessage(
-                                                context.resources.getString(R.string.done),
-                                                context = context
-                                            )
+                                            Toaster.done()
                                         } else {
                                             showYoutubeLikeConfirmDialog = true
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.add_to_favorites),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.add_to_favorites )
                                     }
                                 )
                         )
@@ -583,10 +568,8 @@ fun ArtistOverviewItems(
                                                         filteredArtistSongs.indexOf(item)
                                                     )
                                                 }
-                                            } else {
-                                                SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
-                                            }
-
+                                            } else
+                                                Toaster.e( R.string.disliked_this_song )
                                         }
                                     }
                                 ),

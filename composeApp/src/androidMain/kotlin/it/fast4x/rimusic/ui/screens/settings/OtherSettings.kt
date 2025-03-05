@@ -10,11 +10,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -22,12 +30,26 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.*
+import it.fast4x.rimusic.utils.defaultFolderKey
+import it.fast4x.rimusic.utils.extraspaceKey
+import it.fast4x.rimusic.utils.isAtLeastAndroid10
+import it.fast4x.rimusic.utils.isAtLeastAndroid12
+import it.fast4x.rimusic.utils.isAtLeastAndroid6
+import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
+import it.fast4x.rimusic.utils.isKeepScreenOnEnabledKey
+import it.fast4x.rimusic.utils.isProxyEnabledKey
+import it.fast4x.rimusic.utils.logDebugEnabledKey
+import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.proxyHostnameKey
+import it.fast4x.rimusic.utils.proxyModeKey
+import it.fast4x.rimusic.utils.proxyPortKey
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
+import it.fast4x.rimusic.utils.textCopyToClipboard
+import me.knighthat.utils.Toaster
 import java.io.File
 import java.net.Proxy
 
@@ -234,11 +256,7 @@ fun OtherSettings() {
                         Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
                     )
                 } catch (e: ActivityNotFoundException) {
-                    SmartMessage(
-                        "$msgNoBatteryOptim RiMusic",
-                        type = PopupType.Info,
-                        context = context
-                    )
+                    Toaster.i( "$msgNoBatteryOptim Kreate" )
                 }
             }
         }
@@ -323,10 +341,7 @@ fun OtherSettings() {
 
 
             } else
-                SmartMessage(
-                    context.resources.getString(R.string.restarting_rimusic_is_required),
-                    type = PopupType.Info, context = context
-                )
+                Toaster.i( R.string.restarting_rimusic_is_required )
         }
     )
     ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
@@ -343,7 +358,7 @@ fun OtherSettings() {
                     textCopyToClipboard(it, context)
                 }
             } else
-                SmartMessage(noLogAvailable, type = PopupType.Info, context = context)
+                Toaster.w( noLogAvailable )
         }
     )
     ButtonBarSettingEntry(
@@ -359,7 +374,7 @@ fun OtherSettings() {
                     textCopyToClipboard(it, context)
                 }
             } else
-                SmartMessage(noLogAvailable, type = PopupType.Info, context = context)
+                Toaster.w( noLogAvailable )
         }
     )
 

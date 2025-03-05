@@ -50,7 +50,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.context
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Lyrics
@@ -64,7 +63,6 @@ import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -72,6 +70,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -991,10 +990,8 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
     mediaItemsChunks.forEachIndexed { index, items ->
         if (mediaItems.size <= 50) {}
         else if (index == 0) {
-            SmartMessage(
-                "${mediaItems.size} "+appContext().resources.getString(R.string.songs_adding_in_yt),
-                context = appContext(),
-                durationLong = true
+            Toaster.i(
+                "${mediaItems.size} "+appContext().resources.getString(R.string.songs_adding_in_yt)
             )
         } else {
             delay(2000)
@@ -1015,32 +1012,20 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                         )
                     }
                 }
-                if (items.size == 50) {
-                    SmartMessage(
-                        "${mediaItems.size - (index + 1) * 50} Songs Remaining",
-                        context = appContext(),
-                        durationLong = false
-                    )
-                }
+                if (items.size == 50)
+                    Toaster.i( "${mediaItems.size - (index + 1) * 50} Songs Remaining" )
             }
             .onFailure {
                 println("YtMusic addToPlaylist (list of size ${items.size}) error: ${it.stackTraceToString()}")
                 if(it is ClientRequestException && it.response.status == HttpStatusCode.BadRequest) {
-                    SmartMessage(
-                        appContext().resources.getString(R.string.adding_yt_to_pl_failed),
-                        context = appContext(),
-                        durationLong = false
-                    )
+                    Toaster.w( R.string.adding_yt_to_pl_failed )
                     items.forEach { item ->
                         delay(500)
                         addToPlaylist(ytplaylistId, item.mediaId)
                             .onFailure {
                             println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
-                                SmartMessage(
-                                    appContext().resources.getString(R.string.songs_add_yt_failed)+"${item.mediaMetadata.title} - ${item.mediaMetadata.artist}",
-                                    type = PopupType.Error,
-                                    context = appContext(),
-                                    durationLong = false
+                                Toaster.e(
+                                    appContext().resources.getString(R.string.songs_add_yt_failed)+"${item.mediaMetadata.title} - ${item.mediaMetadata.artist}"
                                 )
                             }.onSuccess {
                                 Database.asyncTransaction {
@@ -1055,20 +1040,15 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                                       ).default()
                                   )
                                 }
-                                SmartMessage(
-                                    "${items.size - (index + 1)} Songs Remaining",
-                                    context = appContext(),
-                                    durationLong = false
-                                )
+                                Toaster.n( "${items.size - (index + 1)} Songs Remaining" )
                             }
                     }
                 }
             }
     }
-    SmartMessage(
-        "${mediaItems.size} "+ appContext().resources.getString(R.string.songs_added_in_yt),
-        context = appContext(),
-        durationLong = true
+
+    Toaster.n(
+        "${mediaItems.size} "+ appContext().resources.getString(R.string.songs_added_in_yt)
     )
 }
 
@@ -1088,18 +1068,10 @@ suspend fun addSongToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylist
                         ).default()
                     )
                 }
-                SmartMessage(
-                    appContext().resources.getString(R.string.songs_add_yt_success),
-                    context = appContext(),
-                    durationLong = true
-                )
+                Toaster.s( R.string.songs_add_yt_success )
             }
             .onFailure {
-                SmartMessage(
-                    appContext().resources.getString(R.string.songs_add_yt_failed),
-                    context = appContext(),
-                    durationLong = true
-                )
+                Toaster.e( R.string.songs_add_yt_failed )
             }
 
     }
@@ -1122,18 +1094,10 @@ suspend fun addToYtLikedSong(mediaItem: MediaItem){
                             mediaItem
                         )
                     }
-                    SmartMessage(
-                        appContext().resources.getString(R.string.songs_liked_yt),
-                        context = appContext(),
-                        durationLong = false
-                    )
+                    Toaster.s( R.string.songs_liked_yt )
                 }
                 .onFailure {
-                    SmartMessage(
-                        appContext().resources.getString(R.string.songs_liked_yt_failed),
-                        context = appContext(),
-                        durationLong = false
-                    )
+                    Toaster.e( R.string.songs_liked_yt_failed )
                 }
         } else {
             removelikeVideoOrSong(mediaItem.mediaId)
@@ -1145,18 +1109,10 @@ suspend fun addToYtLikedSong(mediaItem: MediaItem){
                             mediaItem
                         )
                     }
-                    SmartMessage(
-                        appContext().resources.getString(R.string.song_unliked_yt),
-                        context = appContext(),
-                        durationLong = false
-                    )
+                    Toaster.s( R.string.song_unliked_yt )
                 }
                 .onFailure {
-                    SmartMessage(
-                        appContext().resources.getString(R.string.songs_unliked_yt_failed),
-                        context = appContext(),
-                        durationLong = false
-                    )
+                    Toaster.e( R.string.songs_unliked_yt_failed )
                 }
         }
     }
@@ -1178,17 +1134,11 @@ suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
                         item
                     )
                 }
-                SmartMessage(
-                    "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt),
-                    context = appContext(),
-                    durationLong = false
+                Toaster.s(
+                    "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt)
                 )
             }.onFailure {
-                SmartMessage(
-                    "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt_failed),
-                    context = appContext(),
-                    durationLong = false
-                )
+                Toaster.e( "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt_failed) )
             }
         }
     }

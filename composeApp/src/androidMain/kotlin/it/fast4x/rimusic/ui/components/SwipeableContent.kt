@@ -35,35 +35,32 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AlbumSwipeAction
 import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.enums.PlaylistSwipeAction
 import it.fast4x.rimusic.enums.QueueSwipeAction
+import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.albumSwipeLeftActionKey
 import it.fast4x.rimusic.utils.albumSwipeRightActionKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.playlistSwipeLeftActionKey
 import it.fast4x.rimusic.utils.playlistSwipeRightActionKey
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.queueSwipeLeftActionKey
 import it.fast4x.rimusic.utils.queueSwipeRightActionKey
-import kotlinx.coroutines.flow.distinctUntilChanged
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.context
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.service.MyDownloadService
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.addToYtLikedSong
-import it.fast4x.rimusic.utils.isNetworkConnected
+import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 
 @Composable
 fun SwipeableContent(
@@ -185,7 +182,7 @@ fun SwipeableQueueItem(
     }
     val onFavourite: () -> Unit = {
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-            SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+            Toaster.e( R.string.no_connection )
         } else if (!isYouTubeSyncEnabled()){
             mediaItemToggleLike(mediaItem)
             val message: String
@@ -200,11 +197,7 @@ fun SwipeableQueueItem(
             } else
                 message = context.resources.getString(R.string.added_to_favorites)
 
-            SmartMessage(
-                message,
-                durationLong = likedAt != null,
-                context = context
-            )
+            Toaster.n( message )
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 addToYtLikedSong(mediaItem)
@@ -271,7 +264,7 @@ fun SwipeablePlaylistItem(
     }
     val onFavourite: () -> Unit = {
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-            SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+            Toaster.e( R.string.no_connection )
         } else if (!isYouTubeSyncEnabled()){
             mediaItemToggleLike(mediaItem)
             val message: String
@@ -286,11 +279,7 @@ fun SwipeablePlaylistItem(
             } else
                 message = context.resources.getString(R.string.added_to_favorites)
 
-            SmartMessage(
-                message,
-                durationLong = likedAt != null,
-                context = context
-            )
+            Toaster.n( message )
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 addToYtLikedSong(mediaItem)

@@ -21,12 +21,10 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.SongPlaylistMap
@@ -44,6 +42,7 @@ import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import me.knighthat.component.playlist.NewPlaylistDialog
+import me.knighthat.utils.Toaster
 
 class PlaylistsMenu private constructor(
     private val navController: NavController,
@@ -105,12 +104,7 @@ class PlaylistsMenu private constructor(
                     finalAction( preview )
                 }
             }
-            runBlocking( Dispatchers.Main ) {
-                SmartMessage(
-                    appContext().resources.getString(R.string.done),
-                    type = PopupType.Success, context = appContext()
-                )
-            }
+            Toaster.done()
         }
     }
 

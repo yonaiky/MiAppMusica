@@ -79,7 +79,6 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Info
@@ -106,7 +105,6 @@ import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.SelectorDialog
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
@@ -151,6 +149,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -730,7 +729,7 @@ fun AlbumDetails(
                                 .combinedClickable(
                                     onClick = {
                                         if (isYouTubeSyncEnabled() && !isNetworkConnected(context)){
-                                            SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                                            Toaster.e( R.string.no_connection )
                                         } else {
                                             val bookmarkedAt =
                                                 if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
@@ -773,10 +772,7 @@ fun AlbumDetails(
                                         }
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_bookmark_album),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_bookmark_album )
                                     }
                                 ),
                             onClick = {}
@@ -791,15 +787,11 @@ fun AlbumDetails(
                                     onClick = {
                                         if (songs.any { it.likedAt != -1L }) {
                                             showConfirmDownloadAllDialog = true
-                                        } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                        }
+                                        } else
+                                            Toaster.e( R.string.disliked_this_collection )
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_download_all_songs),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_download_all_songs )
                                     }
                                 )
                         )
@@ -816,10 +808,7 @@ fun AlbumDetails(
                                         showConfirmDeleteDownloadDialog = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_remove_all_downloaded_songs),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_remove_all_downloaded_songs )
                                     }
                                 )
                         )
@@ -862,15 +851,11 @@ fun AlbumDetails(
                                                     .shuffled()
                                                     .map(Song::asMediaItem)
                                             )
-                                        } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                        }
+                                        } else
+                                            Toaster.e( R.string.disliked_this_collection )
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_shuffle),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_shuffle )
                                     }
                                 )
                         )
@@ -888,15 +873,11 @@ fun AlbumDetails(
                                             binder?.stopRadio()
                                             binder?.player?.forcePlayFromBeginning(songs.filter { it.likedAt != -1L }.map(Song::asMediaItem))
                                             binder?.setupRadio(NavigationEndpoint.Endpoint.Watch(videoId = songs.first { it.likedAt != -1L }.id))
-                                        } else {
-                                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                        }
+                                        } else
+                                            Toaster.e( R.string.disliked_this_collection )
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_start_radio),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.start_radio )
                                     }
                                 )
                         )
@@ -918,10 +899,7 @@ fun AlbumDetails(
                                             scrollToNowPlaying = true
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_find_the_song_that_is_playing),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.info_find_the_song_that_is_playing )
                                     }
                                 ),
                             icon = R.drawable.locate,
@@ -940,10 +918,7 @@ fun AlbumDetails(
                                 .combinedClickable(
                                     onClick = {startSync = true},
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.update_album),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.update_album )
                                     }
                                 ),
                             icon = R.drawable.update,
@@ -984,7 +959,7 @@ fun AlbumDetails(
                                          */
                                             onChangeAlbumTitle = {
                                                 if (album?.isYoutubeAlbum == true){
-                                                    SmartMessage(context.resources.getString(R.string.cant_rename_Saved_albums),type = PopupType.Error, context = context)
+                                                    Toaster.w( R.string.cant_rename_Saved_albums )
                                                 } else
                                                 showDialogChangeAlbumTitle = true
                                             },
@@ -1002,9 +977,8 @@ fun AlbumDetails(
                                                                 .map(Song::asMediaItem),
                                                             context
                                                         )
-                                                    } else {
-                                                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                                    }
+                                                    } else
+                                                        Toaster.e( R.string.disliked_this_collection )
                                                 } else {
                                                     binder?.player?.addNext(listMediaItems, context)
                                                     listMediaItems.clear()
@@ -1018,9 +992,8 @@ fun AlbumDetails(
                                                             songs.filter { it.likedAt != -1L }
                                                                 .map(Song::asMediaItem),context
                                                         )
-                                                    } else {
-                                                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                                                    }
+                                                    } else
+                                                        Toaster.e( R.string.disliked_this_collection )
                                                 } else {
                                                     binder?.player?.enqueue(listMediaItems, context)
                                                     listMediaItems.clear()
@@ -1101,7 +1074,7 @@ fun AlbumDetails(
                                             },
                                             onAddToFavourites = {
                                                 if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                                    SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                                    Toaster.e( R.string.no_connection )
                                                 } else if (!isYouTubeSyncEnabled()){
                                                     songs.forEach { song ->
                                                         val likedAt: Long? = song.likedAt
@@ -1169,10 +1142,7 @@ fun AlbumDetails(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_translation),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_translation )
                                         }
                                     )
                             )
@@ -1359,11 +1329,8 @@ fun AlbumDetails(
                                                     songs.filter { it.likedAt != -1L }.map(Song::asMediaItem),
                                                     songs.filter { it.likedAt != -1L }.map(Song::asMediaItem).indexOf(song.asMediaItem)
                                                 )
-                                            } else {
-                                                CoroutineScope(Dispatchers.Main).launch {
-                                                    SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)
-                                                }
-                                            }
+                                            } else
+                                                Toaster.e( R.string.disliked_this_song )
                                         } else checkedState.value = !checkedState.value
                                     }
                                 ),
@@ -1484,9 +1451,8 @@ fun AlbumDetails(
                                     .shuffled()
                                     .map(Song::asMediaItem)
                             )
-                        } else {
-                            SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                        }
+                        } else
+                            Toaster.e( R.string.disliked_this_song )
                     },
                     onClickSettings = onSettingsClick,
                     onClickSearch = onSearchClick

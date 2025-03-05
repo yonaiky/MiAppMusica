@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.screens.player
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -99,7 +100,9 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.Languages
 import it.fast4x.rimusic.enums.LyricsAlignment
 import it.fast4x.rimusic.enums.LyricsBackground
@@ -108,16 +111,17 @@ import it.fast4x.rimusic.enums.LyricsFontSize
 import it.fast4x.rimusic.enums.LyricsHighlight
 import it.fast4x.rimusic.enums.LyricsOutline
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.Romanization
 import it.fast4x.rimusic.models.Lyrics
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import it.fast4x.rimusic.ui.components.themed.LyricsSizeDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
@@ -128,9 +132,14 @@ import it.fast4x.rimusic.utils.SynchronizedLyrics
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.colorPaletteNameKey
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.expandedplayerKey
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.isShowingSynchronizedLyricsKey
+import it.fast4x.rimusic.utils.jumpPreviousKey
+import it.fast4x.rimusic.utils.landscapeControlsKey
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.languageDestinationName
 import it.fast4x.rimusic.utils.lyricsAlignmentKey
@@ -139,8 +148,13 @@ import it.fast4x.rimusic.utils.lyricsColorKey
 import it.fast4x.rimusic.utils.lyricsFontSizeKey
 import it.fast4x.rimusic.utils.lyricsHighlightKey
 import it.fast4x.rimusic.utils.lyricsOutlineKey
+import it.fast4x.rimusic.utils.lyricsSizeAnimateKey
+import it.fast4x.rimusic.utils.lyricsSizeKey
+import it.fast4x.rimusic.utils.lyricsSizeLKey
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.otherLanguageAppKey
+import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -157,21 +171,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.ColorPaletteName
-import it.fast4x.rimusic.thumbnailShape
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.components.themed.LyricsSizeDialog
-import it.fast4x.rimusic.utils.colorPaletteNameKey
-import it.fast4x.rimusic.utils.conditional
-import it.fast4x.rimusic.utils.effectRotationKey
-import it.fast4x.rimusic.utils.jumpPreviousKey
-import it.fast4x.rimusic.utils.landscapeControlsKey
-import it.fast4x.rimusic.utils.lyricsSizeAnimateKey
-import it.fast4x.rimusic.utils.lyricsSizeKey
-import it.fast4x.rimusic.utils.lyricsSizeLKey
-import it.fast4x.rimusic.utils.playNext
-import it.fast4x.rimusic.utils.playPrevious
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.time.Duration.Companion.milliseconds
@@ -476,21 +476,19 @@ fun Lyrics(
                                     && playerEnableLyricsPopupMessage
                                 )
                                     coroutineScope.launch {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_lyrics_found_on_s)
-                                                .format("LrcLib.net"),
-                                            type = PopupType.Success, context = context
+                                        Toaster.s(
+                                            R.string.info_lyrics_found_on_s,
+                                            "LrcLib.net"
                                         )
                                     }
                                 else
                                     if (playerEnableLyricsPopupMessage)
                                         coroutineScope.launch {
 
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_lyrics_not_found_on_s).format("LrcLib.net"),
-                                                type = PopupType.Error,
-                                                durationLong = true,
-                                                context = context
+                                            Toaster.e(
+                                                R.string.info_lyrics_not_found_on_s,
+                                                "LrcLib.net",
+                                                duration = Toast.LENGTH_LONG
                                             )
                                         }
 
@@ -506,11 +504,10 @@ fun Lyrics(
                             }?.onFailure {
                                 if (playerEnableLyricsPopupMessage)
                                     coroutineScope.launch {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.info_lyrics_not_found_on_s_try_on_s)
-                                                .format("LrcLib.net", "KuGou.com"),
-                                            type = PopupType.Error,
-                                            durationLong = true, context = context
+                                        Toaster.e(
+                                            R.string.info_lyrics_not_found_on_s_try_on_s,
+                                            "LrcLib.net", "KuGou.com",
+                                            duration = Toast.LENGTH_LONG
                                         )
                                     }
 
@@ -526,20 +523,18 @@ fun Lyrics(
                                             && playerEnableLyricsPopupMessage
                                         )
                                             coroutineScope.launch {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.info_lyrics_found_on_s)
-                                                        .format("KuGou.com"),
-                                                    type = PopupType.Success, context = context
+                                                Toaster.s(
+                                                    R.string.info_lyrics_found_on_s,
+                                                    "KuGou.com"
                                                 )
                                             }
                                         else
                                             if (playerEnableLyricsPopupMessage)
                                                 coroutineScope.launch {
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.info_lyrics_not_found_on_s)
-                                                            .format("KuGou.com"),
-                                                        type = PopupType.Error,
-                                                        durationLong = true, context = context
+                                                    Toaster.e(
+                                                        R.string.info_lyrics_not_found_on_s,
+                                                        "KuGou.com",
+                                                        duration = Toast.LENGTH_LONG
                                                     )
                                                 }
 
@@ -555,11 +550,10 @@ fun Lyrics(
                                     }?.onFailure {
                                         if (playerEnableLyricsPopupMessage)
                                             coroutineScope.launch {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.info_lyrics_not_found_on_s)
-                                                        .format("KuGou.com"),
-                                                    type = PopupType.Error,
-                                                    durationLong = true, context = context
+                                                Toaster.e(
+                                                    R.string.info_lyrics_not_found_on_s,
+                                                    "KuGou.com",
+                                                    duration = Toast.LENGTH_LONG
                                                 )
                                             }
 
@@ -725,20 +719,19 @@ fun Lyrics(
                     )?.onSuccess {
                         if (it.isNotEmpty() && playerEnableLyricsPopupMessage)
                             coroutineScope.launch {
-                                SmartMessage(
-                                    context.resources.getString(R.string.info_lyrics_tracks_found_on_s)
-                                        .format("LrcLib.net"),
-                                    type = PopupType.Success, context = context
+                                Toaster.e(
+                                    R.string.info_lyrics_tracks_found_on_s,
+                                    "LrcLib.net",
+                                    duration = Toast.LENGTH_LONG
                                 )
                             }
                         else
                             if (playerEnableLyricsPopupMessage)
                                 coroutineScope.launch {
-                                    SmartMessage(
-                                        context.resources.getString(R.string.info_lyrics_tracks_not_found_on_s)
-                                            .format("LrcLib.net"),
-                                        type = PopupType.Error,
-                                        durationLong = true, context = context
+                                    Toaster.e(
+                                        R.string.info_lyrics_not_found_on_s,
+                                        "LrcLib.net",
+                                        duration = Toast.LENGTH_LONG
                                     )
                                 }
                         if (it.isEmpty()){
@@ -809,11 +802,10 @@ fun Lyrics(
                     }?.onFailure {
                         if (playerEnableLyricsPopupMessage)
                             coroutineScope.launch {
-                                SmartMessage(
-                                    context.resources.getString(R.string.an_error_has_occurred_while_fetching_the_lyrics)
-                                        .format("LrcLib.net"),
-                                    type = PopupType.Error,
-                                    durationLong = true, context = context
+                                Toaster.e(
+                                    R.string.an_error_has_occurred_while_fetching_the_lyrics,
+                                    "KuGou.com",
+                                    duration = Toast.LENGTH_LONG
                                 )
                             }
 
@@ -2394,10 +2386,7 @@ fun Lyrics(
                                                         }
                                                     )
                                                 } catch (e: ActivityNotFoundException) {
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.info_not_find_app_browse_internet),
-                                                        type = PopupType.Warning, context = context
-                                                    )
+                                                    Toaster.e( R.string.info_not_find_app_browse_internet )
                                                 }
                                             }
                                         )

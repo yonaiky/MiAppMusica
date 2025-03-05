@@ -67,17 +67,13 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -108,6 +104,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 import kotlin.math.absoluteValue
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -179,13 +176,13 @@ fun MiniPlayer(
     LaunchedEffect(updateLike) {
         if (updateLike) {
             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                Toaster.e( R.string.no_connection )
             } else if (!isYouTubeSyncEnabled()){
                 mediaItemToggleLike(mediaItem)
                 if (likedAt == null)
-                    SmartMessage(context.resources.getString(R.string.added_to_favorites), context = context)
+                    Toaster.n( R.string.added_to_favorites )
                 else
-                    SmartMessage(context.resources.getString(R.string.removed_from_favorites), context = context)
+                    Toaster.n( R.string.removed_from_favorites )
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
                     addToYtLikedSong(mediaItem)
@@ -302,10 +299,7 @@ fun MiniPlayer(
                                     }
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 } else
-                                    SmartMessage(
-                                        context.resources.getString(R.string.player_swiping_down_is_disabled),
-                                        context = context
-                                    )
+                                    Toaster.i( R.string.player_swiping_down_is_disabled )
                             }
                         }
                     )

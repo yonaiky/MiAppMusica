@@ -99,7 +99,6 @@ import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.NotificationButtons
 import it.fast4x.rimusic.enums.NotificationType
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.PresetsReverb
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.WallpaperType
@@ -116,7 +115,6 @@ import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.service.BitmapProvider
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
 import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
 import it.fast4x.rimusic.utils.CoilBitmapLoader
@@ -201,6 +199,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream
@@ -919,10 +918,7 @@ class PlayerServiceModern : MediaLibraryService(),
             bassBoost?.setStrength(bassboostLevel)
             bassBoost?.enabled = true
         }.onFailure {
-            SmartMessage(
-                "Can't enable bass boost",
-                context = this@PlayerServiceModern
-            )
+            Toaster.e( "Can't enable bass boost" )
         }
     }
 
@@ -978,10 +974,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     val loudnessMb = loudnessDb.toMb().let {
                         if (it !in -2000..2000) {
                             withContext(Dispatchers.Main) {
-                                SmartMessage(
-                                    "Extreme loudness detected",
-                                    context = this@PlayerServiceModern
-                                )
+                                Toaster.w( "Extreme loudness detected" )
                                 /*
                                 SmartMessage(
                                     getString(
@@ -1359,18 +1352,7 @@ class PlayerServiceModern : MediaLibraryService(),
         binder.callPause({})
     }
 
-    private fun showSmartMessage(message: String) {
-        coroutineScope.launch(Dispatchers.Main) {
-            withContext(Dispatchers.Main) {
-                SmartMessage(
-                    message,
-                    type = PopupType.Info,
-                    durationLong = true,
-                    context = this@PlayerServiceModern
-                )
-            }
-        }
-    }
+    private fun showSmartMessage( message: String ) = Toaster.i(message)
 
     fun updateWidgets() {
 

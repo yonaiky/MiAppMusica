@@ -88,7 +88,6 @@ import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
@@ -100,7 +99,6 @@ import it.fast4x.rimusic.models.QueuedMediaItem
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.asMediaItem
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
 import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
 import it.fast4x.rimusic.utils.InvincibleService
@@ -180,6 +178,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.io.IOException
 import java.io.ObjectInputStream
@@ -1180,17 +1179,7 @@ class PlayerService : InvincibleService(),
                 Database.loudnessDb(songId).cancellable().collectLatest { loudnessDb ->
                     val loudnessMb = loudnessDb.toMb().let {
                         if (it !in -2000..2000) {
-                            withContext(Dispatchers.Main) {
-                                SmartMessage("Extreme loudness detected", context = this@PlayerService)
-                                /*
-                                SmartMessage(
-                                    getString(
-                                        R.string.loudness_normalization_extreme,
-                                        getString(R.string.format_db, (it / 100f).toString())
-                                    )
-                                )
-                                 */
-                            }
+                            Toaster.w( "Extreme loudness detected" )
 
                             0
                         } else it
@@ -1473,13 +1462,7 @@ class PlayerService : InvincibleService(),
 
     }
 
-    private fun showSmartMessage(message: String) {
-        coroutineScope.launch(Dispatchers.Main) {
-            withContext(Dispatchers.Main) {
-                SmartMessage( message, type = PopupType.Info, durationLong = true ,context = this@PlayerService )
-            }
-        }
-    }
+    private fun showSmartMessage( message: String ) = Toaster.i( message )
 
     /*
     override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {

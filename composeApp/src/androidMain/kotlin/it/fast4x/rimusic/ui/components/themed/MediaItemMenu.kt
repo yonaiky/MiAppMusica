@@ -63,7 +63,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import it.fast4x.compose.persist.persistList
-import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -74,6 +73,8 @@ import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
@@ -85,14 +86,19 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.addToPipedPlaylist
+import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
@@ -101,6 +107,7 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
@@ -110,6 +117,7 @@ import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
+import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.thumbnail
@@ -118,16 +126,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.context
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.addSongToYtPlaylist
-import it.fast4x.rimusic.utils.addToYtLikedSong
-import it.fast4x.rimusic.utils.isNetworkConnected
-import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.time.LocalTime.now
 import java.time.format.DateTimeFormatter
@@ -155,7 +154,7 @@ fun InHistoryMediaItemMenu(
         onDeleteFromDatabase = onDeleteFromDatabase,
         onAddToPreferites = {
             if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+                Toaster.e( R.string.no_connection )
             } else if (!isYouTubeSyncEnabled()){
                 Database.asyncTransaction {
                     like(
@@ -202,7 +201,7 @@ fun InPlaylistMediaItemMenu(
         onDismiss = onDismiss,
         onRemoveFromPlaylist = {
             if (!isNetworkConnected(context) && playlist?.playlist?.isYoutubePlaylist == true && playlist.playlist.isEditable && isYouTubeSyncEnabled()){
-                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                Toaster.e( R.string.no_connection )
             } else if (playlist?.playlist?.isEditable == true) {
 
                 Database.asyncTransaction {
@@ -232,16 +231,12 @@ fun InPlaylistMediaItemMenu(
                     )
                 }
             }else {
-                SmartMessage(
-                    context.resources.getString(R.string.cannot_delete_from_online_playlists),
-                    type = PopupType.Warning,
-                    context = context
-                )
+                Toaster.w( R.string.cannot_delete_from_online_playlists )
             }
         },
         onAddToPreferites = {
             if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                Toaster.e( R.string.no_connection )
             } else if (!isYouTubeSyncEnabled()){
                 Database.asyncTransaction {
                     like(
@@ -332,7 +327,7 @@ fun NonQueuedMediaItemMenuLibrary(
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+                    Toaster.e( R.string.no_connection )
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -375,7 +370,7 @@ fun NonQueuedMediaItemMenuLibrary(
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+                    Toaster.e( R.string.no_connection )
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -532,7 +527,7 @@ fun QueuedMediaItemMenu(
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                    Toaster.e( R.string.no_connection )
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -576,7 +571,7 @@ fun QueuedMediaItemMenu(
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
+                    Toaster.e( R.string.no_connection )
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -1289,7 +1284,7 @@ fun MediaItemMenu(
                             //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
                             onClick = {
                                 if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                    SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                    Toaster.e( R.string.no_connection )
                                 } else if (!isYouTubeSyncEnabled()){
                                     Database.asyncTransaction {
                                         if (like(mediaItem.mediaId, setLikeState(likedAt)) == 0) {

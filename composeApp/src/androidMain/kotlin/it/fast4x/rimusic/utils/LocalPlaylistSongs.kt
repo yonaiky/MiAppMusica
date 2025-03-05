@@ -36,9 +36,9 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.themed.DeleteDialog
 import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
+import me.knighthat.utils.Toaster
 import java.util.UUID
 
 
@@ -111,10 +111,7 @@ class PositionLock private constructor(
 
     override fun onShortClick() {
         if( !isFirstColor )
-            SmartMessage(
-                message = appContext().resources.getString( R.string.info_reorder_is_possible_only_in_ascending_sort ),
-                context = appContext()
-            )
+            Toaster.i( R.string.info_reorder_is_possible_only_in_ascending_sort )
         else
             isFirstIcon = !isFirstIcon
     }

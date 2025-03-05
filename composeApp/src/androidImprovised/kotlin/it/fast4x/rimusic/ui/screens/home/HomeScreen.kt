@@ -25,7 +25,6 @@ import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.toUiMood
 import it.fast4x.rimusic.ui.components.Skeleton
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.utils.enableQuickPicksPageKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.homeScreenTabIndexKey
@@ -37,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.knighthat.ui.screens.home.HomeSongs
+import me.knighthat.utils.Toaster
 import kotlin.system.exitProcess
 
 
@@ -185,10 +185,7 @@ fun HomeScreen(
         }
 
         if( confirmCount == 0 ) {
-            SmartMessage(
-                context.resources.getString(R.string.press_once_again_to_exit),
-                context = context
-            )
+            Toaster.i( R.string.press_once_again_to_exit )
             confirmCount++
 
             // Reset confirmCount after 5s

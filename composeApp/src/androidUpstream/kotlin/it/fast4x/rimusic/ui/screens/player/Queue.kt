@@ -87,18 +87,17 @@ import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.reordering.draggedItem
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
-import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.SongPlaylistMap
+import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
@@ -112,14 +111,15 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.QueuedMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.discoverKey
@@ -143,20 +143,10 @@ import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.smoothScrollToTop
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.windows
-import kotlinx.coroutines.launch
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
-import it.fast4x.rimusic.thumbnailShape
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.addToYtPlaylist
-import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.asSong
-import it.fast4x.rimusic.utils.enqueue
-import it.fast4x.rimusic.utils.formatAsDuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -386,10 +376,7 @@ fun Queue(
                             }"
                         )
                     } catch (e: ActivityNotFoundException) {
-                        SmartMessage(
-                            context.resources.getString(R.string.info_not_find_app_create_doc),
-                            type = PopupType.Warning, context = context
-                        )
+                        Toaster.e( R.string.info_not_find_app_create_doc )
                     }
                 }
             )
@@ -604,7 +591,9 @@ fun Queue(
                                 },
                                 onRemoveFromQueue = {
                                     player.removeMediaItem(currentItem.firstPeriodIndex)
-                                    SmartMessage("${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}", type = PopupType.Warning, context = context)
+                                    Toaster.w(
+                                        "${context.resources.getString(R.string.deleted)} ${currentItem.mediaItem.mediaMetadata.title}"
+                                    )
                                 },
                                 onEnqueue = {
                                     binder.player.enqueue(
@@ -896,12 +885,8 @@ fun Queue(
                                         onDiscoverClick(discoverIsEnabled)
                                     },
                                     onLongClick = {
-                                        SmartMessage(
-                                            context.resources.getString(R.string.discoverinfo),
-                                            context = context
-                                        )
+                                        Toaster.i( R.string.discoverinfo )
                                     }
-
                                 )
                         )
 

@@ -19,6 +19,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.WindowManager
+import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -118,7 +119,6 @@ import it.fast4x.rimusic.enums.LogType
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PipModule
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.extensions.pip.PipEventContainer
 import it.fast4x.rimusic.extensions.pip.PipModuleContainer
@@ -128,7 +128,6 @@ import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.CrossfadeContainer
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.screens.AppNavigation
 import it.fast4x.rimusic.ui.screens.player.MiniPlayer
 import it.fast4x.rimusic.ui.screens.player.Player
@@ -178,8 +177,6 @@ import it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import it.fast4x.rimusic.utils.effectRotationKey
-import it.fast4x.rimusic.utils.enableYouTubeLoginKey
-import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.fontTypeKey
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getEnum
@@ -209,7 +206,6 @@ import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.proxyHostnameKey
 import it.fast4x.rimusic.utils.proxyModeKey
 import it.fast4x.rimusic.utils.proxyPortKey
-import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.restartActivityKey
@@ -235,6 +231,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.invidious.Invidious
 import me.knighthat.piped.Piped
+import me.knighthat.utils.Toaster
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.net.Proxy
@@ -447,13 +444,8 @@ class MainActivity :
                         ProxyPreferences.preference =
                             ProxyPreferenceItem(hName, proxyPort, proxyMode)
                     }
-                } else {
-                    SmartMessage(
-                        "Your Proxy Hostname is invalid, please check it",
-                        PopupType.Warning,
-                        context = this@MainActivity
-                    )
-                }
+                } else
+                    Toaster.e( "Your Proxy Hostname is invalid, please check it" )
             }
             //if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
         }
@@ -1181,10 +1173,9 @@ class MainActivity :
             LaunchedEffect(intentUriData) {
                 val uri = intentUriData ?: return@LaunchedEffect
 
-                SmartMessage(
-                    message = "${"RiMusic "}${getString(R.string.opening_url)}",
-                    durationLong = true,
-                    context = this@MainActivity
+                Toaster.n(
+                    "Kreate ${this@MainActivity.resources.getString( R.string.opening_url )}",
+                    duration = Toast.LENGTH_LONG
                 )
 
                 lifecycleScope.launch(Dispatchers.Main) {
@@ -1232,11 +1223,7 @@ class MainActivity :
                                     )
                                         binder?.player?.forcePlay(song.asMediaItem)
                                     else
-                                        SmartMessage(
-                                            "Parental control is enabled",
-                                            PopupType.Warning,
-                                            context = this@MainActivity
-                                        )
+                                        Toaster.w( "Parental control is enabled" )
                                 }
                             }
                         }

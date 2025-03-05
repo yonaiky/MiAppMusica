@@ -6,21 +6,19 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Session
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.UUID
 
@@ -82,7 +80,7 @@ fun ImportPipedPlaylists(){
 
     val pipedSession = getPipedSession()
     if (pipedSession.token == "" || pipedSession.token.isEmpty()) {
-        SmartMessage(stringResource(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
+        Toaster.w( R.string.info_connect_your_piped_account_first )
         return
     }
 
@@ -211,7 +209,7 @@ fun checkPipedAccount(context: Context, pipedSession: Session): Boolean {
     val isPipedEnabled = context.preferences.getBoolean(isPipedEnabledKey, false)
     //println("mediaItem SyncPipedUtils checkPipedAccount isPipedEnabled $isPipedEnabled token ${pipedSession.token}")
     if (isPipedEnabled && pipedSession.token.isEmpty()) {
-        SmartMessage(context.resources.getString(R.string.info_connect_your_piped_account_first), PopupType.Warning, context = context)
+        Toaster.w( R.string.info_connect_your_piped_account_first )
         Timber.d("SyncPipedUtils checkPipedAccount Piped account not connected")
         return false
     }

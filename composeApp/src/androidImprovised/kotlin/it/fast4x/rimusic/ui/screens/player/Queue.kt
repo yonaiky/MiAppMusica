@@ -61,7 +61,6 @@ import it.fast4x.compose.reordering.reorder
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SortOrder
@@ -76,7 +75,6 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.components.themed.Search
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.DisposableListener
@@ -103,6 +101,7 @@ import me.knighthat.component.ui.screens.player.Discover
 import me.knighthat.component.ui.screens.player.QueueArrow
 import me.knighthat.component.ui.screens.player.Repeat
 import me.knighthat.component.ui.screens.player.ShuffleQueue
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 
@@ -298,7 +297,9 @@ fun Queue(
                             },
                             onRemoveFromQueue = {
                                 player.removeMediaItem(index)
-                                SmartMessage("${context.resources.getString(R.string.deleted)} ${song.title}", type = PopupType.Warning, context = context)
+                                Toaster.s(
+                                    "${context.resources.getString(R.string.deleted)} ${song.title}"
+                                )
                             },
                             onEnqueue = {
                                 binder.player.enqueue(

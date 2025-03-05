@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.utils
 
 import android.content.Context
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -10,14 +11,12 @@ import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 
 data class YouTubeRadio @OptIn(UnstableApi::class) constructor
     (
@@ -95,10 +94,10 @@ data class YouTubeRadio @OptIn(UnstableApi::class) constructor
                     }
                 }
 
-                SmartMessage(
-                    context.resources.getString(R.string.discover_has_been_applied_to_radio).format(
-                        mediaItems?.size?.minus(listMediaItems.size) ?: 0
-                    ), PopupType.Success, context = context
+                Toaster.s(
+                    messageId = R.string.discover_has_been_applied_to_radio,
+                    mediaItems?.size?.minus(listMediaItems.size) ?: 0,
+                    duration = Toast.LENGTH_SHORT
                 )
 
                 mediaItems = listMediaItems

@@ -46,7 +46,6 @@ import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
@@ -80,6 +79,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.SongItem
+import me.knighthat.utils.Toaster
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi
@@ -499,13 +499,7 @@ fun SearchResultScreen(
                                     localBinder?.player?.addNext(video.asMediaItem)
                                 },
                                 onDownload = {
-                                    val message = context.resources.getString(R.string.downloading_videos_not_supported)
-
-                                    SmartMessage(
-                                        message,
-                                        durationLong = false,
-                                        context = context
-                                    )
+                                    Toaster.w( R.string.downloading_videos_not_supported )
                                 },
                                 onEnqueue = {
                                     localBinder?.player?.enqueue(video.asMediaItem)

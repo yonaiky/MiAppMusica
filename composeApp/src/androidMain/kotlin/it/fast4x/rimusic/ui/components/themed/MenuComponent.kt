@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import me.knighthat.utils.Toaster
 
 @SuppressLint("ComposableNaming")
 @Composable
@@ -64,10 +64,7 @@ fun Synchronize(
     override fun onShortClick() {
         onClick()
         menuState.hide()
-        SmartMessage(
-            appContext().resources.getString( R.string.done ),
-            context = appContext()
-        )
+        Toaster.done()
     }
 }
 

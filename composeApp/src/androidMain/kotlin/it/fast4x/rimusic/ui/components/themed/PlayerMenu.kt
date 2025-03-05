@@ -16,7 +16,6 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
@@ -24,7 +23,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.MenuStyle
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
@@ -33,8 +31,6 @@ import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.addToYtPlaylist
-import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isPipedEnabledKey
@@ -47,6 +43,7 @@ import it.fast4x.rimusic.utils.seamlessPlay
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.UUID
 
@@ -141,7 +138,7 @@ fun PlayerMenu(
             onDismiss = onDismiss,
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+                    Toaster.e( R.string.no_connection )
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -193,7 +190,7 @@ fun MiniPlayerMenu(
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+                    Toaster.e( R.string.no_connection )
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -221,7 +218,7 @@ fun MiniPlayerMenu(
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    SmartMessage(context().resources.getString(R.string.no_connection), context = context(), type = PopupType.Error)
+                    Toaster.e( R.string.no_connection )
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(

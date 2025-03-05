@@ -1,5 +1,6 @@
 package it.fast4x.rimusic.utils
 
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,10 +13,9 @@ import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.Toaster
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -64,7 +64,11 @@ fun ApplyDiscoverToQueue() {
                 for (i in mediacount.downTo(0)) {
                     binder.player.removeMediaItem(listMediaItemsIndex[i])
                 }
-                SmartMessage(context.resources.getString(R.string.discover_has_been_applied_to_queue).format(listMediaItemsIndex.size), PopupType.Success, context = context)
+                Toaster.s(
+                    R.string.discover_has_been_applied_to_queue,
+                    listMediaItemsIndex.size,
+                    duration = Toast.LENGTH_SHORT
+                )
                 listMediaItemsIndex.clear()
             }
         }

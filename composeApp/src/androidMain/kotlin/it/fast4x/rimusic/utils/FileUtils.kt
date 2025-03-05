@@ -6,8 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.LogType
-import it.fast4x.rimusic.enums.PopupType
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -137,10 +136,10 @@ fun loadAppLog(context: Context, type: LogType): String? {
         }
     )
     if (file.exists()) {
-        SmartMessage(context.resources.getString(R.string.value_copied), type = PopupType.Info, context = context)
+        Toaster.s( R.string.value_copied )
         return file.readText()
     } else
-        SmartMessage(context.resources.getString(R.string.no_log_available), type = PopupType.Info, context = context)
+        Toaster.w( R.string.no_log_available )
     return null
 }
 

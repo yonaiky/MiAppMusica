@@ -66,7 +66,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.podcastPage
@@ -76,7 +75,6 @@ import it.fast4x.rimusic.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
@@ -95,7 +93,6 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
@@ -105,6 +102,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.durationTextToMillis
@@ -129,10 +127,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.addToYtPlaylist
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 
@@ -233,7 +228,7 @@ fun Podcast(
                             ).default()
                         }?.let( ::insertSongPlaylistMaps )
                 }
-                SmartMessage(context.resources.getString(R.string.done), PopupType.Success, context = context)
+                Toaster.done()
             }
         )
     }
@@ -419,7 +414,7 @@ fun Podcast(
                                                 }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_download_all_songs), context = context)
+                                            Toaster.i( R.string.info_download_all_songs )
                                         }
                                     )
                             )
@@ -447,7 +442,7 @@ fun Podcast(
                                                 }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_remove_all_downloaded_songs), context = context)
+                                            Toaster.i( R.string.info_remove_all_downloaded_songs )
                                         }
                                     )
                             )
@@ -468,7 +463,7 @@ fun Podcast(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_enqueue_songs), context = context)
+                                            Toaster.i( R.string.info_enqueue_songs )
                                         }
                                     )
                             )
@@ -493,7 +488,7 @@ fun Podcast(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_shuffle), context = context)
+                                            Toaster.i( R.string.info_shuffle )
                                         }
                                     )
                             )
@@ -520,7 +515,7 @@ fun Podcast(
 
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_start_radio), context = context)
+                                            Toaster.i( R.string.info_start_radio )
                                         }
                                     )
                             )
@@ -576,7 +571,7 @@ fun Podcast(
                                                         }
 
                                                         CoroutineScope(Dispatchers.Main).launch {
-                                                            SmartMessage(context.resources.getString(R.string.done), type = PopupType.Success, context = context)
+                                                            Toaster.done()
                                                         }
                                                     },
                                                     onGoToPlaylist = {
@@ -587,7 +582,7 @@ fun Podcast(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(context.resources.getString(R.string.info_add_in_playlist), context = context)
+                                            Toaster.i( R.string.info_add_in_playlist )
                                         }
                                     )
                             )

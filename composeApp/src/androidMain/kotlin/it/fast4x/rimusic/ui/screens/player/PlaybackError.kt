@@ -27,7 +27,6 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.service.FakeException
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.NoInternetException
@@ -38,13 +37,13 @@ import it.fast4x.rimusic.service.UnknownException
 import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.VideoIdMismatchException
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.typography
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
@@ -83,8 +82,9 @@ fun PlayerError(error: PlaybackException) {
 
     if (errorCounter < 2) {
         Timber.e("Playback error: ${error.cause?.cause}")
-        SmartMessage(
-            if (binder?.player?.currentWindow?.mediaItem?.isLocal == true) localMusicFileNotFoundError
+        Toaster.w(
+            if (binder?.player?.currentWindow?.mediaItem?.isLocal == true)
+                localMusicFileNotFoundError
             else when (error.cause?.cause) {
                 is UnresolvedAddressException, is UnknownHostException -> networkerror
                 is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
@@ -97,7 +97,7 @@ fun PlayerError(error: PlaybackException) {
                 is UnknownException -> unknownerror
                 is FakeException -> unknownerror
                 else -> unknownerror
-            }, PopupType.Warning, context = context
+            }
         )
     }
 

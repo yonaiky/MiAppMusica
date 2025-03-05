@@ -39,7 +39,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -77,30 +76,29 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
-import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.PlaylistPage
-import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.Database.Companion.insert
 import it.fast4x.rimusic.Database.Companion.like
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PopupType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
+import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -109,29 +107,35 @@ import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
-import it.fast4x.rimusic.ui.components.themed.SmartMessage
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
+import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
+import it.fast4x.rimusic.utils.addToYtLikedSongs
+import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
-import it.fast4x.rimusic.utils.completed
+import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
+import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getDownloadState
+import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isNowPlaying
+import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -139,30 +143,18 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.addToYtLikedSongs
-import it.fast4x.rimusic.utils.align
-import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.formatAsDuration
-import it.fast4x.rimusic.utils.getHttpClient
-import it.fast4x.rimusic.utils.isNetworkConnected
-import it.fast4x.rimusic.utils.languageDestination
-import it.fast4x.rimusic.utils.setLikeState
-import kotlinx.coroutines.flow.filterNotNull
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import me.knighthat.utils.Toaster
 import timber.log.Timber
-import java.io.File
 
 
 @ExperimentalTextApi
@@ -335,7 +327,7 @@ fun PlaylistSongList(
                                 }
                                 ?.let( ::insertSongPlaylistMaps )
                 }
-                SmartMessage(context.resources.getString(R.string.done), PopupType.Success, context = context)
+                Toaster.done()
             }
         )
     }
@@ -531,20 +523,12 @@ fun PlaylistSongList(
                                                                 mediaItem = it.asMediaItem,
                                                                 downloadState = false
                                                             )
-                                                        } else {
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.disliked_this_collection),
-                                                        type = PopupType.Error,
-                                                        context = context
-                                                    )
-                                                }
+                                                        } else
+                                                            Toaster.e( R.string.disliked_this_collection )
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_download_all_songs),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_download_all_songs )
                                         }
                                     )
                             )
@@ -571,19 +555,12 @@ fun PlaylistSongList(
                                                             downloadState = true
                                                         )
                                                     } else {
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.disliked_this_collection),
-                                                        type = PopupType.Error,
-                                                        context = context
-                                                    )
+                                                        Toaster.e( R.string.disliked_this_collection )
                                                 }
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_remove_all_downloaded_songs),
-                                                context = context
-                                            )
+                                            Toaster.n( R.string.info_remove_all_downloaded_songs )
                                         }
                                     )
                             )
@@ -605,19 +582,11 @@ fun PlaylistSongList(
                                                     ?.let { mediaItems ->
                                                         binder?.player?.enqueue(mediaItems, context)
                                                     }
-                                            } else {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.disliked_this_collection),
-                                                    type = PopupType.Error,
-                                                    context = context
-                                                )
-                                            }
+                                            } else
+                                                Toaster.e( R.string.disliked_this_collection )
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_enqueue_songs),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_enqueue_songs )
                                         }
                                     )
                             )
@@ -641,19 +610,11 @@ fun PlaylistSongList(
                                                             it
                                                         )
                                                     }
-                                            } else {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.disliked_this_collection),
-                                                    type = PopupType.Error,
-                                                    context = context
-                                                )
-                                            }
+                                            } else
+                                                Toaster.e( R.string.disliked_this_collection )
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_shuffle),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_shuffle )
                                         }
                                     )
                             )
@@ -677,20 +638,12 @@ fun PlaylistSongList(
                                                         else playlistPage?.songs?.first { it.asMediaItem.mediaId !in dislikedSongs }?.asMediaItem?.mediaId
                                                         )
                                                     )
-                                                } else {
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.disliked_this_collection),
-                                                        type = PopupType.Error,
-                                                        context = context
-                                                    )
-                                                }
+                                                } else
+                                                    Toaster.e( R.string.disliked_this_collection )
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_start_radio),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_start_radio )
                                         }
                                     )
                             )
@@ -722,7 +675,7 @@ fun PlaylistSongList(
                                                         val playlistSize = playlistPage?.songs?.size ?: 0
 
                                                         if ((playlistSize + playlistPreview.songCount) > 5000 && playlistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
-                                                            SmartMessage(context.resources.getString(R.string.yt_playlist_limited), context = context, type = PopupType.Error)
+                                                            Toaster.e( R.string.yt_playlist_limited )
                                                         } else if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
                                                             playlistPage!!.songs.forEachIndexed { index, song ->
                                                                 runCatching {
@@ -749,11 +702,7 @@ fun PlaylistSongList(
                                                                     )
                                                                 }
                                                         }
-                                                        CoroutineScope(Dispatchers.Main).launch {
-                                                            SmartMessage(context.resources.getString(
-                                                                        R.string.done
-                                                                    ), type = PopupType.Success, context = context)
-                                                        }
+                                                        Toaster.done()
                                                     },
                                                     onGoToPlaylist = {
                                                         navController.navigate("${NavRoutes.localPlaylist.name}/$it")
@@ -763,10 +712,7 @@ fun PlaylistSongList(
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_add_in_playlist),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_add_in_playlist )
                                         }
                                     )
                             )
@@ -780,7 +726,7 @@ fun PlaylistSongList(
                                     .combinedClickable(
                                         onClick = {
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                                SmartMessage(appContext().resources.getString(R.string.no_connection), context = appContext(), type = PopupType.Error)
+                                                Toaster.e( R.string.no_connection )
                                             } else if (!isYouTubeSyncEnabled()){
                                                 Database.asyncTransaction {
                                                     playlistPage!!.songs.filter { getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null) }.forEachIndexed { _, song ->
@@ -791,20 +737,15 @@ fun PlaylistSongList(
                                                             }
                                                         }
                                                     }
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.done),
-                                                        context = context
-                                                    )
+
+                                                    Toaster.done()
                                                 }
                                             } else {
                                                 showYoutubeLikeConfirmDialog = true
                                             }
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.add_to_favorites),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.add_to_favorites )
                                         }
                                     )
                             )
@@ -863,20 +804,13 @@ fun PlaylistSongList(
                                                                 ?.let(::insertSongPlaylistMaps)
                                                         }
                                                     }
-                                                    SmartMessage(
-                                                        context.resources.getString(R.string.done),
-                                                        context = context
-                                                    )
+                                                    Toaster.done()
                                                     saveCheck = !saveCheck
-                                                } else {
-                                                    SmartMessage(context.resources.getString(R.string.no_connection), context = context, type = PopupType.Error)
-                                                }
+                                                } else
+                                                    Toaster.e( R.string.no_connection )
                                             },
                                             onLongClick = {
-                                                SmartMessage(
-                                                    context.resources.getString(R.string.save_youtube_library),
-                                                    context = context
-                                                )
+                                                Toaster.i( R.string.save_youtube_library )
                                             }
                                         )
                                 )
@@ -1033,10 +967,7 @@ fun PlaylistSongList(
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
-                                            SmartMessage(
-                                                context.resources.getString(R.string.info_translation),
-                                                context = context
-                                            )
+                                            Toaster.i( R.string.info_translation )
                                         }
                                     )
                             )
@@ -1189,7 +1120,8 @@ fun PlaylistSongList(
                                                         mediaItems.indexOf(song.asMediaItem)
                                                     )
                                                 }
-                                        } else {SmartMessage(context.resources.getString(R.string.disliked_this_song),type = PopupType.Error, context = context)}
+                                        } else
+                                            Toaster.e( R.string.disliked_this_song )
                                     }
                                 ),
                             disableScrollingText = disableScrollingText,
@@ -1234,9 +1166,8 @@ fun PlaylistSongList(
                                     it
                                 )
                             }
-                    } else {
-                        SmartMessage(context.resources.getString(R.string.disliked_this_collection),type = PopupType.Error, context = context)
-                    }
+                    } else
+                        Toaster.e( R.string.disliked_this_collection )
                 }
             )
 
