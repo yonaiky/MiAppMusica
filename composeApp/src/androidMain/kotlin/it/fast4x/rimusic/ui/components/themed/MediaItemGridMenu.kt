@@ -448,7 +448,7 @@ fun MediaItemGridMenu (
                     color = colorPalette().favoritesIcon,
                     onClick = {
                         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                            Toaster.e( R.string.no_connection )
+                            Toaster.noInternet()
                         } else if (!isYouTubeSyncEnabled()){
                             mediaItemToggleLike(mediaItem)
                             updateData = !updateData

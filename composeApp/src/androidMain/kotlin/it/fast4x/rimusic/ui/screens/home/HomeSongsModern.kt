@@ -1418,7 +1418,7 @@ fun HomeSongsModern(
                                         },
                                         onAddToPreferites = {
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                                Toaster.e( R.string.no_connection )
+                                                Toaster.noInternet()
                                             } else if (!isYouTubeSyncEnabled()){
                                                 if (listMediaItems.isNotEmpty()) {
                                                     Database.asyncTransaction {
@@ -1448,7 +1448,7 @@ fun HomeSongsModern(
                                         showonAddToPreferitesYoutube = isYouTubeSyncEnabled(),
                                         onAddToPreferitesYoutube = {
                                             if (!isNetworkConnected(appContext())) {
-                                                Toaster.e( R.string.no_connection )
+                                                Toaster.noInternet()
                                             } else {
                                                 showRiMusicLikeYoutubeLikeConfirmDialog = true
                                             }

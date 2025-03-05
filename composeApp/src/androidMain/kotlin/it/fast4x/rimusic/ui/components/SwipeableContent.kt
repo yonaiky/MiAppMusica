@@ -182,7 +182,7 @@ fun SwipeableQueueItem(
     }
     val onFavourite: () -> Unit = {
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-            Toaster.e( R.string.no_connection )
+            Toaster.noInternet()
         } else if (!isYouTubeSyncEnabled()){
             mediaItemToggleLike(mediaItem)
             val message: String
@@ -264,7 +264,7 @@ fun SwipeablePlaylistItem(
     }
     val onFavourite: () -> Unit = {
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-            Toaster.e( R.string.no_connection )
+            Toaster.noInternet()
         } else if (!isYouTubeSyncEnabled()){
             mediaItemToggleLike(mediaItem)
             val message: String

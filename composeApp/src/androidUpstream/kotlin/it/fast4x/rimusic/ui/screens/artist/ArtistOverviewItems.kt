@@ -468,7 +468,7 @@ fun ArtistOverviewItems(
                                 .combinedClickable(
                                     onClick = {
                                         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                            Toaster.e( R.string.no_connection )
+                                            Toaster.noInternet()
                                         } else if (!isYouTubeSyncEnabled()){
                                             artistSongs.forEachIndexed { _, song ->
                                                 Database.asyncTransaction {

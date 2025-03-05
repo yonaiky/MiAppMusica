@@ -176,7 +176,7 @@ fun MiniPlayer(
     LaunchedEffect(updateLike) {
         if (updateLike) {
             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                Toaster.e( R.string.no_connection )
+                Toaster.noInternet()
             } else if (!isYouTubeSyncEnabled()){
                 mediaItemToggleLike(mediaItem)
                 if (likedAt == null)

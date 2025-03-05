@@ -260,7 +260,7 @@ fun InfoAlbumAndArtistEssential(
                         icon = getLikeState(mediaId),
                         onClick = {
                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                Toaster.e( R.string.no_connection )
+                                Toaster.noInternet()
                             } else if (!isYouTubeSyncEnabled()){
                                 Database.asyncTransaction {
                                     CoroutineScope(Dispatchers.IO).launch {
@@ -441,7 +441,7 @@ fun ControlsEssential(
             icon = getLikeState(mediaId),
             onClick = {
                 if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                    Toaster.e( R.string.no_connection )
+                    Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         CoroutineScope(Dispatchers.IO).launch {

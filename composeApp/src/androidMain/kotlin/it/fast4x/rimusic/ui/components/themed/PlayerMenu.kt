@@ -138,7 +138,7 @@ fun PlayerMenu(
             onDismiss = onDismiss,
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    Toaster.e( R.string.no_connection )
+                    Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -190,7 +190,7 @@ fun MiniPlayerMenu(
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    Toaster.e( R.string.no_connection )
+                    Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -218,7 +218,7 @@ fun MiniPlayerMenu(
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    Toaster.e( R.string.no_connection )
+                    Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(

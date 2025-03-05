@@ -726,7 +726,7 @@ fun PlaylistSongList(
                                     .combinedClickable(
                                         onClick = {
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                                Toaster.e( R.string.no_connection )
+                                                Toaster.noInternet()
                                             } else if (!isYouTubeSyncEnabled()){
                                                 Database.asyncTransaction {
                                                     playlistPage!!.songs.filter { getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null) }.forEachIndexed { _, song ->
@@ -807,7 +807,7 @@ fun PlaylistSongList(
                                                     Toaster.done()
                                                     saveCheck = !saveCheck
                                                 } else
-                                                    Toaster.e( R.string.no_connection )
+                                                    Toaster.noInternet()
                                             },
                                             onLongClick = {
                                                 Toaster.i( R.string.save_youtube_library )

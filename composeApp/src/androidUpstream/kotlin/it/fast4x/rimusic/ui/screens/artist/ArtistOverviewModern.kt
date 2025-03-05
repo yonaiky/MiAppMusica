@@ -349,7 +349,7 @@ fun ArtistOverviewModern(
                             ),
                             onClick = {
                                 if (isYouTubeSyncEnabled() && !isNetworkConnected(context)){
-                                    Toaster.e( R.string.no_connection )
+                                    Toaster.noInternet()
                                 } else {
                                     val bookmarkedAt =
                                         if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null

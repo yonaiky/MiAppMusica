@@ -47,7 +47,7 @@ class FollowButton private constructor(
 
     override fun onShortClick() {
         if ( isYouTubeSyncEnabled() && !isNetworkConnected( appContext() ) ){
-            Toaster.e( R.string.no_connection )
+            Toaster.noInternet()
         } else {
             val artist = getArtist()
 

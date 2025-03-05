@@ -154,7 +154,7 @@ fun InHistoryMediaItemMenu(
         onDeleteFromDatabase = onDeleteFromDatabase,
         onAddToPreferites = {
             if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                Toaster.e( R.string.no_connection )
+                Toaster.noInternet()
             } else if (!isYouTubeSyncEnabled()){
                 Database.asyncTransaction {
                     like(
@@ -201,7 +201,7 @@ fun InPlaylistMediaItemMenu(
         onDismiss = onDismiss,
         onRemoveFromPlaylist = {
             if (!isNetworkConnected(context) && playlist?.playlist?.isYoutubePlaylist == true && playlist.playlist.isEditable && isYouTubeSyncEnabled()){
-                Toaster.e( R.string.no_connection )
+                Toaster.noInternet()
             } else if (playlist?.playlist?.isEditable == true) {
 
                 Database.asyncTransaction {
@@ -236,7 +236,7 @@ fun InPlaylistMediaItemMenu(
         },
         onAddToPreferites = {
             if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                Toaster.e( R.string.no_connection )
+                Toaster.noInternet()
             } else if (!isYouTubeSyncEnabled()){
                 Database.asyncTransaction {
                     like(
@@ -327,7 +327,7 @@ fun NonQueuedMediaItemMenuLibrary(
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    Toaster.e( R.string.no_connection )
+                    Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -370,7 +370,7 @@ fun NonQueuedMediaItemMenuLibrary(
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    Toaster.e( R.string.no_connection )
+                    Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -527,7 +527,7 @@ fun QueuedMediaItemMenu(
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    Toaster.e( R.string.no_connection )
+                    Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -571,7 +571,7 @@ fun QueuedMediaItemMenu(
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){
-                    Toaster.e( R.string.no_connection )
+                    Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
                         like(
@@ -1284,7 +1284,7 @@ fun MediaItemMenu(
                             //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
                             onClick = {
                                 if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                    Toaster.e( R.string.no_connection )
+                                    Toaster.noInternet()
                                 } else if (!isYouTubeSyncEnabled()){
                                     Database.asyncTransaction {
                                         if (like(mediaItem.mediaId, setLikeState(likedAt)) == 0) {

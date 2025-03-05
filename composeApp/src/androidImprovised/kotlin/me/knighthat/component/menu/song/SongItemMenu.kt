@@ -266,7 +266,7 @@ class SongItemMenu private constructor(
                                 color = colorPalette().favoritesIcon,
                                 onClick = {
                                     if ( !isNetworkConnected( context ) && isYouTubeSyncEnabled() ) {
-                                        Toaster.e( R.string.no_connection )
+                                        Toaster.noInternet()
                                     } else if ( !isYouTubeSyncEnabled() ){
                                         mediaItemToggleLike( song.asMediaItem )
                                     } else {

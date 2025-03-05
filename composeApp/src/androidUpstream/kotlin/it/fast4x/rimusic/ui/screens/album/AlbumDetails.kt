@@ -729,7 +729,7 @@ fun AlbumDetails(
                                 .combinedClickable(
                                     onClick = {
                                         if (isYouTubeSyncEnabled() && !isNetworkConnected(context)){
-                                            Toaster.e( R.string.no_connection )
+                                            Toaster.noInternet()
                                         } else {
                                             val bookmarkedAt =
                                                 if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
@@ -1074,7 +1074,7 @@ fun AlbumDetails(
                                             },
                                             onAddToFavourites = {
                                                 if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                                    Toaster.e( R.string.no_connection )
+                                                    Toaster.noInternet()
                                                 } else if (!isYouTubeSyncEnabled()){
                                                     songs.forEach { song ->
                                                         val likedAt: Long? = song.likedAt

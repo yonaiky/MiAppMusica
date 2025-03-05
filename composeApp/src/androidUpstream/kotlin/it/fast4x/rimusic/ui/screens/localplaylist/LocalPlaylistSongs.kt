@@ -1378,7 +1378,7 @@ fun LocalPlaylistSongs(
                                 .combinedClickable(
                                     onClick = {
                                         if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
-                                            Toaster.e( R.string.no_connection )
+                                            Toaster.noInternet()
                                         } else if (playlistSongs.any {
                                                 (it.song.thumbnailUrl?.startsWith("https://lh3.googleusercontent.com") == false) && !(it.song.id.startsWith(
                                                     LOCAL_KEY_PREFIX
@@ -1591,7 +1591,7 @@ fun LocalPlaylistSongs(
                                         onSyncronize = {sync()},
                                         onLinkUnlink = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && playlistPreview.playlist.isEditable && isYouTubeSyncEnabled()){
-                                                Toaster.e( R.string.no_connection )
+                                                Toaster.noInternet()
                                             } else if (playlistPreview.playlist.isYoutubePlaylist){
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     if (playlistPreview.playlist.isEditable) {
@@ -1619,7 +1619,7 @@ fun LocalPlaylistSongs(
                                         },
                                         onRename = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && (playlistPreview.playlist.isEditable) && isYouTubeSyncEnabled()){
-                                                Toaster.e( R.string.no_connection )
+                                                Toaster.noInternet()
                                             } else if (playlistPreview.playlist.isEditable && playlistNotMonthlyType){
                                                 isRenaming = true
                                             }
@@ -1744,7 +1744,7 @@ fun LocalPlaylistSongs(
                                         },
                                         onAddToPreferites = {
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                                Toaster.e( R.string.no_connection )
+                                                Toaster.noInternet()
                                             } else if (!isYouTubeSyncEnabled()){
                                                 if (listMediaItems.isEmpty()) {
                                                     playlistSongs.forEachIndexed { index, song ->
@@ -1778,7 +1778,7 @@ fun LocalPlaylistSongs(
                                         },
                                         onDelete = {
                                             if (!isNetworkConnected(context) && playlistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
-                                                Toaster.e( R.string.no_connection )
+                                                Toaster.noInternet()
                                             } else isDeleting = true
                                         },
                                         showonListenToYT = !playlistPreview.playlist.browseId.isNullOrBlank(),
@@ -2184,7 +2184,7 @@ fun LocalPlaylistSongs(
                         mediaItem = song.asMediaItem,
                         onRemoveFromQueue = {
                             if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()){
-                                Toaster.e( R.string.no_connection )
+                                Toaster.noInternet()
                             } else if (playlistPreview?.playlist?.isEditable == true) {
                                 if (isYouTubeSyncEnabled() && playlistPreview?.playlist?.isYoutubePlaylist == true && playlistPreview?.playlist?.isEditable == true) {
                                     Database.asyncTransaction {
@@ -2362,7 +2362,7 @@ fun LocalPlaylistSongs(
                                             InPlaylistMediaItemMenu(
                                                 onMatchingSong = {
                                                     if (!isNetworkConnected(context) && playlistPreview?.playlist?.isYoutubePlaylist == true && (playlistPreview?.playlist?.isEditable == true) && isYouTubeSyncEnabled()) {
-                                                        Toaster.e( R.string.no_connection )
+                                                        Toaster.noInternet()
                                                     } else if ((playlistPreview?.playlist?.isYoutubePlaylist) == false) {
                                                         songMatchingDialogEnable = true
                                                         matchingSongEntity = song
