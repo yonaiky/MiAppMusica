@@ -47,7 +47,7 @@ jobs:
       #
       # Explanations:
       # git log --since="24 hours ago" --name-only --pretty=format:
-      # - Show all files that were changed withing 24 hrs.
+      # - Show all files that were changed withing 48 hrs.
       # - Show changed file paths in relative (composeApp/androidMain, etc.)
       #
       # grep -q "^composeApp/androidImprovised/" && echo "true" || echo "false"
@@ -57,20 +57,20 @@ jobs:
       # This step ensures only flavor with changes made will have its cache rebuild.
       #
       # However, rebuild all cache if a file in this group has changed:
-      # - Any file inside composeApp/androidMain
-      # - Any file inside composeApp/commonMain
-      # - Any .gradle, .gradle.kts, or gradle-wrapper.properties
+      # - composeApp/androidMain
+      # - composeApp/commonMain
+      # - .gradle, .gradle.kts, or gradle-wrapper.properties
       #
-      - name: Detect changes in last 24 hours
+      - name: Detect changes in last 48 hours
         id: detect-changes
         run: |
-          FLAVOR_UPSTREAM_CHANGED=$(git log --since="24 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/androidUpstream/" && echo "true" || echo "false")
-          FLAVOR_IMPROVISED_CHANGED=$(git log --since="24 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/androidImprovised/" && echo "true" || echo "false")
+          FLAVOR_UPSTREAM_CHANGED=$(git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/androidUpstream/" && echo "true" || echo "false")
+          FLAVOR_IMPROVISED_CHANGED=$(git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/androidImprovised/" && echo "true" || echo "false")
           if \
-            git log --since="24 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/androidMain/" || \
-            git log --since="24 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/commonMain/" || \
-            git log --since="24 hours ago" --name-only --pretty=format: | grep -q "^.*\.gradle.*" || \
-            git log --since="24 hours ago" --name-only --pretty=format: | grep -q "^gradle-wrapper.properties"; then
+            git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/androidMain/" || \
+            git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/commonMain/" || \
+            git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^.*\.gradle.*" || \
+            git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^gradle-wrapper.properties"; then
           
             FLAVOR_UPSTREAM_CHANGED="true"
             FLAVOR_IMPROVISED_CHANGED="true"
