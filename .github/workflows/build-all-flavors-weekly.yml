@@ -273,7 +273,7 @@ jobs:
           tag_name: "weekly-kbuild"
           body: |
             <div align="center">
-              <img alt="app-logo" src="/assets/design/latest/app_logo.svg" width="300" height="100" />
+              <img alt="app-logo" src="/assets/design/latest/featuregraphic.png" />
               <p><b>Kreate</b> - by @knighthat</p>
             </div>
             

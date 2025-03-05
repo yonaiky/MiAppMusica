@@ -1,9 +1,8 @@
 <div align="center">
-  <img src="./assets/design/latest/app_logo.svg" width="300" height="100" />    
-  <p><b>RiMusic</b> is a <b>multilingual</b> Android application for streaming music from YouTube Music.</p>
-  <p>It began as an <b>extension</b> of <b>ViMusic</b>, then acquired its own identity.</p>
-<p><b>It allows the user to customize it at will.</b></p>
-<p><b>RiMusic does not collect any data.</b></p>
+  <img alt="project's banner" src="./assets/design/latest/app_banner.svg" width="250" height="100" />    
+  <p>
+    <b>Kreate</b> is a <a href="https://github.com/fast4x/RiMusic">RiMusic</a> folk with performance in mind
+  </p>
 </div>
 
 # ❗ IMPORTANT
@@ -53,12 +52,9 @@ letting me port some (or most) of new changes to legacy _kbuild_ flavor.
 
 ## 📷 Screenshots
 <div align="center">
-  <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" width="15%" />
-  <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" width="15%" />
-  <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg" width="15%" />
-  <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg" width="15%" />
-  <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/5.jpg" width="15%" />
-  <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/6.jpg" width="15%" />
+  <img alt="screenshot 1" src="./assets/screenshots/1.webp" width="20%" />
+  <img alt="screenshot 2" src="./assets/screenshots/2.webp" width="20%" />
+  <img alt="screenshot 3" src="./assets/screenshots/3.webp" width="20%" />
 </div>
 
 ## 🌐 Languages available
