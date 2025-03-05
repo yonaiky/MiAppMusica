@@ -28,9 +28,6 @@ changes happen in the upstream branch.
 Therefore, **_improvised_** flavor is introduced. This will help me keep track of upstream branch while
 letting me port some (or most) of new changes to legacy _kbuild_ flavor.
 
-## 📲 BE CAREFUL!
-## RiMusic is not present on Google Play Store, do not search and download RiMusic on Google Play Store because they are fake clones to steal your money and personal information.
-
 ## ✨ Features
 - **Multilingual:** English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions for other languages are welcome
 - UI Mode, swtich from RiMusic to classic ViMusic style, viceversa
@@ -108,9 +105,6 @@ letting me port some (or most) of new changes to legacy _kbuild_ flavor.
 ## 📲 Installation
 [<img src="./assets/images/getItGithub.png" alt="GitHub" height="80">](https://github.com/knighthat/RiMusic/releases/tag/weekly-kbuild)
 
-## ❓ FAQs
-- See [Wiki page FAQs](https://github.com/fast4x/RiMusic/wiki/FAQs)
-
 ## 🤝 Contributing
 **Pull requests are welcome**
 - If you want:
@@ -119,7 +113,8 @@ letting me port some (or most) of new changes to legacy _kbuild_ flavor.
 
 
 ### 🔤 Translations
-- Go to [Crowdin](https://crowdin.com/project/rimusic/invite?h=73f0e6b64be1c64a8aebd467d286cf851925330), help with the translations.
+
+> Currently unavailable!
 
 ### 🤝 **Developer / Designer that contribute:**
 
@@ -467,6 +462,9 @@ letting me port some (or most) of new changes to legacy _kbuild_ flavor.
 
 
 ## ⚠️ Disclaimer
-This project, its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates, subsidiaries.
+
+This project is built on top of [RiMusic](https://github.com/fast4x/RiMusic) but has no relation to the original author.
+Furthermore, its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, 
+Google LLC or any of its affiliates, subsidiaries.
 
 Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
