@@ -1,1 +1,0 @@
-A multilingual Android application for streaming music from YouTube Music.
