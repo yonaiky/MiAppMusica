@@ -6,7 +6,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import it.fast4x.rimusic.R
 import me.knighthat.utils.Toaster
 
-abstract class ImportSongsFromFile(
+abstract class ImportFromFile(
     private val launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
 ) {
     abstract val supportedMimes: Array<String>

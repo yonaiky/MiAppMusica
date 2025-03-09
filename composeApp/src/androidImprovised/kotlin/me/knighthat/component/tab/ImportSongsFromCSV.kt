@@ -20,7 +20,7 @@ import it.fast4x.rimusic.utils.formatAsDuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import me.knighthat.component.ImportSongsFromFile
+import me.knighthat.component.ImportFromFile
 import me.knighthat.utils.Toaster
 import me.knighthat.utils.csv.SongCSV
 import java.io.InputStream
@@ -42,7 +42,7 @@ import java.io.InputStream
  */
 class ImportSongsFromCSV(
     launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
-) : ImportSongsFromFile(launcher), MenuIcon, Descriptive {
+) : ImportFromFile(launcher), MenuIcon, Descriptive {
 
     companion object {
         private fun parseFromCsvFile( inputStream: InputStream ): List<SongCSV> =
