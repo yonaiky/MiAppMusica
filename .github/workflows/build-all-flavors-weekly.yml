@@ -8,29 +8,44 @@ on:
   # Allow manual trigger
   workflow_dispatch:
 
-  # Run jobs when this workflow is updated
-  push:
-    branches: [kbuild]
-    paths:
-      - .github/workflows/build-all-flavors-weekly.yml
-
 # Prevent multiple jobs from running at the same time
 concurrency:
   group: 'weekly-deploy'
   cancel-in-progress: false  # Don't cancel any in-progress runs in this group
 
 jobs:
-  setup:
+  build_time:
+    name: Capture current time
     runs-on: ubuntu-latest
     # Set date as a variable
     outputs:
-      BUILD_DATE: ${{ steps.date.outputs.date }}
+      date: ${{ steps.date.outputs.date }}
 
     steps:
       - name: Get date
         id: date
         # Output of "October 2 2024" will be "20241002"
         run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+
+  build_version:
+    name: Extract version
+    runs-on: ubuntu-latest
+    # Set version as a variable
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4.2.1
+
+      - name: Get version
+        id: version
+        # Output is current version located inside composeApp/build.gradle.kts
+        # android {
+        #   defaultConfig {
+        #     versionName = "..."
+        #   }
+        # }
+        run: echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '"' '{print $2}')" >> $GITHUB_OUTPUT
 
   build-upstream-full:
     name: Build upstream flavor (full)
@@ -255,7 +270,7 @@ jobs:
           path: signed/*.apk
 
   upload-to-release:
-    needs: [setup, sign-apks]
+    needs: [build_time, build_version, sign-apks]
     runs-on: ubuntu-latest
 
     steps:
@@ -268,9 +283,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: '*.apk'
-
-          name: Weekly Build | ${{ needs.setup.outputs.BUILD_DATE }}
-          tag_name: "weekly-kbuild"
+          # Name: v0.0.1-20250303 | Weekly Build
+          name: v${{ needs.build_version.outputs.version }}-${{ needs.build_time.outputs.date }} | Weekly Build
+          tag_name: v${{ needs.build_version.outputs.version }}-${{ needs.build_time.outputs.date }}
+          make-latest: "true"
           body: |
             <div align="center">
               <img alt="app-logo" src="/assets/design/latest/featuregraphic.png" />
