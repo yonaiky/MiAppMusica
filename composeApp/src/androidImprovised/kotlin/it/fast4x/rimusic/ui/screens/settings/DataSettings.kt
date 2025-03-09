@@ -57,6 +57,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
+import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
 import java.util.concurrent.CancellationException
 
@@ -445,6 +446,18 @@ fun DataSettings() {
             R.string.existing_data_will_be_overwritten,
             context.applicationInfo.nonLocalizedLabel
         ))
+
+        val exportSettingsDialog = ExportSettingsDialog( context )
+        exportSettingsDialog.Render()
+
+        SettingsEntry(
+            title = exportSettingsDialog.dialogTitle,
+            text = stringResource( R.string.store_settings_in_a_file ),
+            onClick = exportSettingsDialog::showDialog
+        )
+        ImportantSettingsDescription(
+            stringResource( R.string.description_exclude_credentials )
+        )
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.search_history))
