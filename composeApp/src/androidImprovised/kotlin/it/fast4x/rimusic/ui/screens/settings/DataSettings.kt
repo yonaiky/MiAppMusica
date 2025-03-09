@@ -59,6 +59,7 @@ import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
 import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
+import me.knighthat.component.import.ImportSettings
 import java.util.concurrent.CancellationException
 
 @SuppressLint("SuspiciousIndentation")
@@ -458,6 +459,18 @@ fun DataSettings() {
         ImportantSettingsDescription(
             stringResource( R.string.description_exclude_credentials )
         )
+
+        val importSettings = ImportSettings( context )
+
+        SettingsEntry(
+            title = stringResource( R.string.title_import_settings ),
+            text = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
+            onClick = importSettings::onShortClick
+        )
+        ImportantSettingsDescription(text = stringResource(
+            R.string.existing_data_will_be_overwritten,
+            context.applicationInfo.nonLocalizedLabel
+        ))
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.search_history))

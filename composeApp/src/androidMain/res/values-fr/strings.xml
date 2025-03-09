@@ -953,4 +953,6 @@ Volume BAS : titre précédent</string>
     <string name="title_export_settings">Export settings</string>
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
+    <string name="title_import_settings">Import settings</string>
+    <string name="restore_settings_from_file">Restore your settings from file created by \"%s\"</string>
 </resources>
