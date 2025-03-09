@@ -946,4 +946,6 @@ CC-BY-SA 3.0</string>
     <string name="export_cached">Export cached</string>
     <string name="info_export_cached_or_downloaded_song">Export cached or downloaded song</string>
     <string name="song_must_be_cached_or_downloaded_to_export">Song must be cached or downloaded to export</string>
+    <string name="title_restart_required">Restart required</string>
+    <string name="restart_dialog_body">Please open %s again after!</string>
 </resources>
