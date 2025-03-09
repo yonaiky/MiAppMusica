@@ -129,8 +129,8 @@ android {
         applicationId = "it.fast4x.rimusic"
         minSdk = 21
         targetSdk = 35
-        versionCode = 83
-        versionName = "0.6.71"
+        versionCode = 84
+        versionName = "0.7.0"
 
         /*
                 UNIVERSAL VARIABLES
