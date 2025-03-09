@@ -47,6 +47,7 @@ object Updater {
     lateinit var build: GithubRelease.Build
 
     private fun extractBuild( assets: List<GithubRelease.Build> ): GithubRelease.Build {
+        val appName = BuildConfig.APP_NAME
         val flavor = BuildConfig.FLAVOR
         val buildType = BuildConfig.BUILD_TYPE
 
@@ -55,7 +56,7 @@ object Updater {
 
         // Get the first build that has name matches 'RiMusic-<flavor>-<buildType>.apk'
         // e.g. Upstream full version will have name 'RiMusic-upstream-full.apk'
-        val fileName = "RiMusic-$flavor-$buildType.apk"
+        val fileName = "$appName-$flavor-$buildType.apk"
         return assets.fastFirstOrNull {    // Experimental, revert to firstOrNull if needed
             it.name == fileName
         } ?: throw IOException( "File $fileName is not available for download!" )
@@ -71,7 +72,8 @@ object Updater {
     private suspend fun fetchUpdate() = withContext( Dispatchers.IO ) {
         val client = OkHttpClient()
 
-        val url = Repository.GITHUB_API.plus( Repository.API_TAG_PATH )
+        // https://api.github.com/repos/knighthat/Kreate/releases/latest
+        val url = "${Repository.GITHUB_API}/repos/${Repository.LATEST_TAG_URL}"
         val request = Request.Builder().url( url ).build()
         val response = client.newCall( request ).execute()
 

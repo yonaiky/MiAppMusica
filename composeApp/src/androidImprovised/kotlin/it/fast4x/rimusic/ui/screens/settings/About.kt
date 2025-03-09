@@ -119,7 +119,8 @@ fun About() {
             )
             Row(
                 Modifier.clickable {
-                    uriHandler.openUri( Repository.OWNER_URL )
+                    val url = "${Repository.GITHUB}/${Repository.OWNER}"
+                    uriHandler.openUri( url )
                 }
             ) {
                 Icon(
@@ -128,7 +129,7 @@ fun About() {
                     contentDescription = null
                 )
                 BasicText(
-                    text = "knighthat",
+                    text = Repository.OWNER,
                     style = typography().s.secondary.copy(
                         textDecoration = TextDecoration.Underline
                     ),
