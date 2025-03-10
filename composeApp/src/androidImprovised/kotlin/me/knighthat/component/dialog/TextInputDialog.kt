@@ -59,8 +59,7 @@ abstract class TextInputDialog(
             keyboardOptions = keyboardOption,
             leadingIcon = { LeadingIcon() },
             trailingIcon = { TrailingIcon() },
-            modifier = Modifier.padding( vertical = 20.dp )
-                               .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             colors = InputDialog.defaultTextFieldColors()
                                 .copy(
                                     errorTextColor = colorPalette().text,
@@ -78,10 +77,8 @@ abstract class TextInputDialog(
                 text = errorMessage,
                 style = typography().xs.copy( color = Color(android.graphics.Color.RED) ),
                 modifier = Modifier.fillMaxWidth( .7f )
-                                    .padding( bottom = 20.dp )
+                                    .padding( top = Dialog.VERTICAL_PADDING.dp )
             )
         }
-
-        Buttons()
     }
 }

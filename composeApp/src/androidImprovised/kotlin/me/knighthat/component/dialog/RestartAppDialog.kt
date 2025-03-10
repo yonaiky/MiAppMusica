@@ -76,6 +76,5 @@ object RestartAppDialog: ConfirmDialog {
             style = typography().xs.copy( color = colorPalette().text ),
             modifier = Modifier.padding( vertical = 20.dp )
         )
-        super.DialogBody()
     }
 }

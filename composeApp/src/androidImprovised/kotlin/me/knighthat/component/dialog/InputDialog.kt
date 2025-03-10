@@ -103,7 +103,5 @@ interface InputDialog: InteractiveDialog {
                                .fillMaxWidth(),
             colors = defaultTextFieldColors()
         )
-
-        Buttons()
     }
 }

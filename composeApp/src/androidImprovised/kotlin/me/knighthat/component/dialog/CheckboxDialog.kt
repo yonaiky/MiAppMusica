@@ -36,13 +36,10 @@ abstract class CheckboxDialog(activeState: MutableState<Boolean>): ConfirmDialog
     @Composable
     override fun DialogBody() {
         Column(
-            Modifier.padding( vertical = 20.dp )
-                    .fillMaxWidth( .8f )
+            Modifier.fillMaxWidth( .8f )
         ) {
             items.forEach { it.ToolBarButton() }
         }
-
-        super.DialogBody()
     }
 
     abstract class Item: MenuIcon {

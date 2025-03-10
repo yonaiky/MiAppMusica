@@ -44,7 +44,4 @@ interface ConfirmDialog: InteractiveDialog {
             onConfirm = ::onConfirm
         )
     }
-
-    @Composable
-    override fun DialogBody() = Buttons()
 }

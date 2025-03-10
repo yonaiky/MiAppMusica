@@ -1,11 +1,14 @@
 package me.knighthat.component.dialog
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.HorizontalDivider
@@ -17,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.utils.bold
+import it.fast4x.rimusic.utils.isLandscape
 
 interface Dialog {
 
@@ -25,6 +29,46 @@ interface Dialog {
          * Space between top and bottom line of dialog.
          */
         const val VERTICAL_PADDING = 15
+
+        /**
+         * Represents the maximum height allowed
+         * for this component in portrait mode.
+         *
+         * Larger number may cause accessibility issue
+         */
+        const val MAX_WIDTH_PORTRAIT = .95f
+
+        /**
+         * Represents the maximum height allowed
+         * for this component in landscape mode.
+         *
+         * Larger number may cause accessibility issue
+         */
+        const val MAX_WIDTH_LANDSCAPE = .6f
+
+        /**
+         * Represents the maximum width allowed
+         * for this component in portrait mode.
+         *
+         * Larger number may cause accessibility issue
+         */
+        const val MAX_HEIGHT_PORTRAIT = .5f
+
+        /**
+         * Represents the maximum width allowed
+         * for this component in landscape mode.
+         *
+         * Larger number may cause accessibility issue
+         */
+        const val MAX_HEIGHT_LANDSCAPE = .7f
+
+        /**
+         * Space between sections in dialog.
+         *
+         * A section is an individual part of dialog,
+         * i.e. title, body, buttons
+         */
+        const val SPACE_BETWEEN_SECTIONS = 20
     }
 
     @get:Composable
@@ -50,39 +94,47 @@ interface Dialog {
     fun Render() {
         if( !isActive ) return
 
-        val screenWidthDp = LocalConfiguration.current.screenWidthDp
+        val screenWidthDp = LocalConfiguration.current.screenWidthDp.dp
+        val screenHeightDp = LocalConfiguration.current.screenHeightDp.dp
+        val maxWidth =
+            if( isLandscape ) MAX_WIDTH_LANDSCAPE else MAX_WIDTH_PORTRAIT
+        val maxHeight =
+            if( isLandscape ) MAX_HEIGHT_LANDSCAPE else MAX_HEIGHT_PORTRAIT
 
-        androidx.compose.ui.window.Dialog( ::hideDialog ) {
+        androidx.compose.ui.window.Dialog( ::hideDialog ) dialogComp@ {
             Column(
-                modifier = Modifier.padding( horizontal = (screenWidthDp * .05f).dp )
+                modifier = Modifier.wrapContentSize()
+                                   .sizeIn(
+                                       maxWidth = screenWidthDp * maxWidth,
+                                       maxHeight = screenHeightDp * maxHeight
+                                   )
                                    .background(
                                        color = colorPalette().background0,
                                        shape = RoundedCornerShape( 8.dp )
-                                   ),
+                                   )
+                                   .padding( vertical = VERTICAL_PADDING.dp ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer( Modifier.height( VERTICAL_PADDING.dp ) )
+                Box(
+                    Modifier.padding( bottom = 8.dp )
+                            .fillMaxWidth( .9f )
+                ) {
+                    BasicText(
+                        text = dialogTitle,
+                        style = typography().m.bold,
+                    )
+                }
 
-                BasicText(
-                    text = dialogTitle,
-                    style = typography().m.bold,
-                    modifier = Modifier.padding(
-                                           bottom = 8.dp,
-                                           start = (screenWidthDp * .05f).dp
-                                       )
-                                       .fillMaxWidth( .8f )
-                                       .align( Alignment.Start )
-                )
+                HorizontalDivider( Modifier.fillMaxWidth( .95f ) )
 
-                HorizontalDivider(
-                    Modifier.height( 2.dp )
-                            .fillMaxWidth( .95f )
-                            .background( colorPalette().textDisabled )
-                )
+                Spacer( Modifier.height( SPACE_BETWEEN_SECTIONS.dp ) )
 
                 DialogBody()
 
-                Spacer( Modifier.height( VERTICAL_PADDING.dp ) )
+                if( this@Dialog is InteractiveDialog ) {
+                    Spacer( Modifier.height( SPACE_BETWEEN_SECTIONS.dp ) )
+                    Buttons()
+                }
             }
         }
     }
