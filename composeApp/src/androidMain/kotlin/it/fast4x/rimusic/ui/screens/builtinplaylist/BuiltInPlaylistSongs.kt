@@ -77,6 +77,7 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedSongs
+import it.fast4x.rimusic.BuildConfig
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.R
@@ -147,9 +148,8 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.utils.TimeDateUtils
 import me.knighthat.utils.Toaster
-import java.text.SimpleDateFormat
-import java.util.Date
 
 
 @ExperimentalTextApi
@@ -460,11 +460,9 @@ fun BuiltInPlaylistSongs(
             setValue = { text ->
                 plistName = text
                 try {
-                    @SuppressLint("SimpleDateFormat")
-                    val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
-                    exportLauncher.launch("RMPlaylist_${text.take(20)}_${dateFormat.format(
-                        Date()
-                    )}")
+                    exportLauncher.launch(
+                        "${BuildConfig.APP_NAME}_playlist_${TimeDateUtils.localizedDateNoDelimiter()}_${TimeDateUtils.timeNoDelimiter()}"
+                    )
                 } catch (e: ActivityNotFoundException) {
                     Toaster.e( R.string.info_not_find_app_create_doc )
                 }

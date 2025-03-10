@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
+import it.fast4x.rimusic.BuildConfig
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.models.Song
@@ -21,11 +22,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.knighthat.component.ExportToFileDialog
+import me.knighthat.utils.TimeDateUtils
 import me.knighthat.utils.csv.SongCSV
 import java.io.OutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 /**
  * Create a custom CSV file with replicable information of
@@ -114,8 +113,6 @@ class ExportSongsToCSVDialog private constructor(
 
     override fun onShortClick() = showDialog()
 
-    override fun defaultFileName(): String {
-        val dateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault() )
-        return "RMPlaylist_${dateFormat.format( Date() )}"
-    }
+    override fun defaultFileName(): String =
+        "${BuildConfig.APP_NAME}_playlist_${TimeDateUtils.localizedDateNoDelimiter()}_${TimeDateUtils.timeNoDelimiter()}"
 }

@@ -19,10 +19,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.knighthat.component.ExportToFileDialog
+import me.knighthat.utils.TimeDateUtils
 import java.io.FileInputStream
-import java.text.DateFormat
-import java.util.Date
-import java.util.Locale
 
 class ExportDatabaseDialog private constructor(
     valueState: MutableState<TextFieldValue>,
@@ -69,8 +67,6 @@ class ExportDatabaseDialog private constructor(
         @Composable
         get() = stringResource( R.string.title_name_your_export )
 
-    override fun defaultFileName(): String {
-        val dateFormat = DateFormat.getDateInstance( DateFormat.SHORT, Locale.getDefault() )
-        return "${BuildConfig.APP_NAME}_database_${dateFormat.format( Date() )}"
-    }
+    override fun defaultFileName(): String =
+        "${BuildConfig.APP_NAME}_database_${TimeDateUtils.localizedDateNoDelimiter()}_${TimeDateUtils.timeNoDelimiter()}"
 }

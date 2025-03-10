@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.utils
 
 
-import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.content.pm.PackageManager
@@ -75,30 +74,14 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.Calendar
-import java.util.Date
 import java.util.GregorianCalendar
+import java.util.Locale
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
-
-fun getDateTimeAsFormattedString(dateAsLongInMs: Long): String? {
-    try {
-        return SimpleDateFormat("dd/MM/yyyy").format(Date(dateAsLongInMs))
-    } catch (e: Exception) {
-        return null // parsing exception
-    }
-}
-
-fun getTimestampFromDate(date: String): Long {
-    return try {
-        SimpleDateFormat("dd-MM-yyyy").parse(date).time
-    } catch (e: Exception) {
-        return 0
-    }
-}
 
 fun songToggleLike( song: Song ) {
     Database.asyncTransaction {
@@ -440,11 +423,10 @@ fun TimeToString(timeMs: Int): String {
 }
 */
 
-@SuppressLint("SimpleDateFormat")
-fun getCalculatedMonths( month: Int): String? {
+fun getCalculatedMonths( month: Int): String {
     val c: Calendar = GregorianCalendar()
     c.add(Calendar.MONTH, -month)
-    val sdfr = SimpleDateFormat("yyyy-MM")
+    val sdfr = SimpleDateFormat( "yyyy-MM", Locale.getDefault() )
     return sdfr.format(c.time).toString()
 }
 

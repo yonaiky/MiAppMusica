@@ -82,6 +82,7 @@ import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import it.fast4x.compose.persist.persistList
+import it.fast4x.rimusic.BuildConfig
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -194,10 +195,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.utils.TimeDateUtils
 import me.knighthat.utils.Toaster
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.util.Date
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.system.exitProcess
@@ -775,11 +775,9 @@ fun HomeSongsModern(
             setValue = { text ->
                 plistName = text
                 try {
-                    @SuppressLint("SimpleDateFormat")
-                    val dateFormat = SimpleDateFormat("yyyyMMddHHmmss")
-                    exportLauncher.launch("RMPlaylist_${text.take(20)}_${dateFormat.format(
-                        Date()
-                    )}")
+                    exportLauncher.launch(
+                        "${BuildConfig.APP_NAME}_playlist_${TimeDateUtils.localizedDateNoDelimiter()}_${TimeDateUtils.timeNoDelimiter()}"
+                    )
                 } catch (e: ActivityNotFoundException) {
                     Toaster.e( R.string.info_not_find_app_create_doc )
                 }

@@ -1,6 +1,5 @@
 package it.fast4x.rimusic.utils
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -9,19 +8,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
-import it.fast4x.rimusic.ui.components.themed.TitleSection
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ytAccountName
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun WelcomeMessage(){
     val hour =
         remember {
             val date = Calendar.getInstance().time
-            @SuppressLint("SimpleDateFormat")
-            val formatter = SimpleDateFormat("HH")
+            val formatter = SimpleDateFormat( "HH", Locale.getDefault() )
             formatter.format(date).toInt()
         }
 
