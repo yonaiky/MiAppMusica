@@ -35,7 +35,7 @@ class NewPlaylistDialog private constructor(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>,
     private val pipedState: MutableState<Boolean>
-): TextInputDialog(InputDialogConstraints.ALL, false), MenuIcon, Descriptive {
+): TextInputDialog(InputDialogConstraints.ALL), MenuIcon, Descriptive {
 
     companion object {
         @Composable

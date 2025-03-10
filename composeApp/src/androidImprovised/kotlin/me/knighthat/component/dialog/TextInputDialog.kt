@@ -23,11 +23,16 @@ import org.intellij.lang.annotations.MagicConstant
 
 abstract class TextInputDialog(
     @MagicConstant(valuesFromClass = InputDialogConstraints::class)
-    constraint: String,
-    val allowEmpty: Boolean
+    constraint: String
 ): InputDialog {
 
-    val constraintRegex: Regex = Regex( constraint )
+    private val constraintRegex: Regex = Regex( constraint )
+
+    /**
+     * Whether the [value] is allow to be empty
+     * when [onSet] is called.
+     */
+    open val allowEmpty: Boolean = false
 
     var errorMessage: String by mutableStateOf("")
 

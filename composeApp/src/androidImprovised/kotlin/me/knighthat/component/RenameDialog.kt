@@ -18,7 +18,7 @@ import me.knighthat.component.dialog.TextInputDialog
 abstract class RenameDialog(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>
-): TextInputDialog(InputDialogConstraints.ALL, false), MenuIcon, Descriptive {
+): TextInputDialog(InputDialogConstraints.ALL), MenuIcon, Descriptive {
 
     override var isActive: Boolean by activeState
     override var value: TextFieldValue by valueState

@@ -17,9 +17,10 @@ abstract class ExportToFileDialog(
     valueState: MutableState<TextFieldValue>,
     activeState: MutableState<Boolean>,
     private val launcher: ManagedActivityResultLauncher<String, Uri?>
-): TextInputDialog(InputDialogConstraints.ALL, false) {
+): TextInputDialog(InputDialogConstraints.ALL) {
 
     override val keyboardOption: KeyboardOptions = KeyboardOptions.Default
+    override val allowEmpty: Boolean = true
 
     override var value: TextFieldValue by valueState
     override var isActive: Boolean by activeState
