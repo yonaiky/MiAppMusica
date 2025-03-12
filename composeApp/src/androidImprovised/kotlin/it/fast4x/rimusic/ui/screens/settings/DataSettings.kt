@@ -59,6 +59,7 @@ import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
 import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
+import me.knighthat.component.import.ImportMigration
 import me.knighthat.component.import.ImportSettings
 import java.util.concurrent.CancellationException
 
@@ -471,6 +472,14 @@ fun DataSettings() {
             R.string.existing_data_will_be_overwritten,
             context.applicationInfo.nonLocalizedLabel
         ))
+
+        val importMigration = ImportMigration( context, binder )
+
+        SettingsEntry(
+            title = "Import migration file",
+            text = "For old users before conversion. \nUse old app to make a backup for migration",
+            onClick = importMigration::onShortClick
+        )
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.search_history))

@@ -21,7 +21,7 @@ class ImportSettings private constructor(
 ): ImportFromFile(launcher) {
 
     companion object {
-        private fun onImport( context: Context, inStream: InputStream ) =
+        fun onImport( context: Context, inStream: InputStream ) =
             csvReader().readAllWithHeader( inStream )
                        .fastForEach { row -> // Experimental, revert back to [forEach] if needed
                            val type = row["Type"] ?: ""

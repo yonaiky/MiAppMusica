@@ -952,4 +952,6 @@
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
     <string name="title_import_settings">Import settings</string>
     <string name="restore_settings_from_file">Restore your settings from file created by \"%s\"</string>
+    <string name="title_import_migration_file">Import migration file</string>
+    <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
 </resources>
