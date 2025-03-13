@@ -153,19 +153,17 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
-            versionNameSuffix = "-kbm"
+            manifestPlaceholders["appName"] = "$APP_NAME-debug"
         }
 
         create( "full" ) {
             // App's properties
-            applicationIdSuffix = ".kbuild"
-            versionNameSuffix = "-kbf"
+            versionNameSuffix = "-f"
         }
 
         create( "minified" ) {
             // App's properties
-            applicationIdSuffix = ".kbuild"
-            versionNameSuffix = "-kbm"
+            versionNameSuffix = "-m"
 
             // Package optimization
             isMinifyEnabled = true
@@ -182,29 +180,16 @@ android {
          * just need to change this variable
          */
         forEach {
-            it.manifestPlaceholders["appName"] = APP_NAME
+            it.manifestPlaceholders.putIfAbsent( "appName", APP_NAME )
         }
     }
 
     applicationVariants.all {
         outputs.map { it as BaseVariantOutputImpl }
                .forEach { output ->
-                   output.outputFileName = "$APP_NAME-$flavorName-${buildType.name}-unsigned.apk"
+                   output.outputFileName = "$APP_NAME-${buildType.name}-unsigned.apk"
                }
     }
-
-    //<editor-fold desc="Kbuild dimension">
-    flavorDimensions += "kbuild"
-    productFlavors {
-        create( "upstream" ) {
-            dimension = "kbuild"
-            applicationIdSuffix += ".upstream"
-        }
-        create( "improvised" ) {
-            dimension = "kbuild"
-        }
-    }
-    //</editor-fold>
 
     sourceSets.all {
         kotlin.srcDir("src/$name/kotlin")

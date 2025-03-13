@@ -48,7 +48,6 @@ object Updater {
 
     private fun extractBuild( assets: List<GithubRelease.Build> ): GithubRelease.Build {
         val appName = BuildConfig.APP_NAME
-        val flavor = BuildConfig.FLAVOR
         val buildType = BuildConfig.BUILD_TYPE
 
         if( buildType != "full" && buildType != "minified" )
@@ -56,7 +55,7 @@ object Updater {
 
         // Get the first build that has name matches 'RiMusic-<flavor>-<buildType>.apk'
         // e.g. Upstream full version will have name 'RiMusic-upstream-full.apk'
-        val fileName = "$appName-$flavor-$buildType.apk"
+        val fileName = "$appName-$buildType.apk"
         return assets.fastFirstOrNull {    // Experimental, revert to firstOrNull if needed
             it.name == fileName
         } ?: throw IOException( "File $fileName is not available for download!" )
