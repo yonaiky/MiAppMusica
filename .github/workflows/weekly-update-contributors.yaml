@@ -33,7 +33,7 @@ jobs:
         run: python .github/get_developers.py
 
       - name: Copy generated contributors.json to its correct place
-        run: "mv .github/contributors.json composeApp/src/androidMain/res/raw/contributors.json"
+        run: "mv contributors.json composeApp/src/androidMain/res/raw/contributors.json"
 
       - name: Get current date
         id: date
