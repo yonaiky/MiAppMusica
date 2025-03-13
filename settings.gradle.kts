@@ -25,7 +25,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "RiMusic"
+rootProject.name = "Kreate"
 include(":composeApp")
 // Projects from extensions
 include(":innertube")

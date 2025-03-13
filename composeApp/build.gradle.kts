@@ -126,7 +126,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "it.fast4x.rimusic"
+        applicationId = "me.knighthat.kreate"
         minSdk = 21
         targetSdk = 35
         versionCode = 84
