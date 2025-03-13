@@ -22,8 +22,8 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
 import it.fast4x.rimusic.MainActivity
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget.Companion.isPlayingKey
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget.Companion.songArtistKey
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget.Companion.songTitleKey

@@ -89,6 +89,7 @@ import androidx.compose.ui.unit.sp
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
@@ -98,7 +99,6 @@ import it.fast4x.lrclib.LrcLib
 import it.fast4x.lrclib.models.Track
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode

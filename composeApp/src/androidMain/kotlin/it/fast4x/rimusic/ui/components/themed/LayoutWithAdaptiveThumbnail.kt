@@ -17,8 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
 import com.valentinilk.shimmer.shimmer
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.thumbnailShape

@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 

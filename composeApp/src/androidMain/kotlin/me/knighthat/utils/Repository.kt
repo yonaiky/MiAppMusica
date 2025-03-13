@@ -1,6 +1,6 @@
 package me.knighthat.utils
 
-import it.fast4x.rimusic.BuildConfig
+import app.kreate.android.BuildConfig
 
 object Repository {
 

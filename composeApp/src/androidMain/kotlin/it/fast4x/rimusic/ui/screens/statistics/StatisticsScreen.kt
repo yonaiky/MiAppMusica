@@ -13,7 +13,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.ui.components.Skeleton
 

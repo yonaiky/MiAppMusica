@@ -53,12 +53,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.R
+import app.kreate.android.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.multiFloatActionIconOffsetXkey
 import it.fast4x.rimusic.utils.multiFloatActionIconOffsetYkey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.colorPalette
 
 enum class MultiFabState {
     Collapsed, Expanded

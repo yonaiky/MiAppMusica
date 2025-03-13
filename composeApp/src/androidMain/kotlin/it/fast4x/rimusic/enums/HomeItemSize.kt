@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.ui.styling.px
 import me.knighthat.enums.TextView
 

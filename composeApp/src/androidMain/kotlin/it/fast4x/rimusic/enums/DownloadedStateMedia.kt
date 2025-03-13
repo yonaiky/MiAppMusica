@@ -1,7 +1,7 @@
 package it.fast4x.rimusic.enums
 
 import androidx.annotation.DrawableRes
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 
 enum class DownloadedStateMedia(
     @field:DrawableRes override val iconId: Int

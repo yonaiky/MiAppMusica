@@ -13,8 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.CacheSpan
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern

@@ -3,7 +3,7 @@ package me.knighthat.component
 import android.content.ActivityNotFoundException
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import me.knighthat.utils.Toaster
 
 abstract class ImportFromFile(

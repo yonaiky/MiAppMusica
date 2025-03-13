@@ -14,12 +14,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.R
 import it.fast4x.compose.persist.PersistMapCleanup
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongs
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -28,7 +29,6 @@ import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
-import it.fast4x.rimusic.ui.components.Skeleton
 
 @ExperimentalMaterialApi
 @ExperimentalTextApi

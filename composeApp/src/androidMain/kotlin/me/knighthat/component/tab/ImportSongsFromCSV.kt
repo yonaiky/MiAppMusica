@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
+import app.kreate.android.R
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song

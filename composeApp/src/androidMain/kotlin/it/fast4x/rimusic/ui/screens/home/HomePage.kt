@@ -37,17 +37,19 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.R
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.requests.HomePage
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.Countries
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -56,10 +58,13 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
+import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.WelcomeMessage
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.disableScrollingTextKey
+import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.loadedDataKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -71,18 +76,7 @@ import it.fast4x.rimusic.utils.showSearchTabKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.items.VideoItem
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
-import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.forcePlay
-import it.fast4x.rimusic.utils.saveFileToInternalStorage
 import timber.log.Timber
-import java.io.File
-import java.io.IOException
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
 
 
 @OptIn(ExperimentalMaterial3Api::class)

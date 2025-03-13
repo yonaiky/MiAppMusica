@@ -10,8 +10,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.R
 import it.fast4x.compose.persist.PersistMapCleanup
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.ui.components.Skeleton
 
 @ExperimentalMaterialApi

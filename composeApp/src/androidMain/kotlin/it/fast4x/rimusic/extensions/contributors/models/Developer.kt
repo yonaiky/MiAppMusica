@@ -30,12 +30,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import app.kreate.android.R
 import coil.compose.rememberAsyncImagePainter
 import com.google.gson.annotations.SerializedName
-import it.fast4x.rimusic.R
-import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 
 data class Developer(
     val id: Int,

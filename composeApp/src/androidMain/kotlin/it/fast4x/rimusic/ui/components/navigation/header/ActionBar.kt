@@ -14,17 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import app.kreate.android.R
 import coil.compose.AsyncImage
-import it.fast4x.rimusic.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.extensions.pip.isPipSupported
 import it.fast4x.rimusic.extensions.pip.rememberPipHandler
-import it.fast4x.rimusic.utils.enablePictureInPictureKey
-import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.components.themed.DropdownMenu
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
+import it.fast4x.rimusic.utils.enablePictureInPictureKey
+import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.ytAccountThumbnail
 
 @Composable

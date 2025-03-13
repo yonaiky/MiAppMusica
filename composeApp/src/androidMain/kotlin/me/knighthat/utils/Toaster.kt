@@ -10,7 +10,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import es.dmoral.toasty.Toasty
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.appContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

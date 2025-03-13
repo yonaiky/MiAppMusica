@@ -10,7 +10,7 @@ import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Session
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap

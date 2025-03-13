@@ -43,10 +43,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
-import it.fast4x.rimusic.R
+import app.kreate.android.R
+import it.fast4x.rimusic.colorPalette
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import it.fast4x.rimusic.colorPalette
 import android.graphics.Color as AndroidColor
 
 

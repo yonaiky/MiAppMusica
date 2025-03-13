@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.enums.Drawable
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.SortOrder

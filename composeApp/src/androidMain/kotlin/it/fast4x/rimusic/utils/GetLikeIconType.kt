@@ -2,7 +2,7 @@ package it.fast4x.rimusic.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.enums.IconLikeType
 
 @Composable

@@ -19,8 +19,8 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.R
 import it.fast4x.compose.persist.PersistMapCleanup
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.toUiMood

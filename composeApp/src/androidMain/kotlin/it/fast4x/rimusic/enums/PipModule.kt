@@ -1,7 +1,7 @@
 package it.fast4x.rimusic.enums
 
 import androidx.annotation.StringRes
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import me.knighthat.enums.TextView
 
 enum class PipModule(

@@ -40,7 +40,7 @@
     </queries>
 
     <application
-        android:name=".MainApplication"
+        android:name="it.fast4x.rimusic.MainApplication"
         android:allowBackup="true"
         android:banner="@mipmap/ic_banner"
         android:configChanges="colorMode|density|fontScale|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode"
@@ -59,7 +59,7 @@
 
 
         <activity
-            android:name=".MainActivity"
+            android:name="it.fast4x.rimusic.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.RiMusic"
@@ -145,7 +145,7 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <receiver android:name=".ui.widgets.PlayerVerticalWidgetReceiver"
+        <receiver android:name="it.fast4x.rimusic.ui.widgets.PlayerVerticalWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -154,7 +154,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/player_vertical_widget_info" />
         </receiver>
-        <receiver android:name=".ui.widgets.PlayerHorizontalWidgetReceiver"
+        <receiver android:name="it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -166,7 +166,7 @@
 
         <!-- NEW PLAYER SERVICE -->
         <service
-            android:name=".service.modern.PlayerServiceModern"
+            android:name="it.fast4x.rimusic.service.modern.PlayerServiceModern"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback"
             tools:ignore="ExportedService">
@@ -185,7 +185,7 @@
         </receiver>
         <!-- NEW PLAYER SERVICE -->
 
-        <service android:name=".service.MyDownloadService"
+        <service android:name="it.fast4x.rimusic.service.MyDownloadService"
             android:exported="false"
             android:foregroundServiceType="dataSync">
             <!-- This is needed for Scheduler -->
@@ -205,7 +205,7 @@
         </service>
 
         <receiver
-            android:name=".service.modern.PlayerServiceModern$NotificationDismissReceiver"
+            android:name="it.fast4x.rimusic.service.modern.PlayerServiceModern$NotificationDismissReceiver"
             android:exported="false" />
 
         <meta-data android:name="com.google.android.gms.car.application"

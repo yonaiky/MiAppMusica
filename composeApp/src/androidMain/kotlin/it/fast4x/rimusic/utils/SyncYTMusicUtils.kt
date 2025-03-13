@@ -14,7 +14,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.Database.Companion.getAlbumsList
 import it.fast4x.rimusic.Database.Companion.getArtistsList
 import it.fast4x.rimusic.Database.Companion.update
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.models.Album

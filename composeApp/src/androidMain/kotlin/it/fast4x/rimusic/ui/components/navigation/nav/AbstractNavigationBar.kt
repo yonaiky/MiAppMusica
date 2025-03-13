@@ -11,11 +11,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import it.fast4x.rimusic.R
-import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.ui.components.themed.Button
+import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.rimusic.ui.components.themed.Button
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 
 @SuppressLint("ComposableNaming")
 abstract class AbstractNavigationBar(

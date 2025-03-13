@@ -90,6 +90,8 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
+import app.kreate.android.BuildConfig
+import app.kreate.android.R
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException

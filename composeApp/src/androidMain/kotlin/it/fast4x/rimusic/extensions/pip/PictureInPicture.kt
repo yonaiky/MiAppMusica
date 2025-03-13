@@ -28,8 +28,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.OnPictureInPictureModeChangedProvider
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.graphics.toRect
+import app.kreate.android.R
 import it.fast4x.compose.persist.findActivityNullable
-import it.fast4x.rimusic.R
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.utils.ActionReceiver
 import it.fast4x.rimusic.utils.enablePictureInPictureAutoKey
 import it.fast4x.rimusic.utils.enablePictureInPictureKey
@@ -38,7 +39,6 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.appContext
 
 
 private fun logError(throwable: Throwable) = Log.e("PipHandler", "An error occurred", throwable)

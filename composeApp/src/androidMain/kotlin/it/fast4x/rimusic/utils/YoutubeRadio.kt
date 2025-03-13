@@ -10,7 +10,7 @@ import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

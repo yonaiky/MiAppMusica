@@ -45,7 +45,7 @@ import it.fast4x.lrclib.LrcLib
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.Database.Companion.getLikedAt
 import it.fast4x.rimusic.EXPLICIT_PREFIX
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.context

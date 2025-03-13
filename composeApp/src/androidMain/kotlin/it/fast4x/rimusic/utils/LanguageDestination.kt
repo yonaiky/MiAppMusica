@@ -4,7 +4,7 @@ package it.fast4x.rimusic.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.enums.Languages
 import me.bush.translator.Language
 

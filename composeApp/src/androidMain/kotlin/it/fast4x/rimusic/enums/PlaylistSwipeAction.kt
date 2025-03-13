@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
 import androidx.annotation.StringRes
 import androidx.media3.common.util.UnstableApi
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import me.knighthat.enums.TextView
 
 enum class PlaylistSwipeAction(

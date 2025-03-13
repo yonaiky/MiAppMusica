@@ -2,7 +2,7 @@ package it.fast4x.rimusic.enums
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import me.knighthat.enums.TextView
 
 enum class DurationInSeconds {

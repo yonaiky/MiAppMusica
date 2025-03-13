@@ -37,7 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.enums.ThumbnailCoverType
 import it.fast4x.rimusic.utils.VinylSizeKey
 import it.fast4x.rimusic.utils.rememberPreference

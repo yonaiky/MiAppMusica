@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.media3.exoplayer.ExoPlayer
+import app.kreate.android.R
 import it.fast4x.compose.reordering.ReorderingState
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive

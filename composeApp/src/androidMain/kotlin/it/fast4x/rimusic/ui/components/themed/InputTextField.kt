@@ -26,11 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.R
-import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.textCopyFromClipboard
+import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.textCopyFromClipboard
 
 @Composable
 inline fun InputTextField(

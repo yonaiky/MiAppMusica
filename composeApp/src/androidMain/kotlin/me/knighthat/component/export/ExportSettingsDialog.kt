@@ -12,9 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import app.kreate.android.BuildConfig
+import app.kreate.android.R
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
-import it.fast4x.rimusic.BuildConfig
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

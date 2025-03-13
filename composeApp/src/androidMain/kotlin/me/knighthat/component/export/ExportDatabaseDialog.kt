@@ -12,9 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import it.fast4x.rimusic.BuildConfig
+import app.kreate.android.BuildConfig
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -12,12 +12,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import it.fast4x.rimusic.R
+import app.kreate.android.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.extensions.games.pacman.Pacman
-import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.components.themed.Button
-import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 
 class AppHeader(
     val navController: NavController

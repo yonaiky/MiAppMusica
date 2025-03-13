@@ -11,14 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.kreate.android.R
 import com.google.gson.Gson
 import com.google.gson.JsonArray
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.extensions.contributors.models.Developer
 import it.fast4x.rimusic.extensions.contributors.models.Translator
 import timber.log.Timber
 import java.io.InputStream
-import java.net.URL
 
 private val GSON = Gson()
 private lateinit var developersList: List<Developer>

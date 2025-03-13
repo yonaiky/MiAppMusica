@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.models.Song

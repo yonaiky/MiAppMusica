@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.R
+import app.kreate.android.R
 import me.knighthat.enums.TextView
 
 enum class ThumbnailRoundness(

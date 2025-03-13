@@ -31,20 +31,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.kreate.android.R
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.R
-import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
+import it.fast4x.rimusic.cleanPrefix
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.shimmer
-import it.fast4x.rimusic.MONTHLY_PREFIX
-import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.utils.checkFileExists
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
@@ -55,9 +58,6 @@ import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.thumbnailShape
-import it.fast4x.rimusic.typography
 import timber.log.Timber
 
 @Composable

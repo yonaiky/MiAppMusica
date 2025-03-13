@@ -2,8 +2,8 @@ package me.knighthat.component.tab
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.R
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState

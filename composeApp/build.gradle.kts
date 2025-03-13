@@ -148,7 +148,7 @@ android {
         }
     }
 
-    namespace = "it.fast4x.rimusic"
+    namespace = "app.kreate.android"
 
     buildTypes {
         debug {
