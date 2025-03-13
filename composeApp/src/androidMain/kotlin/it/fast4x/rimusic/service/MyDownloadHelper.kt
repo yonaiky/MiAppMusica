@@ -9,6 +9,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.DatabaseProvider
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.cache.Cache
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.offline.Download
@@ -22,6 +23,8 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
+import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.utils.DownloadSyncedLyrics
 import it.fast4x.rimusic.utils.asSong
@@ -30,6 +33,9 @@ import it.fast4x.rimusic.utils.autoDownloadSongKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenAlbumBookmarkedKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenLikedKey
 import it.fast4x.rimusic.utils.download
+import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
+import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
+import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.removeDownload
@@ -45,8 +51,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
 import java.util.concurrent.Executors
+import kotlin.io.path.createTempDirectory
 
 @UnstableApi
 object MyDownloadHelper {
@@ -64,14 +70,12 @@ object MyDownloadHelper {
 //        Channel<DownloadManager>(onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     const val DOWNLOAD_NOTIFICATION_CHANNEL_ID = "download_channel"
-
-    private const val DOWNLOAD_CONTENT_DIRECTORY = "downloads"
+    const val CACHE_DIRNAME = "exo_downloads"
 
     private lateinit var databaseProvider: DatabaseProvider
     lateinit var downloadCache: Cache
 
     private lateinit var downloadNotificationHelper: DownloadNotificationHelper
-    private lateinit var downloadDirectory: File
     private lateinit var downloadManager: DownloadManager
     lateinit var audioQualityFormat: AudioQualityFormat
 
@@ -121,30 +125,46 @@ object MyDownloadHelper {
      */
 
     @Synchronized
-    fun getDownloadCache(context: Context): Cache {
-        if (!MyDownloadHelper::downloadCache.isInitialized) {
-            val downloadContentDirectory =
-                File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY)
-            downloadCache = SimpleCache(
-                downloadContentDirectory,
-                NoOpCacheEvictor(),
-                getDatabaseProvider(context)
-            )
+    private fun initDownloadCache( context: Context ): SimpleCache {
+        val cacheSize = context.preferences.getEnum( exoPlayerDiskDownloadCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`2GB` )
+
+        val cacheEvictor = when( cacheSize ) {
+            ExoPlayerDiskCacheMaxSize.Unlimited -> NoOpCacheEvictor()
+
+            ExoPlayerDiskCacheMaxSize.Custom    -> {
+                val customCacheSize = context.preferences.getInt( exoPlayerCustomCacheKey, 32 ) * 1000 * 1000L
+                LeastRecentlyUsedCacheEvictor( customCacheSize )
+            }
+
+            else                                -> LeastRecentlyUsedCacheEvictor( cacheSize.bytes )
         }
-        return downloadCache
+
+        val cacheDir = when( cacheSize ) {
+            // Temporary directory deletes itself after close
+            // It means songs remain on device as long as it's open
+            ExoPlayerDiskCacheMaxSize.Disabled -> createTempDirectory( CACHE_DIRNAME ).toFile()
+
+            else                               ->
+                // Looks a bit ugly but what it does is
+                // check location set by user and return
+                // appropriate path with [CACHE_DIRNAME] appended.
+                when( context.preferences.getEnum( exoPlayerCacheLocationKey, ExoPlayerCacheLocation.System ) ) {
+                    ExoPlayerCacheLocation.System -> context.cacheDir
+                    ExoPlayerCacheLocation.Private -> context.filesDir
+                }.resolve( CACHE_DIRNAME )
+        }
+
+        // Ensure this location exists
+        cacheDir.mkdirs()
+
+        return SimpleCache( cacheDir, cacheEvictor, getDatabaseProvider(context) )
     }
 
     @Synchronized
-    fun getDownloadSimpleCache(context: Context): Cache {
-        if (!MyDownloadHelper::downloadCache.isInitialized) {
-            val downloadContentDirectory =
-                File(getDownloadDirectory(context), DOWNLOAD_CONTENT_DIRECTORY)
-            downloadCache = SimpleCache(
-                downloadContentDirectory,
-                NoOpCacheEvictor(),
-                getDatabaseProvider(context)
-            )
-        }
+    fun getDownloadCache( context: Context ): Cache {
+        if ( !MyDownloadHelper::downloadCache.isInitialized )
+            downloadCache = initDownloadCache( context )
+
         return downloadCache
     }
 
@@ -207,20 +227,6 @@ object MyDownloadHelper {
             StandaloneDatabaseProvider(context)
         return databaseProvider
     }
-
-    @Synchronized
-    fun getDownloadDirectory(context: Context): File {
-        if (!MyDownloadHelper::downloadDirectory.isInitialized) {
-            downloadDirectory = context.getExternalFilesDir(null) ?: context.filesDir
-            downloadDirectory.resolve(DOWNLOAD_CONTENT_DIRECTORY).also { directory ->
-                if (directory.exists()) return@also
-                directory.mkdir()
-            }
-            //Log.d("downloadMedia", downloadDirectory.path)
-        }
-        return downloadDirectory
-    }
-
 
     fun addDownload(context: Context, mediaItem: MediaItem) {
         if (mediaItem.isLocal) return

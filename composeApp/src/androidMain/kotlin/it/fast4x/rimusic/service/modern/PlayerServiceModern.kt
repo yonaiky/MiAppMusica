@@ -35,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.text.isDigitsOnly
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.AuxEffectInfo
 import androidx.media3.common.C
@@ -206,6 +205,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.createTempDirectory
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import android.os.Binder as AndroidBinder
@@ -232,8 +232,8 @@ class PlayerServiceModern : MediaLibraryService(),
     private var mediaLibrarySessionCallback: MediaLibrarySessionCallback =
         MediaLibrarySessionCallback(this, Database, MyDownloadHelper)
     lateinit var player: ExoPlayer
-    lateinit var cache: SimpleCache
-    lateinit var downloadCache: SimpleCache
+    lateinit var cache: Cache
+    lateinit var downloadCache: Cache
     private lateinit var audioVolumeObserver: AudioVolumeObserver
     private lateinit var bitmapProvider: BitmapProvider
     private var volumeNormalizationJob: Job? = null
@@ -349,47 +349,39 @@ class PlayerServiceModern : MediaLibraryService(),
         showLikeButton = preferences.getBoolean(showLikeButtonBackgroundPlayerKey, true)
         showDownloadButton = preferences.getBoolean(showDownloadButtonBackgroundPlayerKey, true)
 
-        val exoPlayerCustomCache = preferences.getInt(exoPlayerCustomCacheKey, 32) * 1000 * 1000L
+        val cacheSize = preferences.getEnum( exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`2GB` )
 
-        val cacheEvictor = when (val size =
-            preferences.getEnum(exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`2GB`)) {
+        val cacheEvictor = when( cacheSize ) {
             ExoPlayerDiskCacheMaxSize.Unlimited -> NoOpCacheEvictor()
-            ExoPlayerDiskCacheMaxSize.Custom -> LeastRecentlyUsedCacheEvictor(exoPlayerCustomCache)
-            else -> LeastRecentlyUsedCacheEvictor(size.bytes)
-        }
 
-        //val cacheEvictor = NoOpCacheEvictor()
-        val exoPlayerCacheLocation = preferences.getEnum(
-            exoPlayerCacheLocationKey, ExoPlayerCacheLocation.System
-        )
-        val directoryLocation =
-            if (exoPlayerCacheLocation == ExoPlayerCacheLocation.Private) filesDir else cacheDir
-
-        var cacheDirName = "rimusic_cache"
-
-        val cacheSize =
-            preferences.getEnum(exoPlayerDiskCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`2GB`)
-
-        if (cacheSize == ExoPlayerDiskCacheMaxSize.Disabled) cacheDirName = "rimusic_no_cache"
-
-        val directory = directoryLocation.resolve(cacheDirName).also { dir ->
-            if (dir.exists()) return@also
-
-            dir.mkdir()
-
-            directoryLocation.listFiles()?.forEach { file ->
-                if (file.isDirectory && file.name.length == 1 && file.name.isDigitsOnly() || file.extension == "uid") {
-                    if (!file.renameTo(dir.resolve(file.name))) {
-                        file.deleteRecursively()
-                    }
-                }
+            ExoPlayerDiskCacheMaxSize.Custom    -> {
+                val customCacheSize = preferences.getInt( exoPlayerCustomCacheKey, 32 ) * 1000 * 1000L
+                LeastRecentlyUsedCacheEvictor( customCacheSize )
             }
 
-            filesDir.resolve("coil").deleteRecursively()
+            else                                -> LeastRecentlyUsedCacheEvictor( cacheSize.bytes )
         }
 
-        cache = SimpleCache(directory, cacheEvictor, StandaloneDatabaseProvider(this))
-        downloadCache = MyDownloadHelper.getDownloadSimpleCache(applicationContext) as SimpleCache
+        val cacheDir = when( cacheSize ) {
+            // Temporary directory deletes itself after close
+            // It means songs remain on device as long as it's open
+            ExoPlayerDiskCacheMaxSize.Disabled -> createTempDirectory( CACHE_DIRNAME ).toFile()
+
+            else                               ->
+                // Looks a bit ugly but what it does is
+                // check location set by user and return
+                // appropriate path with [CACHE_DIRNAME] appended.
+                when( preferences.getEnum( exoPlayerCacheLocationKey, ExoPlayerCacheLocation.System ) ) {
+                    ExoPlayerCacheLocation.System -> cacheDir
+                    ExoPlayerCacheLocation.Private -> filesDir
+                }.resolve( CACHE_DIRNAME )
+        }
+
+        // Ensure this location exists
+        cacheDir.mkdirs()
+
+        cache = SimpleCache( cacheDir, cacheEvictor, StandaloneDatabaseProvider(this) )
+        downloadCache = MyDownloadHelper.getDownloadCache( applicationContext )
 
 
         player = ExoPlayer.Builder(this)
@@ -1911,6 +1903,7 @@ class PlayerServiceModern : MediaLibraryService(),
         const val PLAYLIST = "playlist"
         const val SEARCHED = "searched"
 
+        const val CACHE_DIRNAME = "exo_cache"
     }
 
 }
