@@ -72,7 +72,6 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(libs.navigation)
             implementation(libs.media3.session)
             implementation(libs.kotlin.coroutines.guava)
             implementation(libs.newpipe.extractor)
