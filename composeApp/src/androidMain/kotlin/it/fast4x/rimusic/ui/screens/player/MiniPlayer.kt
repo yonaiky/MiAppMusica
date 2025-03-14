@@ -48,7 +48,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -61,7 +60,6 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
-import coil.compose.AsyncImage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -78,7 +76,6 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
-import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.backgroundProgressKey
@@ -99,11 +96,11 @@ import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
-import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.utils.Toaster
 import kotlin.math.absoluteValue
 
@@ -328,16 +325,12 @@ fun MiniPlayer(
 
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .height(Dimensions.miniPlayerHeight)
+                modifier = Modifier.height( Dimensions.miniPlayerHeight )
             ) {
-                AsyncImage(
-                    model = mediaItem.mediaMetadata.artworkUri.thumbnail(Dimensions.thumbnails.song.px),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(thumbnailShape())
-                        .size(48.dp)
+                ImageCacheFactory.Thumbnail(
+                    thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString(),
+                    modifier = Modifier.clip( thumbnailShape() )
+                                       .size( 48.dp )
                 )
                 NowPlayingSongIndicator(mediaItem.mediaId, binder.player)
             }
