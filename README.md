@@ -7,51 +7,47 @@
 
 # ❗ IMPORTANT
 
-Since `January 5th 2025`, this project is split into 2 parts, **_upstream_** and **_improvised_**.
+> Updated March 14 2025
 
-### ⇄ What's the different
+The app is now officially released under new ID. Therefore, fresh installation is required.
 
-| Upstream               | Improvised                   |
-|------------------------|------------------------------|
-| Bleeding-edge features | Optimized for performance    |
-| Contains minor changes | Contains significant changes |
-| Fast to deliver        | Takes a while to implement   |
+Fortunately, @knighthat has introduced migration system to help you transfer data from old Kreate
+to new app effortlessly.
 
-## 📖 What is KBuild
-
-KBuild started as an unstable branch of RiMusic with changes made before pushing to upstream branch.
-
-After some time, changes are too many to be able to merge into upstream, causing diversion between
-branches. This is extremely hard to maintain since I (most likely) have to re-write changes if there's some major
-changes happen in the upstream branch. 
-
-Therefore, **_improvised_** flavor is introduced. This will help me keep track of upstream branch while
-letting me port some (or most) of new changes to legacy _kbuild_ flavor.
+For more details, check out [this article](https://kreate.knighthat.me/usr/how-to-migrate).
 
 ## ✨ Features
 - **Multilingual:** English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions for other languages are welcome
+- Friendly designs
 - UI Mode, swtich from RiMusic to classic ViMusic style, viceversa
 - Auto cache songs for offline playback with a custom cache size
 - Download songs or entire playlists for offline playback (not cache) 
 - Background playback
 - Listening statistics
 - Audio visualizer on player with many type of effects.
-  - THIS FEATURE REQUIRES MIC PERMISSION, ONLY AVAILABLE IF ACTIVATED FROM SETTINGS. [Full list of permissions](https://github.com/fast4x/RiMusic/wiki/FAQs#what-permissions-are-used)
+  > THIS FEATURE REQUIRES MIC PERMISSION, ONLY AVAILABLE IF ACTIVATED FROM SETTINGS. Full list of permissions (available soon)
 - News, mood, musical genres, new albums from favourite artists
-- Import/Export online, RiMusic playlists, can share with friend all RiMusic playlists
+- Import/Export online, RiMusic playlists, can be shared with friends
 - Fetch, display, edit, translate synchronized, or not, songs lyrics
 - Customizable themes
 - Sleep timer with customizable time
 - Audio control: volume app, device, playback speed, pitch, normalization, skip silence
-- Android Auto, Android TV, YT Video support
+- Support for Android Auto, Android TV, and YouTube video
 - Widgets (experimental)
 - Check for Updates, which can be enabled or disabled in settings
+- Export cached/downloaded media
+- Export settings
+- Weekly update
+- Plays music even with no internet connection 
 
 ## 📷 Screenshots
 <div align="center">
-  <img alt="screenshot 1" src="./assets/screenshots/1.webp" width="20%" />
-  <img alt="screenshot 2" src="./assets/screenshots/2.webp" width="20%" />
-  <img alt="screenshot 3" src="./assets/screenshots/3.webp" width="20%" />
+  <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" />
+  <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" />
+  <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" />
+  <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" />
+  <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" />
+  <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" />
 </div>
 
 ## 🌐 Languages available
