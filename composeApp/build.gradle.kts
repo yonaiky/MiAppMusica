@@ -173,6 +173,15 @@ android {
             )
         }
 
+        // Specifically tailored to F-Droid build
+        // inherited from minified build type
+        release {
+            initWith( maybeCreate("minified") )
+
+            // App's properties
+            versionNameSuffix = "-fdroid"
+        }
+
         /**
          * For convenience only.
          * "Forkers" want to change app name across builds
