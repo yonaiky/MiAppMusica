@@ -8,6 +8,6 @@ enum class ExoPlayerCacheLocation(
     @field:StringRes override val textId: Int
 ): TextView {
 
-    System( R.string.cache_location_private ),
-    Private( R.string.cache_location_system );
+    System( R.string.cache_location_system ),
+    Private( R.string.cache_location_private );
 }
