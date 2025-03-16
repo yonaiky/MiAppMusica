@@ -308,7 +308,7 @@ fun GeneralSettings(
         if( search.input.isBlank() || stringResource(R.string.update).contains( search.input, true ) )
             Updater.SettingEntry()
 
-        //SettingsGroupSpacer()
+        SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.languages))
 
         SettingsDescription(text = stringResource(R.string.system_language)+": $systemLocale")

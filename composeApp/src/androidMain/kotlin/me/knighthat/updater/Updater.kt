@@ -43,6 +43,8 @@ object Updater {
     private val JSON = Json {
         ignoreUnknownKeys = true
     }
+    private val isUpdatable: Boolean =
+        !BuildConfig.DEBUG && !BuildConfig.VERSION_NAME.endsWith("fdroid", true )
 
     lateinit var build: GithubRelease.Build
 
@@ -50,11 +52,16 @@ object Updater {
         val appName = BuildConfig.APP_NAME
         val buildType = BuildConfig.BUILD_TYPE
 
+        /*
+           IDE will complain that is condition is always true
+           but because it only sees debug, it assumes the results
+           of this evaluation. DO NOT remove this!
+         */
         if( buildType != "full" && buildType != "minified" )
             throw IllegalStateException( "Unknown build type ${BuildConfig.BUILD_TYPE}" )
 
-        // Get the first build that has name matches 'RiMusic-<flavor>-<buildType>.apk'
-        // e.g. Upstream full version will have name 'RiMusic-upstream-full.apk'
+        // Get the first build that has name matches 'Kreate-<buildType>.apk'
+        // e.g. Full version will have name 'Kreate-full.apk'
         val fileName = "$appName-$buildType.apk"
         return assets.fastFirstOrNull {    // Experimental, revert to firstOrNull if needed
             it.name == fileName
@@ -87,6 +94,9 @@ object Updater {
     fun checkForUpdate(
         isForced: Boolean = false
     ) = CoroutineScope( Dispatchers.IO ).launch {
+        NewUpdateAvailableDialog.isCancelled = !isUpdatable
+        if( !isUpdatable ) return@launch
+
         try {
             if(!::build.isInitialized || isForced)
                 fetchUpdate()
@@ -122,6 +132,8 @@ object Updater {
     @Composable
     fun SettingEntry() {
         var checkUpdateState by rememberPreference( checkUpdateStateKey, CheckUpdateState.Disabled )
+        if( !isUpdatable )
+            checkUpdateState = CheckUpdateState.Disabled
 
         Row( Modifier.fillMaxWidth() ) {
             EnumValueSelectorSettingsEntry(
@@ -129,11 +141,12 @@ object Updater {
                 selectedValue = checkUpdateState,
                 onValueSelected = { checkUpdateState = it },
                 valueText = { it.text },
+                isEnabled = isUpdatable,
                 modifier = Modifier.weight( 1f )
             )
 
             AnimatedVisibility(
-                visible = checkUpdateState != CheckUpdateState.Disabled,
+                visible = checkUpdateState != CheckUpdateState.Disabled && isUpdatable,
                 // Slide in from right + fade in effect.
                 enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(initialAlpha = 0f),
                 // Slide out from left + fade out effect.
@@ -147,6 +160,13 @@ object Updater {
             }
         }
 
-        SettingsDescription( stringResource( R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup  )  )
+        SettingsDescription(
+            stringResource(
+                if( isUpdatable )
+                    R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup
+                else
+                    R.string.description_app_not_installed_by_apk
+            )
+        )
     }
 }
