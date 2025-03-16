@@ -659,22 +659,18 @@ interface Database {
     fun fakeSongsList(): Flow<List<Song>>
 
     @Query("""
-        SELECT Artist.*
-        FROM Artist
-        JOIN SongArtistMap ON SongArtistMap.artistId = Artist.id
-        JOIN Song ON Song.id = SongArtistMap.songId
-        WHERE Song.id = :songId
+        SELECT SongArtistMap.artistId
+        FROM SongArtistMap
+        WHERE SongArtistMap.songId = :songId
     """)
-    fun findArtistOfSong( songId: String ): Flow<Artist?>
+    fun findArtistIdOfSong( songId: String ): Flow<String?>
 
     @Query("""
-        SELECT Album.*
-        FROM Album
-        JOIN SongAlbumMap ON SongAlbumMap.albumId = Album.id
-        JOIN Song ON Song.id = SongAlbumMap.songId = Song.id
-        WHERE Song.id = :songId
+        SELECT SongAlbumMap.albumId
+        FROM SongAlbumMap
+        WHERE SongAlbumMap.songId = :songId
     """)
-    fun findAlbumOfSong( songId: String ): Flow<Album?>
+    fun findAlbumIdOfSong( songId: String ): Flow<String?>
 
     @Transaction
     //@Query("SELECT Playlist.*, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = Playlist.id) as songCount " +
@@ -2438,8 +2434,11 @@ interface Database {
     """)
     fun insertSongToPlaylist( songId: String, playlistId: Long )
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(songArtistMap: SongArtistMap): Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(songAlbumMap: SongAlbumMap): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(song: Song): Long

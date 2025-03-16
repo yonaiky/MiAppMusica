@@ -13,6 +13,7 @@ import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +44,7 @@ class GoToAlbum private constructor(
         val song = getSong()
 
         CoroutineScope( Dispatchers.IO ).future {
-            var result = Database.findAlbumOfSong( song.id ).firstOrNull()
+            var result = Database.findAlbumIdOfSong( song.id ).firstOrNull()
 
             /*
              * If album isn't stored inside database, attempt to fetch
@@ -107,7 +108,13 @@ class GoToAlbum private constructor(
                                          ?.album
                                          ?.endpoint
                                          ?.browseId
-                                         ?.let { result = Album(it) }
+                                         ?.let {
+                                             result = it
+                                             Database.asyncTransaction {
+                                                 insert( Album(it) )
+                                                 insert( SongAlbumMap(song.id, it, null) )
+                                             }
+                                         }
                              }
                              ?.onFailure {
                                  Timber.tag("go_to_album").e(it)
@@ -117,8 +124,8 @@ class GoToAlbum private constructor(
             }
 
             result
-        }.get()?.let {
-            navController.navigate(route = "${NavRoutes.album.name}/${it.id}")
+        }.get()?.let { albumId ->
+            navController.navigate(route = "${NavRoutes.album.name}/$albumId")
         }
     }
 }

@@ -9,6 +9,7 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +41,7 @@ class GoToArtist private constructor(
         val song = getSong()
 
         CoroutineScope( Dispatchers.IO ).future {
-            var result = Database.findArtistOfSong( song.id ).firstOrNull()
+            var result = Database.findArtistIdOfSong( song.id ).firstOrNull()
 
             // If artist isn't stored inside database, attempt to fetch
             if( result == null ) {
@@ -51,7 +52,13 @@ class GoToArtist private constructor(
                              response.second
                                      ?.videoDetails
                                      ?.channelId
-                                     ?.let { result = Artist(it) }
+                                     ?.let {
+                                         result = it
+                                         Database.asyncTransaction {
+                                             insert( Artist(it) )
+                                             insert( SongArtistMap(song.id, it) )
+                                         }
+                                     }
                          }.onFailure {
                              Timber.tag("go_to_artist").e(it)
                              Toaster.e( R.string.failed_to_fetch_artist )
@@ -59,8 +66,8 @@ class GoToArtist private constructor(
             }
 
             result
-        }.get()?.let {
-            navController.navigate(route = "${NavRoutes.artist.name}/${it.id}")
+        }.get()?.let { artistId ->
+            navController.navigate(route = "${NavRoutes.artist.name}/$artistId")
         }
     }
 }
