@@ -123,7 +123,7 @@ fun ArtistScreenModern(
                 online.description?.let { description = it }
 
                 Database.asyncTransaction {
-                    upsert(Artist(
+                    artistTable.upsert(Artist(
                         id = browseId,
                         name =  getUpdated( artist?.name, online.artist.title ),
                         thumbnailUrl = getUpdated( artist?.thumbnailUrl, online.artist.thumbnail?.url ),
@@ -137,21 +137,20 @@ fun ArtistScreenModern(
                           ?.items
                           ?.reversed()        // Albums from YTM are sorted from latest to oldest
                           ?.map { (it as Innertube.SongItem).asSong }
-                          ?.onEach( this::upsert )
+                          ?.also( songTable::upsert )
                           ?.map { SongArtistMap( it.id, browseId ) }
-                          ?.forEach( this::upsert )
+                          ?.also( songArtistMapTable::upsert )
 
                     online.sections
-                        .firstOrNull { it.title.startsWith( "Albums", true ) }
-                        ?.items
-                        ?.reversed()        // Albums from YTM are sorted from latest to oldest
-                        ?.map { (it as Innertube.AlbumItem).asAlbum }
-                        ?.also {
-                            Timber.tag("album_screen").d("Online albums size: ${it.size}")
-                            albums = it
-                        }
-                        ?.forEach( this::upsert )
-
+                          .firstOrNull { it.title.startsWith( "Albums", true ) }
+                          ?.items
+                          ?.reversed()        // Albums from YTM are sorted from latest to oldest
+                          ?.map { (it as Innertube.AlbumItem).asAlbum }
+                          ?.also {
+                              Timber.tag("album_screen").d("Online albums size: ${it.size}")
+                              albums = it
+                              albumTable.upsert( it )
+                          }
                 }
             }
     }

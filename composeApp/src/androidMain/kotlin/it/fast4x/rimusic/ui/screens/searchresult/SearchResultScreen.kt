@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.R
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -37,7 +38,6 @@ import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.kreate.android.R
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.SongAlbumMap
@@ -355,42 +355,35 @@ fun SearchResultScreen(
 
                                                                 println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
 
-                                                                Database.upsert(
+                                                                Database.albumTable.upsert(
                                                                     Album(
                                                                         id = album.key,
                                                                         title = currentAlbumPage.title,
                                                                         thumbnailUrl = currentAlbumPage.thumbnail?.url,
                                                                         year = currentAlbumPage.year,
-                                                                        authorsText = currentAlbumPage.authors
-                                                                            ?.joinToString(
-                                                                                ""
-                                                                            ) {
-                                                                                it.name
-                                                                                    ?: ""
-                                                                            },
+                                                                        authorsText = currentAlbumPage.authors?.joinToString( "" ) { it.name ?: "" },
                                                                         shareUrl = currentAlbumPage.url,
                                                                         timestamp = System.currentTimeMillis(),
                                                                         bookmarkedAt = System.currentTimeMillis()
-                                                                    ),
-                                                                    currentAlbumPage
-                                                                        .songsPage
-                                                                        ?.items
-                                                                        ?.map(
-                                                                            Innertube.SongItem::asMediaItem
-                                                                        )
-                                                                        ?.onEach(
-                                                                            Database::insert
-                                                                        )
-                                                                        ?.mapIndexed { position, mediaItem ->
-                                                                            SongAlbumMap(
-                                                                                songId = mediaItem.mediaId,
-                                                                                albumId = album.key,
-                                                                                position = position
-                                                                            )
-                                                                        }
-                                                                        ?: emptyList()
+                                                                    )
                                                                 )
 
+                                                                currentAlbumPage.songsPage
+                                                                                ?.items
+                                                                                ?.map(
+                                                                                    Innertube.SongItem::asMediaItem
+                                                                                )
+                                                                                ?.onEach(
+                                                                                    Database::insert
+                                                                                )
+                                                                                ?.mapIndexed { position, mediaItem ->
+                                                                                    SongAlbumMap(
+                                                                                        songId = mediaItem.mediaId,
+                                                                                        albumId = album.key,
+                                                                                        position = position
+                                                                                    )
+                                                                                }
+                                                                                ?.also( Database.songAlbumMapTable::upsert )
                                                             }
                                                             ?.onFailure {
                                                                 println("mediaItem error searchResultScreen album ${it.stackTraceToString()}")

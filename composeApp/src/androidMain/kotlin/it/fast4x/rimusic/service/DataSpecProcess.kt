@@ -3,19 +3,15 @@ package it.fast4x.rimusic.service
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
-import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSpec
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.models.Format
-import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.service.modern.getAvancedInnerTubeStream
 import it.fast4x.rimusic.service.modern.getInnerTubeFormatUrl
 import it.fast4x.rimusic.service.modern.getInnerTubeStream
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import me.knighthat.piped.Piped
 import me.knighthat.piped.request.player
 
@@ -34,7 +30,7 @@ private suspend fun getPipedFormatUrl(
                 //println("PlayerService MyDownloadHelper DataSpecProcess getPipedFormatUrl before upsert format $it")
                 Database.asyncTransaction {
                     if ( songExist(videoId) > 0 )
-                        upsert(
+                        formatTable.upsert(
                             Format(
                                 songId = videoId,
                                 itag = it?.itag?.toInt(),

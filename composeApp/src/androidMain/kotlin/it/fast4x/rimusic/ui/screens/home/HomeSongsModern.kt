@@ -359,7 +359,7 @@ fun HomeSongsModern(
                                         }
 
                                         if (song != null) {
-                                            Database.upsert(song)
+                                            songTable.upsert( song )
                                             Database.like(
                                                 song.id,
                                                 System.currentTimeMillis()

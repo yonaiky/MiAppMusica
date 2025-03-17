@@ -123,7 +123,7 @@ fun AlbumScreen(
                                                          ?.fastJoinToString( "" )
 
                    Database.asyncTransaction {
-                       upsert(Album(
+                       albumTable.upsert(Album(
                            id = browseId,
                            title = getUpdated( album?.title, onlineAlbum.title ),
                            thumbnailUrl = getUpdated( album?.thumbnailUrl, onlineAlbum.thumbnail?.url ),
@@ -144,7 +144,7 @@ fun AlbumScreen(
                                      position = position
                                  )
                              }
-                             .forEach( this::upsert )
+                             .forEach( songAlbumMapTable::upsert )
                    }
 
                    alternatives = online.otherVersions

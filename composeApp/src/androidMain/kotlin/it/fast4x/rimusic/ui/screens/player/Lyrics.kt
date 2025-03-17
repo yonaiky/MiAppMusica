@@ -493,7 +493,7 @@ fun Lyrics(
                                         }
 
                                 isError = false
-                                Database.upsert(
+                                Database.lyricsTable.upsert(
                                     Lyrics(
                                         songId = mediaId,
                                         fixed = currentLyrics?.fixed,
@@ -539,7 +539,7 @@ fun Lyrics(
                                                 }
 
                                         isError = false
-                                        Database.upsert(
+                                        Database.lyricsTable.upsert(
                                             Lyrics(
                                                 songId = mediaId,
                                                 fixed = currentLyrics?.fixed,
@@ -573,7 +573,7 @@ fun Lyrics(
                         kotlin.runCatching {
                             Innertube.lyrics(NextBody(videoId = mediaId))
                                 ?.onSuccess { fixedLyrics ->
-                                    Database.upsert(
+                                    Database.lyricsTable.upsert(
                                         Lyrics(
                                             songId = mediaId,
                                             fixed = fixedLyrics ?: "",
@@ -607,7 +607,7 @@ fun Lyrics(
                 setValue = {
                     Database.asyncTransaction {
                         ensureSongInserted()
-                        upsert(
+                        lyricsTable.upsert(
                             Lyrics(
                                 songId = mediaId,
                                 fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else it,
@@ -684,7 +684,7 @@ fun Lyrics(
                             onClick = {
                                 menuState.hide()
                                 Database.asyncTransaction {
-                                    upsert(
+                                    lyricsTable.upsert(
                                         Lyrics(
                                             songId = mediaId,
                                             fixed = lyrics?.fixed,
@@ -2398,7 +2398,7 @@ fun Lyrics(
                                             onClick = {
                                                 menuState.hide()
                                                 Database.asyncTransaction {
-                                                    upsert(
+                                                    lyricsTable.upsert(
                                                         Lyrics(
                                                             songId = mediaId,
                                                             fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else null,

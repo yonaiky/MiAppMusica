@@ -44,7 +44,7 @@ fun UpdateYoutubeArtist(browseId: String) {
                             ?.onSuccess { currentArtistPage ->
                                 artistPage = currentArtistPage
 
-                                Database.upsert(
+                                Database.artistTable.upsert(
                                     Artist(
                                         id = browseId,
                                         name = currentArtistPage.name,
@@ -82,31 +82,31 @@ fun UpdateYoutubeAlbum (browseId: String) {
 
                                 Database.clearAlbum(browseId)
 
-                                Database.upsert(
+                                Database.albumTable.upsert(
                                     Album(
                                         id = browseId,
-                                        title = currentAlbumPage?.title,
-                                        thumbnailUrl = currentAlbumPage?.thumbnail?.url,
-                                        year = currentAlbumPage?.year,
-                                        authorsText = currentAlbumPage?.authors
+                                        title = currentAlbumPage.title,
+                                        thumbnailUrl = currentAlbumPage.thumbnail?.url,
+                                        year = currentAlbumPage.year,
+                                        authorsText = currentAlbumPage.authors
                                             ?.joinToString("") { it.name ?: "" },
-                                        shareUrl = currentAlbumPage?.url,
+                                        shareUrl = currentAlbumPage.url,
                                         timestamp = System.currentTimeMillis(),
                                         bookmarkedAt = album?.bookmarkedAt
-                                    ),
-                                    currentAlbumPage
-                                        ?.songsPage
-                                        ?.items
-                                        ?.map(Innertube.SongItem::asMediaItem)
-                                        ?.onEach(Database::insert)
-                                        ?.mapIndexed { position, mediaItem ->
-                                            SongAlbumMap(
-                                                songId = mediaItem.mediaId,
-                                                albumId = browseId,
-                                                position = position
-                                            )
-                                        } ?: emptyList()
+                                    )
                                 )
+                                currentAlbumPage.songsPage
+                                                ?.items
+                                                ?.map(Innertube.SongItem::asMediaItem)
+                                                ?.onEach(Database::insert)
+                                                ?.mapIndexed { position, mediaItem ->
+                                                    SongAlbumMap(
+                                                        songId = mediaItem.mediaId,
+                                                        albumId = browseId,
+                                                        position = position
+                                                    )
+                                                }
+                                               ?.also( Database.songAlbumMapTable::upsert )
                             }
                     }
 

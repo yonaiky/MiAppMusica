@@ -69,7 +69,7 @@ class ImportSongsFromCSV(
                     // Skip this song if it doesn't have id
                     if( it.songId.isBlank() ) return@fastForEach
 
-                    insert(     // Use [insert] because it'll ignore if song exists
+                    this.songTable.upsert(      // Existing songs should be replaced by the one defined in CSV file, else, insert it.
                         Song(
                             id = it.songId,
                             title = it.title,
@@ -82,7 +82,7 @@ class ImportSongsFromCSV(
 
                     // '-1' playlistId indicates song doesn't belong to any playlist
                     if( it.playlistId != -1L && it.playlistName.isNotBlank() ) {
-                        insert(     // Use [insert] because it'll ignore if song exists
+                        playlistTable.upsert(       // Existing playlists should be replaced by the one defined in CSV file, else, insert it.
                             Playlist( it.playlistId, it.playlistName )
                         )
 

@@ -25,7 +25,6 @@ import androidx.room.RoomWarnings
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import androidx.room.Upsert
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
@@ -2490,30 +2489,6 @@ interface Database {
             }
         }
     }
-
-    @Upsert
-    fun upsert(lyrics: Lyrics)
-
-    @Upsert
-    fun upsert(album: Album, songAlbumMaps: List<SongAlbumMap>)
-
-    @Upsert
-    fun upsert( album: Album )
-
-    @Upsert
-    fun upsert(songAlbumMap: SongAlbumMap)
-
-    @Upsert
-    fun upsert( songArtistMap: SongArtistMap )
-
-    @Upsert
-    fun upsert(artist: Artist)
-
-    @Upsert
-    fun upsert(format: Format)
-
-    @Upsert
-    fun upsert(song: Song)
 
     @Delete
     fun delete(searchQuery: SearchQuery)

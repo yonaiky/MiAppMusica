@@ -3,7 +3,6 @@ package it.fast4x.rimusic.service.modern
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
-import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
@@ -27,8 +26,6 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoginEnabled
 import it.fast4x.rimusic.useYtLoginOnlyForBrowse
 import it.fast4x.rimusic.utils.getSignatureTimestampOrNull
 import it.fast4x.rimusic.utils.getStreamUrl
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import me.knighthat.invidious.Invidious
 import me.knighthat.invidious.request.player
 import me.knighthat.piped.Piped
@@ -178,7 +175,7 @@ suspend fun getAvancedInnerTubeStream(
                             //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                             Database.asyncTransaction {
                                 if (songExist(videoId) > 0)
-                                    upsert(
+                                    formatTable.upsert(
                                         Format(
                                             songId = videoId,
                                             itag = it?.itag?.toInt(),
@@ -272,7 +269,7 @@ suspend fun getInnerTubeStream(
                             //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                             Database.asyncTransaction {
                                 if (songExist(videoId) > 0)
-                                    upsert(
+                                    formatTable.upsert(
                                         Format(
                                             songId = videoId,
                                             itag = it?.itag?.toInt(),
@@ -374,7 +371,7 @@ suspend fun getInnerTubeFormatUrl(
                         //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                         Database.asyncTransaction {
                             if (songExist(videoId) > 0)
-                                upsert(
+                                formatTable.upsert(
                                     Format(
                                         songId = videoId,
                                         itag = it?.itag?.toInt(),
@@ -429,7 +426,7 @@ private suspend fun getPipedFormatUrl(
                 //println("PlayerService MyDownloadHelper DataSpecProcess getPipedFormatUrl before upsert format $it")
                 Database.asyncTransaction {
                     if ( songExist(videoId) > 0 )
-                        upsert(
+                        formatTable.upsert(
                             Format(
                                 songId = videoId,
                                 itag = it?.itag?.toInt(),
@@ -467,7 +464,7 @@ private suspend fun getInvidiousFormatUrl(
                 //println("PlayerService MyDownloadHelper DataSpecProcess getInvidiousFormatUrl before upsert format $it")
                 Database.asyncTransaction {
                     if( songExist(videoId) > 0 )
-                        upsert(
+                        formatTable.upsert(
                             Format(
                                 songId = videoId,
                                 itag = it?.itag?.toInt(),

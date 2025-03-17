@@ -949,7 +949,7 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                                 ).milliseconds,
                                 album = it.albumTitle
                             )?.onSuccess { lyrics ->
-                                Database.upsert(
+                                Database.lyricsTable.upsert(
                                     Lyrics(
                                         songId = it.asMediaItem.mediaId,
                                         fixed = currentLyrics?.fixed,
@@ -969,7 +969,7 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                                                 ?: ""
                                         ) / 1000
                                     )?.onSuccess { lyrics ->
-                                        Database.upsert(
+                                        Database.lyricsTable.upsert(
                                             Lyrics(
                                                 songId = it.asMediaItem.mediaId,
                                                 fixed = currentLyrics?.fixed,

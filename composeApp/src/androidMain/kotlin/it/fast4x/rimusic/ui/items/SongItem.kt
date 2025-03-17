@@ -39,10 +39,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.compose.rememberNavController
+import app.kreate.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.kreate.android.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteName
@@ -74,9 +74,7 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shimmerEffect
 import it.fast4x.rimusic.utils.thumbnail
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.utils.Toaster
@@ -101,8 +99,8 @@ fun SongItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         onDownloadClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Database.upsert(song.asSong)
+            Database.asyncTransaction {
+                songTable.upsert( song.asSong )
             }
             onDownloadClick()
         },
@@ -138,8 +136,8 @@ fun SongItem(
         trailingContent = trailingContent,
         modifier = modifier,
         onDownloadClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Database.upsert(song.asSong)
+            Database.asyncTransaction {
+                songTable.upsert( song.asSong )
             }
             onDownloadClick()
         },
@@ -174,8 +172,8 @@ fun SongItem(
         trailingContent = trailingContent,
         modifier = modifier,
         onDownloadClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                Database.upsert(song)
+            Database.asyncTransaction {
+                songTable.upsert( song )
             }
             onDownloadClick()
         },
