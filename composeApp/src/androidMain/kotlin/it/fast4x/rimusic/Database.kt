@@ -1,34 +1,21 @@
 package it.fast4x.rimusic
 
-import android.content.ContentValues
-import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
-import android.os.Parcel
 import androidx.compose.ui.util.fastZip
-import androidx.core.database.getFloatOrNull
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
 import androidx.room.AutoMigration
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.DeleteColumn
-import androidx.room.DeleteTable
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RawQuery
-import androidx.room.RenameColumn
-import androidx.room.RenameTable
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.RoomWarnings
 import androidx.room.Transaction
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import androidx.room.migration.AutoMigrationSpec
-import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
-import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.ArtistSortBy
@@ -61,6 +48,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import me.knighthat.database.AlbumTable
 import me.knighthat.database.ArtistTable
+import me.knighthat.database.Converters
 import me.knighthat.database.EventTable
 import me.knighthat.database.FormatTable
 import me.knighthat.database.LyricsTable
@@ -71,6 +59,19 @@ import me.knighthat.database.SongAlbumMapTable
 import me.knighthat.database.SongArtistMapTable
 import me.knighthat.database.SongPlaylistMapTable
 import me.knighthat.database.SongTable
+import me.knighthat.database.migration.From10To11Migration
+import me.knighthat.database.migration.From11To12Migration
+import me.knighthat.database.migration.From14To15Migration
+import me.knighthat.database.migration.From20To21Migration
+import me.knighthat.database.migration.From21To22Migration
+import me.knighthat.database.migration.From22To23Migration
+import me.knighthat.database.migration.From23To24Migration
+import me.knighthat.database.migration.From24To25Migration
+import me.knighthat.database.migration.From25To26Migration
+import me.knighthat.database.migration.From26To27Migration
+import me.knighthat.database.migration.From3To4Migration
+import me.knighthat.database.migration.From7To8Migration
+import me.knighthat.database.migration.From8To9Migration
 import org.intellij.lang.annotations.MagicConstant
 
 @Dao
@@ -2586,13 +2587,13 @@ interface Database {
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
-        AutoMigration(from = 3, to = 4, spec = DatabaseInitializer.From3To4Migration::class),
+        AutoMigration(from = 3, to = 4, spec = From3To4Migration::class),
         AutoMigration(from = 4, to = 5),
         AutoMigration(from = 5, to = 6),
         AutoMigration(from = 6, to = 7),
-        AutoMigration(from = 7, to = 8, spec = DatabaseInitializer.From7To8Migration::class),
+        AutoMigration(from = 7, to = 8, spec = From7To8Migration::class),
         AutoMigration(from = 9, to = 10),
-        AutoMigration(from = 11, to = 12, spec = DatabaseInitializer.From11To12Migration::class),
+        AutoMigration(from = 11, to = 12, spec = From11To12Migration::class),
         AutoMigration(from = 12, to = 13),
         AutoMigration(from = 13, to = 14),
         AutoMigration(from = 15, to = 16),
@@ -2600,8 +2601,8 @@ interface Database {
         AutoMigration(from = 17, to = 18),
         AutoMigration(from = 18, to = 19),
         AutoMigration(from = 19, to = 20),
-        AutoMigration(from = 20, to = 21, spec = DatabaseInitializer.From20To21Migration::class),
-        AutoMigration(from = 21, to = 22, spec = DatabaseInitializer.From21To22Migration::class),
+        AutoMigration(from = 20, to = 21, spec = From20To21Migration::class),
+        AutoMigration(from = 21, to = 22, spec = From21To22Migration::class),
     ],
 )
 @TypeConverters(Converters::class)
@@ -2645,250 +2646,6 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
 
         fun reload() = synchronized(this) {
             Instance = getDatabase()
-        }
-    }
-
-    @DeleteTable.Entries(DeleteTable(tableName = "QueuedMediaItem"))
-    class From3To4Migration : AutoMigrationSpec
-
-    @RenameColumn.Entries(RenameColumn("Song", "albumInfoId", "albumId"))
-    class From7To8Migration : AutoMigrationSpec
-
-    class From8To9Migration : Migration(8, 9) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.query(SimpleSQLiteQuery("SELECT DISTINCT browseId, text, Info.id FROM Info JOIN Song ON Info.id = Song.albumId;"))
-                .use { cursor ->
-                    val albumValues = ContentValues(2)
-                    while (cursor.moveToNext()) {
-                        albumValues.put("id", cursor.getString(0))
-                        albumValues.put("title", cursor.getString(1))
-                        db.insert("Album", CONFLICT_IGNORE, albumValues)
-
-                        db.execSQL(
-                            "UPDATE Song SET albumId = '${cursor.getString(0)}' WHERE albumId = ${
-                                cursor.getLong(
-                                    2
-                                )
-                            }"
-                        )
-                    }
-                }
-
-            db.query(SimpleSQLiteQuery("SELECT GROUP_CONCAT(text, ''), SongWithAuthors.songId FROM Info JOIN SongWithAuthors ON Info.id = SongWithAuthors.authorInfoId GROUP BY songId;"))
-                .use { cursor ->
-                    val songValues = ContentValues(1)
-                    while (cursor.moveToNext()) {
-                        songValues.put("artistsText", cursor.getString(0))
-                        db.update(
-                            "Song",
-                            CONFLICT_IGNORE,
-                            songValues,
-                            "id = ?",
-                            arrayOf(cursor.getString(1))
-                        )
-                    }
-                }
-
-            db.query(SimpleSQLiteQuery("SELECT browseId, text, Info.id FROM Info JOIN SongWithAuthors ON Info.id = SongWithAuthors.authorInfoId WHERE browseId NOT NULL;"))
-                .use { cursor ->
-                    val artistValues = ContentValues(2)
-                    while (cursor.moveToNext()) {
-                        artistValues.put("id", cursor.getString(0))
-                        artistValues.put("name", cursor.getString(1))
-                        db.insert("Artist", CONFLICT_IGNORE, artistValues)
-
-                        db.execSQL(
-                            "UPDATE SongWithAuthors SET authorInfoId = '${cursor.getString(0)}' WHERE authorInfoId = ${
-                                cursor.getLong(
-                                    2
-                                )
-                            }"
-                        )
-                    }
-                }
-
-            db.execSQL("INSERT INTO SongArtistMap(songId, artistId) SELECT songId, authorInfoId FROM SongWithAuthors")
-
-            db.execSQL("DROP TABLE Info;")
-            db.execSQL("DROP TABLE SongWithAuthors;")
-        }
-    }
-
-    class From10To11Migration : Migration(10, 11) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.query(SimpleSQLiteQuery("SELECT id, albumId FROM Song;")).use { cursor ->
-                val songAlbumMapValues = ContentValues(2)
-                while (cursor.moveToNext()) {
-                    songAlbumMapValues.put("songId", cursor.getString(0))
-                    songAlbumMapValues.put("albumId", cursor.getString(1))
-                    db.insert("SongAlbumMap", CONFLICT_IGNORE, songAlbumMapValues)
-                }
-            }
-
-            db.execSQL("CREATE TABLE IF NOT EXISTS `Song_new` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `artistsText` TEXT, `durationText` TEXT NOT NULL, `thumbnailUrl` TEXT, `lyrics` TEXT, `likedAt` INTEGER, `totalPlayTimeMs` INTEGER NOT NULL, `loudnessDb` REAL, `contentLength` INTEGER, PRIMARY KEY(`id`))")
-
-            db.execSQL("INSERT INTO Song_new(id, title, artistsText, durationText, thumbnailUrl, lyrics, likedAt, totalPlayTimeMs, loudnessDb, contentLength) SELECT id, title, artistsText, durationText, thumbnailUrl, lyrics, likedAt, totalPlayTimeMs, loudnessDb, contentLength FROM Song;")
-            db.execSQL("DROP TABLE Song;")
-            db.execSQL("ALTER TABLE Song_new RENAME TO Song;")
-        }
-    }
-
-    @RenameTable("SongInPlaylist", "SongPlaylistMap")
-    @RenameTable("SortedSongInPlaylist", "SortedSongPlaylistMap")
-    class From11To12Migration : AutoMigrationSpec
-
-    class From14To15Migration : Migration(14, 15) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.query(SimpleSQLiteQuery("SELECT id, loudnessDb, contentLength FROM Song;"))
-                .use { cursor ->
-                    val formatValues = ContentValues(3)
-                    while (cursor.moveToNext()) {
-                        formatValues.put("songId", cursor.getString(0))
-                        formatValues.put("loudnessDb", cursor.getFloatOrNull(1))
-                        formatValues.put("contentLength", cursor.getFloatOrNull(2))
-                        db.insert("Format", CONFLICT_IGNORE, formatValues)
-                    }
-                }
-
-            db.execSQL("CREATE TABLE IF NOT EXISTS `Song_new` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `artistsText` TEXT, `durationText` TEXT NOT NULL, `thumbnailUrl` TEXT, `lyrics` TEXT, `likedAt` INTEGER, `totalPlayTimeMs` INTEGER NOT NULL, PRIMARY KEY(`id`))")
-
-            db.execSQL("INSERT INTO Song_new(id, title, artistsText, durationText, thumbnailUrl, lyrics, likedAt, totalPlayTimeMs) SELECT id, title, artistsText, durationText, thumbnailUrl, lyrics, likedAt, totalPlayTimeMs FROM Song;")
-            db.execSQL("DROP TABLE Song;")
-            db.execSQL("ALTER TABLE Song_new RENAME TO Song;")
-        }
-    }
-
-    @DeleteColumn.Entries(
-        DeleteColumn("Artist", "shuffleVideoId"),
-        DeleteColumn("Artist", "shufflePlaylistId"),
-        DeleteColumn("Artist", "radioVideoId"),
-        DeleteColumn("Artist", "radioPlaylistId"),
-    )
-    class From20To21Migration : AutoMigrationSpec
-
-    @DeleteColumn.Entries(DeleteColumn("Artist", "info"))
-    class From21To22Migration : AutoMigrationSpec
-
-    class From22To23Migration : Migration(22, 23) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            db.execSQL("CREATE TABLE IF NOT EXISTS Lyrics (`songId` TEXT NOT NULL, `fixed` TEXT, `synced` TEXT, PRIMARY KEY(`songId`), FOREIGN KEY(`songId`) REFERENCES `Song`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)")
-
-            db.query(SimpleSQLiteQuery("SELECT id, lyrics, synchronizedLyrics FROM Song;")).use { cursor ->
-                val lyricsValues = ContentValues(3)
-                while (cursor.moveToNext()) {
-                    lyricsValues.put("songId", cursor.getString(0))
-                    lyricsValues.put("fixed", cursor.getString(1))
-                    lyricsValues.put("synced", cursor.getString(2))
-                    db.insert("Lyrics", CONFLICT_IGNORE, lyricsValues)
-                }
-            }
-
-            db.execSQL("CREATE TABLE IF NOT EXISTS Song_new (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `artistsText` TEXT, `durationText` TEXT, `thumbnailUrl` TEXT, `likedAt` INTEGER, `totalPlayTimeMs` INTEGER NOT NULL, PRIMARY KEY(`id`))")
-            db.execSQL("INSERT INTO Song_new(id, title, artistsText, durationText, thumbnailUrl, likedAt, totalPlayTimeMs) SELECT id, title, artistsText, durationText, thumbnailUrl, likedAt, totalPlayTimeMs FROM Song;")
-            db.execSQL("DROP TABLE Song;")
-            db.execSQL("ALTER TABLE Song_new RENAME TO Song;")
-        }
-    }
-
-
-    class From23To24Migration : Migration(23, 24) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            try {
-                db.execSQL("ALTER TABLE SongPlaylistMap ADD COLUMN setVideoId TEXT;")
-            } catch (e: Exception) {
-                println("Database From23To24Migration error ${e.stackTraceToString()}")
-            }
-
-        }
-    }
-
-    class From24To25Migration : Migration(24, 25) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            try {
-                db.execSQL("ALTER TABLE Playlist ADD COLUMN isEditable INTEGER NOT NULL DEFAULT 0;")
-            } catch (e: Exception) {
-                println("Database From24To25Migration error ${e.stackTraceToString()}")
-            }
-
-        }
-    }
-
-    class From25To26Migration : Migration(25, 26) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            try {
-                db.execSQL("ALTER TABLE Playlist ADD COLUMN isYoutubePlaylist INTEGER NOT NULL DEFAULT 0;")
-            } catch (e: Exception) {
-                println("Database From25To26Migration error ${e.stackTraceToString()}")
-            }
-
-        }
-    }
-    class From26To27Migration : Migration(26, 27) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            try {
-                db.execSQL("ALTER TABLE Album ADD COLUMN isYoutubeAlbum INTEGER NOT NULL DEFAULT 0;")
-            } catch (e: Exception) {
-                println("Database From26To27Migration error ${e.stackTraceToString()}")
-            }
-            try {
-                db.execSQL("ALTER TABLE Artist ADD COLUMN isYoutubeArtist INTEGER NOT NULL DEFAULT 0;")
-            } catch (e: Exception) {
-                println("Database From26To27Migration error ${e.stackTraceToString()}")
-            }
-            try {
-                db.execSQL("ALTER TABLE SongPlaylistMap ADD COLUMN dateAdded INTEGER NULL;")
-            } catch (e: Exception) {
-                println("Database From26To27Migration error ${e.stackTraceToString()}")
-            }
-
-        }
-    }
-}
-
-
-@TypeConverters
-object Converters {
-
-    @TypeConverter
-    @JvmStatic
-    fun fromString(stringListString: String): List<String> {
-        return stringListString.split(",").map { it }
-    }
-
-    @TypeConverter
-    @JvmStatic
-    fun toString(stringList: List<String>): String {
-        return stringList.joinToString(separator = ",")
-    }
-
-    @TypeConverter
-    @JvmStatic
-    @UnstableApi
-    fun mediaItemFromByteArray(value: ByteArray?): MediaItem? {
-        return value?.let { byteArray ->
-            runCatching {
-                val parcel = Parcel.obtain()
-                parcel.unmarshall(byteArray, 0, byteArray.size)
-                parcel.setDataPosition(0)
-                val bundle = parcel.readBundle(MediaItem::class.java.classLoader)
-                parcel.recycle()
-
-                bundle?.let(MediaItem::fromBundle)
-            }.getOrNull()
-        }
-    }
-
-    @TypeConverter
-    @JvmStatic
-    @UnstableApi
-    fun mediaItemToByteArray(mediaItem: MediaItem?): ByteArray? {
-        return mediaItem?.toBundle()?.let { persistableBundle ->
-            val parcel = Parcel.obtain()
-            parcel.writeBundle(persistableBundle)
-            val bytes = parcel.marshall()
-            parcel.recycle()
-
-            bytes
         }
     }
 }
