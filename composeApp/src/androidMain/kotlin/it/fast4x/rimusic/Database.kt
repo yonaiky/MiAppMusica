@@ -2490,24 +2490,6 @@ interface Database {
         }
     }
 
-    @Delete
-    fun delete(searchQuery: SearchQuery)
-
-    @Delete
-    fun delete(playlist: Playlist)
-
-    @Delete
-    fun delete(songPlaylistMap: SongPlaylistMap)
-
-    @Delete
-    fun delete(song: Song)
-
-    @Delete
-    fun delete(album: Album)
-
-    @Delete
-    fun delete(artist: Artist)
-
     /**
      * Reset [Format.contentLength] of provided song.
      *

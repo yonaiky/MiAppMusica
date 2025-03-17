@@ -1204,7 +1204,7 @@ fun HomeSongsModern(
                                                 if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id?: "") == 0)) {
                                                     binder?.cache?.removeResource(song.song.id)
                                                     binder?.downloadCache?.removeResource(song.song.id)
-                                                    Database.delete(song.song)
+                                                    Database.songTable.delete( song.song )
                                                     songsDeleted++
                                                     if (songsDeleted == totalSongsToDelete) {
                                                         deleteProgressDialog = false
@@ -1896,7 +1896,7 @@ fun HomeSongsModern(
                                     menuState.hide()
                                     binder?.cache?.removeResource(song.song.id)
                                     binder?.downloadCache?.removeResource(song.song.id)
-                                    Database.delete(song.song)
+                                    Database.songTable.delete( song.song )
                                     Database.deleteSongFromPlaylists(song.song.id)
                                 }
                                 Toaster.s( R.string.deleted )

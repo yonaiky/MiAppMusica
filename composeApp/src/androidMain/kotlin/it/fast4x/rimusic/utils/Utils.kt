@@ -846,11 +846,11 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                 }
 
                 Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
-                if (song.thumbnailUrl == "") Database.delete(song)
+                if (song.thumbnailUrl == "") Database.songTable.delete( song )
             }
         } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
             songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
-            Database.delete(song)
+            Database.songTable.delete( song )
             Database.songTable.insertIgnore( songNotFound )
             Database.songPlaylistMapTable.insertIgnore(
                 SongPlaylistMap(

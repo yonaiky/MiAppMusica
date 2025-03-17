@@ -513,7 +513,7 @@ fun HomeSongs(
                 Database.asyncTransaction {
                     deleteSongFromPlaylists(songRif.id)
                     deleteFormat(songRif.id)
-                    delete(songRif)
+                    songTable.delete( songRif )
                 }
                 Toaster.s( R.string.deleted )
                 menuState.hide()

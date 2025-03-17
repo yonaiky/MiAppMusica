@@ -45,8 +45,9 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
 
             val localPlaylists = Database.ytmPrivatePlaylists().firstOrNull()
 
-            (localPlaylists?.filter { playlist -> playlist.browseId !in ytmPrivatePlaylists.map { if (it.key.startsWith("VL")) it.key.substringAfter("VL") else it.key }  })?.forEach { playlist ->
-                Database.asyncTransaction{ delete(playlist) }
+            Database.asyncTransaction {
+                (localPlaylists?.filter { playlist -> playlist.browseId !in ytmPrivatePlaylists.map { if (it.key.startsWith("VL")) it.key.substringAfter("VL") else it.key }  })
+                    ?.forEach( playlistTable::delete )
             }
 
             ytmPrivatePlaylists.forEach { remotePlaylist ->

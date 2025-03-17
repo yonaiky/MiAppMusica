@@ -768,11 +768,8 @@ fun PlaylistSongList(
                                                         }
                                                         Database.asyncTransaction {
                                                             Database.playlistWithBrowseId(
-                                                                browseId.substringAfter(
-                                                                    "VL"
-                                                                )
-                                                            )
-                                                                ?.let { delete(it) }
+                                                                browseId.substringAfter("VL")
+                                                            )?.let( playlistTable::delete )
                                                         }
                                                     } else {
                                                         CoroutineScope(Dispatchers.IO).launch {

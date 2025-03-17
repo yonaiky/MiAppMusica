@@ -54,7 +54,7 @@ open class DeleteSongDialog(
                 binder?.downloadCache?.removeResource( it.id )
                 deleteSongFromPlaylists( it.id )
                 deleteFormat( it.id )
-                delete( it )
+                songTable.delete( it )
             }
 
             Toaster.i( R.string.deleted )

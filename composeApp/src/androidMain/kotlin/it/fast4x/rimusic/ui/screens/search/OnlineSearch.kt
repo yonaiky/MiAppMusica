@@ -545,14 +545,12 @@ fun OnlineSearch(
                                 interactionSource = remember { MutableInteractionSource() },
                                 onClick = {
                                     Database.asyncTransaction {
-                                        delete(searchQuery)
+                                        searchTable.delete( searchQuery )
                                     }
                                 },
                                 onLongClick = {
                                     Database.asyncTransaction {
-                                        history.forEach {
-                                            delete(it)
-                                        }
+                                        history.also( searchTable::delete )
                                     }
                                     reloadHistory = !reloadHistory
                                 }

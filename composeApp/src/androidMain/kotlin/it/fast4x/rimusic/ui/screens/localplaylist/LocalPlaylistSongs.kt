@@ -211,7 +211,7 @@ fun LocalPlaylistSongs(
     )
     val deleteDialog = DeletePlaylist {
         Database.asyncTransaction {
-            playlistPreview?.playlist?.let( ::delete )
+            playlistPreview?.playlist?.let( playlistTable::delete )
         }
 
         if (
