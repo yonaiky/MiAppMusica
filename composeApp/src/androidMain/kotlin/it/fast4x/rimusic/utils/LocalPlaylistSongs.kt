@@ -286,7 +286,7 @@ class RenameDialog private constructor(
 
         Database.asyncTransaction {
             playlist.copy( name = "$prefix$newValue" )
-                    .let( ::update )
+                    .let( playlistTable::update )
         }
 
         if ( isPipedPlaylist )

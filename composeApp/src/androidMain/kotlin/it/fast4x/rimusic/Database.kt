@@ -25,14 +25,12 @@ import androidx.room.RoomWarnings
 import androidx.room.Transaction
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import androidx.room.Update
 import androidx.room.Upsert
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
-import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
@@ -2491,26 +2489,6 @@ interface Database {
                 )
             }
         }
-    }
-
-    @Update
-    fun update( song: Song )
-
-    @Update
-    fun update(artist: Artist)
-
-    @Update
-    fun update(album: Album)
-
-    @Update
-    fun update(playlist: Playlist)
-
-    @Update
-    fun update(playlist: Playlist, playlistItem: Innertube.PlaylistItem) {
-        update(playlist.copy(
-            name = playlistItem.title ?: "",
-            browseId = playlistItem.key
-        ))
     }
 
     @Upsert

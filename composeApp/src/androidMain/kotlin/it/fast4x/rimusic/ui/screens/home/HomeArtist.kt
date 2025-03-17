@@ -171,7 +171,7 @@ fun HomeArtists(
                     coroutineScope.launch(Dispatchers.IO) {
                         val artistThumbnail = YtMusic.getArtistPage(artist.id).getOrNull()?.artist?.thumbnail?.url
                         Database.asyncTransaction {
-                            update(artist.copy(thumbnailUrl = artistThumbnail))
+                            artistTable.update( artist.copy(thumbnailUrl = artistThumbnail) )
                         }
                     }
                 }

@@ -91,6 +91,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import androidx.compose.ui.util.fastZip
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.PlaybackParameters
@@ -105,7 +106,6 @@ import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.Database.Companion.update
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
@@ -573,7 +573,7 @@ inline fun SelectorArtistsDialog(
                                         .onSuccess { currentArtistPage ->
                                             artist?.copy(
                                                 thumbnailUrl = currentArtistPage.artist.thumbnail?.url
-                                            )?.let(::update)
+                                            )?.let( Database.artistTable::update )
                                             Database.artist(values[idArtist].id).collect{artist = it}
                                         }
                                 }
@@ -2061,8 +2061,10 @@ fun SongMatchingDialog(
                                                 )
                                             )
                                             CoroutineScope(Dispatchers.IO).launch {
-                                                val album = Database.album(song.album?.endpoint?.browseId ?: "").firstOrNull()
-                                                album?.copy(thumbnailUrl = song.thumbnail?.url)?.let { update(it) }
+                                                Database.album(song.album?.endpoint?.browseId ?: "")
+                                                        .firstOrNull()
+                                                        ?.copy( thumbnailUrl = song.thumbnail?.url )
+                                                        ?.let( albumTable::update )
 
                                                 if (isYouTubeSyncEnabled() && playlist?.isYoutubePlaylist == true && playlist.isEditable){
                                                     YtMusic.addToPlaylist(playlist.browseId ?: "", song.asMediaItem.mediaId)

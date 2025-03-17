@@ -190,7 +190,7 @@ fun HomeAlbums(
                         coroutineScope.launch(Dispatchers.IO) {
                             Database.asyncTransaction {
                                 val albumThumbnail = albumThumbnailFromSong(album.id)
-                                update(album.copy(thumbnailUrl = albumThumbnail))
+                                albumTable.update( album.copy(thumbnailUrl = albumThumbnail) )
                             }
                         }
                     }

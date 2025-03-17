@@ -822,8 +822,10 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     )
                 )
                 CoroutineScope(Dispatchers.IO).launch {
-                    val album = Database.album(matchedSong.album?.endpoint?.browseId ?: "").firstOrNull()
-                    album?.copy(thumbnailUrl = matchedSong.thumbnail?.url)?.let { update(it) }
+                    Database.album(matchedSong.album?.endpoint?.browseId ?: "")
+                            .firstOrNull()
+                            ?.copy( thumbnailUrl = matchedSong.thumbnail?.url )
+                            ?.let( albumTable::update )
 
                     if (isYouTubeSyncEnabled() && playlist?.isYoutubePlaylist == true && playlist.isEditable){
                         YtMusic.addToPlaylist(playlist.browseId ?: "", matchedSong.asMediaItem.mediaId)
@@ -895,9 +897,6 @@ suspend fun updateLocalPlaylist(song: Song){
                         title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()
                     )
                 )
-                CoroutineScope(Dispatchers.IO).launch {
-                    val album = Database.album(matchedSong.album?.endpoint?.browseId ?: "").firstOrNull()
-                    album?.copy(thumbnailUrl = matchedSong.thumbnail?.url)?.let { update(it) }
                 songAlbumMapTable.insertIgnore(
                     SongAlbumMap(
                         matchedSong.asMediaItem.mediaId,
@@ -906,6 +905,11 @@ suspend fun updateLocalPlaylist(song: Song){
                     )
                 )
 
+                runBlocking {
+                    Database.album(matchedSong.album?.endpoint?.browseId ?: "")
+                            .firstOrNull()
+                            ?.copy( thumbnailUrl = matchedSong.thumbnail?.url )
+                            ?.let( albumTable::update )
                 }
 
                 if ( artistsNames != null && artistsIds != null ) {

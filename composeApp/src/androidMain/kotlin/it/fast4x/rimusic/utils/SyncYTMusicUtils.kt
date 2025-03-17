@@ -7,14 +7,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.Companion.albumTable
 import it.fast4x.rimusic.Database.Companion.getAlbumsList
 import it.fast4x.rimusic.Database.Companion.getArtistsList
-import it.fast4x.rimusic.Database.Companion.update
-import app.kreate.android.R
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.models.Album
@@ -114,7 +114,8 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
 
                         // Update here playlist isEditable flag because library contain playlists but isEditable isn't always available
                         if (remotePlaylist.isEditable == true)
-                            Database.update(playlist.copy(isEditable = true))
+                            Database.playlistTable
+                                    .update( playlist.copy(isEditable = true) )
 
                         if (remotePlaylist.songs.isNotEmpty()) {
                             //Database.clearPlaylist(playlistId)
@@ -185,7 +186,9 @@ suspend fun importYTMSubscribedChannels(): Boolean {
             val Artists = getArtistsList().firstOrNull()
             Database.asyncTransaction {
                 Artists?.filter {artist -> artist?.isYoutubeArtist == true && artist.id !in ytmArtists.map { it.key } }?.forEach { artist ->
-                    if (artist != null) update(artist.copy(isYoutubeArtist = false, bookmarkedAt = null))
+
+                    artist?.copy(isYoutubeArtist = false, bookmarkedAt = null)
+                          ?.let( artistTable::update )
                 }
             }
         }
@@ -233,7 +236,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
                             isYoutubeAlbum = true,
                             bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
                             thumbnailUrl = remoteAlbum.thumbnail?.url)
-                            .let(::update)
+                            .let( albumTable::update )
                     }
 
                 }
@@ -241,7 +244,9 @@ suspend fun importYTMLikedAlbums(): Boolean {
             val Albums = getAlbumsList().firstOrNull()
             Database.asyncTransaction {
                 Albums?.filter {album -> album?.isYoutubeAlbum == true && album.id !in ytmAlbums.map { it.key } }?.forEach { album->
-                    if (album != null) update(album.copy(isYoutubeAlbum = false, bookmarkedAt = null))
+
+                    album?.copy(isYoutubeAlbum = false, bookmarkedAt = null)
+                         ?.let( albumTable::update )
                 }
             }
         }
