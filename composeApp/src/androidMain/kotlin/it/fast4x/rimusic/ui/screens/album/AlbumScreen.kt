@@ -39,15 +39,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastDistinctBy
+import androidx.compose.ui.util.fastJoinToString
+import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.BrowseBody
-import it.fast4x.innertube.requests.albumPage
+import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.colorPalette
@@ -65,7 +65,6 @@ import it.fast4x.rimusic.utils.transitionEffectKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import me.knighthat.coil.ImageCacheFactory
 import org.jetbrains.annotations.Contract
 
@@ -104,56 +103,53 @@ fun AlbumScreen(
     var alternatives by persistList<Innertube.AlbumItem>( "album/$browseId/alternatives" )
     var description by rememberSaveable { mutableStateOf("") }
     LaunchedEffect( Unit ) {
-        withContext( Dispatchers.IO ) {
+        /**
+         * Get fetched version of this data unless the
+         * current data is modified by the user (annotated by
+         * [MODIFIED_PREFIX] prefix.
+         */
+        @Contract("!null,!null->!null")
+        fun getUpdated( current: String?, new: String? ): String? =
+            if( current?.startsWith( MODIFIED_PREFIX, true ) == true )
+                current
+            else
+                new
 
-            /**
-             * Get fetched version of this data unless the
-             * current data is modified by the user (annotated by
-             * [MODIFIED_PREFIX] prefix.
-             */
-            @Contract("!null,!null->!null")
-            fun getUpdated( current: String?, new: String? ): String? =
-                if( current?.startsWith( MODIFIED_PREFIX, true ) == true )
-                    current
-                else
-                    new
+        YtMusic.getAlbum( browseId, true )
+               .onSuccess { online ->
+                   val onlineAlbum = online.album
+                   val authorsText: String? = onlineAlbum.authors
+                                                         ?.fastMapNotNull { it.name }
+                                                         ?.fastJoinToString( "" )
 
-            val browseBody = BrowseBody(browseId = browseId)
-            Innertube.albumPage( browseBody )
-                ?.onSuccess { online ->
-                    val authorsText = online.authors?.joinToString("") { it.name ?: "" }
+                   Database.asyncTransaction {
+                       upsert(Album(
+                           id = browseId,
+                           title = getUpdated( album?.title, onlineAlbum.title ),
+                           thumbnailUrl = getUpdated( album?.thumbnailUrl, onlineAlbum.thumbnail?.url ),
+                           year = onlineAlbum.year,
+                           authorsText = getUpdated( album?.authorsText, authorsText ),
+                           shareUrl = online.url,
+                           timestamp = album?.timestamp ?: System.currentTimeMillis(),
+                           bookmarkedAt = album?.bookmarkedAt
+                       ))
 
-                    Database.asyncTransaction {
-                        upsert(Album(
-                            id = browseId,
-                            title = getUpdated( album?.title, online.title ),
-                            thumbnailUrl = getUpdated( album?.thumbnailUrl, online.thumbnail?.url ),
-                            year = online.year,
-                            authorsText = getUpdated( album?.authorsText, authorsText ),
-                            shareUrl = online.url,
-                            timestamp = album?.timestamp ?: System.currentTimeMillis(),
-                            bookmarkedAt = album?.bookmarkedAt
-                        ))
+                       online.songs
+                             .map( Innertube.SongItem::asMediaItem )
+                             .onEach( Database::insert )
+                             .mapIndexed { position, mediaItem ->
+                                 SongAlbumMap(
+                                     songId = mediaItem.mediaId,
+                                     albumId = browseId,
+                                     position = position
+                                 )
+                             }
+                             .forEach( this::upsert )
+                   }
 
-                        online.songsPage
-                            ?.items
-                            ?.fastDistinctBy { it.key }       // Experimental, revert to `distinctBy` if needed
-                            ?.map( Innertube.SongItem::asMediaItem )
-                            ?.onEach( Database::insert )
-                            ?.mapIndexed { position, mediaItem ->
-                                SongAlbumMap(
-                                    songId = mediaItem.mediaId,
-                                    albumId = browseId,
-                                    position = position
-                                )
-                            }
-                            ?.forEach( this::upsert )
-                    }
-
-                    alternatives = online.otherVersions ?: emptyList()
-                    description = online.description ?: ""
-                }
-        }
+                   alternatives = online.otherVersions
+                   description = online.description ?: ""
+               }
     }
 
     val thumbnailPainter = ImageCacheFactory.Painter( album?.thumbnailUrl )
