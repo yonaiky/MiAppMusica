@@ -62,6 +62,18 @@ import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.utils.isExplicit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import me.knighthat.database.AlbumTable
+import me.knighthat.database.ArtistTable
+import me.knighthat.database.EventTable
+import me.knighthat.database.FormatTable
+import me.knighthat.database.LyricsTable
+import me.knighthat.database.PlaylistTable
+import me.knighthat.database.QueuedMediaItemTable
+import me.knighthat.database.SearchQueryTable
+import me.knighthat.database.SongAlbumMapTable
+import me.knighthat.database.SongArtistMapTable
+import me.knighthat.database.SongPlaylistMapTable
+import me.knighthat.database.SongTable
 import org.intellij.lang.annotations.MagicConstant
 
 @Dao
@@ -71,6 +83,30 @@ interface Database {
     private val _internal: RoomDatabase
         get() = DatabaseInitializer.Instance
 
+    val songTable: SongTable
+        get() = DatabaseInitializer.Instance.songTable
+    val albumTable: AlbumTable
+        get() = DatabaseInitializer.Instance.albumTable
+    val artistTable: ArtistTable
+        get() = DatabaseInitializer.Instance.artistTable
+    val eventTable: EventTable
+        get() = DatabaseInitializer.Instance.eventTable
+    val formatTable: FormatTable
+        get() = DatabaseInitializer.Instance.formatTable
+    val lyricsTable: LyricsTable
+        get() = DatabaseInitializer.Instance.lyricsTable
+    val playlistTable: PlaylistTable
+        get() = DatabaseInitializer.Instance.playlistTable
+    val queueTable: QueuedMediaItemTable
+        get() = DatabaseInitializer.Instance.queueTable
+    val searchTable: SearchQueryTable
+        get() = DatabaseInitializer.Instance.searchQueryTable
+    val songAlbumMapTable: SongAlbumMapTable
+        get() = DatabaseInitializer.Instance.songAlbumMapTable
+    val songArtistMapTable: SongArtistMapTable
+        get() = DatabaseInitializer.Instance.songArtistMapTable
+    val songPlaylistMapTable: SongPlaylistMapTable
+        get() = DatabaseInitializer.Instance.songPlaylistMapTable
 
     //**********************************************
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
@@ -2673,6 +2709,18 @@ interface Database {
 @TypeConverters(Converters::class)
 abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
     abstract val database: Database
+    abstract val albumTable: AlbumTable
+    abstract val artistTable: ArtistTable
+    abstract val eventTable: EventTable
+    abstract val formatTable: FormatTable
+    abstract val lyricsTable: LyricsTable
+    abstract val playlistTable: PlaylistTable
+    abstract val queueTable: QueuedMediaItemTable
+    abstract val searchQueryTable: SearchQueryTable
+    abstract val songAlbumMapTable: SongAlbumMapTable
+    abstract val songArtistMapTable: SongArtistMapTable
+    abstract val songPlaylistMapTable: SongPlaylistMapTable
+    abstract val songTable: SongTable
 
     companion object {
 
