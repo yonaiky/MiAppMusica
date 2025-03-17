@@ -313,7 +313,8 @@ fun PlaylistSongList(
             placeholder = "https://........",
             setValue = { text ->
                 Database.asyncTransaction {
-                    val playlistId = insert(Playlist(name = text, browseId = browseId))
+                    val playlist = Playlist(name = text, browseId = browseId)
+                    val pId = playlistTable.insert( playlist )
 
                     playlistPage?.songs
                                 ?.map(Innertube.SongItem::asMediaItem)
@@ -321,11 +322,11 @@ fun PlaylistSongList(
                                 ?.mapIndexed { index, mediaItem ->
                                     SongPlaylistMap(
                                         songId = mediaItem.mediaId,
-                                        playlistId = playlistId,
+                                        playlistId = pId,
                                         position = index
                                     ).default()
                                 }
-                                ?.let( ::insertSongPlaylistMaps )
+                                ?.let( songPlaylistMapTable::insertIgnore )
                 }
                 Toaster.done()
             }
@@ -680,8 +681,8 @@ fun PlaylistSongList(
                                                             playlistPage!!.songs.forEachIndexed { index, song ->
                                                                 runCatching {
                                                                     coroutineScope.launch(Dispatchers.IO) {
-                                                                        Database.insert(song.asSong)
-                                                                        Database.insert(
+                                                                        Database.songTable.insertIgnore( song.asSong )
+                                                                        Database.songPlaylistMapTable.insertIgnore(
                                                                             SongPlaylistMap(
                                                                                 songId = song.asMediaItem.mediaId,
                                                                                 playlistId = playlistPreview.playlist.id,
@@ -782,14 +783,13 @@ fun PlaylistSongList(
                                                             )
                                                         }
                                                         Database.asyncTransaction {
-                                                            val playlistId = insert(
-                                                                Playlist(
-                                                                    name = (playlistPage?.playlist?.title ?: ""),
-                                                                    browseId = browseId.substringAfter("VL"),
-                                                                    isYoutubePlaylist = true,
-                                                                    isEditable = false
-                                                                )
+                                                            val playlist = Playlist(
+                                                                name = (playlistPage?.playlist?.title ?: ""),
+                                                                browseId = browseId.substringAfter("VL"),
+                                                                isYoutubePlaylist = true,
+                                                                isEditable = false
                                                             )
+                                                            val pId =  playlistTable.insert( playlist )
 
                                                             playlistPage?.songs
                                                                 ?.map(Innertube.SongItem::asMediaItem)
@@ -797,11 +797,11 @@ fun PlaylistSongList(
                                                                 ?.mapIndexed { index, mediaItem ->
                                                                     SongPlaylistMap(
                                                                         songId = mediaItem.mediaId,
-                                                                        playlistId = playlistId,
+                                                                        playlistId = pId,
                                                                         position = index
                                                                     ).default()
                                                                 }
-                                                                ?.let(::insertSongPlaylistMaps)
+                                                                ?.let( songPlaylistMapTable::insertIgnore )
                                                         }
                                                     }
                                                     Toaster.done()

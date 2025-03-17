@@ -215,18 +215,19 @@ fun Podcast(
             placeholder = "https://........",
             setValue = { text ->
                 Database.asyncTransaction {
-                    val playlistId = insert(Playlist(name = text, browseId = browseId))
+                    val playlist = Playlist(name = text, browseId = browseId)
+                    val pId = playlistTable.insert( playlist )
 
                     podcastPage?.listEpisode
-                        ?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
-                        ?.onEach( ::insert )
-                        ?.mapIndexed { index, mediaItem ->
-                            SongPlaylistMap(
-                                songId = mediaItem.mediaId,
-                                playlistId = playlistId,
-                                position = index
-                            ).default()
-                        }?.let( ::insertSongPlaylistMaps )
+                               ?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
+                               ?.onEach( ::insert )
+                               ?.mapIndexed { index, mediaItem ->
+                                   SongPlaylistMap(
+                                       songId = mediaItem.mediaId,
+                                       playlistId = pId,
+                                       position = index
+                                   ).default()
+                               }?.let( songPlaylistMapTable::insertIgnore )
                 }
                 Toaster.done()
             }
@@ -548,7 +549,7 @@ fun Podcast(
                                                             podcastPage?.listEpisode?.forEachIndexed { index, song ->
                                                                 runCatching {
                                                                     Database.insert(song.asMediaItem)
-                                                                    Database.insert(
+                                                                    Database.songPlaylistMapTable.insertIgnore(
                                                                         SongPlaylistMap(
                                                                             songId = song.asMediaItem.mediaId,
                                                                             playlistId = playlistPreview.playlist.id,

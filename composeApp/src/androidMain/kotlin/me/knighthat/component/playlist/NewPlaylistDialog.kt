@@ -101,10 +101,11 @@ class NewPlaylistDialog private constructor(
             playlist = Playlist(name = newValue)
         }
 
-        if( playlist != null )
+        playlist?.let {
             Database.asyncTransaction {
-                insert(playlist!!)
+                playlistTable.insert( it )
             }
+        }
 
         val pipedSession = getPipedSession()
         if ( pipedState.value && pipedSession.token.isNotEmpty() )

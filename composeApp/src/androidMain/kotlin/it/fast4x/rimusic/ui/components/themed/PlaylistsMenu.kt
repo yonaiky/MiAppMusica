@@ -90,7 +90,7 @@ class PlaylistsMenu private constructor(
                 try {
                     mediaItems( preview ).forEachIndexed { index, mediaItem ->
                         insert(mediaItem)
-                        insert(
+                        songPlaylistMapTable.insertIgnore(
                             SongPlaylistMap(
                                 songId = mediaItem.mediaId,
                                 playlistId = preview.playlist.id,

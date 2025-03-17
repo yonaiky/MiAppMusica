@@ -66,7 +66,9 @@ suspend fun importYTMPrivatePlaylists(): Boolean {
                             isYoutubePlaylist = true,
                             isEditable = (remotePlaylist.isEditable == true)
                         )
-                        Database.insert(localPlaylist.copy(browseId = playlistIdChecked))
+
+                        val playlist = localPlaylist.copy(browseId = playlistIdChecked)
+                        Database.playlistTable.upsert( playlist )
                     } else {
                         Database.updatePlaylistName(YTP_PREFIX+remotePlaylist.title, localPlaylist?.id ?: 0L)
                     }
@@ -127,7 +129,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                                         position = position,
                                         setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
                                     ).default()
-                                }.let(Database::insertSongPlaylistMaps)
+                                }.let( songPlaylistMapTable::insertIgnore )
                         }
 
                         /*localPlaylistSongs.filter { it.asMediaItem.mediaId !in remotePlaylist.songs.map { it.asMediaItem.mediaId } }
@@ -168,13 +170,13 @@ suspend fun importYTMSubscribedChannels(): Boolean {
                             bookmarkedAt = System.currentTimeMillis(),
                             isYoutubeArtist = true
                         )
-                        Database.insert(localArtist)
+                        Database.artistTable.insertReplace( localArtist )
                     } else {
                         localArtist.copy(
                             bookmarkedAt = localArtist.bookmarkedAt ?: System.currentTimeMillis(),
                             thumbnailUrl = remoteArtist.thumbnail?.url,
                             isYoutubeArtist = true
-                        ).let(::update)
+                        ).let( Database.artistTable::update )
                     }
 
 
@@ -225,7 +227,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
                             authorsText = remoteAlbum.authors?.getOrNull(1)?.name,
                             isYoutubeAlbum = true
                         )
-                        Database.insert(localAlbum)
+                        Database.albumTable.insertReplace( localAlbum )
                     } else {
                         localAlbum.copy(
                             isYoutubeAlbum = true,

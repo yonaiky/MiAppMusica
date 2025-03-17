@@ -1466,7 +1466,7 @@ fun HomeSongsModern(
                                                     runCatching {
                                                         CoroutineScope(Dispatchers.IO).launch {
                                                             Database.insert(song.song.asMediaItem)
-                                                            Database.insert(
+                                                            Database.songPlaylistMapTable.insertIgnore(
                                                                 SongPlaylistMap(
                                                                     songId = song.song.asMediaItem.mediaId,
                                                                     playlistId = playlistPreview.playlist.id,
@@ -1920,7 +1920,7 @@ fun HomeSongsModern(
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.song.asMediaItem.mediaId)
                                 Database.asyncTransaction {
-                                    Database.insert(
+                                    songTable.insertIgnore(
                                         Song(
                                             id = song.song.asMediaItem.mediaId,
                                             title = song.song.asMediaItem.mediaMetadata.title.toString(),

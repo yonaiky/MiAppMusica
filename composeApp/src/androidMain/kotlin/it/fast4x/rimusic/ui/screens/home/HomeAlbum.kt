@@ -435,7 +435,7 @@ fun HomeAlbums(
                                                         songs.forEachIndexed { index, song ->
                                                             Database.asyncTransaction {
                                                                 insert(song.asMediaItem)
-                                                                insert(
+                                                                songPlaylistMapTable.insertIgnore(
                                                                     SongPlaylistMap(
                                                                         songId = song.asMediaItem.mediaId,
                                                                         playlistId = playlistPreview.playlist.id,

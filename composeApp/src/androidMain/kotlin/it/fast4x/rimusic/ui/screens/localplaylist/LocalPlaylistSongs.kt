@@ -340,7 +340,7 @@ fun LocalPlaylistSongs(
                                     playlistId = playlistId,
                                     position = position
                                 )
-                            }?.let(Database::insertSongPlaylistMaps)
+                            }?.let( songPlaylistMapTable::insertIgnore )
                     }
                 }
             } else {

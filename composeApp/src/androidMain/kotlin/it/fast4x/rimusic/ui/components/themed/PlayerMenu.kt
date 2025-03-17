@@ -266,10 +266,13 @@ fun AddToPlaylistPlayerMenu(
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
                     insert(mediaItem)
-                    insert(
+
+                    val pId: Long? = playlistTable.insertIgnore( playlist )
+                                                  .takeIf { it != -1L }
+                    songPlaylistMapTable.insertIgnore(
                         SongPlaylistMap(
                             songId = mediaItem.mediaId,
-                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            playlistId = pId ?: playlist.id,
                             position = position
                         ).default()
                     )
@@ -354,7 +357,7 @@ fun AddToPlaylistArtistSongs(
                 if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist){
                     Database.asyncTransaction {
                         insert(mediaItem)
-                        insert(
+                        songPlaylistMapTable.insertIgnore(
                             SongPlaylistMap(
                                 songId = mediaItem.mediaId,
                                 playlistId = playlistPreview.playlist.id,

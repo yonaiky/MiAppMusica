@@ -2040,16 +2040,25 @@ fun SongMatchingDialog(
                                                 Database.insert(song.asMediaItem)
                                             }
 
-                                            insert(
+                                            songPlaylistMapTable.insertIgnore(
                                                 SongPlaylistMap(
                                                     songId = song.asMediaItem.mediaId,
                                                     playlistId = playlistId,
                                                     position = position
                                                 ).default()
                                             )
-                                            insert(
-                                                Album(id = song.album?.endpoint?.browseId ?: "", title = song.asMediaItem.mediaMetadata.albumTitle?.toString()),
-                                                SongAlbumMap(songId = song.asMediaItem.mediaId, albumId = song.album?.endpoint?.browseId ?: "", position = null)
+                                            albumTable.insertIgnore(
+                                                Album(
+                                                    id = song.album?.endpoint?.browseId ?: "",
+                                                    title = song.asMediaItem.mediaMetadata.albumTitle?.toString()
+                                                )
+                                            )
+                                            songAlbumMapTable.insertIgnore(
+                                                SongAlbumMap(
+                                                    song.asMediaItem.mediaId,
+                                                    song.album?.endpoint?.browseId ?: "",
+                                                    null
+                                                )
                                             )
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 val album = Database.album(song.album?.endpoint?.browseId ?: "").firstOrNull()
@@ -2059,25 +2068,19 @@ fun SongMatchingDialog(
                                                     YtMusic.addToPlaylist(playlist.browseId ?: "", song.asMediaItem.mediaId)
                                                 }
                                             }
-                                            if ((artistsNames != null) && (artistsIds != null)) {
-                                                artistsNames.let { artistNames ->
-                                                    artistsIds.let { artistIds ->
-                                                        if (artistNames.size == artistIds.size) {
-                                                            insert(
-                                                                artistNames.mapIndexed { index, artistName ->
-                                                                    Artist(id = (artistIds[index]) ?: "", name = artistName)
-                                                                },
-                                                                artistIds.map { artistId ->
-                                                                    SongArtistMap(
-                                                                        songId = song.asMediaItem.mediaId,
-                                                                        artistId = (artistId) ?: ""
-                                                                    )
-                                                                }
-                                                            )
-                                                        }
-                                                    }
+                                            if ( artistsNames != null && artistsIds != null ) {
+                                                artistsNames.fastZip( artistsIds ) { artistName, artistId ->
+                                                    if( artistId == null ) return@fastZip
+
+                                                    artistTable.insertIgnore(
+                                                        Artist(id = artistId, name = artistName)
+                                                    )
+                                                    songArtistMapTable.insertIgnore(
+                                                        SongArtistMap(song.asMediaItem.mediaId, artistId)
+                                                    )
                                                 }
                                             }
+
                                             Database.updateSongArtist(song.asMediaItem.mediaId, artistNameString)
                                         }
                                         onDismiss()

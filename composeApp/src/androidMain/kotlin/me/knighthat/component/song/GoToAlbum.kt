@@ -111,8 +111,8 @@ class GoToAlbum private constructor(
                                          ?.let {
                                              result = it
                                              Database.asyncTransaction {
-                                                 insert( Album(it) )
-                                                 insert( SongAlbumMap(song.id, it, null) )
+                                                 albumTable.insert( Album(it) )
+                                                 songAlbumMapTable.insert( SongAlbumMap(song.id, it, null) )
                                              }
                                          }
                              }

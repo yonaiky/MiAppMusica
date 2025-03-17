@@ -168,13 +168,14 @@ fun PlaylistsItemGridMenu(
                     setValue = { text ->
                         onDismiss()
                         Database.asyncTransaction {
-                            val playlistId = insert(Playlist(name = text))
+                            val pId = playlistTable.insert( Playlist(name = text) )
                             onAddToPlaylist(
                                 PlaylistPreview(
                                     Playlist(
-                                        id = playlistId,
+                                        id = pId,
                                         name = text
-                                    ), 0
+                                    ),
+                                    0
                                 )
                             )
                         }

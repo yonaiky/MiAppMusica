@@ -55,8 +55,8 @@ class GoToArtist private constructor(
                                      ?.let {
                                          result = it
                                          Database.asyncTransaction {
-                                             insert( Artist(it) )
-                                             insert( SongArtistMap(song.id, it) )
+                                             artistTable.insert( Artist(it) )
+                                             songArtistMapTable.insert( SongArtistMap(song.id, it) )
                                          }
                                      }
                          }.onFailure {

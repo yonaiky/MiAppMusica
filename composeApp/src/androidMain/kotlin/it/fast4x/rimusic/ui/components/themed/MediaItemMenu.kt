@@ -643,10 +643,13 @@ fun BaseMediaItemMenu(
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
                     insert(mediaItem)
-                    insert(
+
+                    val pId: Long? = playlistTable.insertIgnore( playlist )
+                                                  .takeIf { it != -1L }
+                    songPlaylistMapTable.insertIgnore(
                         SongPlaylistMap(
                             songId = mediaItem.mediaId,
-                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            playlistId = pId ?: playlist.id,
                             position = position
                         ).default()
                     )
@@ -730,10 +733,13 @@ fun MiniMediaItemMenu(
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
                     insert(mediaItem)
-                    insert(
+
+                    val pId: Long? = playlistTable.insertIgnore( playlist )
+                                                  .takeIf { it != -1L }
+                    songPlaylistMapTable.insertIgnore(
                         SongPlaylistMap(
                             songId = mediaItem.mediaId,
-                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            playlistId = pId ?: playlist.id,
                             position = position
                         ).default()
                     )
@@ -2097,13 +2103,14 @@ fun AddToPlaylistArtistSongsMenu(
             setValue = { text ->
                 onDismiss()
                 Database.asyncTransaction {
-                    val playlistId = insert(Playlist(name = text))
+                    val pId = playlistTable.insert( Playlist(name = text) )
                     onAddToPlaylist(
                         PlaylistPreview(
                             Playlist(
-                                id = playlistId,
+                                id = pId,
                                 name = text
-                            ), 0
+                            ),
+                            0
                         )
                     )
                 }

@@ -69,29 +69,22 @@ fun CheckMonthlyPlaylist() {
             Timber.d("SongsMostPlayed ${songsMostPlayed?.size}")
 
             songsMostPlayed.let {songs ->
-                        if (songs?.isNotEmpty() == true) {
-                            Database.asyncTransaction {
-                                val playlistId = insert(Playlist(name = "${MONTHLY_PREFIX}${ym}"))
-                                playlistId.let {
-                                    songs.forEachIndexed{ position, song ->
-                                        insert(
-                                            SongPlaylistMap(
-                                                songId = song.id,
-                                                playlistId = it,
-                                                position = position
-                                            ).default()
-                                        )
-                                    }
-                                }
-
-                            }
-
+                if (songs?.isNotEmpty() == true) {
+                    Database.asyncTransaction {
+                        val playlist = Playlist(name = "${MONTHLY_PREFIX}${ym}")
+                        val pId = playlistTable.insert( playlist )
+                        songs.forEachIndexed{ position, song ->
+                            songPlaylistMapTable.insertIgnore(
+                                SongPlaylistMap(
+                                    songId = song.id,
+                                    playlistId = pId,
+                                    position = position
+                                ).default()
+                            )
                         }
                     }
-
-
-
-
+                }
+            }
         }
     //println("mediaItem internal $monthlyPlaylist")
 }
@@ -157,19 +150,17 @@ fun CreateMonthlyPlaylist() {
 
                 if (songsMostPlayed.value?.isNotEmpty() == true) {
                     Database.asyncTransaction {
-                        val playlistId = insert(Playlist(name = "${MONTHLY_PREFIX}${ym}"))
-                        playlistId.let {
-                            songsMostPlayed.value!!.forEachIndexed{ position, song ->
-                                insert(
-                                    SongPlaylistMap(
-                                        songId = song.id,
-                                        playlistId = it,
-                                        position = position
-                                    ).default()
-                                )
-                            }
+                        val playlist = Playlist(name = "${MONTHLY_PREFIX}${ym}")
+                        val pId = playlistTable.insert( playlist )
+                        songsMostPlayed.value!!.forEachIndexed{ position, song ->
+                            songPlaylistMapTable.insertIgnore(
+                                SongPlaylistMap(
+                                    songId = song.id,
+                                    playlistId = pId,
+                                    position = position
+                                ).default()
+                            )
                         }
-
                     }
 
                 }

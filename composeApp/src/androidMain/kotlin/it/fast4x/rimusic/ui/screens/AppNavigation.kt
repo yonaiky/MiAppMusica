@@ -379,7 +379,7 @@ fun AppNavigation(
 
                     if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
                         Database.asyncTransaction {
-                            insert(SearchQuery(query = query))
+                            searchTable.insert( SearchQuery(query = query) )
                         }
                     }
                 },

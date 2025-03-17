@@ -15,7 +15,6 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.database.SQLException
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.AudioDeviceCallback
@@ -591,17 +590,13 @@ class PlayerServiceModern : MediaLibraryService(),
 
         if ( totalPlayTimeMs > minTimeForEvent.asMillis ) {
             Database.asyncTransaction {
-                try {
-                    insert(
-                        Event(
-                            songId = mediaItem.mediaId,
-                            timestamp = System.currentTimeMillis(),
-                            playTime = totalPlayTimeMs
-                        )
+                eventTable.insertIgnore(
+                    Event(
+                        songId = mediaItem.mediaId,
+                        timestamp = System.currentTimeMillis(),
+                        playTime = totalPlayTimeMs
                     )
-                } catch (e: SQLException) {
-                    Timber.e("PlayerService onPlaybackStatsReady SQLException ${e.stackTraceToString()}")
-                }
+                )
             }
 
         }
@@ -1430,7 +1425,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
                 Database.asyncTransaction {
                     clearQueue()
-                    insert( queuedMediaItems )
+                    queueTable.insert( queuedMediaItems )
                 }
 
                 Timber.d("PlayerServiceModern QueuePersistentEnabled Saved queue")

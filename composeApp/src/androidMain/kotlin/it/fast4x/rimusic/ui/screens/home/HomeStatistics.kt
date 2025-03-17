@@ -76,7 +76,7 @@ fun HomeStatistics(
             placeholder = stringResource(R.string.enter_the_playlist_name),
             setValue = { text ->
                 Database.asyncTransaction {
-                    insert(Playlist(name = text))
+                    playlistTable.insert( Playlist(name = text) )
                 }
             }
         )

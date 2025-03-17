@@ -87,6 +87,7 @@ import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Folder
+import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
@@ -690,7 +691,7 @@ fun DeviceListSongs(
                                             filteredSongs.forEachIndexed { index, song ->
                                                 Database.asyncTransaction {
                                                     insert(song.asMediaItem)
-                                                    insert(
+                                                    songPlaylistMapTable.insertIgnore(
                                                         SongPlaylistMap(
                                                             songId = song.asMediaItem.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
@@ -704,7 +705,7 @@ fun DeviceListSongs(
                                                 //Log.d("mediaItemMaxPos", position.toString())
                                                 Database.asyncTransaction {
                                                     insert(song)
-                                                    insert(
+                                                    songPlaylistMapTable.insert(
                                                         SongPlaylistMap(
                                                             songId = song.mediaId,
                                                             playlistId = playlistPreview.playlist.id,
@@ -1100,12 +1101,9 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                                         thumbnailUrl = albumUri.toString(),
                                         relativePath = relativePath
                                     )
-                                    Database.insert(
-                                        song.toSong()
-                                    )
-                                    
-                                    Database.insert(
-                                        it.fast4x.rimusic.models.Format(
+                                    Database.songTable.insertIgnore( song.toSong() )
+                                    Database.formatTable.insertReplace(
+                                        Format(
                                             songId = song.id,
                                             itag = 0,
                                             mimeType = mimeType,

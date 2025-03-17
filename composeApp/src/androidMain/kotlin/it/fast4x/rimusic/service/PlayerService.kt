@@ -12,7 +12,6 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.ServiceInfo
 import android.content.res.Configuration
-import android.database.SQLException
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.AudioDeviceCallback
@@ -834,17 +833,13 @@ class PlayerService : InvincibleService(),
 
         if ( totalPlayTimeMs > minTimeForEvent.asMillis ) {
             Database.asyncTransaction {
-                try {
-                    insert(
-                        Event(
-                            songId = mediaItem.mediaId,
-                            timestamp = System.currentTimeMillis(),
-                            playTime = totalPlayTimeMs
-                        )
+                eventTable.insertIgnore(
+                    Event(
+                        songId = mediaItem.mediaId,
+                        timestamp = System.currentTimeMillis(),
+                        playTime = totalPlayTimeMs
                     )
-                } catch (e: SQLException) {
-                    Timber.e("PlayerService onPlaybackStatsReady SQLException ${e.stackTraceToString()}")
-                }
+                )
             }
 
         }
@@ -1089,7 +1084,7 @@ class PlayerService : InvincibleService(),
         }.let { queuedMediaItems ->
             Database.asyncTransaction {
                 clearQueue()
-                insert(queuedMediaItems)
+                queueTable.insert( queuedMediaItems )
             }
         }
     }

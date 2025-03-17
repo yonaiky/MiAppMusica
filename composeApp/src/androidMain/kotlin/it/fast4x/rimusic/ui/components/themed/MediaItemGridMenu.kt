@@ -181,10 +181,13 @@ fun BaseMediaItemGridMenu(
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
                     insert(mediaItem)
-                    insert(
+
+                    val pId: Long? = playlistTable.insertIgnore( playlist )
+                                                  .takeIf { it != -1L }
+                    songPlaylistMapTable.insertIgnore(
                         SongPlaylistMap(
                             songId = mediaItem.mediaId,
-                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            playlistId = pId ?: playlist.id,
                             position = position
                         ).default()
                     )
@@ -253,10 +256,13 @@ fun MiniMediaItemGridMenu(
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
                     insert(mediaItem)
-                    insert(
+
+                    val pId: Long? = playlistTable.insertIgnore( playlist )
+                                                  .takeIf { it != -1L }
+                    songPlaylistMapTable.insertIgnore(
                         SongPlaylistMap(
                             songId = mediaItem.mediaId,
-                            playlistId = insert(playlist).takeIf { it != -1L } ?: playlist.id,
+                            playlistId = pId ?: playlist.id,
                             position = position
                         ).default()
                     )

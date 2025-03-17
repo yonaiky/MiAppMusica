@@ -8,13 +8,13 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.isConnectionMetered
 import it.fast4x.rimusic.utils.okHttpDataSourceFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import it.fast4x.rimusic.appContext
 import java.io.IOException
 
 @OptIn(UnstableApi::class)
@@ -42,9 +42,8 @@ internal fun PlayerService.createDataSourceFactory(): DataSource.Factory {
             }
             // Ensure that the song is in database
             Database.asyncTransaction {
-                if (mediaItem != null) {
-                    insert(mediaItem.asSong)
-                }
+                if (mediaItem != null)
+                    songTable.insertIgnore( mediaItem.asSong )
             }
 
 

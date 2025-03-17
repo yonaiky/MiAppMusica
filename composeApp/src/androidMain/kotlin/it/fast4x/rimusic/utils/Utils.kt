@@ -18,11 +18,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.util.fastZip
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
 import com.zionhuang.innertube.pages.LibraryPage
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ClientRequestException
@@ -45,7 +47,6 @@ import it.fast4x.lrclib.LrcLib
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.Database.Companion.getLikedAt
 import it.fast4x.rimusic.EXPLICIT_PREFIX
-import app.kreate.android.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.context
@@ -68,6 +69,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
 import java.io.File
@@ -799,16 +801,25 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                 if (songExist(matchedSong.asSong.id) == 0) {
                     Database.insert(matchedSong.asMediaItem)
                 }
-                insert(
+                songPlaylistMapTable.insertIgnore(
                     SongPlaylistMap(
                         songId = matchedSong.asMediaItem.mediaId,
                         playlistId = playlistId,
                         position = position
                     ).default()
                 )
-                insert(
-                    Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
-                    SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
+                albumTable.insertIgnore(
+                    Album(
+                        id = matchedSong.album?.endpoint?.browseId ?: "",
+                        title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()
+                    )
+                )
+                songAlbumMapTable.insertIgnore(
+                    SongAlbumMap(
+                        matchedSong.asMediaItem.mediaId,
+                        matchedSong.album?.endpoint?.browseId ?: "",
+                        null
+                    )
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     val album = Database.album(matchedSong.album?.endpoint?.browseId ?: "").firstOrNull()
@@ -818,30 +829,28 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                         YtMusic.addToPlaylist(playlist.browseId ?: "", matchedSong.asMediaItem.mediaId)
                     }
                 }
-                if ((artistsNames != null) && (artistsIds != null)) {
-                    artistsNames.let { artistNames ->
-                        artistsIds.let { artistIds ->
-                            if (artistNames.size == artistIds.size) {
-                                insert(
-                                    artistNames.mapIndexed { index, artistName ->
-                                        Artist(id = (artistIds[index]) ?: "", name = artistName)
-                                    },
-                                    artistIds.map { artistId ->
-                                        SongArtistMap(songId = matchedSong.asMediaItem.mediaId, artistId = (artistId) ?: "")
-                                    }
-                                )
-                            }
-                        }
+
+                if ( artistsNames != null && artistsIds != null ) {
+                    artistsNames.fastZip( artistsIds ) { artistName, artistId ->
+                        if( artistId == null ) return@fastZip
+
+                        artistTable.insertIgnore(
+                            Artist(id = artistId, name = artistName)
+                        )
+                        songArtistMapTable.insertIgnore(
+                            SongArtistMap(song.id, artistId)
+                        )
                     }
                 }
+
                 Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
                 if (song.thumbnailUrl == "") Database.delete(song)
             }
         } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
             songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
             Database.delete(song)
-            Database.insert(songNotFound)
-            Database.insert(
+            Database.songTable.insertIgnore( songNotFound )
+            Database.songPlaylistMapTable.insertIgnore(
                 SongPlaylistMap(
                     songId = songNotFound.id,
                     playlistId = playlistId,
@@ -880,29 +889,35 @@ suspend fun updateLocalPlaylist(song: Song){
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
             if (matchedSong != null) {
-                insert(
-                    Album(id = matchedSong.album?.endpoint?.browseId ?: "", title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()),
-                    SongAlbumMap(songId = matchedSong.asMediaItem.mediaId, albumId = matchedSong.album?.endpoint?.browseId ?: "", position = null)
+                albumTable.insertIgnore(
+                    Album(
+                        id = matchedSong.album?.endpoint?.browseId ?: "",
+                        title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()
+                    )
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     val album = Database.album(matchedSong.album?.endpoint?.browseId ?: "").firstOrNull()
                     album?.copy(thumbnailUrl = matchedSong.thumbnail?.url)?.let { update(it) }
+                songAlbumMapTable.insertIgnore(
+                    SongAlbumMap(
+                        matchedSong.asMediaItem.mediaId,
+                        matchedSong.album?.endpoint?.browseId ?: "",
+                        null
+                    )
+                )
+
                 }
 
-                if ((artistsNames != null) && (artistsIds != null)) {
-                    artistsNames.let { artistNames ->
-                        artistsIds.let { artistIds ->
-                            if (artistNames.size == artistIds.size) {
-                                insert(
-                                    artistNames.mapIndexed { index, artistName ->
-                                        Artist(id = (artistIds[index]) ?: "", name = artistName)
-                                    },
-                                    artistIds.map { artistId ->
-                                        SongArtistMap(songId = song.id, artistId = (artistId) ?: "")
-                                    }
-                                )
-                            }
-                        }
+                if ( artistsNames != null && artistsIds != null ) {
+                    artistsNames.fastZip( artistsIds ) { artistName, artistId ->
+                        if( artistId == null ) return@fastZip
+
+                        artistTable.insertIgnore(
+                            Artist(id = artistId, name = artistName)
+                        )
+                        songArtistMapTable.insertIgnore(
+                            SongArtistMap(song.id, artistId)
+                        )
                     }
                 }
                 Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
@@ -985,7 +1000,7 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                         if (songExist(item.mediaId) == 0){
                             Database.insert(item)
                         }
-                        Database.insert(
+                        songPlaylistMapTable.insertIgnore(
                             SongPlaylistMap(
                                 songId = item.mediaId,
                                 playlistId = localPlaylistId,
@@ -1014,7 +1029,7 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                                     if (songExist(item.mediaId) == 0){
                                        Database.insert(item)
                                    }
-                                   insert(
+                                   songPlaylistMapTable.insertIgnore(
                                       SongPlaylistMap(
                                         songId = item.mediaId,
                                         playlistId = localPlaylistId,
@@ -1042,7 +1057,7 @@ suspend fun addSongToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylist
                     if (songExist(mediaItem.mediaId) == 0) {
                         Database.insert(mediaItem)
                     }
-                    insert(
+                    songPlaylistMapTable.insertIgnore(
                         SongPlaylistMap(
                             songId = mediaItem.mediaId,
                             playlistId = localPlaylistId,

@@ -6,11 +6,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import app.kreate.android.R
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Session
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
-import app.kreate.android.R
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
@@ -51,12 +51,11 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
                         thumbnailUrl = video.thumbnailUrl.toString()
                     )
                 }
-                if (song != null) {
-                    Database.insert(song)
-                }
+                if (song != null)
+                    Database.songTable.insertIgnore( song )
             }
             playlist.videos.forEachIndexed { index, song ->
-                Database.insert(
+                Database.songPlaylistMapTable.insertIgnore(
                     SongPlaylistMap(
                         songId = song.id.toString(),
                         playlistId = playlistId,
@@ -94,13 +93,6 @@ fun ImportPipedPlaylists(){
                     it.forEach {
                         val playlistExist = playlistExistByName("$PIPED_PREFIX${it.name}")
                         if (playlistExist == 0L) {
-                            val playlistId =
-                                insert(
-                                    Playlist(
-                                        name = "$PIPED_PREFIX${it.name}",
-                                        browseId = it.id.toString()
-                                    )
-                                )
                             coroutineScope.launch(Dispatchers.IO) {
                                 async {
                                     Piped.playlist.songs(
@@ -119,18 +111,23 @@ fun ImportPipedPlaylists(){
                                                 thumbnailUrl = video.thumbnailUrl.toString()
                                             )
                                         }
-                                        if (song != null) insert(song)
+                                        if (song != null) songTable.insertIgnore( song )
                                     }
                                     playlist.videos.forEachIndexed { index, song ->
-                                        if (!song.id.isNullOrBlank() || !song.id.isNullOrEmpty()) {
-                                            insert(
-                                                SongPlaylistMap(
-                                                    songId = song.id.toString(),
-                                                    playlistId = playlistId,
-                                                    position = index
-                                                ).default()
-                                            )
-                                        }
+                                        if( song.id.isNullOrBlank() ) return@forEachIndexed
+                                        val innerPlaylist = Playlist(
+                                            name = "$PIPED_PREFIX${it.name}",
+                                            browseId = it.id.toString()
+                                        )
+                                        val pId = playlistTable.insert( innerPlaylist )
+
+                                        songPlaylistMapTable.insertIgnore(
+                                            SongPlaylistMap(
+                                                songId = song.id.toString(),
+                                                playlistId = pId,
+                                                position = index
+                                            ).default()
+                                        )
                                     }
 
                                 }
@@ -189,8 +186,9 @@ fun createPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
         async {
             Piped.playlist.create(session = pipedSession, name = name)
         }.await()?.map {
-           playlistId = Database.insert(Playlist(name = "$PIPED_PREFIX$name", browseId = it.id.toString()))
-           browseId = it.id.toString()
+            val playlist = Playlist(name = "$PIPED_PREFIX$name", browseId = it.id.toString())
+            playlistId = Database.playlistTable.insert( playlist)
+            browseId = it.id.toString()
         }
         Timber.d("SyncPipedUtils createPipedPlaylist pipedSession $pipedSession, name $name new playlistId $playlistId browseId $browseId")
     }

@@ -1,9 +1,9 @@
 package it.fast4x.rimusic
 
 import android.content.ContentValues
-import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE
 import android.os.Parcel
+import androidx.compose.ui.util.fastZip
 import androidx.core.database.getFloatOrNull
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -2424,28 +2424,6 @@ interface Database {
     @Query("DELETE FROM Event WHERE songId = :songId")
     fun clearEventsFor(songId: String)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    @Throws(SQLException::class)
-    fun insert(event: Event)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(format: Format)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(artist: Artist)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(album: Album)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(searchQuery: SearchQuery)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(playlist: Playlist): Long
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(songPlaylistMap: SongPlaylistMap): Long
-
     /**
      * Insert provided song into indicated playlist
      * at the next available position.
@@ -2470,27 +2448,6 @@ interface Database {
     """)
     fun insertSongToPlaylist( songId: String, playlistId: Long )
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(songArtistMap: SongArtistMap): Long
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(songAlbumMap: SongAlbumMap): Long
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(song: Song): Long
-
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(queuedMediaItems: List<QueuedMediaItem>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertSongPlaylistMaps(songPlaylistMaps: List<SongPlaylistMap>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(album: Album, songAlbumMap: SongAlbumMap)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(artists: List<Artist>, songArtistMaps: List<SongArtistMap>)
-
     @Transaction
     fun insert(mediaItem: MediaItem, block: (Song) -> Song = { it }) {
         var title = mediaItem.mediaMetadata.title!!.toString()
@@ -2504,28 +2461,34 @@ interface Database {
             durationText = mediaItem.mediaMetadata.extras?.getString("durationText"),
             thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString()
         ).let(block).also { song ->
-            if (insert(song) == -1L) return
+            if (songTable.insertIgnore( song ) == -1L) return
         }
 
         mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
-            insert(
-                Album(id = albumId, title = mediaItem.mediaMetadata.albumTitle?.toString()),
-                SongAlbumMap(songId = song.id, albumId = albumId, position = null)
+            albumTable.insertIgnore(
+                Album(
+                    id = albumId,
+                    title = mediaItem.mediaMetadata.albumTitle?.toString()
+                )
+            )
+            songAlbumMapTable.insertIgnore(
+                SongAlbumMap( song.id, albumId, null )
             )
         }
 
-        mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")?.let { artistNames ->
-            mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.let { artistIds ->
-                if (artistNames.size == artistIds.size) {
-                    insert(
-                        artistNames.mapIndexed { index, artistName ->
-                            Artist(id = artistIds[index], name = artistName)
-                        },
-                        artistIds.map { artistId ->
-                            SongArtistMap(songId = song.id, artistId = artistId)
-                        }
-                    )
-                }
+        val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")
+        val artistsIds = mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")
+
+        if ( artistsNames != null && artistsIds != null ) {
+            artistsNames.fastZip( artistsIds ) { artistName, artistId ->
+                if( artistId == null ) return@fastZip
+
+                artistTable.insertIgnore(
+                    Artist(id = artistId, name = artistName)
+                )
+                songArtistMapTable.insertIgnore(
+                    SongArtistMap(song.id, artistId)
+                )
             }
         }
     }
