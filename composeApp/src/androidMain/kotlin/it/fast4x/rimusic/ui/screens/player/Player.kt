@@ -1955,16 +1955,6 @@ fun Player(
             && binder.player.currentMediaItemIndex + 1 < binder.player.mediaItemCount )
             binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1) else MediaItem.EMPTY
 
-        var songLiked by remember {
-            mutableStateOf(0)
-        }
-
-        LaunchedEffect(Unit, nextmedia.mediaId) {
-            withContext(Dispatchers.IO) {
-                songLiked = Database.songliked(nextmedia.mediaId)
-            }
-        }
-
         val thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
         val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
         val statsfornerds by rememberPreference(statsfornerdsKey, false)

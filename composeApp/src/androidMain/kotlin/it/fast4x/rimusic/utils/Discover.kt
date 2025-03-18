@@ -7,14 +7,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.first
 import me.knighthat.utils.Toaster
 
 @OptIn(UnstableApi::class)
@@ -28,7 +25,6 @@ fun ApplyDiscoverToQueue() {
 
     binder?.player ?: return
 
-    val context = LocalContext.current
     val player = binder.player
 
     var listMediaItemsIndex = remember {
@@ -38,25 +34,19 @@ fun ApplyDiscoverToQueue() {
         mutableStateOf(player.currentTimeline.windows)
     }
 
-    var songInPlaylist by remember {
-        mutableStateOf(0)
-    }
-    var songIsLiked by remember {
-        mutableStateOf(0)
-    }
-
     LaunchedEffect(Unit) {
         listMediaItemsIndex.clear()
         windows.forEach { window ->
-            if (window.firstPeriodIndex != player.currentMediaItemIndex) {
-                withContext(Dispatchers.IO) {
-                    songInPlaylist = Database.songUsedInPlaylists(window.mediaItem.mediaId)
-                    songIsLiked = Database.songliked(window.mediaItem.mediaId)
-                }
-                if (songInPlaylist > 0 || songIsLiked > 0) {
-                    listMediaItemsIndex.add(window.firstPeriodIndex)
-                }
-            }
+            if( window.firstPeriodIndex == player.currentMediaItemIndex )
+                return@forEach
+
+            val mediaId = window.mediaItem.mediaId
+            val isMappedToAPlaylist = Database.isSongMappedToPlaylist( mediaId ).first()
+            val isLiked = Database.songTable.isLiked( mediaId ).first()
+
+            if( isMappedToAPlaylist && isLiked )
+                listMediaItemsIndex.add(window.firstPeriodIndex)
+
         }.also {
             if (listMediaItemsIndex.isNotEmpty()) {
                 val mediacount = listMediaItemsIndex.size - 1

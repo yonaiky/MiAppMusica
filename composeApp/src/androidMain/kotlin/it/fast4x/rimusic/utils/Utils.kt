@@ -88,16 +88,7 @@ const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 fun songToggleLike( song: Song ) {
     Database.asyncTransaction {
         songTable.insertIgnore( song )
-
-        if (songliked(song.asMediaItem.mediaId) == 0)
-            like(
-                song.asMediaItem.mediaId,
-                System.currentTimeMillis()
-            )
-        else like(
-            song.asMediaItem.mediaId,
-            null
-        )
+        songTable.toggleLike( song.id )
     }
 }
 
@@ -105,16 +96,7 @@ fun songToggleLike( song: Song ) {
 fun mediaItemToggleLike( mediaItem: MediaItem) {
     Database.asyncTransaction {
         songTable.insertIgnore( mediaItem )
-
-        if (songliked(mediaItem.mediaId) == 0)
-            like(
-                mediaItem.mediaId,
-                System.currentTimeMillis()
-            )
-        else like(
-            mediaItem.mediaId,
-            null
-        )
+        songTable.toggleLike( mediaItem.mediaId )
 
         MyDownloadHelper.autoDownloadWhenLiked(
             context(),
