@@ -179,7 +179,7 @@ jobs:
           files: '*.apk'
           # Name: v0.0.1-20250303 | Weekly Build
           name: v${{ needs.build_version.outputs.version }}-${{ needs.build_time.outputs.date }} | Weekly Build
-          tag_name: v${{ needs.build_version.outputs.version }}-${{ needs.build_time.outputs.date }}
+          tag_name: v${{ needs.build_version.outputs.version }}
           make-latest: "true"
           body: |
             <div align="center">
