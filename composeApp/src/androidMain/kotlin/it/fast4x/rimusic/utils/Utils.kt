@@ -87,38 +87,35 @@ const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 
 fun songToggleLike( song: Song ) {
     Database.asyncTransaction {
-        if (songExist(song.asMediaItem.mediaId) == 0)
-            insert(song.asMediaItem, Song::toggleLike)
-        //else {
-            if (songliked(song.asMediaItem.mediaId) == 0)
-                like(
-                    song.asMediaItem.mediaId,
-                    System.currentTimeMillis()
-                )
-            else like(
+        songTable.insertIgnore( song )
+
+        if (songliked(song.asMediaItem.mediaId) == 0)
+            like(
                 song.asMediaItem.mediaId,
-                null
+                System.currentTimeMillis()
             )
-        //}
+        else like(
+            song.asMediaItem.mediaId,
+            null
+        )
     }
 }
 
 @OptIn(UnstableApi::class)
 fun mediaItemToggleLike( mediaItem: MediaItem) {
     Database.asyncTransaction {
-        if (songExist(mediaItem.mediaId) == 0)
-            insert(mediaItem, Song::toggleLike)
-        //else {
-            if (songliked(mediaItem.mediaId) == 0)
-                like(
-                    mediaItem.mediaId,
-                    System.currentTimeMillis()
-                )
-            else like(
+        songTable.insertIgnore( mediaItem )
+
+        if (songliked(mediaItem.mediaId) == 0)
+            like(
                 mediaItem.mediaId,
-                null
+                System.currentTimeMillis()
             )
-        //}
+        else like(
+            mediaItem.mediaId,
+            null
+        )
+
         MyDownloadHelper.autoDownloadWhenLiked(
             context(),
             mediaItem
@@ -798,9 +795,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                 deleteSongFromPlaylist(song.id, playlist?.id ?: 0L)
             }
             if (matchedSong != null) {
-                if (songExist(matchedSong.asSong.id) == 0) {
-                    Database.insert(matchedSong.asMediaItem)
-                }
+                songTable.insertIgnore( matchedSong.asSong )
                 songPlaylistMapTable.insertIgnore(
                     SongPlaylistMap(
                         songId = matchedSong.asMediaItem.mediaId,
@@ -999,14 +994,12 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
         }
         addToPlaylist(ytplaylistId, items.map { it.mediaId })
             .onSuccess {
-                items.forEachIndexed { index, item ->
-                    Database.asyncTransaction {
-                        if (songExist(item.mediaId) == 0){
-                            Database.insert(item)
-                        }
+                Database.asyncTransaction {
+                    items.forEachIndexed { index, mediaItem ->
+                        songTable.insertIgnore( mediaItem )
                         songPlaylistMapTable.insertIgnore(
                             SongPlaylistMap(
-                                songId = item.mediaId,
+                                songId = mediaItem.mediaId,
                                 playlistId = localPlaylistId,
                                 position = position + index
                             ).default()
@@ -1030,16 +1023,15 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                                 )
                             }.onSuccess {
                                 Database.asyncTransaction {
-                                    if (songExist(item.mediaId) == 0){
-                                       Database.insert(item)
-                                   }
-                                   songPlaylistMapTable.insertIgnore(
-                                      SongPlaylistMap(
-                                        songId = item.mediaId,
-                                        playlistId = localPlaylistId,
-                                        position = position
-                                      ).default()
-                                  )
+                                    songTable.insertIgnore( item )
+
+                                    songPlaylistMapTable.insertIgnore(
+                                        SongPlaylistMap(
+                                            songId = item.mediaId,
+                                            playlistId = localPlaylistId,
+                                            position = position
+                                        ).default()
+                                    )
                                 }
                                 Toaster.n( "${items.size - (index + 1)} Songs Remaining" )
                             }
@@ -1058,9 +1050,7 @@ suspend fun addSongToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylist
         addToPlaylist(ytplaylistId,mediaItem.mediaId)
             .onSuccess {
                 Database.asyncTransaction {
-                    if (songExist(mediaItem.mediaId) == 0) {
-                        Database.insert(mediaItem)
-                    }
+                    songTable.insertIgnore( mediaItem )
                     songPlaylistMapTable.insertIgnore(
                         SongPlaylistMap(
                             songId = mediaItem.mediaId,
@@ -1086,9 +1076,7 @@ suspend fun addToYtLikedSong(mediaItem: MediaItem){
             likeVideoOrSong(mediaItem.mediaId)
                 .onSuccess {
                     Database.asyncTransaction {
-                        if (songExist(mediaItem.mediaId) == 0) {
-                            Database.insert(mediaItem)
-                        }
+                        songTable.insertIgnore( mediaItem )
                         like(mediaItem.mediaId, System.currentTimeMillis())
                         MyDownloadHelper.autoDownloadWhenLiked(
                             context(),
@@ -1121,27 +1109,29 @@ suspend fun addToYtLikedSong(mediaItem: MediaItem){
 
 @OptIn(UnstableApi::class)
 suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
-    if (isYouTubeSyncEnabled()) {
-        mediaItems.forEachIndexed { index, item ->
-            delay(1000)
-            likeVideoOrSong(item.mediaId).onSuccess {
+    if( !isYouTubeSyncEnabled() ) return
+
+    mediaItems.forEachIndexed { index, item ->
+        delay(1000)
+
+        likeVideoOrSong( item.mediaId )
+            .onSuccess {
                 Database.asyncTransaction {
-                    if (songExist(item.mediaId) == 0) {
-                        Database.insert(item)
-                    }
-                    like(item.mediaId, System.currentTimeMillis())
+                    songTable.insertIgnore( item )
+                    like( item.mediaId, System.currentTimeMillis() )
                     MyDownloadHelper.autoDownloadWhenLiked(
                         context(),
                         item
                     )
+
+                    Toaster.s(
+                        "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt)
+                    )
                 }
-                Toaster.s(
-                    "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt)
-                )
-            }.onFailure {
+            }
+            .onFailure {
                 Toaster.e( "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt_failed) )
             }
-        }
     }
 }
 

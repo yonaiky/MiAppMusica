@@ -1358,9 +1358,6 @@ interface Database {
     @Query("SELECT * FROM Song WHERE id = :id")
     fun song(id: String?): Flow<Song?>
 
-    @Query("SELECT count(id) FROM Song WHERE id = :id")
-    fun songExist(id: String): Int
-
     @Query("SELECT likedAt FROM Song WHERE id = :songId")
     fun likedAt(songId: String): Flow<Long?>
 

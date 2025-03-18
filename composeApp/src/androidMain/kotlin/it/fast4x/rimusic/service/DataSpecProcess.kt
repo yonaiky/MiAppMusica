@@ -29,16 +29,15 @@ private suspend fun getPipedFormatUrl(
             }.also {
                 //println("PlayerService MyDownloadHelper DataSpecProcess getPipedFormatUrl before upsert format $it")
                 Database.asyncTransaction {
-                    if ( songExist(videoId) > 0 )
-                        formatTable.upsert(
-                            Format(
-                                songId = videoId,
-                                itag = it?.itag?.toInt(),
-                                mimeType = it?.mimeType,
-                                contentLength = it?.contentLength?.toLong(),
-                                bitrate = it?.bitrate?.toLong()
-                            )
+                    formatTable.upsert(
+                        Format(
+                            songId = videoId,
+                            itag = it?.itag?.toInt(),
+                            mimeType = it?.mimeType,
+                            contentLength = it?.contentLength?.toLong(),
+                            bitrate = it?.bitrate?.toLong()
                         )
+                    )
                 }
                 //println("PlayerService MyDownloadHelper DataSpecProcess getPipedFormatUrl after upsert format $it")
             }

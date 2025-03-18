@@ -174,18 +174,17 @@ suspend fun getAvancedInnerTubeStream(
                             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream song $videoId itag selected ${it}")
                             //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                             Database.asyncTransaction {
-                                if (songExist(videoId) > 0)
-                                    formatTable.upsert(
-                                        Format(
-                                            songId = videoId,
-                                            itag = it?.itag?.toInt(),
-                                            mimeType = it?.mimeType,
-                                            contentLength = it?.contentLength,
-                                            bitrate = it?.bitrate?.toLong(),
-                                            lastModified = it?.lastModified,
-                                            loudnessDb = it?.loudnessDb?.toFloat()
-                                        )
+                                formatTable.upsert(
+                                    Format(
+                                        songId = videoId,
+                                        itag = it?.itag?.toInt(),
+                                        mimeType = it?.mimeType,
+                                        contentLength = it?.contentLength,
+                                        bitrate = it?.bitrate?.toLong(),
+                                        lastModified = it?.lastModified,
+                                        loudnessDb = it?.loudnessDb?.toFloat()
                                     )
+                                )
                             }
                             //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
                         }
@@ -268,18 +267,17 @@ suspend fun getInnerTubeStream(
                             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream song $videoId itag selected ${it}")
                             //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                             Database.asyncTransaction {
-                                if (songExist(videoId) > 0)
-                                    formatTable.upsert(
-                                        Format(
-                                            songId = videoId,
-                                            itag = it?.itag?.toInt(),
-                                            mimeType = it?.mimeType,
-                                            contentLength = it?.contentLength,
-                                            bitrate = it?.bitrate?.toLong(),
-                                            lastModified = it?.lastModified,
-                                            loudnessDb = it?.loudnessDb?.toFloat()
-                                        )
+                                formatTable.upsert(
+                                    Format(
+                                        songId = videoId,
+                                        itag = it?.itag?.toInt(),
+                                        mimeType = it?.mimeType,
+                                        contentLength = it?.contentLength,
+                                        bitrate = it?.bitrate?.toLong(),
+                                        lastModified = it?.lastModified,
+                                        loudnessDb = it?.loudnessDb?.toFloat()
                                     )
+                                )
                             }
                             //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
                         }
@@ -370,18 +368,17 @@ suspend fun getInnerTubeFormatUrl(
                         println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnertubeFormat song $videoId itag selected ${it}")
                         //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                         Database.asyncTransaction {
-                            if (songExist(videoId) > 0)
-                                formatTable.upsert(
-                                    Format(
-                                        songId = videoId,
-                                        itag = it?.itag?.toInt(),
-                                        mimeType = it?.mimeType,
-                                        contentLength = it?.contentLength,
-                                        bitrate = it?.bitrate?.toLong(),
-                                        lastModified = it?.lastModified,
-                                        loudnessDb = it?.loudnessDb?.toFloat()
-                                    )
+                            formatTable.upsert(
+                                Format(
+                                    songId = videoId,
+                                    itag = it?.itag?.toInt(),
+                                    mimeType = it?.mimeType,
+                                    contentLength = it?.contentLength,
+                                    bitrate = it?.bitrate?.toLong(),
+                                    lastModified = it?.lastModified,
+                                    loudnessDb = it?.loudnessDb?.toFloat()
                                 )
+                            )
                         }
                         //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
                     }
@@ -425,16 +422,15 @@ private suspend fun getPipedFormatUrl(
             }.also {
                 //println("PlayerService MyDownloadHelper DataSpecProcess getPipedFormatUrl before upsert format $it")
                 Database.asyncTransaction {
-                    if ( songExist(videoId) > 0 )
-                        formatTable.upsert(
-                            Format(
-                                songId = videoId,
-                                itag = it?.itag?.toInt(),
-                                mimeType = it?.mimeType,
-                                contentLength = it?.contentLength?.toLong(),
-                                bitrate = it?.bitrate?.toLong()
-                            )
+                    formatTable.upsert(
+                        Format(
+                            songId = videoId,
+                            itag = it?.itag?.toInt(),
+                            mimeType = it?.mimeType,
+                            contentLength = it?.contentLength?.toLong(),
+                            bitrate = it?.bitrate?.toLong()
                         )
+                    )
                 }
                 //println("PlayerService MyDownloadHelper DataSpecProcess getPipedFormatUrl after upsert format $it")
             }
@@ -463,15 +459,14 @@ private suspend fun getInvidiousFormatUrl(
             }.also {
                 //println("PlayerService MyDownloadHelper DataSpecProcess getInvidiousFormatUrl before upsert format $it")
                 Database.asyncTransaction {
-                    if( songExist(videoId) > 0 )
-                        formatTable.upsert(
-                            Format(
-                                songId = videoId,
-                                itag = it?.itag?.toInt(),
-                                mimeType = it?.mimeType,
-                                bitrate = it?.bitrate?.toLong()
-                            )
+                    formatTable.upsert(
+                        Format(
+                            songId = videoId,
+                            itag = it?.itag?.toInt(),
+                            mimeType = it?.mimeType,
+                            bitrate = it?.bitrate?.toLong()
                         )
+                    )
                 }
                 //println("PlayerService MyDownloadHelper DataSpecProcess getInvidiousFormatUrl after upsert format $it")
             }

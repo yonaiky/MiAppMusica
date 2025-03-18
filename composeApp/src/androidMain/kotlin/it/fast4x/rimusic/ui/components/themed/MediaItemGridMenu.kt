@@ -663,14 +663,9 @@ fun MediaItemGridMenu (
         mutableStateOf(false)
     }
 
-    var songSaved by remember {
-        mutableStateOf(0)
-    }
-    LaunchedEffect(Unit, mediaItem.mediaId) {
-        withContext(Dispatchers.IO) {
-            songSaved = Database.songExist(mediaItem.mediaId)
-        }
-    }
+    val isSongExist by remember( mediaItem.mediaId ) {
+        Database.songTable.exists( mediaItem.mediaId )
+    }.collectAsState( false, Dispatchers.IO )
 
     if (showDialogChangeSongTitle)
         InputTextDialog(
@@ -876,7 +871,7 @@ fun MediaItemGridMenu (
                 }
             ) {
 
-                if (!isLocal && songSaved > 0) {
+                if ( !isLocal && isSongExist ) {
                     GridMenuItem(
                         icon = R.drawable.title_edit,
                         title = R.string.update_title,
