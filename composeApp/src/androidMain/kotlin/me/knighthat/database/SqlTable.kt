@@ -4,8 +4,11 @@ import android.database.SQLException
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.RawQuery
 import androidx.room.Update
 import androidx.room.Upsert
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 
 /**
  * Define class as a table.
@@ -13,6 +16,12 @@ import androidx.room.Upsert
  * Where [T] is record's type.
  */
 interface SqlTable<T> {
+
+    /**
+     * @return name of the table this [androidx.room.Dao] represents.
+     */
+    val tableName: String
+        get() = ""
 
     /**
      * Attempt to write [record] into database.
@@ -309,4 +318,47 @@ interface SqlTable<T> {
      */
     @Delete
     fun delete( records: List<T> ): Int
+
+    /**
+     * @param query SQLite compatible command to execute
+     * @return number of rows this command affected
+     */
+    @RawQuery
+    fun rawReturnsEffected( query: SupportSQLiteQuery ): Long
+
+    /**
+     * @return number of rows this table has
+     */
+    fun countAll(): Long {
+        val query = SimpleSQLiteQuery( "SELECT COUNT(*) FROM $tableName" )
+        return rawReturnsEffected( query )
+    }
+
+    /**
+     * @return number of rows match [condition]
+     */
+    fun count( condition: String ): Long {
+        val query = SimpleSQLiteQuery( "SELECT COUNT(*) FROM $tableName WHERE $condition" )
+        return rawReturnsEffected( query )
+    }
+
+    /**
+     * Wipe the table clean.
+     *
+     * @return number of rows deleted
+     */
+    fun deleteAll(): Long {
+        val query = SimpleSQLiteQuery( "DELETE FROM $tableName" )
+        return rawReturnsEffected( query )
+    }
+
+    /**
+     * Clear records match [condition]
+     *
+     * @return number of rows deleted
+     */
+    fun delete(condition: String ): Long {
+        val query = SimpleSQLiteQuery( "DELETE FROM $tableName WHERE $condition" )
+        return rawReturnsEffected( query )
+    }
 }

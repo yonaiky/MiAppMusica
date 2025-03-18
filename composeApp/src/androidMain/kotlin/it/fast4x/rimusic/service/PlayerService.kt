@@ -1083,7 +1083,7 @@ class PlayerService : InvincibleService(),
             )
         }.let { queuedMediaItems ->
             Database.asyncTransaction {
-                clearQueue()
+                queueTable.deleteAll()
                 queueTable.insert( queuedMediaItems )
             }
         }

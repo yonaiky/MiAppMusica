@@ -6,4 +6,8 @@ import it.fast4x.rimusic.models.Format
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
-interface FormatTable: SqlTable<Format>
+interface FormatTable: SqlTable<Format> {
+
+    override val tableName: String
+        get() = "Format"
+}

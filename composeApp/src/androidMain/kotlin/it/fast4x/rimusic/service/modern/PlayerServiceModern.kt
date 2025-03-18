@@ -1424,7 +1424,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 if (queuedMediaItems.isEmpty()) return@let
 
                 Database.asyncTransaction {
-                    clearQueue()
+                    queueTable.deleteAll()
                     queueTable.insert( queuedMediaItems )
                 }
 

@@ -592,7 +592,7 @@ fun HomeQuickPicks(
                                                         mediaItem = song.asMediaItem,
                                                         onRemoveFromQuickPicks = {
                                                             Database.asyncTransaction {
-                                                                clearEventsFor(song.id)
+                                                                eventTable.delete( song )
                                                             }
                                                         },
 

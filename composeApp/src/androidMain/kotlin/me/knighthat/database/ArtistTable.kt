@@ -6,4 +6,8 @@ import it.fast4x.rimusic.models.Artist
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
-interface ArtistTable: SqlTable<Artist>
+interface ArtistTable: SqlTable<Artist> {
+
+    override val tableName: String
+        get() = "Artist"
+}

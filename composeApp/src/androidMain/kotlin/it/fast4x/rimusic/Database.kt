@@ -4,9 +4,6 @@ import androidx.compose.ui.util.fastZip
 import androidx.media3.common.MediaItem
 import androidx.room.AutoMigration
 import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.RewriteQueriesToDropUnusedColumns
@@ -624,19 +621,9 @@ interface Database {
     """)
     fun isSongMappedToPlaylist( songId: String ): Flow<Boolean>
 
-    @Query("SELECT COUNT(1) FROM Song WHERE likedAt IS NOT NULL")
-    fun likedSongsCount(): Flow<Int>
-
-    @Query("SELECT COUNT(1) FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
-    fun onDeviceSongsCount(): Flow<Int>
-
     @Transaction
     @Query("SELECT * FROM Song WHERE artistsText = :name ")
     fun artistSongsByname(name: String): Flow<List<Song>>
-
-    @Transaction
-    @Query("SELECT * FROM Song")
-    fun flowListAllSongs(): Flow<List<Song>>
 
     @Query("SELECT id FROM Playlist WHERE name = :playlistName")
     fun playlistExistByName(playlistName: String): Long
@@ -1357,17 +1344,8 @@ interface Database {
     @Query("SELECT * FROM QueuedMediaItem")
     fun queue(): List<QueuedMediaItem>
 
-    @Query("DELETE FROM QueuedMediaItem")
-    fun clearQueue()
-
     @Query("SELECT * FROM SearchQuery WHERE `query` LIKE :query ORDER BY id DESC")
     fun queries(query: String): Flow<List<SearchQuery>>
-
-    @Query("SELECT COUNT (*) FROM SearchQuery")
-    fun queriesCount(): Flow<Int>
-
-    @Query("DELETE FROM SearchQuery")
-    fun clearQueries()
 
     @Query("UPDATE Playlist SET name = '${PINNED_PREFIX}'||name WHERE id = :playlistId")
     fun pinPlaylist(playlistId: Long): Int
@@ -2412,15 +2390,6 @@ interface Database {
     @Query("SELECT Song.* FROM Event JOIN Song ON Song.id = songId WHERE playTime > 0 and Song.id NOT LIKE '$LOCAL_KEY_PREFIX%' GROUP BY songId ORDER BY timestamp DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun lastPlayed( limit: Int = 10 ): Flow<List<Song>>
-
-    @Query("SELECT COUNT (*) FROM Event")
-    fun eventsCount(): Flow<Int>
-
-    @Query("DELETE FROM Event")
-    fun clearEvents()
-
-    @Query("DELETE FROM Event WHERE songId = :songId")
-    fun clearEventsFor(songId: String)
 
     /**
      * Insert provided song into indicated playlist

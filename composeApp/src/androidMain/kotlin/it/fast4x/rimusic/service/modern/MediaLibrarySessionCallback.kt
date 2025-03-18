@@ -240,10 +240,10 @@ class MediaLibrarySessionCallback @Inject constructor(
 
 
                 PlayerServiceModern.PLAYLIST -> {
-                    val likedSongCount = database.likedSongsCount().first()
+                    val likedSongCount = database.songTable.count( "WHERE likedAt IS NOT NULL" )
                     val cachedSongCount = getCountCachedSongs().first()
                     val downloadedSongCount = getCountDownloadedSongs().first()
-                    val onDeviceSongCount = database.onDeviceSongsCount().first()
+                    val onDeviceSongCount = database.songTable.count( "WHERE id LIKE '${it.fast4x.rimusic.service.LOCAL_KEY_PREFIX}%'" )
                     val playlists = database.playlistPreviewsByDateSongCountAsc().first()
                     listOf(
                         browsableMediaItem(

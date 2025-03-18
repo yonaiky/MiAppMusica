@@ -6,4 +6,8 @@ import it.fast4x.rimusic.models.QueuedMediaItem
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
-interface QueuedMediaItemTable: SqlTable<QueuedMediaItem>
+interface QueuedMediaItemTable: SqlTable<QueuedMediaItem> {
+
+    override val tableName: String
+        get() = "QueuedMediaItem"
+}

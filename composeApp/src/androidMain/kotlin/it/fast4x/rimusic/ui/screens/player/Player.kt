@@ -1955,15 +1955,6 @@ fun Player(
             && binder.player.currentMediaItemIndex + 1 < binder.player.mediaItemCount )
             binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1) else MediaItem.EMPTY
 
-        var songPlaylist1 by remember {
-            mutableStateOf(0)
-        }
-        LaunchedEffect(Unit, nextmedia.mediaId) {
-            withContext(Dispatchers.IO) {
-                songPlaylist1 = Database.songUsedInPlaylists(nextmedia.mediaId)
-            }
-        }
-
         var songLiked by remember {
             mutableStateOf(0)
         }

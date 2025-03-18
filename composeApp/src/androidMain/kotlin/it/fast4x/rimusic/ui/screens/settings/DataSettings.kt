@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -53,7 +53,6 @@ import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
@@ -61,6 +60,7 @@ import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
 import me.knighthat.component.import.ImportMigration
 import me.knighthat.component.import.ImportSettings
+import me.knighthat.utils.Toaster
 import java.util.concurrent.CancellationException
 
 @SuppressLint("SuspiciousIndentation")
@@ -120,10 +120,6 @@ fun DataSettings() {
     )
 
     var pauseSearchHistory by rememberPreference(pauseSearchHistoryKey, false)
-
-    val queriesCount by remember {
-        Database.queriesCount().distinctUntilChanged()
-    }.collectAsState(initial = 0)
 
     var cleanCacheOfflineSongs by remember {
         mutableStateOf(false)
@@ -495,6 +491,11 @@ fun DataSettings() {
         )
         RestartPlayerService(restartService, onRestart = { restartService = false } )
 
+        var queriesCount by remember { mutableLongStateOf( 0L ) }
+        Database.asyncQuery {
+           queriesCount = searchTable.countAll()
+        }
+
         SettingsEntry(
             title = stringResource(R.string.clear_search_history),
                       text = if (queriesCount > 0) {
@@ -503,7 +504,13 @@ fun DataSettings() {
                           stringResource(R.string.history_is_empty)
                       },
                       isEnabled = queriesCount > 0,
-                      onClick = { Database.asyncTransaction( Database::clearQueries ) }
+                      onClick = {
+                          Database.asyncTransaction {
+                              searchTable.deleteAll()
+                          }
+
+                          Toaster.done()
+                      }
         )
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
