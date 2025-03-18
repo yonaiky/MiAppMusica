@@ -690,10 +690,10 @@ fun DeviceListSongs(
                                         if (listMediaItems.isEmpty()) {
                                             filteredSongs.forEachIndexed { index, song ->
                                                 Database.asyncTransaction {
-                                                    insert(song.asMediaItem)
+                                                    songTable.insertIgnore( song.song )
                                                     songPlaylistMapTable.insertIgnore(
                                                         SongPlaylistMap(
-                                                            songId = song.asMediaItem.mediaId,
+                                                            songId = song.song.id,
                                                             playlistId = playlistPreview.playlist.id,
                                                             position = position + index
                                                         ).default()

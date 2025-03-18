@@ -1465,10 +1465,10 @@ fun HomeSongsModern(
                                                 items.forEachIndexed { index, song ->
                                                     runCatching {
                                                         CoroutineScope(Dispatchers.IO).launch {
-                                                            Database.insert(song.song.asMediaItem)
+                                                            Database.songTable.insertIgnore( song.song )
                                                             Database.songPlaylistMapTable.insertIgnore(
                                                                 SongPlaylistMap(
-                                                                    songId = song.song.asMediaItem.mediaId,
+                                                                    songId = song.song.id,
                                                                     playlistId = playlistPreview.playlist.id,
                                                                     position = position + index
                                                                 ).default()

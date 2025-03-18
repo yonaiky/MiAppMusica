@@ -434,10 +434,10 @@ fun HomeAlbums(
                                                     if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
                                                         songs.forEachIndexed { index, song ->
                                                             Database.asyncTransaction {
-                                                                insert(song.asMediaItem)
+                                                                songTable.insertIgnore( song )
                                                                 songPlaylistMapTable.insertIgnore(
                                                                     SongPlaylistMap(
-                                                                        songId = song.asMediaItem.mediaId,
+                                                                        songId = song.id,
                                                                         playlistId = playlistPreview.playlist.id,
                                                                         position = position + index
                                                                     ).default()
