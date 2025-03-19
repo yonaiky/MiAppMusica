@@ -47,9 +47,11 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.util.concurrent.Executors
 import kotlin.io.path.createTempDirectory
@@ -307,10 +309,11 @@ object MyDownloadHelper {
     fun autoDownloadWhenLiked(context: Context, mediaItem: MediaItem) {
         if (context.preferences.getBoolean(autoDownloadSongWhenLikedKey, false)) {
             Database.asyncQuery {
-                if (getLikedAt(mediaItem.mediaId) !in listOf(-1L,null)) {
-                    autoDownload(context, mediaItem)
-                } else {
-                    removeDownload(context, mediaItem)
+                runBlocking {
+                    if( songTable.isLiked( mediaItem.mediaId ).first() )
+                        autoDownload(context, mediaItem)
+                    else
+                        removeDownload(context, mediaItem)
                 }
             }
         }

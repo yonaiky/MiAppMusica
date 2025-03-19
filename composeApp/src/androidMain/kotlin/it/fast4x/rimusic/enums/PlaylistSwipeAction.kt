@@ -5,6 +5,9 @@ import androidx.annotation.OptIn
 import androidx.annotation.StringRes
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
+import it.fast4x.rimusic.enums.QueueSwipeAction.Download
+import it.fast4x.rimusic.enums.QueueSwipeAction.Favourite
+import it.fast4x.rimusic.enums.QueueSwipeAction.NoAction
 import me.knighthat.enums.TextView
 
 enum class PlaylistSwipeAction(
@@ -23,9 +26,10 @@ enum class PlaylistSwipeAction(
     Enqueue( R.drawable.enqueue, R.string.enqueue );
 
     @OptIn(UnstableApi::class)
-    fun getStateIcon(likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int? {
-        return when (this) {
-            Download -> when (downloadedStateMedia) {
+    fun getStateIcon( likeState: Boolean?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia ): Int? =
+        when( this ) {
+            NoAction -> null
+            Download -> when( downloadedStateMedia ) {
                 DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED -> when (downloadState) {
                     androidx.media3.exoplayer.offline.Download.STATE_DOWNLOADING -> R.drawable.download_progress
                     androidx.media3.exoplayer.offline.Download.STATE_QUEUED -> R.drawable.download_progress
@@ -34,12 +38,11 @@ enum class PlaylistSwipeAction(
                 }
                 else -> downloadedStateMedia.iconId
             }
-            Favourite -> when (likedState) {
-                -1L -> R.drawable.heart_dislike
-                null -> R.drawable.heart_outline
-                else -> R.drawable.heart
+            Favourite -> when( likeState ) {
+                false -> R.drawable.heart_dislike
+                null  -> R.drawable.heart_outline
+                else  -> R.drawable.heart
             }
             else -> iconId
         }
-    }
 }

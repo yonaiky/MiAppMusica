@@ -25,11 +25,10 @@ enum class QueueSwipeAction(
     Enqueue( R.drawable.enqueue, R.string.enqueue );
 
     @OptIn(UnstableApi::class)
-    fun getStateIcon(likedState: Long?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia): Int? {
-        return when (this) {
+    fun getStateIcon( likeState: Boolean?, downloadState: Int, downloadedStateMedia: DownloadedStateMedia ): Int? =
+        when( this ) {
             NoAction -> null
-            PlayNext -> R.drawable.play_skip_forward
-            Download -> when (downloadedStateMedia) {
+            Download -> when( downloadedStateMedia ) {
                 DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED -> when (downloadState) {
                     androidx.media3.exoplayer.offline.Download.STATE_DOWNLOADING -> R.drawable.download_progress
                     androidx.media3.exoplayer.offline.Download.STATE_QUEUED -> R.drawable.download_progress
@@ -38,13 +37,11 @@ enum class QueueSwipeAction(
                 }
                 else -> downloadedStateMedia.iconId
             }
-            Favourite -> when (likedState) {
-                -1L -> R.drawable.heart_dislike
-                null -> R.drawable.heart_outline
-                else -> R.drawable.heart
+            Favourite -> when( likeState ) {
+                false -> R.drawable.heart_dislike
+                null  -> R.drawable.heart_outline
+                else  -> R.drawable.heart
             }
-            RemoveFromQueue -> R.drawable.trash
-            Enqueue -> R.drawable.enqueue
+            else -> iconId
         }
-    }
 }

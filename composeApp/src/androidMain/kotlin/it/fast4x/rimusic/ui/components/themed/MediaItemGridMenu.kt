@@ -94,6 +94,7 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -323,12 +324,6 @@ fun MediaItemGridMenu (
     var updateData by remember {
         mutableStateOf(false)
     }
-    var likedAt by remember {
-        mutableStateOf<Long?>(null)
-    }
-    LaunchedEffect(Unit, mediaItem.mediaId, updateData) {
-        Database.likedAt(mediaItem.mediaId).collect { likedAt = it }
-    }
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
@@ -447,10 +442,15 @@ fun MediaItemGridMenu (
                 disableScrollingText = disableScrollingText
             )
 
+            val isSongLiked by remember( mediaItem.mediaId ) {
+                Database.songTable
+                    .isLiked( mediaItem.mediaId )
+                    .distinctUntilChanged()
+            }.collectAsState( false, Dispatchers.IO )
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 IconButton(
-                    icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+                    icon = if ( isSongLiked ) R.drawable.heart else R.drawable.heart_outline,
                     color = colorPalette().favoritesIcon,
                     onClick = {
                         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {

@@ -45,7 +45,6 @@ import it.fast4x.innertube.utils.getProxy
 import it.fast4x.kugou.KuGou
 import it.fast4x.lrclib.LrcLib
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.Database.Companion.getLikedAt
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
@@ -67,6 +66,7 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -84,13 +84,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
-
-fun songToggleLike( song: Song ) {
-    Database.asyncTransaction {
-        songTable.insertIgnore( song )
-        songTable.toggleLike( song.id )
-    }
-}
 
 @OptIn(UnstableApi::class)
 fun mediaItemToggleLike( mediaItem: MediaItem) {
@@ -1052,41 +1045,29 @@ suspend fun addSongToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylist
 
 
 @OptIn(UnstableApi::class)
-suspend fun addToYtLikedSong(mediaItem: MediaItem){
-    if (isYouTubeSyncEnabled()) {
-        if (getLikedAt(mediaItem.mediaId) in listOf(-1L, null)) {
-            likeVideoOrSong(mediaItem.mediaId)
-                .onSuccess {
-                    Database.asyncTransaction {
-                        songTable.insertIgnore( mediaItem )
-                        like(mediaItem.mediaId, System.currentTimeMillis())
-                        MyDownloadHelper.autoDownloadWhenLiked(
-                            context(),
-                            mediaItem
-                        )
-                    }
-                    Toaster.s( R.string.songs_liked_yt )
-                }
-                .onFailure {
-                    Toaster.e( R.string.songs_liked_yt_failed )
-                }
-        } else {
-            removelikeVideoOrSong(mediaItem.mediaId)
-                .onSuccess {
-                    Database.asyncTransaction {
-                        like(mediaItem.mediaId, null)
-                        MyDownloadHelper.autoDownloadWhenLiked(
-                            context(),
-                            mediaItem
-                        )
-                    }
-                    Toaster.s( R.string.song_unliked_yt )
-                }
-                .onFailure {
-                    Toaster.e( R.string.songs_unliked_yt_failed )
-                }
-        }
+suspend fun addToYtLikedSong(mediaItem: MediaItem) {
+    if( !isYouTubeSyncEnabled() ) return
+
+    Database.songTable.insertIgnore( mediaItem )
+
+    val isSongLiked = Database.songTable.isLiked( mediaItem.mediaId ).first()
+
+    val isSuccess: Boolean =
+        (if( isSongLiked ) likeVideoOrSong( mediaItem.mediaId ) else removelikeVideoOrSong( mediaItem.mediaId )).isSuccess
+
+    val messageId = when {
+        isSongLiked && isSuccess -> R.string.songs_liked_yt
+        isSongLiked && !isSuccess -> R.string.songs_liked_yt_failed
+        !isSongLiked && isSuccess -> R.string.song_unliked_yt
+        !isSongLiked && !isSuccess -> R.string.songs_unliked_yt_failed
+        else -> throw RuntimeException()
     }
+
+    if( isSuccess ) {
+        Database.songTable.toggleLike(mediaItem.mediaId)
+        Toaster.s( messageId )
+    } else
+        Toaster.e( messageId)
 }
 
 @OptIn(UnstableApi::class)
@@ -1100,7 +1081,7 @@ suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
             .onSuccess {
                 Database.asyncTransaction {
                     songTable.insertIgnore( item )
-                    like( item.mediaId, System.currentTimeMillis() )
+                    songTable.likeState( item.mediaId, true )
                     MyDownloadHelper.autoDownloadWhenLiked(
                         context(),
                         item

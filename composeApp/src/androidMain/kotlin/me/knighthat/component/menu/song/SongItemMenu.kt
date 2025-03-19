@@ -63,6 +63,7 @@ import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.component.SongItem
@@ -255,7 +256,9 @@ class SongItemMenu private constructor(
                     ),
                     trailingContent = {
                         val isLiked by remember {
-                            Database.likedAt( song.id ).map { it != null }
+                            Database.songTable
+                                    .isLiked( song.id )
+                                    .distinctUntilChanged()
                         }.collectAsState( false, Dispatchers.IO )
 
                         Column(

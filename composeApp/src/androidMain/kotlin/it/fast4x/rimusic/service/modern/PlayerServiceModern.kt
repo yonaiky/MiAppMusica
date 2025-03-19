@@ -1809,10 +1809,7 @@ class PlayerServiceModern : MediaLibraryService(),
         fun toggleLike() {
             Database.asyncTransaction {
                 currentSong.value?.let {
-                    like(
-                        it.id,
-                        setLikeState(it.likedAt)
-                    )
+                    songTable.rotateLikeState( it.id )
                 }.also {
                     currentSong.debounce(1000).collect(coroutineScope) { updateDefaultNotification() }
                 }

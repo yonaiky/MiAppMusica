@@ -31,6 +31,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
@@ -157,16 +158,16 @@ fun MiniPlayer(
 
     playerError?.let { PlayerError(error = it) }
 
-    var likedAt by rememberSaveable {
-        mutableStateOf<Long?>(null)
-    }
+    val isSongLiked by remember( mediaItem.mediaId ) {
+        Database.songTable
+                .isLiked( mediaItem.mediaId )
+                .distinctUntilChanged()
+    }.collectAsState( false, Dispatchers.IO )
+
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
         MiniPlayerType.Modern
     )
-    LaunchedEffect(mediaItem.mediaId) {
-        Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
-    }
 
     var updateLike by rememberSaveable { mutableStateOf(false) }
 
@@ -176,10 +177,10 @@ fun MiniPlayer(
                 Toaster.noInternet()
             } else if (!isYouTubeSyncEnabled()){
                 mediaItemToggleLike(mediaItem)
-                if (likedAt == null)
-                    Toaster.n( R.string.added_to_favorites )
-                else
+                if ( isSongLiked )
                     Toaster.n( R.string.removed_from_favorites )
+                else
+                    Toaster.n( R.string.added_to_favorites )
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
                     addToYtLikedSong(mediaItem)
@@ -249,10 +250,12 @@ fun MiniPlayer(
                 Icon(
                     imageVector = when (dismissState.targetValue) {
                         SwipeToDismissBoxValue.StartToEnd -> {
-                            if (miniPlayerType == MiniPlayerType.Modern) ImageVector.vectorResource(R.drawable.play_skip_back) else
-                             if (likedAt == null)
-                             ImageVector.vectorResource(R.drawable.heart_outline)
-                             else ImageVector.vectorResource(R.drawable.heart)
+                            if (miniPlayerType == MiniPlayerType.Modern)
+                                ImageVector.vectorResource(R.drawable.play_skip_back)
+                            else if ( isSongLiked )
+                                ImageVector.vectorResource(R.drawable.heart)
+                            else
+                                ImageVector.vectorResource(R.drawable.heart_outline)
                         }
                         SwipeToDismissBoxValue.EndToStart ->  ImageVector.vectorResource(R.drawable.play_skip_forward)
                         SwipeToDismissBoxValue.Settled ->  ImageVector.vectorResource(R.drawable.play)
@@ -442,7 +445,7 @@ fun MiniPlayer(
                 )
                 if (miniPlayerType == MiniPlayerType.Modern)
                  it.fast4x.rimusic.ui.components.themed.IconButton(
-                     icon = if (likedAt == null) getUnlikedIcon() else getLikedIcon(),
+                     icon = if( isSongLiked ) getLikedIcon() else getUnlikedIcon(),
                      color = colorPalette().favoritesIcon,
                      onClick = {
                          updateLike = true

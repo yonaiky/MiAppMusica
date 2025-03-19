@@ -12,6 +12,7 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -174,30 +175,29 @@ fun SwipeableQueueItem(
         }
     }
 
-    var likedAt by rememberSaveable {
-        mutableStateOf<Long?>(null)
-    }
-    LaunchedEffect(mediaItem.mediaId) {
-        Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
-    }
+    val songLikeState by remember {
+        Database.songTable
+                .likeState( mediaItem.mediaId )
+                .distinctUntilChanged()
+    }.collectAsState( null, Dispatchers.IO )
+
     val onFavourite: () -> Unit = {
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
             Toaster.noInternet()
         } else if (!isYouTubeSyncEnabled()){
             mediaItemToggleLike(mediaItem)
-            val message: String
             val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
             val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
-            if (likedAt == -1L) {
-                message =
-                    "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_disliked)}"
-            } else if (likedAt != null) {
-                message =
-                    "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_favorites)}"
-            } else
-                message = context.resources.getString(R.string.added_to_favorites)
 
-            Toaster.n( message )
+            val messageId = when( songLikeState ) {
+                false -> R.string.removed_from_disliked
+                true -> R.string.added_to_favorites
+                null -> R.string.removed_from_favorites
+            }
+
+            Toaster.s(
+                "\"$mTitle - $mArtist\" ${context.getString(messageId)}"
+            )
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 addToYtLikedSong(mediaItem)
@@ -223,12 +223,12 @@ fun SwipeableQueueItem(
 
     SwipeableContent(
         swipeToLeftIcon = queueSwipeLeftAction.getStateIcon(
-            likedAt,
+            songLikeState,
             downloadState,
             downloadedStateMedia
         ),
         swipeToRightIcon = queueSwipeRightAction.getStateIcon(
-            likedAt,
+            songLikeState,
             downloadState,
             downloadedStateMedia
         ),
@@ -251,35 +251,34 @@ fun SwipeablePlaylistItem(
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
-    var likedAt by rememberSaveable {
-        mutableStateOf<Long?>(null)
-    }
     val downloadState = getDownloadState(mediaItem.mediaId)
     var downloadedStateMedia by remember { mutableStateOf(DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) }
     downloadedStateMedia = if (!mediaItem.isLocal) downloadedStateMedia(mediaItem.mediaId)
     else DownloadedStateMedia.DOWNLOADED
 
-    LaunchedEffect(mediaItem.mediaId) {
-        Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
-    }
+    val songLikeState by remember {
+        Database.songTable
+            .likeState( mediaItem.mediaId )
+            .distinctUntilChanged()
+    }.collectAsState( null, Dispatchers.IO )
+
     val onFavourite: () -> Unit = {
         if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
             Toaster.noInternet()
         } else if (!isYouTubeSyncEnabled()){
             mediaItemToggleLike(mediaItem)
-            val message: String
             val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
             val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
-            if (likedAt == -1L) {
-                message =
-                    "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_disliked)}"
-            } else if (likedAt != null) {
-                message =
-                    "\"$mTitle - $mArtist\" ${context.resources.getString(R.string.removed_from_favorites)}"
-            } else
-                message = context.resources.getString(R.string.added_to_favorites)
 
-            Toaster.n( message )
+            val messageId = when( songLikeState ) {
+                false -> R.string.removed_from_disliked
+                true -> R.string.added_to_favorites
+                null -> R.string.removed_from_favorites
+            }
+
+            Toaster.s(
+                "\"$mTitle - $mArtist\" ${context.getString(messageId)}"
+            )
         } else {
             CoroutineScope(Dispatchers.IO).launch {
                 addToYtLikedSong(mediaItem)
@@ -304,12 +303,12 @@ fun SwipeablePlaylistItem(
 
     SwipeableContent(
         swipeToLeftIcon =  playlistSwipeLeftAction.getStateIcon(
-            likedAt,
+            songLikeState,
             downloadState,
             downloadedStateMedia
         ),
         swipeToRightIcon =  playlistSwipeRightAction.getStateIcon(
-            likedAt,
+            songLikeState,
             downloadState,
             downloadedStateMedia
         ),

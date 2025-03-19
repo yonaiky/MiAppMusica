@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +44,6 @@ import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.models.Info
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.UiMedia
 import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtistEssential
 import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtistModern
@@ -65,6 +65,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 
@@ -99,12 +100,10 @@ fun Controls(
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
 
-    var currentSong by remember { mutableStateOf<Song?>(null) }
-    LaunchedEffect(mediaId) {
-        Database.song(mediaId).distinctUntilChanged().collect {
-            currentSong = it
-        }
-    }
+    val currentSong by remember {
+        Database.song( mediaId )
+                .distinctUntilChanged()
+    }.collectAsState( null, Dispatchers.IO )
 
     println("Controls currentSong: ${currentSong?.title}")
 
@@ -117,11 +116,6 @@ fun Controls(
 
     //val onGoToArtist = artistRoute::global
     //val onGoToAlbum = albumRoute::global
-
-
-    var likedAt by rememberSaveable {
-        mutableStateOf<Long?>(null)
-    }
 
     /*
     var nextmediaItemIndex = binder.player.nextMediaItemIndex ?: -1
@@ -152,11 +146,6 @@ fun Controls(
             )
     }
     //val durationVisible by remember(isSeeking) { derivedStateOf { isSeeking } }
-
-
-    LaunchedEffect(mediaId) {
-        Database.likedAt(mediaId).distinctUntilChanged().collect { likedAt = it }
-    }
 
     var isDownloaded by rememberSaveable {
         mutableStateOf(false)
@@ -239,7 +228,7 @@ fun Controls(
                             title = title,
                             albumId = albumId,
                             mediaId = mediaId,
-                            likedAt = likedAt,
+                            likedAt = currentSong?.likedAt,
                             onCollapse = onCollapse,
                             disableScrollingText = disableScrollingText,
                             artist = artist,
@@ -255,7 +244,7 @@ fun Controls(
                             title = title,
                             albumId = albumId,
                             mediaId = mediaId,
-                            likedAt = likedAt,
+                            likedAt = currentSong?.likedAt,
                             onCollapse = onCollapse,
                             disableScrollingText = disableScrollingText,
                             artist = artist,
@@ -284,7 +273,7 @@ fun Controls(
                         binder = binder,
                         position = position,
                         shouldBePlaying = shouldBePlaying,
-                        likedAt = likedAt,
+                        likedAt = currentSong?.likedAt,
                         mediaId = mediaId,
                         onBlurScaleChange = onBlurScaleChange
                     )
@@ -317,7 +306,7 @@ fun Controls(
                         title = title,
                         albumId = albumId,
                         mediaId = mediaId,
-                        likedAt = likedAt,
+                        likedAt = currentSong?.likedAt,
                         onCollapse = onCollapse,
                         disableScrollingText = disableScrollingText,
                         artist = artist,
@@ -333,7 +322,7 @@ fun Controls(
                         title = title,
                         albumId = albumId,
                         mediaId = mediaId,
-                        likedAt = likedAt,
+                        likedAt = currentSong?.likedAt,
                         onCollapse = onCollapse,
                         disableScrollingText = disableScrollingText,
                         artist = artist,
@@ -361,7 +350,7 @@ fun Controls(
                         binder = binder,
                         position = position,
                         shouldBePlaying = shouldBePlaying,
-                        likedAt = likedAt,
+                        likedAt = currentSong?.likedAt,
                         mediaId = mediaId,
                         onBlurScaleChange = onBlurScaleChange
                     )
@@ -374,7 +363,7 @@ fun Controls(
                         binder = binder,
                         position = position,
                         shouldBePlaying = shouldBePlaying,
-                        likedAt = likedAt,
+                        likedAt = currentSong?.likedAt,
                         mediaId = mediaId,
                         onBlurScaleChange = onBlurScaleChange
                     )
@@ -414,7 +403,7 @@ fun Controls(
                     title = title,
                     albumId = albumId,
                     mediaId = mediaId,
-                    likedAt = likedAt,
+                    likedAt = currentSong?.likedAt,
                     onCollapse = onCollapse,
                     disableScrollingText = disableScrollingText,
                     artist = artist,
@@ -430,7 +419,7 @@ fun Controls(
                     title = title,
                     albumId = albumId,
                     mediaId = mediaId,
-                    likedAt = likedAt,
+                    likedAt = currentSong?.likedAt,
                     onCollapse = onCollapse,
                     disableScrollingText = disableScrollingText,
                     artist = artist,
@@ -460,7 +449,7 @@ fun Controls(
                     binder = binder,
                     position = position,
                     shouldBePlaying = shouldBePlaying,
-                    likedAt = likedAt,
+                    likedAt = currentSong?.likedAt,
                     mediaId = mediaId,
                     onBlurScaleChange = onBlurScaleChange
                 )
@@ -475,7 +464,7 @@ fun Controls(
                     binder = binder,
                     position = position,
                     shouldBePlaying = shouldBePlaying,
-                    likedAt = likedAt,
+                    likedAt = currentSong?.likedAt,
                     mediaId = mediaId,
                     onBlurScaleChange = onBlurScaleChange
                 )

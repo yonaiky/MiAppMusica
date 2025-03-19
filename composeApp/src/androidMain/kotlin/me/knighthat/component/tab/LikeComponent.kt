@@ -31,7 +31,7 @@ class LikeComponent private constructor(
     override fun onShortClick() {
         Database.asyncTransaction {
             getSongs().forEach {
-                like( it.id, System.currentTimeMillis() )
+                songTable.likeState( it.id, true )
             }
 
             Toaster.done()

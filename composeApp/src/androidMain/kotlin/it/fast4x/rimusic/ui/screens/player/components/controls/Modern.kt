@@ -245,15 +245,7 @@ fun InfoAlbumAndArtistModern(
                                 Toaster.noInternet()
                             } else if (!isYouTubeSyncEnabled()){
                                 Database.asyncTransaction {
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        if (like(mediaId, setLikeState(likedAt)) == 0) {
-                                            currentMediaItem
-                                                ?.takeIf { it.mediaId == mediaId }
-                                                ?.let {
-                                                    insert(currentMediaItem, Song::toggleLike)
-                                                }
-                                        }
-                                    }
+                                    songTable.rotateLikeState( mediaId )
                                 }
                             } else {
                                 CoroutineScope(Dispatchers.IO).launch {

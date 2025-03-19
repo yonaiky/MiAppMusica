@@ -2,29 +2,28 @@ package it.fast4x.rimusic.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import it.fast4x.rimusic.Database
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun getLikeState(mediaId: String): Int {
-    var likedAt by remember {
-        mutableStateOf<Long?>(null)
-    }
+    val songLikeState by remember( mediaId ) {
+        Database.songTable
+                .likeState( mediaId )
+                .distinctUntilChanged()
+    }.collectAsState( false, Dispatchers.IO )
 
-    LaunchedEffect(mediaId) {
-        Database.likedAt(mediaId).distinctUntilChanged().collect { likedAt = it }
-    }
-
-    return when (likedAt) {
-        -1L -> getDislikedIcon()
+    return when( songLikeState ) {
+        false -> getDislikedIcon()
         null -> getUnlikedIcon()
-        else -> getLikedIcon()
+        true -> getLikedIcon()
     }
-
 }
 
 fun setLikeState(likedAt: Long?): Long? {

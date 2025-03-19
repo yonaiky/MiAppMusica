@@ -191,9 +191,11 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.utils.TimeDateUtils
 import me.knighthat.utils.Toaster
@@ -360,13 +362,8 @@ fun HomeSongsModern(
 
                                         if (song != null) {
                                             songTable.upsert( song )
-                                            Database.like(
-                                                song.id,
-                                                System.currentTimeMillis()
-                                            )
+                                            songTable.likeState( song.id, true )
                                         }
-
-
 
                                 }
                                 /**/
@@ -1122,25 +1119,27 @@ fun HomeSongsModern(
                             )
                         }
 
+
                         if (showRiMusicLikeYoutubeLikeConfirmDialog) {
-                            Database.asyncTransaction {
-                            totalMinutesToLike = formatAsDuration((if (listMediaItems.isNotEmpty()) (listMediaItems.filter { Database.getLikedAt(it.mediaId) !in listOf(-1L,null)}).size
-                                else (items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }).size)*1000.toLong())
-                                }
+                            val list = runBlocking {
+                                listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
+                                              .filter {
+                                                  Database.songTable.isLiked( it.mediaId ).first()
+                                              }
+                            }
+
+                            LaunchedEffect( Unit ) {
+                                totalMinutesToLike = formatAsDuration( list.size.times( 1000L ) )
+                            }
+
                             ConfirmationDialog(
                                 text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all_rimusictoytmusic),
                                 onDismiss = { showRiMusicLikeYoutubeLikeConfirmDialog = false },
                                 onConfirm = {
                                     showRiMusicLikeYoutubeLikeConfirmDialog = false
 
-                                    if (listMediaItems.isNotEmpty()) {
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            addToYtLikedSongs(listMediaItems.filter { Database.getLikedAt(it.mediaId) !in listOf(-1L,null) }.map { it })
-                                        }
-                                    } else {
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            addToYtLikedSongs(items.filter { Database.getLikedAt(it.asMediaItem.mediaId) !in listOf(-1L,null) }.map { it.asMediaItem })
-                                        }
+                                    CoroutineScope( Dispatchers.IO ).launch {
+                                        list.also { addToYtLikedSongs( it ) }
                                     }
                                 }
                             )
@@ -1148,21 +1147,15 @@ fun HomeSongsModern(
 
                         if (showYoutubeLikeConfirmDialog) {
                             songItemsToLike.clear()
-                            if (listMediaItems.isEmpty()) {
-                                items.forEachIndexed { index, song ->
-                                    if (song.song.likedAt in listOf(-1L,null)) {
-                                        songItemsToLike.add(song.asMediaItem)
-                                    }
-                                }
-                            } else {
-                                Database.asyncTransaction {
-                                    listMediaItems.forEachIndexed { index, song ->
-                                        if (Database.getLikedAt(song.mediaId) in listOf(-1L,null)) {
-                                            songItemsToLike.add(song)
-                                        }
-                                    }
-                                }
+
+                            runBlocking {
+                                listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
+                                              .filter {
+                                                  !Database.songTable.isLiked( it.mediaId ).first()
+                                              }
+                                              .also( songItemsToLike::addAll )
                             }
+
                             totalMinutesToLike = formatAsDuration(((songItemsToLike).size*1000).toLong())
                             ConfirmationDialog(
                                 text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
@@ -1418,26 +1411,14 @@ fun HomeSongsModern(
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
                                                 Toaster.noInternet()
                                             } else if (!isYouTubeSyncEnabled()){
-                                                if (listMediaItems.isNotEmpty()) {
-                                                    Database.asyncTransaction {
-                                                        listMediaItems.filter{getLikedAt(it.mediaId) in listOf(-1L,null)}.map {
-                                                            Database.like(
-                                                                it.mediaId,
-                                                                System.currentTimeMillis()
-                                                            )
-                                                        }
-                                                    }
-                                                } else {
-                                                    Database.asyncTransaction {
-                                                        items.filter {
-                                                            getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null)
-                                                        }.map {
-                                                            Database.like(
-                                                                it.asMediaItem.mediaId,
-                                                                System.currentTimeMillis()
-                                                            )
-                                                        }
-                                                    }
+                                                runBlocking {
+                                                    listMediaItems.ifEmpty { items.map( SongEntity::asMediaItem ) }
+                                                                  .filter {
+                                                                      !Database.songTable.isLiked( it.mediaId ).first()
+                                                                  }
+                                                                  .forEach {
+                                                                      Database.songTable.likeState( it.mediaId, true )
+                                                                  }
                                                 }
                                             } else {
                                                 showYoutubeLikeConfirmDialog = true

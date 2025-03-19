@@ -164,6 +164,7 @@ import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -334,10 +335,10 @@ class PlayerService : InvincibleService(),
     @ExperimentalCoroutinesApi
     @FlowPreview
     private val isLikedState = mediaItemState
+        .filterNotNull()
         .flatMapMerge { item ->
-            item?.mediaId?.let { Database.likedAt(it).distinctUntilChanged() } ?: flowOf(null)
+            Database.songTable.isLiked( item.mediaId ).distinctUntilChanged()
         }
-        .map { it != null }
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
     @ExperimentalCoroutinesApi
@@ -1993,10 +1994,7 @@ class PlayerService : InvincibleService(),
         fun toggleLike() = mediaItemState.value?.let { mediaItem ->
             //mediaItemToggleLike(mediaItem)
             Database.asyncTransaction {
-                like(
-                    mediaItem.mediaId,
-                    if (isLikedState.value) null else System.currentTimeMillis()
-                )
+                songTable.likeState( mediaItem.mediaId, true )
             }
             updatePlaybackState()
         }

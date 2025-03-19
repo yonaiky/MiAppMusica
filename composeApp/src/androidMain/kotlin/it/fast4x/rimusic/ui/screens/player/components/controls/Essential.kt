@@ -65,7 +65,6 @@ import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.models.Info
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.UiMedia
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
@@ -94,7 +93,6 @@ import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.textoutlineKey
@@ -263,15 +261,7 @@ fun InfoAlbumAndArtistEssential(
                                 Toaster.noInternet()
                             } else if (!isYouTubeSyncEnabled()){
                                 Database.asyncTransaction {
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        if (like(mediaId, setLikeState(likedAt)) == 0) {
-                                            currentMediaItem
-                                                ?.takeIf { it.mediaId == mediaId }
-                                                ?.let {
-                                                    insert(currentMediaItem, Song::toggleLike)
-                                                }
-                                        }
-                                    }
+                                    songTable.rotateLikeState( mediaId )
                                 }
                             } else {
                                 CoroutineScope(Dispatchers.IO).launch {
@@ -444,15 +434,7 @@ fun ControlsEssential(
                     Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            if (like(mediaId, setLikeState(likedAt)) == 0) {
-                                currentMediaItem
-                                    ?.takeIf { it.mediaId == mediaId }
-                                    ?.let {
-                                        insert(currentMediaItem, Song::toggleLike)
-                                    }
-                            }
-                        }
+                        songTable.rotateLikeState( mediaId )
                     }
                 } else {
                     CoroutineScope(Dispatchers.IO).launch {

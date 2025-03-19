@@ -14,6 +14,7 @@ import app.kreate.android.R
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
@@ -82,17 +83,12 @@ data class YouTubeRadio @OptIn(UnstableApi::class) constructor
 
 
             if (isDiscoverEnabled) {
-                var listMediaItems = mutableListOf<MediaItem>()
-                withContext(Dispatchers.IO) {
-                    mediaItems?.forEach {
-                        val songInPlaylist = Database.songUsedInPlaylists(it.mediaId)
-                        val songIsLiked = (Database.getLikedAt(it.mediaId) !in listOf(-1L,null))
-                        val sIQ = songsInQueue(it.mediaId)
-                        if (songInPlaylist == 0 && !songIsLiked && (it.mediaId != sIQ)) {
-                            listMediaItems.add(it)
-                        }
-                    }
-                }
+                val listMediaItems =
+                    mediaItems?.filter {
+                        Database.isSongMappedToPlaylist( it.mediaId ).first()
+                                && Database.songTable.isLiked( it.mediaId ).first()
+                                && it.mediaId != songsInQueue( it.mediaId )
+                    } ?: emptyList()
 
                 Toaster.s(
                     messageId = R.string.discover_has_been_applied_to_radio,
@@ -103,11 +99,11 @@ data class YouTubeRadio @OptIn(UnstableApi::class) constructor
                 mediaItems = listMediaItems
             }
 
-        withContext(Dispatchers.IO) {
-            mediaItems = mediaItems?.filter {
-                (Database.getLikedAt(it.mediaId) != -1L)
-            }?.distinct()
-        }
+        mediaItems?.distinct()
+                  ?.filter {
+                      Database.songTable.isLiked( it.mediaId ).first()
+                  }
+                  ?.also { mediaItems = it }
 
         return mediaItems ?: emptyList()
     }

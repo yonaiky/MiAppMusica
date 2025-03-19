@@ -157,10 +157,7 @@ fun InHistoryMediaItemMenu(
                 Toaster.noInternet()
             } else if (!isYouTubeSyncEnabled()){
                 Database.asyncTransaction {
-                    like(
-                        song.asMediaItem.mediaId,
-                        System.currentTimeMillis()
-                    )
+                    songTable.likeState( song.id, true )
                     MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
                 }
             }
@@ -239,10 +236,7 @@ fun InPlaylistMediaItemMenu(
                 Toaster.noInternet()
             } else if (!isYouTubeSyncEnabled()){
                 Database.asyncTransaction {
-                    like(
-                        song.asMediaItem.mediaId,
-                        System.currentTimeMillis()
-                    )
+                    songTable.likeState( song.id, true )
                     MyDownloadHelper.autoDownloadWhenLiked(context(),song.asMediaItem)
                 }
             }
@@ -330,10 +324,7 @@ fun NonQueuedMediaItemMenuLibrary(
                     Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
-                        like(
-                            mediaItem.mediaId,
-                            System.currentTimeMillis()
-                        )
+                        songTable.likeState( mediaItem.mediaId, true )
                         MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                     }
                 }
@@ -373,10 +364,7 @@ fun NonQueuedMediaItemMenuLibrary(
                     Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
-                        like(
-                            mediaItem.mediaId,
-                            System.currentTimeMillis()
-                        )
+                        songTable.likeState( mediaItem.mediaId, true )
                         MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                     }
                 }
@@ -530,10 +518,7 @@ fun QueuedMediaItemMenu(
                     Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
-                        like(
-                            mediaItem.mediaId,
-                            System.currentTimeMillis()
-                        )
+                        songTable.likeState( mediaItem.mediaId, true )
                         MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                     }
                 }
@@ -574,10 +559,7 @@ fun QueuedMediaItemMenu(
                     Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
-                        like(
-                            mediaItem.mediaId,
-                            System.currentTimeMillis()
-                        )
+                        songTable.likeState( mediaItem.mediaId, true )
                         MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                     }
                 }
@@ -906,10 +888,6 @@ fun MediaItemMenu(
         )
     }
 
-    var likedAt by remember {
-        mutableStateOf<Long?>(null)
-    }
-
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
     }
@@ -932,10 +910,6 @@ fun MediaItemMenu(
             }
             Database.getArtistsList(artistIds).collect { artistsList = it }
         }
-    }
-
-    LaunchedEffect(Unit, mediaItem.mediaId) {
-        Database.likedAt(mediaItem.mediaId).collect { likedAt = it }
     }
 
     var showCircularSlider by remember {
@@ -1288,9 +1262,7 @@ fun MediaItemMenu(
                                     Toaster.noInternet()
                                 } else if (!isYouTubeSyncEnabled()){
                                     Database.asyncTransaction {
-                                        if (like(mediaItem.mediaId, setLikeState(likedAt)) == 0) {
-                                            insert(mediaItem, Song::toggleLike)
-                                        }
+                                        songTable.rotateLikeState( mediaItem.mediaId )
                                         MyDownloadHelper.autoDownloadWhenLiked(context(), mediaItem)
                                     }
                                 } else {

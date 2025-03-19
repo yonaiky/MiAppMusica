@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -75,6 +76,7 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shimmerEffect
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.utils.Toaster
@@ -379,14 +381,13 @@ fun SongItem(
         ) {
             thumbnailContent()
 
+            val isSongLiked by remember( mediaItem.mediaId ) {
+                Database.songTable
+                    .isLiked( mediaItem.mediaId )
+                    .distinctUntilChanged()
+            }.collectAsState( false, Dispatchers.IO )
 
-            var likedAt by remember {
-                mutableStateOf<Long?>(null)
-            }
-            LaunchedEffect(Unit, mediaItem.mediaId) {
-                Database.likedAt(mediaItem.mediaId).collect { likedAt = it }
-            }
-            if (likedAt != null)
+            if ( isSongLiked )
                 HeaderIconButton(
                     onClick = {},
                     icon = getLikeState(mediaItem.mediaId),

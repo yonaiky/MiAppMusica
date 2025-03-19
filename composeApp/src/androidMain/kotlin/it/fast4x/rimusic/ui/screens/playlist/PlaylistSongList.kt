@@ -80,7 +80,6 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.requests.PlaylistPage
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.Database.Companion.like
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
@@ -91,6 +90,7 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
@@ -149,7 +149,9 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -202,16 +204,6 @@ fun PlaylistSongList(
         Database.asyncTransaction {
             localPlaylist = Database.playlistWithBrowseId(browseId.substringAfter("VL"))
         }
-    }
-
-    @Composable
-    fun checkLike(mediaId : String, song: Innertube. SongItem) : Boolean {
-        LaunchedEffect(Unit, mediaId) {
-            withContext(Dispatchers.IO) {
-                isLiked = like( mediaId, setLikeState(song.asSong.likedAt))
-            }
-        }
-        return true
     }
 
     LaunchedEffect(Unit, browseId) {
@@ -276,8 +268,10 @@ fun PlaylistSongList(
     var totalMinutesToLike by remember { mutableStateOf("") }
 
     if (showYoutubeLikeConfirmDialog) {
-        Database.asyncTransaction {
-            playlistNotLikedSongs = playlistSongs.filter { getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null)}
+        runBlocking {
+            playlistNotLikedSongs = playlistSongs.filter {
+                Database.songTable.isLiked( it.asSong.id ).first()
+            }
         }
         totalMinutesToLike = formatAsDuration(playlistNotLikedSongs.size.toLong()*1000)
         ConfirmationDialog(
@@ -402,8 +396,8 @@ fun PlaylistSongList(
                                         Color.Red.copy(0.75f).compositeOver(Color.White)
                                         ),
                                         modifier = Modifier
-                                           .size(40.dp)
-                                           .offset(5.dp,5.dp)
+                                            .size(40.dp)
+                                            .offset(5.dp, 5.dp)
                                    )
                                 }
 
@@ -525,11 +519,11 @@ fun PlaylistSongList(
                                                                 downloadState = false
                                                             )
                                                         } else
-                                                            Toaster.e( R.string.disliked_this_collection )
+                                                    Toaster.e(R.string.disliked_this_collection)
                                             }
                                         },
                                         onLongClick = {
-                                            Toaster.i( R.string.info_download_all_songs )
+                                            Toaster.i(R.string.info_download_all_songs)
                                         }
                                     )
                             )
@@ -556,12 +550,12 @@ fun PlaylistSongList(
                                                             downloadState = true
                                                         )
                                                     } else {
-                                                        Toaster.e( R.string.disliked_this_collection )
+                                                    Toaster.e(R.string.disliked_this_collection)
                                                 }
                                             }
                                         },
                                         onLongClick = {
-                                            Toaster.n( R.string.info_remove_all_downloaded_songs )
+                                            Toaster.n(R.string.info_remove_all_downloaded_songs)
                                         }
                                     )
                             )
@@ -584,10 +578,10 @@ fun PlaylistSongList(
                                                         binder?.player?.enqueue(mediaItems, context)
                                                     }
                                             } else
-                                                Toaster.e( R.string.disliked_this_collection )
+                                                Toaster.e(R.string.disliked_this_collection)
                                         },
                                         onLongClick = {
-                                            Toaster.i( R.string.info_enqueue_songs )
+                                            Toaster.i(R.string.info_enqueue_songs)
                                         }
                                     )
                             )
@@ -729,15 +723,13 @@ fun PlaylistSongList(
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
                                                 Toaster.noInternet()
                                             } else if (!isYouTubeSyncEnabled()){
-                                                Database.asyncTransaction {
-                                                    playlistPage!!.songs.filter { getLikedAt(it.asMediaItem.mediaId) in listOf(-1L,null) }.forEachIndexed { _, song ->
-                                                        Database.asyncTransaction {
-                                                            if (like(song.asMediaItem.mediaId, setLikeState(song.asSong.likedAt)) == 0
-                                                            ) {
-                                                                insert(song.asMediaItem, Song::toggleLike)
-                                                            }
-                                                        }
-                                                    }
+                                                CoroutineScope( Dispatchers.IO ).launch {
+                                                    playlistPage!!.songs
+                                                                  .map{ it.asSong.id }
+                                                                  .filter {
+                                                                      !Database.songTable.isLiked( it ).first()
+                                                                  }
+                                                                  .forEach( Database.songTable::toggleLike )
 
                                                     Toaster.done()
                                                 }

@@ -141,10 +141,7 @@ fun PlayerMenu(
                     Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
-                        like(
-                            mediaItem.mediaId,
-                            System.currentTimeMillis()
-                        )
+                        songTable.likeState( mediaItem.mediaId, true )
                         MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                     }
                 }
@@ -193,10 +190,7 @@ fun MiniPlayerMenu(
                     Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
-                        like(
-                            mediaItem.mediaId,
-                            System.currentTimeMillis()
-                        )
+                        songTable.likeState( mediaItem.mediaId, true )
                         MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                     }
                 }
@@ -221,10 +215,7 @@ fun MiniPlayerMenu(
                     Toaster.noInternet()
                 } else if (!isYouTubeSyncEnabled()){
                     Database.asyncTransaction {
-                        like(
-                            mediaItem.mediaId,
-                            System.currentTimeMillis()
-                        )
+                        songTable.likeState( mediaItem.mediaId, true )
                         MyDownloadHelper.autoDownloadWhenLiked(context(),mediaItem)
                     }
                 }

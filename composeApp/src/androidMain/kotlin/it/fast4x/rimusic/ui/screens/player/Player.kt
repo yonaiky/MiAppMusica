@@ -589,15 +589,6 @@ fun Player(
         }
     }
 
-    var likedAt by rememberSaveable {
-        mutableStateOf<Long?>(null)
-    }
-    LaunchedEffect(mediaItem.mediaId) {
-        Database.likedAt(mediaItem.mediaId).distinctUntilChanged().collect { likedAt = it }
-        updateBrush = true
-    }
-
-
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
     }
@@ -1261,7 +1252,12 @@ fun Player(
         //modifier: Modifier
     ) -> Unit = { //innerModifier ->
         var deltaX by remember { mutableStateOf(0f) }
-        //var direction by remember { mutableIntStateOf(-1)}
+
+        val isSongLiked by remember( mediaItem.mediaId ) {
+            Database.songTable
+                .isLiked( mediaItem.mediaId )
+                .distinctUntilChanged()
+        }.collectAsState( false, Dispatchers.IO )
 
             Thumbnail(
                 thumbnailTapEnabledKey = thumbnailTapEnabled,
@@ -1278,17 +1274,12 @@ fun Player(
                 onDoubleTap = {
                     val currentMediaItem = binder.player.currentMediaItem
                     Database.asyncTransaction {
-                        if (like(
-                                mediaItem.mediaId,
-                                if (likedAt == null) System.currentTimeMillis() else null
-                            ) == 0
-                        ) {
+                        if( !isSongLiked )
                             currentMediaItem
                                 ?.takeIf { it.mediaId == mediaItem.mediaId }
                                 ?.let {
                                     insert(currentMediaItem, Song::toggleLike)
                                 }
-                        }
                     }
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
