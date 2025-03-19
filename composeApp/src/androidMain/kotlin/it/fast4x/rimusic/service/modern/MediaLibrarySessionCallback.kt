@@ -7,7 +7,6 @@ import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
 import androidx.core.net.toUri
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
@@ -300,10 +299,10 @@ class MediaLibrarySessionCallback @Inject constructor(
                 else -> when {
 
                     parentId.startsWith("${PlayerServiceModern.ARTIST}/") ->
-                        database.artistSongs(parentId.removePrefix("${PlayerServiceModern.ARTIST}/"))
-                            .first().map {
-                                it.toMediaItem(parentId)
-                            }
+                        database.songArtistMapTable
+                                .findAllSongsByArtist( parentId.removePrefix("${PlayerServiceModern.ARTIST}/") )
+                                .first()
+                                .map { it.toMediaItem( parentId ) }
 
                     parentId.startsWith("${PlayerServiceModern.ALBUM}/") ->
                         database.albumSongs(parentId.removePrefix("${PlayerServiceModern.ALBUM}/"))
@@ -328,9 +327,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                                 context.preferences.getEnum(MaxTopPlaylistItemsKey,
                                     MaxTopPlaylistItems.`10`).toInt()
                             )
-                            ID_ONDEVICE -> database.songsEntityOnDevice().map { list ->
-                                list.map { it.song }
-                            }
+                            ID_ONDEVICE -> database.songTable.allOnDevice()
                             ID_DOWNLOADED -> {
                                 val downloads = downloadHelper.downloads.value
                                 database.findAllSongs( 1 )
@@ -365,9 +362,15 @@ class MediaLibrarySessionCallback @Inject constructor(
         mediaId: String,
     ): ListenableFuture<LibraryResult<MediaItem>> = scope.future(Dispatchers.IO) {
         println("PlayerServiceModern MediaLibrarySessionCallback.onGetItem: $mediaId")
-        database.song(mediaId).first()?.toMediaItem()?.let {
-            LibraryResult.ofItem(it, null)
-        } ?: LibraryResult.ofError(SessionError.ERROR_UNKNOWN)
+
+        database.songTable
+                .findById( mediaId )
+                .first()
+                ?.toMediaItem()
+                ?.let {
+                    LibraryResult.ofItem( it, null )
+                }
+                ?: LibraryResult.ofError( SessionError.ERROR_UNKNOWN )
     }
 
     override fun onSetMediaItems(
@@ -410,7 +413,7 @@ class MediaLibrarySessionCallback @Inject constructor(
             PlayerServiceModern.ARTIST -> {
                 val songId = path.getOrNull(2) ?: return@future defaultResult
                 val artistId = path.getOrNull(1) ?: return@future defaultResult
-                val songs = database.artistSongs(artistId).first()
+                val songs = database.songArtistMapTable.findAllSongsByArtist( artistId ).first()
                 MediaSession.MediaItemsWithStartPosition(
                     songs.map { it.toMediaItem() },
                     songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
@@ -445,7 +448,9 @@ class MediaLibrarySessionCallback @Inject constructor(
                         context.preferences.getEnum(MaxTopPlaylistItemsKey,
                             MaxTopPlaylistItems.`10`).toInt()
                     )
-                    ID_ONDEVICE -> database.songsEntityOnDevice()
+                    ID_ONDEVICE -> database.songTable.allOnDevice().map { list ->
+                        list.map { SongEntity(it) }
+                    }
                     ID_DOWNLOADED -> {
                         val downloads = downloadHelper.downloads.value
                         database.findAllSongEntity( -1 )
@@ -497,12 +502,18 @@ class MediaLibrarySessionCallback @Inject constructor(
             return Futures.immediateFuture(defaultResult)
 
         scope.future {
-                val queuedSong = database.queue()
-                if (queuedSong.isEmpty()) return@future Futures.immediateFuture(defaultResult)
+            val startIndex: Int
+            val startPositionMs: Long
+            val mediaItems: List<MediaItem>
 
-            val startIndex = queuedSong.indexOfFirst { it.position != null }.coerceAtLeast(0)
-            val startPositionMs = queuedSong[startIndex].position ?: C.TIME_UNSET
-            val mediaItems = queuedSong.map { it.mediaItem.asSong.toMediaItem(isFromPersistentQueue = true) }
+            database.queueTable.all().first().run {
+                indexOfFirst { it.position != null }.coerceAtLeast( 0 )
+                                                    .let {
+                                                        startIndex = it
+                                                        startPositionMs = it.toLong()
+                                                    }
+                mediaItems = map { it.mediaItem.asSong.toMediaItem( true ) }
+            }
 
             val resumptionPlaylist = MediaSession.MediaItemsWithStartPosition(
                 mediaItems,

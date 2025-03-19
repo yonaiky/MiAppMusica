@@ -63,7 +63,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
-import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -79,7 +78,6 @@ import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
-import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
@@ -119,13 +117,11 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.time.LocalTime.now
@@ -895,21 +891,11 @@ fun MediaItemMenu(
     downloadState = getDownloadState(mediaItem.mediaId)
     val isDownloaded = if (!isLocal) isDownloadedSong(mediaItem.mediaId) else true
 
-    var artistsList by persistList<Artist?>("home/artists")
-    var artistIds = remember { mutableListOf("") }
-
     LaunchedEffect(Unit, mediaItem.mediaId) {
-        withContext(Dispatchers.IO) {
-            if (albumInfo?.id.isNullOrEmpty())
-                albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
-            if (artistsInfo.isNullOrEmpty())
-                artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
-
-            artistsInfo?.forEach { info ->
-                if (info.id.isNotEmpty()) artistIds.add(info.id)
-            }
-            Database.getArtistsList(artistIds).collect { artistsList = it }
-        }
+        if (albumInfo?.id.isNullOrEmpty())
+            albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
+        if (artistsInfo.isNullOrEmpty())
+            artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
     }
 
     var showCircularSlider by remember {

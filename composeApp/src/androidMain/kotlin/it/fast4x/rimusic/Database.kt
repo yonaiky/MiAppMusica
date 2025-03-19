@@ -29,7 +29,6 @@ import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.models.PlaylistWithSongs
 import it.fast4x.rimusic.models.QueuedMediaItem
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.Song
@@ -104,11 +103,6 @@ interface Database {
         get() = DatabaseInitializer.Instance.songPlaylistMapTable
 
     //**********************************************
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Transaction
-    @Query("SELECT * FROM Song")
-    fun listAllSongsAsFlow(): Flow<List<SongEntity>>
-
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
     @Query("SELECT Song.*, contentLength FROM Song INNER JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs")
@@ -589,10 +583,6 @@ interface Database {
     fun eventWithSongByPeriod(date: Long, limit:Long = Long.MAX_VALUE): Flow<List<EventWithSong>>
 
     @Transaction
-    @Query("SELECT * FROM Playlist WHERE isYoutubePlaylist = 1")
-    fun ytmPrivatePlaylists(): Flow<List<Playlist>>
-
-    @Transaction
     @Query("SELECT * FROM Song WHERE totalPlayTimeMs > 0 ORDER BY totalPlayTimeMs DESC LIMIT :count")
     @RewriteQueriesToDropUnusedColumns
     fun topSongs(count: Int = 10): Flow<List<Song>>
@@ -621,10 +611,6 @@ interface Database {
     """)
     fun isSongMappedToPlaylist( songId: String ): Flow<Boolean>
 
-    @Transaction
-    @Query("SELECT * FROM Song WHERE artistsText = :name ")
-    fun artistSongsByname(name: String): Flow<List<Song>>
-
     @Query("SELECT id FROM Playlist WHERE name = :playlistName")
     fun playlistExistByName(playlistName: String): Long
 
@@ -651,33 +637,8 @@ interface Database {
     @Query("UPDATE Artist SET name = :name WHERE id = :id")
     fun updateArtistName(id: String, name: String): Int
 
-    @Transaction
-    @Query("SELECT * FROM Artist WHERE id in (:idsList)")
-    @RewriteQueriesToDropUnusedColumns
-    fun getArtistsList(idsList: List<String>): Flow<List<Artist?>>
-
-    @Transaction
-    @Query("SELECT * FROM Artist")
-    @RewriteQueriesToDropUnusedColumns
-    fun getArtistsList(): Flow<List<Artist?>>
-
-    @Transaction
-    @Query("SELECT * FROM Song WHERE id in (:idsList) ")
-    @RewriteQueriesToDropUnusedColumns
-    fun getSongsList(idsList: List<String>): Flow<List<Song>>
-
-    @Transaction
-    @Query("SELECT * FROM Song WHERE id in (:idsList) ")
-    @RewriteQueriesToDropUnusedColumns
-    fun getSongsListNoFlow(idsList: List<String>): List<Song>
-
     @Query("SELECT thumbnailUrl FROM Song WHERE id in (:idsList) ")
     fun getSongsListThumbnailUrls(idsList: List<String>): Flow<List<String?>>
-
-    @Transaction
-    @Query("SELECT * FROM Song WHERE ROWID='wooowww' ")
-    @RewriteQueriesToDropUnusedColumns
-    fun fakeSongsList(): Flow<List<Song>>
 
     @Query("""
         SELECT SongArtistMap.artistId
@@ -746,17 +707,6 @@ interface Database {
             "GROUP BY songId  ORDER BY timestamp DESC LIMIT :limit")
     @RewriteQueriesToDropUnusedColumns
     fun songsMostPlayedByYearMonthNoFlow(year: Long, month: Long, limit:Long = Long.MAX_VALUE): List<Song>
-
-    @Transaction
-    @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
-    @RewriteQueriesToDropUnusedColumns
-    fun songsOnDevice(): Flow<List<Song>>
-
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Transaction
-    @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
-    @RewriteQueriesToDropUnusedColumns
-    fun songsEntityOnDevice(): Flow<List<SongEntity>>
 
     //<editor-fold defaultstate="collapsed" desc="Find favorite songs">
     @Query("""
@@ -1341,19 +1291,10 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun favorites(): Flow<List<Song>>
 
-    @Query("SELECT * FROM QueuedMediaItem")
-    fun queue(): List<QueuedMediaItem>
-
-    @Query("SELECT * FROM SearchQuery WHERE `query` LIKE :query ORDER BY id DESC")
-    fun queries(query: String): Flow<List<SearchQuery>>
-
     @Query("UPDATE Playlist SET name = '${PINNED_PREFIX}'||name WHERE id = :playlistId")
     fun pinPlaylist(playlistId: Long): Int
     @Query("UPDATE Playlist SET name = REPLACE(name,'${PINNED_PREFIX}','') WHERE id = :playlistId")
     fun unPinPlaylist(playlistId: Long): Int
-
-    @Query("SELECT * FROM Song WHERE id = :id")
-    fun song(id: String?): Flow<Song?>
 
     @Query("UPDATE Album SET bookmarkedAt = :bookmarkedAt WHERE id = :id")
     fun bookmarkAlbum(id: String, bookmarkedAt: Long?): Int
@@ -1393,12 +1334,6 @@ interface Database {
 
     @Query("UPDATE Song SET durationText = :durationText WHERE id = :songId")
     fun updateDurationText(songId: String, durationText: String): Int
-
-    @Query("SELECT * FROM Lyrics WHERE songId = :songId")
-    fun lyrics(songId: String): Flow<Lyrics?>
-
-    @Query("SELECT * FROM Artist WHERE id = :id")
-    fun artist(id: String): Flow<Artist?>
 
     @Query("SELECT * FROM Artist WHERE bookmarkedAt IS NOT NULL ORDER BY name")
     fun preferitesArtistsByName(): Flow<List<Artist>>
@@ -1547,12 +1482,6 @@ interface Database {
         )
     """)
     fun isArtistFollowed( artistId: String ): Flow<Boolean>
-
-    @Query("SELECT * FROM Album WHERE id = :id")
-    fun album(id: String): Flow<Album?>
-
-    @Query("SELECT * FROM Album")
-    fun getAlbumsList(): Flow<List<Album?>>
 
     @Query("SELECT timestamp FROM Album WHERE id = :id")
     fun albumTimestamp(id: String): Long?
@@ -1899,30 +1828,6 @@ interface Database {
     fun updateSongMaxPositionToPlaylist(id: Long): Int
 
     @Transaction
-    @Query("SELECT * FROM Playlist WHERE id = :id")
-    fun playlistWithSongs(id: Long): Flow<PlaylistWithSongs?>
-
-    @Transaction
-    @Query("SELECT * FROM Playlist WHERE browseId = :browseId")
-    fun playlistWithBrowseId(browseId: String): Playlist?
-
-    @Transaction
-    @Query("SELECT * FROM Playlist WHERE trim(name) COLLATE NOCASE = trim(:name) COLLATE NOCASE")
-    fun playlistWithSongsNoFlow(name: String): PlaylistWithSongs?
-
-    @Transaction
-    @Query("SELECT * FROM Playlist WHERE trim(name) COLLATE NOCASE = trim(:name) COLLATE NOCASE")
-    fun playlistWithSongs(name: String): Flow<PlaylistWithSongs?>
-
-    @Transaction
-    @Query("SELECT * FROM Playlist WHERE browseId = :browseId")
-    fun playlistWithSongsByBrowseId(browseId: String): Flow<PlaylistWithSongs?>
-
-    @Transaction
-    @Query("SELECT * FROM Playlist WHERE name LIKE '${MONTHLY_PREFIX}' || :name || '%'  ")
-    fun monthlyPlaylists(name: String?): Flow<List<PlaylistWithSongs?>>
-
-    @Transaction
     @Query("SELECT *, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = id) as songCount FROM Playlist WHERE name LIKE '${MONTHLY_PREFIX}' || :name || '%'  ")
     fun monthlyPlaylistsPreview(name: String?): Flow<List<PlaylistPreview>>
 
@@ -2162,11 +2067,6 @@ interface Database {
 
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Transaction
-    @Query("SELECT * FROM Playlist WHERE browseId = :browseId")
-    fun playlist(browseId: String): Flow<Playlist?>
-
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Transaction
     @Query("SELECT *, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = id) as songCount FROM Playlist WHERE id=:id")
     fun singlePlaylistPreview(id: Long): Flow<PlaylistPreview?>
 
@@ -2252,16 +2152,6 @@ interface Database {
     @Query("SELECT thumbnailUrl FROM Song JOIN SongPlaylistMap ON id = songId WHERE playlistId = :id AND thumbnailUrl <>'' ORDER BY position LIMIT 4")
     fun playlistThumbnailUrls(id: Long): Flow<List<String?>>
 
-
-
-    @Transaction
-    @Query("SELECT * FROM Song JOIN SongArtistMap ON Song.id = SongArtistMap.songId WHERE SongArtistMap.artistId = :artistId AND totalPlayTimeMs > 0 ORDER BY Song.ROWID DESC")
-    @RewriteQueriesToDropUnusedColumns
-    fun artistSongs(artistId: String): Flow<List<Song>>
-
-    @Query("SELECT * FROM Format WHERE songId = :songId")
-    fun format(songId: String): Flow<Format?>
-
     @Query("SELECT contentLength FROM Format WHERE songId = :songId")
     fun formatContentLength(songId: String): Long
 
@@ -2323,9 +2213,6 @@ interface Database {
 
     @Query("SELECT loudnessDb FROM Format WHERE songId = :songId")
     fun loudnessDb(songId: String): Flow<Float?>
-
-    @Query("SELECT * FROM Song WHERE title LIKE :query OR artistsText LIKE :query")
-    fun search(query: String): Flow<List<Song>>
 
     @Query("SELECT albumId AS id, Album.title AS name, 0 AS size FROM SongAlbumMap LEFT JOIN Album ON id=albumId WHERE songId = :songId")
     fun songAlbumInfo(songId: String): Info?

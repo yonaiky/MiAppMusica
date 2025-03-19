@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,46 +14,24 @@ import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.models.Playlist
-import it.fast4x.rimusic.models.PlaylistWithSongs
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-
-
-@Composable
-fun monthlyPLaylist(playlist: String?): State<PlaylistWithSongs?> {
-    val monthlyPlaylist = remember {
-        Database.playlistWithSongs("${MONTHLY_PREFIX}${playlist}")
-    }.collectAsState(initial = null, context = Dispatchers.IO)
-
-    return monthlyPlaylist
-}
-
-@Composable
-fun monthlyPLaylists(playlist: String? = ""): State<List<PlaylistWithSongs?>?> {
-    val monthlyPlaylists = remember {
-        Database.monthlyPlaylists(playlist)
-    }.collectAsState(initial = null, context = Dispatchers.IO)
-
-    return monthlyPlaylists
-}
 
 @Composable
 fun CheckMonthlyPlaylist() {
     val ym = getCalculatedMonths(1)
-    val y = ym?.substring(0,4)?.toLong() ?: 0
-    val m = ym?.substring(5,7)?.toLong() ?: 0
-    var canCreateMonthlyPlaylist by remember { mutableStateOf(false) }
+    val y = ym.substring(0,4).toLong()
+    val m = ym.substring(5,7).toLong()
 
-    var monthlyPlaylist by remember { mutableStateOf<PlaylistWithSongs?>(null) }
-    LaunchedEffect(ym) {
-        monthlyPlaylist = withContext(Dispatchers.IO) {
-            Database.playlistWithSongsNoFlow("${MONTHLY_PREFIX}${ym}")
-        }
-        canCreateMonthlyPlaylist = monthlyPlaylist == null
-    }
+    val canCreateMonthlyPlaylist by remember {
+        Database.playlistTable
+                .findByName( "$MONTHLY_PREFIX$ym")
+                .map { it == null }
+    }.collectAsState( false, Dispatchers.IO )
 
     Timber.d("CheckMonthlyPlaylist $canCreateMonthlyPlaylist")
 
@@ -84,87 +61,6 @@ fun CheckMonthlyPlaylist() {
                         }
                     }
                 }
-            }
-        }
-    //println("mediaItem internal $monthlyPlaylist")
-}
-
-/*
-@Composable
-fun CheckMonthlyPlaylist() {
-    val ym = getCalculatedMonths(1)
-    val y = ym?.substring(0,4)?.toLong() ?: 0
-    val m = ym?.substring(5,7)?.toLong() ?: 0
-    val monthlyPlaylist by remember { mutableStateOf(
-        transaction {
-            Database.playlistWithSongsNoFlow("${MONTHLY_PREFIX}${ym}")
-        }
-    ) }
-
-    if (monthlyPlaylist == null) {
-        val songsMostPlayed = remember {
-            Database.songsMostPlayedByYearMonth(y, m)
-        }.collectAsState(initial = null, context = Dispatchers.IO)
-
-        if (songsMostPlayed.value?.isNotEmpty() == true) {
-            transaction {
-                val playlistId = Database.insert(Playlist(name = "${MONTHLY_PREFIX}${ym}"))
-                playlistId.let {
-                    songsMostPlayed.value!!.forEachIndexed{ position, song ->
-                        Database.insert(
-                            SongPlaylistMap(
-                                songId = song.id,
-                                playlistId = it,
-                                position = position
-                            )
-                        )
-                    }
-                }
-
-            }
-
-        }
-
-
-    }
-    //println("mediaItem internal $monthlyPlaylist")
-}
-*/
-
-@Composable
-fun CreateMonthlyPlaylist() {
-    val ym = getCalculatedMonths(1)
-    val y = ym?.substring(0,4)?.toLong() ?: 0
-    val m = ym?.substring(5,7)?.toLong() ?: 0
-    //var monthlyPlaylist by remember { mutableStateOf<PlaylistWithSongs?>(null) }
-
-
-    val monthlyPlaylist = remember {
-        Database.playlistWithSongs("${MONTHLY_PREFIX}${ym}")
-    }.collectAsState(initial = null, context = Dispatchers.IO)
-        .also {
-            if (it.value == null) {
-                val songsMostPlayed = remember {
-                    Database.songsMostPlayedByYearMonth(y, m)
-                }.collectAsState(initial = null, context = Dispatchers.IO)
-
-                if (songsMostPlayed.value?.isNotEmpty() == true) {
-                    Database.asyncTransaction {
-                        val playlist = Playlist(name = "${MONTHLY_PREFIX}${ym}")
-                        val pId = playlistTable.insert( playlist )
-                        songsMostPlayed.value!!.forEachIndexed{ position, song ->
-                            songPlaylistMapTable.insertIgnore(
-                                SongPlaylistMap(
-                                    songId = song.id,
-                                    playlistId = pId,
-                                    position = position
-                                ).default()
-                            )
-                        }
-                    }
-
-                }
-
             }
         }
     //println("mediaItem internal $monthlyPlaylist")

@@ -36,6 +36,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -89,8 +90,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
-import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
@@ -143,7 +142,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
@@ -198,13 +196,10 @@ fun PlaylistSongList(
     val translator = Translator(getHttpClient())
     val languageDestination = languageDestination()
 
-    var localPlaylist by remember { mutableStateOf<Playlist?>(null) }
-
-    LaunchedEffect(saveCheck) {
-        Database.asyncTransaction {
-            localPlaylist = Database.playlistWithBrowseId(browseId.substringAfter("VL"))
-        }
-    }
+    val localPlaylist by remember( saveCheck ) {
+        Database.playlistTable
+                .findByBrowseId( browseId.substringAfter("VL") )
+    }.collectAsState( null, Dispatchers.IO )
 
     LaunchedEffect(Unit, browseId) {
         YtMusic.getPlaylist(browseId).completed()
@@ -757,11 +752,11 @@ fun PlaylistSongList(
                                                             YtMusic.removelikePlaylistOrAlbum(
                                                                 browseId.substringAfter("VL")
                                                             )
-                                                        }
-                                                        Database.asyncTransaction {
-                                                            Database.playlistWithBrowseId(
-                                                                browseId.substringAfter("VL")
-                                                            )?.let( playlistTable::delete )
+
+                                                            Database.playlistTable
+                                                                    .findByBrowseId( browseId.substringAfter("VL") )
+                                                                    .first()
+                                                                    ?.let( Database.playlistTable::delete )
                                                         }
                                                     } else {
                                                         CoroutineScope(Dispatchers.IO).launch {

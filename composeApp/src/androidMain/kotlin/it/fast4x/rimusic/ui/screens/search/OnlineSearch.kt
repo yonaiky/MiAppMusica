@@ -28,6 +28,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +42,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,7 +55,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
-import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchSuggestionsBody
 import it.fast4x.innertube.requests.searchSuggestionsWithItems
@@ -86,12 +85,13 @@ import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.pauseSearchHistoryKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @UnstableApi
@@ -106,20 +106,20 @@ fun OnlineSearch(
     onSearch: (String) -> Unit,
     decorationBox: @Composable (@Composable () -> Unit) -> Unit,
 ) {
-    val context = LocalContext.current
-    var history by persistList<SearchQuery>("search/online/history")
+    // Settings
+    val isHistoryPaused by rememberPreference( pauseSearchHistoryKey, false )
 
     var reloadHistory by remember {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(textFieldValue.text, reloadHistory) {
-        if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
-            Database.queries("%${textFieldValue.text}%")
+    val history by remember( textFieldValue.text, isHistoryPaused, reloadHistory ) {
+        if( isHistoryPaused ) return@remember flowOf()
+
+        Database.searchTable
+                .findAllContain( textFieldValue.text )
                 .distinctUntilChanged { old, new -> old.size == new.size }
-                .collect { history = it }
-        }
-    }
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     //var suggestionsResult by persist<Result<List<String>?>?>("search/online/suggestionsResult")
     var suggestionsResult by remember {

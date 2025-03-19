@@ -101,7 +101,8 @@ fun Controls(
     binder?.player ?: return
 
     val currentSong by remember {
-        Database.song( mediaId )
+        Database.songTable
+                .findById( mediaId )
                 .distinctUntilChanged()
     }.collectAsState( null, Dispatchers.IO )
 

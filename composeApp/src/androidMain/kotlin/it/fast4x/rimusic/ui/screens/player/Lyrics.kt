@@ -449,86 +449,105 @@ fun Lyrics(
 
 
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics, checkLyrics) {
-            withContext(Dispatchers.IO) {
-
-                Database.lyrics(mediaId).collect { currentLyrics ->
-                    if (isShowingSynchronizedLyrics && currentLyrics?.synced == null) {
-                        lyrics = null
-                        var duration = withContext(Dispatchers.Main) {
-                            durationProvider()
-                        }
-
-                        while (duration == C.TIME_UNSET) {
-                            delay(100)
-                            duration = withContext(Dispatchers.Main) {
+            Database.lyricsTable
+                    .findBySongId( mediaId )
+                    .collect { currentLyrics ->
+                        if (isShowingSynchronizedLyrics && currentLyrics?.synced == null) {
+                            lyrics = null
+                            var duration = withContext(Dispatchers.Main) {
                                 durationProvider()
                             }
-                        }
 
-                        kotlin.runCatching {
-                            LrcLib.lyrics(
-                                artist = artistName ?: "",
-                                title = title ?: "",
-                                duration = duration.milliseconds,
-                                album = mediaMetadata.albumTitle?.toString()
-                            )?.onSuccess {
-                                if ((it?.text?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
-                                    && playerEnableLyricsPopupMessage
-                                )
-                                    coroutineScope.launch {
-                                        Toaster.s(
-                                            R.string.info_lyrics_found_on_s,
-                                            "LrcLib.net"
+                            while (duration == C.TIME_UNSET) {
+                                delay(100)
+                                duration = withContext(Dispatchers.Main) {
+                                    durationProvider()
+                                }
+                            }
+
+                            kotlin.runCatching {
+                                LrcLib.lyrics(
+                                    artist = artistName ?: "",
+                                    title = title ?: "",
+                                    duration = duration.milliseconds,
+                                    album = mediaMetadata.albumTitle?.toString()
+                                )?.onSuccess {
+                                    if ((it?.text?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
+                                        && playerEnableLyricsPopupMessage
+                                    )
+                                        coroutineScope.launch {
+                                            Toaster.s(
+                                                R.string.info_lyrics_found_on_s,
+                                                "LrcLib.net"
+                                            )
+                                        }
+                                    else
+                                        if (playerEnableLyricsPopupMessage)
+                                            coroutineScope.launch {
+
+                                                Toaster.e(
+                                                    R.string.info_lyrics_not_found_on_s,
+                                                    "LrcLib.net",
+                                                    duration = Toast.LENGTH_LONG
+                                                )
+                                            }
+
+                                    isError = false
+                                    Database.lyricsTable.upsert(
+                                        Lyrics(
+                                            songId = mediaId,
+                                            fixed = currentLyrics?.fixed,
+                                            synced = it?.text.orEmpty()
                                         )
-                                    }
-                                else
+                                    )
+                                    checkedLyricsLrc = true
+                                }?.onFailure {
                                     if (playerEnableLyricsPopupMessage)
                                         coroutineScope.launch {
-
                                             Toaster.e(
-                                                R.string.info_lyrics_not_found_on_s,
-                                                "LrcLib.net",
+                                                R.string.info_lyrics_not_found_on_s_try_on_s,
+                                                "LrcLib.net", "KuGou.com",
                                                 duration = Toast.LENGTH_LONG
                                             )
                                         }
 
-                                isError = false
-                                Database.lyricsTable.upsert(
-                                    Lyrics(
-                                        songId = mediaId,
-                                        fixed = currentLyrics?.fixed,
-                                        synced = it?.text.orEmpty()
-                                    )
-                                )
-                                checkedLyricsLrc = true
-                            }?.onFailure {
-                                if (playerEnableLyricsPopupMessage)
-                                    coroutineScope.launch {
-                                        Toaster.e(
-                                            R.string.info_lyrics_not_found_on_s_try_on_s,
-                                            "LrcLib.net", "KuGou.com",
-                                            duration = Toast.LENGTH_LONG
-                                        )
-                                    }
+                                    checkedLyricsLrc = true
 
-                                checkedLyricsLrc = true
+                                    kotlin.runCatching {
+                                        KuGou.lyrics(
+                                            artist = mediaMetadata.artist?.toString() ?: "",
+                                            title = cleanPrefix(mediaMetadata.title?.toString() ?: ""),
+                                            duration = duration / 1000
+                                        )?.onSuccess {
+                                            if ((it?.value?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
+                                                && playerEnableLyricsPopupMessage
+                                            )
+                                                coroutineScope.launch {
+                                                    Toaster.s(
+                                                        R.string.info_lyrics_found_on_s,
+                                                        "KuGou.com"
+                                                    )
+                                                }
+                                            else
+                                                if (playerEnableLyricsPopupMessage)
+                                                    coroutineScope.launch {
+                                                        Toaster.e(
+                                                            R.string.info_lyrics_not_found_on_s,
+                                                            "KuGou.com",
+                                                            duration = Toast.LENGTH_LONG
+                                                        )
+                                                    }
 
-                                kotlin.runCatching {
-                                    KuGou.lyrics(
-                                        artist = mediaMetadata.artist?.toString() ?: "",
-                                        title = cleanPrefix(mediaMetadata.title?.toString() ?: ""),
-                                        duration = duration / 1000
-                                    )?.onSuccess {
-                                        if ((it?.value?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
-                                            && playerEnableLyricsPopupMessage
-                                        )
-                                            coroutineScope.launch {
-                                                Toaster.s(
-                                                    R.string.info_lyrics_found_on_s,
-                                                    "KuGou.com"
+                                            isError = false
+                                            Database.lyricsTable.upsert(
+                                                Lyrics(
+                                                    songId = mediaId,
+                                                    fixed = currentLyrics?.fixed,
+                                                    synced = it?.value.orEmpty()
                                                 )
-                                            }
-                                        else
+                                            )
+                                            checkedLyricsKugou = true
+                                        }?.onFailure {
                                             if (playerEnableLyricsPopupMessage)
                                                 coroutineScope.launch {
                                                     Toaster.e(
@@ -538,62 +557,40 @@ fun Lyrics(
                                                     )
                                                 }
 
-                                        isError = false
+                                            isError = true
+                                        }
+                                    }.onFailure {
+                                        Timber.e("Lyrics Kugou get error ${it.stackTraceToString()}")
+                                    }
+                                }
+                            }.onFailure {
+                                Timber.e("Lyrics get error ${it.stackTraceToString()}")
+                            }
+
+                        } else if (!isShowingSynchronizedLyrics && currentLyrics?.fixed == null) {
+                            isError = false
+                            lyrics = null
+                            kotlin.runCatching {
+                                Innertube.lyrics(NextBody(videoId = mediaId))
+                                    ?.onSuccess { fixedLyrics ->
                                         Database.lyricsTable.upsert(
                                             Lyrics(
                                                 songId = mediaId,
-                                                fixed = currentLyrics?.fixed,
-                                                synced = it?.value.orEmpty()
+                                                fixed = fixedLyrics ?: "",
+                                                synced = currentLyrics?.synced
                                             )
                                         )
-                                        checkedLyricsKugou = true
                                     }?.onFailure {
-                                        if (playerEnableLyricsPopupMessage)
-                                            coroutineScope.launch {
-                                                Toaster.e(
-                                                    R.string.info_lyrics_not_found_on_s,
-                                                    "KuGou.com",
-                                                    duration = Toast.LENGTH_LONG
-                                                )
-                                            }
-
-                                        isError = true
-                                    }
-                                }.onFailure {
-                                    Timber.e("Lyrics Kugou get error ${it.stackTraceToString()}")
+                                    isError = true
                                 }
+                            }.onFailure {
+                                Timber.e("Lyrics Innertube get error ${it.stackTraceToString()}")
                             }
-                        }.onFailure {
-                            Timber.e("Lyrics get error ${it.stackTraceToString()}")
+                            checkedLyricsInnertube = true
+                        } else {
+                            lyrics = currentLyrics
                         }
-
-                    } else if (!isShowingSynchronizedLyrics && currentLyrics?.fixed == null) {
-                        isError = false
-                        lyrics = null
-                        kotlin.runCatching {
-                            Innertube.lyrics(NextBody(videoId = mediaId))
-                                ?.onSuccess { fixedLyrics ->
-                                    Database.lyricsTable.upsert(
-                                        Lyrics(
-                                            songId = mediaId,
-                                            fixed = fixedLyrics ?: "",
-                                            synced = currentLyrics?.synced
-                                        )
-                                    )
-                                }?.onFailure {
-                                isError = true
-                            }
-                        }.onFailure {
-                            Timber.e("Lyrics Innertube get error ${it.stackTraceToString()}")
-                        }
-                        checkedLyricsInnertube = true
-                    } else {
-                        lyrics = currentLyrics
                     }
-                }
-
-            }
-
         }
 
 

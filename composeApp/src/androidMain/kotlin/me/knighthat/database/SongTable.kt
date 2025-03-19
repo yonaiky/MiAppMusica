@@ -5,7 +5,9 @@ import androidx.media3.common.MediaItem
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.utils.asSong
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +17,64 @@ interface SongTable: SqlTable<Song> {
 
     override val tableName: String
         get() = "Song"
+
+    /**
+     * @return all records from this table
+     */
+    @Query("SELECT DISTINCT * FROM Song")
+    fun all(): Flow<List<Song>>
+
+    /**
+     * @return all records that have [Song.id] start with [LOCAL_KEY_PREFIX]
+     */
+    @Query("SELECT DISTINCT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
+    fun allOnDevice(): Flow<List<Song>>
+
+    /**
+     * @param songId of album to look for
+     * @return [Song] that has [Song.id] matches [songId]
+     */
+    @Query("SELECT DISTINCT * FROM Song WHERE id = :songId")
+    fun findById( songId: String ): Flow<Song?>
+
+    /**
+     * [searchTerm] appears in [Song.title] or [Song.artistsText].
+     * Additionally, it's **case-insensitive**
+     *
+     * I.E.: `name` matches `1name_to` and `1_NaMe_to`
+     *
+     * @param searchTerm what to look for
+     * @return all [Song]s that have [Song.title] or [Song.artistsText] contain [searchTerm]
+     */
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Song 
+        WHERE title LIKE '%' || :searchTerm || '%' COLLATE NOCASE
+        OR artistsText LIKE '%' || :searchTerm || '%' COLLATE NOCASE
+    """)
+    fun findAllTitleArtistContains( searchTerm: String ): Flow<List<Song>>
+
+    /**
+     * Require [artistName] to match [Song.artistsText], except for case-sensitive.
+     *
+     * I.E.: `Michael` matches both `michael` and `MICHAEL`
+     *
+     * Additionally, [MODIFIED_PREFIX] is removed before comparision.
+     *
+     * @param artistName [Song.artistsText] to look for
+     * @return all [Song]s that have [Song.artistsText] match [artistName]
+     */
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Song 
+        WHERE trim(
+            CASE 
+                WHEN artistsText LIKE '$MODIFIED_PREFIX%' THEN SUBSTR(artistsText, LENGTH('$MODIFIED_PREFIX') + 1)
+                ELSE artistsText
+            END
+        ) COLLATE NOCASE = trim(:artistName) COLLATE NOCASE
+    """)
+    fun findAllByArtist( artistName: String ): Flow<List<Song>>
 
     /**
      * Convert [MediaItem] into [Song] and attempt to it into database.

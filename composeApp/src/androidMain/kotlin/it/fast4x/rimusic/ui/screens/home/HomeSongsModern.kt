@@ -45,6 +45,7 @@ import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -191,6 +192,7 @@ import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import it.fast4x.rimusic.utils.topPlaylistPeriodKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -229,7 +231,9 @@ fun HomeSongsModern(
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     var items by persistList<SongEntity>("home/songs")
-    var itemsAll by persistList<SongEntity>("")
+    val itemsAll by remember {
+        Database.songTable.all().distinctUntilChanged()
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     //var songsWithAlbum by persistList<SongWithAlbum>("home/songsWithAlbum")
 
@@ -258,10 +262,6 @@ fun HomeSongsModern(
 
     var showHiddenSongs by remember {
         mutableStateOf(0)
-    }
-
-    LaunchedEffect(Unit) {
-        Database.listAllSongsAsFlow().collect { itemsAll = it }
     }
 
     var includeLocalSongs by rememberPreference(includeLocalSongsKey, true)
@@ -413,37 +413,23 @@ fun HomeSongsModern(
             LaunchedEffect(Unit, builtInPlaylist, sortBy, sortOrder, filter, topPlaylistPeriod) {
 
                 if (builtInPlaylist == BuiltInPlaylist.Downloaded) {
-                    /*
-                    val downloads = DownloadUtil.downloads.value
-                    Database.listAllSongsAsFlow()
-                        .combine(
-                            Database
-                                .songsOffline(sortBy, sortOrder)
-                        ){ a, b ->
-                            a.filter { song ->
-                                downloads[song.song.id]?.state == Download.STATE_COMPLETED
-                            }.union(
-                                b.filter { binder?.isCached(it) ?: false } //.map { it.song }
-                            )
-                        }
-                        .collect {
-                            items = it.toList()
-                        }
-
-                     */
-
-
                     val downloads = MyDownloadHelper.downloads.value
-                    Database.listAllSongsAsFlow()
-                        .flowOn(Dispatchers.IO)
-                        .map {
-                            it.filter { song ->
-                                downloads[song.song.id]?.state == Download.STATE_COMPLETED
+
+                    Database.songTable
+                            .all()
+                            .flowOn( Dispatchers.IO )
+                            .distinctUntilChanged()
+                            .map { list ->
+                                list.filter { song ->
+                                        downloads[song.id]?.state == Download.STATE_COMPLETED
+                                    }
+                                    .map { song ->
+                                        SongEntity( song )
+                                    }
                             }
-                        }
-                        .collect {
-                            items = it
-                        }
+                            .collect {
+                                items = it
+                            }
                 }
 
                 if (builtInPlaylist == BuiltInPlaylist.Favorites) {
@@ -1181,23 +1167,23 @@ fun HomeSongsModern(
                             withContext(Dispatchers.IO) {
                                 Database.asyncTransaction {
                                     totalSongsToDelete = (itemsAll.filter {
-                                        !it.song.id.startsWith(LOCAL_KEY_PREFIX)
-                                                && it.song.likedAt == null
-                                                && songUsedInPlaylists(it.song.id) == 0
+                                        !it.id.startsWith(LOCAL_KEY_PREFIX)
+                                                && it.likedAt == null
+                                                && songUsedInPlaylists(it.id) == 0
                                                 && albumBookmarked(
-                                            songAlbumInfo(it.song.id)?.id ?: "" ) == 0
+                                            songAlbumInfo(it.id)?.id ?: "" ) == 0
                                     }).size
                                     if (totalSongsToDelete == 0) {
                                         Toaster.i( R.string.nothing_to_delete )
                                         deleteProgressDialog = false
                                     } else {
                                         songsDeleted = 0
-                                        itemsAll.filter {!it.song.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
+                                        itemsAll.filter {!it.id.startsWith(LOCAL_KEY_PREFIX)}.forEach { song ->
                                             Database.asyncTransaction {
-                                                if ((song.song.likedAt == null) && (Database.songUsedInPlaylists(song.song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.song.id)?.id?: "") == 0)) {
-                                                    binder?.cache?.removeResource(song.song.id)
-                                                    binder?.downloadCache?.removeResource(song.song.id)
-                                                    Database.songTable.delete( song.song )
+                                                if ((song.likedAt == null) && (Database.songUsedInPlaylists(song.id) == 0) && (Database.albumBookmarked(Database.songAlbumInfo(song.id)?.id?: "") == 0)) {
+                                                    binder?.cache?.removeResource(song.id)
+                                                    binder?.downloadCache?.removeResource(song.id)
+                                                    Database.songTable.delete( song )
                                                     songsDeleted++
                                                     if (songsDeleted == totalSongsToDelete) {
                                                         deleteProgressDialog = false

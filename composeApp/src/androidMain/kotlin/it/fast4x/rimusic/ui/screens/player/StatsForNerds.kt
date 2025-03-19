@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.screens.player
 
 import android.annotation.SuppressLint
-import android.net.ConnectivityManager
 import android.text.format.Formatter
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -21,7 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,21 +33,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheSpan
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.kreate.android.R
-import it.fast4x.rimusic.enums.AudioQualityFormat
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
-import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.blackgradientKey
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.isLandscape
@@ -59,11 +58,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.components.themed.IconButton
+import kotlinx.coroutines.Dispatchers
 import kotlin.math.roundToInt
 
 @SuppressLint("LongLogTag")
@@ -95,9 +90,9 @@ fun StatsForNerds(
             mutableStateOf(binder.downloadCache.getCachedBytes(mediaId, 0, -1))
         }
 
-        var format by remember {
-            mutableStateOf<Format?>(null)
-        }
+        val format by remember {
+            Database.formatTable.findBySongId( mediaId )
+        }.collectAsState( null, Dispatchers.IO )
         val showThumbnail by rememberPreference(showthumbnailKey, true)
         val statsForNerds by rememberPreference(statsfornerdsKey, false)
         val playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
@@ -115,69 +110,6 @@ fun StatsForNerds(
             targetValue = if (statsfornerdsfull) 180f else 0f,
             animationSpec = tween(durationMillis = 500)
         )
-        LaunchedEffect(mediaId) {
-            Database.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
-                if (currentFormat?.itag == null) {
-                    /*
-                    binder.player.currentMediaItem?.takeIf { it.mediaId == mediaId }?.let { mediaItem ->
-                        withContext(Dispatchers.IO) {
-                            delay(2000)
-                            Innertube.player(PlayerBody(videoId = mediaId))?.onSuccess { response ->
-                                response.streamingData?.adaptiveFormats
-                                ?.filter {
-                                when (audioQualityFormat) {
-                                    AudioQualityFormat.Auto -> it.itag == 251 || it.itag == 141 ||
-                                            it.itag == 250 || it.itag == 140 ||
-                                            it.itag == 249 || it.itag == 139 ||
-                                            it.itag == 171
-                                    AudioQualityFormat.High -> it.itag == 251 || it.itag == 141
-                                    AudioQualityFormat.Medium -> it.itag == 250 || it.itag == 140 || it.itag == 171
-                                    AudioQualityFormat.Low -> it.itag == 249 || it.itag == 139
-                                }
-
-                            }
-                                ?.maxByOrNull {
-                                    (it.bitrate?.times(
-                                        when (audioQualityFormat) {
-                                            AudioQualityFormat.Auto -> if (connectivityManager.isActiveNetworkMetered) -1 else 1
-                                            AudioQualityFormat.High -> 1
-                                            AudioQualityFormat.Medium -> -1
-                                            AudioQualityFormat.Low -> -1
-                                        }
-                                    ) ?: -1) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
-                                }
-                                ?.let { format ->
-                                /*
-                                when(audioQualityFormat) {
-                                    AudioQualityFormat.Auto -> response.streamingData?.autoMaxQualityFormat
-                                    AudioQualityFormat.High -> response.streamingData?.highestQualityFormat
-                                    AudioQualityFormat.Medium -> response.streamingData?.mediumQualityFormat
-                                    AudioQualityFormat.Low -> response.streamingData?.lowestQualityFormat
-                                }?.let { format ->
-
-                                 */
-                                    Database.insert(mediaItem)
-                                    Database.insert(
-                                        Format(
-                                            songId = mediaId,
-                                            itag = format.itag,
-                                            mimeType = format.mimeType,
-                                            bitrate = format.bitrate,
-                                            loudnessDb = response.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                            contentLength = format.contentLength,
-                                            lastModified = format.lastModified
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    */
-                } else {
-                    format = currentFormat
-                }
-            }
-        }
 
         DisposableEffect(mediaId) {
             val listener = object : Cache.Listener {

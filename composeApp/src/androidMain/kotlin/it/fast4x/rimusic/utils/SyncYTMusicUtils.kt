@@ -13,9 +13,6 @@ import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.Database.Companion.albumTable
-import it.fast4x.rimusic.Database.Companion.getAlbumsList
-import it.fast4x.rimusic.Database.Companion.getArtistsList
-import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
@@ -27,73 +24,12 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
-
-suspend fun importYTMPrivatePlaylists(): Boolean {
-    if (isYouTubeSyncEnabled()) {
-
-        Toaster.n( R.string.syncing, Toast.LENGTH_LONG )
-
-        Innertube.library("FEmusic_liked_playlists").completed().onSuccess { page ->
-
-            val ytmPrivatePlaylists = page.items.filterIsInstance<Innertube.PlaylistItem>()
-                .filterNot { it.key == "VLLM" || it.key == "VLSE" }
-
-            val localPlaylists = Database.ytmPrivatePlaylists().firstOrNull()
-
-            Database.asyncTransaction {
-                (localPlaylists?.filter { playlist -> playlist.browseId !in ytmPrivatePlaylists.map { if (it.key.startsWith("VL")) it.key.substringAfter("VL") else it.key }  })
-                    ?.forEach( playlistTable::delete )
-            }
-
-            ytmPrivatePlaylists.forEach { remotePlaylist ->
-                withContext(Dispatchers.IO) {
-                    val playlistIdChecked =
-                        if (remotePlaylist.key.startsWith("VL")) remotePlaylist.key.substringAfter("VL") else remotePlaylist.key
-                    println("Playlist ${localPlaylists?.map { it.browseId }}")
-                    var localPlaylist =
-                        localPlaylists?.find { it.browseId == playlistIdChecked }
-
-                    println("Local playlist: $localPlaylist")
-                    println("Remote playlist: $remotePlaylist")
-                    if (localPlaylist == null && playlistIdChecked.isNotEmpty()) {
-                        localPlaylist = Playlist(
-                            name = (remotePlaylist.title) ?: "",
-                            browseId = playlistIdChecked,
-                            isYoutubePlaylist = true,
-                            isEditable = (remotePlaylist.isEditable == true)
-                        )
-
-                        val playlist = localPlaylist.copy(browseId = playlistIdChecked)
-                        Database.playlistTable.upsert( playlist )
-                    } else {
-                        Database.updatePlaylistName(YTP_PREFIX+remotePlaylist.title, localPlaylist?.id ?: 0L)
-                    }
-
-                    Database.playlistWithSongsByBrowseId(playlistIdChecked).firstOrNull()?.let {
-                          if (it.playlist.id != 0L && it.songs.isEmpty())
-                            it.playlist.id.let { id ->
-                                ytmPrivatePlaylistSync(
-                                    it.playlist,
-                                    id
-                                )
-                            }
-                    }
-                }
-            }
-
-        }.onFailure {
-            println("Error importing YTM private playlists: ${it.stackTraceToString()}")
-            return false
-        }
-        return true
-    } else
-        return false
-}
 
 @OptIn(UnstableApi::class)
 fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
@@ -158,40 +94,36 @@ suspend fun importYTMSubscribedChannels(): Boolean {
             println("YTM artists: $ytmArtists")
 
             ytmArtists.forEach { remoteArtist ->
-                withContext(Dispatchers.IO) {
+                var localArtist = Database.artistTable.findById( remoteArtist.key ).first()
+                println("Local artist: $localArtist")
+                println("Remote artist: $remoteArtist")
 
-                    var localArtist = Database.artist(remoteArtist.key).firstOrNull()
-                    println("Local artist: $localArtist")
-                    println("Remote artist: $remoteArtist")
+                if (localArtist == null) {
+                    localArtist = Artist(
+                        id = remoteArtist.key,
+                        name = remoteArtist.title,
+                        thumbnailUrl = remoteArtist.thumbnail?.url,
+                        bookmarkedAt = System.currentTimeMillis(),
+                        isYoutubeArtist = true
+                    )
+                    Database.artistTable.insertReplace( localArtist )
+                } else {
+                    localArtist.copy(
+                        bookmarkedAt = localArtist.bookmarkedAt ?: System.currentTimeMillis(),
+                        thumbnailUrl = remoteArtist.thumbnail?.url,
+                        isYoutubeArtist = true
+                    ).let( Database.artistTable::update )
+                }
+            }
 
-                    if (localArtist == null) {
-                        localArtist = Artist(
-                            id = remoteArtist.key,
-                            name = remoteArtist.title,
-                            thumbnailUrl = remoteArtist.thumbnail?.url,
-                            bookmarkedAt = System.currentTimeMillis(),
-                            isYoutubeArtist = true
-                        )
-                        Database.artistTable.insertReplace( localArtist )
-                    } else {
-                        localArtist.copy(
-                            bookmarkedAt = localArtist.bookmarkedAt ?: System.currentTimeMillis(),
-                            thumbnailUrl = remoteArtist.thumbnail?.url,
-                            isYoutubeArtist = true
-                        ).let( Database.artistTable::update )
+            Database.artistTable
+                    .all()
+                    .first()
+                    .filter { artist ->
+                        artist.isYoutubeArtist && artist.id !in ytmArtists.map { it.key }
                     }
-
-
-                }
-            }
-            val Artists = getArtistsList().firstOrNull()
-            Database.asyncTransaction {
-                Artists?.filter {artist -> artist?.isYoutubeArtist == true && artist.id !in ytmArtists.map { it.key } }?.forEach { artist ->
-
-                    artist?.copy(isYoutubeArtist = false, bookmarkedAt = null)
-                          ?.let( artistTable::update )
-                }
-            }
+                    .map { it.copy( isYoutubeArtist = false, bookmarkedAt = null ) }
+                    .forEach( Database.artistTable::update )
         }
             .onFailure {
                 println("Error importing YTM subscribed artists channels: ${it.stackTraceToString()}")
@@ -215,41 +147,38 @@ suspend fun importYTMLikedAlbums(): Boolean {
             println("YTM albums: $ytmAlbums")
 
             ytmAlbums.forEach { remoteAlbum ->
-                withContext(Dispatchers.IO) {
+                var localAlbum = Database.albumTable.findById( remoteAlbum.key ).first()
+                println("Local album: $localAlbum")
+                println("Remote album: $remoteAlbum")
 
-                    var localAlbum = Database.album(remoteAlbum.key).firstOrNull()
-                    println("Local album: $localAlbum")
-                    println("Remote album: $remoteAlbum")
+                if (localAlbum == null) {
+                    localAlbum = Album(
+                        id = remoteAlbum.key,
+                        title = remoteAlbum.title,
+                        thumbnailUrl = remoteAlbum.thumbnail?.url,
+                        bookmarkedAt = System.currentTimeMillis(),
+                        year = remoteAlbum.year,
+                        authorsText = remoteAlbum.authors?.getOrNull(1)?.name,
+                        isYoutubeAlbum = true
+                    )
+                    Database.albumTable.insertReplace( localAlbum )
+                } else {
+                    localAlbum.copy(
+                        isYoutubeAlbum = true,
+                        bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
+                        thumbnailUrl = remoteAlbum.thumbnail?.url)
+                        .let( albumTable::update )
+                }
+            }
 
-                    if (localAlbum == null) {
-                        localAlbum = Album(
-                            id = remoteAlbum.key,
-                            title = remoteAlbum.title,
-                            thumbnailUrl = remoteAlbum.thumbnail?.url,
-                            bookmarkedAt = System.currentTimeMillis(),
-                            year = remoteAlbum.year,
-                            authorsText = remoteAlbum.authors?.getOrNull(1)?.name,
-                            isYoutubeAlbum = true
-                        )
-                        Database.albumTable.insertReplace( localAlbum )
-                    } else {
-                        localAlbum.copy(
-                            isYoutubeAlbum = true,
-                            bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
-                            thumbnailUrl = remoteAlbum.thumbnail?.url)
-                            .let( albumTable::update )
+            Database.albumTable
+                    .all()
+                    .first()
+                    .filter { album ->
+                        album.isYoutubeAlbum && album.id !in ytmAlbums.map { it.key }
                     }
-
-                }
-            }
-            val Albums = getAlbumsList().firstOrNull()
-            Database.asyncTransaction {
-                Albums?.filter {album -> album?.isYoutubeAlbum == true && album.id !in ytmAlbums.map { it.key } }?.forEach { album->
-
-                    album?.copy(isYoutubeAlbum = false, bookmarkedAt = null)
-                         ?.let( albumTable::update )
-                }
-            }
+                    .map { it.copy( isYoutubeAlbum = false, bookmarkedAt = null ) }
+                    .also( Database.albumTable::update )
         }
             .onFailure {
                 println("Error importing YTM liked albums: ${it.stackTraceToString()}")

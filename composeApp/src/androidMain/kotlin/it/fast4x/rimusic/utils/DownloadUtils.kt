@@ -3,27 +3,21 @@ package it.fast4x.rimusic.utils
 
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-
 import androidx.compose.ui.platform.LocalContext
-
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
-
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalDownloadHelper
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 
 @UnstableApi
 @Composable
@@ -39,22 +33,20 @@ fun InitDownloader() {
 fun downloadedStateMedia(mediaId: String): DownloadedStateMedia {
     val binder = LocalPlayerServiceBinder.current
 
-    val cachedBytes by remember(mediaId) {
-        mutableStateOf(binder?.cache?.getCachedBytes(mediaId, 0, -1))
+    val cachedBytes = remember(mediaId) {
+        binder?.cache?.getCachedBytes(mediaId, 0, -1)
     }
 
-    var isDownloaded by remember { mutableStateOf(false) }
-    LaunchedEffect(mediaId) {
-        MyDownloadHelper.getDownload(mediaId).collect { download ->
-            isDownloaded = download?.state == Download.STATE_COMPLETED
+    val isDownloaded by remember {
+        MyDownloadHelper.getDownload( mediaId ).map {
+            it?.state == Download.STATE_COMPLETED
         }
-    }
-    var isCached by remember { mutableStateOf(false) }
-    LaunchedEffect(mediaId) {
-        Database.format(mediaId).distinctUntilChanged().collectLatest { format ->
-           isCached = format?.contentLength == cachedBytes
+    }.collectAsState( false, Dispatchers.IO )
+    val isCached by remember {
+        Database.formatTable.findBySongId( mediaId ).map {
+            it?.contentLength == cachedBytes
         }
-    }
+    }.collectAsState( false, Dispatchers.IO )
 
     return when {
         isDownloaded && isCached -> DownloadedStateMedia.CACHED_AND_DOWNLOADED

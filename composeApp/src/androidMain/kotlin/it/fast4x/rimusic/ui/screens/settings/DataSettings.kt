@@ -53,6 +53,7 @@ import it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
@@ -61,7 +62,6 @@ import me.knighthat.component.import.ImportDatabase
 import me.knighthat.component.import.ImportMigration
 import me.knighthat.component.import.ImportSettings
 import me.knighthat.utils.Toaster
-import java.util.concurrent.CancellationException
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalCoilApi::class)
@@ -149,22 +149,22 @@ fun DataSettings() {
     if (cleanDownloadCache) {
         ConfirmationDialog(
             text = stringResource(R.string.do_you_really_want_to_delete_cache),
-                           onDismiss = {
-                               cleanDownloadCache = false
-                           },
-                           onConfirm = {
-                               binder?.downloadCache?.keys?.forEach { song ->
-                                   binder.downloadCache.removeResource(song)
+            onDismiss = {
+                cleanDownloadCache = false
+            },
+            onConfirm = {
+                binder?.downloadCache?.keys?.forEach { songId ->
+                    binder.downloadCache.removeResource(songId)
 
-                                   CoroutineScope(Dispatchers.IO).launch {
-                                       Database.song(song).collect {
-                                           val mediaItem = it?.asMediaItem ?: throw CancellationException()
-                                           MyDownloadHelper.removeDownload(context, mediaItem)
-                                           throw CancellationException()
-                                       }
-                                   }
-                               }
-                           }
+                    CoroutineScope(Dispatchers.IO).launch {
+                        Database.songTable
+                                .findById( songId )
+                                .first()
+                                ?.asMediaItem
+                                ?.let { MyDownloadHelper.removeDownload( context, it ) }
+                    }
+                }
+            }
         )
     }
 
@@ -184,16 +184,16 @@ fun DataSettings() {
 
     Column(
         modifier = Modifier
-        .background(colorPalette().background0)
-        //.fillMaxSize()
+            .background(colorPalette().background0)
+            //.fillMaxSize()
         .fillMaxHeight()
-        .fillMaxWidth(
-            if( NavigationBarPosition.Right.isCurrent() )
-                Dimensions.contentWidthRightBar
+            .fillMaxWidth(
+                if (NavigationBarPosition.Right.isCurrent())
+                    Dimensions.contentWidthRightBar
                 else
                     1f
-        )
-        .verticalScroll(rememberScrollState())
+            )
+            .verticalScroll(rememberScrollState())
         /*
          *            .padding(
          *                LocalPlayerAwareWindowInsets.current

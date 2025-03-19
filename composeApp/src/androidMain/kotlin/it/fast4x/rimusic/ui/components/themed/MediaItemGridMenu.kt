@@ -51,7 +51,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
-import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -64,7 +63,6 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
-import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.SongPlaylistMap
@@ -97,7 +95,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
 
 @OptIn(UnstableApi::class)
@@ -354,21 +351,11 @@ fun MediaItemGridMenu (
         )
     }
 
-    var artistsList by persistList<Artist?>("home/artists")
-    var artistIds = remember { mutableListOf("") }
-
     LaunchedEffect(Unit, mediaItem.mediaId) {
-        withContext(Dispatchers.IO) {
-            if (albumInfo == null)
-                albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
-            if (artistsInfo == null)
-                artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
-
-            artistsInfo?.forEach { info ->
-                if (info.id.isNotEmpty()) artistIds.add(info.id)
-            }
-            Database.getArtistsList(artistIds).collect { artistsList = it }
-        }
+        if (albumInfo == null)
+            albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
+        if (artistsInfo == null)
+            artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
     }
 
 

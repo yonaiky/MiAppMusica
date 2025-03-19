@@ -242,155 +242,155 @@ fun SearchResultScreen(
                                 albumItem = album,
                                 onPlayNext = {
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        Database
-                                            .album(album.key)
-                                            .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
-                                            .collect {
-                                                if (albumPage == null)
-                                                    withContext(Dispatchers.IO) {
-                                                        Innertube.albumPage(
-                                                            BrowseBody(
-                                                                browseId = album.key
+                                        Database.albumTable
+                                                .findById( album.key )
+                                                .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
+                                                .collect {
+                                                    if (albumPage == null)
+                                                        withContext(Dispatchers.IO) {
+                                                            Innertube.albumPage(
+                                                                BrowseBody(
+                                                                    browseId = album.key
+                                                                )
                                                             )
-                                                        )
-                                                            ?.onSuccess { currentAlbumPage ->
-                                                                albumPage =
-                                                                    currentAlbumPage
+                                                                ?.onSuccess { currentAlbumPage ->
+                                                                    albumPage =
+                                                                        currentAlbumPage
 
-                                                                println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
+                                                                    println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
 
-                                                                albumPage
-                                                                    ?.songsPage
-                                                                    ?.items
-                                                                    ?.map(
-                                                                        Innertube.SongItem::asMediaItem
-                                                                    )
-                                                                    ?.let { it1 ->
-                                                                        withContext(Dispatchers.Main) {
-                                                                            binder?.player?.addNext(
-                                                                                it1,
-                                                                                context
-                                                                            )
+                                                                    albumPage
+                                                                        ?.songsPage
+                                                                        ?.items
+                                                                        ?.map(
+                                                                            Innertube.SongItem::asMediaItem
+                                                                        )
+                                                                        ?.let { it1 ->
+                                                                            withContext(Dispatchers.Main) {
+                                                                                binder?.player?.addNext(
+                                                                                    it1,
+                                                                                    context
+                                                                                )
+                                                                            }
                                                                         }
-                                                                    }
-                                                                println("mediaItem success add in queue album songsPage ${albumPage
-                                                                    ?.songsPage
-                                                                    ?.items?.size}")
+                                                                    println("mediaItem success add in queue album songsPage ${albumPage
+                                                                        ?.songsPage
+                                                                        ?.items?.size}")
 
-                                                            }
-                                                            ?.onFailure {
-                                                                println("mediaItem error searchResultScreen album ${it.stackTraceToString()}")
-                                                            }
-                                                    }
-                                            }
+                                                                }
+                                                                ?.onFailure {
+                                                                    println("mediaItem error searchResultScreen album ${it.stackTraceToString()}")
+                                                                }
+                                                        }
+                                                }
                                     }
 
                                 },
                                 onEnqueue = {
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        Database
-                                            .album(album.key)
-                                            .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
-                                            .collect {
-                                                if (albumPage == null)
-                                                    withContext(Dispatchers.IO) {
-                                                        Innertube.albumPage(
-                                                            BrowseBody(
-                                                                browseId = album.key
+                                        Database.albumTable
+                                                .findById( album.key )
+                                                .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
+                                                .collect {
+                                                    if (albumPage == null)
+                                                        withContext(Dispatchers.IO) {
+                                                            Innertube.albumPage(
+                                                                BrowseBody(
+                                                                    browseId = album.key
+                                                                )
                                                             )
-                                                        )
-                                                            ?.onSuccess { currentAlbumPage ->
-                                                                albumPage =
-                                                                    currentAlbumPage
+                                                                ?.onSuccess { currentAlbumPage ->
+                                                                    albumPage =
+                                                                        currentAlbumPage
 
-                                                                println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
+                                                                    println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
 
-                                                                albumPage
-                                                                    ?.songsPage
-                                                                    ?.items
-                                                                    ?.map(
-                                                                        Innertube.SongItem::asMediaItem
-                                                                    )
-                                                                    ?.let { it1 ->
-                                                                        withContext(Dispatchers.Main) {
-                                                                            binder?.player?.enqueue(
-                                                                                it1,
-                                                                                context
-                                                                            )
+                                                                    albumPage
+                                                                        ?.songsPage
+                                                                        ?.items
+                                                                        ?.map(
+                                                                            Innertube.SongItem::asMediaItem
+                                                                        )
+                                                                        ?.let { it1 ->
+                                                                            withContext(Dispatchers.Main) {
+                                                                                binder?.player?.enqueue(
+                                                                                    it1,
+                                                                                    context
+                                                                                )
+                                                                            }
                                                                         }
-                                                                    }
-                                                                println("mediaItem success add in queue album songsPage ${albumPage
-                                                                    ?.songsPage
-                                                                    ?.items?.size}")
+                                                                    println("mediaItem success add in queue album songsPage ${albumPage
+                                                                        ?.songsPage
+                                                                        ?.items?.size}")
 
-                                                            }
-                                                            ?.onFailure {
-                                                                println("mediaItem error searchResultScreen album ${it.stackTraceToString()}")
-                                                            }
+                                                                }
+                                                                ?.onFailure {
+                                                                    println("mediaItem error searchResultScreen album ${it.stackTraceToString()}")
+                                                                }
 
-                                                    }
+                                                        }
 
-                                                //}
-                                            }
+                                                    //}
+                                                }
 
                                     }
 
                                 },
                                 onBookmark = {
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        Database
-                                            .album(album.key)
-                                            .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
-                                            .collect {
-                                                if (albumPage == null)
-                                                    withContext(Dispatchers.IO) {
-                                                        Innertube.albumPage(
-                                                            BrowseBody(
-                                                                browseId = album.key
-                                                            )
-                                                        )
-                                                            ?.onSuccess { currentAlbumPage ->
-                                                                albumPage =
-                                                                    currentAlbumPage
-
-                                                                println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
-
-                                                                Database.albumTable.upsert(
-                                                                    Album(
-                                                                        id = album.key,
-                                                                        title = currentAlbumPage.title,
-                                                                        thumbnailUrl = currentAlbumPage.thumbnail?.url,
-                                                                        year = currentAlbumPage.year,
-                                                                        authorsText = currentAlbumPage.authors?.joinToString( "" ) { it.name ?: "" },
-                                                                        shareUrl = currentAlbumPage.url,
-                                                                        timestamp = System.currentTimeMillis(),
-                                                                        bookmarkedAt = System.currentTimeMillis()
-                                                                    )
+                                        Database.albumTable
+                                                .findById( album.key )
+                                                .combine(snapshotFlow { currentTabIndex }) { album, tabIndex -> album to tabIndex }
+                                                .collect {
+                                                    if (albumPage == null)
+                                                        withContext(Dispatchers.IO) {
+                                                            Innertube.albumPage(
+                                                                BrowseBody(
+                                                                    browseId = album.key
                                                                 )
+                                                            )
+                                                                ?.onSuccess { currentAlbumPage ->
+                                                                    albumPage =
+                                                                        currentAlbumPage
 
-                                                                currentAlbumPage.songsPage
-                                                                                ?.items
-                                                                                ?.map(
-                                                                                    Innertube.SongItem::asMediaItem
-                                                                                )
-                                                                                ?.onEach(
-                                                                                    Database::insert
-                                                                                )
-                                                                                ?.mapIndexed { position, mediaItem ->
-                                                                                    SongAlbumMap(
-                                                                                        songId = mediaItem.mediaId,
-                                                                                        albumId = album.key,
-                                                                                        position = position
+                                                                    println("mediaItem success home album songsPage ${currentAlbumPage.songsPage} description ${currentAlbumPage.description} year ${currentAlbumPage.year}")
+
+                                                                    Database.albumTable.upsert(
+                                                                        Album(
+                                                                            id = album.key,
+                                                                            title = currentAlbumPage.title,
+                                                                            thumbnailUrl = currentAlbumPage.thumbnail?.url,
+                                                                            year = currentAlbumPage.year,
+                                                                            authorsText = currentAlbumPage.authors?.joinToString( "" ) { it.name ?: "" },
+                                                                            shareUrl = currentAlbumPage.url,
+                                                                            timestamp = System.currentTimeMillis(),
+                                                                            bookmarkedAt = System.currentTimeMillis()
+                                                                        )
+                                                                    )
+
+                                                                    currentAlbumPage.songsPage
+                                                                                    ?.items
+                                                                                    ?.map(
+                                                                                        Innertube.SongItem::asMediaItem
                                                                                     )
-                                                                                }
-                                                                                ?.also( Database.songAlbumMapTable::upsert )
-                                                            }
-                                                            ?.onFailure {
-                                                                println("mediaItem error searchResultScreen album ${it.stackTraceToString()}")
-                                                            }
+                                                                                    ?.onEach(
+                                                                                        Database::insert
+                                                                                    )
+                                                                                    ?.mapIndexed { position, mediaItem ->
+                                                                                        SongAlbumMap(
+                                                                                            songId = mediaItem.mediaId,
+                                                                                            albumId = album.key,
+                                                                                            position = position
+                                                                                        )
+                                                                                    }
+                                                                                    ?.also( Database.songAlbumMapTable::upsert )
+                                                                }
+                                                                ?.onFailure {
+                                                                    println("mediaItem error searchResultScreen album ${it.stackTraceToString()}")
+                                                                }
 
-                                                    }
-                                            }
+                                                        }
+                                                }
                                     }
                                 }
                             ) {

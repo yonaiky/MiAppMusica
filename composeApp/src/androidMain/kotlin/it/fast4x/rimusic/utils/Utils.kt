@@ -67,10 +67,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
 import java.io.File
 import java.text.SimpleDateFormat
@@ -792,8 +790,9 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     )
                 )
                 CoroutineScope(Dispatchers.IO).launch {
-                    Database.album(matchedSong.album?.endpoint?.browseId ?: "")
-                            .firstOrNull()
+                    Database.albumTable
+                            .findById(matchedSong.album?.endpoint?.browseId ?: "")
+                            .first()
                             ?.copy( thumbnailUrl = matchedSong.thumbnail?.url )
                             ?.let( albumTable::update )
 
@@ -876,8 +875,9 @@ suspend fun updateLocalPlaylist(song: Song){
                 )
 
                 runBlocking {
-                    Database.album(matchedSong.album?.endpoint?.browseId ?: "")
-                            .firstOrNull()
+                    Database.albumTable
+                            .findById( matchedSong.album?.endpoint?.browseId ?: "" )
+                            .first()
                             ?.copy( thumbnailUrl = matchedSong.thumbnail?.url )
                             ?.let( albumTable::update )
                 }
@@ -903,8 +903,8 @@ suspend fun updateLocalPlaylist(song: Song){
 fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
     var lyrics by mutableStateOf<Lyrics?>(null)
     coroutineScope.launch {
-        withContext(Dispatchers.IO) {
-            Database.lyrics(it.asMediaItem.mediaId)
+        Database.lyricsTable
+                .findBySongId( it.song.id )
                 .collect { currentLyrics ->
                     if (currentLyrics?.synced == null) {
                         lyrics = null
@@ -921,7 +921,7 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                             )?.onSuccess { lyrics ->
                                 Database.lyricsTable.upsert(
                                     Lyrics(
-                                        songId = it.asMediaItem.mediaId,
+                                        songId = it.song.id,
                                         fixed = currentLyrics?.fixed,
                                         synced = lyrics?.text.orEmpty()
                                     )
@@ -941,7 +941,7 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                                     )?.onSuccess { lyrics ->
                                         Database.lyricsTable.upsert(
                                             Lyrics(
-                                                songId = it.asMediaItem.mediaId,
+                                                songId = it.song.id,
                                                 fixed = currentLyrics?.fixed,
                                                 synced = lyrics?.value.orEmpty()
                                             )
@@ -952,7 +952,6 @@ fun DownloadSyncedLyrics(it : SongEntity, coroutineScope : CoroutineScope){
                         }.onFailure {}
                     }
                 }
-        }
     }
 }
 

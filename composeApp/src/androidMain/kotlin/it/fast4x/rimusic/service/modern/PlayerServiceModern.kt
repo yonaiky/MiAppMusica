@@ -167,7 +167,6 @@ import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import it.fast4x.rimusic.utils.setGlobalVolume
-import it.fast4x.rimusic.utils.setLikeState
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.skipMediaOnErrorKey
@@ -190,6 +189,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -258,7 +258,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
     private val currentSong = currentMediaItem.flatMapLatest { mediaItem ->
-        Database.song(mediaItem?.mediaId)
+        Database.songTable.findById( mediaItem?.mediaId ?: "" )
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
 //    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
@@ -1449,7 +1449,9 @@ class PlayerServiceModern : MediaLibraryService(),
         if (!isPersistentQueueEnabled) return
 
         Database.asyncQuery {
-            val queuedSong = queue()
+            val queuedSong = runBlocking {
+                queueTable.all().first()
+            }
 
             if (queuedSong.isEmpty()) return@asyncQuery
 

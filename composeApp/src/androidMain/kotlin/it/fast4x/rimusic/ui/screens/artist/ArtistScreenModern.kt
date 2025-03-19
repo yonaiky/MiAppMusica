@@ -55,7 +55,6 @@ import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.ui.screens.artist.ArtistDetails
@@ -79,9 +78,9 @@ fun ArtistScreenModern(
 
     var artist: Artist? by remember { mutableStateOf( null ) }
     LaunchedEffect( Unit ) {
-        Database.artist( browseId )
+        Database.artistTable
+                .findById( browseId )
                 .flowOn( Dispatchers.IO )
-                .distinctUntilChanged()
                 .collect { artist = it }
     }
 

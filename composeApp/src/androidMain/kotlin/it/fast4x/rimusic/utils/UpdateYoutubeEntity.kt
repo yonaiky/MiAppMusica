@@ -31,32 +31,32 @@ fun UpdateYoutubeArtist(browseId: String) {
     val tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
 
     LaunchedEffect(browseId) {
-        Database
-            .artist(browseId)
-            .combine(snapshotFlow { tabIndex }.map { it != 4 }) { artist, mustFetch -> artist to mustFetch }
-            .distinctUntilChanged()
-            .collect { (currentArtist, mustFetch) ->
-                artist = currentArtist
+        Database.artistTable
+                .findById( browseId )
+                .combine(snapshotFlow { tabIndex }.map { it != 4 }) { artist, mustFetch -> artist to mustFetch }
+                .distinctUntilChanged()
+                .collect { (currentArtist, mustFetch) ->
+                    artist = currentArtist
 
-                if (artistPage == null && (currentArtist?.timestamp == null || mustFetch)) {
-                    withContext(Dispatchers.IO) {
-                        Innertube.artistPage(BrowseBody(browseId = browseId))
-                            ?.onSuccess { currentArtistPage ->
-                                artistPage = currentArtistPage
+                    if (artistPage == null && (currentArtist?.timestamp == null || mustFetch)) {
+                        withContext(Dispatchers.IO) {
+                            Innertube.artistPage(BrowseBody(browseId = browseId))
+                                ?.onSuccess { currentArtistPage ->
+                                    artistPage = currentArtistPage
 
-                                Database.artistTable.upsert(
-                                    Artist(
-                                        id = browseId,
-                                        name = currentArtistPage.name,
-                                        thumbnailUrl = currentArtistPage.thumbnail?.url,
-                                        timestamp = System.currentTimeMillis(),
-                                        bookmarkedAt = currentArtist?.bookmarkedAt
+                                    Database.artistTable.upsert(
+                                        Artist(
+                                            id = browseId,
+                                            name = currentArtistPage.name,
+                                            thumbnailUrl = currentArtistPage.thumbnail?.url,
+                                            timestamp = System.currentTimeMillis(),
+                                            bookmarkedAt = currentArtist?.bookmarkedAt
+                                        )
                                     )
-                                )
-                            }
+                                }
+                        }
                     }
                 }
-            }
     }
 
 }
@@ -68,49 +68,49 @@ fun UpdateYoutubeAlbum (browseId: String) {
     var albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
     val tabIndex by rememberSaveable {mutableStateOf(0)}
     LaunchedEffect(browseId) {
-        Database
-            .album(browseId)
-            .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
-            .collect { (currentAlbum, tabIndex) ->
-                album = currentAlbum
+        Database.albumTable
+                .findById( browseId )
+                .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
+                .collect { (currentAlbum, tabIndex) ->
+                    album = currentAlbum
 
-                if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
-                    withContext(Dispatchers.IO) {
-                        Innertube.albumPage(BrowseBody(browseId = browseId))
-                            ?.onSuccess { currentAlbumPage ->
-                                albumPage = currentAlbumPage
+                    if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
+                        withContext(Dispatchers.IO) {
+                            Innertube.albumPage(BrowseBody(browseId = browseId))
+                                ?.onSuccess { currentAlbumPage ->
+                                    albumPage = currentAlbumPage
 
-                                Database.clearAlbum(browseId)
+                                    Database.clearAlbum(browseId)
 
-                                Database.albumTable.upsert(
-                                    Album(
-                                        id = browseId,
-                                        title = currentAlbumPage.title,
-                                        thumbnailUrl = currentAlbumPage.thumbnail?.url,
-                                        year = currentAlbumPage.year,
-                                        authorsText = currentAlbumPage.authors
-                                            ?.joinToString("") { it.name ?: "" },
-                                        shareUrl = currentAlbumPage.url,
-                                        timestamp = System.currentTimeMillis(),
-                                        bookmarkedAt = album?.bookmarkedAt
+                                    Database.albumTable.upsert(
+                                        Album(
+                                            id = browseId,
+                                            title = currentAlbumPage.title,
+                                            thumbnailUrl = currentAlbumPage.thumbnail?.url,
+                                            year = currentAlbumPage.year,
+                                            authorsText = currentAlbumPage.authors
+                                                ?.joinToString("") { it.name ?: "" },
+                                            shareUrl = currentAlbumPage.url,
+                                            timestamp = System.currentTimeMillis(),
+                                            bookmarkedAt = album?.bookmarkedAt
+                                        )
                                     )
-                                )
-                                currentAlbumPage.songsPage
-                                                ?.items
-                                                ?.map(Innertube.SongItem::asMediaItem)
-                                                ?.onEach(Database::insert)
-                                                ?.mapIndexed { position, mediaItem ->
-                                                    SongAlbumMap(
-                                                        songId = mediaItem.mediaId,
-                                                        albumId = browseId,
-                                                        position = position
-                                                    )
-                                                }
-                                               ?.also( Database.songAlbumMapTable::upsert )
-                            }
-                    }
+                                    currentAlbumPage.songsPage
+                                                    ?.items
+                                                    ?.map(Innertube.SongItem::asMediaItem)
+                                                    ?.onEach(Database::insert)
+                                                    ?.mapIndexed { position, mediaItem ->
+                                                        SongAlbumMap(
+                                                            songId = mediaItem.mediaId,
+                                                            albumId = browseId,
+                                                            position = position
+                                                        )
+                                                    }
+                                                   ?.also( Database.songAlbumMapTable::upsert )
+                                }
+                        }
 
+                    }
                 }
-            }
     }
 }

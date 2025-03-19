@@ -53,6 +53,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -99,7 +100,6 @@ import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.SearchBody
@@ -169,7 +169,7 @@ import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -562,20 +562,19 @@ inline fun SelectorArtistsDialog(
                 Box {
                     HorizontalPager(state = pagerState) { idArtist ->
                         val browseId = values[idArtist].id
-                        var artist by persist<Artist?>("artist/$browseId/artist")
-                        LaunchedEffect(browseId) {
-                            Database.artist(values[idArtist].id).collect{artist = it}
-                        }
+                        val artist by remember( browseId ) {
+                            Database.artistTable.findById( browseId )
+                        }.collectAsState( null, Dispatchers.IO )
+
                         LaunchedEffect(Unit) {
                             if (artist?.thumbnailUrl == null) {
                                 withContext(Dispatchers.IO) {
                                     YtMusic.getArtistPage(browseId = browseId)
-                                        .onSuccess { currentArtistPage ->
-                                            artist?.copy(
-                                                thumbnailUrl = currentArtistPage.artist.thumbnail?.url
-                                            )?.let( Database.artistTable::update )
-                                            Database.artist(values[idArtist].id).collect{artist = it}
-                                        }
+                                           .onSuccess { currentArtistPage ->
+                                               artist?.copy(
+                                                   thumbnailUrl = currentArtistPage.artist.thumbnail?.url
+                                               )?.let( Database.artistTable::update )
+                                           }
                                 }
                             }
                         }
@@ -2059,8 +2058,9 @@ fun SongMatchingDialog(
                                                 )
                                             )
                                             CoroutineScope(Dispatchers.IO).launch {
-                                                Database.album(song.album?.endpoint?.browseId ?: "")
-                                                        .firstOrNull()
+                                                Database.albumTable
+                                                        .findById(song.album?.endpoint?.browseId ?: "")
+                                                        .first()
                                                         ?.copy( thumbnailUrl = song.thumbnail?.url )
                                                         ?.let( albumTable::update )
 

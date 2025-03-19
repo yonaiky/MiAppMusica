@@ -461,7 +461,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         .map(SongWithContentLength::song)
 
                     MediaId.ondevice -> Database
-                        .songsOnDevice()
+                        .songTable
+                        .allOnDevice()
                         .first()
 
                     MediaId.downloaded -> {
@@ -484,9 +485,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     MediaId.playlists -> data
                         .getOrNull(1)
                         ?.toLongOrNull()
-                        ?.let(Database::playlistWithSongs)
+                        ?.let(Database.songPlaylistMapTable::findAllSongsOf)
                         ?.first()
-                        ?.songs
 
                     MediaId.albums -> data
                         .getOrNull(1)
@@ -496,7 +496,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     MediaId.artists -> {
                         data
                         .getOrNull(1)
-                        ?.let(Database::artistSongsByname)
+                        ?.let(Database.songTable::findAllByArtist)
                         ?.first()
                     }
 

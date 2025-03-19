@@ -94,7 +94,8 @@ fun AlbumScreen(
 
     var album by persist<Album?>("album/$browseId")
     LaunchedEffect(Unit) {
-        Database.album( browseId )
+        Database.albumTable
+                .findById( browseId )
                 .flowOn( Dispatchers.IO )
                 .distinctUntilChanged()
                 .collect { album = it }
