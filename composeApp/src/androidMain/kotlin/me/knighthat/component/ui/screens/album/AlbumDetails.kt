@@ -71,7 +71,7 @@ fun AlbumBookmark(
     albumId: String
 ): MenuIcon = object : MenuIcon, Descriptive, DualIcon {
     val isBookmarked by remember {
-        Database.isAlbumBookmarked( albumId )
+        Database.albumTable.isBookmarked( albumId )
     }.collectAsState( false, Dispatchers.IO )
 
     override val iconId: Int = R.drawable.bookmark
@@ -86,7 +86,7 @@ fun AlbumBookmark(
         get() = stringResource( messageId )
 
     override fun onShortClick() = Database.asyncTransaction {
-        toggleAlbumBookmark( albumId )
+        albumTable.toggleBookmark( albumId )
     }
 }
 

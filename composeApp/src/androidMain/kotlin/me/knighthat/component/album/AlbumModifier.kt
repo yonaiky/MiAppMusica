@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import it.fast4x.rimusic.Database
 import me.knighthat.component.RenameDialog
+import me.knighthat.database.AlbumTable
 
 class AlbumModifier private constructor(
     activeState: MutableState<Boolean>,
@@ -15,7 +17,7 @@ class AlbumModifier private constructor(
     override val iconId: Int,
     override val messageId: Int,
     private val getDefaultValue: () -> String,
-    private val onConfirm: (String) -> Unit
+    private val onConfirm: AlbumTable.(String) -> Unit
 ): RenameDialog(activeState, valueState) {
 
     companion object {
@@ -24,7 +26,7 @@ class AlbumModifier private constructor(
             iconId: Int,
             messageId: Int,
             getDefaultValue: () -> String,
-            onConfirm: (String) -> Unit
+            onConfirm: AlbumTable.(String) -> Unit
         ) = AlbumModifier(
             remember { mutableStateOf(false) },
             remember( getDefaultValue() ) {
@@ -57,6 +59,8 @@ class AlbumModifier private constructor(
         super.onSet( newValue )
         if( errorMessage.isNotEmpty() ) return
 
-        onConfirm( newValue )
+        Database.asyncTransaction {
+            albumTable.onConfirm( newValue )
+        }
     }
 }

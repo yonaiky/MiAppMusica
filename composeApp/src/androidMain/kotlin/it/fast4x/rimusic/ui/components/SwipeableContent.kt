@@ -11,12 +11,10 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,9 +30,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadService
+import app.kreate.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
-import app.kreate.android.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AlbumSwipeAction
@@ -329,12 +327,10 @@ fun SwipeableAlbumItem(
     onBookmark: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    var bookmarkedAt by rememberSaveable {
-        mutableStateOf<Long?>(null)
-    }
-    LaunchedEffect(albumItem.key) {
-        Database.albumBookmarkedAt(albumItem.key).distinctUntilChanged().collect { bookmarkedAt = it }
-    }
+    val album by remember( albumItem.key ) {
+        Database.albumTable
+                .findById( albumItem.key )
+    }.collectAsState( null, Dispatchers.IO )
 
     val albumSwipeLeftAction by rememberPreference(albumSwipeLeftActionKey, AlbumSwipeAction.PlayNext)
     val albumSwipeRightAction by rememberPreference(albumSwipeRightActionKey, AlbumSwipeAction.Bookmark)
@@ -347,14 +343,12 @@ fun SwipeableAlbumItem(
             else -> ({})
         }
     }
-    val swipeLeftCallback = getActionCallback(albumSwipeLeftAction)
-    val swipeRighCallback = getActionCallback(albumSwipeRightAction)
 
     SwipeableContent(
-        swipeToLeftIcon =  albumSwipeLeftAction.getStateIcon(bookmarkedAt),
-        swipeToRightIcon =  albumSwipeRightAction.getStateIcon(bookmarkedAt),
-        onSwipeToLeft = swipeLeftCallback,
-        onSwipeToRight = swipeRighCallback
+        swipeToLeftIcon =  albumSwipeLeftAction.getStateIcon( album?.bookmarkedAt ),
+        swipeToRightIcon =  albumSwipeRightAction.getStateIcon( album?.bookmarkedAt ),
+        onSwipeToLeft = getActionCallback( albumSwipeLeftAction ),
+        onSwipeToRight = getActionCallback( albumSwipeRightAction )
     ) {
         content()
     }

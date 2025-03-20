@@ -69,6 +69,85 @@ interface AlbumTable: SqlTable<Album> {
     @Query("SELECT DISTINCT * FROM Album WHERE id = :albumId")
     fun findById( albumId: String ): Flow<Album?>
 
+    /**
+     * @return [Album] that has song with id [songId]
+     */
+    @Query("""
+        SELECT Album.*
+        FROM SongAlbumMap 
+        JOIN Album ON id = albumId
+        WHERE songId = :songId
+    """)
+    fun findBySongId( songId: String ): Flow<Album?>
+
+    /**
+     * @return whether [Album] with id [albumId] is bookmarked,
+     * if album doesn't exist, return default value - `false`
+     */
+    @Query("""
+        SELECT 
+            CASE
+                WHEN bookmarkedAt IS NOT NULL THEN 1   
+                ELSE 0
+            END
+        FROM Album
+        WHERE id = :albumId 
+    """)
+    fun isBookmarked( albumId: String ): Flow<Boolean>
+
+    /**
+     * There are 2 possible actions.
+     *
+     * ### If album IS bookmarked
+     *
+     * This will remove [Album.bookmarkedAt] timestamp (replace with NULL)
+     *
+     * ## If album IS NOT bookmarked
+     *
+     * It will assign [Album.bookmarkedAt] with current time in millis
+     *
+     * @param albumId album identifier to update its [Album.bookmarkedAt]
+     *
+     * @return number of albums updated by this operation
+     */
+    @Query("""
+        UPDATE Album
+        SET bookmarkedAt = 
+            CASE 
+                WHEN bookmarkedAt IS NULL THEN strftime('%s', 'now') * 1000
+                ELSE NULL
+            END
+        WHERE id = :albumId
+    """)
+    fun toggleBookmark( albumId: String ): Int
+
+    /**
+     * @param albumId identifier of [Album]
+     * @param thumbnailUrl new url to thumbnail
+     *
+     * @return number of albums affected by this operation
+     */
+    @Query("UPDATE Album SET thumbnailUrl = :thumbnailUrl WHERE id = :albumId")
+    fun updateCover( albumId: String, thumbnailUrl: String ): Int
+
+    /**
+     * @param albumId identifier of [Album]
+     * @param authors name(s) of people who made this song
+     *
+     * @return number of albums affected by this operation
+     */
+    @Query("UPDATE Album SET authorsText = :authors WHERE id = :albumId")
+    fun updateAuthors( albumId: String, authors: String ): Int
+
+    /**
+     * @param albumId identifier of [Album]
+     * @param title new name of this album
+     *
+     * @return number of albums affected by this operation
+     */
+    @Query("UPDATE Album SET title = :title WHERE id = :albumId")
+    fun updateTitle( albumId: String, title: String ): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort bookmarked">
     fun sortBookmarkedByTitle( limit: Long = Long.MAX_VALUE ): Flow<List<Album>> =
         allBookmarked( limit ).map { list ->

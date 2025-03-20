@@ -194,23 +194,23 @@ fun AlbumDetails(
     val changeTitle = AlbumModifier(
         iconId = R.drawable.title_edit,
         messageId = R.string.update_title,
-        getDefaultValue = { album?.title ?: "" },
+        getDefaultValue = { album?.cleanTitle() ?: "" },
     ) {
-        Database.updateAlbumTitle( browseId, "$MODIFIED_PREFIX$it" )
+        updateTitle( browseId, "$MODIFIED_PREFIX$it" )
     }
     val changeAuthors = AlbumModifier(
         iconId = R.drawable.artists_edit,
         messageId = R.string.update_authors,
-        getDefaultValue = { album?.authorsText ?: "" },
+        getDefaultValue = { album?.cleanAuthorsText() ?: "" },
     ) {
-        Database.updateAlbumAuthors( browseId, "$MODIFIED_PREFIX$it" )
+        updateAuthors( browseId, "$MODIFIED_PREFIX$it" )
     }
     val changeCover = AlbumModifier(
         iconId = R.drawable.cover_edit,
         messageId = R.string.update_cover,
         getDefaultValue = { album?.thumbnailUrl ?: "" },
     ) {
-        Database.updateAlbumCover( browseId, "$MODIFIED_PREFIX$it" )
+        updateCover( browseId, "$MODIFIED_PREFIX$it" )
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Translator">

@@ -523,12 +523,6 @@ fun Player(
 
     val windowInsets = WindowInsets.systemBars
 
-    var albumInfo by remember {
-        mutableStateOf(mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
-            Info(albumId, null)
-        })
-    }
-
     var artistsInfo by remember {
         mutableStateOf(
             mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")?.let { artistNames ->
@@ -549,7 +543,6 @@ fun Player(
 
     LaunchedEffect(mediaItem.mediaId) {
         withContext(Dispatchers.IO) {
-            albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
             artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
         }
         updateBrush = true
@@ -558,10 +551,6 @@ fun Player(
 
     val ExistIdsExtras =
         mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.size.toString()
-    val ExistAlbumIdExtras = mediaItem.mediaMetadata.extras?.getString("albumId")
-
-    var albumId = albumInfo?.id
-    if (albumId == null) albumId = ExistAlbumIdExtras
 
     var artistIds = arrayListOf<String>()
     var artistNames = arrayListOf<String>()
@@ -588,6 +577,7 @@ fun Player(
             }
         }
     }
+    val albumId = mediaItem.mediaMetadata.extras?.getString("albumId")
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)

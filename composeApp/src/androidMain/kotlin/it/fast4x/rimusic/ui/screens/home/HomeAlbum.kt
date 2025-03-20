@@ -102,6 +102,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.tab.SongShuffler
+import me.knighthat.database.AlbumTable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -350,26 +351,26 @@ fun HomeAlbums(
                         var titleId = 0
                         var defValue = ""
                         var placeholderTextId: Int = 0
-                        var queryBlock: (Database, String, String) -> Int = { _, _, _ -> 0}
+                        var queryBlock: (AlbumTable, String, String) -> Int = { _, _, _ -> 0}
 
                         if( showDialogChangeAlbumCover ) {
                             onDismiss = { showDialogChangeAlbumCover = false }
                             titleId = R.string.update_cover
                             defValue = album.thumbnailUrl.toString()
                             placeholderTextId = R.string.cover
-                            queryBlock = Database::updateAlbumCover
+                            queryBlock = AlbumTable::updateCover
                         } else if( showDialogChangeAlbumTitle ) {
                             onDismiss = { showDialogChangeAlbumTitle = false }
                             titleId = R.string.update_title
                             defValue = album.title.toString()
                             placeholderTextId = R.string.title
-                            queryBlock = Database::updateAlbumTitle
+                            queryBlock = AlbumTable::updateTitle
                         } else if( showDialogChangeAlbumAuthors ) {
                             onDismiss = { showDialogChangeAlbumAuthors = false }
                             titleId = R.string.update_authors
                             defValue = album.authorsText.toString()
                             placeholderTextId = R.string.authors
-                            queryBlock = Database::updateAlbumAuthors
+                            queryBlock = AlbumTable::updateAuthors
                         }
 
                         if( showDialogChangeAlbumTitle || showDialogChangeAlbumAuthors || showDialogChangeAlbumCover )
@@ -380,7 +381,7 @@ fun HomeAlbums(
                                 placeholder = stringResource( placeholderTextId ),
                                 setValue = {
                                     if (it.isNotEmpty())
-                                        Database.asyncTransaction { queryBlock( this, album.id, it ) }
+                                        Database.asyncTransaction { queryBlock( albumTable, album.id, it ) }
                                 },
                                 prefix = MODIFIED_PREFIX
                             )

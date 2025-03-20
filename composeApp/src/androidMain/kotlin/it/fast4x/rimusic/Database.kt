@@ -146,18 +146,6 @@ interface Database {
     fun updatePlaylistName(playlistName: String, playlistId: Long): Int
 
 
-    @Query("UPDATE Album SET thumbnailUrl = :thumb WHERE id = :id")
-    fun updateAlbumCover(id: String, thumb: String): Int
-
-    @Query("UPDATE Album SET authorsText = :artist WHERE id = :id")
-    fun updateAlbumAuthors(id: String, artist: String): Int
-
-    @Query("UPDATE Album SET title = :title WHERE id = :id")
-    fun updateAlbumTitle(id: String, title: String): Int
-
-    @Query("UPDATE Artist SET name = :name WHERE id = :id")
-    fun updateArtistName(id: String, name: String): Int
-
     @Query("SELECT thumbnailUrl FROM Song WHERE id in (:idsList) ")
     fun getSongsListThumbnailUrls(idsList: List<String>): Flow<List<String?>>
 
@@ -167,13 +155,6 @@ interface Database {
         WHERE SongArtistMap.songId = :songId
     """)
     fun findArtistIdOfSong( songId: String ): Flow<String?>
-
-    @Query("""
-        SELECT SongAlbumMap.albumId
-        FROM SongAlbumMap
-        WHERE SongAlbumMap.songId = :songId
-    """)
-    fun findAlbumIdOfSong( songId: String ): Flow<String?>
 
     @Query("SELECT thumbnailUrl FROM Song WHERE likedAt IS NOT NULL AND id NOT LIKE '$LOCAL_KEY_PREFIX%'  LIMIT 4")
     fun preferitesThumbnailUrls(): Flow<List<String?>>
@@ -186,41 +167,6 @@ interface Database {
     @Query("UPDATE Playlist SET name = REPLACE(name,'${PINNED_PREFIX}','') WHERE id = :playlistId")
     fun unPinPlaylist(playlistId: Long): Int
 
-    @Query("UPDATE Album SET bookmarkedAt = :bookmarkedAt WHERE id = :id")
-    fun bookmarkAlbum(id: String, bookmarkedAt: Long?): Int
-
-    @Query("""
-        SELECT 
-            CASE
-                WHEN bookmarkedAt IS NOT NULL THEN 1   
-                ELSE 0
-            END
-        FROM Album
-        WHERE id = :albumId 
-    """)
-    fun isAlbumBookmarked( albumId: String ): Flow<Boolean>
-
-    /**
-     * There are 2 possible actions.
-     *
-     * ### If album IS bookmarked
-     * This will remove [Album.bookmarkedAt] timestamp (replaces with NULL)
-     *
-     * ## If album IS NOT bookmarked
-     * It will assign [Album.bookmarkedAt] with current time in millis
-     *
-     * @param albumId album identifier to update its [Album.bookmarkedAt]
-     */
-    @Query("""
-        UPDATE Album
-        SET bookmarkedAt = 
-            CASE 
-                WHEN bookmarkedAt IS NULL THEN strftime('%s', 'now') * 1000
-                ELSE NULL
-            END
-        WHERE id = :albumId
-    """)
-    fun toggleAlbumBookmark( albumId: String )
 
     @Query("UPDATE Song SET durationText = :durationText WHERE id = :songId")
     fun updateDurationText(songId: String, durationText: String): Int
@@ -255,18 +201,6 @@ interface Database {
         )
     """)
     fun isArtistFollowed( artistId: String ): Flow<Boolean>
-
-    @Query("SELECT timestamp FROM Album WHERE id = :id")
-    fun albumTimestamp(id: String): Long?
-
-    @Query("SELECT bookmarkedAt FROM Album WHERE id = :id")
-    fun albumBookmarkedAt(id: String): Flow<Long?>
-
-    @Query("SELECT count(id) FROM Album WHERE id = :id and bookmarkedAt IS NOT NULL")
-    fun albumBookmarked(id: String): Int
-
-    @Query("SELECT count(id) FROM Album WHERE id = :id")
-    fun albumExist(id: String): Int
 
     @Query("UPDATE Song SET totalPlayTimeMs = 0 WHERE id = :id")
     fun resetTotalPlayTimeMs(id: String)
