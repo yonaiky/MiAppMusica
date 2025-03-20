@@ -89,6 +89,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -133,7 +134,9 @@ fun ArtistDetails(
     var showMoreSongs by rememberSaveable { mutableStateOf( false ) }
     val songPreviews by remember( showMoreSongs ) {
         val filterLimit = if( showMoreSongs ) Long.MAX_VALUE else 5
-        Database.findLatestSongsOfArtist( browseId, filterLimit )
+        Database.songArtistMapTable
+                .allSongsBy( browseId, filterLimit )
+                .distinctUntilChanged()
     }.collectAsState( emptyList(), Dispatchers.IO )
 
     val itemSelector = ItemSelector<Song>()

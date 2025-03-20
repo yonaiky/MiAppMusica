@@ -6,6 +6,7 @@ import androidx.room.RewriteQueriesToDropUnusedColumns
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Artist
+import it.fast4x.rimusic.models.Song
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -26,8 +27,11 @@ interface ArtistTable: SqlTable<Artist> {
         ORDER BY ROWID 
         LIMIT :limit
     """)
-    fun allFollowing(limit: Long = Long.MAX_VALUE ): Flow<List<Artist>>
+    fun allFollowing( limit: Long = Long.MAX_VALUE ): Flow<List<Artist>>
 
+    /**
+     * @return artists that have their songs mapped to at least 1 playlist
+     */
     @Query("""
         SELECT DISTINCT A.*
         FROM Artist A
@@ -37,6 +41,20 @@ interface ArtistTable: SqlTable<Artist> {
         LIMIT :limit
     """)
     fun allInLibrary( limit: Long = Long.MAX_VALUE ): Flow<List<Artist>>
+
+    /**
+     * @return all songs of following artists
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongArtistMap sam
+        JOIN Artist A ON A.id = sam.artistId
+        JOIN Song S ON S.id = sam.songId
+        WHERE A.bookmarkedAt IS NOT NULL
+        ORDER BY S.ROWID
+        LIMIT :limit
+    """)
+    fun allSongsInFollowing( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @param artistId of artist to look for

@@ -6,9 +6,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
-import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.LocalPlayerServiceBinder
 import app.kreate.android.R
+import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.MaxSongs
 import it.fast4x.rimusic.models.Song
@@ -27,7 +26,7 @@ import kotlinx.coroutines.launch
 import me.knighthat.utils.Toaster
 
 @UnstableApi
-class SongShuffler(
+class SongShuffler private constructor(
     private val binder: PlayerServiceModern.Binder?,
     private val songs: () -> List<Song>
 ): MenuIcon, Descriptive {
@@ -39,11 +38,11 @@ class SongShuffler(
 
         @Composable
         operator fun invoke(
-            databaseCall: Database.() -> Flow<List<Song>>,
+            databaseCall: () -> Flow<List<Song>>,
             vararg key: Any?
         ): SongShuffler {
             val songsToShuffle by remember( key ) {
-                Database.databaseCall()
+                databaseCall()
             }.collectAsState( emptyList(), Dispatchers.IO )
 
             return SongShuffler { songsToShuffle }

@@ -3,11 +3,15 @@ package me.knighthat.database
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import it.fast4x.rimusic.MONTHLY_PREFIX
+import it.fast4x.rimusic.PINNED_PREFIX
+import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.models.Song
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -17,6 +21,69 @@ interface PlaylistTable: SqlTable<Playlist> {
 
     override val tableName: String
         get() = "Playlist"
+
+    /**
+     * @return list of songs that were mapped to at least 1 playlist
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongPlaylistMap spm
+        JOIN Song S ON S.id = spm.songId
+        ORDER BY S.ROWID
+    """)
+    fun allSongs(): Flow<List<Song>>
+
+    /**
+     * @return list of songs that were mapped to at least 1 **pinned** playlist
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongPlaylistMap spm
+        JOIN Song S ON S.id = spm.songId
+        JOIN Playlist P ON P.id = spm.playlistId
+        WHERE P.name LIKE '$PINNED_PREFIX%' COLLATE NOCASE
+        ORDER BY S.ROWID
+    """)
+    fun allPinnedSongs(): Flow<List<Song>>
+
+    /**
+     * @return list of songs that belong to Piped
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongPlaylistMap spm
+        JOIN Song S ON S.id = spm.songId
+        JOIN Playlist P ON P.id = spm.playlistId
+        WHERE P.name LIKE '$PIPED_PREFIX%' COLLATE NOCASE
+        ORDER BY S.ROWID
+    """)
+    fun allPipedSongs(): Flow<List<Song>>
+
+    /**
+     * @return list of songs that belong YouTube private playlist
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongPlaylistMap spm
+        JOIN Song S ON S.id = spm.songId
+        JOIN Playlist P ON P.id = spm.playlistId
+        WHERE P.isYoutubePlaylist
+        ORDER BY S.ROWID
+    """)
+    fun allYTPlaylistSongs(): Flow<List<Song>>
+
+    /**
+     * @return list of songs that were mapped to at least 1 **monthly** playlist
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongPlaylistMap spm
+        JOIN Song S ON S.id = spm.songId
+        JOIN Playlist P ON P.id = spm.playlistId
+        WHERE P.name LIKE '$MONTHLY_PREFIX%' COLLATE NOCASE
+        ORDER BY S.ROWID
+    """)
+    fun allMonthlySongs(): Flow<List<Song>>
 
     /**
      * @return all playlists from this table with number of songs they carry

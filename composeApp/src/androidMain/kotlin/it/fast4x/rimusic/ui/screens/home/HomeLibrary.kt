@@ -125,13 +125,14 @@ fun HomeLibrary(
      * visible penalty. Furthermore, this will reduce load time significantly.
      */
     val shuffle = SongShuffler(
-        when( playlistType ) {
-            PlaylistsType.Playlist -> Database::songsInAllPlaylists
-            PlaylistsType.PinnedPlaylist -> Database::songsInAllPinnedPlaylists
-            PlaylistsType.MonthlyPlaylist -> Database::songsInAllMonthlyPlaylists
-            PlaylistsType.PipedPlaylist -> Database::songsInAllPipedPlaylists
-            PlaylistsType.YTPlaylist -> Database::songsInAllYTPrivatePlaylists
-        }
+        databaseCall = when( playlistType ) {
+            PlaylistsType.Playlist          -> Database.playlistTable::allSongs
+            PlaylistsType.PinnedPlaylist    -> Database.playlistTable::allPinnedSongs
+            PlaylistsType.MonthlyPlaylist   -> Database.playlistTable::allMonthlySongs
+            PlaylistsType.PipedPlaylist     -> Database.playlistTable::allPipedSongs
+            PlaylistsType.YTPlaylist        -> Database.playlistTable::allYTPlaylistSongs
+        },
+        key = arrayOf( playlistType )
     )
     //</editor-fold>
     //<editor-fold desc="New playlist dialog">

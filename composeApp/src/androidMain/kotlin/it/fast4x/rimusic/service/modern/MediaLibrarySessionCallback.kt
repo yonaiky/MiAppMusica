@@ -303,15 +303,18 @@ class MediaLibrarySessionCallback @Inject constructor(
 
                     parentId.startsWith("${PlayerServiceModern.ARTIST}/") ->
                         database.songArtistMapTable
-                                .findAllSongsByArtist( parentId.removePrefix("${PlayerServiceModern.ARTIST}/") )
+                                .allSongsBy( parentId.removePrefix("${PlayerServiceModern.ARTIST}/") )
                                 .first()
                                 .map { it.toMediaItem( parentId ) }
 
-                    parentId.startsWith("${PlayerServiceModern.ALBUM}/") ->
-                        database.albumSongs(parentId.removePrefix("${PlayerServiceModern.ALBUM}/"))
-                            .first().map {
-                                it.toMediaItem(parentId)
-                            }
+                    parentId.startsWith("${PlayerServiceModern.ALBUM}/") -> {
+                        val albumId = parentId.removePrefix("${PlayerServiceModern.ALBUM}/")
+
+                        database.songAlbumMapTable
+                                .allSongsOf( albumId )
+                                .first()
+                                .map { it.toMediaItem( parentId ) }
+                    }
 
                     parentId.startsWith("${PlayerServiceModern.PLAYLIST}/") -> {
 
@@ -329,10 +332,14 @@ class MediaLibrarySessionCallback @Inject constructor(
                                                          binder.cache.isCached( song.id, 0L, contentLength )
                                                  }.reversed()
                             }
-                            ID_TOP -> database.trending(
-                                context.preferences.getEnum(MaxTopPlaylistItemsKey,
-                                    MaxTopPlaylistItems.`10`).toInt()
-                            )
+                            ID_TOP ->
+                                database.eventTable
+                                        .findSongsMostPlayedBetween(
+                                            from = 0,
+                                            limit = context.preferences
+                                                           .getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`)
+                                                           .toLong()
+                                        )
                             ID_ONDEVICE -> database.songTable.allOnDevice()
                             ID_DOWNLOADED -> {
                                 val downloads = downloadHelper.downloads.value
@@ -420,7 +427,7 @@ class MediaLibrarySessionCallback @Inject constructor(
             PlayerServiceModern.ARTIST -> {
                 val songId = path.getOrNull(2) ?: return@future defaultResult
                 val artistId = path.getOrNull(1) ?: return@future defaultResult
-                val songs = database.songArtistMapTable.findAllSongsByArtist( artistId ).first()
+                val songs = database.songArtistMapTable.allSongsBy( artistId ).first()
                 MediaSession.MediaItemsWithStartPosition(
                     songs.map { it.toMediaItem() },
                     songs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
@@ -431,8 +438,7 @@ class MediaLibrarySessionCallback @Inject constructor(
             PlayerServiceModern.ALBUM -> {
                 val songId = path.getOrNull(2) ?: return@future defaultResult
                 val albumId = path.getOrNull(1) ?: return@future defaultResult
-                val albumWithSongs =
-                    database.albumSongs(albumId).first() ?: return@future defaultResult
+                val albumWithSongs = database.songAlbumMapTable.allSongsOf( albumId ).first()
                 MediaSession.MediaItemsWithStartPosition(
                     albumWithSongs.map { it.toMediaItem() },
                     albumWithSongs.indexOfFirst { it.id == songId }.takeIf { it != -1 }
@@ -461,10 +467,17 @@ class MediaLibrarySessionCallback @Inject constructor(
                                                  .reversed()
                                                  .map { SongEntity(it) }
                                          }
-                    ID_TOP -> database.trendingSongEntity(
-                        context.preferences.getEnum(MaxTopPlaylistItemsKey,
-                            MaxTopPlaylistItems.`10`).toInt()
-                    )
+                    ID_TOP ->
+                        database.eventTable
+                                .findSongsMostPlayedBetween(
+                                    from = 0,
+                                    limit = context.preferences
+                                                   .getEnum( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
+                                                   .toLong()
+                                )
+                                .map { list ->
+                                    list.map { SongEntity(it) }
+                                }
                     ID_ONDEVICE -> database.songTable.allOnDevice().map { list ->
                         list.map { SongEntity(it) }
                     }

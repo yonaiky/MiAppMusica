@@ -483,13 +483,14 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                                 }
                     }
 
-                    MediaId.top -> {
-                        val maxTopSongs = preferences.getEnum(MaxTopPlaylistItemsKey,
-                            MaxTopPlaylistItems.`10`).toInt()
-
-                        Database.trending(maxTopSongs)
+                    MediaId.top ->
+                        Database.eventTable
+                                .findSongsMostPlayedBetween(
+                                    from = 0,
+                                    limit = preferences.getEnum( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
+                                                       .toLong()
+                                )
                                 .first()
-                    }
 
                     MediaId.playlists -> data
                         .getOrNull(1)
@@ -498,9 +499,9 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         ?.first()
 
                     MediaId.albums -> data
-                        .getOrNull(1)
-                        ?.let(Database::albumSongs)
-                        ?.first()
+                        .getOrElse( 1 ) { "" }
+                        .let( Database.songAlbumMapTable::allSongsOf )
+                        .first()
 
                     MediaId.artists -> {
                         data

@@ -663,7 +663,7 @@ fun MediaItemGridMenu (
             setValue = {
                 if (it.isNotEmpty()) {
                     Database.asyncTransaction {
-                        updateSongTitle(mediaItem.mediaId, it)
+                        songTable.updateTitle( mediaItem.mediaId, it )
                     }
                 }
             },

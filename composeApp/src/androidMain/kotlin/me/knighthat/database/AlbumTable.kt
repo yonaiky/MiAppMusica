@@ -6,6 +6,7 @@ import androidx.room.RewriteQueriesToDropUnusedColumns
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.Song
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -34,6 +35,9 @@ interface AlbumTable: SqlTable<Album> {
     """)
     fun allBookmarked( limit: Long = Long.MAX_VALUE ): Flow<List<Album>>
 
+    /**
+     * @return albums that have their songs mapped to at least 1 playlist
+     */
     @Query("""
         SELECT DISTINCT A.*
         FROM Album A
@@ -43,6 +47,20 @@ interface AlbumTable: SqlTable<Album> {
         LIMIT :limit
     """)
     fun allInLibrary( limit: Long = Long.MAX_VALUE ): Flow<List<Album>>
+
+    /**
+     * @return all songs of bookmarked albums
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongAlbumMap sam
+        JOIN Album A ON A.id = sam.albumId
+        JOIN Song S ON S.id = sam.songId
+        WHERE A.bookmarkedAt IS NOT NULL
+        ORDER BY S.ROWID
+        LIMIT :limit
+    """)
+    fun allSongsInBookmarked( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @param albumId of album to look for

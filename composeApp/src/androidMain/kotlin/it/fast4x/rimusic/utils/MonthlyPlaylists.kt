@@ -3,29 +3,27 @@ package it.fast4x.rimusic.utils
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.models.Playlist
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
+import me.knighthat.utils.TimeDateUtils
 import timber.log.Timber
+import java.time.LocalDate
 
 @Composable
 fun CheckMonthlyPlaylist() {
     val ym = getCalculatedMonths(1)
-    val y = ym.substring(0,4).toLong()
-    val m = ym.substring(5,7).toLong()
+    val y = ym.substring(0,4).toInt()
+    val m = ym.substring(5,7).toInt()
 
     val canCreateMonthlyPlaylist by remember {
         Database.playlistTable
@@ -36,12 +34,18 @@ fun CheckMonthlyPlaylist() {
     Timber.d("CheckMonthlyPlaylist $canCreateMonthlyPlaylist")
 
         if (canCreateMonthlyPlaylist) {
-                var songsMostPlayed by remember { mutableStateOf<List<Song>?>(null) }
-            LaunchedEffect(Unit) {
-                withContext(Dispatchers.IO) {
-                    songsMostPlayed = Database.songsMostPlayedByYearMonthNoFlow(y, m)
-                }
-            }
+            val songsMostPlayed by remember {
+                val startDate = LocalDate.of(y, m, 1 )
+                val endDate = startDate.plusMonths( 1 ).minusDays( 1 )
+
+                Database.eventTable
+                        .findSongsMostPlayedBetween(
+                            from = TimeDateUtils.toStartDateMillis( startDate ),
+                            to = TimeDateUtils.toStartDateMillis( endDate ),
+                            limit = 1
+                        )
+                        .distinctUntilChanged()
+            }.collectAsState( emptyList(), Dispatchers.IO )
 
             Timber.d("SongsMostPlayed ${songsMostPlayed?.size}")
 

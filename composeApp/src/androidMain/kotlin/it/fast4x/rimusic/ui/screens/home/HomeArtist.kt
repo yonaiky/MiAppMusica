@@ -101,6 +101,14 @@ fun HomeArtists(
 ) {
     // Essentials
     val lazyGridState = rememberLazyGridState()
+    val (colorPalette, typography) = LocalAppearance.current
+    val menuState = LocalMenuState.current
+    val coroutineScope = rememberCoroutineScope()
+
+    // Settings
+    var artistType by rememberPreference(artistTypeKey, ArtistsType.Favorites )
+    var filterBy by rememberPreference(filterByKey, FilterBy.All)
+
 
     var items by persistList<Artist>( "")
     var itemsToFilter by persistList<Artist>( "home/artists" )
@@ -124,15 +132,12 @@ fun HomeArtists(
         override fun onClick(index: Int) = onArtistClick(itemsOnDisplay[index])
 
     }
-    val shuffle = SongShuffler( Database::songsInAllFollowedArtists )
+    val shuffle = SongShuffler(
+        databaseCall = Database.artistTable::allSongsInFollowing,
+        key = arrayOf( artistType )
+    )
 
-    var artistType by rememberPreference(artistTypeKey, ArtistsType.Favorites )
     val buttonsList = ArtistsType.entries.map { it to it.text }
-
-    var filterBy by rememberPreference(filterByKey, FilterBy.All)
-    val (colorPalette, typography) = LocalAppearance.current
-    val menuState = LocalMenuState.current
-    val coroutineScope = rememberCoroutineScope()
 
     if (!isYouTubeSyncEnabled()) {
         filterBy = FilterBy.All

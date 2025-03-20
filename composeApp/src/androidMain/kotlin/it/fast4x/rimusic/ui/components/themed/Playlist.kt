@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,15 +22,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import coil.compose.AsyncImage
-import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.utils.thumbnail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun Playlist(
@@ -43,10 +43,12 @@ fun Playlist(
     disableScrollingText: Boolean,
     thumbnailUrl: String? = null,
 ) {
-    var songs by persistList<Song>("playlist${playlist.playlist.id}/songsThumbnails")
-    LaunchedEffect(playlist.playlist.id) {
-        Database.songsPlaylistTop4Positions(playlist.playlist.id).collect{ songs = it }
-    }
+    val songs by remember {
+        Database.songPlaylistMapTable
+                .sortSongsByPlayTime( playlist.playlist.id, 4 )
+                .distinctUntilChanged()
+    }.collectAsState( emptyList(), Dispatchers.IO )
+
     val thumbnails = songs
         .takeWhile { it.thumbnailUrl?.isNotEmpty() ?: false }
         .take(4)

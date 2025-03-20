@@ -17,6 +17,8 @@ interface SongArtistMapTable: SqlTable<SongArtistMap> {
 
     /**
      * @param artistId of artist to look for
+     * @param limit number of results cannot go over this value
+     *
      * @return all [Song]s that were mapped to artist has [Artist.id] matches [artistId]
      */
     @Query("""
@@ -24,6 +26,8 @@ interface SongArtistMapTable: SqlTable<SongArtistMap> {
         FROM SongArtistMap sam 
         JOIN Song ON Song.id = sam.songId
         WHERE sam.artistId = :artistId
+        ORDER BY Song.ROWID
+        LIMIT :limit
     """)
-    fun findAllSongsByArtist( artistId: String ): Flow<List<Song>>
+    fun allSongsBy( artistId: String, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
 }

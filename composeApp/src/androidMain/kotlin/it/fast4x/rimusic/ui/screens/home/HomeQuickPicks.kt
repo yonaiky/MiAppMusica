@@ -229,7 +229,6 @@ fun HomeQuickPicks(
     val showCharts by rememberPreference(showChartsKey, true)
 
     val refreshScope = rememberCoroutineScope()
-    val now = System.currentTimeMillis()
     val last50Year: Duration = 18250.days
     val from = last50Year.inWholeMilliseconds
 
@@ -253,35 +252,48 @@ fun HomeQuickPicks(
             refreshScope.launch(Dispatchers.IO) {
                 when (playEventType) {
                     PlayEventsType.MostPlayed ->
-                        Database.songsMostPlayedByPeriod(from, now, 1).distinctUntilChanged()
-                            .collect { songs ->
-                                val song = songs.firstOrNull()
-                                if (relatedPageResult == null || trending?.id != song?.id) {
-                                    relatedPageResult = Innertube.relatedPage(
-                                        NextBody(
-                                            videoId = (song?.id ?: "HZnNt9nnEhw")
+                        Database.eventTable
+                                .findSongsMostPlayedBetween(
+                                    from = from,
+                                    limit = 1
+                                )
+                                .distinctUntilChanged()
+                                .collect { songs ->
+                                    val song = songs.firstOrNull()
+                                    if (relatedPageResult == null || trending?.id != song?.id) {
+                                        relatedPageResult = Innertube.relatedPage(
+                                            NextBody(
+                                                videoId = (song?.id ?: "HZnNt9nnEhw")
+                                            )
                                         )
-                                    )
+                                    }
+                                    trending = song
                                 }
-                                trending = song
-                            }
 
                     PlayEventsType.LastPlayed, PlayEventsType.CasualPlayed -> {
-                        val numSongs = if (playEventType == PlayEventsType.LastPlayed) 3 else 100
-                        Database.lastPlayed(numSongs).distinctUntilChanged().collect { songs ->
-                            val song =
-                                if (playEventType == PlayEventsType.LastPlayed) songs.firstOrNull()
-                                else songs.shuffled().firstOrNull()
-                            if (relatedPageResult == null || trending?.id != song?.id) {
-                                relatedPageResult =
-                                    Innertube.relatedPage(
-                                        NextBody(
-                                            videoId = (song?.id ?: "HZnNt9nnEhw")
-                                        )
-                                    )
-                            }
-                            trending = song
-                        }
+                        val numSongs = if (playEventType == PlayEventsType.LastPlayed) 3L else 100L
+                        Database.eventTable
+                                .findSongsMostPlayedBetween(
+                                    from = 0,
+                                    limit = numSongs
+                                )
+                                .distinctUntilChanged()
+                                .collect { songs ->
+                                    val song =
+                                        if (playEventType == PlayEventsType.LastPlayed)
+                                            songs.firstOrNull()
+                                        else
+                                            songs.shuffled().firstOrNull()
+                                    if (relatedPageResult == null || trending?.id != song?.id) {
+                                        relatedPageResult =
+                                            Innertube.relatedPage(
+                                                NextBody(
+                                                    videoId = (song?.id ?: "HZnNt9nnEhw")
+                                                )
+                                            )
+                                    }
+                                    trending = song
+                                }
                     }
 
                 }

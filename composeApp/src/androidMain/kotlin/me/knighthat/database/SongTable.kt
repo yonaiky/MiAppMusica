@@ -52,6 +52,15 @@ interface SongTable: SqlTable<Song> {
     """)
     fun allFavorites( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
 
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Song 
+        WHERE likedAt IS NOT NULL AND likedAt < 0
+        ORDER BY ROWID
+        LIMIT :limit
+    """)
+    fun allDisliked( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+
     /**
      * @param songId of album to look for
      * @return [Song] that has [Song.id] matches [songId]
@@ -232,6 +241,24 @@ interface SongTable: SqlTable<Song> {
         WHERE id = :songId
     """)
     fun likeState( songId: String, likeState: Boolean? ): Int
+
+    /**
+     * @param songId identifier of [Song]
+     * @param title new name of this song
+     *
+     * @return number of albums affected by this operation
+     */
+    @Query("UPDATE Song SET title = :title WHERE id = :songId")
+    fun updateTitle( songId: String, title: String ): Int
+
+    /**
+     * @param songId identifier of [Song]
+     * @param artistsText artists to display
+     *
+     * @return number of albums affected by this operation
+     */
+    @Query("UPDATE Song SET artistsText = :artistsText WHERE id = :songId")
+    fun updateArtists( songId: String, artistsText: String ): Int
 
     //<editor-fold defaultstate="collapsed" desc="Sort all">
     fun sortAllByPlayTime( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =

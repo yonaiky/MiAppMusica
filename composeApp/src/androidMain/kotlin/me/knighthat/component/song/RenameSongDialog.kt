@@ -7,9 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MODIFIED_PREFIX
-import app.kreate.android.R
 import it.fast4x.rimusic.models.Song
 import me.knighthat.component.RenameDialog
 import me.knighthat.utils.Toaster
@@ -55,7 +55,7 @@ class RenameSongDialog private constructor(
 
         val song = getSong() ?: return
         Database.asyncTransaction {
-            updateSongTitle( song.id, "$MODIFIED_PREFIX$newValue" )
+            songTable.updateTitle( song.id, "$MODIFIED_PREFIX$newValue" )
             Toaster.done()
         }
 

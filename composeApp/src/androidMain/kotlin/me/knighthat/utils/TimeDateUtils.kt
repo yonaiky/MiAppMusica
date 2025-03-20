@@ -2,6 +2,8 @@ package me.knighthat.utils
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 
@@ -45,4 +47,10 @@ object TimeDateUtils {
     fun timeFormatNoDelimiter(): SimpleDateFormat = SimpleDateFormat( "HHmmss", Locale.getDefault() )
 
     fun timeNoDelimiter(): String = timeFormatNoDelimiter().format( Date() )
+
+    /**
+     * @return epoch millis represents the start of [date]
+     */
+    fun toStartDateMillis( date: LocalDate ): Long =
+        date.atStartOfDay( ZoneId.systemDefault() ).toInstant().toEpochMilli()
 }

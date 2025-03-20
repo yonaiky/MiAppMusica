@@ -814,7 +814,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     }
                 }
 
-                Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
+                Database.songTable.updateArtists( matchedSong.asMediaItem.mediaId, artistNameString )
                 if (song.thumbnailUrl == "") Database.songTable.delete( song )
             }
         } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
@@ -894,7 +894,7 @@ suspend fun updateLocalPlaylist(song: Song){
                         )
                     }
                 }
-                Database.updateSongArtist(matchedSong.asMediaItem.mediaId, artistNameString)
+                Database.songTable.updateArtists( matchedSong.asMediaItem.mediaId, artistNameString )
             }
         }
     }

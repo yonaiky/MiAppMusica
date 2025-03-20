@@ -54,7 +54,7 @@ class ChangeAuthorDialog private constructor(
 
         val song = getSong() ?: return
         Database.asyncTransaction {
-            updateSongArtist( song.id, newValue )
+            songTable.updateArtists( song.id, newValue )
             Toaster.done()
         }
 

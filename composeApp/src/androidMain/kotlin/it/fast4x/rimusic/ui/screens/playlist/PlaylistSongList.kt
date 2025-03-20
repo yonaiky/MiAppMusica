@@ -90,6 +90,7 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
@@ -146,8 +147,9 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -287,12 +289,14 @@ fun PlaylistSongList(
             durationTextToMillis(it1) }?.toLong() ?: 0
     }
 
-    var dislikedSongs by persistList<String>("")
-
-    LaunchedEffect(Unit) {
-        Database.dislikedSongsById().filterNotNull()
-            .collect { dislikedSongs = it }
-    }
+    val dislikedSongs by remember {
+        Database.songTable
+                .allDisliked()
+                .map { list ->
+                    list.map( Song::id )
+                }
+                .distinctUntilChanged()
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     if (isImportingPlaylist) {
         InputTextDialog(

@@ -28,6 +28,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,10 +49,8 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import coil.compose.AsyncImagePainter
 import it.fast4x.compose.persist.PersistMapCleanup
-import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.appContext
@@ -101,7 +100,6 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -145,20 +143,11 @@ fun AlbumDetails(
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    var items by persistList<Song>( "album/${browseId}/songs" )
-    LaunchedEffect( album ) {
-        // [album] goes from null to not-null after it's inserted to the database
-        if( album == null ) return@LaunchedEffect
-
-        Database.findSongsOfAlbum( browseId )
-                .flowOn( Dispatchers.IO )
+    val items by remember {
+        Database.songAlbumMapTable
+                .allSongsOf( browseId )
                 .distinctUntilChanged()
-                .collect { list ->
-                    items = list.filter {
-                        !parentalControlEnabled || !it.title.contains( EXPLICIT_PREFIX, true )
-                    }
-                }
-    }
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     val itemSelector = ItemSelector<Song>()
 

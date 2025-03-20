@@ -923,7 +923,7 @@ fun MediaItemMenu(
             setValue = {
                 if (it.isNotEmpty()) {
                     Database.asyncTransaction {
-                        updateSongTitle(mediaItem.mediaId, it)
+                        songTable.updateTitle( mediaItem.mediaId, it )
                     }
                 }
             },
@@ -939,7 +939,7 @@ fun MediaItemMenu(
             setValue = {
                 if (it.isNotEmpty()) {
                     Database.asyncTransaction {
-                        updateSongArtist(mediaItem.mediaId, it)
+                        songTable.updateArtists( mediaItem.mediaId, it )
                     }
                 }
             }

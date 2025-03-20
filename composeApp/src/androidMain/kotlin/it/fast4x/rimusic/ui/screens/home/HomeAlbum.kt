@@ -25,6 +25,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -97,6 +98,7 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.tab.SongShuffler
@@ -116,11 +118,13 @@ fun HomeAlbums(
 ) {
     // Essentials
     val menuState = LocalMenuState.current
-    //val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val lazyGridState = rememberLazyGridState()
+    val coroutineScope = rememberCoroutineScope()
 
+    // Settings
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    var albumType by rememberPreference(albumTypeKey, AlbumsType.Favorites )
 
     var items by persistList<Album>( "home/albums" )
     var itemsToFilter by persistList<Album>( "home/artists" )
@@ -143,11 +147,12 @@ fun HomeAlbums(
         override fun getItems(): List<Album> = itemsOnDisplay
         override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
     }
-    val shuffle = SongShuffler( Database::songsInAllBookmarkedAlbums )
+    val shuffle = SongShuffler(
+        databaseCall = Database.albumTable::allSongsInBookmarked,
+        key = arrayOf( albumType )
+    )
 
-    var albumType by rememberPreference(albumTypeKey, AlbumsType.Favorites )
     val buttonsList = AlbumsType.entries.map { it to it.text }
-    val coroutineScope = rememberCoroutineScope()
 
     if (!isYouTubeSyncEnabled()) {
         filterBy = FilterBy.All
@@ -325,10 +330,11 @@ fun HomeAlbums(
                         items = itemsOnDisplay,
                         key = Album::id
                     ) { album ->
-                        var songs = remember { listOf<Song>() }
-                        Database.asyncQuery {
-                            songs = albumSongsList(album.id)
-                        }
+                        val songs by remember {
+                            Database.songAlbumMapTable
+                                    .allSongsOf( album.id )
+                                    .distinctUntilChanged()
+                        }.collectAsState( emptyList(), Dispatchers.IO )
 
                         var showDialogChangeAlbumTitle by remember {
                             mutableStateOf(false)

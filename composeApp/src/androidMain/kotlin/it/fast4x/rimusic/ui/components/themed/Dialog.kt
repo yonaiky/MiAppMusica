@@ -2081,7 +2081,7 @@ fun SongMatchingDialog(
                                                 }
                                             }
 
-                                            Database.updateSongArtist(song.asMediaItem.mediaId, artistNameString)
+                                            Database.songTable.updateArtists( song.asMediaItem.mediaId, artistNameString )
                                         }
                                         onDismiss()
                                     }

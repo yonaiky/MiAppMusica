@@ -26,9 +26,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,13 +46,12 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.R
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.kreate.android.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MaxStatisticsItems
@@ -61,9 +60,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.StatisticsCategory
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
-import it.fast4x.rimusic.models.Album
-import it.fast4x.rimusic.models.Artist
-import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.ButtonsRow
@@ -102,6 +98,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
@@ -149,15 +146,6 @@ fun StatisticsPage(
     val thumbnailSizeDp = Dimensions.thumbnails.song
     val thumbnailSize = thumbnailSizeDp.px
 
-    var songs by persistList<Song>("statistics/songs")
-    var allSongs by persistList<Song>("statistics/allsongs")
-    var artists by persistList<Artist>("statistics/artists")
-    var albums by persistList<Album>("statistics/albums")
-    var playlists by persistList<PlaylistPreview>("statistics/playlists")
-
-
-    val now: Long = System.currentTimeMillis()
-
     val today: Duration = 1.days
     val lastWeek: Duration = 7.days
     val lastMonth: Duration = 30.days
@@ -177,37 +165,42 @@ fun StatisticsPage(
         StatisticsType.All -> last50Year.inWholeMilliseconds
     }
 
-    var maxStatisticsItems by rememberPreference(
-        maxStatisticsItemsKey,
-        MaxStatisticsItems.`10`
-    )
+    val maxStatisticsItems by rememberPreference( maxStatisticsItemsKey, MaxStatisticsItems.`10` )
 
-    var totalPlayTimes = 0L
-    allSongs.forEach {
-        totalPlayTimes += it.totalPlayTimeMs
-    }
-
-    if (showStatsListeningTime) {
-        LaunchedEffect(Unit) {
-            Database.songsMostPlayedByPeriod(from, now).collect { allSongs = it }
-        }
-    }
-    LaunchedEffect(Unit) {
-        Database.artistsMostPlayedByPeriod(from, now, maxStatisticsItems.toInt())
-            .collect { artists = it }
-    }
-    LaunchedEffect(Unit) {
-        Database.albumsMostPlayedByPeriod(from, now, maxStatisticsItems.toInt())
-            .collect { albums = it }
-    }
-    LaunchedEffect(Unit) {
-        Database.playlistsMostPlayedByPeriod(from, now, maxStatisticsItems.toInt())
-            .collect { playlists = it }
-    }
-    LaunchedEffect(Unit) {
-        Database.songsMostPlayedByPeriod(from, now, maxStatisticsItems.toLong())
-            .collect { songs = it }
-    }
+    val artists by remember {
+        Database.eventTable
+                .findArtistsMostPlayedBetween(
+                    from = from,
+                    limit = maxStatisticsItems.toLong()
+                )
+                .distinctUntilChanged()
+    }.collectAsState( emptyList(), Dispatchers.IO )
+    val albums by remember {
+        Database.eventTable
+                .findAlbumsMostPlayedBetween(
+                    from = from,
+                    limit = maxStatisticsItems.toLong()
+                )
+                .distinctUntilChanged()
+    }.collectAsState( emptyList(), Dispatchers.IO )
+    val playlists by remember {
+        Database.eventTable
+                .findPlaylistMostPlayedBetweenAsPreview(
+                    from = from,
+                    limit = maxStatisticsItems.toLong()
+                )
+                .distinctUntilChanged()
+    }.collectAsState( emptyList(), Dispatchers.IO )
+    var totalPlayTimes by remember { mutableLongStateOf(0L) }
+    val songs by remember {
+        Database.eventTable
+            .findSongsMostPlayedBetween( from )
+            .distinctUntilChanged()
+            .onEach {
+                totalPlayTimes = it.sumOf( Song::totalPlayTimeMs )
+            }
+            .map { it.take( maxStatisticsItems.toInt() ) }
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
@@ -290,7 +283,7 @@ fun StatisticsPage(
                             ) {
                                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 8.dp)) {
                                     SettingsEntry(
-                                        title = "${allSongs.size} ${stringResource(R.string.statistics_songs_heard)}",
+                                        title = "${songs.size} ${stringResource(R.string.statistics_songs_heard)}",
                                         text = "${formatAsTime(totalPlayTimes)} ${stringResource(R.string.statistics_of_time_taken)}",
                                         onClick = {},
                                         trailingContent = {
