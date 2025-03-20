@@ -140,11 +140,9 @@ fun HomeArtists(
 
     LaunchedEffect( Unit, sort.sortBy, sort.sortOrder, artistType ) {
         when( artistType ) {
-            ArtistsType.Favorites -> Database.artists( sort.sortBy, sort.sortOrder ).collect { itemsToFilter = it }
-            ArtistsType.Library -> Database.artistsInLibrary( sort.sortBy, sort.sortOrder ).collect { itemsToFilter = it }
-            //ArtistsType.All -> Database.artistsWithSongsSaved( sort.sortBy, sort.sortOrder ).collect { items = it }
-        }
-
+            ArtistsType.Favorites -> Database.artistTable.sortAll( sort.sortBy, sort.sortOrder )
+            ArtistsType.Library -> Database.artistTable.sortInLibrary( sort.sortBy, sort.sortOrder )
+        }.collect { itemsToFilter = it }
     }
     LaunchedEffect( Unit, itemsToFilter, filterBy ) {
         items = when(filterBy) {

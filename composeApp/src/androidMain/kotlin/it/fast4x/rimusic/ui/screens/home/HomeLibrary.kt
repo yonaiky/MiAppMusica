@@ -74,6 +74,7 @@ import it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import it.fast4x.rimusic.utils.showPipedPlaylistsKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
@@ -140,7 +141,10 @@ fun HomeLibrary(
     val sync = autoSyncToolbutton(R.string.autosync)
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
-        Database.playlistPreviews(sort.sortBy, sort.sortOrder).collect { items = it }
+        Database.playlistTable
+                .sortPreviews( sort.sortBy, sort.sortOrder )
+                .distinctUntilChanged()
+                .collect { items = it }
     }
     LaunchedEffect( items, search.input ) {
         val scrollIndex = lazyGridState.firstVisibleItemIndex

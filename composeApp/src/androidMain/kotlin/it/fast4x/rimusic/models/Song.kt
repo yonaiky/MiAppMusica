@@ -42,6 +42,8 @@ data class Song(
 
     fun cleanTitle() = cleanPrefix( this.title )
 
+    fun cleanArtistsText() = cleanPrefix( this.artistsText ?: "" )
+
     fun relativePlayTime(): Double {
         val totalPlayTimeMs = durationTextToMillis(this.durationText ?: "")
         return if(totalPlayTimeMs > 0) this.totalPlayTimeMs.toDouble() / totalPlayTimeMs.toDouble() else 0.0

@@ -78,7 +78,6 @@ import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
-import it.fast4x.rimusic.utils.HiddenSongs
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.PeriodSelector
 import it.fast4x.rimusic.utils.addNext
@@ -118,6 +117,7 @@ import me.knighthat.component.tab.DeleteHiddenSongsDialog
 import me.knighthat.component.tab.DeleteSongDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
+import me.knighthat.component.tab.HiddenSongs
 import me.knighthat.component.tab.HideSongDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.ItemSelector
@@ -188,7 +188,7 @@ fun HomeSongs( navController: NavController ) {
         rememberPreference(songSortByKey, SongSortBy.DateAdded)
     )
     val topPlaylists = PeriodSelector.init()
-    val hiddenSongs = HiddenSongs.init()
+    val hiddenSongs = HiddenSongs()
     val search = Search.init()
     val hideSongDialog = HideSongDialog()
     val itemSelector = ItemSelector<Song>()
@@ -249,25 +249,10 @@ fun HomeSongs( navController: NavController ) {
         isLoading = true
 
         when( builtInPlaylist ) {
-            BuiltInPlaylist.All -> Database.findAllSongs( songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() )
+            BuiltInPlaylist.All, BuiltInPlaylist.Offline, BuiltInPlaylist.Downloaded ->
+                Database.songTable.sortAll( songSort.sortBy, songSort.sortOrder, Long.MAX_VALUE, hiddenSongs.isShown() )
 
-            BuiltInPlaylist.Favorites -> Database.findFavoriteSongs( songSort.sortBy, songSort.sortOrder )
-
-            BuiltInPlaylist.Offline -> Database.findOfflineSongs( songSort.sortBy, songSort.sortOrder )
-
-            BuiltInPlaylist.Downloaded -> Database.findAllSongs(
-                sortBy = songSort.sortBy,
-                sortOrder = songSort.sortOrder,
-                showHidden = hiddenSongs.isShown(),
-                filterList =  MyDownloadHelper.downloads
-                                              .value
-                                              .values
-                                              .filter {
-                                                  it.state == Download.STATE_COMPLETED
-                                              }.map {
-                                                  it.request.id
-                                              }
-            )
+            BuiltInPlaylist.Favorites -> Database.songTable.sortFavorites( songSort.sortBy, songSort.sortOrder )
 
             BuiltInPlaylist.Top -> Database.mostListenedSongs(
                 period = topPlaylists.period.duration.inWholeMilliseconds,
@@ -291,6 +276,14 @@ fun HomeSongs( navController: NavController ) {
                 val contentLength = Database.formatContentLength( song.id )
                 binder?.cache?.isCached(song.id, 0, contentLength) ?: false
             }
+
+            BuiltInPlaylist.Downloaded -> MyDownloadHelper.downloads
+                                                          .value
+                                                          .values
+                                                          .filter { it.state == Download.STATE_COMPLETED }
+                                                          .any {
+                                                              it.request.id == song.id
+                                                          }
 
             BuiltInPlaylist.Top ->
                 excludeSongWithDurationLimit == DurationInMinutes.Disabled

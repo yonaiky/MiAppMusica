@@ -156,7 +156,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     )
 
                     MediaId.songs -> Database
-                        .sortAllSongsByPlayTime( 0 )
+                        .songTable
+                        .sortAllByRelativePlayTime()
                         .first()
                         .reversed()
                         .take( 500 )
@@ -168,7 +169,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         }
 
                     MediaId.playlists -> Database
-                        .playlistPreviewsByNameAsc()
+                        .playlistTable
+                        .sortPreviewsByName()
                         .first()
                         .map { it.asBrowserMediaItem }
                         .sortedBy { it.description.title.toString() }
@@ -183,14 +185,18 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         }
 
                     MediaId.albums -> Database
-                        .albumsByRowIdDesc()
+                        .albumTable
+                        .all()
                         .first()
+                        .reversed()
                         .map { it.asBrowserMediaItem }
                         .toMutableList()
 
                     MediaId.artists -> Database
-                        .artistsByRowIdDesc()
+                        .artistTable
+                        .allFollowing()
                         .first()
+                        .reversed()
                         .map { it.asBrowserMediaItem }
                         .toMutableList()
 
@@ -447,8 +453,10 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         }
 
                     MediaId.favorites -> Database
-                        .favorites()
+                        .songTable
+                        .allFavorites()
                         .first()
+                        .reversed()
 
                     MediaId.offline -> Database
                         .songsWithContentLength()
@@ -467,7 +475,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
 
                     MediaId.downloaded -> {
                         val downloads = MyDownloadHelper.downloads.value
-                        Database.findAllSongs( 1 )
+                        Database.songTable
+                                .all( excludeHidden = true )
                                 .first()
                                 .filter {
                                        downloads[it.id]?.state == Download.STATE_COMPLETED
@@ -485,7 +494,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     MediaId.playlists -> data
                         .getOrNull(1)
                         ?.toLongOrNull()
-                        ?.let(Database.songPlaylistMapTable::findAllSongsOf)
+                        ?.let(Database.songPlaylistMapTable::allSongsOf)
                         ?.first()
 
                     MediaId.albums -> data

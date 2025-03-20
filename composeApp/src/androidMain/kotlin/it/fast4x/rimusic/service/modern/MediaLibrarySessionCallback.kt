@@ -214,10 +214,13 @@ class MediaLibrarySessionCallback @Inject constructor(
                     )
                 )
 
-                PlayerServiceModern.SONG -> database.sortAllSongsByRowId( 0 ).first()
+                PlayerServiceModern.SONG -> database
+                    .songTable
+                    .all( excludeHidden = false )
+                    .first()
                     .map { it.toMediaItem(parentId) }
 
-                PlayerServiceModern.ARTIST -> database.artistsByRowIdAsc().first().map { artist ->
+                PlayerServiceModern.ARTIST -> database.artistTable.allFollowing().first().map { artist ->
                     browsableMediaItem(
                         "${PlayerServiceModern.ARTIST}/${artist.id}",
                         artist.name ?: "",
@@ -227,7 +230,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                     )
                 }
 
-                PlayerServiceModern.ALBUM -> database.albumsByRowIdAsc().first().map { album ->
+                PlayerServiceModern.ALBUM -> database.albumTable.all().first().map { album ->
                     browsableMediaItem(
                         "${PlayerServiceModern.ALBUM}/${album.id}",
                         album.title ?: "",
@@ -243,7 +246,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                     val cachedSongCount = getCountCachedSongs().first()
                     val downloadedSongCount = getCountDownloadedSongs().first()
                     val onDeviceSongCount = database.songTable.count( "WHERE id LIKE '${it.fast4x.rimusic.service.LOCAL_KEY_PREFIX}%'" )
-                    val playlists = database.playlistPreviewsByDateSongCountAsc().first()
+                    val playlists = database.playlistTable.sortPreviewsBySongCount().first()
                     listOf(
                         browsableMediaItem(
                             "${PlayerServiceModern.PLAYLIST}/${ID_FAVORITES}",
@@ -314,14 +317,17 @@ class MediaLibrarySessionCallback @Inject constructor(
 
                         when (val playlistId =
                             parentId.removePrefix("${PlayerServiceModern.PLAYLIST}/")) {
-                            ID_FAVORITES -> database.sortFavoriteSongEntityByRowId().map { list ->
-                                list.map { it.song }
-                            }
-                            ID_CACHED -> database.sortOfflineSongEntityByPlayTime().map { list ->
-                                list.filter { song ->
-                                    binder?.cache?.isCached(song.song.id, 0L, song.contentLength ?: 0L) ?: false
-                                }.reversed()
-                                .map { it.song }
+                            ID_FAVORITES -> database.songTable.allFavorites()
+                            ID_CACHED -> database.songTable
+                                                 .all( excludeHidden = true )
+                                                 .map { list ->
+                                                     list.filter { song ->
+                                                         val contentLength = runBlocking {
+                                                             database.formatContentLength( song.id )
+                                                         }
+
+                                                         binder.cache.isCached( song.id, 0L, contentLength )
+                                                 }.reversed()
                             }
                             ID_TOP -> database.trending(
                                 context.preferences.getEnum(MaxTopPlaylistItemsKey,
@@ -330,7 +336,8 @@ class MediaLibrarySessionCallback @Inject constructor(
                             ID_ONDEVICE -> database.songTable.allOnDevice()
                             ID_DOWNLOADED -> {
                                 val downloads = downloadHelper.downloads.value
-                                database.findAllSongs( 1 )
+                                database.songTable
+                                        .all( excludeHidden = true )
                                         .flowOn( Dispatchers.IO )
                                         .map { list ->
                                             list.filter {
@@ -339,7 +346,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                                         }
                             }
 
-                            else -> database.sortSongsFromPlaylistByRowId( playlistId.toLong() )
+                            else -> database.songPlaylistMapTable.allSongsOf( playlistId.toLong() )
                         }.first().map {
                             it.toMediaItem(parentId)
                         }
@@ -402,7 +409,7 @@ class MediaLibrarySessionCallback @Inject constructor(
 
             PlayerServiceModern.SONG -> {
                 val songId = path.getOrNull(1) ?: return@future defaultResult
-                val allSongs = database.findAllSongs( -1 ).first()
+                val allSongs = database.songTable.all( excludeHidden = false ).first()
                 MediaSession.MediaItemsWithStartPosition(
                     allSongs.map { it.toMediaItem() },
                     allSongs.indexOfFirst { it.id == songId }.takeIf { it != -1 } ?: 0,
@@ -438,12 +445,22 @@ class MediaLibrarySessionCallback @Inject constructor(
                 val songId = path.getOrNull(2) ?: return@future defaultResult
                 val playlistId = path.getOrNull(1) ?: return@future defaultResult
                 val songs = when (playlistId) {
-                    ID_FAVORITES -> database.sortFavoriteSongEntityByRowId().map{ it.reversed() }
-                    ID_CACHED -> database.sortOfflineSongEntityByPlayTime().map {
-                        it.filter { song ->
-                            binder?.cache?.isCached(song.song.id, 0L, song.contentLength ?: 0L) ?: false
-                        }.reversed()
+                    ID_FAVORITES -> database.songTable.allFavorites().map{  list ->
+                        list.map { SongEntity(it) }.reversed()
                     }
+                    ID_CACHED -> database.songTable
+                                         .all( excludeHidden = true )
+                                         .map { list ->
+                                             list.filter { song ->
+                                                     val contentLength = runBlocking {
+                                                         database.formatContentLength( song.id )
+                                                     }
+
+                                                     binder.cache.isCached( song.id, 0L, contentLength )
+                                                 }
+                                                 .reversed()
+                                                 .map { SongEntity(it) }
+                                         }
                     ID_TOP -> database.trendingSongEntity(
                         context.preferences.getEnum(MaxTopPlaylistItemsKey,
                             MaxTopPlaylistItems.`10`).toInt()
@@ -453,21 +470,19 @@ class MediaLibrarySessionCallback @Inject constructor(
                     }
                     ID_DOWNLOADED -> {
                         val downloads = downloadHelper.downloads.value
-                        database.findAllSongEntity( -1 )
+                        database.songTable
+                                .all( excludeHidden = false )
                                 .flowOn( Dispatchers.IO )
                                 .map { songs ->
                                     songs.filter {
-                                        downloads[it.song.id]?.state == Download.STATE_COMPLETED
-                                    }
-                                }
-                                .map { songs ->
-                                    songs.map { it to downloads[it.song.id] }
-                                        .sortedBy { it.second?.updateTimeMs ?: 0L }
-                                        .map { it.first }
+                                            downloads[it.id]?.state == Download.STATE_COMPLETED
+                                        }
+                                        .sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
+                                        .map{ SongEntity(it) }
                                 }
                     }
 
-                    else -> database.sortSongsFromPlaylistByRowId( playlistId.toLong() )
+                    else -> database.songPlaylistMapTable.allSongsOf( playlistId.toLong() )
                         // TODO temporary
                         .map { list ->
                             list.map {
@@ -591,11 +606,18 @@ class MediaLibrarySessionCallback @Inject constructor(
             )
             .build()
 
-    private fun getCountCachedSongs() = database.sortOfflineSongEntityByPlayTime().map {
-        it.filter { song ->
-            binder.cache.isCached(song.song.id, 0L, song.contentLength ?: 0L)
-        }.size
-    }
+    private fun getCountCachedSongs() =
+        database.songTable
+                .all( excludeHidden = true )
+                .map { list ->
+                    list.filter { song ->
+                        val contentLength = runBlocking {
+                            database.formatContentLength(song.id)
+                        }
+
+                        binder.cache.isCached(song.id, 0L, contentLength)
+                    }.size
+                }
 
     private fun getCountDownloadedSongs() = downloadHelper.downloads.map {
         it.filter {

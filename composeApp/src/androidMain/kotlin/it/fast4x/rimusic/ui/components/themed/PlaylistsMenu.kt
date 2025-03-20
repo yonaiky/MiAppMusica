@@ -152,7 +152,7 @@ class PlaylistsMenu private constructor(
         val sortOrder by rememberPreference( playlistSortOrderKey, SortOrder.Descending )
 
         val playlistPreviews by remember {
-            Database.playlistPreviews( sortBy, sortOrder )
+            Database.playlistTable.sortPreviews( sortBy, sortOrder )
         }.collectAsState( emptyList(), Dispatchers.IO )
 
         val pinnedPlaylists = playlistPreviews.filter {

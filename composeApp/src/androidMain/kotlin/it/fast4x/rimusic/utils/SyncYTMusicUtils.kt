@@ -117,7 +117,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
             }
 
             Database.artistTable
-                    .all()
+                    .allFollowing()
                     .first()
                     .filter { artist ->
                         artist.isYoutubeArtist && artist.id !in ytmArtists.map { it.key }

@@ -155,11 +155,9 @@ fun HomeAlbums(
 
     LaunchedEffect( sort.sortBy, sort.sortOrder, albumType ) {
         when ( albumType ) {
-            AlbumsType.Favorites -> Database.albums( sort.sortBy, sort.sortOrder ).collect { itemsToFilter = it }
-            AlbumsType.Library -> Database.albumsInLibrary( sort.sortBy, sort.sortOrder ).collect { itemsToFilter = it }
-            //AlbumsType.All -> Database.albumsWithSongsSaved( sort.sortBy, sort.sortOrder ).collect { items = it }
-
-        }
+            AlbumsType.Favorites -> Database.albumTable.sortBookmarked( sort.sortBy, sort.sortOrder )
+            AlbumsType.Library -> Database.albumTable.sortInLibrary( sort.sortBy, sort.sortOrder )
+        }.collect { itemsToFilter = it }
     }
     LaunchedEffect( Unit, itemsToFilter, filterBy ) {
         items = when(filterBy) {

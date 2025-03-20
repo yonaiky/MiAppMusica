@@ -119,8 +119,8 @@ fun AlbumsItemGridMenu(
                 val sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
                 val sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
                 val playlistPreviews by remember {
-                    Database.playlistPreviews(sortBy, sortOrder)
-                }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+                    Database.playlistTable.sortPreviews( sortBy, sortOrder )
+                }.collectAsState( emptyList(), Dispatchers.IO )
 
                 val pinnedPlaylists = playlistPreviews.filter {
                     it.playlist.name.startsWith(PINNED_PREFIX, 0, true)

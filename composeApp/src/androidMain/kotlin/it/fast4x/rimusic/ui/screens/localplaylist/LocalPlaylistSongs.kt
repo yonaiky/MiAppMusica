@@ -453,7 +453,8 @@ fun LocalPlaylistSongs(
     }
     //</editor-fold>
     LaunchedEffect( sort.sortOrder, sort.sortBy ) {
-        Database.songsPlaylist( playlistId, sort.sortBy, sort.sortOrder )
+        Database.songPlaylistMapTable
+                .sortSongs( playlistId, sort.sortBy, sort.sortOrder )
                 .flowOn( Dispatchers.IO )
                 .distinctUntilChanged()
                 .collectLatest { items = it }

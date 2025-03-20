@@ -6,10 +6,14 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import it.fast4x.rimusic.MODIFIED_PREFIX
+import it.fast4x.rimusic.enums.SongSortBy
+import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.durationToMillis
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
@@ -21,14 +25,32 @@ interface SongTable: SqlTable<Song> {
     /**
      * @return all records from this table
      */
-    @Query("SELECT DISTINCT * FROM Song")
-    fun all(): Flow<List<Song>>
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Song 
+        WHERE totalPlayTimeMs >= :excludeHidden
+        ORDER BY ROWID 
+        LIMIT :limit
+    """)
+    fun all(
+        limit: Long = Long.MAX_VALUE,
+        excludeHidden: Boolean = false
+    ): Flow<List<Song>>
 
     /**
      * @return all records that have [Song.id] start with [LOCAL_KEY_PREFIX]
      */
     @Query("SELECT DISTINCT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
     fun allOnDevice(): Flow<List<Song>>
+
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Song 
+        WHERE likedAt IS NOT NULL AND likedAt > 0
+        ORDER BY ROWID
+        LIMIT :limit
+    """)
+    fun allFavorites( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @param songId of album to look for
@@ -210,4 +232,198 @@ interface SongTable: SqlTable<Song> {
         WHERE id = :songId
     """)
     fun likeState( songId: String, likeState: Boolean? ): Int
+
+    //<editor-fold defaultstate="collapsed" desc="Sort all">
+    fun sortAllByPlayTime( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+        all( limit ).map { list ->
+            list.sortedBy( Song::totalPlayTimeMs )
+        }
+
+    fun sortAllByRelativePlayTime( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+        all( limit ).map { list ->
+            list.sortedBy( Song::relativePlayTime )
+        }
+
+    fun sortAllByTitle( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+        all( limit ).map { list ->
+            list.sortedBy( Song::cleanTitle )
+        }
+
+    @Query("""
+        SELECT DISTINCT S.* 
+        FROM Song S 
+        LEFT JOIN Event E ON E.songId = S.id 
+        WHERE totalPlayTimeMs >= :excludeHidden
+        ORDER BY E.timestamp
+        LIMIT :limit
+    """)
+    fun sortAllByDatePlayed( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
+
+    fun sortAllByLikedAt( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+        all( limit ).map { list ->
+            list.sortedBy( Song::likedAt )
+        }
+
+    fun sortAllByArtist( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+        all( limit ).map { list ->
+            list.sortedBy( Song::cleanArtistsText )
+        }
+
+    fun sortAllByDuration( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+        all( limit ).map { list ->
+            list.sortedBy {
+                durationToMillis( it.durationText ?: "0:0" )
+            }
+        }
+
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM Song S
+        LEFT JOIN SongAlbumMap sam ON sam.songId = S.id
+        LEFT JOIN Album A ON A.id = sam.albumId
+        WHERE totalPlayTimeMs >= :excludeHidden
+        ORDER BY 
+            CASE 
+                WHEN A.title LIKE '$MODIFIED_PREFIX%' THEN SUBSTR(A.title, LENGTH('$MODIFIED_PREFIX') + 1)
+                ELSE A.title
+            END
+        LIMIT :limit
+    """)
+    fun sortAllByAlbumName( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
+
+    /**
+     * Fetch all songs from the database and sort them
+     * according to [sortBy] and [sortOrder]. It also
+     * excludes songs if condition of [excludeHidden] is met.
+     *
+     * [sortBy] sorts all based on each song's property
+     * such as [SongSortBy.Title], [SongSortBy.PlayTime], etc.
+     * While [sortOrder] arranges order of sorted songs
+     * to follow alphabetical order A to Z, or numerical order 0 to 9, etc.
+     *
+     * [excludeHidden] is an optional parameter that indicates
+     * whether the final results contain songs that are hidden
+     * (in)directly by the user.
+     * `-1` shows hidden while `0` does not.
+     *
+     * @param sortBy which song's property is used to sort
+     * @param sortOrder what order should results be in
+     * @param excludeHidden whether to include hidden songs in final results or not
+     *
+     * @return a **SORTED** list of [Song]s that are continuously
+     * updated to reflect changes within the database - wrapped by [Flow]
+     *
+     * @see SongSortBy
+     * @see SortOrder
+     */
+    fun sortAll(
+        sortBy: SongSortBy,
+        sortOrder: SortOrder,
+        limit: Long = Long.MAX_VALUE,
+        excludeHidden: Boolean = false
+    ): Flow<List<Song>> = when( sortBy ){
+        SongSortBy.PlayTime         -> sortAllByPlayTime( limit, excludeHidden )
+        SongSortBy.RelativePlayTime -> sortAllByRelativePlayTime( limit, excludeHidden )
+        SongSortBy.Title            -> sortAllByTitle( limit, excludeHidden )
+        SongSortBy.DateAdded        -> all( limit, excludeHidden )      // Already sorted by ROWID
+        SongSortBy.DatePlayed       -> sortAllByDatePlayed( limit, excludeHidden )
+        SongSortBy.DateLiked        -> sortAllByLikedAt( limit, excludeHidden )
+        SongSortBy.Artist           -> sortAllByArtist( limit, excludeHidden )
+        SongSortBy.Duration         -> sortAllByDuration( limit, excludeHidden )
+        SongSortBy.AlbumName        -> sortAllByAlbumName( limit, excludeHidden )
+    }.map( sortOrder::applyTo )
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Sort favorites">
+    fun sortFavoritesByArtist( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+        allFavorites( limit ).map { list ->
+            list.sortedBy( Song::cleanArtistsText )
+        }
+
+    fun sortFavoritesByPlayTime( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+        allFavorites( limit ).map { list ->
+            list.sortedBy( Song::totalPlayTimeMs )
+        }
+
+    fun sortFavoritesByRelativePlayTime( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+        allFavorites( limit ).map { list ->
+            list.sortedBy( Song::relativePlayTime )
+        }
+
+    fun sortFavoritesByTitle( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+        allFavorites( limit ).map { list ->
+            list.sortedBy( Song::cleanTitle )
+        }
+
+    fun sortFavoritesByLikedAt( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+        allFavorites( limit ).map { list ->
+            list.sortedBy( Song::likedAt )
+        }
+
+    @Query("""
+        SELECT DISTINCT S.* 
+        FROM Song S 
+        LEFT JOIN Event E ON E.songId = S.id 
+        WHERE likedAt IS NOT NULL AND likedAt > 0
+        ORDER BY E.timestamp
+        LIMIT :limit
+    """)
+    fun sortFavoritesByDatePlayed( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+
+    fun sortFavoritesByDuration( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+        allFavorites( limit ).map { list ->
+            list.sortedBy {
+                durationToMillis( it.durationText ?: "0:0" )
+            }
+        }
+
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM Song S
+        LEFT JOIN SongAlbumMap sam ON sam.songId = S.id
+        LEFT JOIN Album A ON A.id = sam.albumId
+        WHERE likedAt IS NOT NULL AND likedAt > 0
+        ORDER BY 
+            CASE 
+                WHEN A.title LIKE '$MODIFIED_PREFIX%' THEN SUBSTR(A.title, LENGTH('$MODIFIED_PREFIX') + 1)
+                ELSE A.title
+            END
+        LIMIT :limit
+    """)
+    fun sortFavoritesByAlbumName( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+
+    /**
+     * Fetch all favorite songs and sort them according to [sortBy] and [sortOrder].
+     *
+     * [sortBy] sorts all based on each song's property
+     * such as [SongSortBy.Title], [SongSortBy.PlayTime], etc.
+     * While [sortOrder] arranges order of sorted songs
+     * to follow alphabetical order A to Z, or numerical order 0 to 9, etc.
+     *
+     * @param sortBy which song's property is used to sort
+     * @param sortOrder what order should results be in
+     * @param limit stop query once number of results reaches this number
+     *
+     * @return a **SORTED** list of [Song]s that are continuously
+     * updated to reflect changes within the database - wrapped by [Flow]
+     *
+     * @see SongSortBy
+     * @see SortOrder
+     */
+    fun sortFavorites(
+        sortBy: SongSortBy,
+        sortOrder: SortOrder,
+        limit: Long = Long.MAX_VALUE
+    ): Flow<List<Song>> = when( sortBy ) {
+        SongSortBy.PlayTime         -> sortFavoritesByPlayTime( limit )
+        SongSortBy.RelativePlayTime -> sortFavoritesByRelativePlayTime( limit )
+        SongSortBy.Title            -> sortFavoritesByTitle( limit )
+        SongSortBy.DateAdded        -> allFavorites( limit )      // Already sorted by ROWID
+        SongSortBy.DatePlayed       -> sortFavoritesByDatePlayed( limit )
+        SongSortBy.DateLiked        -> sortFavoritesByLikedAt( limit )
+        SongSortBy.Artist           -> sortFavoritesByArtist( limit )
+        SongSortBy.Duration         -> sortFavoritesByDuration( limit )
+        SongSortBy.AlbumName        -> sortFavoritesByAlbumName( limit )
+    }.map( sortOrder::applyTo )
+    //</editor-fold>
 }

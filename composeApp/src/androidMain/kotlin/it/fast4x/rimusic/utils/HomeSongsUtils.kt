@@ -3,8 +3,6 @@ package it.fast4x.rimusic.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.R
@@ -13,41 +11,10 @@ import it.fast4x.rimusic.enums.TopPlaylistPeriod
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
-import it.fast4x.rimusic.ui.components.tab.toolbar.DualIcon
 import it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
 import it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.themed.PeriodMenu
-
-class HiddenSongs private constructor(
-    private val showHiddenState: MutableState<Boolean>
-): MenuIcon, DualIcon, Descriptive {
-
-    companion object {
-        @JvmStatic
-        @Composable
-        fun init() = HiddenSongs(
-            rememberSaveable { mutableStateOf( false ) }
-        )
-    }
-
-    override val iconId: Int = R.drawable.eye
-    override val secondIconId: Int = R.drawable.eye_off
-    override val messageId: Int = R.string.info_show_hide_hidden_songs
-    override val menuIconTitle: String
-        @Composable
-        get() = stringResource( messageId )
-
-    override var isFirstIcon: Boolean = showHiddenState.value
-        set(value) {
-            showHiddenState.value = value
-            field = value
-        }
-
-    fun isShown() = if( isFirstIcon ) 0 else 1
-
-    override fun onShortClick() { isFirstIcon = !isFirstIcon }
-}
 
 @Composable
 fun randomSort(): MenuIcon = object: MenuIcon, DynamicColor, Descriptive {
