@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -330,34 +329,15 @@ fun MediaItemGridMenu (
     val isDownloaded = if (!isLocal) isDownloadedSong(mediaItem.mediaId) else true
     val thumbnailSizeDp = Dimensions.thumbnails.song + 20.dp
     val thumbnailSizePx = thumbnailSizeDp.px
-    val thumbnailArtistSizeDp = Dimensions.thumbnails.song + 10.dp
 
-    var albumInfo by remember {
-        mutableStateOf(mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
-            Info(albumId, null)
-        })
-    }
-
-
-    var artistsInfo by remember {
-        mutableStateOf(
-            mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")?.let { artistNames ->
-                mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.let { artistIds ->
-                    artistNames.zip(artistIds).map { (authorName, authorId) ->
-                        Info(authorId, authorName)
-                    }
-                }
-            }
-        )
-    }
-
-    LaunchedEffect(Unit, mediaItem.mediaId) {
-        if (albumInfo == null)
-            albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
-        if (artistsInfo == null)
-            artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
-    }
-
+    val album by remember {
+        Database.albumTable
+                .findBySongId( mediaItem.mediaId )
+    }.collectAsState( null, Dispatchers.IO )
+    val artists by remember {
+        Database.artistTable
+                .findBySongId( mediaItem.mediaId )
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     var showSelectDialogListenOn by remember {
         mutableStateOf(false)
@@ -981,7 +961,7 @@ fun MediaItemGridMenu (
 
                 if (!isLocal)
                     onGoToAlbum?.let { onGoToAlbum ->
-                        albumInfo?.let { (albumId) ->
+                        album?.id?.let { albumId ->
                             GridMenuItem(
                                 icon = R.drawable.album,
                                 title = R.string.go_to_album,
@@ -997,16 +977,16 @@ fun MediaItemGridMenu (
 
                 if (!isLocal)
                     onGoToArtist?.let { onGoToArtist ->
-                        artistsInfo?.forEach { (authorId, authorName) ->
+                        artists.forEach { artist ->
                             GridMenuItem(
                                 icon = R.drawable.artists,
                                 title = R.string.more_of,
-                                titleString = authorName ?: "",
+                                titleString = artist.name ?: "",
                                 colorIcon = colorPalette.text,
                                 colorText = colorPalette.text,
                                 onClick = {
                                     onDismiss()
-                                    onGoToArtist(authorId)
+                                    onGoToArtist(artist.id)
                                 }
                             )
                         }

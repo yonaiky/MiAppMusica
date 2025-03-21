@@ -37,6 +37,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -80,7 +81,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayEventsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.isVideoEnabled
-import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -200,8 +200,6 @@ fun HomeQuickPicks(
 //    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
 
 
-
-    var preferitesArtists by persistList<Artist>("home/artists")
 
     var localMonthlyPlaylists by persistList<PlaylistPreview>("home/monthlyPlaylists")
     LaunchedEffect(Unit) {
@@ -335,11 +333,6 @@ fun HomeQuickPicks(
             delay(500)
             refreshing = false
         }
-    }
-
-
-    LaunchedEffect(Unit) {
-        Database.preferitesArtistsByName().collect { preferitesArtists = it }
     }
 
     val songThumbnailSizeDp = Dimensions.thumbnails.song
@@ -738,10 +731,15 @@ fun HomeQuickPicks(
 
 
                 discoverPageInit?.let { page ->
+                    val artists by remember {
+                        Database.artistTable
+                                .sortFollowingByName()
+                                .distinctUntilChanged()
+                    }.collectAsState( emptyList(), Dispatchers.IO )
 
                     var newReleaseAlbumsFiltered by persistList<Innertube.AlbumItem>("discovery/newalbumsartist")
                     page.newReleaseAlbums.forEach { album ->
-                        preferitesArtists.forEach { artist ->
+                        artists.forEach { artist ->
                             if (artist.name == album.authors?.first()?.name) {
                                 newReleaseAlbumsFiltered += album
                             }
@@ -749,7 +747,7 @@ fun HomeQuickPicks(
                     }
 
                     if (showNewAlbumsArtists)
-                        if (newReleaseAlbumsFiltered.isNotEmpty() && preferitesArtists.isNotEmpty()) {
+                        if (newReleaseAlbumsFiltered.isNotEmpty() && artists.isNotEmpty()) {
 
                             BasicText(
                                 text = stringResource(R.string.new_albums_of_your_artists),

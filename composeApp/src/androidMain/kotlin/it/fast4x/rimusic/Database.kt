@@ -19,7 +19,6 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
 import it.fast4x.rimusic.models.EventWithSong
 import it.fast4x.rimusic.models.Format
-import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
@@ -149,13 +148,6 @@ interface Database {
     @Query("SELECT thumbnailUrl FROM Song WHERE id in (:idsList) ")
     fun getSongsListThumbnailUrls(idsList: List<String>): Flow<List<String?>>
 
-    @Query("""
-        SELECT SongArtistMap.artistId
-        FROM SongArtistMap
-        WHERE SongArtistMap.songId = :songId
-    """)
-    fun findArtistIdOfSong( songId: String ): Flow<String?>
-
     @Query("SELECT thumbnailUrl FROM Song WHERE likedAt IS NOT NULL AND id NOT LIKE '$LOCAL_KEY_PREFIX%'  LIMIT 4")
     fun preferitesThumbnailUrls(): Flow<List<String?>>
 
@@ -170,37 +162,6 @@ interface Database {
 
     @Query("UPDATE Song SET durationText = :durationText WHERE id = :songId")
     fun updateDurationText(songId: String, durationText: String): Int
-
-    @Query("SELECT * FROM Artist WHERE bookmarkedAt IS NOT NULL ORDER BY name")
-    fun preferitesArtistsByName(): Flow<List<Artist>>
-
-    @Query("""
-        UPDATE Artist
-        SET bookmarkedAt = CASE
-            WHEN bookmarkedAt IS NULL THEN strftime('%s', 'now') * 1000
-            ELSE NULL
-        END
-        WHERE id = :artistId
-    """)
-    fun toggleArtistFollow( artistId: String )
-
-    /**
-     * Keeps track [Artist.bookmarkedAt] of provided artist.
-     * When artist is not in database, returns `false`
-     */
-    @Query("""
-        SELECT COALESCE(
-            (
-                SELECT 1 
-                FROM Artist 
-                WHERE id = :artistId 
-                AND bookmarkedAt IS NOT NULL 
-                LIMIT 1
-            ),
-            0
-        )
-    """)
-    fun isArtistFollowed( artistId: String ): Flow<Boolean>
 
     @Query("UPDATE Song SET totalPlayTimeMs = 0 WHERE id = :id")
     fun resetTotalPlayTimeMs(id: String)
@@ -299,14 +260,8 @@ interface Database {
     @Query("SELECT loudnessDb FROM Format WHERE songId = :songId")
     fun loudnessDb(songId: String): Flow<Float?>
 
-    @Query("SELECT albumId AS id, Album.title AS name, 0 AS size FROM SongAlbumMap LEFT JOIN Album ON id=albumId WHERE songId = :songId")
-    fun songAlbumInfo(songId: String): Info?
-
     @Query("SELECT thumbnailUrl FROM Song LEFT JOIN SongAlbumMap ON id=songId WHERE albumId = :albumId")
     fun albumThumbnailFromSong(albumId: String): String?
-
-    @Query("SELECT id, name, 0 AS size FROM Artist LEFT JOIN SongArtistMap ON id = artistId WHERE songId = :songId")
-    fun songArtistInfo(songId: String): List<Info>
 
     /**
      * Insert provided song into indicated playlist

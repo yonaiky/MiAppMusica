@@ -14,7 +14,7 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.guava.future
 import me.knighthat.utils.Toaster
 import timber.log.Timber
@@ -41,7 +41,11 @@ class GoToArtist private constructor(
         val song = getSong()
 
         CoroutineScope( Dispatchers.IO ).future {
-            var result = Database.findArtistIdOfSong( song.id ).firstOrNull()
+            var result = Database.artistTable
+                                          .findBySongId( song.id )
+                                          .first()
+                                          .firstOrNull()
+                                          ?.id
 
             // If artist isn't stored inside database, attempt to fetch
             if( result == null ) {

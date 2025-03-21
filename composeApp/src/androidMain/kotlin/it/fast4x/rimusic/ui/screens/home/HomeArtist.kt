@@ -145,7 +145,7 @@ fun HomeArtists(
 
     LaunchedEffect( Unit, sort.sortBy, sort.sortOrder, artistType ) {
         when( artistType ) {
-            ArtistsType.Favorites -> Database.artistTable.sortAll( sort.sortBy, sort.sortOrder )
+            ArtistsType.Favorites -> Database.artistTable.sortFollowing( sort.sortBy, sort.sortOrder )
             ArtistsType.Library -> Database.artistTable.sortInLibrary( sort.sortBy, sort.sortOrder )
         }.collect { itemsToFilter = it }
     }

@@ -63,8 +63,58 @@ interface ArtistTable: SqlTable<Artist> {
     @Query("SELECT DISTINCT * FROM Artist WHERE id = :artistId")
     fun findById( artistId: String ): Flow<Artist?>
 
+    @Query("""
+        SELECT DISTINCT Artist.*
+        FROM SongArtistMap
+        JOIN Artist ON id = artistId
+        WHERE songId = :songId
+    """)
+    fun findBySongId( songId: String ): Flow<List<Artist>>
+
+    /**
+     * @return whether [Artist] with id [artistId] is followed by user,
+     * if artist doesn't exist, return default value - `false`
+     */
+    @Query("""
+        SELECT COALESCE(
+            (
+                SELECT 1 
+                FROM Artist 
+                WHERE id = :artistId 
+                AND bookmarkedAt IS NOT NULL 
+            ),
+            0
+        )
+    """)
+    fun isFollowing( artistId: String ): Flow<Boolean>
+
+    /**
+     * There are 2 possible actions.
+     *
+     * ### If artist IS followed
+     *
+     * This will remove [Artist.bookmarkedAt] timestamp (replace with NULL)
+     *
+     * ## If artist IS NOT followed
+     *
+     * It will assign [Artist.bookmarkedAt] with current time in millis
+     *
+     * @param artistId artist identifier to update its [Artist.bookmarkedAt]
+     *
+     * @return number of artists updated by this operation
+     */
+    @Query("""
+        UPDATE Artist
+        SET bookmarkedAt = CASE
+            WHEN bookmarkedAt IS NULL THEN strftime('%s', 'now') * 1000
+            ELSE NULL
+        END
+        WHERE id = :artistId
+    """)
+    fun toggleFollow( artistId: String ): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort all">
-    fun sortAllByName( limit: Long = Long.MAX_VALUE ): Flow<List<Artist>> =
+    fun sortFollowingByName( limit: Long = Long.MAX_VALUE ): Flow<List<Artist>> =
         allFollowing( limit ).map { list ->
             list.sortedBy( Artist::cleanName )
         }
@@ -88,12 +138,12 @@ interface ArtistTable: SqlTable<Artist> {
      * @see ArtistSortBy
      * @see SortOrder
      */
-    fun sortAll(
+    fun sortFollowing(
         sortBy: ArtistSortBy,
         sortOrder: SortOrder,
         limit: Long = Long.MAX_VALUE
     ): Flow<List<Artist>> = when( sortBy ) {
-        ArtistSortBy.Name       -> sortAllByName( limit )
+        ArtistSortBy.Name       -> sortFollowingByName( limit )
         ArtistSortBy.DateAdded  -> allFollowing( limit )
     }.map( sortOrder::applyTo )
     //</editor-fold>

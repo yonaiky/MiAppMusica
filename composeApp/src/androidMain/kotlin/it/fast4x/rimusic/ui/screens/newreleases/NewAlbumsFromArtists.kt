@@ -19,7 +19,9 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +39,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.items.AlbumItem
@@ -49,6 +50,8 @@ import it.fast4x.rimusic.utils.navigationBarPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.showSearchTabKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @ExperimentalTextApi
 @UnstableApi
@@ -62,11 +65,6 @@ fun NewAlbumsFromArtists(
     var discoverPage by persist<Result<Innertube.DiscoverPageAlbums>>("home/discoveryAlbums")
     LaunchedEffect(Unit) {
         discoverPage = Innertube.discoverPageNewAlbums()
-    }
-
-    var preferitesArtists by persistList<Artist>("home/artists")
-    LaunchedEffect(Unit) {
-        Database.preferitesArtistsByName().collect { preferitesArtists = it }
     }
 
     val thumbnailSizeDp = Dimensions.thumbnails.album + 24.dp
@@ -100,9 +98,15 @@ fun NewAlbumsFromArtists(
 
         /***************/
         discoverPage?.getOrNull()?.let { page ->
+            val artists by remember {
+                Database.artistTable
+                        .sortFollowingByName()
+                        .distinctUntilChanged()
+            }.collectAsState( emptyList(), Dispatchers.IO )
+
             var newReleaseAlbumsFiltered by persistList<Innertube.AlbumItem>("discovery/newalbumsartist")
             page.newReleaseAlbums.forEach { album ->
-                preferitesArtists.forEach { artist ->
+                artists.forEach { artist ->
                     if (artist.name == album.authors?.first()?.name) {
                         newReleaseAlbumsFiltered += album
                     }

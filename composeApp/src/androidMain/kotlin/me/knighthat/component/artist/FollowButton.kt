@@ -52,7 +52,7 @@ class FollowButton private constructor(
             val artist = getArtist()
 
             Database.asyncTransaction {
-                toggleArtistFollow( artist.id )
+                artistTable.toggleFollow( artist.id )
             }
 
             CoroutineScope( Dispatchers.IO ).launch {
@@ -69,7 +69,8 @@ class FollowButton private constructor(
     @Composable
     override fun ToolBarButton() {
         val isFollowed by remember {
-            Database.isArtistFollowed( getArtist().id )
+            Database.artistTable
+                    .isFollowing( getArtist().id )
         }.collectAsState( false, Dispatchers.IO )
         val colorPalette = colorPalette()
 

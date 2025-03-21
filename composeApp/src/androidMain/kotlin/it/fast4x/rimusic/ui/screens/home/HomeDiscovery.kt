@@ -35,6 +35,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -60,7 +61,6 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -79,6 +79,8 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @ExperimentalMaterialApi
 @SuppressLint("SuspiciousIndentation")
@@ -111,13 +113,8 @@ fun HomeDiscovery(
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discovery")
 
-    var preferitesArtists by persistList<Artist>("home/artists")
-
     LaunchedEffect(key1 = Unit) {
         discoverPage = Innertube.discoverPage()
-    }
-    LaunchedEffect(Unit) {
-        Database.preferitesArtistsByName().collect { preferitesArtists = it }
     }
     val showSearchTab by rememberPreference(showSearchTabKey, false)
 
@@ -166,9 +163,15 @@ fun HomeDiscovery(
                 onClick = onSearchClick
             )
             discoverPage?.getOrNull()?.let { page ->
+                val artists by remember {
+                    Database.artistTable
+                            .sortFollowingByName()
+                            .distinctUntilChanged()
+                }.collectAsState( emptyList(), Dispatchers.IO )
+
                 var newReleaseAlbumsFiltered by persistList<Innertube.AlbumItem>("discovery/newalbumsartist")
                 page.newReleaseAlbums.forEach { album ->
-                    preferitesArtists.forEach { artist ->
+                    artists.forEach { artist ->
                         if (artist.name == album.authors?.first()?.name) {
                             newReleaseAlbumsFiltered += album
                             //Log.d("mediaItem","artst ok")
@@ -176,7 +179,7 @@ fun HomeDiscovery(
                     }
                 }
 
-                 if ( newReleaseAlbumsFiltered.distinct().isNotEmpty() && preferitesArtists.isNotEmpty() ) {
+                 if ( newReleaseAlbumsFiltered.distinct().isNotEmpty() && artists.isNotEmpty() ) {
                     BasicText(
                         text = stringResource(R.string.new_albums_of_your_artists),
                         style = typography().m.semiBold,

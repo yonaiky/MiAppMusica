@@ -29,7 +29,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -861,29 +860,6 @@ fun MediaItemMenu(
         mutableStateOf(0.dp)
     }
 
-    //println("mediaItem in MediaItemMenu albumId ${mediaItem.mediaMetadata.extras?.getString("albumId")}")
-
-
-    var albumInfo by remember {
-        mutableStateOf(mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
-            Info(albumId, null)
-        })
-    }
-
-    //println("mediaItem in MediaItemMenu albumInfo albumId ${albumInfo?.id}")
-
-    var artistsInfo by remember {
-        mutableStateOf(
-            mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")?.let { artistNames ->
-                mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.let { artistIds ->
-                    artistNames.zip(artistIds).map { (authorName, authorId) ->
-                        Info(authorId, authorName)
-                    }
-                }
-            }
-        )
-    }
-
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
     }
@@ -891,12 +867,14 @@ fun MediaItemMenu(
     downloadState = getDownloadState(mediaItem.mediaId)
     val isDownloaded = if (!isLocal) isDownloadedSong(mediaItem.mediaId) else true
 
-    LaunchedEffect(Unit, mediaItem.mediaId) {
-        if (albumInfo?.id.isNullOrEmpty())
-            albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
-        if (artistsInfo.isNullOrEmpty())
-            artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
-    }
+    val album by remember {
+        Database.albumTable
+                .findBySongId( mediaItem.mediaId )
+    }.collectAsState( null, Dispatchers.IO )
+    val artists by remember {
+        Database.artistTable
+                .findBySongId( mediaItem.mediaId )
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     var showCircularSlider by remember {
         mutableStateOf(false)
@@ -1643,7 +1621,7 @@ fun MediaItemMenu(
                 //println("mediaItem in MediaItemMenu onGoToAlbum  albumInfo ${albumInfo?.id}")
 
                 if (!isLocal) onGoToAlbum?.let { onGoToAlbum ->
-                    albumInfo?.let { (albumId) ->
+                    album?.id?.let { albumId ->
                         MenuEntry(
                             icon = R.drawable.album,
                             text = stringResource(R.string.go_to_album),
@@ -1656,13 +1634,13 @@ fun MediaItemMenu(
                 }
 
                 if (!isLocal) onGoToArtist?.let { onGoToArtist ->
-                    artistsInfo?.forEach { (authorId, authorName) ->
+                    artists.forEach { artist ->
                         MenuEntry(
                             icon = R.drawable.artists,
-                            text = stringResource(R.string.more_of) + " $authorName",
+                            text = stringResource(R.string.more_of) + " ${artist.name}",
                             onClick = {
                                 onDismiss()
-                                onGoToArtist(authorId)
+                                onGoToArtist(artist.id)
                             }
                         )
                     }
