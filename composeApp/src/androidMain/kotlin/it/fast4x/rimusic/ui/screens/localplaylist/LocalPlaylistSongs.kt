@@ -330,7 +330,7 @@ fun LocalPlaylistSongs(
                         remotePlaylist.songsPage
                             ?.items
                             ?.map(Innertube.SongItem::asMediaItem)
-                            ?.onEach(Database::insert)
+                            ?.onEach( ::insertIgnore )
                             ?.mapIndexed { position, mediaItem ->
                                 SongPlaylistMap(
                                     songId = mediaItem.mediaId,

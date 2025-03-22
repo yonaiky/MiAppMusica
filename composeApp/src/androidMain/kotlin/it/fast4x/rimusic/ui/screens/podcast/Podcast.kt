@@ -220,7 +220,7 @@ fun Podcast(
 
                     podcastPage?.listEpisode
                                ?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
-                               ?.onEach( ::insert )
+                               ?.onEach( ::insertIgnore )
                                ?.mapIndexed { index, mediaItem ->
                                    SongPlaylistMap(
                                        songId = mediaItem.mediaId,
@@ -548,7 +548,8 @@ fun Podcast(
                                                         if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
                                                             podcastPage?.listEpisode?.forEachIndexed { index, song ->
                                                                 runCatching {
-                                                                    Database.insert(song.asMediaItem)
+                                                                    Database.insertIgnore( song.asMediaItem )
+
                                                                     Database.songPlaylistMapTable.insertIgnore(
                                                                         SongPlaylistMap(
                                                                             songId = song.asMediaItem.mediaId,

@@ -704,7 +704,7 @@ fun DeviceListSongs(
                                             listMediaItems.forEachIndexed { index, song ->
                                                 //Log.d("mediaItemMaxPos", position.toString())
                                                 Database.asyncTransaction {
-                                                    insert(song)
+                                                    Database.insertIgnore( song )
                                                     songPlaylistMapTable.insert(
                                                         SongPlaylistMap(
                                                             songId = song.mediaId,

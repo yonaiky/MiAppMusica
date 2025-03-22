@@ -927,7 +927,7 @@ fun BuiltInPlaylistSongs(
                                             listMediaItems.forEachIndexed { index, song ->
                                                 //Log.d("mediaItemMaxPos", position.toString())
                                                 Database.asyncTransaction {
-                                                    insert(song)
+                                                    insertIgnore( song )
                                                     songPlaylistMapTable.insert(
                                                         SongPlaylistMap(
                                                             songId = song.mediaId,

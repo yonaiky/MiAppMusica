@@ -177,7 +177,7 @@ fun BaseMediaItemGridMenu(
         onAddToPlaylist = { playlist, position ->
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
-                    insert(mediaItem)
+                    insertIgnore( mediaItem )
 
                     val pId: Long? = playlistTable.insertIgnore( playlist )
                                                   .takeIf { it != -1L }
@@ -252,7 +252,7 @@ fun MiniMediaItemGridMenu(
         onAddToPlaylist = { playlist, position ->
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
-                    insert(mediaItem)
+                    insertIgnore( mediaItem )
 
                     val pId: Long? = playlistTable.insertIgnore( playlist )
                                                   .takeIf { it != -1L }

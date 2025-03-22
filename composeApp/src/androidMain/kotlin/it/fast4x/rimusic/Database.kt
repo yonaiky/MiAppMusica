@@ -27,7 +27,6 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
-import it.fast4x.rimusic.utils.isExplicit
 import kotlinx.coroutines.flow.Flow
 import me.knighthat.database.AlbumTable
 import me.knighthat.database.ArtistTable
@@ -95,22 +94,25 @@ interface Database {
     @Query("SELECT DISTINCT (timestamp / 86400000) as timestampDay, event.* FROM event ORDER BY rowId DESC")
     fun events(): Flow<List<EventWithSong>>
 
+    /**
+     * Attempt to insert a [MediaItem] into `Song` table
+     *
+     * If [mediaItem] comes with album and artist(s) then
+     * this method handles the insertion automatically.
+     *
+     * **_This method doesn't require to be called on worker
+     * thread exclusively._**
+     *
+     * > NOTE: This function is wrapped by transaction, any
+     * failure happens during insertion results in rollback
+     * to protect database integrity.
+     */
     @Transaction
-    fun insert(mediaItem: MediaItem, block: (Song) -> Song = { it }) {
-        var title = mediaItem.mediaMetadata.title!!.toString()
-        if(!title.startsWith(EXPLICIT_PREFIX, true) && mediaItem.isExplicit){
-            title = EXPLICIT_PREFIX + title
-        }
-        val song = Song(
-            id = mediaItem.mediaId,
-            title = title,
-            artistsText = mediaItem.mediaMetadata.artist?.toString(),
-            durationText = mediaItem.mediaMetadata.extras?.getString("durationText"),
-            thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString()
-        ).let(block).also { song ->
-            if (songTable.insertIgnore( song ) == -1L) return
-        }
+    fun insertIgnore( mediaItem: MediaItem ) {
+        // Insert song
+        songTable.insertIgnore( mediaItem )
 
+        // Insert album
         mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
             albumTable.insertIgnore(
                 Album(
@@ -119,9 +121,10 @@ interface Database {
                 )
             )
             songAlbumMapTable.insertIgnore(
-                SongAlbumMap( song.id, albumId, null )
+                SongAlbumMap( mediaItem.mediaId, albumId, null )
             )
         }
+        // Insert artist
 
         val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")
         val artistsIds = mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")
@@ -131,10 +134,10 @@ interface Database {
                 if( artistId == null ) return@fastZip
 
                 artistTable.insertIgnore(
-                    Artist(id = artistId, name = artistName)
+                    Artist( artistId, artistName )
                 )
                 songArtistMapTable.insertIgnore(
-                    SongArtistMap(song.id, artistId)
+                    SongArtistMap( mediaItem.mediaId, artistId )
                 )
             }
         }

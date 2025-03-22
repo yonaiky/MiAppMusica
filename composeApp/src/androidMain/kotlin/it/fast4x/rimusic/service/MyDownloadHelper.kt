@@ -243,11 +243,7 @@ object MyDownloadHelper {
             .setData("${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}".encodeToByteArray()) // Title in notification
             .build()
 
-        Database.asyncTransaction {
-            runCatching {
-                insert(mediaItem)
-            }.also { if (it.isFailure) return@asyncTransaction }
-        }
+        Database.insertIgnore( mediaItem )
 
         val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1200)
 

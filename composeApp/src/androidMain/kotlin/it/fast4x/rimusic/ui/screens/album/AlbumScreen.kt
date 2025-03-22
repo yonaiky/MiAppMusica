@@ -137,7 +137,7 @@ fun AlbumScreen(
 
                        online.songs
                              .map( Innertube.SongItem::asMediaItem )
-                             .onEach( Database::insert )
+                             .onEach( ::insertIgnore )
                              .mapIndexed { position, mediaItem ->
                                  SongAlbumMap(
                                      songId = mediaItem.mediaId,

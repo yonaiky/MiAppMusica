@@ -169,7 +169,6 @@ import it.fast4x.rimusic.enums.ThumbnailCoverType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.models.Info
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.ui.toUiMedia
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
@@ -1221,7 +1220,8 @@ fun Player(
                             currentMediaItem
                                 ?.takeIf { it.mediaId == mediaItem.mediaId }
                                 ?.let {
-                                    insert(currentMediaItem, Song::toggleLike)
+                                    insertIgnore( currentMediaItem )
+                                    songTable.toggleLike( currentMediaItem.mediaId )
                                 }
                     }
                     if (effectRotationEnabled) isRotated = !isRotated
@@ -2087,7 +2087,7 @@ fun Player(
                                 onDismiss = {
                                         isShowingLyrics = false
                                 },
-                                ensureSongInserted = { Database.insert(mediaItem) },
+                                ensureSongInserted = { Database.insertIgnore( mediaItem ) },
                                 size = 1000.dp,
                                 mediaMetadataProvider = mediaItem::mediaMetadata,
                                 durationProvider = player::getDuration,
@@ -3004,7 +3004,7 @@ fun Player(
                                 onDismiss = {
                                         isShowingLyrics = false
                                 },
-                                ensureSongInserted = { Database.insert(mediaItem) },
+                                ensureSongInserted = { Database.insertIgnore( mediaItem ) },
                                 size = 1000.dp,
                                 mediaMetadataProvider = mediaItem::mediaMetadata,
                                 durationProvider = player::getDuration,

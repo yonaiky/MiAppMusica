@@ -58,7 +58,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
 
                             remotePlaylist.songs
                                 .map(Innertube.SongItem::asMediaItem)
-                                .onEach(Database::insert)
+                                .onEach( ::insertIgnore )
                                 .mapIndexed { position, mediaItem ->
                                     SongPlaylistMap(
                                         songId = mediaItem.mediaId,

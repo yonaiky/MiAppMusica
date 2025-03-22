@@ -311,7 +311,7 @@ fun PlaylistSongList(
 
                     playlistPage?.songs
                                 ?.map(Innertube.SongItem::asMediaItem)
-                                ?.onEach( ::insert )
+                                ?.onEach( ::insertIgnore )
                                 ?.mapIndexed { index, mediaItem ->
                                     SongPlaylistMap(
                                         songId = mediaItem.mediaId,
@@ -780,16 +780,16 @@ fun PlaylistSongList(
                                                             val pId =  playlistTable.insert( playlist )
 
                                                             playlistPage?.songs
-                                                                ?.map(Innertube.SongItem::asMediaItem)
-                                                                ?.onEach(::insert)
-                                                                ?.mapIndexed { index, mediaItem ->
-                                                                    SongPlaylistMap(
-                                                                        songId = mediaItem.mediaId,
-                                                                        playlistId = pId,
-                                                                        position = index
-                                                                    ).default()
-                                                                }
-                                                                ?.let( songPlaylistMapTable::insertIgnore )
+                                                                        ?.map( Innertube.SongItem::asMediaItem )
+                                                                        ?.onEach( ::insertIgnore )
+                                                                        ?.mapIndexed { index, mediaItem ->
+                                                                            SongPlaylistMap(
+                                                                                songId = mediaItem.mediaId,
+                                                                                playlistId = pId,
+                                                                                position = index
+                                                                            ).default()
+                                                                        }
+                                                                        ?.let( songPlaylistMapTable::insertIgnore )
                                                         }
                                                     }
                                                     Toaster.done()

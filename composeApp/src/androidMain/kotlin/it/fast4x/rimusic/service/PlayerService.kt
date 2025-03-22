@@ -1956,9 +1956,7 @@ class PlayerService : InvincibleService(),
 
                     val songs = it.process()
 
-                    songs.forEach {
-                        Database.asyncTransaction { insert(it) }
-                    }
+                    songs.forEach( Database::insertIgnore )
 
                     if (justAdd) {
                         player.addMediaItems(songs.drop(1))

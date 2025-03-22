@@ -89,7 +89,8 @@ class PlaylistsMenu private constructor(
             runBlocking( Dispatchers.IO ) {
                 try {
                     mediaItems( preview ).forEachIndexed { index, mediaItem ->
-                        insert(mediaItem)
+                        insertIgnore( mediaItem )
+
                         songPlaylistMapTable.insertIgnore(
                             SongPlaylistMap(
                                 songId = mediaItem.mediaId,

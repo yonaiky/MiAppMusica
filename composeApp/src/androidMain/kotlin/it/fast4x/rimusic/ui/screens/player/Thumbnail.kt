@@ -41,9 +41,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ThumbnailCoverType
 import it.fast4x.rimusic.enums.ThumbnailType
@@ -360,7 +360,7 @@ fun Thumbnail(
                             //if (thumbnailTapEnabledKey)
                             onShowLyrics(false)
                         },
-                        ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
+                        ensureSongInserted = { Database.insertIgnore( currentWindow.mediaItem ) },
                         size = thumbnailSizeDp,
                         mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
                         durationProvider = player::getDuration,

@@ -369,12 +369,8 @@ fun SearchResultScreen(
 
                                                                     currentAlbumPage.songsPage
                                                                                     ?.items
-                                                                                    ?.map(
-                                                                                        Innertube.SongItem::asMediaItem
-                                                                                    )
-                                                                                    ?.onEach(
-                                                                                        Database::insert
-                                                                                    )
+                                                                                    ?.map( Innertube.SongItem::asMediaItem )
+                                                                                    ?.onEach( Database::insertIgnore )
                                                                                     ?.mapIndexed { position, mediaItem ->
                                                                                         SongAlbumMap(
                                                                                             songId = mediaItem.mediaId,
