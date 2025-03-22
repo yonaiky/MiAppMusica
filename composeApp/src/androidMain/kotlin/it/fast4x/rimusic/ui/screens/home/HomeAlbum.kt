@@ -99,8 +99,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.database.AlbumTable
 
@@ -186,20 +187,37 @@ fun HomeAlbums(
         lazyGridState.scrollToItem( scrollIndex, scrollOffset )
     }
 
-    if (albumType == AlbumsType.Library) {
-        if (items.any{it.thumbnailUrl == null}) {
-            LaunchedEffect(Unit) {
-                withContext(Dispatchers.IO) {
-                    items.filter { it.thumbnailUrl == null }.forEach { album ->
-                        coroutineScope.launch(Dispatchers.IO) {
-                            Database.asyncTransaction {
-                                val albumThumbnail = albumThumbnailFromSong(album.id)
-                                albumTable.update( album.copy(thumbnailUrl = albumThumbnail) )
-                            }
-                        }
-                    }
-                }
-            }
+    LaunchedEffect( Unit ) {
+        // TODO Convert to fetch from the internet
+        Database.asyncTransaction {
+            // Only occurs when album doesn't have thumbnailUrl assigned
+            items.filter { it.thumbnailUrl == null }
+                 .forEach { album ->
+                     /**
+                      * Topology:
+                      *
+                      * Return the most frequently occurring [Song.thumbnailUrl]
+                      * among all songs of this album.
+                      *
+                      * Explanation:
+                      *
+                      * [Song.thumbnailUrl] can be changed by user.
+                      * If 1 song has its thumbnail changed, the result
+                      * remains the same because all others have the same url.
+                      *
+                      * Even when most changed to different urls, it only needs
+                      * 2 songs to have the same [Song.thumbnailUrl] to return
+                      * the same result.
+                      */
+                     runBlocking {
+                         songAlbumMapTable.allSongsOf( album.id )
+                                          .first()
+                                          .groupingBy( Song::thumbnailUrl )
+                                          .eachCount()
+                                          .maxByOrNull { it.value }
+                                          ?.key
+                     }?.let { albumTable.updateCover( album.id, it ) }
+                 }
         }
     }
 

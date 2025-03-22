@@ -325,11 +325,11 @@ class MediaLibrarySessionCallback @Inject constructor(
                                                  .all( excludeHidden = true )
                                                  .map { list ->
                                                      list.filter { song ->
-                                                         val contentLength = runBlocking {
-                                                             database.formatContentLength( song.id )
-                                                         }
-
-                                                         binder.cache.isCached( song.id, 0L, contentLength )
+                                                         binder.cache.isCached(
+                                                             song.id,
+                                                             0L,
+                                                             database.formatTable.findContentLengthOf( song.id ).first()
+                                                         )
                                                  }.reversed()
                             }
                             ID_TOP ->
@@ -458,11 +458,11 @@ class MediaLibrarySessionCallback @Inject constructor(
                                          .all( excludeHidden = true )
                                          .map { list ->
                                              list.filter { song ->
-                                                     val contentLength = runBlocking {
-                                                         database.formatContentLength( song.id )
-                                                     }
-
-                                                     binder.cache.isCached( song.id, 0L, contentLength )
+                                                     binder.cache.isCached(
+                                                         song.id,
+                                                         0L,
+                                                         database.formatTable.findContentLengthOf( song.id ).first()
+                                                     )
                                                  }
                                                  .reversed()
                                                  .map { SongEntity(it) }
@@ -624,11 +624,11 @@ class MediaLibrarySessionCallback @Inject constructor(
                 .all( excludeHidden = true )
                 .map { list ->
                     list.filter { song ->
-                        val contentLength = runBlocking {
-                            database.formatContentLength(song.id)
-                        }
-
-                        binder.cache.isCached(song.id, 0L, contentLength)
+                        binder.cache.isCached(
+                            song.id,
+                            0L,
+                            database.formatTable.findContentLengthOf( song.id ).first()
+                        )
                     }.size
                 }
 

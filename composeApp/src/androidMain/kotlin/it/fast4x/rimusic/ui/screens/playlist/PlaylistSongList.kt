@@ -509,8 +509,8 @@ fun PlaylistSongList(
                                                     playlistPage?.songs?.filter { it.asMediaItem.mediaId !in dislikedSongs }
                                                         ?.forEach {
                                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                            CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.deleteFormat(it.asMediaItem.mediaId)
+                                                            Database.asyncTransaction {
+                                                                formatTable.findBySongId( it.key )
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -540,8 +540,8 @@ fun PlaylistSongList(
                                                 if (playlistPage?.songs?.isNotEmpty() == true)
                                                     playlistPage?.songs?.forEach {
                                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                        CoroutineScope(Dispatchers.IO).launch {
-                                                            Database.deleteFormat(it.asMediaItem.mediaId)
+                                                        Database.asyncTransaction {
+                                                            formatTable.findBySongId( it.key )
                                                         }
                                                         manageDownload(
                                                             context = context,
@@ -1045,8 +1045,8 @@ fun PlaylistSongList(
                         },
                         onDownload = {
                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                            CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( song.asMediaItem.mediaId )
+                            Database.asyncTransaction {
+                                formatTable.updateContentLengthOf( song.key )
                             }
 
                             if (!isLocal)
@@ -1065,8 +1065,8 @@ fun PlaylistSongList(
                             song = song,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    Database.deleteFormat( song.asMediaItem.mediaId )
+                                Database.asyncTransaction {
+                                    formatTable.findBySongId( song.key )
                                 }
 
                                 if (!isLocal)

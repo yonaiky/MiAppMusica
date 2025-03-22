@@ -145,9 +145,6 @@ import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import me.knighthat.utils.TimeDateUtils
 import me.knighthat.utils.Toaster
 
@@ -702,8 +699,8 @@ fun BuiltInPlaylistSongs(
                                 if (songs.isNotEmpty() == true)
                                     songs.forEach {
                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            Database.deleteFormat( it.asMediaItem.mediaId )
+                                        Database.asyncTransaction {
+                                            formatTable.findBySongId( it.id )
                                         }
                                         manageDownload(
                                             context = context,
@@ -742,8 +739,8 @@ fun BuiltInPlaylistSongs(
                                     if (songs.isNotEmpty() == true)
                                         songs.forEach {
                                             binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                            CoroutineScope(Dispatchers.IO).launch {
-                                                Database.deleteFormat( it.asMediaItem.mediaId )
+                                            Database.asyncTransaction {
+                                                formatTable.deleteBySongId( it.id )
                                             }
                                             manageDownload(
                                                 context = context,
@@ -1201,8 +1198,8 @@ fun BuiltInPlaylistSongs(
                             song = song,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    Database.deleteFormat( song.asMediaItem.mediaId )
+                                Database.asyncTransaction {
+                                    formatTable.findBySongId( song.id )
                                 }
 
                                 if (!isLocal)

@@ -27,7 +27,7 @@ abstract class MediaDownloadDialog(
             binder.cache.removeResource( it.id )
 
             Database.asyncTransaction {
-                Database.deleteFormat( it.id )
+                formatTable.deleteBySongId( it.id )
             }
 
             onAction( it )

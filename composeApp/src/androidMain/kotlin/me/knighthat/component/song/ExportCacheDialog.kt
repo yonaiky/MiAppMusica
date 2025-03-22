@@ -22,6 +22,7 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.knighthat.component.ExportToFileDialog
 import me.knighthat.utils.Toaster
@@ -40,7 +41,7 @@ class ExportCacheDialog(
             binder: PlayerServiceModern.Binder ,
             song: Song
         ) = CoroutineScope( Dispatchers.IO ).launch {       // Run in background to prevent UI thread from freezing due to large file.
-            val contentLength =  Database.formatContentLength( song.id )
+            val contentLength =  Database.formatTable.findContentLengthOf( song.id ).first()
 
             val isCached = binder.cache.isCached( song.id, 0, contentLength )
             val isDownloaded = binder.downloadCache.isCached( song.id, 0, contentLength )

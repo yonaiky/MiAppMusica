@@ -2029,11 +2029,11 @@ fun SongMatchingDialog(
                                             if (isYouTubeSyncEnabled() && playlist?.isYoutubePlaylist == true && playlist.isEditable){
                                                 CoroutineScope(Dispatchers.IO).launch {
                                                     if (removeYTSongFromPlaylist(songToRematch.id, playlist.browseId ?: "", playlistId))
-                                                        deleteSongFromPlaylist(songToRematch.id, playlistId)
+                                                        songPlaylistMapTable.deleteBySongId( songToRematch.id, playlistId )
                                                 }
-                                            } else {
-                                                deleteSongFromPlaylist(songToRematch.id, playlistId)
-                                            }
+                                            } else
+                                                songPlaylistMapTable.deleteBySongId( songToRematch.id, playlistId )
+
 
                                             songTable.insertIgnore( song.asSong )
 

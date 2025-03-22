@@ -86,7 +86,7 @@ class ImportSongsFromCSV(
                             Playlist( it.playlistId, it.playlistName )
                         )
 
-                        insertSongToPlaylist( it.songId, it.playlistId )
+                        songPlaylistMapTable.map( it.songId, it.playlistId )
                     }
                 }
 

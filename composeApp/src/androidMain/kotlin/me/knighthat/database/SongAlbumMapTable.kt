@@ -16,6 +16,22 @@ interface SongAlbumMapTable: SqlTable<SongAlbumMap> {
         get() = "SongAlbumMap"
 
     /**
+     * Remove all songs belong to album with id [albumId]
+     *
+     * @param albumId album to have its songs wiped
+     *
+     * @return number of rows affected by this operation
+     */
+    fun clear( albumId: String ) = delete( "albumId = $albumId" )
+
+    /**
+     * Delete all mappings where songs aren't exist in `Song` table
+     *
+     * @return number of rows affected by this operation
+     */
+    fun clearGhostMaps() = delete( "songId NOT IN (SELECT DISTINCT id FROM Song)" )
+
+    /**
      * Results are sorted by [SongAlbumMap.position].
      *
      * @param albumId of artist to look for

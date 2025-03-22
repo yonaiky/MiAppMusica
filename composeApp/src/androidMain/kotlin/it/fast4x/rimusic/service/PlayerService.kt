@@ -359,11 +359,14 @@ class PlayerService : InvincibleService(),
     @FlowPreview
     private val isCachedState = mediaItemState
         .flatMapMerge { item ->
-            item?.mediaId?.let {
-                flowOf(
-                    cache.isCached(it, 0, Database.formatContentLength(it))
+            val songId = item?.mediaId ?: ""
+            flowOf(
+                cache.isCached(
+                    songId,
+                    0L,
+                    Database.formatTable.findContentLengthOf( songId ).first()
                 )
-            } ?: flowOf(false)
+            )
         }
         .map { it }
         .stateIn(coroutineScope, SharingStarted.Eagerly, false)
@@ -823,11 +826,10 @@ class PlayerService : InvincibleService(),
 
         val totalPlayTimeMs = playbackStats.totalPlayTimeMs
 
-        if (totalPlayTimeMs > 5000) {
+        if ( totalPlayTimeMs > 5000 )
             Database.asyncTransaction {
-                incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
+                songTable.updateTotalPlayTime( mediaItem.mediaId, totalPlayTimeMs )
             }
-        }
 
 
         val minTimeForEvent =
@@ -1175,24 +1177,28 @@ class PlayerService : InvincibleService(),
             volumeNormalizationJob?.cancel()
             volumeNormalizationJob = coroutineScope.launch(Dispatchers.Main) {
                 fun Float?.toMb() = ((this ?: 0f) * 100).toInt()
-                Database.loudnessDb(songId).cancellable().collectLatest { loudnessDb ->
-                    val loudnessMb = loudnessDb.toMb().let {
-                        if (it !in -2000..2000) {
-                            Toaster.w( "Extreme loudness detected" )
 
-                            0
-                        } else it
-                    }
-                    try {
-                        //default
-                        //loudnessEnhancer?.setTargetGain(-((loudnessDb ?: 0f) * 100).toInt() + 500)
-                        loudnessEnhancer?.setTargetGain(baseGain.toMb() - loudnessMb)
-                        loudnessEnhancer?.enabled = true
-                    } catch (e: Exception) {
-                        Timber.e("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
-                        println("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
-                    }
-                }
+                Database.formatTable
+                        .findBySongId( songId )
+                        .cancellable()
+                        .collectLatest { format ->
+                            val loudnessMb = format?.loudnessDb.toMb().let {
+                                if (it !in -2000..2000) {
+                                    Toaster.w( "Extreme loudness detected" )
+
+                                    0
+                                } else
+                                    it
+                            }
+
+                            try {
+                                loudnessEnhancer?.setTargetGain(baseGain.toMb() - loudnessMb)
+                                loudnessEnhancer?.enabled = true
+                            } catch (e: Exception) {
+                                Timber.e("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
+                                println("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
+                            }
+                        }
             }
         }
     }

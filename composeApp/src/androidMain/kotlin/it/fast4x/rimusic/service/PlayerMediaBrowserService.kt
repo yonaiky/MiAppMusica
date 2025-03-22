@@ -31,7 +31,6 @@ import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongWithContentLength
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
@@ -458,15 +457,16 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         .first()
                         .reversed()
 
-                    MediaId.offline -> Database
-                        .songsWithContentLength()
-                        .first()
-                        .filter { song ->
-                            song.contentLength?.let {
-                                cache.isCached(song.song.id, 0, it)
-                            } ?: false
-                        }
-                        .map(SongWithContentLength::song)
+                    MediaId.offline -> Database.songTable
+                                               .all( excludeHidden = true )
+                                               .first()
+                                               .filter { song ->
+                                                   cache.isCached(
+                                                       song.id,
+                                                       0L,
+                                                       Database.formatTable.findContentLengthOf( song.id ).first()
+                                                   )
+                                               }
 
                     MediaId.ondevice -> Database
                         .songTable

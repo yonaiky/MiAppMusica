@@ -25,7 +25,6 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -194,22 +193,20 @@ suspend fun removeYTSongFromPlaylist(
     playlistBrowseId: String,
     playlistId: Long,
 ): Boolean {
-
     println("removeYTSongFromPlaylist removeSongFromPlaylist params songId = $songId, playlistBrowseId = $playlistBrowseId, playlistId = $playlistId")
 
-    if (isYouTubeSyncEnabled()) {
-        Database.asyncTransaction {
-            CoroutineScope(Dispatchers.IO).launch {
-                val songSetVideoId = Database.getSetVideoIdFromPlaylist(songId, playlistId).firstOrNull()
-                println("removeYTSongFromPlaylist removeSongFromPlaylist songSetVideoId = $songSetVideoId")
-                if (songSetVideoId != null)
-                    YtMusic.removeFromPlaylist(playlistId = playlistBrowseId, videoId =  songId, setVideoId = songSetVideoId)
-            }
-        }
+    if ( isYouTubeSyncEnabled() )  {
+        val setVideoId: String = Database.songPlaylistMapTable
+                                         .findById( songId, playlistId )
+                                         .first()
+                                         ?.setVideoId ?: return false
 
-        return true
-    } else
-        return false
+        println("removeYTSongFromPlaylist removeSongFromPlaylist songSetVideoId = $setVideoId")
+
+        YtMusic.removeFromPlaylist( playlistBrowseId, songId, setVideoId )
+    }
+
+    return isYouTubeSyncEnabled()
 }
 
 

@@ -94,12 +94,10 @@ import it.fast4x.rimusic.utils.showStatsListeningTimeKey
 import it.fast4x.rimusic.utils.statisticsCategoryKey
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -317,8 +315,8 @@ fun StatisticsPage(
                             song = songs.get(it).asMediaItem,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    Database.deleteFormat( songs.get(it).asMediaItem.mediaId )
+                                Database.asyncTransaction {
+                                    formatTable.deleteBySongId( songs[it].id )
                                 }
                                 manageDownload(
                                     context = context,
@@ -427,12 +425,15 @@ fun StatisticsPage(
                         count = playlists.count()
                     ) {
                         val thumbnails by remember {
-                            Database.playlistThumbnailUrls(playlists[it].playlist.id).distinctUntilChanged().map {
-                                it.map { url ->
-                                    url.thumbnail(playlistThumbnailSizePx / 2)
-                                }
-                            }
-                        }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+                            Database.songPlaylistMapTable
+                                    .sortSongsByPlayTime( playlists[it].playlist.id )
+                                    .distinctUntilChanged()
+                                    .map { list ->
+                                        list.map { song ->
+                                            song.thumbnailUrl.thumbnail( playlistThumbnailSizePx / 2 )
+                                        }
+                                    }
+                        }.collectAsState( emptyList(), Dispatchers.IO )
 
                         PlaylistItem(
                             thumbnailContent = {

@@ -203,10 +203,10 @@ fun InPlaylistMediaItemMenu(
                             if (isYouTubeSyncEnabled() && playlist.playlist.isYoutubePlaylist && playlist.playlist.isEditable) {
                                 CoroutineScope(Dispatchers.IO).launch {
                                     if (removeYTSongFromPlaylist(song.id,playlist.playlist.browseId ?: "",playlistId))
-                                        deleteSongFromPlaylist(song.id, playlistId)
+                                        songPlaylistMapTable.deleteBySongId( song.id, playlistId )
                                 }
                             } else {
-                                deleteSongFromPlaylist(song.id, playlistId)
+                                songPlaylistMapTable.deleteBySongId( song.id, playlistId )
                             }
                         }
                     }
@@ -280,7 +280,7 @@ fun NonQueuedMediaItemMenuLibrary(
                     binder.cache.removeResource(mediaItem.mediaId)
                     binder.downloadCache.removeResource(mediaItem.mediaId)
                     Database.asyncTransaction {
-                        resetTotalPlayTimeMs(mediaItem.mediaId)
+                        songTable.updateTotalPlayTime( mediaItem.mediaId, 0 )
                     }
                 }
             }
@@ -942,8 +942,8 @@ fun MediaItemMenu(
             }.collectAsState( emptyList(), Dispatchers.IO )
 
             val playlistIds by remember {
-                Database.getPlaylistsWithSong(mediaItem.mediaId)
-            }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+                Database.songPlaylistMapTable.mappedTo( mediaItem.mediaId )
+            }.collectAsState( emptyList(), Dispatchers.IO )
 
             val pinnedPlaylists = playlistPreviews.filter {
                 it.playlist.name.startsWith(PINNED_PREFIX, 0, true)
@@ -1196,8 +1196,8 @@ fun MediaItemMenu(
                             ?.toString(),
                         onDownloadClick = {
                             binder?.cache?.removeResource(mediaItem.mediaId)
-                            CoroutineScope(Dispatchers.IO).launch {
-                                Database.deleteFormat( mediaItem.mediaId )
+                            Database.asyncTransaction {
+                                formatTable.deleteBySongId( mediaItem.mediaId )
                             }
                             if (!isLocal)
                                 manageDownload(
@@ -1818,8 +1818,8 @@ fun AddToPlaylistItemMenu(
     }.collectAsState( emptyList(), Dispatchers.IO )
 
     val playlistIds by remember {
-        Database.getPlaylistsWithSong(mediaItem.mediaId)
-    }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+        Database.songPlaylistMapTable.mappedTo( mediaItem.mediaId )
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     val pinnedPlaylists = playlistPreviews.filter {
         it.playlist.name.startsWith(PINNED_PREFIX, 0, true)

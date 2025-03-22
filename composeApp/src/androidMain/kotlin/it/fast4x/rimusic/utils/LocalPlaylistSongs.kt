@@ -23,7 +23,6 @@ import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.PipedSession
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
@@ -37,7 +36,6 @@ import it.fast4x.rimusic.ui.components.themed.DeleteDialog
 import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runBlocking
 import me.knighthat.utils.Toaster
 import java.util.UUID
 
@@ -64,12 +62,7 @@ fun pin(
 
     override fun onShortClick() {
         Database.asyncTransaction {
-            val playlistName = playlistPreview?.playlist?.name ?: return@asyncTransaction
-            if( playlistName.startsWith( PINNED_PREFIX ) )
-                unPinPlaylist( playlistId )
-            else
-                pinPlaylist( playlistId )
-
+            playlistTable.togglePin( playlistId )
             isFirstColor = isPinned()
         }
     }
@@ -183,10 +176,7 @@ fun DeletePlaylist(
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun Reposition(
-    playlistId: () -> Long?,
-    songs: () -> List<Song>
-): MenuIcon = object: ConfirmDialog, MenuIcon, Descriptive {
+fun Reposition(playlistId: Long): MenuIcon = object: ConfirmDialog, MenuIcon, Descriptive {
 
     val menuState: MenuState = LocalMenuState.current
     override val messageId: Int = R.string.renumber_songs_positions
@@ -203,14 +193,12 @@ fun Reposition(
     override fun onShortClick() = super.onShortClick()
 
     override fun onConfirm() {
-        val pId = playlistId() ?: return
-
         Database.asyncTransaction {
-            runBlocking {
-                songs().shuffled()
-            }.forEachIndexed { index, song ->
-                Database.updateSongPosition( pId, song.id, index )
-            }
+            // [List.shuffled()] is extremely slow. Furthermore, passing
+            // songs here will create a capture of the list, that requires
+            // memory and the list is incomplete, thus, results in the
+            // shuffle only happens to a few items.
+            songPlaylistMapTable.shufflePositions( playlistId )
         }
 
         onDismiss()

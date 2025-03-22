@@ -183,10 +183,9 @@ fun SearchResultScreen(
                                 },
                                 onDownload = {
                                     localBinder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        Database.resetContentLength( song.asMediaItem.mediaId )
+                                    Database.asyncTransaction {
+                                        formatTable.updateContentLengthOf( song.key )
                                     }
-
                                     manageDownload(
                                         context = context,
                                         mediaItem = song.asMediaItem,

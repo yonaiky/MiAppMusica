@@ -741,14 +741,15 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                                 playlist.id
                             )
                         )
-                            deleteSongFromPlaylist(song.id, playlist.id)
+                            songPlaylistMapTable.deleteBySongId( song.id, playlist.id )
 
                     }
                 }
 
-            } else {
-                deleteSongFromPlaylist(song.id, playlist?.id ?: 0L)
-            }
+            } else
+                playlist?.id?.let {
+                    songPlaylistMapTable.deleteBySongId( song.id, it )
+                }
             if (matchedSong != null) {
                 songTable.insertIgnore( matchedSong.asSong )
                 songPlaylistMapTable.insertIgnore(

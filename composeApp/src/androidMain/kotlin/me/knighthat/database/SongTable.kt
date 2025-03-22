@@ -62,7 +62,15 @@ interface SongTable: SqlTable<Song> {
     fun allDisliked( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
 
     /**
+     * Delete all songs with [Song.totalPlayTimeMs] equal to `0`
+     *
+     * @return number of rows affected by this operation
+     */
+    fun clearHiddenSongs() = delete( "totalPlayTimeMs = 0" )
+
+    /**
      * @param songId of album to look for
+     *
      * @return [Song] that has [Song.id] matches [songId]
      */
     @Query("SELECT DISTINCT * FROM Song WHERE id = :songId")
@@ -259,6 +267,14 @@ interface SongTable: SqlTable<Song> {
      */
     @Query("UPDATE Song SET artistsText = :artistsText WHERE id = :songId")
     fun updateArtists( songId: String, artistsText: String ): Int
+
+    /**
+     * Set [Song.totalPlayTimeMs] to [totalPlayTime] with song with id [songId]
+     *
+     * @return number of rows affected by this operation
+     */
+    @Query("UPDATE Song SET totalPlayTimeMs = :totalPlayTime WHERE id = :songId")
+    fun updateTotalPlayTime( songId: String, totalPlayTime: Long ): Int
 
     //<editor-fold defaultstate="collapsed" desc="Sort all">
     fun sortAllByPlayTime( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =

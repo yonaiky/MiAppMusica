@@ -71,10 +71,8 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -248,10 +246,9 @@ fun HistoryList(
                                     song = event.song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(event.song.asMediaItem.mediaId)
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            Database.deleteFormat( event.song.asMediaItem.mediaId )
+                                        Database.asyncTransaction {
+                                            formatTable.deleteBySongId( event.song.id )
                                         }
-
                                         if (!isLocal)
                                             manageDownload(
                                                 context = context,
@@ -341,10 +338,9 @@ fun HistoryList(
                             song = song,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.mediaId)
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    Database.deleteFormat( song.mediaId )
+                                Database.asyncTransaction {
+                                    formatTable.deleteBySongId( song.mediaId )
                                 }
-
                                 if (!isLocal)
                                     manageDownload(
                                         context = context,

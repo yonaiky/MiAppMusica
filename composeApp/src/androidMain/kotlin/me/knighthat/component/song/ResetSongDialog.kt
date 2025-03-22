@@ -153,8 +153,8 @@ class ResetSongDialog private constructor(
                 if( items.first { it.id == CACHE_CHECKBOX_ID }.selected ) {
                     binder?.cache?.removeResource( song.id )
                     binder?.downloadCache?.removeResource( song.id )
-                    deleteFormat( song.id )
-                    resetContentLength( song.id )
+                    formatTable.deleteBySongId( song.id )
+                    formatTable.updateContentLengthOf( song.id )
                 }
 
                 songTable.update( song )

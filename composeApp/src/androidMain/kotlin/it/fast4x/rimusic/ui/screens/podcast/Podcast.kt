@@ -404,8 +404,8 @@ fun Podcast(
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true)
                                                 podcastPage?.listEpisode?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    CoroutineScope(Dispatchers.IO).launch {
-                                                        Database.deleteFormat( it.asMediaItem.mediaId )
+                                                    Database.asyncTransaction {
+                                                        formatTable.findBySongId( it.asMediaItem.mediaId )
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -432,8 +432,8 @@ fun Podcast(
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true)
                                                 podcastPage?.listEpisode?.forEach {
                                                     binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    CoroutineScope(Dispatchers.IO).launch {
-                                                        Database.deleteFormat( it.asMediaItem.mediaId )
+                                                    Database.asyncTransaction {
+                                                        formatTable.findBySongId( it.asMediaItem.mediaId )
                                                     }
                                                     manageDownload(
                                                         context = context,
@@ -728,8 +728,8 @@ fun Podcast(
                         },
                         onDownload = {
                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                            CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( song.asMediaItem.mediaId )
+                            Database.asyncTransaction {
+                                formatTable.updateContentLengthOf( song.asMediaItem.mediaId )
                             }
 
                             if (!isLocal)
@@ -748,10 +748,9 @@ fun Podcast(
                             song = song.asMediaItem,
                             onDownloadClick = {
                                 binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    Database.deleteFormat( song.asMediaItem.mediaId )
+                                Database.asyncTransaction {
+                                    formatTable.findBySongId( song.asMediaItem.mediaId )
                                 }
-
                                 if (!isLocal)
                                     manageDownload(
                                         context = context,

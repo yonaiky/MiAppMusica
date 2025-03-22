@@ -17,7 +17,9 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.UUID
@@ -37,8 +39,8 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
             println("pipedInfo syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
             Timber.d("SyncPipedUtils syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
 
-            playlistId.let {
-                Database.asyncTransaction { clearPlaylist(it) }
+            Database.asyncTransaction {
+                songPlaylistMapTable.clear( playlistId )
             }
 
             playlist.videos.forEach {video ->
@@ -91,8 +93,10 @@ fun ImportPipedPlaylists(){
                 //itemsPiped = it
                 Database.asyncTransaction {
                     it.forEach {
-                        val playlistExist = playlistExistByName("$PIPED_PREFIX${it.name}")
-                        if (playlistExist == 0L) {
+                        val playlistExist = runBlocking {
+                            playlistTable.exists( "$PIPED_PREFIX${it.name}" ).first()
+                        }
+                        if ( !playlistExist ) {
                             coroutineScope.launch(Dispatchers.IO) {
                                 async {
                                     Piped.playlist.songs(

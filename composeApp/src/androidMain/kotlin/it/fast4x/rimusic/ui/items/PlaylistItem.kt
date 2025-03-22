@@ -125,12 +125,15 @@ fun PlaylistItem(
     initialisePlaylistThumbnail()
 
     val thumbnails by remember {
-        Database.playlistThumbnailUrls(playlist.playlist.id).distinctUntilChanged().map {
-            it.map { url ->
-                url.thumbnail(thumbnailSizePx / 2)
-            }
-        }
-    }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+        Database.songPlaylistMapTable
+                .sortSongsByPlayTime( playlist.playlist.id, 4 )
+                .distinctUntilChanged()
+                .map { list ->
+                    list.map {
+                        it.thumbnailUrl.thumbnail( thumbnailSizePx / 2 )
+                    }
+                }
+        }.collectAsState( emptyList(), Dispatchers.IO )
 
     PlaylistItem(
         browseId = playlist.playlist.browseId,

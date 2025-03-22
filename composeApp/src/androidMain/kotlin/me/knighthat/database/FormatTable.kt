@@ -14,9 +14,39 @@ interface FormatTable: SqlTable<Format> {
         get() = "Format"
 
     /**
+     * Song with [songId] will have its [Format] removed
+     *
+     * @return number of rows affected by this operation
+     */
+    fun deleteBySongId( songId: String ) = delete( "songId = $songId" )
+
+    /**
      * @param songId of song to look for
      * @return [Format] that has [Format.songId] matches [songId]
      */
     @Query("SELECT DISTINCT * FROM Format WHERE songId = :songId")
     fun findBySongId( songId: String ): Flow<Format?>
+
+    /**
+     * @return stored [Format.contentLength] of song with id [songId], `0` otherwise
+     */
+    @Query("""
+        SELECT COALESCE(
+            (
+                SELECT contentLength
+                FROM Format
+                WHERE songId = :songId
+            ),
+            0
+        )
+    """)
+    fun findContentLengthOf( songId: String ): Flow<Long>
+
+    /**
+     * Set [Format.contentLength] of song with id [songId] to [contentLength]
+     *
+     * @return number of rows affected by this operation
+     */
+    @Query("UPDATE Format SET contentLength = :contentLength WHERE songId = :songId")
+    fun updateContentLengthOf( songId: String, contentLength: Long = 0L ): Int
 }

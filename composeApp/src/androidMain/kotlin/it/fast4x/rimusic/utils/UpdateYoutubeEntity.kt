@@ -80,7 +80,7 @@ fun UpdateYoutubeAlbum (browseId: String) {
                                 ?.onSuccess { currentAlbumPage ->
                                     albumPage = currentAlbumPage
 
-                                    Database.clearAlbum(browseId)
+                                    Database.songAlbumMapTable.clear( browseId )
 
                                     Database.albumTable.upsert(
                                         Album(

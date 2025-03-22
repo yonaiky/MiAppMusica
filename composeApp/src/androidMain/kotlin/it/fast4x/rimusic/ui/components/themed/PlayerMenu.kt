@@ -86,7 +86,7 @@ fun PlayerMenu(
                 binder.cache.removeResource(mediaItem.mediaId)
                 binder.downloadCache.removeResource(mediaItem.mediaId)
                 Database.asyncTransaction {
-                    resetTotalPlayTimeMs(mediaItem.mediaId)
+                    songTable.updateTotalPlayTime( mediaItem.mediaId, 0 )
                 }
             }
         )
@@ -286,13 +286,17 @@ fun AddToPlaylistPlayerMenu(
         },
         onRemoveFromPlaylist = { playlist ->
             Database.asyncTransaction {
+                val position = songPlaylistMapTable.findPositionOf( mediaItem.mediaId, playlist.id )
+                if( position == -1 ) return@asyncTransaction
+
                 if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
                     Timber.d("MediaItemMenu InPlaylistMediaItemMenu onRemoveFromPlaylist browseId ${playlist.browseId}")
                     removeFromPipedPlaylist(
                         context = context,
                         coroutineScope = coroutineScope,
                         pipedSession = pipedSession.toApiSession(),
-                        id = UUID.fromString(cleanPrefix(playlist.browseId ?: "")),positionInPlaylist(mediaItem.mediaId,playlist.id)
+                        id = UUID.fromString(cleanPrefix(playlist.browseId ?: "")),
+                        idx = position
                     )
                 }
             }
@@ -305,15 +309,14 @@ fun AddToPlaylistPlayerMenu(
                                 playlist.id
                             )
                         )
-                            deleteSongFromPlaylist(mediaItem.mediaId, playlist.id)
+                            songPlaylistMapTable.deleteBySongId( mediaItem.mediaId, playlist.id )
 
                     }
                 }
-            } else {
+            } else
                 Database.asyncTransaction {
-                    deleteSongFromPlaylist(mediaItem.mediaId, playlist.id)
+                    songPlaylistMapTable.deleteBySongId( mediaItem.mediaId, playlist.id )
                 }
-            }
         },
         onDismiss = onDismiss,
     )

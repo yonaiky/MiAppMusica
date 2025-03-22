@@ -6,7 +6,6 @@ import androidx.room.AutoMigration
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
-import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.RoomWarnings
@@ -21,16 +20,13 @@ import it.fast4x.rimusic.models.EventWithSong
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Playlist
-import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.QueuedMediaItem
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
-import it.fast4x.rimusic.models.SongWithContentLength
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
-import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.utils.isExplicit
 import kotlinx.coroutines.flow.Flow
 import me.knighthat.database.AlbumTable
@@ -95,197 +91,9 @@ interface Database {
     //**********************************************
 
     @Transaction
-    @Query("SELECT * FROM Format WHERE songId = :songId ORDER BY bitrate DESC LIMIT 1")
-    fun getBestFormat(songId: String): Flow<Format?>
-
-    @Transaction
-    @Query("SELECT * FROM Format ORDER BY lastModified DESC LIMIT 1")
-    fun getLastBestFormat(): Flow<Format?>
-
-    @Transaction
     @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
     @Query("SELECT DISTINCT (timestamp / 86400000) as timestampDay, event.* FROM event ORDER BY rowId DESC")
     fun events(): Flow<List<EventWithSong>>
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT Event.* FROM Event JOIN Song ON Song.id = songId WHERE " +
-            "Event.timestamp / 86400000 = :date / 86400000 LIMIT :limit")
-    @RewriteQueriesToDropUnusedColumns
-    fun eventWithSongByPeriod(date: Long, limit:Long = Long.MAX_VALUE): Flow<List<EventWithSong>>
-
-    @Transaction
-    @Query("SELECT count(playlistId) FROM SongPlaylistMap WHERE songId = :id")
-    fun songUsedInPlaylists(id: String): Int
-
-    data class PlayListIdPosition(val playlistId: Long, val position: Int)
-    @Transaction
-    @Query("SELECT playlistId, position FROM SongPlaylistMap WHERE songId = :id")
-    fun playlistsUsedForSong(id: String): List<PlayListIdPosition>
-
-    @Transaction
-    @Query("SELECT position FROM SongPlaylistMap WHERE playlistId = :playlistId AND songId = :id")
-    fun positionInPlaylist(id: String, playlistId: Long): Int
-
-    /**
-     *  Whether the song is mapped to a playlist
-     */
-    @Query("""
-        SELECT COUNT(s.id) > 0
-        FROM Song s
-        JOIN SongPlaylistMap spm ON spm.songId = s.id 
-        WHERE s.id = :songId
-    """)
-    fun isSongMappedToPlaylist( songId: String ): Flow<Boolean>
-
-    @Query("SELECT id FROM Playlist WHERE name = :playlistName")
-    fun playlistExistByName(playlistName: String): Long
-
-    @Query("UPDATE Playlist SET name = :playlistName WHERE id = :playlistId")
-    fun updatePlaylistName(playlistName: String, playlistId: Long): Int
-
-
-    @Query("SELECT thumbnailUrl FROM Song WHERE id in (:idsList) ")
-    fun getSongsListThumbnailUrls(idsList: List<String>): Flow<List<String?>>
-
-    @Query("SELECT thumbnailUrl FROM Song WHERE likedAt IS NOT NULL AND id NOT LIKE '$LOCAL_KEY_PREFIX%'  LIMIT 4")
-    fun preferitesThumbnailUrls(): Flow<List<String?>>
-
-    @Query("SELECT thumbnailUrl FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0  LIMIT 4")
-    fun offlineThumbnailUrls(): Flow<List<String?>>
-
-    @Query("UPDATE Playlist SET name = '${PINNED_PREFIX}'||name WHERE id = :playlistId")
-    fun pinPlaylist(playlistId: Long): Int
-    @Query("UPDATE Playlist SET name = REPLACE(name,'${PINNED_PREFIX}','') WHERE id = :playlistId")
-    fun unPinPlaylist(playlistId: Long): Int
-
-
-    @Query("UPDATE Song SET durationText = :durationText WHERE id = :songId")
-    fun updateDurationText(songId: String, durationText: String): Int
-
-    @Query("UPDATE Song SET totalPlayTimeMs = 0 WHERE id = :id")
-    fun resetTotalPlayTimeMs(id: String)
-
-    @Query("UPDATE Song SET totalPlayTimeMs = totalPlayTimeMs + :addition WHERE id = :id")
-    fun incrementTotalPlayTimeMs(id: String, addition: Long)
-
-    @Transaction
-    @Query("SELECT max(position) maxPos FROM SongPlaylistMap WHERE playlistId = :id")
-    fun getSongMaxPositionToPlaylist(id: Long): Int
-
-    @Transaction
-    @Query("SELECT PM.playlistId FROM SongPlaylistMap PM WHERE PM.songId = :id")
-    fun getPlaylistsWithSong(id: String): Flow<List<Long>>
-
-    @Transaction
-    @Query("SELECT max(position) maxPos FROM SongPlaylistMap WHERE playlistId = :id")
-    fun updateSongMaxPositionToPlaylist(id: Long): Int
-
-    @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = id) as songCount FROM Playlist WHERE name LIKE '${MONTHLY_PREFIX}' || :name || '%'  ")
-    fun monthlyPlaylistsPreview(name: String?): Flow<List<PlaylistPreview>>
-
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = id) as songCount FROM Playlist WHERE id=:id")
-    fun singlePlaylistPreview(id: Long): Flow<PlaylistPreview?>
-
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Transaction
-    @Query("SELECT *, (SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = id) as songCount FROM Playlist WHERE name LIKE '${PINNED_PREFIX}%' ORDER BY name COLLATE NOCASE ASC")
-    fun playlistPinnedPreviewsByNameAsc(): Flow<List<PlaylistPreview>>
-
-    @Query("SELECT thumbnailUrl FROM Song JOIN SongPlaylistMap ON id = songId WHERE playlistId = :id AND thumbnailUrl <>'' ORDER BY position LIMIT 4")
-    fun playlistThumbnailUrls(id: Long): Flow<List<String?>>
-
-    @Query("SELECT contentLength FROM Format WHERE songId = :songId")
-    fun formatContentLength(songId: String): Long
-
-    @Transaction
-    @Query("UPDATE Format SET contentLength = 0 WHERE songId = :songId")
-    fun resetFormatContentLength(songId: String)
-
-    @Transaction
-    @Query("DELETE FROM Song WHERE totalPlayTimeMs = 0")
-    fun deleteHiddenSongs()
-    // USEFUL FOR MAINTENANCE
-    @Transaction
-    @Query("DELETE FROM SongArtistMap WHERE songId NOT IN (SELECT DISTINCT id FROM Song)")
-    fun cleanSongArtistMap()
-    @Transaction
-    @Query("DELETE FROM SongPlaylistMap WHERE songId NOT IN (SELECT DISTINCT id FROM Song)")
-    fun cleanSongPlaylistMap()
-    @Transaction
-    @Query("DELETE FROM SongAlbumMap WHERE songId NOT IN (SELECT DISTINCT id FROM Song)")
-    fun cleanSongAlbumMap()
-    @Transaction
-    @Query("DELETE FROM Format WHERE songId = :songId")
-    fun deleteFormat(songId: String)
-
-    @Transaction
-    @Query("SELECT Song.*, contentLength FROM Song JOIN Format ON id = songId WHERE contentLength IS NOT NULL AND totalPlayTimeMs > 0 ORDER BY Song.ROWID DESC")
-    fun songsWithContentLength(): Flow<List<SongWithContentLength>>
-
-    @Transaction
-    @Query("""
-        UPDATE SongPlaylistMap SET position = 
-          CASE 
-            WHEN position < :fromPosition THEN position + 1
-            WHEN position > :fromPosition THEN position - 1
-            ELSE :toPosition
-          END 
-        WHERE playlistId = :playlistId AND position BETWEEN MIN(:fromPosition,:toPosition) and MAX(:fromPosition,:toPosition)
-    """)
-    fun move(playlistId: Long, fromPosition: Int, toPosition: Int)
-
-    @Transaction
-    @Query("UPDATE SongPlaylistMap SET position = :toPosition WHERE playlistId = :playlistId and songId = :songId")
-    fun updateSongPosition(playlistId: Long, songId: String, toPosition: Int)
-
-    @Query("DELETE FROM SongPlaylistMap WHERE playlistId = :id")
-    fun clearPlaylist(id: Long)
-
-    @Query("DELETE FROM SongPlaylistMap WHERE songId = :id")
-    fun deleteSongFromPlaylists(id: String)
-
-    @Query("DELETE FROM SongPlaylistMap WHERE songId = :id and playlistId = :playlistId")
-    fun deleteSongFromPlaylist(id: String, playlistId: Long)
-
-    @Query("SELECT setVideoId FROM SongPlaylistMap WHERE songId = :id and playlistId = :playlistId")
-    fun getSetVideoIdFromPlaylist(id: String, playlistId: Long): Flow<String?>
-
-    @Query("DELETE FROM SongAlbumMap WHERE albumId = :id")
-    fun clearAlbum(id: String)
-
-    @Query("SELECT loudnessDb FROM Format WHERE songId = :songId")
-    fun loudnessDb(songId: String): Flow<Float?>
-
-    @Query("SELECT thumbnailUrl FROM Song LEFT JOIN SongAlbumMap ON id=songId WHERE albumId = :albumId")
-    fun albumThumbnailFromSong(albumId: String): String?
-
-    /**
-     * Insert provided song into indicated playlist
-     * at the next available position.
-     *
-     * @param songId     song to add
-     * @param playlistId playlist to add song into
-     */
-    @Query("""
-        INSERT INTO SongPlaylistMap ( songId, playlistId, position )
-        VALUES( 
-            :songId,
-            :playlistId,
-            COALESCE(
-                (
-                    SELECT MAX(position) + 1 
-                    FROM SongPlaylistMap 
-                    WHERE playlistId = :playlistId
-                ), 
-                0
-            )
-        )
-    """)
-    fun insertSongToPlaylist( songId: String, playlistId: Long )
 
     @Transaction
     fun insert(mediaItem: MediaItem, block: (Song) -> Song = { it }) {
@@ -330,23 +138,6 @@ interface Database {
                 )
             }
         }
-    }
-
-    /**
-     * Reset [Format.contentLength] of provided song.
-     *
-     * This method is already wrapped by [Transaction] call,
-     * therefore, it's unnecessary to wrap it with a coroutine
-     * or other transaction call.
-     *
-     * To use it inside another [Transaction] wrapper, please
-     * refer to [resetFormatContentLength].
-     *
-     * @param songId id of song to have its [Format.contentLength] reset
-     */
-    @Transaction
-    fun resetContentLength( songId: String ) = asyncTransaction {
-        resetFormatContentLength( songId )
     }
 
     /**

@@ -16,6 +16,13 @@ interface SongArtistMapTable: SqlTable<SongArtistMap> {
         get() = "SongArtistMap"
 
     /**
+     * Delete all mappings where songs aren't exist in `Song` table
+     *
+     * @return number of rows affected by this operation
+     */
+    fun clearGhostMaps() = delete( "songId NOT IN (SELECT DISTINCT id FROM Song)" )
+
+    /**
      * @param artistId of artist to look for
      * @param limit number of results cannot go over this value
      *

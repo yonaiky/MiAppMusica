@@ -19,10 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -77,7 +75,6 @@ import it.fast4x.rimusic.utils.shimmerEffect
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.withContext
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.utils.Toaster
 
@@ -346,20 +343,10 @@ fun SongItem(
     val duration = mediaItem.mediaMetadata.extras?.getString("durationText")
 
     val playlistindicator by rememberPreference(playlistindicatorKey,false)
-    var songPlaylist by remember {
-        mutableIntStateOf(0)
-    }
+    val isSongMappedToPlaylist by remember {
+        Database.songPlaylistMapTable.isMapped( mediaItem.mediaId )
+    }.collectAsState( false, Dispatchers.IO )
     val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
-
-    // TODO improve playlist indicator without recompose
-    // There's no need, turning this into Flow is much more efficient
-    if (playlistindicator)
-        LaunchedEffect(Unit, forceRecompose) {
-            withContext(Dispatchers.IO) {
-                songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
-            }
-        }
-
 
     val context = LocalContext.current
     val colorPalette = LocalAppearance.current.colorPalette
@@ -442,7 +429,7 @@ fun SongItem(
                                 .size(18.dp)
                         )
 
-                    if (playlistindicator && (songPlaylist > 0)) {
+                    if ( playlistindicator && isSongMappedToPlaylist ) {
                         IconButton(
                             icon = R.drawable.add_in_playlist,
                             color = if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text,
@@ -459,9 +446,6 @@ fun SongItem(
                                                 navController = navController,
                                                 onDismiss = {
                                                     menuState.hide()
-                                                    Database.asyncTransaction {
-                                                        songPlaylist = songUsedInPlaylists(mediaItem.mediaId)
-                                                    }
                                                 },
                                                 mediaItem = mediaItem,
                                                 binder = binder,
@@ -555,7 +539,7 @@ fun SongItem(
                             .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                             .weight(1f)
                     )
-                if (playlistindicator && (songPlaylist > 0)) {
+                if ( playlistindicator && isSongMappedToPlaylist ) {
                     IconButton(
                         icon = R.drawable.add_in_playlist,
                         color = if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text,
@@ -572,9 +556,6 @@ fun SongItem(
                                             navController = navController,
                                             onDismiss = {
                                                 menuState.hide()
-                                                Database.asyncTransaction {
-                                                    songPlaylist = songUsedInPlaylists(mediaItem.mediaId)
-                                                }
                                             },
                                             mediaItem = mediaItem,
                                             binder = binder,

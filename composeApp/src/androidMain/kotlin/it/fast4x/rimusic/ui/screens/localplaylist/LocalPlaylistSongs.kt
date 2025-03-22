@@ -27,6 +27,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,7 +52,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
-import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.compose.reordering.draggedItem
 import it.fast4x.compose.reordering.rememberReorderingState
@@ -74,7 +74,6 @@ import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
@@ -137,13 +136,11 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.component.ResetCache
@@ -182,7 +179,10 @@ fun LocalPlaylistSongs(
     val lazyListState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
 
-    var playlistPreview by persist<PlaylistPreview?>("localPlaylist/playlist")
+    val playlistPreview by remember {
+        Database.playlistTable
+                .findAsPreview( playlistId )
+    }.collectAsState( null, Dispatchers.IO )
     var items by persistList<Song>( "localPlaylist/$playlistId/items" )
     var itemsOnDisplay by persistList<Song>("localPlaylist/$playlistId/songs/on_display")
 
@@ -231,10 +231,7 @@ fun LocalPlaylistSongs(
         if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
             navController.popBackStack()
     }
-    val renumberDialog = Reposition(
-        { playlistPreview?.playlist?.id },
-        { items }
-    )
+    val renumberDialog = Reposition(playlistId)
     val downloadAllDialog = DownloadAllSongsDialog ( ::getSongs )
     val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog ( ::getSongs )
     val editThumbnailLauncher = rememberLauncherForActivityResult(
@@ -328,7 +325,7 @@ fun LocalPlaylistSongs(
                                 ?.completed()
                         }
                     }?.getOrNull()?.let { remotePlaylist ->
-                        Database.clearPlaylist(playlistId)
+                        Database.songPlaylistMapTable.clear( playlistId )
 
                         remotePlaylist.songsPage
                             ?.items
@@ -481,12 +478,6 @@ fun LocalPlaylistSongs(
              }
             .let { itemsOnDisplay = it }
     }
-    LaunchedEffect(Unit) {
-        Database.singlePlaylistPreview( playlistId )
-            .flowOn( Dispatchers.IO )
-            .distinctUntilChanged()
-            .collect { playlistPreview = it }
-    }
     LaunchedEffect( playlistPreview?.playlist?.name ) {
 //        renameDialog.playlistName = playlistPreview?.playlist?.name?.let { name ->
 //            if( name.startsWith( MONTHLY_PREFIX, true ) )
@@ -517,7 +508,7 @@ fun LocalPlaylistSongs(
         onDragEnd = { fromIndex, toIndex ->
             //Log.d("mediaItem","reoder playlist $playlistId, from $fromIndex, to $toIndex")
             Database.asyncTransaction {
-                move(playlistId, fromIndex, toIndex)
+                songPlaylistMapTable.move( playlistId, fromIndex, toIndex )
             }
         },
         extraItemCount = 1
@@ -782,7 +773,7 @@ fun LocalPlaylistSongs(
                         },
                         onRemoveFromQueue = {
                             Database.asyncTransaction {
-                                deleteSongFromPlaylist(song.id, playlistId)
+                                songPlaylistMapTable.deleteBySongId( song.id, playlistId )
                             }
 
 
@@ -803,8 +794,8 @@ fun LocalPlaylistSongs(
                         },
                         onDownload = {
                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                            CoroutineScope(Dispatchers.IO).launch {
-                                Database.resetContentLength( song.asMediaItem.mediaId )
+                            Database.asyncTransaction {
+                                formatTable.updateContentLengthOf( song.id )
                             }
 
                             if (!isLocal) {

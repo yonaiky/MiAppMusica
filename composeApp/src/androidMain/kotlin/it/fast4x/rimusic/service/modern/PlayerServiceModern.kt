@@ -578,11 +578,10 @@ class PlayerServiceModern : MediaLibraryService(),
 
         val totalPlayTimeMs = playbackStats.totalPlayTimeMs
 
-        if (totalPlayTimeMs > 5000) {
+        if ( totalPlayTimeMs > 5000 )
             Database.asyncTransaction {
-                incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
+                songTable.updateTotalPlayTime( mediaItem.mediaId, totalPlayTimeMs )
             }
-        }
 
 
         val minTimeForEvent =
@@ -957,34 +956,28 @@ class PlayerServiceModern : MediaLibraryService(),
             volumeNormalizationJob?.cancel()
             volumeNormalizationJob = coroutineScope.launch(Dispatchers.Main) {
                 fun Float?.toMb() = ((this ?: 0f) * 100).toInt()
-                Database.loudnessDb(songId).cancellable().collectLatest { loudnessDb ->
-                    val loudnessMb = loudnessDb.toMb().let {
-                        if (it !in -2000..2000) {
-                            withContext(Dispatchers.Main) {
-                                Toaster.w( "Extreme loudness detected" )
-                                /*
-                                SmartMessage(
-                                    getString(
-                                        R.string.loudness_normalization_extreme,
-                                        getString(R.string.format_db, (it / 100f).toString())
-                                    )
-                                )
-                                 */
+
+                Database.formatTable
+                        .findBySongId( songId )
+                        .cancellable()
+                        .collectLatest { format ->
+                            val loudnessMb = format?.loudnessDb.toMb().let {
+                                if (it !in -2000..2000) {
+                                    Toaster.w( "Extreme loudness detected" )
+
+                                    0
+                                } else
+                                    it
                             }
 
-                            0
-                        } else it
-                    }
-                    try {
-                        //default
-                        //loudnessEnhancer?.setTargetGain(-((loudnessDb ?: 0f) * 100).toInt() + 500)
-                        loudnessEnhancer?.setTargetGain(baseGain.toMb() - loudnessMb)
-                        loudnessEnhancer?.enabled = true
-                    } catch (e: Exception) {
-                        Timber.e("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
-                        println("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
-                    }
-                }
+                            try {
+                                loudnessEnhancer?.setTargetGain(baseGain.toMb() - loudnessMb)
+                                loudnessEnhancer?.enabled = true
+                            } catch (e: Exception) {
+                                Timber.e("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
+                                println("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
+                            }
+                        }
             }
         }
     }

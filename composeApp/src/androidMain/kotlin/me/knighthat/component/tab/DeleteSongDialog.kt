@@ -52,8 +52,8 @@ open class DeleteSongDialog(
                 menuState.hide()
                 binder?.cache?.removeResource( it.id )
                 binder?.downloadCache?.removeResource( it.id )
-                deleteSongFromPlaylists( it.id )
-                deleteFormat( it.id )
+                songPlaylistMapTable.deleteBySongId( it.id )
+                formatTable.deleteBySongId( it.id )
                 songTable.delete( it )
             }
 

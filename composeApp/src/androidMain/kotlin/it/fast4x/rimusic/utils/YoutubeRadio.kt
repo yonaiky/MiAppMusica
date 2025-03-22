@@ -5,12 +5,12 @@ import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
 import it.fast4x.rimusic.Database
-import app.kreate.android.R
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,7 +85,7 @@ data class YouTubeRadio @OptIn(UnstableApi::class) constructor
             if (isDiscoverEnabled) {
                 val listMediaItems =
                     mediaItems?.filter {
-                        Database.isSongMappedToPlaylist( it.mediaId ).first()
+                        Database.songPlaylistMapTable.isMapped( it.mediaId ).first()
                                 && Database.songTable.isLiked( it.mediaId ).first()
                                 && it.mediaId != songsInQueue( it.mediaId )
                     } ?: emptyList()

@@ -41,7 +41,7 @@ fun ApplyDiscoverToQueue() {
                 return@forEach
 
             val mediaId = window.mediaItem.mediaId
-            val isMappedToAPlaylist = Database.isSongMappedToPlaylist( mediaId ).first()
+            val isMappedToAPlaylist = Database.songPlaylistMapTable.isMapped( mediaId ).first()
             val isLiked = Database.songTable.isLiked( mediaId ).first()
 
             if( isMappedToAPlaylist && isLiked )

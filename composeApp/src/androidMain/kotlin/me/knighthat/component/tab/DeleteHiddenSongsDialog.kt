@@ -38,10 +38,10 @@ class DeleteHiddenSongsDialog private constructor(
     override fun onConfirm() {
         Database.asyncTransaction {
             menuState.hide()
-            deleteHiddenSongs()
-            cleanSongArtistMap()
-            cleanSongAlbumMap()
-            cleanSongPlaylistMap()
+            songTable.clearHiddenSongs()
+            songArtistMapTable.clearGhostMaps()
+            songAlbumMapTable.clearGhostMaps()
+            songPlaylistMapTable.clearGhostMaps()
         }
 
         onDismiss()

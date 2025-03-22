@@ -42,10 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.kreate.android.R
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.DownloadedStateMedia
@@ -241,7 +241,7 @@ fun SongItem(
                 if( showInPlaylistIndicator && !isInPlaylistScreen ) {
 
                     val isExistedInAPlaylist by remember( showInPlaylistIndicator ) {
-                        Database.isSongMappedToPlaylist( song.id )
+                        Database.songPlaylistMapTable.isMapped( song.id )
                     }.collectAsState( initial = false, context = Dispatchers.IO )
 
                     if( isExistedInAPlaylist )
@@ -341,7 +341,7 @@ fun SongItem(
                             // TODO: Confirmation dialog upon delete
                             binder?.cache?.removeResource( mediaItem.mediaId )
                             Database.asyncTransaction {
-                                deleteFormat( mediaItem.mediaId )
+                                formatTable.deleteBySongId( mediaItem.mediaId )
                             }
 
                             manageDownload(

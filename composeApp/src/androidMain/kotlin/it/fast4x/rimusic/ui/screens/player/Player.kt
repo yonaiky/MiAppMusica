@@ -300,7 +300,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.utils.Toaster
 import kotlin.Float.Companion.POSITIVE_INFINITY
@@ -1290,14 +1289,9 @@ fun Player(
     }
     val textoutline by rememberPreference(textoutlineKey, false)
 
-    var songPlaylist by remember {
-        mutableStateOf(0)
-    }
-    LaunchedEffect(Unit, mediaItem.mediaId) {
-        withContext(Dispatchers.IO) {
-            songPlaylist = Database.songUsedInPlaylists(mediaItem.mediaId)
-        }
-    }
+    val isSongMappedToPlaylist by remember( mediaItem.mediaId ) {
+        Database.songPlaylistMapTable.isMapped( mediaItem.mediaId )
+    }.collectAsState( false, Dispatchers.IO )
     val playlistindicator by rememberPreference(playlistindicatorKey, false)
     val carousel by rememberPreference(carouselKey, true)
     val carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
@@ -1649,7 +1643,7 @@ fun Player(
                         if (showButtonPlayerAddToPlaylist)
                             IconButton(
                                 icon = R.drawable.add_in_playlist,
-                                color = if (songPlaylist > 0 && playlistindicator)
+                                color = if ( isSongMappedToPlaylist && playlistindicator )
                                     if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text
                                     else colorPalette().accent,
                                 onClick = {
@@ -1658,9 +1652,6 @@ fun Player(
                                             navController = navController,
                                             onDismiss = {
                                                 menuState.hide()
-                                                Database.asyncTransaction {
-                                                    songPlaylist = songUsedInPlaylists(mediaItem.mediaId)
-                                                }
                                             },
                                             mediaItem = mediaItem,
                                             binder = binder,
@@ -1673,13 +1664,13 @@ fun Player(
                                 modifier = Modifier
                                     //.padding(horizontal = 4.dp)
                                     .size(24.dp)
-                                    .conditional(songPlaylist > 0 && playlistindicator) {
+                                    .conditional( isSongMappedToPlaylist && playlistindicator ) {
                                         background(
                                             color.accent,
                                             CircleShape
                                         )
                                     }
-                                    .conditional(songPlaylist > 0 && playlistindicator) {
+                                    .conditional( isSongMappedToPlaylist && playlistindicator ) {
                                         padding(
                                             all = 5.dp
                                         )

@@ -74,6 +74,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.Countries
 import it.fast4x.rimusic.enums.NavRoutes
@@ -81,7 +82,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayEventsType
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.isVideoEnabled
-import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
@@ -146,10 +146,10 @@ import it.fast4x.rimusic.utils.showRelatedAlbumsKey
 import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.showSimilarArtistsKey
 import it.fast4x.rimusic.utils.showTipsKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
@@ -198,13 +198,6 @@ fun HomeQuickPicks(
     var chartsPageResult by persist<Result<Innertube.ChartsPage?>>("home/chartsPage")
     var chartsPageInit by persist<Innertube.ChartsPage>("home/chartsPage")
 //    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
-
-
-
-    var localMonthlyPlaylists by persistList<PlaylistPreview>("home/monthlyPlaylists")
-    LaunchedEffect(Unit) {
-        Database.monthlyPlaylistsPreview("").collect { localMonthlyPlaylists = it }
-    }
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
@@ -559,10 +552,9 @@ fun HomeQuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            Database.deleteFormat( song.asMediaItem.mediaId )
+                                        Database.asyncTransaction {
+                                            formatTable.findBySongId( song.id )
                                         }
-
 
                                         if (!isLocal)
                                             manageDownload(
@@ -603,8 +595,8 @@ fun HomeQuickPicks(
 
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.deleteFormat(song.asMediaItem.mediaId)
+                                                            Database.asyncTransaction {
+                                                                formatTable.findBySongId( song.id )
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -660,8 +652,8 @@ fun HomeQuickPicks(
                                     song = song,
                                     onDownloadClick = {
                                         binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            Database.deleteFormat( song.asMediaItem.mediaId )
+                                        Database.asyncTransaction {
+                                            formatTable.findBySongId( song.key )
                                         }
                                         if (!isLocal)
                                             manageDownload(
@@ -692,8 +684,8 @@ fun HomeQuickPicks(
                                                         mediaItem = song.asMediaItem,
                                                         onDownload = {
                                                             binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            CoroutineScope(Dispatchers.IO).launch {
-                                                                Database.deleteFormat(song.asMediaItem.mediaId)
+                                                            Database.asyncTransaction {
+                                                                formatTable.findBySongId( song.key )
                                                             }
                                                             manageDownload(
                                                                 context = context,
@@ -922,8 +914,19 @@ fun HomeQuickPicks(
                         }
                     }
 
+                val monthlyPlaylists by remember {
+                    Database.playlistTable
+                            .allAsPreview()
+                            .distinctUntilChanged()
+                            .map { list ->
+                                list.filter {
+                                    it.playlist.name.startsWith( MONTHLY_PREFIX, true )
+                                }
+                            }
+                }.collectAsState( emptyList(), Dispatchers.IO )
+
                 if (showMonthlyPlaylistInQuickPicks)
-                    localMonthlyPlaylists.let { playlists ->
+                    monthlyPlaylists.let { playlists ->
                         if (playlists.isNotEmpty()) {
                             BasicText(
                                 text = stringResource(R.string.monthly_playlists),

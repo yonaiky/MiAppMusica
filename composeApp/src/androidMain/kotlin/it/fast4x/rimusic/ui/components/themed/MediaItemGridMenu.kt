@@ -392,8 +392,8 @@ fun MediaItemGridMenu (
                     ?.toString(),
                 onDownloadClick = {
                     binder?.cache?.removeResource(mediaItem.mediaId)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Database.deleteFormat( mediaItem.mediaId )
+                    Database.asyncTransaction {
+                        formatTable.deleteBySongId( mediaItem.mediaId )
                     }
                     if (!isLocal)
                         manageDownload(
@@ -669,8 +669,8 @@ fun MediaItemGridMenu (
             }.collectAsState( emptyList(), Dispatchers.IO )
 
             val playlistIds by remember {
-                Database.getPlaylistsWithSong(mediaItem.mediaId)
-            }.collectAsState(initial = emptyList(), context = Dispatchers.IO)
+                Database.songPlaylistMapTable.mappedTo( mediaItem.mediaId )
+            }.collectAsState( emptyList(), Dispatchers.IO )
 
             val pinnedPlaylists = playlistPreviews.filter {
                 it.playlist.name.startsWith(PINNED_PREFIX, 0, true)

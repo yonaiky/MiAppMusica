@@ -116,6 +116,50 @@ interface PlaylistTable: SqlTable<Playlist> {
     """)
     fun findByName( playlistName: String ): Flow<Playlist?>
 
+    /**
+     * @return playlist with id [playlistId] and its number of songs
+     */
+    @Query("""
+        SELECT Playlist.*, COUNT(songId) AS songCount
+        FROM Playlist 
+        JOIN SongPlaylistMap ON playlistId = id
+        WHERE id = :playlistId
+        ORDER BY position
+    """)
+    fun findAsPreview( playlistId: Long ): Flow<PlaylistPreview?>
+
+    /**
+     * @return whether a playlist with name [playlistName] exists in the database
+     */
+    @Query("""
+        SELECT COUNT(id) > 0
+        FROM Playlist
+        WHERE name = :playlistName
+    """)
+    fun exists( playlistName: String ): Flow<Boolean>
+
+    /**
+     * ### If playlist **IS NOT** pinned
+     *
+     * Add [PINNED_PREFIX] to [Playlist.name]
+     *
+     * ### If playlist **IS** pinned
+     *
+     * Remove [PINNED_PREFIX] from [Playlist.name]
+     *
+     * @return number of rows affected
+     */
+    @Query("""
+        UPDATE Playlist
+        SET name = 
+            CASE
+                WHEN name LIKE '$PINNED_PREFIX%' THEN SUBSTR(name, LENGTH('$PINNED_PREFIX') + 1)
+                ELSE '$PINNED_PREFIX' || name
+            END
+        WHERE id = :playlistId
+    """)
+    fun togglePin( playlistId: Long ): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort as preview">
     @Query("""
         SELECT DISTINCT P.*, COUNT(spm.songId) as songCount

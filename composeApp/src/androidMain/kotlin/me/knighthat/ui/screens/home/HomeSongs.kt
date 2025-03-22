@@ -103,12 +103,11 @@ import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
@@ -273,7 +272,7 @@ fun HomeSongs( navController: NavController ) {
 
             // TODO merge this to phrase 1
             BuiltInPlaylist.Offline -> runBlocking( Dispatchers.IO ) {
-                val contentLength = Database.formatContentLength( song.id )
+                val contentLength = Database.formatTable.findContentLengthOf( song.id ).first()
                 binder?.cache?.isCached(song.id, 0, contentLength) ?: false
             }
 
@@ -427,8 +426,8 @@ fun HomeSongs( navController: NavController ) {
                         onDownload = {
                             if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
                                 binder?.cache?.removeResource(mediaItem.mediaId)
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    Database.resetContentLength( mediaItem.mediaId )
+                                Database.asyncTransaction {
+                                    formatTable.updateContentLengthOf( mediaItem.mediaId )
                                 }
                                 if ( !isLocal )
                                     manageDownload(

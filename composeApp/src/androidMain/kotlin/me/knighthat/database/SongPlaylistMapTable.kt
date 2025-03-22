@@ -21,6 +21,37 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
         get() = "SongPlaylistMap"
 
     /**
+     * Song with [songId] will be removed from all playlists
+     *
+     * @return number of rows affected by this operation
+     */
+    fun deleteBySongId( songId: String ): Long = delete( "songId = $songId" )
+
+    /**
+     * Remove song with [songId] from playlist with id [playlistId]
+     *
+     * @return number of rows affected by this operation
+     */
+    fun deleteBySongId( songId: String, playlistId: Long ) =
+        delete( "songId = $songId and playlistId = $playlistId" )
+
+    /**
+     * Remove all songs belong to playlist with id [playlistId]
+     *
+     * @param playlistId playlist to have its songs wiped
+     *
+     * @return number of rows affected by this operation
+     */
+    fun clear( playlistId: Long ) = delete( "playlistId = $playlistId" )
+
+    /**
+     * Delete all mappings where songs aren't exist in `Song` table
+     *
+     * @return number of rows affected by this operation
+     */
+    fun clearGhostMaps() = delete( "songId NOT IN (SELECT DISTINCT id FROM Song)" )
+
+    /**
      * @param playlistId of playlist to look for
      * @return all [Song]s that were mapped to playlist has [Playlist.id] matches [playlistId]
      */
@@ -33,6 +64,127 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
         LIMIT :limit
     """)
     fun allSongsOf( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+
+    /**
+     * @param songId of playlist to look for
+     * @param playlistId playlist to look into
+     *
+     * @return [SongPlaylistMap] that has [Song.id] matches [songId] and [Playlist.id] matches [playlistId]
+     */
+    @Query("SELECT * FROM SongPlaylistMap WHERE playlistId = :playlistId AND songId = :songId")
+    fun findById( songId: String, playlistId: Long ): Flow<SongPlaylistMap?>
+
+    /**
+     * @return position of [songId] in [playlistId], `-1` otherwise
+     */
+    @Query("""
+        SELECT COALESCE(
+            (
+                SELECT 'position'
+                FROM SongPlaylistMap 
+                WHERE songId = :songId 
+                AND playlistId = :playlistId
+            ),
+            -1
+        ) 
+        """)
+    fun findPositionOf( songId: String, playlistId: Long ): Int
+
+    /**
+     * @return whether [songId] is mapped to any playlist
+     */
+    @Query("""
+        SELECT COUNT(s.id) > 0
+        FROM Song s
+        JOIN SongPlaylistMap spm ON spm.songId = s.id 
+        WHERE s.id = :songId
+    """)
+    fun isMapped( songId: String ): Flow<Boolean>
+
+    /**
+     * @return list of [Playlist.id] that [songId] is mapped to
+     */
+    @Query("""
+        SELECT playlistId
+        FROM SongPlaylistMap
+        WHERE songId = :songId
+    """)
+    fun mappedTo( songId: String ): Flow<List<Long>>
+
+    /**
+     * Randomly assign new [SongPlaylistMap.position] to
+     * each song mapped to playlist with id [playlistId].
+     *
+     * @return number of rows affected by this operation
+     */
+    @Query("""
+        UPDATE SongPlaylistMap 
+        SET position = shuffled.new_position
+        FROM (
+            SELECT spm1.songId, ROW_NUMBER() OVER (ORDER BY RANDOM()) - 1 AS new_position
+            FROM SongPlaylistMap spm1
+            WHERE spm1.playlistId = :playlistId
+        ) AS shuffled
+        WHERE playlistId = :playlistId
+        AND shuffled.songId = SongPlaylistMap.songId 
+    """)
+    // You'll get complain from IDE that "shuffled" and "FROM"
+    // aren't exist, that's OK - IGNORE it.
+    fun shufflePositions( playlistId: Long ): Int
+
+    /**
+     * Move song from [from] to [to].
+     *
+     * Other songs' positions are updated accordingly
+     *
+     * @return number of rows affected by this operation
+     */
+    @Query("""
+        UPDATE SongPlaylistMap
+        SET position = updated.new_position
+        FROM (
+            SELECT 
+                spm.songId, 
+                spm.position,
+                CASE 
+                    WHEN spm.position = :from THEN :to 
+                    WHEN spm.position > :from AND spm.position <= :to THEN position - 1 
+                    WHEN spm.position < :from AND spm.position >= :to THEN position + 1 
+                    ELSE spm.position
+                END AS new_position
+            FROM SongPlaylistMap spm
+            WHERE spm.playlistId = :playlistId
+        ) AS updated
+        WHERE playlistId = :playlistId
+        AND updated.songId = SongPlaylistMap.songId
+    """)
+    // You'll get complain from IDE that "updated" and "FROM"
+    // aren't exist, that's OK - IGNORE it.
+    fun move( playlistId: Long, from: Int, to: Int ): Int
+
+    /**
+     * Insert provided song into indicated playlist
+     * at the next available position.
+     *
+     * @param songId     song to add
+     * @param playlistId playlist to add song into
+     */
+    @Query("""
+        INSERT INTO SongPlaylistMap ( songId, playlistId, position )
+        VALUES( 
+            :songId,
+            :playlistId,
+            COALESCE(
+                (
+                    SELECT MAX(position) + 1 
+                    FROM SongPlaylistMap 
+                    WHERE playlistId = :playlistId
+                ), 
+                0
+            )
+        )
+    """)
+    fun map( songId: String, playlistId: Long )
 
     //<editor-fold defaultstate="collapsed" desc="Sort songs of playlist">
     @Query("""
