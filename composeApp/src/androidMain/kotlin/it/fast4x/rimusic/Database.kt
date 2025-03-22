@@ -4,11 +4,9 @@ import androidx.compose.ui.util.fastZip
 import androidx.media3.common.MediaItem
 import androidx.room.AutoMigration
 import androidx.room.Dao
-import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.RoomWarnings
 import androidx.room.Transaction
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SimpleSQLiteQuery
@@ -16,7 +14,6 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
-import it.fast4x.rimusic.models.EventWithSong
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Playlist
@@ -27,7 +24,6 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
-import kotlinx.coroutines.flow.Flow
 import me.knighthat.database.AlbumTable
 import me.knighthat.database.ArtistTable
 import me.knighthat.database.Converters
@@ -88,11 +84,6 @@ interface Database {
         get() = DatabaseInitializer.Instance.songPlaylistMapTable
 
     //**********************************************
-
-    @Transaction
-    @SuppressWarnings(RoomWarnings.QUERY_MISMATCH)
-    @Query("SELECT DISTINCT (timestamp / 86400000) as timestampDay, event.* FROM event ORDER BY rowId DESC")
-    fun events(): Flow<List<EventWithSong>>
 
     /**
      * Attempt to insert a [MediaItem] into `Song` table

@@ -9,6 +9,7 @@ import it.fast4x.rimusic.models.Event
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import kotlinx.coroutines.flow.Flow
+import me.knighthat.database.ext.EventWithSong
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
@@ -16,6 +17,9 @@ interface EventTable: SqlTable<Event> {
 
     override val tableName: String
         get() = "Event"
+
+    @Query("SELECT DISTINCT * FROM Event LIMIT :limit")
+    fun allWithSong( limit: Int = Int.MAX_VALUE ): Flow<List<EventWithSong>>
 
     /**
      * Delete any record if its [Event.songId]
