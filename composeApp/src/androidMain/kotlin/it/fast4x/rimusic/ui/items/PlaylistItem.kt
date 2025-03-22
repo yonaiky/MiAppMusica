@@ -126,10 +126,10 @@ fun PlaylistItem(
 
     val thumbnails by remember {
         Database.songPlaylistMapTable
-                .sortSongsByPlayTime( playlist.playlist.id, 4 )
+                .sortSongsByPlayTime( playlist.playlist.id )
                 .distinctUntilChanged()
                 .map { list ->
-                    list.map {
+                    list.takeLast( 4 ).map {
                         it.thumbnailUrl.thumbnail( thumbnailSizePx / 2 )
                     }
                 }

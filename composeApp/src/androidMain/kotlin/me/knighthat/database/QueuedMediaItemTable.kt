@@ -16,6 +16,10 @@ interface QueuedMediaItemTable: SqlTable<QueuedMediaItem> {
     /**
      * @return all records from this table
      */
-    @Query("SELECT DISTINCT * FROM QueuedMediaItem")
-    fun all(): Flow<List<QueuedMediaItem>>
+    @Query("""
+        SELECT DISTINCT * 
+        FROM QueuedMediaItem
+        LIMIT :limit
+    """)
+    fun all( limit: Int = Int.MAX_VALUE ): Flow<List<QueuedMediaItem>>
 }

@@ -31,6 +31,7 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 @Composable
 fun Playlist(
@@ -43,17 +44,16 @@ fun Playlist(
     disableScrollingText: Boolean,
     thumbnailUrl: String? = null,
 ) {
-    val songs by remember {
+    val thumbnails by remember {
         Database.songPlaylistMapTable
-                .sortSongsByPlayTime( playlist.playlist.id, 4 )
+                .sortSongsByPlayTime( playlist.playlist.id )
                 .distinctUntilChanged()
+                .map { list ->
+                    list.takeLast( 4 ).map {
+                        it.thumbnailUrl.thumbnail( thumbnailSizePx / 2 )
+                    }
+                }
     }.collectAsState( emptyList(), Dispatchers.IO )
-
-    val thumbnails = songs
-        .takeWhile { it.thumbnailUrl?.isNotEmpty() ?: false }
-        .take(4)
-        .map { it.thumbnailUrl.thumbnail(thumbnailSizePx / 2) }
-
 
     PlaylistItem(
         thumbnailContent = {

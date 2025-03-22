@@ -9,6 +9,7 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
@@ -27,7 +28,7 @@ interface ArtistTable: SqlTable<Artist> {
         ORDER BY ROWID 
         LIMIT :limit
     """)
-    fun allFollowing( limit: Long = Long.MAX_VALUE ): Flow<List<Artist>>
+    fun allFollowing( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
 
     /**
      * @return artists that have their songs mapped to at least 1 playlist
@@ -40,7 +41,7 @@ interface ArtistTable: SqlTable<Artist> {
         ORDER BY A.ROWID
         LIMIT :limit
     """)
-    fun allInLibrary( limit: Long = Long.MAX_VALUE ): Flow<List<Artist>>
+    fun allInLibrary( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
 
     /**
      * @return all songs of following artists
@@ -54,7 +55,7 @@ interface ArtistTable: SqlTable<Artist> {
         ORDER BY S.ROWID
         LIMIT :limit
     """)
-    fun allSongsInFollowing( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun allSongsInFollowing( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @param artistId of artist to look for
@@ -114,7 +115,7 @@ interface ArtistTable: SqlTable<Artist> {
     fun toggleFollow( artistId: String ): Int
 
     //<editor-fold defaultstate="collapsed" desc="Sort all">
-    fun sortFollowingByName( limit: Long = Long.MAX_VALUE ): Flow<List<Artist>> =
+    fun sortFollowingByName( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>> =
         allFollowing( limit ).map { list ->
             list.sortedBy( Artist::cleanName )
         }
@@ -141,15 +142,15 @@ interface ArtistTable: SqlTable<Artist> {
     fun sortFollowing(
         sortBy: ArtistSortBy,
         sortOrder: SortOrder,
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Artist>> = when( sortBy ) {
-        ArtistSortBy.Name       -> sortFollowingByName( limit )
-        ArtistSortBy.DateAdded  -> allFollowing( limit )
-    }.map( sortOrder::applyTo )
+        ArtistSortBy.Name       -> sortFollowingByName()
+        ArtistSortBy.DateAdded  -> allFollowing()
+    }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sort artists in library">
-    fun sortInLibraryByName( limit: Long = Long.MAX_VALUE ): Flow<List<Artist>> =
+    fun sortInLibraryByName( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>> =
         allInLibrary( limit ).map { list ->
             list.sortedBy( Artist::cleanName )
         }
@@ -177,10 +178,10 @@ interface ArtistTable: SqlTable<Artist> {
     fun sortInLibrary(
         sortBy: ArtistSortBy,
         sortOrder: SortOrder,
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Artist>> = when( sortBy ) {
-        ArtistSortBy.Name       -> sortInLibraryByName( limit )
-        ArtistSortBy.DateAdded  -> allInLibrary( limit )     // Already sorted by ROWID
-    }.map( sortOrder::applyTo )
+        ArtistSortBy.Name       -> sortInLibraryByName()
+        ArtistSortBy.DateAdded  -> allInLibrary()     // Already sorted by ROWID
+    }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 }

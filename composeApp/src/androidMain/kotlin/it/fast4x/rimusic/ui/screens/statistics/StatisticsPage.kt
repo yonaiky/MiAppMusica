@@ -429,7 +429,7 @@ fun StatisticsPage(
                                     .sortSongsByPlayTime( playlists[it].playlist.id )
                                     .distinctUntilChanged()
                                     .map { list ->
-                                        list.map { song ->
+                                        list.takeLast( 4 ).map { song ->
                                             song.thumbnailUrl.thumbnail( playlistThumbnailSizePx / 2 )
                                         }
                                     }

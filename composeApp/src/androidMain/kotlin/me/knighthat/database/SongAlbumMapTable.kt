@@ -48,5 +48,5 @@ interface SongAlbumMapTable: SqlTable<SongAlbumMap> {
         ORDER BY position
         LIMIT :limit
     """)
-    fun allSongsOf( albumId: String, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun allSongsOf( albumId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 }

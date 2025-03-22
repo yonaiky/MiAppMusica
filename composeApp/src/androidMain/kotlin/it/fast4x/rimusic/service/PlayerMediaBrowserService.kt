@@ -169,7 +169,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
 
                     MediaId.playlists -> Database
                         .playlistTable
-                        .sortPreviewsByName()
+                        .allAsPreview()
                         .first()
                         .map { it.asBrowserMediaItem }
                         .sortedBy { it.description.title.toString() }

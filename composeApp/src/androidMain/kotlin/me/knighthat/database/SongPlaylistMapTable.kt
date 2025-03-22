@@ -12,6 +12,7 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.utils.durationTextToMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
@@ -63,7 +64,7 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
         ORDER BY S.ROWID
         LIMIT :limit
     """)
-    fun allSongsOf( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun allSongsOf( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @param songId of playlist to look for
@@ -202,7 +203,7 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
             END
         LIMIT :limit
     """)
-    fun sortSongsByAlbum( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun sortSongsByAlbum( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT S.*
@@ -214,9 +215,9 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
         ORDER BY A.year IS NULL, A.year
         LIMIT :limit
     """)
-    fun sortSongsByAlbumYear( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun sortSongsByAlbumYear( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
-    fun sortSongsByArtist( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortSongsByArtist( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allSongsOf( playlistId, limit ).map { list ->
             list.sortedBy( Song::cleanArtistsText )
         }
@@ -241,7 +242,7 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
             END
         LIMIT :limit
     """)
-    fun sortSongsByAlbumAndArtist( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun sortSongsByAlbumAndArtist( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     @Query("""
         SELECT S.*
@@ -252,14 +253,14 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
         ORDER BY E.timestamp
         LIMIT :limit
     """)
-    fun sortSongsByDatePlayed( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun sortSongsByDatePlayed( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
-    fun sortSongsByPlayTime( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortSongsByPlayTime( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allSongsOf( playlistId, limit ).map { list ->
             list.sortedBy( Song::totalPlayTimeMs )
         }
 
-    fun sortSongsByRelativePlayTime( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortSongsByRelativePlayTime( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allSongsOf( playlistId, limit ).map { list ->
             list.sortedBy( Song::relativePlayTime )
         }
@@ -272,19 +273,19 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
         ORDER BY spm.position
         LIMIT :limit
     """)
-    fun sortSongsByPosition( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun sortSongsByPosition( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
-    fun sortSongsByTitle( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortSongsByTitle( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allSongsOf( playlistId, limit ).map { list ->
             list.sortedBy( Song::cleanTitle )
         }
 
-    fun sortSongsByDuration( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortSongsByDuration( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allSongsOf( playlistId, limit ).map { list ->
             list.sortedBy { durationTextToMillis( it.durationText ?: "0" ) }
         }
 
-    fun sortSongsByLikedAt( playlistId: Long, limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortSongsByLikedAt( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allSongsOf( playlistId, limit ).map { list ->
             list.sortedBy( Song::likedAt )
         }
@@ -312,20 +313,20 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
         playlistId: Long,
         sortBy: PlaylistSongSortBy,
         sortOrder: SortOrder,
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Song>> = when( sortBy ) {
-        PlaylistSongSortBy.Album            -> sortSongsByAlbum( playlistId, limit )
-        PlaylistSongSortBy.AlbumYear        -> sortSongsByAlbumYear( playlistId, limit )
-        PlaylistSongSortBy.Artist           -> sortSongsByArtist( playlistId, limit )
-        PlaylistSongSortBy.ArtistAndAlbum   -> sortSongsByAlbumAndArtist( playlistId, limit )
-        PlaylistSongSortBy.DatePlayed       -> sortSongsByDatePlayed( playlistId, limit )
-        PlaylistSongSortBy.PlayTime         -> sortSongsByPlayTime( playlistId, limit )
-        PlaylistSongSortBy.RelativePlayTime -> sortSongsByRelativePlayTime( playlistId, limit )
-        PlaylistSongSortBy.Position         -> sortSongsByPosition( playlistId, limit )
-        PlaylistSongSortBy.Title            -> sortSongsByTitle( playlistId, limit )
-        PlaylistSongSortBy.Duration         -> sortSongsByDuration( playlistId, limit )
-        PlaylistSongSortBy.DateLiked        -> sortSongsByLikedAt( playlistId, limit )
+        PlaylistSongSortBy.Album            -> sortSongsByAlbum( playlistId )
+        PlaylistSongSortBy.AlbumYear        -> sortSongsByAlbumYear( playlistId )
+        PlaylistSongSortBy.Artist           -> sortSongsByArtist( playlistId )
+        PlaylistSongSortBy.ArtistAndAlbum   -> sortSongsByAlbumAndArtist( playlistId )
+        PlaylistSongSortBy.DatePlayed       -> sortSongsByDatePlayed( playlistId )
+        PlaylistSongSortBy.PlayTime         -> sortSongsByPlayTime( playlistId )
+        PlaylistSongSortBy.RelativePlayTime -> sortSongsByRelativePlayTime( playlistId )
+        PlaylistSongSortBy.Position         -> sortSongsByPosition( playlistId )
+        PlaylistSongSortBy.Title            -> sortSongsByTitle( playlistId )
+        PlaylistSongSortBy.Duration         -> sortSongsByDuration( playlistId )
+        PlaylistSongSortBy.DateLiked        -> sortSongsByLikedAt( playlistId )
         PlaylistSongSortBy.DateAdded        -> allSongsOf( playlistId )     // Already sorted by ROWID
-    }.map( sortOrder::applyTo )
+    }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 }

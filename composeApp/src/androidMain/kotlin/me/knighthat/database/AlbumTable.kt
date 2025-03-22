@@ -9,6 +9,7 @@ import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
@@ -20,8 +21,8 @@ interface AlbumTable: SqlTable<Album> {
     /**
      * @return all records from this table
      */
-    @Query("SELECT DISTINCT * FROM Album")
-    fun all(): Flow<List<Album>>
+    @Query("SELECT DISTINCT * FROM Album LIMIT :limit")
+    fun all( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     /**
      * @return all albums from this table that are bookmarked by user
@@ -33,7 +34,7 @@ interface AlbumTable: SqlTable<Album> {
         ORDER BY ROWID
         LIMIT :limit
     """)
-    fun allBookmarked( limit: Long = Long.MAX_VALUE ): Flow<List<Album>>
+    fun allBookmarked( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     /**
      * @return albums that have their songs mapped to at least 1 playlist
@@ -46,7 +47,7 @@ interface AlbumTable: SqlTable<Album> {
         ORDER BY A.ROWID
         LIMIT :limit
     """)
-    fun allInLibrary( limit: Long = Long.MAX_VALUE ): Flow<List<Album>>
+    fun allInLibrary( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     /**
      * @return all songs of bookmarked albums
@@ -60,7 +61,7 @@ interface AlbumTable: SqlTable<Album> {
         ORDER BY S.ROWID
         LIMIT :limit
     """)
-    fun allSongsInBookmarked( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun allSongsInBookmarked( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @param albumId of album to look for
@@ -149,17 +150,17 @@ interface AlbumTable: SqlTable<Album> {
     fun updateTitle( albumId: String, title: String ): Int
 
     //<editor-fold defaultstate="collapsed" desc="Sort bookmarked">
-    fun sortBookmarkedByTitle( limit: Long = Long.MAX_VALUE ): Flow<List<Album>> =
+    fun sortBookmarkedByTitle( limit: Int = Int.MAX_VALUE ): Flow<List<Album>> =
         allBookmarked( limit ).map { list ->
             list.sortedBy( Album::cleanTitle )
         }
 
-    fun sortBookmarkedByYear( limit: Long = Long.MAX_VALUE ): Flow<List<Album>> =
+    fun sortBookmarkedByYear( limit: Int = Int.MAX_VALUE ): Flow<List<Album>> =
         allBookmarked( limit ).map { list ->
             list.sortedBy( Album::year )
         }
 
-    fun sortBookmarkedByArtist( limit: Long = Long.MAX_VALUE ): Flow<List<Album>> =
+    fun sortBookmarkedByArtist( limit: Int = Int.MAX_VALUE ): Flow<List<Album>> =
         allBookmarked( limit ).map { list ->
             list.sortedBy( Album::cleanAuthorsText )
         }
@@ -173,7 +174,7 @@ interface AlbumTable: SqlTable<Album> {
         ORDER BY COUNT(sam.songId)
         LIMIT :limit
     """)
-    fun sortBookmarkedBySongsCount( limit: Long = Long.MAX_VALUE ): Flow<List<Album>>
+    fun sortBookmarkedBySongsCount( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     @Query("""
         SELECT DISTINCT A.*
@@ -199,7 +200,7 @@ interface AlbumTable: SqlTable<Album> {
     """)
     // Duration conversion is baked into SQL syntax to reduce code complexity
     // at the cost of unfriendly syntax, potentially makes it harder to maintain or reuse.
-    fun sortBookmarkedByDuration( limit: Long = Long.MAX_VALUE ): Flow<List<Album>>
+    fun sortBookmarkedByDuration( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     /**
      * Fetch all bookmarked albums and sort
@@ -223,29 +224,29 @@ interface AlbumTable: SqlTable<Album> {
     fun sortBookmarked(
         sortBy: AlbumSortBy,
         sortOrder: SortOrder,
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Album>> = when( sortBy ) {
-        AlbumSortBy.Title       -> sortBookmarkedByTitle( limit )
-        AlbumSortBy.Year        -> sortBookmarkedByYear( limit )
-        AlbumSortBy.DateAdded   -> allBookmarked( limit )       // Already sorted by ROWID
-        AlbumSortBy.Artist      -> sortBookmarkedByArtist( limit )
-        AlbumSortBy.Songs       -> sortBookmarkedBySongsCount( limit )
-        AlbumSortBy.Duration    -> sortBookmarkedByDuration( limit )
-    }.map( sortOrder::applyTo )
+        AlbumSortBy.Title       -> sortBookmarkedByTitle()
+        AlbumSortBy.Year        -> sortBookmarkedByYear()
+        AlbumSortBy.DateAdded   -> allBookmarked()       // Already sorted by ROWID
+        AlbumSortBy.Artist      -> sortBookmarkedByArtist()
+        AlbumSortBy.Songs       -> sortBookmarkedBySongsCount()
+        AlbumSortBy.Duration    -> sortBookmarkedByDuration()
+    }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sort albums in library">
-    fun sortInLibraryByTitle( limit: Long = Long.MAX_VALUE ): Flow<List<Album>> =
+    fun sortInLibraryByTitle( limit: Int = Int.MAX_VALUE ): Flow<List<Album>> =
         allInLibrary( limit ).map { list ->
             list.sortedBy( Album::cleanTitle )
         }
 
-    fun sortInLibraryByYear( limit: Long = Long.MAX_VALUE ): Flow<List<Album>> =
+    fun sortInLibraryByYear( limit: Int = Int.MAX_VALUE ): Flow<List<Album>> =
         allInLibrary( limit ).map { list ->
             list.sortedBy( Album::year )
         }
 
-    fun sortInLibraryByArtist( limit: Long = Long.MAX_VALUE ): Flow<List<Album>> =
+    fun sortInLibraryByArtist( limit: Int = Int.MAX_VALUE ): Flow<List<Album>> =
         allInLibrary( limit ).map { list ->
             list.sortedBy( Album::cleanAuthorsText )
         }
@@ -259,7 +260,7 @@ interface AlbumTable: SqlTable<Album> {
         ORDER BY COUNT(sam.songId)
         LIMIT :limit
     """)
-    fun sortInLibraryBySongsCount( limit: Long = Long.MAX_VALUE ): Flow<List<Album>>
+    fun sortInLibraryBySongsCount( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     @Query("""
         SELECT DISTINCT A.*
@@ -283,7 +284,7 @@ interface AlbumTable: SqlTable<Album> {
         )
         LIMIT :limit
     """)
-    fun sortInLibraryByDuration( limit: Long = Long.MAX_VALUE ): Flow<List<Album>>
+    fun sortInLibraryByDuration( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     /**
      * Fetch all albums that have their songs mapped to
@@ -308,14 +309,14 @@ interface AlbumTable: SqlTable<Album> {
     fun sortInLibrary(
         sortBy: AlbumSortBy,
         sortOrder: SortOrder,
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Album>> = when( sortBy ) {
-        AlbumSortBy.Title       -> sortInLibraryByTitle( limit )
-        AlbumSortBy.Year        -> sortInLibraryByYear( limit )
-        AlbumSortBy.DateAdded   -> allInLibrary( limit )        // Already sorted by ROWID
-        AlbumSortBy.Artist      -> sortInLibraryByArtist( limit )
-        AlbumSortBy.Songs       -> sortInLibraryBySongsCount( limit )
-        AlbumSortBy.Duration    -> sortInLibraryByDuration( limit )
-    }.map( sortOrder::applyTo )
+        AlbumSortBy.Title       -> sortInLibraryByTitle()
+        AlbumSortBy.Year        -> sortInLibraryByYear()
+        AlbumSortBy.DateAdded   -> allInLibrary()        // Already sorted by ROWID
+        AlbumSortBy.Artist      -> sortInLibraryByArtist()
+        AlbumSortBy.Songs       -> sortInLibraryBySongsCount()
+        AlbumSortBy.Duration    -> sortInLibraryByDuration()
+    }.map( sortOrder::applyTo ).take( 4 )
     //</editor-fold>
 }

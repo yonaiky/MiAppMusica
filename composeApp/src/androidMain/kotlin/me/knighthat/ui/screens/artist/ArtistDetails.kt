@@ -133,7 +133,7 @@ fun ArtistDetails(
 
     var showMoreSongs by rememberSaveable { mutableStateOf( false ) }
     val songPreviews by remember( showMoreSongs ) {
-        val filterLimit = if( showMoreSongs ) Long.MAX_VALUE else 5
+        val filterLimit = if( showMoreSongs ) Int.MAX_VALUE else 5
         Database.songArtistMapTable
                 .allSongsBy( browseId, filterLimit )
                 .distinctUntilChanged()

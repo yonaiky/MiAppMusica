@@ -38,11 +38,11 @@ class SongShuffler private constructor(
 
         @Composable
         operator fun invoke(
-            databaseCall: () -> Flow<List<Song>>,
+            databaseCall: (Int) -> Flow<List<Song>>,
             vararg key: Any?
         ): SongShuffler {
             val songsToShuffle by remember( key ) {
-                databaseCall()
+                databaseCall( Int.MAX_VALUE )
             }.collectAsState( emptyList(), Dispatchers.IO )
 
             return SongShuffler { songsToShuffle }

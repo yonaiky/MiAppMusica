@@ -14,6 +14,7 @@ import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.Song
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
@@ -30,8 +31,9 @@ interface PlaylistTable: SqlTable<Playlist> {
         FROM SongPlaylistMap spm
         JOIN Song S ON S.id = spm.songId
         ORDER BY S.ROWID
+        LIMIT :limit
     """)
-    fun allSongs(): Flow<List<Song>>
+    fun allSongs( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @return list of songs that were mapped to at least 1 **pinned** playlist
@@ -43,8 +45,9 @@ interface PlaylistTable: SqlTable<Playlist> {
         JOIN Playlist P ON P.id = spm.playlistId
         WHERE P.name LIKE '$PINNED_PREFIX%' COLLATE NOCASE
         ORDER BY S.ROWID
+        LIMIT :limit
     """)
-    fun allPinnedSongs(): Flow<List<Song>>
+    fun allPinnedSongs( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @return list of songs that belong to Piped
@@ -56,8 +59,9 @@ interface PlaylistTable: SqlTable<Playlist> {
         JOIN Playlist P ON P.id = spm.playlistId
         WHERE P.name LIKE '$PIPED_PREFIX%' COLLATE NOCASE
         ORDER BY S.ROWID
+        LIMIT :limit
     """)
-    fun allPipedSongs(): Flow<List<Song>>
+    fun allPipedSongs( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @return list of songs that belong YouTube private playlist
@@ -69,8 +73,9 @@ interface PlaylistTable: SqlTable<Playlist> {
         JOIN Playlist P ON P.id = spm.playlistId
         WHERE P.isYoutubePlaylist
         ORDER BY S.ROWID
+        LIMIT :limit
     """)
-    fun allYTPlaylistSongs(): Flow<List<Song>>
+    fun allYTPlaylistSongs( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @return list of songs that were mapped to at least 1 **monthly** playlist
@@ -82,8 +87,9 @@ interface PlaylistTable: SqlTable<Playlist> {
         JOIN Playlist P ON P.id = spm.playlistId
         WHERE P.name LIKE '$MONTHLY_PREFIX%' COLLATE NOCASE
         ORDER BY S.ROWID
+        LIMIT :limit
     """)
-    fun allMonthlySongs(): Flow<List<Song>>
+    fun allMonthlySongs( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @return all playlists from this table with number of songs they carry
@@ -96,7 +102,7 @@ interface PlaylistTable: SqlTable<Playlist> {
         ORDER BY P.ROWID
         LIMIT :limit
     """)
-    fun allAsPreview( limit: Long = Long.MAX_VALUE ): Flow<List<PlaylistPreview>>
+    fun allAsPreview( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
 
     /**
      * @param browseId of playlist to look for
@@ -170,14 +176,14 @@ interface PlaylistTable: SqlTable<Playlist> {
         ORDER BY SUM(S.totalPlayTimeMs)
         LIMIT :limit
     """)
-    fun sortPreviewsByMostPlayed( limit: Long = Long.MAX_VALUE ): Flow<List<PlaylistPreview>>
+    fun sortPreviewsByMostPlayed( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
 
-    fun sortPreviewsByName( limit: Long = Long.MAX_VALUE ): Flow<List<PlaylistPreview>> =
+    fun sortPreviewsByName( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>> =
         allAsPreview( limit ).map { list ->
             list.sortedBy { it.playlist.cleanName() }
         }
 
-    fun sortPreviewsBySongCount( limit: Long = Long.MAX_VALUE ): Flow<List<PlaylistPreview>> =
+    fun sortPreviewsBySongCount( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>> =
         allAsPreview( limit ).map { list ->
             list.sortedBy( PlaylistPreview::songCount )
         }
@@ -204,12 +210,12 @@ interface PlaylistTable: SqlTable<Playlist> {
     fun sortPreviews(
         sortBy: PlaylistSortBy,
         sortOrder: SortOrder,
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<PlaylistPreview>> = when( sortBy ) {
-        PlaylistSortBy.MostPlayed   -> sortPreviewsByMostPlayed( limit )
-        PlaylistSortBy.Name         -> sortPreviewsByName( limit )
-        PlaylistSortBy.DateAdded    -> allAsPreview( limit )       // Already sorted by ROWID
-        PlaylistSortBy.SongCount    -> sortPreviewsBySongCount( limit )
-    }.map( sortOrder::applyTo )
+        PlaylistSortBy.MostPlayed   -> sortPreviewsByMostPlayed()
+        PlaylistSortBy.Name         -> sortPreviewsByName()
+        PlaylistSortBy.DateAdded    -> allAsPreview()       // Already sorted by ROWID
+        PlaylistSortBy.SongCount    -> sortPreviewsBySongCount()
+    }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 }

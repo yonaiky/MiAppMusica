@@ -14,6 +14,7 @@ import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.durationToMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
@@ -33,15 +34,20 @@ interface SongTable: SqlTable<Song> {
         LIMIT :limit
     """)
     fun all(
-        limit: Long = Long.MAX_VALUE,
+        limit: Int = Int.MAX_VALUE,
         excludeHidden: Boolean = false
     ): Flow<List<Song>>
 
     /**
      * @return all records that have [Song.id] start with [LOCAL_KEY_PREFIX]
      */
-    @Query("SELECT DISTINCT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%'")
-    fun allOnDevice(): Flow<List<Song>>
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Song 
+        WHERE id LIKE '$LOCAL_KEY_PREFIX%'
+        LIMIT :limit
+    """)
+    fun allOnDevice( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT * 
@@ -50,7 +56,7 @@ interface SongTable: SqlTable<Song> {
         ORDER BY ROWID
         LIMIT :limit
     """)
-    fun allFavorites( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun allFavorites( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     @Query("""
         SELECT DISTINCT * 
@@ -59,7 +65,7 @@ interface SongTable: SqlTable<Song> {
         ORDER BY ROWID
         LIMIT :limit
     """)
-    fun allDisliked( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun allDisliked( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * Delete all songs with [Song.totalPlayTimeMs] equal to `0`
@@ -277,17 +283,17 @@ interface SongTable: SqlTable<Song> {
     fun updateTotalPlayTime( songId: String, totalPlayTime: Long ): Int
 
     //<editor-fold defaultstate="collapsed" desc="Sort all">
-    fun sortAllByPlayTime( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+    fun sortAllByPlayTime( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
         all( limit ).map { list ->
             list.sortedBy( Song::totalPlayTimeMs )
         }
 
-    fun sortAllByRelativePlayTime( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+    fun sortAllByRelativePlayTime( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
         all( limit ).map { list ->
             list.sortedBy( Song::relativePlayTime )
         }
 
-    fun sortAllByTitle( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+    fun sortAllByTitle( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
         all( limit ).map { list ->
             list.sortedBy( Song::cleanTitle )
         }
@@ -300,19 +306,19 @@ interface SongTable: SqlTable<Song> {
         ORDER BY E.timestamp
         LIMIT :limit
     """)
-    fun sortAllByDatePlayed( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
+    fun sortAllByDatePlayed( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
 
-    fun sortAllByLikedAt( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+    fun sortAllByLikedAt( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
         all( limit ).map { list ->
             list.sortedBy( Song::likedAt )
         }
 
-    fun sortAllByArtist( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+    fun sortAllByArtist( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
         all( limit ).map { list ->
             list.sortedBy( Song::cleanArtistsText )
         }
 
-    fun sortAllByDuration( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
+    fun sortAllByDuration( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
         all( limit ).map { list ->
             list.sortedBy {
                 durationToMillis( it.durationText ?: "0:0" )
@@ -332,7 +338,7 @@ interface SongTable: SqlTable<Song> {
             END
         LIMIT :limit
     """)
-    fun sortAllByAlbumName( limit: Long = Long.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
+    fun sortAllByAlbumName( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
 
     /**
      * Fetch all songs from the database and sort them
@@ -362,7 +368,7 @@ interface SongTable: SqlTable<Song> {
     fun sortAll(
         sortBy: SongSortBy,
         sortOrder: SortOrder,
-        limit: Long = Long.MAX_VALUE,
+        limit: Int = Int.MAX_VALUE,
         excludeHidden: Boolean = false
     ): Flow<List<Song>> = when( sortBy ){
         SongSortBy.PlayTime         -> sortAllByPlayTime( limit, excludeHidden )
@@ -378,27 +384,27 @@ interface SongTable: SqlTable<Song> {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sort favorites">
-    fun sortFavoritesByArtist( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortFavoritesByArtist( limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allFavorites( limit ).map { list ->
             list.sortedBy( Song::cleanArtistsText )
         }
 
-    fun sortFavoritesByPlayTime( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortFavoritesByPlayTime( limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allFavorites( limit ).map { list ->
             list.sortedBy( Song::totalPlayTimeMs )
         }
 
-    fun sortFavoritesByRelativePlayTime( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortFavoritesByRelativePlayTime( limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allFavorites( limit ).map { list ->
             list.sortedBy( Song::relativePlayTime )
         }
 
-    fun sortFavoritesByTitle( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortFavoritesByTitle( limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allFavorites( limit ).map { list ->
             list.sortedBy( Song::cleanTitle )
         }
 
-    fun sortFavoritesByLikedAt( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortFavoritesByLikedAt( limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allFavorites( limit ).map { list ->
             list.sortedBy( Song::likedAt )
         }
@@ -411,9 +417,9 @@ interface SongTable: SqlTable<Song> {
         ORDER BY E.timestamp
         LIMIT :limit
     """)
-    fun sortFavoritesByDatePlayed( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun sortFavoritesByDatePlayed( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
-    fun sortFavoritesByDuration( limit: Long = Long.MAX_VALUE ): Flow<List<Song>> =
+    fun sortFavoritesByDuration( limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allFavorites( limit ).map { list ->
             list.sortedBy {
                 durationToMillis( it.durationText ?: "0:0" )
@@ -433,7 +439,7 @@ interface SongTable: SqlTable<Song> {
             END
         LIMIT :limit
     """)
-    fun sortFavoritesByAlbumName( limit: Long = Long.MAX_VALUE ): Flow<List<Song>>
+    fun sortFavoritesByAlbumName( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * Fetch all favorite songs and sort them according to [sortBy] and [sortOrder].
@@ -456,17 +462,17 @@ interface SongTable: SqlTable<Song> {
     fun sortFavorites(
         sortBy: SongSortBy,
         sortOrder: SortOrder,
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Song>> = when( sortBy ) {
-        SongSortBy.PlayTime         -> sortFavoritesByPlayTime( limit )
-        SongSortBy.RelativePlayTime -> sortFavoritesByRelativePlayTime( limit )
-        SongSortBy.Title            -> sortFavoritesByTitle( limit )
-        SongSortBy.DateAdded        -> allFavorites( limit )      // Already sorted by ROWID
-        SongSortBy.DatePlayed       -> sortFavoritesByDatePlayed( limit )
-        SongSortBy.DateLiked        -> sortFavoritesByLikedAt( limit )
-        SongSortBy.Artist           -> sortFavoritesByArtist( limit )
-        SongSortBy.Duration         -> sortFavoritesByDuration( limit )
-        SongSortBy.AlbumName        -> sortFavoritesByAlbumName( limit )
-    }.map( sortOrder::applyTo )
+        SongSortBy.PlayTime         -> sortFavoritesByPlayTime()
+        SongSortBy.RelativePlayTime -> sortFavoritesByRelativePlayTime()
+        SongSortBy.Title            -> sortFavoritesByTitle()
+        SongSortBy.DateAdded        -> allFavorites()      // Already sorted by ROWID
+        SongSortBy.DatePlayed       -> sortFavoritesByDatePlayed()
+        SongSortBy.DateLiked        -> sortFavoritesByLikedAt()
+        SongSortBy.Artist           -> sortFavoritesByArtist()
+        SongSortBy.Duration         -> sortFavoritesByDuration()
+        SongSortBy.AlbumName        -> sortFavoritesByAlbumName()
+    }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 }

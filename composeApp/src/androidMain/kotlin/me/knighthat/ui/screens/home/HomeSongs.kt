@@ -249,7 +249,7 @@ fun HomeSongs( navController: NavController ) {
 
         when( builtInPlaylist ) {
             BuiltInPlaylist.All, BuiltInPlaylist.Offline, BuiltInPlaylist.Downloaded ->
-                Database.songTable.sortAll( songSort.sortBy, songSort.sortOrder, Long.MAX_VALUE, hiddenSongs.isShown() )
+                Database.songTable.sortAll( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isShown() )
 
             BuiltInPlaylist.Favorites -> Database.songTable.sortFavorites( songSort.sortBy, songSort.sortOrder )
 
