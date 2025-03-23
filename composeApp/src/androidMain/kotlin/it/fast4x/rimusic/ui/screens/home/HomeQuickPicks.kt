@@ -3,10 +3,8 @@ package it.fast4x.rimusic.ui.screens.home
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -21,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -38,7 +35,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,11 +43,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
@@ -84,7 +77,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.isVideoEnabled
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
@@ -94,7 +86,6 @@ import it.fast4x.rimusic.ui.components.themed.Loader
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
@@ -118,12 +109,9 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.forcePlay
-import it.fast4x.rimusic.utils.getDownloadState
-import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.loadedDataKey
-import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.playVideo
@@ -528,197 +516,63 @@ fun HomeQuickPicks(
                             .padding(bottom = 8.dp)
                     )
 
-
-
-
                     LazyHorizontalGrid(
                         state = quickPicksLazyGridState,
                         rows = GridCells.Fixed(if (relatedInit != null) 3 else 1),
                         flingBehavior = ScrollableDefaults.flingBehavior(),
                         contentPadding = endPaddingValues,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(if (relatedInit != null) Dimensions.itemsVerticalPadding * 3 * 9 else Dimensions.itemsVerticalPadding * 9)
-                        //.height((songThumbnailSizeDp + Dimensions.itemsVerticalPadding * 2) * 4)
+                        modifier = Modifier.fillMaxWidth()
+                                           .height(
+                                               if ( relatedInit != null)
+                                                   Dimensions.itemsVerticalPadding * 3 * 9
+                                               else
+                                                   Dimensions.itemsVerticalPadding * 9
+                                           )
                     ) {
                         trending?.let { song ->
                             item {
-                                val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                                downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                val isDownloaded =
-                                    if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
-                                var forceRecompose by remember { mutableStateOf(false) }
-                                SongItem(
+                                me.knighthat.component.SongItem(
                                     song = song,
-                                    onDownloadClick = {
-                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.asyncTransaction {
-                                            formatTable.findBySongId( song.id )
-                                        }
-
-                                        if (!isLocal)
-                                            manageDownload(
-                                                context = context,
-                                                mediaItem = song.asMediaItem,
-                                                downloadState = isDownloaded
-                                            )
-
-                                    },
-                                    downloadState = downloadState,
-                                    thumbnailSizePx = songThumbnailSizePx,
-                                    thumbnailSizeDp = songThumbnailSizeDp,
-                                    trailingContent = {
-                                        Image(
-                                            painter = painterResource(R.drawable.star),
-                                            contentDescription = null,
-                                            colorFilter = ColorFilter.tint(colorPalette().accent),
-                                            modifier = Modifier
-                                                .size(16.dp)
+                                    onClick = {
+                                        binder?.stopRadio()
+                                        binder?.player?.forcePlay( song.asMediaItem )
+                                        binder?.setupRadio(
+                                            NavigationEndpoint.Endpoint.Watch( song.id )
                                         )
                                     },
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onLongClick = {
-                                                menuState.display {
-                                                    NonQueuedMediaItemMenu(
-                                                        navController = navController,
-                                                        onDismiss = {
-                                                            menuState.hide()
-                                                            forceRecompose = true
-                                                        },
-                                                        mediaItem = song.asMediaItem,
-                                                        onRemoveFromQuickPicks = {
-                                                            Database.asyncTransaction {
-                                                                eventTable.delete( song )
-                                                            }
-                                                        },
-
-                                                        onDownload = {
-                                                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.asyncTransaction {
-                                                                formatTable.findBySongId( song.id )
-                                                            }
-                                                            manageDownload(
-                                                                context = context,
-                                                                mediaItem = song.asMediaItem,
-                                                                downloadState = isDownloaded
-                                                            )
-                                                        },
-                                                        disableScrollingText = disableScrollingText
-                                                    )
-                                                }
-                                                hapticFeedback.performHapticFeedback(
-                                                    HapticFeedbackType.LongPress
-                                                )
-                                            },
-                                            onClick = {
-                                                val mediaItem = song.asMediaItem
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlay(mediaItem)
-                                                binder?.setupRadio(
-                                                    NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
-                                                )
-                                            }
-                                        )
-                                        .animateItem(
-                                            fadeInSpec = null,
-                                            fadeOutSpec = null
-                                        )
-                                        .width(itemInHorizontalGridWidth),
-                                    disableScrollingText = disableScrollingText,
-                                    isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false,
-                                    forceRecompose = forceRecompose
+                                    modifier = Modifier.width( itemInHorizontalGridWidth )
                                 )
                             }
                         }
 
-                        if (relatedInit != null) {
+                        relatedInit?.let { relatedPage ->
                             items(
-                                items = relatedInit?.songs?.distinctBy { it.key }?.filter {
-                                    if (cachedSongs != null) {
-                                        cachedSongs.indexOf(it.asMediaItem.mediaId) < 0
-                                    } else true
-                                }
-                                    ?.dropLast(if (trending == null) 0 else 1)
-                                    ?: emptyList(),
-                                key = Innertube.SongItem::key
+                                items = relatedPage.songs
+                                                   ?.distinctBy( Innertube.SongItem::key )
+                                                   ?.filter {
+                                                       cachedSongs == null || cachedSongs.indexOf( it.key ) < 0
+                                                   }
+                                                   ?.dropLast( if( trending == null) 0 else 1 )
+                                                   ?.map( Innertube.SongItem::asSong )
+                                                   .orEmpty(),
+                                key = Song::id
                             ) { song ->
-                                val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                                downloadState = getDownloadState(song.asMediaItem.mediaId)
-                                val isDownloaded =
-                                    if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
-                                var forceRecompose by remember { mutableStateOf(false) }
-                                SongItem(
+                                me.knighthat.component.SongItem(
                                     song = song,
-                                    onDownloadClick = {
-                                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                        Database.asyncTransaction {
-                                            formatTable.findBySongId( song.key )
-                                        }
-                                        if (!isLocal)
-                                            manageDownload(
-                                                context = context,
-                                                mediaItem = song.asMediaItem,
-                                                downloadState = isDownloaded
-                                            )
-
-                                    },
-                                    downloadState = downloadState,
-                                    thumbnailSizePx = songThumbnailSizePx,
-                                    thumbnailSizeDp = songThumbnailSizeDp,
-                                    modifier = Modifier
-                                        .animateItem(
-                                            fadeInSpec = null,
-                                            fadeOutSpec = null
+                                    onClick = {
+                                        binder?.stopRadio()
+                                        binder?.player?.forcePlay( song.asMediaItem )
+                                        binder?.setupRadio(
+                                            NavigationEndpoint.Endpoint.Watch( song.id )
                                         )
-                                        .width(itemInHorizontalGridWidth)
-                                        .combinedClickable(
-                                            onLongClick = {
-                                                menuState.display {
-                                                    NonQueuedMediaItemMenu(
-                                                        navController = navController,
-                                                        onDismiss = {
-                                                            menuState.hide()
-                                                            forceRecompose = true
-                                                        },
-                                                        mediaItem = song.asMediaItem,
-                                                        onDownload = {
-                                                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                                            Database.asyncTransaction {
-                                                                formatTable.findBySongId( song.key )
-                                                            }
-                                                            manageDownload(
-                                                                context = context,
-                                                                mediaItem = song.asMediaItem,
-                                                                downloadState = isDownloaded
-                                                            )
-                                                        },
-                                                        disableScrollingText = disableScrollingText
-                                                    )
-                                                }
-                                                hapticFeedback.performHapticFeedback(
-                                                    HapticFeedbackType.LongPress
-                                                )
-                                            },
-                                            onClick = {
-                                                val mediaItem = song.asMediaItem
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlay(mediaItem)
-                                                binder?.setupRadio(
-                                                    NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
-                                                )
-                                            }
-                                        ),
-                                    disableScrollingText = disableScrollingText,
-                                    isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false,
-                                    forceRecompose = forceRecompose
+                                    },
+                                    modifier = Modifier.width( itemInHorizontalGridWidth )
                                 )
                             }
                         }
                     }
 
                     if (relatedInit == null) Loader()
-
                 }
 
 
