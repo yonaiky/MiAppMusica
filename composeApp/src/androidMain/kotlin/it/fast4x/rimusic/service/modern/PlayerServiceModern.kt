@@ -14,7 +14,6 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.AudioDeviceCallback
@@ -102,6 +101,7 @@ import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
+import it.fast4x.rimusic.extensions.connectivity.AndroidConnectivityObserverLegacy
 import it.fast4x.rimusic.extensions.discord.sendDiscordPresence
 import it.fast4x.rimusic.isHandleAudioFocusEnabled
 import it.fast4x.rimusic.models.Event
@@ -261,14 +261,12 @@ class PlayerServiceModern : MediaLibraryService(),
         Database.songTable.findById( mediaItem?.mediaId ?: "" )
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-//    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-//    private val currentFormat = currentMediaItem.flatMapLatest { mediaItem ->
-//        mediaItem?.mediaId?.let { Database.format(it) }!!
-//    }
-
     var currentSongStateDownload = MutableStateFlow(Download.STATE_STOPPED)
 
-    //private lateinit var connectivityManager: ConnectivityManager
+    lateinit var connectivityObserver: AndroidConnectivityObserverLegacy
+    private val isNetworkAvailable = MutableStateFlow(true)
+    private val waitingForNetwork = MutableStateFlow(false)
+
     private var notificationManager: NotificationManager? = null
     private val playerVerticalWidget = PlayerVerticalWidget()
     private val playerHorizontalWidget = PlayerHorizontalWidget()
@@ -280,12 +278,26 @@ class PlayerServiceModern : MediaLibraryService(),
         super.onCreate()
 
         // Enable Android Auto if disabled, REQUIRE ENABLING DEV MODE IN ANDROID AUTO
-        val component = ComponentName(this, PlayerServiceModern::class.java)
-        packageManager.setComponentEnabledSetting(
-            component,
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
-        )
+        try {
+            connectivityObserver.unregister()
+        } catch (e: Exception) {
+            // isn't registered
+        }
+        connectivityObserver = AndroidConnectivityObserverLegacy(this@PlayerServiceModern)
+        coroutineScope.launch {
+            connectivityObserver.networkStatus.collect { isAvailable ->
+                isNetworkAvailable.value = isAvailable
+                Timber.d("PlayerServiceModern network status: $isAvailable")
+                println("PlayerServiceModern network status: $isAvailable")
+                if (isAvailable && waitingForNetwork.value) {
+                    waitingForNetwork.value = false
+                    withContext(Dispatchers.Main) {
+                        player.prepare()
+                        player.play()
+                    }
+                }
+            }
+        }
 
         val notificationType = preferences.getEnum(notificationTypeKey, NotificationType.Default)
         when(notificationType){
@@ -469,8 +481,6 @@ class PlayerServiceModern : MediaLibraryService(),
 
         audioVolumeObserver = AudioVolumeObserver(this)
         audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
-
-        //connectivityManager = getSystemService()!!
 
         // Download listener help to notify download change to UI
         downloadListener = object : DownloadManager.Listener {
@@ -774,10 +784,34 @@ class PlayerServiceModern : MediaLibraryService(),
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        Timber.e("PlayerService onPlayerError ${error.stackTraceToString()}")
-        println("mediaItem onPlayerError errorCode ${error.errorCode} errorCodeName ${error.errorCodeName}")
-        if (error.errorCode in PlayerErrorsToReload) {
-            //println("mediaItem onPlayerError recovered occurred errorCodeName ${error.errorCodeName}")
+
+        Timber.e("PlayerServiceModern onPlayerError error code ${error.errorCode} message ${error.message} cause ${error.cause?.cause}")
+        println("PlayerServiceModern onPlayerError error code ${error.errorCode} message ${error.message} cause ${error.cause?.cause}")
+
+        val playbackConnectionExeptionList = listOf(
+            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, //primary error code to manage
+            PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT
+        )
+
+        // check if error is caused by internet connection
+        val isConnectionError = (error.cause?.cause is PlaybackException)
+                && (error.cause?.cause as PlaybackException).errorCode in playbackConnectionExeptionList
+
+        if (!isNetworkAvailable.value || isConnectionError) {
+            waitingForNetwork.value = true
+            Toaster.noInternet()
+            return
+        }
+
+        val playbackHttpExeptionList = listOf(
+            PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS,
+            PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE,
+            416 // 416 Range Not Satisfiable
+        )
+
+        if (error.errorCode in playbackHttpExeptionList) {
+            Timber.e("PlayerServiceModern onPlayerError recovered occurred errorCodeName ${error.errorCodeName} cause ${error.cause?.cause}")
+            println("PlayerServiceModern onPlayerError recovered occurred errorCodeName ${error.errorCodeName} cause ${error.cause?.cause}")
             player.pause()
             player.prepare()
             player.play()
@@ -832,6 +866,9 @@ class PlayerServiceModern : MediaLibraryService(),
                 sendOpenEqualizerIntent()
             } else {
                 sendCloseEqualizerIntent()
+                if (!player.playWhenReady) {
+                    waitingForNetwork.value = false
+                }
             }
         }
 
