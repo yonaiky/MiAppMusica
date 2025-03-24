@@ -6,9 +6,13 @@ on:
   # Therefore, when 1 of them changes, everything needs
   # to be rebuild for up-to-date cache.
   push:
+    
     paths:
       - '**/*.gradle*'
       - '**/gradle-wrapper.properties'
+    # Don't run on tag creation
+    tags-ignore:
+      - '**'
 
   schedule:
     # Runs every other day at midnight UTC
