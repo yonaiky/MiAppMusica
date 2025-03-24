@@ -187,57 +187,19 @@ jobs:
               <p><b>Kreate</b> - by @knighthat</p>
             </div>
             
-            ## ATTENTION
-            
-            **NEW**: This is the final update for old Kreate upstream and improvised. New version of Kreate
-            is now a standalone app, with its own identity.
-            
-            ### If you're on old Kreate
-            
-            Continue to download your flavor (upstream or improvise) to unlock button to export your data
-            to a file for migration
-            
-            ### If you're a new user
-            
-            Please download `Kreate-full.apk` or `Kreate-minified.apk` according to your preference 
-            (`minified` version offers smaller size without any loss, only install `full` if you have 
-            troubles with `minified` version)
-            
-            ### How to migrate
-
-            Install new Kreate (don't worry, it won't override your data) then **Settings** > **Data** > **Import migration file**.
-            
-            Or, visit [document](https://kreate.knighthat.me/usr/how-to-migrate) for demonstrations
-            
             ## 📲 Installation
+  
+            Download and install `minified` version of the app (because the size is smaller).\
+            Only install `full` version when `minified` exhibits problems during installation.\
+            If you have trouble using the app, report it with the link below.
             
-            This version is signed by (@knighthat). Android treats this build as if this is a different app, thus,
-            your old RiMusic app will not be removed nor its data will be wiped.
-            
-            > Help! I install your build before Jan 5th, which version should I download now?
-            > **_improvised_** is your updated version. Download _minified_ or _full_ as you see fit.
-            > Your app will be updated normally without losing any data in the process.
-            > 
             > **If Android says that data will be wiped, cancel and report it [HERE](https://github.com/knighthat/Kreate/issues/new?assignees=&labels=bug&template=bug_report.yaml)**
             
             ## Verification
             
-            > Always check for signature before installing any app you downloaded from Github or any other APK distributors.
+            > Always check for signature before installing any app you downloaded from Github or any other APK distributors.\
             
-            ### My signature hashes
-              
-            | Algorithm      | Variant    | Hash digest                                                      |
-            |----------------|------------|------------------------------------------------------------------|
-            | SHA-256        | improvised | 8c1bf1d9f63288f36837aba5ba3dbef929d0e78055d3cd6d9ec8d26ae487f56e |
-            | SHA-1          | improvised | 2dae81c56e516193f433c04b5b8b2f79c39ecec2                         |
-            | MD5            | improvised | b8ac8c9d91e7c6972d966e0e167e0e71                                 |
-            | SHA-256        | upstream   | 899d2f3924b1f563f898853cc1767f261de4124b106040c6d934bc2dd503d4e0 |
-            | SHA-1          | upstream   | 363e4cdf85e6089047b0a97f236dfe5875e12719                         |
-            | MD5            | upstream   | 6f8f59849089efc9e55b05448f1b8380                                 |
-            
-            ### New Kreate APKs
-            
-            > These are public key hashes
+            ### Public key hashes
             
             | Algorithm      | Hash digest                                                      |
             |----------------|------------------------------------------------------------------|
