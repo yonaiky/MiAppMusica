@@ -207,6 +207,14 @@ jobs:
             | SHA-1          | f49a497bd47322c90e9f534ff945ac05f3a8e77a                         |
             | MD5            | d4fc781f4a5ffc10434cb84d93706eba                                 |
             
+            ### Certificate hashes
+            
+            | Algorithm      | Hash digest                                                      |
+            |----------------|------------------------------------------------------------------|
+            | SHA-256        | 1bd03a8de5df4dbd7faddb81b9f2aaf55681a584a93d6fb47e9a5ccc736ef7ac |
+            | SHA-1          | 1690571d0d8b8d54c43a4b9460a2a2bc5f67e9bc                         |
+            | MD5            | 320e604e315a0abb177e8d7570dcf4dc                                 |
+            
             ## FAQ
             
             <details> 
