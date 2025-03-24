@@ -362,7 +362,6 @@ fun AppNavigation(
                 )
             )
         ) { navBackStackEntry ->
-            val context = LocalContext.current
             val text = navBackStackEntry.arguments?.getString("text") ?: ""
 
             SearchScreen(
@@ -377,11 +376,11 @@ fun AppNavigation(
                         route = "${NavRoutes.searchResults.name}/${Uri.encode( query )}",
                     )
 
-                    if (!context.preferences.getBoolean(pauseSearchHistoryKey, false)) {
+                    if ( !context.preferences.getBoolean(pauseSearchHistoryKey, false) )
                         Database.asyncTransaction {
-                            searchTable.insert( SearchQuery(query = query) )
+                            // Must ignore to prevent "UNIQUE constraint" exception
+                            searchTable.insertIgnore( SearchQuery(query = query) )
                         }
-                    }
                 },
 
                 )
