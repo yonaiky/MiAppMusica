@@ -103,7 +103,7 @@ fun typographyOf(color: Color, useSystemFont: Boolean, applyFontPadding: Boolean
         },
         fontWeight = FontWeight.Normal,
         color = color,
-        platformStyle = @Suppress("DEPRECATION") (PlatformTextStyle(includeFontPadding = applyFontPadding))
+        platformStyle = PlatformTextStyle(includeFontPadding = applyFontPadding)
     )
 
     return Typography(
