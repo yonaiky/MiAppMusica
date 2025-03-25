@@ -5,7 +5,15 @@
 
 version: 2
 updates:
-  - package-ecosystem: "gradle" # See documentation for possible values
+  - package-ecosystem: gradle # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 20
+  - package-ecosystem: github-actions # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: weekly
+      day: wednesday
+    open-pull-requests-limit: 10
