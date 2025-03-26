@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -54,6 +54,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
@@ -491,10 +492,11 @@ fun DataSettings() {
         )
         RestartPlayerService(restartService, onRestart = { restartService = false } )
 
-        var queriesCount by remember { mutableLongStateOf( 0L ) }
-        Database.asyncQuery {
-           queriesCount = searchTable.countAll()
-        }
+        val queriesCount by remember {
+            Database.searchTable
+                    .findAllContain("")
+                    .map { it.size }
+        }.collectAsState( 0, Dispatchers.IO )
 
         SettingsEntry(
             title = stringResource(R.string.clear_search_history),
