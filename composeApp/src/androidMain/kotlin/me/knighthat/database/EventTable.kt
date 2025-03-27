@@ -27,7 +27,7 @@ interface EventTable: SqlTable<Event> {
      *
      * @return number of rows deleted
      */
-    fun delete( song: Song ) = delete( "WHERE songId = ${song.id}" )
+    fun delete( song: Song ) = delete( "WHERE songId = '${song.id}'" )
 
     /**
      * Return a list of songs that were listened to by user.

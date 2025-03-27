@@ -22,7 +22,7 @@ interface SongAlbumMapTable: SqlTable<SongAlbumMap> {
      *
      * @return number of rows affected by this operation
      */
-    fun clear( albumId: String ) = delete( "albumId = $albumId" )
+    fun clear( albumId: String ) = delete( "albumId = '$albumId'" )
 
     /**
      * Delete all mappings where songs aren't exist in `Song` table

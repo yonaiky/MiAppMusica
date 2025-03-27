@@ -18,7 +18,7 @@ interface FormatTable: SqlTable<Format> {
      *
      * @return number of rows affected by this operation
      */
-    fun deleteBySongId( songId: String ) = delete( "songId = $songId" )
+    fun deleteBySongId( songId: String ) = delete( "songId = '$songId'" )
 
     /**
      * @param songId of song to look for

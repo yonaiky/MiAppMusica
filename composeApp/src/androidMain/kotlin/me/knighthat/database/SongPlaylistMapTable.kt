@@ -26,7 +26,7 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
      *
      * @return number of rows affected by this operation
      */
-    fun deleteBySongId( songId: String ): Long = delete( "songId = $songId" )
+    fun deleteBySongId( songId: String ): Long = delete( "songId = '$songId'" )
 
     /**
      * Remove song with [songId] from playlist with id [playlistId]
@@ -34,7 +34,7 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
      * @return number of rows affected by this operation
      */
     fun deleteBySongId( songId: String, playlistId: Long ) =
-        delete( "songId = $songId and playlistId = $playlistId" )
+        delete( "songId = '$songId' AND playlistId = $playlistId" )
 
     /**
      * Remove all songs belong to playlist with id [playlistId]
