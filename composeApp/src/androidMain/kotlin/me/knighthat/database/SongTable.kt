@@ -20,9 +20,6 @@ import kotlinx.coroutines.flow.take
 @RewriteQueriesToDropUnusedColumns
 interface SongTable: SqlTable<Song> {
 
-    override val tableName: String
-        get() = "Song"
-
     /**
      * @return all records from this table
      */
@@ -72,7 +69,8 @@ interface SongTable: SqlTable<Song> {
      *
      * @return number of rows affected by this operation
      */
-    fun clearHiddenSongs() = delete( "totalPlayTimeMs = 0" )
+    @Query("DELETE FROM Song WHERE totalPlayTimeMs = 0")
+    fun clearHiddenSongs(): Int
 
     /**
      * @param songId of album to look for

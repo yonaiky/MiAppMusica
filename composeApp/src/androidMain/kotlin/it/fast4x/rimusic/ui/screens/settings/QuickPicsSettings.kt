@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +41,7 @@ import it.fast4x.rimusic.utils.showPlaylistMightLikeKey
 import it.fast4x.rimusic.utils.showRelatedAlbumsKey
 import it.fast4x.rimusic.utils.showSimilarArtistsKey
 import it.fast4x.rimusic.utils.showTipsKey
+import kotlinx.coroutines.Dispatchers
 import me.knighthat.utils.Toaster
 
 @ExperimentalAnimationApi
@@ -244,10 +245,10 @@ fun  QuickPicsSettings() {
         ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
          */
 
-        var eventsCount by remember { mutableLongStateOf( 0L ) }
-        Database.asyncQuery {
-            eventsCount = eventTable.countAll()
-        }
+        val eventsCount by remember {
+            Database.eventTable
+                    .countAll()
+        }.collectAsState( 0L, Dispatchers.IO )
 
         SettingsEntry(
             title = stringResource(R.string.reset_quick_picks),

@@ -18,23 +18,21 @@ import kotlinx.coroutines.flow.take
 @RewriteQueriesToDropUnusedColumns
 interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
 
-    override val tableName: String
-        get() = "SongPlaylistMap"
-
     /**
      * Song with [songId] will be removed from all playlists
      *
      * @return number of rows affected by this operation
      */
-    fun deleteBySongId( songId: String ): Long = delete( "songId = '$songId'" )
+    @Query("DELETE FROM SongPlaylistMap WHERE songId = :songId")
+    fun deleteBySongId( songId: String ): Int
 
     /**
      * Remove song with [songId] from playlist with id [playlistId]
      *
      * @return number of rows affected by this operation
      */
-    fun deleteBySongId( songId: String, playlistId: Long ) =
-        delete( "songId = '$songId' AND playlistId = $playlistId" )
+    @Query("DELETE FROM SongPlaylistMap WHERE songId = :songId AND playlistId = :playlistId")
+    fun deleteBySongId( songId: String, playlistId: Long ): Int
 
     /**
      * Remove all songs belong to playlist with id [playlistId]
@@ -43,14 +41,22 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
      *
      * @return number of rows affected by this operation
      */
-    fun clear( playlistId: Long ) = delete( "playlistId = $playlistId" )
+    @Query("DELETE FROM SongPlaylistMap WHERE playlistId = :playlistId")
+    fun clear( playlistId: Long ): Int
 
     /**
      * Delete all mappings where songs aren't exist in `Song` table
      *
      * @return number of rows affected by this operation
      */
-    fun clearGhostMaps() = delete( "songId NOT IN (SELECT DISTINCT id FROM Song)" )
+    @Query("""
+        DELETE FROM SongPlaylistMap 
+        WHERE songId NOT IN (
+            SELECT DISTINCT id
+            FROM Song
+        )
+    """)
+    fun clearGhostMaps(): Int
 
     /**
      * @param playlistId of playlist to look for

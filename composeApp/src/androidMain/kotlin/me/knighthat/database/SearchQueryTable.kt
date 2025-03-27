@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @RewriteQueriesToDropUnusedColumns
 interface SearchQueryTable: SqlTable<SearchQuery> {
 
-    override val tableName: String
-        get() = "SearchQuery"
-
     /**
      * [searchTerm] appears in [SearchQuery.query].
      * Additionally, it's **case-insensitive**
@@ -28,4 +25,7 @@ interface SearchQueryTable: SqlTable<SearchQuery> {
         WHERE `query` LIKE '%' || :searchTerm || '%' COLLATE NOCASE
         """)
     fun findAllContain( searchTerm: String ): Flow<List<SearchQuery>>
+
+    @Query("DELETE FROM SearchQuery")
+    fun deleteAll(): Int
 }

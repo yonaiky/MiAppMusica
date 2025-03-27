@@ -12,15 +12,19 @@ import kotlinx.coroutines.flow.Flow
 @RewriteQueriesToDropUnusedColumns
 interface SongArtistMapTable: SqlTable<SongArtistMap> {
 
-    override val tableName: String
-        get() = "SongArtistMap"
-
     /**
      * Delete all mappings where songs aren't exist in `Song` table
      *
      * @return number of rows affected by this operation
      */
-    fun clearGhostMaps() = delete( "songId NOT IN (SELECT DISTINCT id FROM Song)" )
+    @Query("""
+        DELETE FROM SongArtistMap 
+        WHERE songId NOT IN (
+            SELECT DISTINCT id
+            FROM Song
+        )
+    """)
+    fun clearGhostMaps(): Int
 
     /**
      * @param artistId of artist to look for

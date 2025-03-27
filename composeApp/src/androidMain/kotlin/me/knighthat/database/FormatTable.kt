@@ -10,15 +10,13 @@ import kotlinx.coroutines.flow.Flow
 @RewriteQueriesToDropUnusedColumns
 interface FormatTable: SqlTable<Format> {
 
-    override val tableName: String
-        get() = "Format"
-
     /**
      * Song with [songId] will have its [Format] removed
      *
      * @return number of rows affected by this operation
      */
-    fun deleteBySongId( songId: String ) = delete( "songId = '$songId'" )
+    @Query("DELETE FROM Format WHERE songId = :songId")
+    fun deleteBySongId( songId: String ): Int
 
     /**
      * @param songId of song to look for

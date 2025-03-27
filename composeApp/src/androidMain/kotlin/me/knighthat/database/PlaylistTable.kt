@@ -20,9 +20,6 @@ import kotlinx.coroutines.flow.take
 @RewriteQueriesToDropUnusedColumns
 interface PlaylistTable: SqlTable<Playlist> {
 
-    override val tableName: String
-        get() = "Playlist"
-
     /**
      * @return list of songs that were mapped to at least 1 playlist
      */

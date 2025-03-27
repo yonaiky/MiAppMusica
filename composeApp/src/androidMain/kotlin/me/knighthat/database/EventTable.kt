@@ -15,19 +15,11 @@ import me.knighthat.database.ext.EventWithSong
 @RewriteQueriesToDropUnusedColumns
 interface EventTable: SqlTable<Event> {
 
-    override val tableName: String
-        get() = "Event"
+    @Query("SELECT COUNT(*) FROM Event")
+    fun countAll(): Flow<Long>
 
     @Query("SELECT DISTINCT * FROM Event LIMIT :limit")
     fun allWithSong( limit: Int = Int.MAX_VALUE ): Flow<List<EventWithSong>>
-
-    /**
-     * Delete any record if its [Event.songId]
-     * equals to provided [song]'s id.
-     *
-     * @return number of rows deleted
-     */
-    fun delete( song: Song ) = delete( "WHERE songId = '${song.id}'" )
 
     /**
      * Return a list of songs that were listened to by user.
@@ -162,4 +154,7 @@ interface EventTable: SqlTable<Event> {
         to: Long = System.currentTimeMillis(),
         limit: Long = Long.MAX_VALUE
     ): Flow<List<PlaylistPreview>>
+
+    @Query("DELETE FROM Event")
+    fun deleteAll(): Int
 }

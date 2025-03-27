@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @RewriteQueriesToDropUnusedColumns
 interface QueuedMediaItemTable: SqlTable<QueuedMediaItem> {
 
-    override val tableName: String
-        get() = "QueuedMediaItem"
-
     /**
      * @return all records from this table
      */
@@ -22,4 +19,7 @@ interface QueuedMediaItemTable: SqlTable<QueuedMediaItem> {
         LIMIT :limit
     """)
     fun all( limit: Int = Int.MAX_VALUE ): Flow<List<QueuedMediaItem>>
+
+    @Query("DELETE FROM QueuedMediaItem")
+    fun deleteAll(): Int
 }

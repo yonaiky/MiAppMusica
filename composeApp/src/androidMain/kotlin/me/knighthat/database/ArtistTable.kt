@@ -15,9 +15,6 @@ import kotlinx.coroutines.flow.take
 @RewriteQueriesToDropUnusedColumns
 interface ArtistTable: SqlTable<Artist> {
 
-    override val tableName: String
-        get() = "Artist"
-
     /**
      * @return all artists from this table that are followed by user
      */
