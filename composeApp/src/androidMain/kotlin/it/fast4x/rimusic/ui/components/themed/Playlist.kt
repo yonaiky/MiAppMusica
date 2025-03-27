@@ -26,7 +26,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +35,8 @@ import kotlinx.coroutines.flow.map
 
 @Composable
 fun Playlist(
-    playlist: PlaylistPreview,
+    playlist: Playlist,
+    songCount: Int,
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
@@ -46,7 +47,7 @@ fun Playlist(
 ) {
     val thumbnails by remember {
         Database.songPlaylistMapTable
-                .sortSongsByPlayTime( playlist.playlist.id )
+                .sortSongsByPlayTime( playlist.id )
                 .distinctUntilChanged()
                 .map { list ->
                     list.takeLast( 4 ).map {
@@ -94,12 +95,12 @@ fun Playlist(
                     }
                 }
             }
-            if (playlist.playlist.browseId?.isNotEmpty() == true && !playlist.playlist.name.startsWith(
+            if (playlist.browseId?.isNotEmpty() == true && !playlist.name.startsWith(
                     PIPED_PREFIX)
             ) {
                 Image(
                     painter = painterResource(R.drawable.ytmusic),
-                    colorFilter = ColorFilter.tint(if (playlist.playlist.isYoutubePlaylist) Color.Red.copy(0.75f).compositeOver(
+                    colorFilter = ColorFilter.tint(if (playlist.isYoutubePlaylist) Color.Red.copy(0.75f).compositeOver(
                         Color.White) else colorPalette().text),
                     modifier = Modifier
                         .size(40.dp)
@@ -108,7 +109,7 @@ fun Playlist(
                     contentScale = ContentScale.Fit
                 )
             }
-            if (playlist.playlist.isYoutubePlaylist && !playlist.playlist.isEditable){
+            if (playlist.isYoutubePlaylist && !playlist.isEditable){
                 Image(
                     painter = painterResource(R.drawable.locked),
                     colorFilter = ColorFilter.tint(Color.Red),
@@ -123,8 +124,8 @@ fun Playlist(
                 )
             }
         },
-        songCount = playlist.songCount,
-        name = cleanPrefix(playlist.playlist.name),
+        songCount = songCount,
+        name = cleanPrefix(playlist.name),
         channelName = null,
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,

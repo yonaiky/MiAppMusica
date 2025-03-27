@@ -137,7 +137,6 @@ import it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
 import it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runBlocking
@@ -179,21 +178,29 @@ fun LocalPlaylistSongs(
     val lazyListState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
 
-    val playlistPreview by remember {
-        Database.playlistTable
-                .findAsPreview( playlistId )
-    }.collectAsState( null, Dispatchers.IO )
-    var items by persistList<Song>( "localPlaylist/$playlistId/items" )
-    var itemsOnDisplay by persistList<Song>("localPlaylist/$playlistId/songs/on_display")
+    // Settings
+    val parentalControlEnabled by rememberPreference( parentalControlEnabledKey, false )
+    val isPipedEnabled by rememberPreference( isPipedEnabledKey, false )
+    val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
+    var isRecommendationEnabled by rememberPreference( isRecommendationEnabledKey, false )
 
     // Non-vital
-    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     val pipedSession = getPipedSession()
-    var isRecommendationEnabled by rememberPreference(isRecommendationEnabledKey, false)
-    // Playlist non-vital
     val thumbnailUrl = remember { mutableStateOf("") }
+
+    val playlist by remember {
+        Database.playlistTable
+                .findById( playlistId )
+    }.collectAsState( null, Dispatchers.IO )
+
+    val sort = PlaylistSongsSort.init()
+    val items by remember( sort.sortBy, sort.sortOrder ) {
+        Database.songPlaylistMapTable
+                .sortSongs( playlistId, sort.sortBy, sort.sortOrder )
+                .flowOn( Dispatchers.IO )
+                .distinctUntilChanged()
+    }.collectAsState( emptyList(), Dispatchers.IO )
+    var itemsOnDisplay by persistList<Song>("localPlaylist/$playlistId/songs/on_display")
 
     val itemSelector = ItemSelector<Song>()
 
@@ -201,21 +208,20 @@ fun LocalPlaylistSongs(
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
     val search = Search.init()
-    val sort = PlaylistSongsSort.init()
     val shuffle = SongShuffler ( ::getSongs )
-    val renameDialog = RenamePlaylistDialog { playlistPreview?.playlist }
+    val renameDialog = RenamePlaylistDialog { playlist }
     val exportDialog = ExportSongsToCSVDialog(
         playlistId = playlistId,
-        playlistName = playlistPreview?.playlist?.name ?: "",
+        playlistName = playlist?.name ?: "",
         songs = ::getSongs
     )
     val deleteDialog = DeletePlaylist {
         Database.asyncTransaction {
-            playlistPreview?.playlist?.let( playlistTable::delete )
+            playlist?.let( playlistTable::delete )
         }
 
         if (
-            playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true
+            playlist?.name?.startsWith(PIPED_PREFIX) == true
             && isPipedEnabled
             && pipedSession.token.isNotEmpty()
         )
@@ -223,7 +229,7 @@ fun LocalPlaylistSongs(
                 context = context,
                 coroutineScope = coroutineScope,
                 pipedSession = pipedSession.toApiSession(),
-                id = UUID.fromString(playlistPreview?.playlist?.browseId)
+                id = UUID.fromString(playlist?.browseId)
             )
 
         onDismiss()
@@ -240,14 +246,14 @@ fun LocalPlaylistSongs(
         // Callback is invoked after the user selects a media item or closes the
         // photo picker.
         if (uri != null) {
-            val thumbnailName = "playlist_${playlistPreview?.playlist?.id}"
+            val thumbnailName = "playlist_${playlist?.id}"
             val permaUri = saveImageToInternalStorage(context, uri, "thumbnail", thumbnailName)
             thumbnailUrl.value = permaUri.toString()
         } else {
             Toaster.w( R.string.thumbnail_not_selected )
         }
     }
-    val pin = PinPlaylist( playlistPreview?.playlist )
+    val pin = PinPlaylist( playlist )
     val positionLock = PositionLock.init( sort.sortOrder )
     LaunchedEffect( itemSelector.isActive ) {
         // Setting this field to true means disable it
@@ -306,8 +312,8 @@ fun LocalPlaylistSongs(
     )
 
     fun sync() {
-        playlistPreview?.let { playlistPreview ->
-            if (!playlistPreview.playlist.name.startsWith(
+        playlist?.let {
+            if (!it.name.startsWith(
                     PIPED_PREFIX,
                     0,
                     true
@@ -318,7 +324,7 @@ fun LocalPlaylistSongs(
                         withContext(Dispatchers.IO) {
                             Innertube.playlistPage(
                                 BrowseBody(
-                                    browseId = playlistPreview.playlist.browseId
+                                    browseId = it.browseId
                                         ?: ""
                                 )
                             )
@@ -346,9 +352,9 @@ fun LocalPlaylistSongs(
                     coroutineScope = coroutineScope,
                     pipedSession = pipedSession.toApiSession(),
                     idPipedPlaylist = UUID.fromString(
-                        playlistPreview.playlist.browseId
+                        it.browseId
                     ),
-                    playlistId = playlistPreview.playlist.id
+                    playlistId = it.id
 
                 )
             }
@@ -356,7 +362,7 @@ fun LocalPlaylistSongs(
     }
     val syncComponent = Synchronize { sync() }
     val listenOnYT = ListenOnYouTube {
-        val browseId = playlistPreview?.playlist?.browseId?.removePrefix( "VL" )
+        val browseId = playlist?.browseId?.removePrefix( "VL" )
 
         binder?.player?.pause()
         uriHandler.openUri( "https://youtube.com/playlist?list=$browseId" )
@@ -373,7 +379,7 @@ fun LocalPlaylistSongs(
             Toaster.w( R.string.no_thumbnail_present )
             return
         }
-        val thumbnailName = "thumbnail/playlist_${playlistPreview?.playlist?.id}"
+        val thumbnailName = "thumbnail/playlist_${playlist?.id}"
         val retVal = deleteFileIfExists(context, thumbnailName)
         if(retVal == true){
             Toaster.s( R.string.removed_thumbnail )
@@ -394,9 +400,6 @@ fun LocalPlaylistSongs(
 
     LaunchedEffect( isRecommendationEnabled ) {
         if( !isRecommendationEnabled ) {
-            // Clear the map when this feature is turned off
-            items = items.filterNot { it in relatedSongs.keys }
-
             relatedSongs = emptyMap()
             return@LaunchedEffect
         }
@@ -449,13 +452,6 @@ fun LocalPlaylistSongs(
                  }
     }
     //</editor-fold>
-    LaunchedEffect( sort.sortOrder, sort.sortBy ) {
-        Database.songPlaylistMapTable
-                .sortSongs( playlistId, sort.sortBy, sort.sortOrder )
-                .flowOn( Dispatchers.IO )
-                .distinctUntilChanged()
-                .collectLatest { items = it }
-    }
     LaunchedEffect( items, relatedSongs, search.input, parentalControlEnabled ) {
         items.toMutableList()
              .apply {
@@ -478,7 +474,7 @@ fun LocalPlaylistSongs(
              }
             .let { itemsOnDisplay = it }
     }
-    LaunchedEffect( playlistPreview?.playlist?.name ) {
+    LaunchedEffect( playlist?.name ) {
 //        renameDialog.playlistName = playlistPreview?.playlist?.name?.let { name ->
 //            if( name.startsWith( MONTHLY_PREFIX, true ) )
 //                getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
@@ -524,19 +520,10 @@ fun LocalPlaylistSongs(
     val playlistThumbnailSizeDp = Dimensions.thumbnails.playlist
     val playlistThumbnailSizePx = playlistThumbnailSizeDp.px
 
-    val thumbnailSizeDp = Dimensions.thumbnails.song
-    val thumbnailSizePx = thumbnailSizeDp.px
-
     val rippleIndication = ripple(bounded = false)
 
-//    var nowPlayingItem by remember {
-//        mutableStateOf(-1)
-//    }
-
     val playlistNotMonthlyType =
-        playlistPreview?.playlist?.name?.startsWith(MONTHLY_PREFIX, 0, true) == false
-    val playlistNotPipedType =
-        playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX, 0, true) == false
+        playlist?.name?.startsWith(MONTHLY_PREFIX, 0, true) == false
 
 
     Box(
@@ -573,7 +560,7 @@ fun LocalPlaylistSongs(
                 ) {
 
                     HeaderWithIcon(
-                        title = cleanPrefix( playlistPreview?.playlist?.name ?: "" ),
+                        title = cleanPrefix( playlist?.name ?: "" ),
                         iconId = R.drawable.playlist,
                         enabled = true,
                         showIcon = false,
@@ -596,9 +583,10 @@ fun LocalPlaylistSongs(
                         )
                 ) {
 
-                    playlistPreview?.let {
+                    playlist?.let {
                         Playlist(
                             playlist = it,
+                            songCount = items.size,
                             thumbnailSizeDp = playlistThumbnailSizeDp,
                             thumbnailSizePx = playlistThumbnailSizePx,
                             alternative = true,
@@ -683,10 +671,10 @@ fun LocalPlaylistSongs(
                         this.add( enqueue )
                         this.add( addToFavorite )
                         this.add( addToPlaylist )
-                        if( playlistPreview?.playlist?.browseId?.isNotBlank() == true )
+                        if( !playlist?.browseId.isNullOrBlank() ) {
                             this.add( syncComponent )
-                        if( playlistPreview?.playlist?.browseId?.isNotBlank() == true )
                             this.add( listenOnYT )
+                        }
                         this.add( renameDialog )
                         this.add( renumberDialog )
                         this.add( deleteDialog )
@@ -697,7 +685,7 @@ fun LocalPlaylistSongs(
                     }
                 )
 
-                if (autosync && playlistPreview?.let { playlistPreview -> !playlistPreview.playlist.browseId.isNullOrBlank() } == true) {
+                if ( autosync && playlist?.browseId.isNullOrBlank() ) {
                     sync()
                 }
 
@@ -777,13 +765,13 @@ fun LocalPlaylistSongs(
                             }
 
 
-                            if (playlistPreview?.playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                                Timber.d("MediaItemMenu LocalPlaylistSongs onSwipeToLeft browseId ${playlistPreview!!.playlist.browseId}")
+                            if (playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
+                                Timber.d("MediaItemMenu LocalPlaylistSongs onSwipeToLeft browseId ${playlist?.browseId}")
                                 removeFromPipedPlaylist(
                                     context = context,
                                     coroutineScope = coroutineScope,
                                     pipedSession = pipedSession.toApiSession(),
-                                    id = UUID.fromString(playlistPreview?.playlist?.browseId),
+                                    id = UUID.fromString(playlist?.browseId),
                                     index
                                 )
                             }

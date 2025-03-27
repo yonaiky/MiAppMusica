@@ -120,16 +120,10 @@ interface PlaylistTable: SqlTable<Playlist> {
     fun findByName( playlistName: String ): Flow<Playlist?>
 
     /**
-     * @return playlist with id [playlistId] and its number of songs
+     * @return playlist with id [playlistId]
      */
-    @Query("""
-        SELECT Playlist.*, COUNT(songId) AS songCount
-        FROM Playlist 
-        JOIN SongPlaylistMap ON playlistId = id
-        WHERE id = :playlistId
-        ORDER BY position
-    """)
-    fun findAsPreview( playlistId: Long ): Flow<PlaylistPreview?>
+    @Query("SELECT * FROM Playlist WHERE id = :playlistId")
+    fun findById( playlistId: Long ): Flow<Playlist?>
 
     /**
      * @return whether a playlist with name [playlistName] exists in the database
