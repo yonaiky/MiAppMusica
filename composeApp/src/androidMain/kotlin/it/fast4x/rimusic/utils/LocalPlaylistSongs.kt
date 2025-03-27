@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
@@ -38,35 +37,6 @@ import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import kotlinx.coroutines.CoroutineScope
 import me.knighthat.utils.Toaster
 import java.util.UUID
-
-
-@Composable
-fun pin(
-    playlistPreview: PlaylistPreview?,
-    playlistId: Long
-): MenuIcon = object: MenuIcon, DynamicColor, Descriptive {
-
-    override val iconId: Int = R.drawable.pin
-    override val messageId: Int = R.string.info_pin_unpin_playlist
-    override val menuIconTitle: String
-        @Composable
-        get() = stringResource( messageId )
-
-    override var isFirstColor: Boolean by rememberSaveable( playlistPreview ) { mutableStateOf( isPinned() ) }
-
-    fun isPinned(): Boolean {
-        return playlistPreview?.playlist
-                              ?.name
-                              ?.startsWith( PINNED_PREFIX, true ) == true
-    }
-
-    override fun onShortClick() {
-        Database.asyncTransaction {
-            playlistTable.togglePin( playlistId )
-            isFirstColor = isPinned()
-        }
-    }
-}
 
 class PositionLock private constructor(
     private val iconState: MutableState<Boolean>,

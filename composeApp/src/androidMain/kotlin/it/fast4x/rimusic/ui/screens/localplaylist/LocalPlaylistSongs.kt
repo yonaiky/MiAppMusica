@@ -127,7 +127,6 @@ import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
-import it.fast4x.rimusic.utils.pin
 import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.removeFromPipedPlaylist
@@ -145,6 +144,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
+import me.knighthat.component.playlist.PinPlaylist
 import me.knighthat.component.playlist.RenamePlaylistDialog
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
@@ -247,7 +247,7 @@ fun LocalPlaylistSongs(
             Toaster.w( R.string.thumbnail_not_selected )
         }
     }
-    val pin = pin( playlistPreview, playlistId )
+    val pin = PinPlaylist( playlistPreview?.playlist )
     val positionLock = PositionLock.init( sort.sortOrder )
     LaunchedEffect( itemSelector.isActive ) {
         // Setting this field to true means disable it
