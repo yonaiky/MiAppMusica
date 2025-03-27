@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -52,7 +53,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -74,7 +74,6 @@ import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
-import it.fast4x.rimusic.ui.screens.ondevice.musicFilesAsFlow
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
@@ -100,6 +99,7 @@ import it.fast4x.rimusic.utils.showCachedPlaylistKey
 import it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
+import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
@@ -109,6 +109,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import me.knighthat.component.FolderItem
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
@@ -123,6 +124,8 @@ import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
+import me.knighthat.utils.PathUtils
+import me.knighthat.utils.getLocalSongs
 import timber.log.Timber
 
 @OptIn(
@@ -146,10 +149,18 @@ fun HomeSongs( navController: NavController ) {
     val maxTopPlaylistItems by rememberPreference( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
     val excludeSongWithDurationLimit by rememberPreference( excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled )
     val odsSortBy by rememberPreference( onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded )
+    val showFolder4LocalSongs by rememberPreference( showFoldersOnDeviceKey, false )
     //</editor-fold>
 
     var items by persistList<Song>( "home/songs" )
     var itemsOnDisplay by persistList<Song>( "home/songs/on_display" )
+
+    var songsOnDevice by remember( builtInPlaylist ) {
+        mutableStateOf( emptyMap<Song, String>() )
+    }
+    var currentPath by remember( songsOnDevice.values ) {
+        mutableStateOf( PathUtils.findCommonPath( songsOnDevice.values ) )
+    }
 
     fun getSongs() = itemsOnDisplay.ifEmpty { items }
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
@@ -258,9 +269,11 @@ fun HomeSongs( navController: NavController ) {
                 limit = maxTopPlaylistItems.toLong()
             )
 
-            else -> context.musicFilesAsFlow( odsSortBy, songSort.sortOrder, context ).map {
-                it.map(OnDeviceSong::toSong)
-            }
+            BuiltInPlaylist.OnDevice -> context.getLocalSongs( odsSortBy, songSort.sortOrder )
+                                               .map {
+                                                   songsOnDevice = it
+                                                   it.keys.toList()
+                                               }
         }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { items = it }
     }
 
@@ -288,9 +301,14 @@ fun HomeSongs( navController: NavController ) {
                 excludeSongWithDurationLimit == DurationInMinutes.Disabled
                         || song.durationText?.let { durationTextToMillis(it) < excludeSongWithDurationLimit.asMillis } == true
 
+            BuiltInPlaylist.OnDevice ->
+                !showFolder4LocalSongs
+                        || currentPath.equals( songsOnDevice[song], true )
+                        || "$currentPath/".equals( songsOnDevice[song], true )
+
             else -> true
         }
-    LaunchedEffect( items, search.input ) {
+    LaunchedEffect( items, search.input, currentPath ) {
         items.filter( ::naturalFilter )
              .filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
              .filter {
@@ -410,6 +428,23 @@ fun HomeSongs( navController: NavController ) {
                         count = 20,
                         key = { it }
                     ) { SongItemPlaceholder() }
+
+                if( builtInPlaylist == BuiltInPlaylist.OnDevice && showFolder4LocalSongs ) {
+                    item( "folder_paths" ) {
+                        PathUtils.AddressBar(
+                            paths = songsOnDevice.values,
+                            currentPath = currentPath,
+                            onSpecificAddressClick = { currentPath = it }
+                        )
+                    }
+
+                    items(
+                        items = PathUtils.getAvailablePaths( songsOnDevice.values, currentPath ),
+                        key = { it }
+                    ) {
+                        FolderItem( it ) { currentPath += "/$it" }
+                    }
+                }
 
                 itemsIndexed(
                     items = itemsOnDisplay,
