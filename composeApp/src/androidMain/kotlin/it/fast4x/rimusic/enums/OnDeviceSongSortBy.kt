@@ -1,22 +1,26 @@
 package it.fast4x.rimusic.enums
 
+import android.provider.MediaStore
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import app.kreate.android.R
 import me.knighthat.enums.TextView
+import org.intellij.lang.annotations.MagicConstant
 
 enum class OnDeviceSongSortBy(
+    @field:MagicConstant(valuesFromClass = MediaStore.Audio.Media::class)
+    val value: String,
     @field:StringRes override val textId: Int,
-    @field:DrawableRes override val iconId: Int
+    @field:DrawableRes override val iconId: Int,
 ): TextView, Drawable {
 
-    Title( R.string.sort_title, R.drawable.text ),
+    Title( MediaStore.Audio.Media.TITLE, R.string.sort_title, R.drawable.text ),
 
-    DateAdded( R.string.sort_date_played, R.drawable.calendar ),
+    DateAdded( MediaStore.Audio.Media.DATE_ADDED, R.string.sort_date_played, R.drawable.calendar ),
 
-    Artist( R.string.sort_artist, R.drawable.artist ),
+    Artist( MediaStore.Audio.Media.ARTIST, R.string.sort_artist, R.drawable.artist ),
 
-    Duration( R.string.sort_duration, R.drawable.time ),
+    Duration( MediaStore.Audio.Media.DURATION, R.string.sort_duration, R.drawable.time ),
 
-    Album( R.string.sort_album, R.drawable.album );
+    Album( MediaStore.Audio.Media.ALBUM, R.string.sort_album, R.drawable.album );
 }

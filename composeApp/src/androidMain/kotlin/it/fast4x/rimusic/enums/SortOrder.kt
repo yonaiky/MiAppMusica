@@ -2,9 +2,9 @@ package it.fast4x.rimusic.enums
 
 import org.jetbrains.annotations.Contract
 
-enum class SortOrder( val rotationZ: Float ) {
-    Ascending( 0f ),
-    Descending( 180f );
+enum class SortOrder( val rotationZ: Float, val asSqlString: String ) {
+    Ascending( 0f, "ASC" ),
+    Descending( 180f, "DESC" );
 
     operator fun not() = when (this) {
         Ascending -> Descending
