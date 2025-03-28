@@ -273,12 +273,28 @@ interface SongTable: SqlTable<Song> {
     fun updateArtists( songId: String, artistsText: String ): Int
 
     /**
-     * Set [Song.totalPlayTimeMs] to [totalPlayTime] with song with id [songId]
+     * Set [Song.totalPlayTimeMs] to:
+     * - [value] if [isIncrement] is `false`
+     * - Sum of [Song.totalPlayTimeMs] and [value] if [isIncrement] is `true`
+     *
+     * @param songId identifier of song to update
+     * @param value value to add/set
+     * @param isIncrement whether to hard set or add to existing value
      *
      * @return number of rows affected by this operation
      */
-    @Query("UPDATE Song SET totalPlayTimeMs = :totalPlayTime WHERE id = :songId")
-    fun updateTotalPlayTime( songId: String, totalPlayTime: Long ): Int
+    @Query(
+        """
+        UPDATE Song 
+        SET totalPlayTimeMs = 
+            CASE
+                WHEN :isIncrement = 0 THEN :value
+                ELSE totalPlayTimeMs + :value
+            END
+        WHERE id = :songId
+    """
+    )
+    fun updateTotalPlayTime( songId: String, value: Long, isIncrement: Boolean = false ): Int
 
     //<editor-fold defaultstate="collapsed" desc="Sort all">
     fun sortAllByPlayTime( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =

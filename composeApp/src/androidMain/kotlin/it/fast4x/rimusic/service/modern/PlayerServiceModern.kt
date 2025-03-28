@@ -580,7 +580,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
         if ( totalPlayTimeMs > 5000 )
             Database.asyncTransaction {
-                songTable.updateTotalPlayTime( mediaItem.mediaId, totalPlayTimeMs )
+                songTable.updateTotalPlayTime( mediaItem.mediaId, totalPlayTimeMs, true )
             }
 
 
