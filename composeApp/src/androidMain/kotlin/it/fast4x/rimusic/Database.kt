@@ -3,14 +3,10 @@ package it.fast4x.rimusic
 import androidx.compose.ui.util.fastZip
 import androidx.media3.common.MediaItem
 import androidx.room.AutoMigration
-import androidx.room.Dao
-import androidx.room.RawQuery
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SimpleSQLiteQuery
-import androidx.sqlite.db.SupportSQLiteQuery
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
@@ -51,37 +47,36 @@ import me.knighthat.database.migration.From3To4Migration
 import me.knighthat.database.migration.From7To8Migration
 import me.knighthat.database.migration.From8To9Migration
 
-@Dao
-interface Database {
-    companion object : Database by DatabaseInitializer.Instance.database
+object Database {
+    const val FILE_NAME = "data.db"
 
-    private val _internal: RoomDatabase
+    private val _internal: DatabaseInitializer
         get() = DatabaseInitializer.Instance
 
     val songTable: SongTable
-        get() = DatabaseInitializer.Instance.songTable
+        get() = _internal.songTable
     val albumTable: AlbumTable
-        get() = DatabaseInitializer.Instance.albumTable
+        get() = _internal.albumTable
     val artistTable: ArtistTable
-        get() = DatabaseInitializer.Instance.artistTable
+        get() = _internal.artistTable
     val eventTable: EventTable
-        get() = DatabaseInitializer.Instance.eventTable
+        get() = _internal.eventTable
     val formatTable: FormatTable
-        get() = DatabaseInitializer.Instance.formatTable
+        get() = _internal.formatTable
     val lyricsTable: LyricsTable
-        get() = DatabaseInitializer.Instance.lyricsTable
+        get() = _internal.lyricsTable
     val playlistTable: PlaylistTable
-        get() = DatabaseInitializer.Instance.playlistTable
+        get() = _internal.playlistTable
     val queueTable: QueuedMediaItemTable
-        get() = DatabaseInitializer.Instance.queueTable
+        get() = _internal.queueTable
     val searchTable: SearchQueryTable
-        get() = DatabaseInitializer.Instance.searchQueryTable
+        get() = _internal.searchQueryTable
     val songAlbumMapTable: SongAlbumMapTable
-        get() = DatabaseInitializer.Instance.songAlbumMapTable
+        get() = _internal.songAlbumMapTable
     val songArtistMapTable: SongArtistMapTable
-        get() = DatabaseInitializer.Instance.songArtistMapTable
+        get() = _internal.songArtistMapTable
     val songPlaylistMapTable: SongPlaylistMapTable
-        get() = DatabaseInitializer.Instance.songPlaylistMapTable
+        get() = _internal.songPlaylistMapTable
 
     //**********************************************
 
@@ -178,14 +173,10 @@ interface Database {
             this.block()
         }
 
-    @RawQuery
-    fun raw(supportSQLiteQuery: SupportSQLiteQuery): Int
-
-    fun checkpoint() {
-        raw(SimpleSQLiteQuery("PRAGMA wal_checkpoint(FULL)"))
-    }
-
-    fun path() = _internal.openHelper.writableDatabase.path
+    fun checkpoint() = _internal.openHelper
+                                      .writableDatabase
+                                      .query( "PRAGMA wal_checkpoint(FULL)" )
+                                      .close()
 
     fun close() = _internal.close()
 }
@@ -233,7 +224,6 @@ interface Database {
 )
 @TypeConverters(Converters::class)
 abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
-    abstract val database: Database
     abstract val albumTable: AlbumTable
     abstract val artistTable: ArtistTable
     abstract val eventTable: EventTable
@@ -248,30 +238,23 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
     abstract val songTable: SongTable
 
     companion object {
-
-        lateinit var Instance: DatabaseInitializer
-
-        private fun getDatabase() = Room
-            .databaseBuilder(appContext(), DatabaseInitializer::class.java, "data.db")
-            .addMigrations(
-                From8To9Migration(),
-                From10To11Migration(),
-                From14To15Migration(),
-                From22To23Migration(),
-                From23To24Migration(),
-                From24To25Migration(),
-                From25To26Migration(),
-                From26To27Migration()
-            )
-            .build()
-
-
-        operator fun invoke() {
-            if (!::Instance.isInitialized) reload()
-        }
-
-        fun reload() = synchronized(this) {
-            Instance = getDatabase()
+        val Instance: DatabaseInitializer by lazy {
+            Room.databaseBuilder(
+                    context = appContext(),
+                    klass = DatabaseInitializer::class.java,
+                    name = Database.FILE_NAME
+                )
+                .addMigrations(
+                    From8To9Migration(),
+                    From10To11Migration(),
+                    From14To15Migration(),
+                    From22To23Migration(),
+                    From23To24Migration(),
+                    From24To25Migration(),
+                    From25To26Migration(),
+                    From26To27Migration()
+                )
+                .build()
         }
     }
 }

@@ -117,7 +117,8 @@ class ImportMigration private constructor(
                                                Database.checkpoint()
                                                Database.close()
 
-                                               FileOutputStream( Database.path() ).use { dbOut ->
+                                               val dbFile = context.getDatabasePath( Database.FILE_NAME )
+                                               FileOutputStream(dbFile).use { dbOut ->
                                                    zipIn.copyTo( dbOut )
                                                }
                                            }

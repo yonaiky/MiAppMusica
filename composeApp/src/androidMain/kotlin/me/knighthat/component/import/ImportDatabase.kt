@@ -41,7 +41,8 @@ class ImportDatabase private constructor(
                                .contentResolver
                                .openInputStream(uri)
                                ?.use { inStream ->
-                                   FileOutputStream( Database.path() ).use { outStream ->
+                                   val dbFile = context.getDatabasePath( Database.FILE_NAME )
+                                   FileOutputStream( dbFile ).use { outStream ->
                                        inStream.copyTo(outStream)
                                    }
                                }

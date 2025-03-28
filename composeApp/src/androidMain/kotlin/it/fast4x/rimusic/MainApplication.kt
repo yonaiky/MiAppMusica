@@ -47,6 +47,5 @@ object Dependencies {
 
     internal fun init(application: MainApplication) {
         this.application = application
-        DatabaseInitializer()
     }
 }

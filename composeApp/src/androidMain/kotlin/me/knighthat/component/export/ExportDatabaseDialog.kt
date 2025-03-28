@@ -54,7 +54,8 @@ class ExportDatabaseDialog private constructor(
                                .contentResolver
                                .openOutputStream(uri)
                                ?.use { outStream ->
-                                   FileInputStream(Database.path()).use { inStream ->
+                                   val dbFile = context.getDatabasePath( Database.FILE_NAME )
+                                   FileInputStream(dbFile).use { inStream ->
                                        inStream.copyTo(outStream)
                                    }
                                }

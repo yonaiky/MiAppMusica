@@ -12,7 +12,6 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.Database.Companion.albumTable
 import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
@@ -166,7 +165,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
                         isYoutubeAlbum = true,
                         bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
                         thumbnailUrl = remoteAlbum.thumbnail?.url)
-                        .let( albumTable::update )
+                        .let( Database.albumTable::update )
                 }
             }
 
