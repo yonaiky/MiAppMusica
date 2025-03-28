@@ -5,6 +5,7 @@
   </p>
 </div>
 
+
 # ❗ IMPORTANT
 
 > Updated March 14 2025
@@ -16,10 +17,12 @@ to new app effortlessly.
 
 For more details, check out [this article](https://kreate.knighthat.me/usr/how-to-migrate).
 
-## ✨ Features
+
+# ✨ Features
+
 - **Multilingual:** English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions for other languages are welcome
 - Friendly designs
-- UI Mode, swtich from RiMusic to classic ViMusic style, viceversa
+- UI Mode, switch from RiMusic to classic ViMusic style, and vice versa.
 - Auto cache songs for offline playback with a custom cache size
 - Download songs or entire playlists for offline playback (not cache) 
 - Background playback
@@ -40,7 +43,9 @@ For more details, check out [this article](https://kreate.knighthat.me/usr/how-t
 - Weekly update
 - Plays music even with no internet connection 
 
-## 📷 Screenshots
+
+# 📷 Screenshots
+
 <div align="center">
   <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" />
   <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" />
@@ -50,7 +55,9 @@ For more details, check out [this article](https://kreate.knighthat.me/usr/how-t
   <img alt="screenshot 1" src="./fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" />
 </div>
 
-## 🌐 Languages available
+
+# 🌐 Supported languages
+
 - **Afrikaans** thanks to [HelloZebra1133](https://crowdin.com/profile/HelloZebra1133)
 - **Arabic:** thanks to [ABS zarzis](https://crowdin.com/profile/abszar), [Ahmad Al Juwaisri](https://crowdin.com/profile/juwaisri)
 - **Azerbaijani** thanks to [Nizami Səmidov](https://crowdin.com/profile/nizamismidov4), [Notesuree](https://github.com/Notesuree)
@@ -98,27 +105,36 @@ For more details, check out [this article](https://kreate.knighthat.me/usr/how-t
 - **Ukrainian:** thanks to [Avin](https://crowdin.com/profile/avinateachip), [Michael Müller](https://crowdin.com/profile/xqzme1337), [NiXT0y](https://crowdin.com/profile/nixt0y), [Crayz310](https://github.com/Crayz310) 
 - **Vietnamese:** thanks to [teaminh](https://crowdin.com/profile/teaminh)
 
-## 📲 Installation
+
+# 📲 Installation
+
 [<img src="./assets/images/getItGithub.png" alt="GitHub" height="80">](https://github.com/knighthat/RiMusic/releases/tag/weekly-kbuild)
 
-## 🤝 Contributing
-**Pull requests are welcome**
-- If you want:
-    - to **develop new functions** or **fix a bug**, fork the repository, send a pull request.
-    - to **translate** or **improve a translation** read the section Translations
+
+# 🤝 Contributing
+
+## To improve functionalities
+
+> Pull requests are welcome
+
+To **develop new functions** or **fix a bug**, fork the repository, open a pull request.
+
+For more details, please refer to [the documentation](https://kreate.knighthat.me/dev/getting_started).
+
+## To translate app
+
+To **translate** or **improve a translation**, please wait for an option to be available in near future.
+
+## To write documentation
+
+To help others understand the app, please visit [knighthat/Kreate-docs](https://github.com/knighthat/Kreate-docs) repository.
 
 
-### 🔤 Translations
+# 🫂 Acknowledgements
 
-> Currently unavailable!
-
-## 🫂 Acknowledgements
-- [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
-- [**RiMusic** - Original](https://github.com/fast4x/RiMusic)
-- **RiMusic current Logo Design from** [jaimtres](https://github.com/jaimtres)
-- **RiMusic previous Logo, many current icons from** [@ikanakova](https://github.com/ikanakova)
-- **RiMusic Website, other features from** [JZITNIK-github](https://github.com/JZITNIK-github), [martkol](https://github.com/martkol)
-- **RiMusic New player, lyrics layouts from** [aneesh1122](https://github.com/aneesh1122)
+- [**RiMusic**](https://github.com/fast4x/RiMusic)
+- RiMusic previous Logo, many current icons from [jaimtres](https://github.com/jaimtres)
+- Player designed by [aneesh1122](https://github.com/aneesh1122)
 - [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A python script that discovers hidden YouTube API clients. Just a research project.
 - [**Ionicons**](https://github.com/ionic-team/ionicons): Premium hand-crafted icons built by Ionic, for Ionic apps, web apps everywhere.
 - [**FlatIcon.com**](https://www.flaticon.com/): Download Free Icons, Stickers for your projects. Resources made by, for designers.
@@ -128,7 +144,7 @@ For more details, check out [this article](https://kreate.knighthat.me/usr/how-t
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): A shader modifier for Compose Multiplatform / Jetpack Compose
 
 
-## ⚠️ Disclaimer
+# ⚠️ Disclaimer
 
 This project is built on top of [RiMusic](https://github.com/fast4x/RiMusic) but has no relation to the original author.
 Furthermore, its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, 
