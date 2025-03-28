@@ -115,5 +115,7 @@ class NewPlaylistDialog private constructor(
                 pipedSession = pipedSession.toApiSession(),
                 name = newValue
             )
+
+        hideDialog()
     }
 }
