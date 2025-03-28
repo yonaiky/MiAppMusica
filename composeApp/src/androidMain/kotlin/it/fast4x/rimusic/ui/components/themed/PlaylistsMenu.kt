@@ -24,8 +24,6 @@ import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
-import it.fast4x.rimusic.enums.PlaylistSortBy
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.typography
@@ -35,8 +33,6 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.utils.menuStyleKey
-import it.fast4x.rimusic.utils.playlistSortByKey
-import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
@@ -149,11 +145,8 @@ class PlaylistsMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
-        val sortBy by rememberPreference( playlistSortByKey, PlaylistSortBy.DateAdded )
-        val sortOrder by rememberPreference( playlistSortOrderKey, SortOrder.Descending )
-
         val playlistPreviews by remember {
-            Database.playlistTable.sortPreviews( sortBy, sortOrder )
+            Database.playlistTable.sortPreviewsByName()
         }.collectAsState( emptyList(), Dispatchers.IO )
 
         val pinnedPlaylists = playlistPreviews.filter {

@@ -92,11 +92,15 @@ interface PlaylistTable: SqlTable<Playlist> {
      * @return all playlists from this table with number of songs they carry
      */
     @Query("""
-        SELECT DISTINCT P.*, COUNT(spm.songId) as songCount
-        FROM SongPlaylistMap spm
-        JOIN Playlist P ON P.id = spm.playlistId
-        GROUP BY P.id
-        ORDER BY P.ROWID
+        SELECT DISTINCT 
+            *,
+            (
+                SELECT COUNT(songId)
+                FROM SongPlaylistMap
+                WHERE playlistId = id
+            ) as songCount
+        FROM Playlist
+        ORDER BY ROWID
         LIMIT :limit
     """)
     fun allAsPreview( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
