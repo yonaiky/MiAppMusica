@@ -13,7 +13,6 @@ import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.CoroutineScope
@@ -110,11 +109,9 @@ class GoToAlbum private constructor(
                                          ?.browseId
                                          ?.let {
                                              result = it
-                                             Database.asyncTransaction {
-                                                 albumTable.insert( Album(it) )
-                                                 songAlbumMapTable.insert( SongAlbumMap(song.id, it, null) )
-                                             }
+                                             Album(it)
                                          }
+                                         ?.let { Database.mapIgnore( it, song ) }
                              }
                              ?.onFailure {
                                  Timber.tag("go_to_album").e(it)

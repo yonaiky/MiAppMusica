@@ -54,4 +54,24 @@ interface SongAlbumMapTable: SqlTable<SongAlbumMap> {
         LIMIT :limit
     """)
     fun allSongsOf( albumId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
+
+    @Query("""
+        INSERT OR IGNORE INTO SongAlbumMap ( songId, albumId, position )
+        VALUES( 
+            :songId,
+            :albumId,
+            CASE
+                WHEN :position < 0 THEN COALESCE(
+                    (
+                        SELECT MAX(position) + 1 
+                        FROM SongAlbumMap 
+                        WHERE albumId = :albumId
+                    ), 
+                    0
+                )
+                ELSE :position 
+            END
+        )
+    """)
+    fun map( songId: String, albumId: String, position: Int = -1 )
 }

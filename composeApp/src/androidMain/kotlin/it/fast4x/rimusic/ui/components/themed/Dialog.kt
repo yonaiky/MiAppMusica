@@ -118,7 +118,6 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
@@ -168,7 +167,6 @@ import it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -2035,28 +2033,19 @@ fun SongMatchingDialog(
 
                                             val asMediaItem = song.asMediaItem
 
-
-                                            albumTable.insertIgnore(
-                                                Album(
-                                                    id = song.album?.endpoint?.browseId ?: "",
-                                                    title = song.asMediaItem.mediaMetadata.albumTitle?.toString()
-                                                )
-                                            )
-                                            songAlbumMapTable.insertIgnore(
-                                                SongAlbumMap(
-                                                    song.asMediaItem.mediaId,
-                                                    song.album?.endpoint?.browseId ?: "",
-                                                    null
-                                                )
-                                            )
                                             playlist?.let { mapIgnore( it, asMediaItem ) }
+                                            song.album
+                                                ?.endpoint
+                                                ?.browseId
+                                                ?.let {
+                                                    Album(
+                                                        id = it,
+                                                        title = asMediaItem.mediaMetadata.albumTitle.toString(),
+                                                        thumbnailUrl = song.thumbnail?.url
+                                                    )
+                                                }
+                                                ?.let { mapIgnore( it, asMediaItem ) }
                                             CoroutineScope(Dispatchers.IO).launch {
-                                                Database.albumTable
-                                                        .findById(song.album?.endpoint?.browseId ?: "")
-                                                        .first()
-                                                        ?.copy( thumbnailUrl = song.thumbnail?.url )
-                                                        ?.let( albumTable::update )
-
                                                 if (isYouTubeSyncEnabled() && playlist?.isYoutubePlaylist == true && playlist.isEditable){
                                                     YtMusic.addToPlaylist(playlist.browseId ?: "", song.asMediaItem.mediaId)
                                                 }

@@ -20,6 +20,7 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
+import it.fast4x.rimusic.utils.asSong
 import me.knighthat.database.AlbumTable
 import me.knighthat.database.ArtistTable
 import me.knighthat.database.Converters
@@ -33,6 +34,7 @@ import me.knighthat.database.SongAlbumMapTable
 import me.knighthat.database.SongArtistMapTable
 import me.knighthat.database.SongPlaylistMapTable
 import me.knighthat.database.SongTable
+import me.knighthat.database.SqlTable
 import me.knighthat.database.migration.From10To11Migration
 import me.knighthat.database.migration.From11To12Migration
 import me.knighthat.database.migration.From14To15Migration
@@ -99,17 +101,18 @@ object Database {
         songTable.insertIgnore( mediaItem )
 
         // Insert album
-        mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
-            albumTable.insertIgnore(
-                Album(
-                    id = albumId,
-                    title = mediaItem.mediaMetadata.albumTitle?.toString()
-                )
-            )
-            songAlbumMapTable.insertIgnore(
-                SongAlbumMap( mediaItem.mediaId, albumId, null )
-            )
-        }
+        mediaItem.mediaMetadata
+                 .extras
+                 ?.getString("albumId")
+                 ?.let {
+                     Album(
+                         id = it,
+                         title =  mediaItem.mediaMetadata.albumTitle.toString()
+                     )
+                 }
+                 // Passing MediaItem causes infinite loop
+                 ?.let { mapIgnore( it, mediaItem.asSong ) }
+
         // Insert artist
 
         val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")
@@ -126,6 +129,62 @@ object Database {
                     SongArtistMap( mediaItem.mediaId, artistId )
                 )
             }
+        }
+    }
+
+    /**
+     * Attempt to map [Song] to [Album].
+     *
+     * [songs] and [album] are ensured to be existed in the database
+     * with [SqlTable.insertIgnore] before attempting
+     * to map two together.
+     *
+     * **_This method doesn't require to be called on worker
+     * thread exclusively._**
+     *
+     * > NOTE: This function is wrapped by transaction, any
+     * failure happens during insertion results in rollback
+     * to protect database integrity.
+     *
+     * @param album to map
+     * @param songs to map
+     * @param position of song in album, **default** or `-1` results in
+     * database puts song to next available position in map
+     */
+    @Transaction
+    fun mapIgnore( album: Album, vararg songs: Song, position: Int = -1 ) {
+        albumTable.insertIgnore( album )
+        songs.forEach {
+            songTable.insertIgnore( it )
+            songAlbumMapTable.map( it.id, album.id, position )
+        }
+    }
+
+    /**
+     * Attempt to put [mediaItems] into `Song` table and map it to [Album].
+     *
+     * [mediaItems] are first inserted to database with [insertIgnore]
+     * then [album] to ensure to be existed in the database  before
+     * attempting to map two together.
+     *
+     * **_This method doesn't require to be called on worker
+     * thread exclusively._**
+     *
+     * > NOTE: This function is wrapped by transaction, any
+     * failure happens during insertion results in rollback
+     * to protect database integrity.
+     *
+     * @param album to map
+     * @param mediaItems list of songs to map
+     * @param position of song in album, **default** or `-1` results in
+     * database puts song to next available position in map
+     */
+    @Transaction
+    fun mapIgnore( album: Album, vararg mediaItems: MediaItem, position: Int = -1 ) {
+        albumTable.insertIgnore( album )
+        mediaItems.forEach {
+            insertIgnore( it )
+            songAlbumMapTable.map( it.mediaId, album.id, position )
         }
     }
 

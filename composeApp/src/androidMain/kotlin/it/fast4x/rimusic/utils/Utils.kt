@@ -54,7 +54,6 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
@@ -67,7 +66,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import me.knighthat.utils.Toaster
 import java.io.File
 import java.text.SimpleDateFormat
@@ -753,27 +751,18 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                 val asMediaItem = matchedSong.asMediaItem
 
                 playlist?.let { mapIgnore( it, asMediaItem ) }
-
-                albumTable.insertIgnore(
-                    Album(
-                        id = matchedSong.album?.endpoint?.browseId ?: "",
-                        title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()
-                    )
-                )
-                songAlbumMapTable.insertIgnore(
-                    SongAlbumMap(
-                        matchedSong.asMediaItem.mediaId,
-                        matchedSong.album?.endpoint?.browseId ?: "",
-                        null
-                    )
-                )
+                matchedSong.album
+                           ?.endpoint
+                           ?.browseId
+                           ?.let {
+                               Album(
+                                   id = it,
+                                   title = asMediaItem.mediaMetadata.albumTitle.toString(),
+                                   thumbnailUrl = matchedSong.thumbnail?.url
+                               )
+                           }
+                           ?.let { mapIgnore( it, asMediaItem ) }
                 CoroutineScope(Dispatchers.IO).launch {
-                    Database.albumTable
-                            .findById(matchedSong.album?.endpoint?.browseId ?: "")
-                            .first()
-                            ?.copy( thumbnailUrl = matchedSong.thumbnail?.url )
-                            ?.let( albumTable::update )
-
                     if (isYouTubeSyncEnabled() && playlist?.isYoutubePlaylist == true && playlist.isEditable){
                         YtMusic.addToPlaylist(playlist.browseId ?: "", matchedSong.asMediaItem.mediaId)
                     }
@@ -803,7 +792,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     }
 }
 
-suspend fun updateLocalPlaylist(song: Song){
+suspend fun updateLocalPlaylist(song: Song) {
     val searchQuery = Innertube.searchPage(
         body = SearchBody(
             query = "${cleanPrefix(song.title)} ${song.artistsText}",
@@ -814,7 +803,7 @@ suspend fun updateLocalPlaylist(song: Song){
 
     val searchResults = searchQuery?.getOrNull()?.items
 
-    fun findSongIndex() : Int {
+    fun findSongIndex(): Int {
         for (i in 0..9) {
             val requiredSong = searchResults?.getOrNull(i)
             val songMatched = (requiredSong?.asMediaItem?.mediaId) == (song.asMediaItem.mediaId)
@@ -829,45 +818,35 @@ suspend fun updateLocalPlaylist(song: Song){
     val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
-        if (findSongIndex() != -1) {
-            if (matchedSong != null) {
-                albumTable.insertIgnore(
-                    Album(
-                        id = matchedSong.album?.endpoint?.browseId ?: "",
-                        title = matchedSong.asMediaItem.mediaMetadata.albumTitle?.toString()
-                    )
+        if( findSongIndex() != -1 || matchedSong == null ) return@asyncTransaction
+
+        val asMediaItem = matchedSong.asMediaItem
+
+        matchedSong.album
+                   ?.endpoint
+                   ?.browseId
+                   ?.let {
+                       Album(
+                           id = it,
+                           title = asMediaItem.mediaMetadata.albumTitle.toString(),
+                           thumbnailUrl = matchedSong.thumbnail?.url
+                       )
+                   }
+                   ?.let { mapIgnore( it, asMediaItem ) }
+
+        if ( artistsNames != null && artistsIds != null ) {
+            artistsNames.fastZip( artistsIds ) { artistName, artistId ->
+                if( artistId == null ) return@fastZip
+
+                artistTable.insertIgnore(
+                    Artist(id = artistId, name = artistName)
                 )
-                songAlbumMapTable.insertIgnore(
-                    SongAlbumMap(
-                        matchedSong.asMediaItem.mediaId,
-                        matchedSong.album?.endpoint?.browseId ?: "",
-                        null
-                    )
+                songArtistMapTable.insertIgnore(
+                    SongArtistMap(song.id, artistId)
                 )
-
-                runBlocking {
-                    Database.albumTable
-                            .findById( matchedSong.album?.endpoint?.browseId ?: "" )
-                            .first()
-                            ?.copy( thumbnailUrl = matchedSong.thumbnail?.url )
-                            ?.let( albumTable::update )
-                }
-
-                if ( artistsNames != null && artistsIds != null ) {
-                    artistsNames.fastZip( artistsIds ) { artistName, artistId ->
-                        if( artistId == null ) return@fastZip
-
-                        artistTable.insertIgnore(
-                            Artist(id = artistId, name = artistName)
-                        )
-                        songArtistMapTable.insertIgnore(
-                            SongArtistMap(song.id, artistId)
-                        )
-                    }
-                }
-                Database.songTable.updateArtists( matchedSong.asMediaItem.mediaId, artistNameString )
             }
         }
+        Database.songTable.updateArtists( matchedSong.asMediaItem.mediaId, artistNameString )
     }
 }
 
