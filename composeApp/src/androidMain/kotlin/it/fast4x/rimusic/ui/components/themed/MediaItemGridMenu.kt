@@ -64,7 +64,6 @@ import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.items.SongItem
@@ -75,6 +74,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.addToYtLikedSong
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.formatAsDuration
@@ -178,16 +178,7 @@ fun BaseMediaItemGridMenu(
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
                     insertIgnore( mediaItem )
-
-                    val pId: Long? = playlistTable.insertIgnore( playlist )
-                                                  .takeIf { it != -1L }
-                    songPlaylistMapTable.insertIgnore(
-                        SongPlaylistMap(
-                            songId = mediaItem.mediaId,
-                            playlistId = pId ?: playlist.id,
-                            position = position
-                        ).default()
-                    )
+                    mapIgnore( playlist, mediaItem.asSong )
                 }
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -253,16 +244,7 @@ fun MiniMediaItemGridMenu(
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
                     insertIgnore( mediaItem )
-
-                    val pId: Long? = playlistTable.insertIgnore( playlist )
-                                                  .takeIf { it != -1L }
-                    songPlaylistMapTable.insertIgnore(
-                        SongPlaylistMap(
-                            songId = mediaItem.mediaId,
-                            playlistId = pId ?: playlist.id,
-                            position = position
-                        ).default()
-                    )
+                    mapIgnore( playlist, mediaItem.asSong )
                 }
             } else {
                 CoroutineScope(Dispatchers.IO).launch {

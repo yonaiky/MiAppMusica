@@ -130,6 +130,62 @@ object Database {
     }
 
     /**
+     * Attempt to map [Song] to [Playlist].
+     *
+     * [songs] and [playlist] are ensured to be existed in the database
+     * with [SqlTable.insertIgnore] before attempting
+     * to map two together.
+     *
+     * **_This method doesn't require to be called on worker
+     * thread exclusively._**
+     *
+     * > NOTE: This function is wrapped by transaction, any
+     * failure happens during insertion results in rollback
+     * to protect database integrity.
+     *
+     * @param playlist to map
+     * @param songs to map
+     */
+    @Transaction
+    fun mapIgnore( playlist: Playlist, vararg songs: Song ) {
+        if( songs.isEmpty() ) return
+
+        playlistTable.insertIgnore( playlist )
+        songs.forEach {
+            songTable.insertIgnore( it )
+            songPlaylistMapTable.map( it.id, playlist.id )
+        }
+    }
+
+    /**
+     * Attempt to put [mediaItems] into `Song` table and map it to [Playlist].
+     *
+     * [mediaItems] are first inserted to database with [insertIgnore]
+     * then [playlist] to ensure to be existed in the database  before
+     * attempting to map two together.
+     *
+     * **_This method doesn't require to be called on worker
+     * thread exclusively._**
+     *
+     * > NOTE: This function is wrapped by transaction, any
+     * failure happens during insertion results in rollback
+     * to protect database integrity.
+     *
+     * @param playlist to map
+     * @param mediaItems list of songs to map
+     */
+    @Transaction
+    fun mapIgnore( playlist: Playlist, vararg mediaItems: MediaItem ) {
+        if( mediaItems.isEmpty() ) return
+
+        playlistTable.insertIgnore( playlist )
+        mediaItems.forEach {
+            insertIgnore( it )
+            songPlaylistMapTable.map( it.mediaId, playlist.id )
+        }
+    }
+
+    /**
      * Commit statements in BULK. If anything goes wrong during the transaction,
      * other statements will be cancelled and reversed to preserve database's integrity.
      * [Read more](https://sqlite.org/lang_transaction.html)

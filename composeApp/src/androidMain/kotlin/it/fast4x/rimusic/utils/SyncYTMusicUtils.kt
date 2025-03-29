@@ -16,7 +16,6 @@ import it.fast4x.rimusic.isAutoSyncEnabled
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Playlist
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
@@ -52,26 +51,11 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                             Database.playlistTable
                                     .update( playlist.copy(isEditable = true) )
 
-                        if (remotePlaylist.songs.isNotEmpty()) {
-                            //Database.clearPlaylist(playlistId)
-
-                            remotePlaylist.songs
-                                .map(Innertube.SongItem::asMediaItem)
-                                .onEach( ::insertIgnore )
-                                .mapIndexed { position, mediaItem ->
-                                    SongPlaylistMap(
-                                        songId = mediaItem.mediaId,
-                                        playlistId = playlistId,
-                                        position = position,
-                                        setVideoId = mediaItem.mediaMetadata.extras?.getString("setVideoId"),
-                                    ).default()
-                                }.let( songPlaylistMapTable::insertIgnore )
-                        }
-
-                        /*localPlaylistSongs.filter { it.asMediaItem.mediaId !in remotePlaylist.songs.map { it.asMediaItem.mediaId } }
-                            .forEach { song ->
-                                deleteSongFromPlaylist(song.asMediaItem.mediaId, playlistId)
-                            }*/
+                        remotePlaylist.songs
+                                      .map( Innertube.SongItem::asMediaItem )
+                                      .let {
+                                          mapIgnore( playlist, *it.toTypedArray() )
+                                      }
                     }
                 }
             }

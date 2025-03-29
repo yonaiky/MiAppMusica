@@ -23,7 +23,6 @@ import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.MenuStyle
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
@@ -31,6 +30,7 @@ import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.addToYtPlaylist
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isPipedEnabledKey
@@ -257,16 +257,7 @@ fun AddToPlaylistPlayerMenu(
             if (!isYouTubeSyncEnabled() || !playlist.isYoutubePlaylist){
                 Database.asyncTransaction {
                     insertIgnore( mediaItem )
-
-                    val pId: Long? = playlistTable.insertIgnore( playlist )
-                                                  .takeIf { it != -1L }
-                    songPlaylistMapTable.insertIgnore(
-                        SongPlaylistMap(
-                            songId = mediaItem.mediaId,
-                            playlistId = pId ?: playlist.id,
-                            position = position
-                        ).default()
-                    )
+                    mapIgnore( playlist, mediaItem.asSong )
                 }
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -347,35 +338,28 @@ fun AddToPlaylistArtistSongs(
         onAddToPlaylist = { playlistPreview ->
             position = playlistPreview.songCount.minus(1)
             if (position > 0) position++ else position = 0
-            mediaItems.forEachIndexed { index, mediaItem ->
-                if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist){
-                    Database.asyncTransaction {
-                        insertIgnore( mediaItem )
 
-                        songPlaylistMapTable.insertIgnore(
-                            SongPlaylistMap(
-                                songId = mediaItem.mediaId,
-                                playlistId = playlistPreview.playlist.id,
-                                position = position + index
-                            ).default()
-                        )
-                    }
-                } else {
+            Database.asyncTransaction {
+                if ( !isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist )
+                    mapIgnore( playlistPreview.playlist, *mediaItems.toTypedArray() )
+                else
                     CoroutineScope(Dispatchers.IO).launch {
                         addToYtPlaylist(playlistPreview.playlist.id, position, playlistPreview.playlist.browseId ?: "", mediaItems)
                     }
-                }
-                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                    Timber.d("BaseMediaItemMenu onAddToPlaylist mediaItem ${mediaItem.mediaId}")
+
+                if ( playlistPreview.playlist.name.startsWith(PIPED_PREFIX)
+                    && isPipedEnabled
+                    && pipedSession.token.isNotEmpty()
+                )
                     addToPipedPlaylist(
                         context = context,
                         coroutineScope = coroutineScope,
                         pipedSession = pipedSession.toApiSession(),
                         id = UUID.fromString(playlistPreview.playlist.browseId),
-                        videos = listOf(mediaItem.mediaId)
+                        videos = mediaItems.map( MediaItem::mediaId )
                     )
-                }
             }
+
             onDismiss()
         },
         onDismiss = onDismiss,

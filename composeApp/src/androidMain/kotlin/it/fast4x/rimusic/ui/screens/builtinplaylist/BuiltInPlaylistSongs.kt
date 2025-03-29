@@ -92,7 +92,6 @@ import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
@@ -119,6 +118,7 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.autoShuffleKey
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
@@ -912,31 +912,15 @@ fun BuiltInPlaylistSongs(
                                         if (listMediaItems.isEmpty()) {
                                             songs.forEachIndexed { index, song ->
                                                 Database.asyncTransaction {
-                                                    songTable.insertIgnore( song )
-                                                    songPlaylistMapTable.insertIgnore(
-                                                        SongPlaylistMap(
-                                                            songId = song.id,
-                                                            playlistId = playlistPreview.playlist.id,
-                                                            position = position + index
-                                                        ).default()
-                                                    )
+                                                    mapIgnore( playlistPreview.playlist, song )
                                                 }
-                                                //Log.d("mediaItemPos", "added position ${position + index}")
                                             }
                                         } else {
                                             listMediaItems.forEachIndexed { index, song ->
-                                                //Log.d("mediaItemMaxPos", position.toString())
                                                 Database.asyncTransaction {
                                                     insertIgnore( song )
-                                                    songPlaylistMapTable.insert(
-                                                        SongPlaylistMap(
-                                                            songId = song.mediaId,
-                                                            playlistId = playlistPreview.playlist.id,
-                                                            position = position + index
-                                                        ).default()
-                                                    )
+                                                    mapIgnore( playlistPreview.playlist, song.asSong )
                                                 }
-                                                //Log.d("mediaItemPos", "add position $position")
                                             }
                                             listMediaItems.clear()
                                             selectItems = false

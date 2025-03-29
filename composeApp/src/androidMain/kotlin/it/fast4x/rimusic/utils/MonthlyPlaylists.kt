@@ -11,7 +11,6 @@ import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.models.Playlist
-import it.fast4x.rimusic.models.SongPlaylistMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -47,27 +46,11 @@ fun CheckMonthlyPlaylist() {
                         .distinctUntilChanged()
             }.collectAsState( emptyList(), Dispatchers.IO )
 
-            Timber.d("SongsMostPlayed ${songsMostPlayed?.size}")
+            Timber.d("SongsMostPlayed ${songsMostPlayed.size}")
 
-            songsMostPlayed.let {songs ->
-                if (songs?.isNotEmpty() == true) {
-                    Database.asyncTransaction {
-                        val playlist = Playlist(name = "${MONTHLY_PREFIX}${ym}")
-                        val pId = playlistTable.insert( playlist )
-                        songs.forEachIndexed{ position, song ->
-                            songPlaylistMapTable.insertIgnore(
-                                SongPlaylistMap(
-                                    songId = song.id,
-                                    playlistId = pId,
-                                    position = position
-                                ).default()
-                            )
-                        }
-                    }
-                }
-            }
+            val playlist = Playlist(name = "${MONTHLY_PREFIX}${ym}")
+            Database.mapIgnore( playlist, *songsMostPlayed.toTypedArray() )
         }
-    //println("mediaItem internal $monthlyPlaylist")
 }
 
 @Composable

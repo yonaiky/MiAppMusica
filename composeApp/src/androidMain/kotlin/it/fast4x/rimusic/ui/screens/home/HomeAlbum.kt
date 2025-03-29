@@ -57,7 +57,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -457,14 +456,7 @@ fun HomeAlbums(
                                                     if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
                                                         songs.forEachIndexed { index, song ->
                                                             Database.asyncTransaction {
-                                                                songTable.insertIgnore( song )
-                                                                songPlaylistMapTable.insertIgnore(
-                                                                    SongPlaylistMap(
-                                                                        songId = song.id,
-                                                                        playlistId = playlistPreview.playlist.id,
-                                                                        position = position + index
-                                                                    ).default()
-                                                                )
+                                                                mapIgnore( playlistPreview.playlist, song )
                                                             }
                                                         }
                                                     } else {

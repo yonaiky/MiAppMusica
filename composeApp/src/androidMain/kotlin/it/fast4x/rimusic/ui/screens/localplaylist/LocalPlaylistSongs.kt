@@ -75,7 +75,6 @@ import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
@@ -313,12 +312,7 @@ fun LocalPlaylistSongs(
 
     fun sync() {
         playlist?.let {
-            if (!it.name.startsWith(
-                    PIPED_PREFIX,
-                    0,
-                    true
-                )
-            ) {
+            if ( !it.name.startsWith(PIPED_PREFIX, true) ) {
                 Database.asyncTransaction {
                     runBlocking(Dispatchers.IO) {
                         withContext(Dispatchers.IO) {
@@ -331,19 +325,14 @@ fun LocalPlaylistSongs(
                                 ?.completed()
                         }
                     }?.getOrNull()?.let { remotePlaylist ->
-                        Database.songPlaylistMapTable.clear( playlistId )
+                        songPlaylistMapTable.clear( playlistId )
 
                         remotePlaylist.songsPage
-                            ?.items
-                            ?.map(Innertube.SongItem::asMediaItem)
-                            ?.onEach( ::insertIgnore )
-                            ?.mapIndexed { position, mediaItem ->
-                                SongPlaylistMap(
-                                    songId = mediaItem.mediaId,
-                                    playlistId = playlistId,
-                                    position = position
-                                )
-                            }?.let( songPlaylistMapTable::insertIgnore )
+                                      ?.items
+                                      ?.map(Innertube.SongItem::asMediaItem)
+                                      ?.let { mediaItems ->
+                                          mapIgnore( it, *mediaItems.toTypedArray() )
+                                      }
                     }
                 }
             } else {

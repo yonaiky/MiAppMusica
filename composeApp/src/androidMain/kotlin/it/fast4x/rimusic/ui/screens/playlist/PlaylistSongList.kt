@@ -91,7 +91,6 @@ import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -156,7 +155,6 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import me.knighthat.utils.Toaster
-import timber.log.Timber
 
 
 @ExperimentalTextApi
@@ -307,21 +305,15 @@ fun PlaylistSongList(
             setValue = { text ->
                 Database.asyncTransaction {
                     val playlist = Playlist(name = text, browseId = browseId)
-                    val pId = playlistTable.insert( playlist )
 
                     playlistPage?.songs
-                                ?.map(Innertube.SongItem::asMediaItem)
-                                ?.onEach( ::insertIgnore )
-                                ?.mapIndexed { index, mediaItem ->
-                                    SongPlaylistMap(
-                                        songId = mediaItem.mediaId,
-                                        playlistId = pId,
-                                        position = index
-                                    ).default()
+                                ?.map( Innertube.SongItem::asMediaItem )
+                                ?.let {
+                                    mapIgnore( playlist, *it.toTypedArray() )
                                 }
-                                ?.let( songPlaylistMapTable::insertIgnore )
+
+                    Toaster.done()
                 }
-                Toaster.done()
             }
         )
     }
@@ -671,22 +663,12 @@ fun PlaylistSongList(
                                                         if ((playlistSize + playlistPreview.songCount) > 5000 && playlistPreview.playlist.isYoutubePlaylist && isYouTubeSyncEnabled()){
                                                             Toaster.e( R.string.yt_playlist_limited )
                                                         } else if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
-                                                            playlistPage!!.songs.forEachIndexed { index, song ->
-                                                                runCatching {
-                                                                    coroutineScope.launch(Dispatchers.IO) {
-                                                                        Database.songTable.insertIgnore( song.asSong )
-                                                                        Database.songPlaylistMapTable.insertIgnore(
-                                                                            SongPlaylistMap(
-                                                                                songId = song.asMediaItem.mediaId,
-                                                                                playlistId = playlistPreview.playlist.id,
-                                                                                position = position + index
-                                                                            ).default()
-                                                                        )
-                                                                    }
-                                                                }.onFailure {
-                                                                    Timber.e("Failed onAddToPlaylist in PlaylistSongListModern  ${it.stackTraceToString()}")
-                                                                }
-                                                              }
+                                                            Database.asyncTransaction {
+                                                                val songs = playlistPage?.songs
+                                                                                                          ?.map( Innertube.SongItem::asMediaItem )
+                                                                                                          .orEmpty()
+                                                                mapIgnore( playlistPreview.playlist, *songs.toTypedArray() )
+                                                            }
                                                         } else {
                                                             CoroutineScope(Dispatchers.IO).launch {
                                                                 YtMusic.addPlaylistToPlaylist(
@@ -770,27 +752,18 @@ fun PlaylistSongList(
                                                                 )
                                                             )
                                                         }
-                                                        Database.asyncTransaction {
-                                                            val playlist = Playlist(
-                                                                name = (playlistPage?.playlist?.title ?: ""),
-                                                                browseId = browseId.substringAfter("VL"),
-                                                                isYoutubePlaylist = true,
-                                                                isEditable = false
-                                                            )
-                                                            val pId =  playlistTable.insert( playlist )
 
-                                                            playlistPage?.songs
-                                                                        ?.map( Innertube.SongItem::asMediaItem )
-                                                                        ?.onEach( ::insertIgnore )
-                                                                        ?.mapIndexed { index, mediaItem ->
-                                                                            SongPlaylistMap(
-                                                                                songId = mediaItem.mediaId,
-                                                                                playlistId = pId,
-                                                                                position = index
-                                                                            ).default()
-                                                                        }
-                                                                        ?.let( songPlaylistMapTable::insertIgnore )
-                                                        }
+                                                        playlistPage?.songs
+                                                                    ?.map( Innertube.SongItem::asMediaItem )
+                                                                    ?.let {
+                                                                        val playlist = Playlist(
+                                                                            name = (playlistPage?.playlist?.title ?: ""),
+                                                                            browseId = browseId.substringAfter("VL"),
+                                                                            isYoutubePlaylist = true,
+                                                                            isEditable = false
+                                                                        )
+                                                                        Database.mapIgnore( playlist, *it.toTypedArray() )
+                                                                    }
                                                     }
                                                     Toaster.done()
                                                     saveCheck = !saveCheck

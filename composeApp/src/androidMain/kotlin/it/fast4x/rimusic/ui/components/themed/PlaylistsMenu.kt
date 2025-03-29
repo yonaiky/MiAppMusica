@@ -25,7 +25,6 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
@@ -36,7 +35,6 @@ import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.utils.Toaster
 
@@ -73,35 +71,14 @@ class PlaylistsMenu private constructor(
         @Composable
         get() = stringResource( messageId )
 
-    private fun onAdd( preview: PlaylistPreview ) {
-        val startPos = preview.songCount
-
-        Database.asyncTransaction {
-            /*
-                Suspend this block until all songs are
-                inserted into database before going to
-                SmartMessage
-            */
-            runBlocking( Dispatchers.IO ) {
-                try {
-                    mediaItems( preview ).forEachIndexed { index, mediaItem ->
-                        insertIgnore( mediaItem )
-
-                        songPlaylistMapTable.insertIgnore(
-                            SongPlaylistMap(
-                                songId = mediaItem.mediaId,
-                                playlistId = preview.playlist.id,
-                                position = startPos + index
-                            ).default()
-                        )
-                    }
-                } catch ( e: Throwable ) {
-                    onFailure( e, preview )
-                } finally {
-                    finalAction( preview )
-                }
-            }
+    private fun onAdd( preview: PlaylistPreview ) = Database.asyncTransaction {
+        try {
+            mapIgnore(preview.playlist, *mediaItems(preview).toTypedArray())
             Toaster.done()
+        } catch (e: Throwable) {
+            onFailure(e, preview)
+        } finally {
+            finalAction(preview)
         }
     }
 

@@ -57,7 +57,6 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongEntity
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
@@ -751,14 +750,10 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     songPlaylistMapTable.deleteBySongId( song.id, it )
                 }
             if (matchedSong != null) {
-                songTable.insertIgnore( matchedSong.asSong )
-                songPlaylistMapTable.insertIgnore(
-                    SongPlaylistMap(
-                        songId = matchedSong.asMediaItem.mediaId,
-                        playlistId = playlistId,
-                        position = position
-                    ).default()
-                )
+                val asMediaItem = matchedSong.asMediaItem
+
+                playlist?.let { mapIgnore( it, asMediaItem ) }
+
                 albumTable.insertIgnore(
                     Album(
                         id = matchedSong.album?.endpoint?.browseId ?: "",
@@ -802,15 +797,8 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
             }
         } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
             songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
-            Database.songTable.delete( song )
-            Database.songTable.insertIgnore( songNotFound )
-            Database.songPlaylistMapTable.insertIgnore(
-                SongPlaylistMap(
-                    songId = songNotFound.id,
-                    playlistId = playlistId,
-                    position = position
-                ).default()
-            )
+            songTable.delete( song )
+            playlist?.let { mapIgnore( it, songNotFound ) }
         }
     }
 }
@@ -951,18 +939,12 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
         }
         addToPlaylist(ytplaylistId, items.map { it.mediaId })
             .onSuccess {
-                Database.asyncTransaction {
-                    items.forEachIndexed { index, mediaItem ->
-                        songTable.insertIgnore( mediaItem )
-                        songPlaylistMapTable.insertIgnore(
-                            SongPlaylistMap(
-                                songId = mediaItem.mediaId,
-                                playlistId = localPlaylistId,
-                                position = position + index
-                            ).default()
-                        )
-                    }
-                }
+                Database.playlistTable
+                        .findById( localPlaylistId )
+                        .first()
+                        ?.let {
+                            Database.mapIgnore( it, *items.toTypedArray() )
+                        }
                 if (items.size == 50)
                     Toaster.i( "${mediaItems.size - (index + 1) * 50} Songs Remaining" )
             }
@@ -972,26 +954,20 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                     Toaster.w( R.string.adding_yt_to_pl_failed )
                     items.forEach { item ->
                         delay(500)
-                        addToPlaylist(ytplaylistId, item.mediaId)
-                            .onFailure {
+                        addToPlaylist(ytplaylistId, item.mediaId).onFailure {
                             println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
                                 Toaster.e(
                                     appContext().resources.getString(R.string.songs_add_yt_failed)+"${item.mediaMetadata.title} - ${item.mediaMetadata.artist}"
                                 )
-                            }.onSuccess {
-                                Database.asyncTransaction {
-                                    songTable.insertIgnore( item )
-
-                                    songPlaylistMapTable.insertIgnore(
-                                        SongPlaylistMap(
-                                            songId = item.mediaId,
-                                            playlistId = localPlaylistId,
-                                            position = position
-                                        ).default()
-                                    )
-                                }
-                                Toaster.n( "${items.size - (index + 1)} Songs Remaining" )
-                            }
+                        }.onSuccess {
+                            Database.playlistTable
+                                    .findById( localPlaylistId )
+                                    .first()
+                                    ?.let { playlist ->
+                                        Database.mapIgnore( playlist, *items.toTypedArray() )
+                                    }
+                            Toaster.n( "${items.size - (index + 1)} Songs Remaining" )
+                        }
                     }
                 }
             }
@@ -1006,15 +982,8 @@ suspend fun addSongToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylist
     if (isYouTubeSyncEnabled()) {
         addToPlaylist(ytplaylistId,mediaItem.mediaId)
             .onSuccess {
-                Database.asyncTransaction {
-                    songTable.insertIgnore( mediaItem )
-                    songPlaylistMapTable.insertIgnore(
-                        SongPlaylistMap(
-                            songId = mediaItem.mediaId,
-                            playlistId = localPlaylistId,
-                            position = position
-                        ).default()
-                    )
+                Database.playlistTable.findById( localPlaylistId ).first()?.let {
+                    Database.mapIgnore( it, mediaItem )
                 }
                 Toaster.s( R.string.songs_add_yt_success )
             }

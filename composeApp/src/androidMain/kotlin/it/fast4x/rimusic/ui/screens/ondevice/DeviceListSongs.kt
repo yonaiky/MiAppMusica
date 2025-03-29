@@ -90,7 +90,6 @@ import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.OnDeviceSong
 import it.fast4x.rimusic.models.SongEntity
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -115,6 +114,7 @@ import it.fast4x.rimusic.utils.OnDeviceBlacklist
 import it.fast4x.rimusic.utils.OnDeviceOrganize
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.defaultFolderKey
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.durationTextToMillis
@@ -690,28 +690,14 @@ fun DeviceListSongs(
                                         if (listMediaItems.isEmpty()) {
                                             filteredSongs.forEachIndexed { index, song ->
                                                 Database.asyncTransaction {
-                                                    songTable.insertIgnore( song.song )
-                                                    songPlaylistMapTable.insertIgnore(
-                                                        SongPlaylistMap(
-                                                            songId = song.song.id,
-                                                            playlistId = playlistPreview.playlist.id,
-                                                            position = position + index
-                                                        ).default()
-                                                    )
+                                                    mapIgnore( playlistPreview.playlist, song.song )
                                                 }
                                             }
                                         } else {
                                             listMediaItems.forEachIndexed { index, song ->
-                                                //Log.d("mediaItemMaxPos", position.toString())
                                                 Database.asyncTransaction {
-                                                    Database.insertIgnore( song )
-                                                    songPlaylistMapTable.insert(
-                                                        SongPlaylistMap(
-                                                            songId = song.mediaId,
-                                                            playlistId = playlistPreview.playlist.id,
-                                                            position = position + index
-                                                        ).default()
-                                                    )
+                                                    insertIgnore( song )
+                                                    mapIgnore( playlistPreview.playlist, song.asSong )
                                                 }
                                             }
                                             listMediaItems.clear()

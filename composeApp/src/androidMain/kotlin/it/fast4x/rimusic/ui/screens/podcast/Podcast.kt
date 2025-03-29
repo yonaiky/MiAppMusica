@@ -78,7 +78,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Playlist
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -128,7 +127,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
-import timber.log.Timber
 
 
 @ExperimentalTextApi
@@ -216,20 +214,15 @@ fun Podcast(
             setValue = { text ->
                 Database.asyncTransaction {
                     val playlist = Playlist(name = text, browseId = browseId)
-                    val pId = playlistTable.insert( playlist )
 
                     podcastPage?.listEpisode
-                               ?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
-                               ?.onEach( ::insertIgnore )
-                               ?.mapIndexed { index, mediaItem ->
-                                   SongPlaylistMap(
-                                       songId = mediaItem.mediaId,
-                                       playlistId = pId,
-                                       position = index
-                                   ).default()
-                               }?.let( songPlaylistMapTable::insertIgnore )
+                               ?.map( Innertube.Podcast.EpisodeItem::asMediaItem )
+                               ?.let {
+                                   mapIgnore( playlist, *it.toTypedArray() )
+                               }
+
+                    Toaster.done()
                 }
-                Toaster.done()
             }
         )
     }
@@ -546,20 +539,11 @@ fun Podcast(
                                                         if (position > 0) position++ else position = 0
 
                                                         if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
-                                                            podcastPage?.listEpisode?.forEachIndexed { index, song ->
-                                                                runCatching {
-                                                                    Database.insertIgnore( song.asMediaItem )
-
-                                                                    Database.songPlaylistMapTable.insertIgnore(
-                                                                        SongPlaylistMap(
-                                                                            songId = song.asMediaItem.mediaId,
-                                                                            playlistId = playlistPreview.playlist.id,
-                                                                            position = position + index
-                                                                        ).default()
-                                                                    )
-                                                                }.onFailure {
-                                                                    Timber.e("Failed onAddToPlaylist in PlaylistSongListModern  ${it.stackTraceToString()}")
-                                                                }
+                                                            val songs = podcastPage?.listEpisode
+                                                                                                     ?.map( Innertube.Podcast.EpisodeItem::asMediaItem )
+                                                                                                     .orEmpty()
+                                                            Database.asyncTransaction {
+                                                                mapIgnore( playlistPreview.playlist, *songs.toTypedArray() )
                                                             }
                                                         } else {
                                                             CoroutineScope(Dispatchers.IO).launch {

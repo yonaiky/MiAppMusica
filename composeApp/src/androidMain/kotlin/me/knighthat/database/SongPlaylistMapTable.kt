@@ -173,11 +173,14 @@ interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
      * Insert provided song into indicated playlist
      * at the next available position.
      *
+     * If record exists in the database (determined by [songId] and [playlistId])
+     * then this operation is skipped.
+     *
      * @param songId     song to add
      * @param playlistId playlist to add song into
      */
     @Query("""
-        INSERT INTO SongPlaylistMap ( songId, playlistId, position )
+        INSERT OR IGNORE INTO SongPlaylistMap ( songId, playlistId, position )
         VALUES( 
             :songId,
             :playlistId,

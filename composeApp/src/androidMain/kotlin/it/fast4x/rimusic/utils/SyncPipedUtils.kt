@@ -13,7 +13,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongPlaylistMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -39,33 +38,27 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
             println("pipedInfo syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
             Timber.d("SyncPipedUtils syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
 
-            Database.asyncTransaction {
-                songPlaylistMapTable.clear( playlistId )
-            }
+            Database.playlistTable
+                    .findById( playlistId )
+                    .first()
+                    ?.let { dbPlaylist ->
+                        Database.songPlaylistMapTable.clear( playlistId )
 
-            playlist.videos.forEach {video ->
-                val song = video.id?.let { id ->
-                    Song(
-                        id = id,
-                        title = video.cleanTitle,
-                        artistsText = video.cleanArtists,
-                        durationText = video.durationText,
-                        thumbnailUrl = video.thumbnailUrl.toString()
-                    )
-                }
-                if (song != null)
-                    Database.songTable.insertIgnore( song )
-            }
-            playlist.videos.forEachIndexed { index, song ->
-                Database.songPlaylistMapTable.insertIgnore(
-                    SongPlaylistMap(
-                        songId = song.id.toString(),
-                        playlistId = playlistId,
-                        position = index
-                    ).default()
-                )
-            }
-
+                        playlist.videos
+                                .mapNotNull video2Song@ {
+                                    if( it.id == null ) return@video2Song null
+                                    Song(
+                                        id = it.id!!,
+                                        title = it.cleanTitle,
+                                        artistsText = it.cleanArtists,
+                                        durationText = it.durationText,
+                                        thumbnailUrl = it.thumbnailUrl.toString()
+                                    )
+                                }
+                                .let {
+                                    Database.mapIgnore( dbPlaylist, *it.toTypedArray() )
+                                }
+                    }
         }
     }
 }
@@ -105,38 +98,27 @@ fun ImportPipedPlaylists(){
                                     )
                                 }.await()?.map {playlist ->
 
-                                    playlist.videos.forEach {video ->
-                                        val song = video.id?.let { id ->
-                                            Song(
-                                                id = id,
-                                                title = video.cleanTitle,
-                                                artistsText = video.cleanArtists,
-                                                durationText = video.durationText,
-                                                thumbnailUrl = video.thumbnailUrl.toString()
-                                            )
-                                        }
-                                        if (song != null) songTable.insertIgnore( song )
-                                    }
-                                    playlist.videos.forEachIndexed { index, song ->
-                                        if( song.id.isNullOrBlank() ) return@forEachIndexed
-                                        val innerPlaylist = Playlist(
-                                            name = "$PIPED_PREFIX${it.name}",
-                                            browseId = it.id.toString()
-                                        )
-                                        val pId = playlistTable.insert( innerPlaylist )
+                                    val innerPlaylist = Playlist(
+                                        name = "$PIPED_PREFIX${it.name}",
+                                        browseId = it.id.toString()
+                                    )
+                                    playlist.videos
+                                            .mapNotNull video2Song@ { video ->
+                                                if( video.id == null ) return@video2Song null
 
-                                        songPlaylistMapTable.insertIgnore(
-                                            SongPlaylistMap(
-                                                songId = song.id.toString(),
-                                                playlistId = pId,
-                                                position = index
-                                            ).default()
-                                        )
-                                    }
-
+                                                Song(
+                                                    id = video.id!!,
+                                                    title = video.cleanTitle,
+                                                    artistsText = video.cleanArtists,
+                                                    durationText = video.durationText,
+                                                    thumbnailUrl = video.thumbnailUrl.toString()
+                                                )
+                                            }
+                                            .let {
+                                                mapIgnore( innerPlaylist, *it.toTypedArray() )
+                                            }
                                 }
                             }
-
                         }
                     }
                 }

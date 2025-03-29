@@ -120,7 +120,6 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
-import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -2034,16 +2033,9 @@ fun SongMatchingDialog(
                                             } else
                                                 songPlaylistMapTable.deleteBySongId( songToRematch.id, playlistId )
 
+                                            val asMediaItem = song.asMediaItem
 
-                                            songTable.insertIgnore( song.asSong )
 
-                                            songPlaylistMapTable.insertIgnore(
-                                                SongPlaylistMap(
-                                                    songId = song.asMediaItem.mediaId,
-                                                    playlistId = playlistId,
-                                                    position = position
-                                                ).default()
-                                            )
                                             albumTable.insertIgnore(
                                                 Album(
                                                     id = song.album?.endpoint?.browseId ?: "",
@@ -2057,6 +2049,7 @@ fun SongMatchingDialog(
                                                     null
                                                 )
                                             )
+                                            playlist?.let { mapIgnore( it, asMediaItem ) }
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 Database.albumTable
                                                         .findById(song.album?.endpoint?.browseId ?: "")
