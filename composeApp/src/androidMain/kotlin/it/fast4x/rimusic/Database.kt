@@ -114,22 +114,11 @@ object Database {
                  ?.let { mapIgnore( it, mediaItem.asSong ) }
 
         // Insert artist
-
-        val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")
-        val artistsIds = mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")
-
-        if ( artistsNames != null && artistsIds != null ) {
-            artistsNames.fastZip( artistsIds ) { artistName, artistId ->
-                if( artistId == null ) return@fastZip
-
-                artistTable.insertIgnore(
-                    Artist( artistId, artistName )
-                )
-                songArtistMapTable.insertIgnore(
-                    SongArtistMap( mediaItem.mediaId, artistId )
-                )
-            }
-        }
+        val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames").orEmpty()
+        val artistsIds = mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds").orEmpty()
+        artistsNames.fastZip( artistsIds ) { name, id -> Artist( id, name ) }
+                    // Passing MediaItem causes infinite loop
+                    .forEach { mapIgnore( it, mediaItem.asSong ) }
     }
 
     /**
@@ -185,6 +174,62 @@ object Database {
         mediaItems.forEach {
             insertIgnore( it )
             songAlbumMapTable.map( it.mediaId, album.id, position )
+        }
+    }
+
+    /**
+     * Attempt to map [Song] to [Artist].
+     *
+     * [songs] and [artist] are ensured to be existed in the database
+     * with [SqlTable.insertIgnore] before attempting
+     * to map two together.
+     *
+     * **_This method doesn't require to be called on worker
+     * thread exclusively._**
+     *
+     * > NOTE: This function is wrapped by transaction, any
+     * failure happens during insertion results in rollback
+     * to protect database integrity.
+     *
+     * @param artist to map
+     * @param songs to map
+     */
+    @Transaction
+    fun mapIgnore( artist: Artist, vararg songs: Song ) {
+        artistTable.insertIgnore( artist )
+        songs.forEach {
+            songTable.insertIgnore( it )
+            songArtistMapTable.insertIgnore(
+                SongArtistMap(it.id, artist.id)
+            )
+        }
+    }
+
+    /**
+     * Attempt to put [mediaItems] into `Song` table and map it to [Album].
+     *
+     * [mediaItems] are first inserted to database with [insertIgnore]
+     * then [artist] to ensure to be existed in the database  before
+     * attempting to map two together.
+     *
+     * **_This method doesn't require to be called on worker
+     * thread exclusively._**
+     *
+     * > NOTE: This function is wrapped by transaction, any
+     * failure happens during insertion results in rollback
+     * to protect database integrity.
+     *
+     * @param artist to map
+     * @param mediaItems list of songs to map
+     */
+    @Transaction
+    fun mapIgnore( artist: Artist, vararg mediaItems: MediaItem ) {
+        artistTable.insertIgnore( artist )
+        mediaItems.forEach {
+            insertIgnore( it )
+            songArtistMapTable.insertIgnore(
+                SongArtistMap(it.mediaId, artist.id)
+            )
         }
     }
 

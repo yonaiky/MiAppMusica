@@ -18,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.util.fastZip
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
@@ -54,7 +53,6 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -723,9 +721,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
     }
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
-    val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
     val artistNameString = matchedSong?.asMediaItem?.mediaMetadata?.artist?.toString() ?: ""
-    val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
         if (findSongIndex() != -1) {
@@ -762,26 +758,26 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                                )
                            }
                            ?.let { mapIgnore( it, asMediaItem ) }
+                matchedSong.authors
+                           ?.mapNotNull {
+                               if( it.name == null || it.endpoint?.browseId == null )
+                                   return@mapNotNull null
+
+                               Artist(
+                                   id = it.name!!,
+                                   name = it.endpoint!!.browseId!!
+                               )
+                           }
+                           ?.forEach { mapIgnore( it, asMediaItem ) }
+
+                songTable.updateArtists( matchedSong.asMediaItem.mediaId, artistNameString )
+
                 CoroutineScope(Dispatchers.IO).launch {
                     if (isYouTubeSyncEnabled() && playlist?.isYoutubePlaylist == true && playlist.isEditable){
                         YtMusic.addToPlaylist(playlist.browseId ?: "", matchedSong.asMediaItem.mediaId)
                     }
                 }
 
-                if ( artistsNames != null && artistsIds != null ) {
-                    artistsNames.fastZip( artistsIds ) { artistName, artistId ->
-                        if( artistId == null ) return@fastZip
-
-                        artistTable.insertIgnore(
-                            Artist(id = artistId, name = artistName)
-                        )
-                        songArtistMapTable.insertIgnore(
-                            SongArtistMap(song.id, artistId)
-                        )
-                    }
-                }
-
-                Database.songTable.updateArtists( matchedSong.asMediaItem.mediaId, artistNameString )
                 if (song.thumbnailUrl == "") Database.songTable.delete( song )
             }
         } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
@@ -813,9 +809,7 @@ suspend fun updateLocalPlaylist(song: Song) {
     }
 
     val matchedSong = searchResults?.getOrNull(findSongIndex())
-    val artistsNames = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.name }
     val artistNameString = matchedSong?.asMediaItem?.mediaMetadata?.artist?.toString() ?: ""
-    val artistsIds = matchedSong?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
 
     Database.asyncTransaction {
         if( findSongIndex() != -1 || matchedSong == null ) return@asyncTransaction
@@ -833,20 +827,19 @@ suspend fun updateLocalPlaylist(song: Song) {
                        )
                    }
                    ?.let { mapIgnore( it, asMediaItem ) }
+        matchedSong.authors
+                   ?.mapNotNull {
+                       if( it.name == null || it.endpoint?.browseId == null )
+                           return@mapNotNull null
 
-        if ( artistsNames != null && artistsIds != null ) {
-            artistsNames.fastZip( artistsIds ) { artistName, artistId ->
-                if( artistId == null ) return@fastZip
+                       Artist(
+                           id = it.name!!,
+                           name = it.endpoint!!.browseId!!
+                       )
+                   }
+                   ?.forEach { mapIgnore( it, asMediaItem ) }
 
-                artistTable.insertIgnore(
-                    Artist(id = artistId, name = artistName)
-                )
-                songArtistMapTable.insertIgnore(
-                    SongArtistMap(song.id, artistId)
-                )
-            }
-        }
-        Database.songTable.updateArtists( matchedSong.asMediaItem.mediaId, artistNameString )
+        songTable.updateArtists( matchedSong.asMediaItem.mediaId, artistNameString )
     }
 }
 

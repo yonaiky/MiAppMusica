@@ -9,7 +9,6 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.CoroutineScope
@@ -58,11 +57,9 @@ class GoToArtist private constructor(
                                      ?.channelId
                                      ?.let {
                                          result = it
-                                         Database.asyncTransaction {
-                                             artistTable.insert( Artist(it) )
-                                             songArtistMapTable.insert( SongArtistMap(song.id, it) )
-                                         }
+                                         Artist(it)
                                      }
+                                     ?.let { Database.mapIgnore( it, song ) }
                          }.onFailure {
                              Timber.tag("go_to_artist").e(it)
                              Toaster.e( R.string.failed_to_fetch_artist )

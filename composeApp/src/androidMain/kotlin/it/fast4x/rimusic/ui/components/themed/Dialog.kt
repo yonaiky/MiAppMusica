@@ -92,7 +92,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import androidx.compose.ui.util.fastZip
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.PlaybackParameters
@@ -118,7 +117,6 @@ import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -2011,8 +2009,6 @@ fun SongMatchingDialog(
             if (songsList.isNotEmpty()) {
                 LazyColumn {
                     itemsIndexed(songsList) { _, song ->
-                        val artistsNames = song?.authors?.filter { it.endpoint != null }?.map { it.name }
-                        val artistsIds = song?.authors?.filter { it.endpoint != null }?.map { it.endpoint?.browseId }
                         val artistNameString = song?.asMediaItem?.mediaMetadata?.artist?.toString() ?: ""
                         if (song != null) {
                             Row(horizontalArrangement = Arrangement.Start,
@@ -2045,25 +2041,24 @@ fun SongMatchingDialog(
                                                     )
                                                 }
                                                 ?.let { mapIgnore( it, asMediaItem ) }
+                                            song.authors
+                                                ?.mapNotNull {
+                                                    if( it.name == null || it.endpoint?.browseId == null )
+                                                        return@mapNotNull null
+
+                                                    Artist(
+                                                        id = it.endpoint!!.browseId!!,
+                                                        name = it.name!!
+                                                    )
+                                                }
+                                                ?.forEach { mapIgnore( it, asMediaItem ) }
+                                            songTable.updateArtists( song.asMediaItem.mediaId, artistNameString )
+
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 if (isYouTubeSyncEnabled() && playlist?.isYoutubePlaylist == true && playlist.isEditable){
                                                     YtMusic.addToPlaylist(playlist.browseId ?: "", song.asMediaItem.mediaId)
                                                 }
                                             }
-                                            if ( artistsNames != null && artistsIds != null ) {
-                                                artistsNames.fastZip( artistsIds ) { artistName, artistId ->
-                                                    if( artistId == null ) return@fastZip
-
-                                                    artistTable.insertIgnore(
-                                                        Artist(id = artistId, name = artistName)
-                                                    )
-                                                    songArtistMapTable.insertIgnore(
-                                                        SongArtistMap(song.asMediaItem.mediaId, artistId)
-                                                    )
-                                                }
-                                            }
-
-                                            Database.songTable.updateArtists( song.asMediaItem.mediaId, artistNameString )
                                         }
                                         onDismiss()
                                     }
