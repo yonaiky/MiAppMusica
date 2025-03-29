@@ -3,6 +3,7 @@ package me.knighthat.database
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Transaction
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
@@ -18,6 +19,7 @@ interface EventTable: SqlTable<Event> {
     @Query("SELECT COUNT(*) FROM Event")
     fun countAll(): Flow<Long>
 
+    @Transaction
     @Query("SELECT DISTINCT * FROM Event LIMIT :limit")
     fun allWithSong( limit: Int = Int.MAX_VALUE ): Flow<List<EventWithSong>>
 
