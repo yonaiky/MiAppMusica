@@ -521,6 +521,17 @@ fun Player(
 
     val windowInsets = WindowInsets.systemBars
 
+    var artistsInfo by remember {
+        mutableStateOf(
+            mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")?.let { artistNames ->
+                mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.let { artistIds ->
+                    artistNames.zip(artistIds).map { (authorName, authorId) ->
+                        Info(authorId, authorName)
+                    }
+                }
+            }
+        )
+    }
     val actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
     var expandedplayer by rememberPreference(expandedplayerKey, false)
 
@@ -528,7 +539,39 @@ fun Player(
 
     if (showlyricsthumbnail) expandedplayer = false
 
-    val artistsInfo = emptyList<Info>()
+    LaunchedEffect(mediaItem.mediaId) {
+        updateBrush = true
+    }
+
+
+    val ExistIdsExtras =
+        mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.size.toString()
+
+    var artistIds = arrayListOf<String>()
+    var artistNames = arrayListOf<String>()
+
+
+    artistsInfo?.forEach { (id) -> artistIds = arrayListOf(id) }
+    if (ExistIdsExtras.equals(0)
+            .not()
+    ) mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.toCollection(artistIds)
+
+    artistsInfo?.forEach { (name) -> artistNames = arrayListOf(name) }
+    if (ExistIdsExtras.equals(0)
+            .not()
+    ) mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")?.toCollection(artistNames)
+
+
+
+    if (artistsInfo?.isEmpty() == true && ExistIdsExtras.equals(0).not()) {
+        artistsInfo = artistNames.let { artistNames ->
+            artistIds.let { artistIds ->
+                artistNames.zip(artistIds).map {
+                    Info(it.second, it.first)
+                }
+            }
+        }
+    }
     val albumId = mediaItem.mediaMetadata.extras?.getString("albumId")
 
     var downloadState by remember {
