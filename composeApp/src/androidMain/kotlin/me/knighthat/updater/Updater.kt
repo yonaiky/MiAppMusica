@@ -35,8 +35,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
 import java.net.UnknownHostException
-import java.time.Instant
-import java.time.ZoneId
+import java.time.ZonedDateTime
 
 object Updater {
 
@@ -106,13 +105,11 @@ object Updater {
              * Therefore, the app will recognize it is behind the update even
              * when the user just updated.
              *
-             * To counter this problem, all [Instant] must be converted to [java.time.LocalDate]
-             * then compared to against each other, this will ensure that
-             * 2 [Instant]s are compared by their date, not exact time.
+             * To counter this problem, time strings are converted into [ZonedDateTime]
+             * and apk creation time is subtracted an hour before the comparison.
              */
-            val zone = ZoneId.systemDefault()
-            val projBuildTime = Instant.parse( BuildConfig.BUILD_TIME ).atZone( zone ).toLocalDate()
-            val upstreamBuildTime = build.buildTime.atZone( zone ).toLocalDate()
+            val projBuildTime = ZonedDateTime.parse( BuildConfig.BUILD_TIME )
+            val upstreamBuildTime = build.buildTime.minusHours( 1L )
 
             NewUpdateAvailableDialog.isActive = upstreamBuildTime.isAfter( projBuildTime )
         } catch( e: Exception ) {

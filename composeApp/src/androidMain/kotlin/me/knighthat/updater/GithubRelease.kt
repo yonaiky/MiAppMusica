@@ -4,7 +4,7 @@ import android.text.format.Formatter
 import it.fast4x.rimusic.appContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.Instant
+import java.time.ZonedDateTime
 
 @Serializable
 data class GithubRelease(
@@ -23,8 +23,8 @@ data class GithubRelease(
         @SerialName("created_at") val createdAt: String,
         @SerialName("browser_download_url") val downloadUrl: String
     ) {
-        val buildTime: Instant by lazy {
-            Instant.parse( createdAt )
+        val buildTime: ZonedDateTime by lazy {
+            ZonedDateTime.parse( createdAt )
         }
 
         val readableSize: String
