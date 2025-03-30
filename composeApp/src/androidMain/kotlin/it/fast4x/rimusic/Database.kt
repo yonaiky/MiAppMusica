@@ -5,7 +5,6 @@ import androidx.media3.common.MediaItem
 import androidx.room.AutoMigration
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.Transaction
 import androidx.room.TypeConverters
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
@@ -95,8 +94,7 @@ object Database {
      * failure happens during insertion results in rollback
      * to protect database integrity.
      */
-    @Transaction
-    fun insertIgnore( mediaItem: MediaItem ) {
+    fun insertIgnore( mediaItem: MediaItem ) = asyncTransaction {
         // Insert song
         songTable.insertIgnore( mediaItem )
 
@@ -140,14 +138,14 @@ object Database {
      * @param position of song in album, **default** or `-1` results in
      * database puts song to next available position in map
      */
-    @Transaction
-    fun mapIgnore( album: Album, vararg songs: Song, position: Int = -1 ) {
-        albumTable.insertIgnore( album )
-        songs.forEach {
-            songTable.insertIgnore( it )
-            songAlbumMapTable.map( it.id, album.id, position )
+    fun mapIgnore( album: Album, vararg songs: Song, position: Int = -1 ) =
+        asyncTransaction {
+            albumTable.insertIgnore( album )
+            songs.forEach {
+                songTable.insertIgnore( it )
+                songAlbumMapTable.map( it.id, album.id, position )
+            }
         }
-    }
 
     /**
      * Attempt to put [mediaItems] into `Song` table and map it to [Album].
@@ -168,14 +166,14 @@ object Database {
      * @param position of song in album, **default** or `-1` results in
      * database puts song to next available position in map
      */
-    @Transaction
-    fun mapIgnore( album: Album, vararg mediaItems: MediaItem, position: Int = -1 ) {
-        albumTable.insertIgnore( album )
-        mediaItems.forEach {
-            insertIgnore( it )
-            songAlbumMapTable.map( it.mediaId, album.id, position )
+    fun mapIgnore( album: Album, vararg mediaItems: MediaItem, position: Int = -1 ) =
+        asyncTransaction {
+            albumTable.insertIgnore( album )
+            mediaItems.forEach {
+                insertIgnore( it )
+                songAlbumMapTable.map( it.mediaId, album.id, position )
+            }
         }
-    }
 
     /**
      * Attempt to map [Song] to [Artist].
@@ -194,16 +192,16 @@ object Database {
      * @param artist to map
      * @param songs to map
      */
-    @Transaction
-    fun mapIgnore( artist: Artist, vararg songs: Song ) {
-        artistTable.insertIgnore( artist )
-        songs.forEach {
-            songTable.insertIgnore( it )
-            songArtistMapTable.insertIgnore(
-                SongArtistMap(it.id, artist.id)
-            )
+    fun mapIgnore( artist: Artist, vararg songs: Song ) =
+        asyncTransaction {
+            artistTable.insertIgnore( artist )
+            songs.forEach {
+                songTable.insertIgnore( it )
+                songArtistMapTable.insertIgnore(
+                    SongArtistMap(it.id, artist.id)
+                )
+            }
         }
-    }
 
     /**
      * Attempt to put [mediaItems] into `Song` table and map it to [Album].
@@ -222,16 +220,16 @@ object Database {
      * @param artist to map
      * @param mediaItems list of songs to map
      */
-    @Transaction
-    fun mapIgnore( artist: Artist, vararg mediaItems: MediaItem ) {
-        artistTable.insertIgnore( artist )
-        mediaItems.forEach {
-            insertIgnore( it )
-            songArtistMapTable.insertIgnore(
-                SongArtistMap(it.mediaId, artist.id)
-            )
+    fun mapIgnore( artist: Artist, vararg mediaItems: MediaItem ) =
+        asyncTransaction {
+            artistTable.insertIgnore( artist )
+            mediaItems.forEach {
+                insertIgnore( it )
+                songArtistMapTable.insertIgnore(
+                    SongArtistMap(it.mediaId, artist.id)
+                )
+            }
         }
-    }
 
     /**
      * Attempt to map [Song] to [Playlist].
@@ -250,16 +248,16 @@ object Database {
      * @param playlist to map
      * @param songs to map
      */
-    @Transaction
-    fun mapIgnore( playlist: Playlist, vararg songs: Song ) {
-        if( songs.isEmpty() ) return
+    fun mapIgnore( playlist: Playlist, vararg songs: Song ) =
+        asyncTransaction {
+            if( songs.isEmpty() ) return@asyncTransaction
 
-        playlistTable.insertIgnore( playlist )
-        songs.forEach {
-            songTable.insertIgnore( it )
-            songPlaylistMapTable.map( it.id, playlist.id )
+            playlistTable.insertIgnore( playlist )
+            songs.forEach {
+                songTable.insertIgnore( it )
+                songPlaylistMapTable.map( it.id, playlist.id )
+            }
         }
-    }
 
     /**
      * Attempt to put [mediaItems] into `Song` table and map it to [Playlist].
@@ -278,16 +276,16 @@ object Database {
      * @param playlist to map
      * @param mediaItems list of songs to map
      */
-    @Transaction
-    fun mapIgnore( playlist: Playlist, vararg mediaItems: MediaItem ) {
-        if( mediaItems.isEmpty() ) return
+    fun mapIgnore( playlist: Playlist, vararg mediaItems: MediaItem ) =
+        asyncTransaction {
+            if( mediaItems.isEmpty() ) return@asyncTransaction
 
-        playlistTable.insertIgnore( playlist )
-        mediaItems.forEach {
-            insertIgnore( it )
-            songPlaylistMapTable.map( it.mediaId, playlist.id )
+            playlistTable.insertIgnore( playlist )
+            mediaItems.forEach {
+                insertIgnore( it )
+                songPlaylistMapTable.map( it.mediaId, playlist.id )
+            }
         }
-    }
 
     /**
      * Commit statements in BULK. If anything goes wrong during the transaction,
