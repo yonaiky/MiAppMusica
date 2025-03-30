@@ -3,12 +3,18 @@ package me.knighthat.database
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Transaction
 import it.fast4x.rimusic.models.Format
 import kotlinx.coroutines.flow.Flow
+import me.knighthat.database.ext.FormatWithSong
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
 interface FormatTable: SqlTable<Format> {
+
+    @Transaction
+    @Query("SELECT DISTINCT * FROM Format LIMIT :limit")
+    fun allWithSongs( limit: Int = Int.MAX_VALUE ): Flow<List<FormatWithSong>>
 
     /**
      * Song with [songId] will have its [Format] removed

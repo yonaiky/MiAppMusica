@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import me.knighthat.database.ext.FormatWithSong
 
 class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -457,16 +458,14 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                         .first()
                         .reversed()
 
-                    MediaId.offline -> Database.songTable
-                                               .all( excludeHidden = true )
+                    MediaId.offline -> Database.formatTable
+                                               .allWithSongs()
                                                .first()
-                                               .filter { song ->
-                                                   cache.isCached(
-                                                       song.id,
-                                                       0L,
-                                                       Database.formatTable.findContentLengthOf( song.id ).first()
-                                                   )
+                                               .filter {
+                                                   val contentLength = it.format.contentLength
+                                                   contentLength != null && cache.isCached( it.song.id, 0L, contentLength )
                                                }
+                                               .map( FormatWithSong::song )
 
                     MediaId.ondevice -> Database
                         .songTable

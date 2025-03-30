@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -53,6 +53,7 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -105,7 +106,7 @@ import it.fast4x.rimusic.utils.songSortByKey
 import it.fast4x.rimusic.utils.songSortOrderKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -124,6 +125,7 @@ import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.SongShuffler
+import me.knighthat.database.ext.FormatWithSong
 import me.knighthat.utils.PathUtils
 import me.knighthat.utils.getLocalSongs
 import timber.log.Timber
@@ -132,7 +134,6 @@ import timber.log.Timber
     ExperimentalAnimationApi::class,
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
-    ExperimentalTextApi::class
 )
 @UnstableApi
 @Composable
@@ -154,6 +155,17 @@ fun HomeSongs( navController: NavController ) {
 
     var items by persistList<Song>( "home/songs" )
     var itemsOnDisplay by persistList<Song>( "home/songs/on_display" )
+    val formats by remember( builtInPlaylist ) {
+        if( builtInPlaylist != BuiltInPlaylist.Offline )
+            return@remember emptyFlow<List<Format>>()
+
+        Database.formatTable
+                .allWithSongs()
+                .distinctUntilChanged()
+                .map { list ->
+                    list.map( FormatWithSong::format )
+                }
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     var songsOnDevice by remember( builtInPlaylist ) {
         mutableStateOf( emptyMap<Song, String>() )
@@ -257,6 +269,7 @@ fun HomeSongs( navController: NavController ) {
     // No filtration applied to this stage, only sort
     LaunchedEffect( builtInPlaylist, topPlaylists.period, odsSortBy, songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
         isLoading = true
+        items = emptyList()
 
         when( builtInPlaylist ) {
             BuiltInPlaylist.All, BuiltInPlaylist.Offline, BuiltInPlaylist.Downloaded ->
@@ -283,10 +296,9 @@ fun HomeSongs( navController: NavController ) {
         when( builtInPlaylist ) {
             BuiltInPlaylist.All -> !includeLocalSongs || !song.id.startsWith( LOCAL_KEY_PREFIX )
 
-            // TODO merge this to phrase 1
             BuiltInPlaylist.Offline -> runBlocking( Dispatchers.IO ) {
-                val contentLength = Database.formatTable.findContentLengthOf( song.id ).first()
-                binder?.cache?.isCached(song.id, 0, contentLength) ?: false
+                val contentLength = formats.firstOrNull { it.songId == song.id }?.contentLength
+                contentLength != null && binder?.cache?.isCached( song.id, 0, contentLength ) ?: false
             }
 
             BuiltInPlaylist.Downloaded -> MyDownloadHelper.downloads

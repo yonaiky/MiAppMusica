@@ -53,6 +53,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
+import me.knighthat.database.ext.FormatWithSong
 import javax.inject.Inject
 
 @UnstableApi
@@ -321,17 +322,16 @@ class MediaLibrarySessionCallback @Inject constructor(
                         when (val playlistId =
                             parentId.removePrefix("${PlayerServiceModern.PLAYLIST}/")) {
                             ID_FAVORITES -> database.songTable.allFavorites()
-                            ID_CACHED -> database.songTable
-                                                 .all( excludeHidden = true )
+                            ID_CACHED -> database.formatTable
+                                                 .allWithSongs()
                                                  .map { list ->
-                                                     list.filter { song ->
-                                                         binder.cache.isCached(
-                                                             song.id,
-                                                             0L,
-                                                             database.formatTable.findContentLengthOf( song.id ).first()
-                                                         )
-                                                 }.reversed()
-                            }
+                                                     list.filter {
+                                                             val contentLength = it.format.contentLength
+                                                             contentLength != null && binder.cache.isCached( it.song.id, 0L, contentLength )
+                                                         }
+                                                         .map( FormatWithSong::song )
+                                                         .reversed()
+                                                 }
                             ID_TOP ->
                                 database.eventTable
                                         .findSongsMostPlayedBetween(
@@ -454,18 +454,15 @@ class MediaLibrarySessionCallback @Inject constructor(
                     ID_FAVORITES -> database.songTable.allFavorites().map{  list ->
                         list.map { SongEntity(it) }.reversed()
                     }
-                    ID_CACHED -> database.songTable
-                                         .all( excludeHidden = true )
+                    ID_CACHED -> database.formatTable
+                                         .allWithSongs()
                                          .map { list ->
-                                             list.filter { song ->
-                                                     binder.cache.isCached(
-                                                         song.id,
-                                                         0L,
-                                                         database.formatTable.findContentLengthOf( song.id ).first()
-                                                     )
+                                             list.filter {
+                                                     val contentLength = it.format.contentLength
+                                                     contentLength != null && binder.cache.isCached( it.song.id, 0L, contentLength )
                                                  }
+                                                 .map { SongEntity(it.song) }
                                                  .reversed()
-                                                 .map { SongEntity(it) }
                                          }
                     ID_TOP ->
                         database.eventTable
@@ -620,16 +617,14 @@ class MediaLibrarySessionCallback @Inject constructor(
             .build()
 
     private fun getCountCachedSongs() =
-        database.songTable
-                .all( excludeHidden = true )
+        database.formatTable
+                .allWithSongs()
                 .map { list ->
-                    list.filter { song ->
-                        binder.cache.isCached(
-                            song.id,
-                            0L,
-                            database.formatTable.findContentLengthOf( song.id ).first()
-                        )
-                    }.size
+                    list.filter {
+                            val contentLength = it.format.contentLength
+                            contentLength != null && binder.cache.isCached( it.song.id, 0L, contentLength )
+                        }
+                        .size
                 }
 
     private fun getCountDownloadedSongs() = downloadHelper.downloads.map {
