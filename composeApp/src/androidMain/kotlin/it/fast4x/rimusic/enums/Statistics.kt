@@ -4,25 +4,29 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import app.kreate.android.R
 import me.knighthat.enums.TextView
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 
 enum class StatisticsType(
+    val duration: Duration,
     @field:DrawableRes override val iconId: Int,
     @field:StringRes override val textId: Int
 ): Drawable, TextView {
 
-    Today( R.drawable.stat_today, R.string.today ),
+    Today( 1.days, R.drawable.stat_today, R.string.today ),
 
-    OneWeek( R.drawable.stat_week, R.string._1_week ),
+    OneWeek( 7.days, R.drawable.stat_week, R.string._1_week ),
 
-    OneMonth( R.drawable.stat_month, R.string._1_month ),
+    OneMonth( 30.days, R.drawable.stat_month, R.string._1_month ),
 
-    ThreeMonths( R.drawable.stat_3months, R.string._3_month ),
+    ThreeMonths( 90.days, R.drawable.stat_3months, R.string._3_month ),
 
-    SixMonths( R.drawable.stat_6months, R.string._6_month ),
+    SixMonths( 180.days, R.drawable.stat_6months, R.string._6_month ),
 
-    OneYear( R.drawable.stat_year, R.string._1_year ),
+    OneYear( 365.days, R.drawable.stat_year, R.string._1_year ),
 
     All( R.drawable.calendar_clear, R.string.all );
+    All( Duration.INFINITE, R.drawable.calendar_clear, R.string.all );
 }
 
 enum class StatisticsCategory(

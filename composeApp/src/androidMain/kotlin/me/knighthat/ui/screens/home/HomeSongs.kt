@@ -79,7 +79,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
-import it.fast4x.rimusic.utils.PeriodSelector
+import it.fast4x.rimusic.utils.Preference
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.builtInPlaylistKey
@@ -113,6 +113,7 @@ import kotlinx.coroutines.runBlocking
 import me.knighthat.component.FolderItem
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
+import me.knighthat.component.song.PeriodSelector
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DeleteHiddenSongsDialog
 import me.knighthat.component.tab.DeleteSongDialog
@@ -209,7 +210,7 @@ fun HomeSongs( navController: NavController ) {
         SongSortBy.entries,
         rememberPreference(songSortByKey, SongSortBy.DateAdded)
     )
-    val topPlaylists = PeriodSelector.init()
+    val topPlaylists = PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
     val hiddenSongs = HiddenSongs()
     val search = Search.init()
     val hideSongDialog = HideSongDialog()

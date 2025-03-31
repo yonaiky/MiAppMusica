@@ -3,6 +3,7 @@ package it.fast4x.rimusic.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import it.fast4x.rimusic.enums.HomeItemSize
+import it.fast4x.rimusic.enums.StatisticsType
 
 object Preference {
 
@@ -10,6 +11,7 @@ object Preference {
     val HOME_ARTIST_ITEM_SIZE = Key( "AristItemSizeEnum", HomeItemSize.SMALL )
     val HOME_ALBUM_ITEM_SIZE = Key( "AlbumItemSizeEnum", HomeItemSize.SMALL )
     val HOME_LIBRARY_ITEM_SIZE = Key( "LibraryItemSizeEnum", HomeItemSize.SMALL )
+    val HOME_SONGS_TOP_PLAYLIST_PERIOD = Key( "HomeSongsTopPlaylistPeriod", StatisticsType.All )
 
     @Composable
     inline fun <reified T: Enum<T>> remember( key: Key<T>): MutableState<T> =
