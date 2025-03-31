@@ -122,7 +122,7 @@ object Database {
     /**
      * Attempt to map [Song] to [Album].
      *
-     * [songs] and [album] are ensured to be existed in the database
+     * [song] and [album] are ensured to be existed in the database
      * with [SqlTable.insertIgnore] before attempting
      * to map two together.
      *
@@ -134,23 +134,21 @@ object Database {
      * to protect database integrity.
      *
      * @param album to map
-     * @param songs to map
+     * @param song to map
      * @param position of song in album, **default** or `-1` results in
      * database puts song to next available position in map
      */
-    fun mapIgnore( album: Album, vararg songs: Song, position: Int = -1 ) =
+    fun mapIgnore( album: Album, song: Song, position: Int = -1 ) =
         asyncTransaction {
             albumTable.insertIgnore( album )
-            songs.forEach {
-                songTable.insertIgnore( it )
-                songAlbumMapTable.map( it.id, album.id, position )
-            }
+            songTable.insertIgnore( song )
+            songAlbumMapTable.map( song.id, album.id, position )
         }
 
     /**
-     * Attempt to put [mediaItems] into `Song` table and map it to [Album].
+     * Attempt to put [mediaItem] into `Song` table and map it to [Album].
      *
-     * [mediaItems] are first inserted to database with [insertIgnore]
+     * [mediaItem] is first inserted to database with [insertIgnore]
      * then [album] to ensure to be existed in the database  before
      * attempting to map two together.
      *
@@ -162,17 +160,15 @@ object Database {
      * to protect database integrity.
      *
      * @param album to map
-     * @param mediaItems list of songs to map
+     * @param mediaItem song to map
      * @param position of song in album, **default** or `-1` results in
      * database puts song to next available position in map
      */
-    fun mapIgnore( album: Album, vararg mediaItems: MediaItem, position: Int = -1 ) =
+    fun mapIgnore( album: Album, mediaItem: MediaItem, position: Int = -1 ) =
         asyncTransaction {
             albumTable.insertIgnore( album )
-            mediaItems.forEach {
-                insertIgnore( it )
-                songAlbumMapTable.map( it.mediaId, album.id, position )
-            }
+            insertIgnore( mediaItem )
+            songAlbumMapTable.map( mediaItem.mediaId, album.id, position )
         }
 
     /**
