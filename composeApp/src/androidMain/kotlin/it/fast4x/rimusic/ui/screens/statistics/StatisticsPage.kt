@@ -99,8 +99,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -126,11 +124,6 @@ fun StatisticsPage(
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
-    val sectionTextModifier = Modifier
-        .padding(horizontal = 16.dp)
-        .padding(top = 24.dp, bottom = 8.dp)
-        .padding(endPaddingValues)
-
     val thumbnailRoundness by rememberPreference(
         thumbnailRoundnessKey,
         ThumbnailRoundness.Heavy
@@ -144,32 +137,14 @@ fun StatisticsPage(
     val thumbnailSizeDp = Dimensions.thumbnails.song
     val thumbnailSize = thumbnailSizeDp.px
 
-    val today: Duration = 1.days
-    val lastWeek: Duration = 7.days
-    val lastMonth: Duration = 30.days
-    val last3Month: Duration = 90.days
-    val last6Month: Duration = 180.days
-    val lastYear: Duration = 365.days
-    val last50Year: Duration = 18250.days
-
-
-    val from = when (statisticsType) {
-        StatisticsType.Today -> today.inWholeMilliseconds
-        StatisticsType.OneWeek -> lastWeek.inWholeMilliseconds
-        StatisticsType.OneMonth -> lastMonth.inWholeMilliseconds
-        StatisticsType.ThreeMonths -> last3Month.inWholeMilliseconds
-        StatisticsType.SixMonths -> last6Month.inWholeMilliseconds
-        StatisticsType.OneYear -> lastYear.inWholeMilliseconds
-        StatisticsType.All -> last50Year.inWholeMilliseconds
-    }
-
     val maxStatisticsItems by rememberPreference( maxStatisticsItemsKey, MaxStatisticsItems.`10` )
+    val from = remember( statisticsType ) { statisticsType.timeStampInMillis() }
 
     val artists by remember {
         Database.eventTable
                 .findArtistsMostPlayedBetween(
                     from = from,
-                    limit = maxStatisticsItems.toLong()
+                    limit = maxStatisticsItems.toInt()
                 )
                 .distinctUntilChanged()
     }.collectAsState( emptyList(), Dispatchers.IO )
@@ -177,7 +152,7 @@ fun StatisticsPage(
         Database.eventTable
                 .findAlbumsMostPlayedBetween(
                     from = from,
-                    limit = maxStatisticsItems.toLong()
+                    limit = maxStatisticsItems.toInt()
                 )
                 .distinctUntilChanged()
     }.collectAsState( emptyList(), Dispatchers.IO )
@@ -185,19 +160,22 @@ fun StatisticsPage(
         Database.eventTable
                 .findPlaylistMostPlayedBetweenAsPreview(
                     from = from,
-                    limit = maxStatisticsItems.toLong()
+                    limit = maxStatisticsItems.toInt()
                 )
                 .distinctUntilChanged()
     }.collectAsState( emptyList(), Dispatchers.IO )
     var totalPlayTimes by remember { mutableLongStateOf(0L) }
     val songs by remember {
         Database.eventTable
-            .findSongsMostPlayedBetween( from )
-            .distinctUntilChanged()
-            .onEach {
-                totalPlayTimes = it.sumOf( Song::totalPlayTimeMs )
-            }
-            .map { it.take( maxStatisticsItems.toInt() ) }
+                .findSongsMostPlayedBetween(
+                    from = from,
+                    limit = maxStatisticsItems.toInt()
+                )
+                .distinctUntilChanged()
+                .onEach {
+                    totalPlayTimes = it.sumOf( Song::totalPlayTimeMs )
+                }
+                .map { it.take( maxStatisticsItems.toInt() ) }
     }.collectAsState( emptyList(), Dispatchers.IO )
 
     var downloadState by remember {

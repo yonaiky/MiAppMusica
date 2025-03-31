@@ -42,16 +42,17 @@ interface EventTable: SqlTable<Event> {
      */
     @Query("""
         SELECT DISTINCT S.*
-        FROM Event E
-        JOIN Song S ON S.id = E.songId
-        WHERE E."timestamp" BETWEEN :from and :to
-        ORDER BY S.totalPlaytimeMs DESC
+        FROM Song S
+        JOIN Event E ON E.songId = S.id
+        WHERE E."timestamp" BETWEEN :from AND :to
+        GROUP BY E.songId 
+        ORDER BY SUM(E.playtime) DESC
         LIMIT :limit
     """)
     fun findSongsMostPlayedBetween(
         from: Long,
         to: Long = System.currentTimeMillis(),
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Song>>
 
     /**
@@ -74,18 +75,17 @@ interface EventTable: SqlTable<Event> {
     @Query("""
         SELECT DISTINCT A.*
         FROM Artist A
-        JOIN songartistmap sam ON sam.artistId = A.id
-        JOIN Event E ON E.songId = sam.songId
-        JOIN Song S ON S.id = sam.songId
-        WHERE E."timestamp" BETWEEN :from and :to
+        JOIN SongArtistMap SAM ON SAM.artistId = A.id
+        JOIN Event E ON E.songId = SAM.songId
+        WHERE E."timestamp" BETWEEN :from AND :to
         GROUP BY A.id
-        ORDER BY SUM(S.totalPlaytimeMs) DESC
+        ORDER BY SUM(E.playtime) DESC
         LIMIT :limit
     """)
     fun findArtistsMostPlayedBetween(
         from: Long,
         to: Long = System.currentTimeMillis(),
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Artist>>
 
     /**
@@ -108,18 +108,17 @@ interface EventTable: SqlTable<Event> {
     @Query("""
         SELECT DISTINCT A.*
         FROM Album A
-        JOIN SongAlbumMap sam ON sam.albumId = A.id
-        JOIN Event E ON E.songId = sam.songId
-        JOIN Song S ON S.id = sam.songId
-        WHERE E."timestamp" BETWEEN :from and :to
+        JOIN SongAlbumMap SAM ON SAM.albumId = A.id
+        JOIN Event E ON E.songId = SAM.songId
+        WHERE E."timestamp" BETWEEN :from AND :to
         GROUP BY A.id
-        ORDER BY SUM(S.totalPlaytimeMs) DESC
+        ORDER BY SUM(E.playtime) DESC
         LIMIT :limit
     """)
     fun findAlbumsMostPlayedBetween(
         from: Long,
         to: Long = System.currentTimeMillis(),
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<Album>>
 
     /**
@@ -141,20 +140,19 @@ interface EventTable: SqlTable<Event> {
      * @return [PlaylistPreview] that their songs were listened to at least once in period in descending order
      */
     @Query("""
-        SELECT DISTINCT P.*, COUNT(spm.songId) AS songCount
+        SELECT DISTINCT P.*, COUNT(SPM.songId) AS songCount
         FROM Playlist P
-        JOIN SongPlaylistMap spm ON spm.playlistId = P.id
-        JOIN Event E ON E.songId = spm.songId
-        JOIN Song S ON S.id = spm.songId
-        WHERE E."timestamp" BETWEEN :from and :to
+        JOIN SongPlaylistMap SPM ON SPM.playlistId = P.id
+        JOIN Event E ON E.songId = SPM.songId
+        WHERE E."timestamp" BETWEEN :from AND :to
         GROUP BY P.id
-        ORDER BY SUM(S.totalPlaytimeMs) DESC
+        ORDER BY SUM(E.playtime) DESC
         LIMIT :limit
     """)
     fun findPlaylistMostPlayedBetweenAsPreview(
         from: Long,
         to: Long = System.currentTimeMillis(),
-        limit: Long = Long.MAX_VALUE
+        limit: Int = Int.MAX_VALUE
     ): Flow<List<PlaylistPreview>>
 
     @Query("DELETE FROM Event")

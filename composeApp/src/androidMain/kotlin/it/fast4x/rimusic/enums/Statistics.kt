@@ -25,8 +25,17 @@ enum class StatisticsType(
 
     OneYear( 365.days, R.drawable.stat_year, R.string._1_year ),
 
-    All( R.drawable.calendar_clear, R.string.all );
     All( Duration.INFINITE, R.drawable.calendar_clear, R.string.all );
+
+    /**
+     * For example:
+     * - March 10th 2025 at 14:30 has timestamp of `1,741,617,000,000`.
+     * [PastDay.timeStampInMillis] returns `1,741,530,600,000` instead of
+     * [Duration.inWholeMilliseconds] which is `86,400,000`.
+     *
+     * @return real timestamp in millis.
+     */
+    fun timeStampInMillis() = System.currentTimeMillis() - this.duration.inWholeMilliseconds
 }
 
 enum class StatisticsCategory(

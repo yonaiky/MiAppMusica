@@ -338,7 +338,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                                             from = 0,
                                             limit = context.preferences
                                                            .getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`)
-                                                           .toLong()
+                                                           .toInt()
                                         )
                             ID_ONDEVICE -> database.songTable.allOnDevice()
                             ID_DOWNLOADED -> {
@@ -470,7 +470,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                                     from = 0,
                                     limit = context.preferences
                                                    .getEnum( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
-                                                   .toLong()
+                                                   .toInt()
                                 )
                                 .map { list ->
                                     list.map { SongEntity(it) }

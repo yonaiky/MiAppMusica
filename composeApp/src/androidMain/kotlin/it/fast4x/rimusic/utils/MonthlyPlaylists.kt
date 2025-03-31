@@ -40,8 +40,7 @@ fun CheckMonthlyPlaylist() {
                 Database.eventTable
                         .findSongsMostPlayedBetween(
                             from = TimeDateUtils.toStartDateMillis( startDate ),
-                            to = TimeDateUtils.toStartDateMillis( endDate ),
-                            limit = 1
+                            to = TimeDateUtils.toStartDateMillis( endDate )
                         )
                         .distinctUntilChanged()
             }.collectAsState( emptyList(), Dispatchers.IO )

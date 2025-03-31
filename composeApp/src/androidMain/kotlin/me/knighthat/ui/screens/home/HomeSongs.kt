@@ -279,8 +279,8 @@ fun HomeSongs( navController: NavController ) {
             BuiltInPlaylist.Favorites -> Database.songTable.sortFavorites( songSort.sortBy, songSort.sortOrder )
 
             BuiltInPlaylist.Top -> Database.eventTable.findSongsMostPlayedBetween(
-                from = topPlaylists.period.duration.inWholeMilliseconds,
-                limit = maxTopPlaylistItems.toLong()
+                from = topPlaylists.period.timeStampInMillis(),
+                limit = maxTopPlaylistItems.toInt()
             )
 
             BuiltInPlaylist.OnDevice -> context.getLocalSongs( odsSortBy, songSort.sortOrder )

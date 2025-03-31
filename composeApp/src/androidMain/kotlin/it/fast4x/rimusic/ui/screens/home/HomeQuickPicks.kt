@@ -250,7 +250,7 @@ fun HomeQuickPicks(
                                 }
 
                     PlayEventsType.LastPlayed, PlayEventsType.CasualPlayed -> {
-                        val numSongs = if (playEventType == PlayEventsType.LastPlayed) 3L else 100L
+                        val numSongs = if (playEventType == PlayEventsType.LastPlayed) 3 else 100
                         Database.eventTable
                                 .findSongsMostPlayedBetween(
                                     from = 0,

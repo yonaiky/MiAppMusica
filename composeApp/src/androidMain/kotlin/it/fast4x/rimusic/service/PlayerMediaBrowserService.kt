@@ -487,7 +487,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                                 .findSongsMostPlayedBetween(
                                     from = 0,
                                     limit = preferences.getEnum( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
-                                                       .toLong()
+                                                       .toInt()
                                 )
                                 .first()
 
