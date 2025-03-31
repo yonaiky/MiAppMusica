@@ -49,7 +49,6 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerPosition
@@ -66,7 +65,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import me.knighthat.coil.ImageCacheFactory
-import org.jetbrains.annotations.Contract
+import me.knighthat.utils.PropUtils
 
 
 @ExperimentalMaterialApi
@@ -104,18 +103,6 @@ fun AlbumScreen(
     var alternatives by persistList<Innertube.AlbumItem>( "album/$browseId/alternatives" )
     var description by rememberSaveable { mutableStateOf("") }
     LaunchedEffect( Unit ) {
-        /**
-         * Get fetched version of this data unless the
-         * current data is modified by the user (annotated by
-         * [MODIFIED_PREFIX] prefix.
-         */
-        @Contract("!null,!null->!null")
-        fun getUpdated( current: String?, new: String? ): String? =
-            if( current?.startsWith( MODIFIED_PREFIX, true ) == true )
-                current
-            else
-                new
-
         YtMusic.getAlbum( browseId, true )
                .onSuccess { online ->
                    val onlineAlbum = online.album
@@ -126,10 +113,10 @@ fun AlbumScreen(
                    Database.asyncTransaction {
                        albumTable.upsert(Album(
                            id = browseId,
-                           title = getUpdated( album?.title, onlineAlbum.title ),
-                           thumbnailUrl = getUpdated( album?.thumbnailUrl, onlineAlbum.thumbnail?.url ),
+                           title = PropUtils.retainIfModified( album?.title, onlineAlbum.title ),
+                           thumbnailUrl = PropUtils.retainIfModified( album?.thumbnailUrl, onlineAlbum.thumbnail?.url ),
                            year = onlineAlbum.year,
-                           authorsText = getUpdated( album?.authorsText, authorsText ),
+                           authorsText = PropUtils.retainIfModified( album?.authorsText, authorsText ),
                            shareUrl = online.url,
                            timestamp = album?.timestamp ?: System.currentTimeMillis(),
                            bookmarkedAt = album?.bookmarkedAt

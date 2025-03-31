@@ -40,7 +40,6 @@ import androidx.navigation.NavController
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
@@ -58,7 +57,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.ui.screens.artist.ArtistDetails
-import org.jetbrains.annotations.Contract
+import me.knighthat.utils.PropUtils
 import timber.log.Timber
 
 @UnstableApi
@@ -93,19 +92,6 @@ fun ArtistScreenModern(
     var description by remember { mutableStateOf( "" ) }
 
     LaunchedEffect( Unit ) {
-
-        /**
-         * Get fetched version of this data unless the
-         * current data is modified by the user (annotated by
-         * [MODIFIED_PREFIX] prefix.
-         */
-        @Contract("!null,!null->!null")
-        fun getUpdated( current: String?, new: String? ): String? =
-            if( current?.startsWith( MODIFIED_PREFIX, true ) == true )
-                current
-            else
-                new
-
         YtMusic.getArtistPage( browseId )
             .onSuccess { online ->
 
@@ -124,8 +110,8 @@ fun ArtistScreenModern(
                 Database.asyncTransaction {
                     artistTable.upsert(Artist(
                         id = browseId,
-                        name =  getUpdated( artist?.name, online.artist.title ),
-                        thumbnailUrl = getUpdated( artist?.thumbnailUrl, online.artist.thumbnail?.url ),
+                        name =  PropUtils.retainIfModified( artist?.name, online.artist.title ),
+                        thumbnailUrl = PropUtils.retainIfModified( artist?.thumbnailUrl, online.artist.thumbnail?.url ),
                         timestamp = artist?.timestamp ?: System.currentTimeMillis(),
                         bookmarkedAt = artist?.bookmarkedAt,
                         isYoutubeArtist = artist?.isYoutubeArtist == true
