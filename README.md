@@ -133,6 +133,12 @@ To **translate** or **improve a translation**, please wait for an option to be a
 
 To help others understand the app, please visit [knighthat/Kreate-docs](https://github.com/knighthat/Kreate-docs) repository.
 
+## If you are good at designing
+
+> Whether UI/UX are welcomed
+
+Submit your designs by [opening a ticket](https://github.com/knighthat/Kreate/issues/new?template=feature_request.yaml)
+
 
 # 🫂 Acknowledgements
 
