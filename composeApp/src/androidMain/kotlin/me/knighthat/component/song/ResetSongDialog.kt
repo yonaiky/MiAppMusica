@@ -157,7 +157,7 @@ class ResetSongDialog private constructor(
                     formatTable.updateContentLengthOf( song.id )
                 }
 
-                songTable.update( song )
+                songTable.updateReplace( song )
 
                 Toaster.done()
             }
