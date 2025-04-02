@@ -9,50 +9,53 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.Database.songPlaylistMapTable
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.models.Playlist
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import me.knighthat.utils.TimeDateUtils
-import timber.log.Timber
 import java.time.LocalDate
+
+private fun addMonthlyPlaylist( from: LocalDate, to: LocalDate, playlistName: String ) {
+    val playlist = Playlist(name = playlistName)
+
+    runBlocking( Dispatchers.IO ) {
+        val pId = Database.playlistTable.insert( playlist )
+
+        Database.eventTable
+                .findSongsMostPlayedBetween(
+                    from = TimeDateUtils.toStartDateMillis( from ),
+                    to = TimeDateUtils.toStartDateMillis( to )
+                )
+                .first()
+                .forEach {
+                    songPlaylistMapTable.map( it.id, pId )
+                }
+    }
+}
 
 @Composable
 fun CheckMonthlyPlaylist() {
-    val ym = getCalculatedMonths(1)
-    val y = ym.substring(0,4).toInt()
-    val m = ym.substring(5,7).toInt()
+    val (lastMonth, thisMonth) = remember {
+        val today = LocalDate.now()
+        today.minusMonths( 1L ) to today
+    }
 
-    val canCreateMonthlyPlaylist by remember {
+    // I.E. April 2025 returns "monthly:202503"
+    val playlistName = remember( lastMonth, thisMonth ) {
+        "$MONTHLY_PREFIX${thisMonth.year}${thisMonth.monthValue}"
+    }
+
+    val isMonthlyPlaylistExist by remember {
         Database.playlistTable
-                .findByName( "$MONTHLY_PREFIX$ym")
-                .map { it == null }
+                .exists( playlistName )
     }.collectAsState( false, Dispatchers.IO )
 
-    Timber.d("CheckMonthlyPlaylist $canCreateMonthlyPlaylist")
-
-        if (canCreateMonthlyPlaylist) {
-            val songsMostPlayed by remember {
-                val startDate = LocalDate.of(y, m, 1 )
-                val endDate = startDate.plusMonths( 1 ).minusDays( 1 )
-
-                Database.eventTable
-                        .findSongsMostPlayedBetween(
-                            from = TimeDateUtils.toStartDateMillis( startDate ),
-                            to = TimeDateUtils.toStartDateMillis( endDate )
-                        )
-                        .distinctUntilChanged()
-            }.collectAsState( emptyList(), Dispatchers.IO )
-
-            Timber.d("SongsMostPlayed ${songsMostPlayed.size}")
-
-            Database.asyncTransaction {
-                mapIgnore(
-                    playlist = Playlist(name = "${MONTHLY_PREFIX}${ym}"),
-                    songs = songsMostPlayed.toTypedArray()
-                )
-            }
+    if( !isMonthlyPlaylistExist )
+        Database.asyncTransaction {
+            addMonthlyPlaylist( lastMonth, thisMonth, playlistName )
         }
 }
 

@@ -66,11 +66,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.knighthat.utils.Toaster
 import java.io.File
-import java.text.SimpleDateFormat
 import java.time.Duration
-import java.util.Calendar
-import java.util.GregorianCalendar
-import java.util.Locale
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
@@ -349,34 +345,6 @@ fun formatAsTime(millis: Long): String {
     val timePart2 = Duration.ofMillis(millis).seconds % 60
 
     return "${timePart1} ${timePart2}s"
-}
-
-fun formatTimelineSongDurationToTime(millis: Long) =
-    Duration.ofMillis(millis*1000).toMinutes().minutes.toString()
-
-/*
-fun TimeToString(timeMs: Int): String {
-    val mFormatBuilder = StringBuilder()
-    val mFormatter = Formatter(mFormatBuilder, Locale.getDefault())
-    val totalSeconds = timeMs / 1000
-    //  videoDurationInSeconds = totalSeconds % 60;
-    val seconds = totalSeconds % 60
-    val minutes = totalSeconds / 60 % 60
-    val hours = totalSeconds / 3600
-    mFormatBuilder.setLength(0)
-    return if (hours > 0) {
-        mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString()
-    } else {
-        mFormatter.format("%02d:%02d", minutes, seconds).toString()
-    }
-}
-*/
-
-fun getCalculatedMonths( month: Int): String {
-    val c: Calendar = GregorianCalendar()
-    c.add(Calendar.MONTH, -month)
-    val sdfr = SimpleDateFormat( "yyyy-MM", Locale.getDefault() )
-    return sdfr.format(c.time).toString()
 }
 
 @JvmName("ResultInnertubeItemsPageCompleted")
