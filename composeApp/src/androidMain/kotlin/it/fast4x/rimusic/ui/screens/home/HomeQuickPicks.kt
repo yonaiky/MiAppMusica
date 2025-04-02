@@ -533,6 +533,7 @@ fun HomeQuickPicks(
                             item {
                                 me.knighthat.component.SongItem(
                                     song = song,
+                                    navController = navController,
                                     onClick = {
                                         binder?.stopRadio()
                                         binder?.player?.forcePlay( song.asMediaItem )
@@ -559,6 +560,7 @@ fun HomeQuickPicks(
                             ) { song ->
                                 me.knighthat.component.SongItem(
                                     song = song,
+                                    navController = navController,
                                     onClick = {
                                         binder?.stopRadio()
                                         binder?.player?.forcePlay( song.asMediaItem )
