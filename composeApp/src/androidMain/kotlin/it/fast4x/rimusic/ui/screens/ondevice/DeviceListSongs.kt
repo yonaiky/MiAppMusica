@@ -1088,7 +1088,7 @@ fun Context.musicFilesAsFlow(sortBy: OnDeviceSongSortBy, order: SortOrder, conte
                                         relativePath = relativePath
                                     )
                                     Database.songTable.insertIgnore( song.toSong() )
-                                    Database.formatTable.insertReplace(
+                                    Database.formatTable.upsert(
                                         Format(
                                             songId = song.id,
                                             itag = 0,

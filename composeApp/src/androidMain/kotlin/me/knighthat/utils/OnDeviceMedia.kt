@@ -119,7 +119,7 @@ private fun Context.getLocalSongs(
 
             Database.asyncTransaction {
                 songTable.insertIgnore( song )
-                formatTable.insertReplace( format )
+                formatTable.upsert( format )
             }
 
             results[song] = relPath
