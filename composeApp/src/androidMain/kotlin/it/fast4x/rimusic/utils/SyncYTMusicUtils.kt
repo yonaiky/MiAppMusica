@@ -143,13 +143,13 @@ suspend fun importYTMLikedAlbums(): Boolean {
                         authorsText = remoteAlbum.authors?.getOrNull(1)?.name,
                         isYoutubeAlbum = true
                     )
-                    Database.albumTable.insertReplace( localAlbum )
+                    Database.albumTable.upsert( localAlbum )
                 } else {
                     localAlbum.copy(
                         isYoutubeAlbum = true,
                         bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
                         thumbnailUrl = remoteAlbum.thumbnail?.url)
-                        .let( Database.albumTable::update )
+                        .let( Database.albumTable::updateReplace )
                 }
             }
 
@@ -160,7 +160,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
                         album.isYoutubeAlbum && album.id !in ytmAlbums.map { it.key }
                     }
                     .map { it.copy( isYoutubeAlbum = false, bookmarkedAt = null ) }
-                    .also( Database.albumTable::update )
+                    .also( Database.albumTable::updateReplace )
         }
             .onFailure {
                 println("Error importing YTM liked albums: ${it.stackTraceToString()}")
