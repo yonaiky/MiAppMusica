@@ -1,8 +1,13 @@
 package me.knighthat.database
 
+import android.database.SQLException
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Update
+import androidx.room.Upsert
 import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Artist
@@ -13,7 +18,7 @@ import kotlinx.coroutines.flow.take
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
-interface ArtistTable: SqlTable<Artist> {
+interface ArtistTable {
 
     /**
      * @return all artists from this table that are followed by user
@@ -85,6 +90,58 @@ interface ArtistTable: SqlTable<Artist> {
         )
     """)
     fun isFollowing( artistId: String ): Flow<Boolean>
+
+    /**
+     * Attempt to write [artist] into database.
+     *
+     * ### Standalone use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * it'll simply be ignored.
+     *
+     * ### Transaction use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * it'll simply be ignored and the transaction continues.
+     *
+     * @param artist data intended to insert in to database
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertIgnore( artist: Artist )
+
+    /**
+     * Attempt to write [artist] into database.
+     *
+     * If [artist] exist (determined by its primary key),
+     * existing record's columns will be replaced
+     * by provided [artist]' data.
+     *
+     * @param artist data intended to insert in to database
+     */
+    @Upsert
+    fun upsert( artist: Artist )
+
+    /**
+     * Attempt to replace a record's data with provided [artist].
+     *
+     * ### Standalone use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * the process is cancel and passes exception to caller.
+     *
+     * ### Transaction use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * **the entire transaction rolls back** and passes exception to caller.
+     *
+     *
+     * @param artist intended to update
+     *
+     * @throws SQLException when there's a conflict
+     */
+    @Update
+    @Throws(SQLException::class)
+    fun update( artist: Artist )
 
     /**
      * There are 2 possible actions.

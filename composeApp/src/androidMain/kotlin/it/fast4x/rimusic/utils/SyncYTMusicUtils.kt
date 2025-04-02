@@ -88,7 +88,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
                         bookmarkedAt = System.currentTimeMillis(),
                         isYoutubeArtist = true
                     )
-                    Database.artistTable.insertReplace( localArtist )
+                    Database.artistTable.upsert( localArtist )
                 } else {
                     localArtist.copy(
                         bookmarkedAt = localArtist.bookmarkedAt ?: System.currentTimeMillis(),
