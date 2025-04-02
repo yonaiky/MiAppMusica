@@ -92,6 +92,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @UnstableApi
@@ -118,7 +119,8 @@ fun OnlineSearch(
 
         Database.searchTable
                 .findAllContain( textFieldValue.text )
-                .distinctUntilChanged { old, new -> old.size == new.size }
+                .distinctUntilChanged()
+                .map{ list -> list.reversed() }
     }.collectAsState( emptyList(), Dispatchers.IO )
 
     //var suggestionsResult by persist<Result<List<String>?>?>("search/online/suggestionsResult")
