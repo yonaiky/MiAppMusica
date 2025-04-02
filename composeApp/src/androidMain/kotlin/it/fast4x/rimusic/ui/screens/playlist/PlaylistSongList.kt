@@ -42,9 +42,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -79,7 +80,6 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.requests.PlaylistPage
-import it.fast4x.innertube.utils.completed
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -168,21 +168,52 @@ fun PlaylistSongList(
     navController: NavController,
     browseId: String,
 ) {
+    // Context
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
     val menuState = LocalMenuState.current
-
-    var playlistPage by persist<PlaylistPage?>("playlist/$browseId/playlistPage")
-    var playlistSongs by persistList<Innertube.SongItem>("playlist/$browseId/songs")
-
-    var filter: String? by rememberSaveable { mutableStateOf(null) }
     val hapticFeedback = LocalHapticFeedback.current
+    val lazyListState = rememberLazyListState()
+
+    // Settings
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-    var isLiked by remember {
-        mutableStateOf(0)
+
+    var playlistPage by persist<PlaylistPage?>("playlist/$browseId/playlistPage")
+    var continuation: String? by remember { mutableStateOf( null ) }
+    var playlistSongs by persistList<Innertube.SongItem>("playlist/$browseId/songs")
+
+    val updatedItemsPageProvider: suspend (String?) -> Result<PlaylistPage> by rememberUpdatedState {
+        if( it == null )
+            YtMusic.getPlaylist( browseId )
+        else
+            YtMusic.getPlaylistContinuation( it )
+                   .map { fetchedPlaylist ->
+                       playlistPage!!.copy(
+                           songs = fetchedPlaylist?.songs.orEmpty(),
+                           songsContinuation = fetchedPlaylist?.continuation
+                       )
+                   }
     }
 
+    LaunchedEffect( lazyListState ) {
+        snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo.any { it.key == "loading" } }
+            .collect { shouldLoadMore ->
+                if ( !shouldLoadMore ) return@collect
+
+                withContext(Dispatchers.IO) {
+                    updatedItemsPageProvider(continuation)
+                }.onSuccess { onlinePlaylist ->
+                    if( continuation == null )
+                        playlistPage = onlinePlaylist
+
+                    playlistSongs += onlinePlaylist.songs.filter { !parentalControlEnabled || !it.explicit }
+                    continuation = onlinePlaylist.songsContinuation
+                }.exceptionOrNull()?.printStackTrace()
+            }
+    }
+
+    var filter: String? by rememberSaveable { mutableStateOf(null) }
     var saveCheck by remember { mutableStateOf(false) }
 
     val sectionTextModifier = Modifier
@@ -200,21 +231,6 @@ fun PlaylistSongList(
         Database.playlistTable
                 .findByBrowseId( browseId.substringAfter("VL") )
     }.collectAsState( null, Dispatchers.IO )
-
-    LaunchedEffect(Unit, browseId) {
-        YtMusic.getPlaylist(browseId).completed()
-            .onSuccess {
-                playlistPage = it
-                playlistSongs = it.songs
-                playlistSongs = if (parentalControlEnabled) it.songs.filter { !it.explicit } else
-                    playlistPage?.songs ?: emptyList()
-            }.onFailure {
-                println("PlaylistSongList error: ${it.stackTraceToString()}")
-            }
-
-        println("PlaylistSongList browseId: ${browseId}")
-        println("PlaylistSongList playlistSongs: ${playlistSongs.size}")
-    }
 
     var filterCharSequence: CharSequence
     filterCharSequence = filter.toString()
@@ -323,10 +339,6 @@ fun PlaylistSongList(
     }
 
     val thumbnailContent = adaptiveThumbnailContent(playlistPage == null, playlistPage?.playlist?.thumbnail?.url)
-
-    val lazyListState = rememberLazyListState()
-
-    val coroutineScope = rememberCoroutineScope()
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -1005,7 +1017,7 @@ fun PlaylistSongList(
                     }
                 }
 
-                itemsIndexed(items = playlistPage?.songs ?: emptyList()) { index, song ->
+                itemsIndexed( items = playlistSongs ) { index, song ->
 
                     val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
                     downloadState = getDownloadState(song.asMediaItem.mediaId)
@@ -1099,7 +1111,7 @@ fun PlaylistSongList(
                     Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
                 }
 
-                if (playlistPage == null) {
+                if ( playlistPage == null || continuation != null ) {
                     item(key = "loading") {
                         ShimmerHost(
                             modifier = Modifier
