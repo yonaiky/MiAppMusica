@@ -3,6 +3,7 @@ package me.knighthat.database
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Upsert
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
@@ -10,7 +11,19 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
-interface SongAlbumMapTable: SqlTable<SongAlbumMap> {
+interface SongAlbumMapTable {
+
+    /**
+     * Attempt to write the list of [SongAlbumMap] to database.
+     *
+     * If record exist (determined by its primary key),
+     * existing record's columns will be replaced
+     * by provided data.
+     *
+     * @param songAlbumMap list of [SongAlbumMap] to insert to database
+     */
+    @Upsert
+    fun upsert( songAlbumMap: List<SongAlbumMap> )
 
     /**
      * Remove all songs belong to album with id [albumId]

@@ -132,7 +132,7 @@ fun AlbumScreen(
                                      position = position
                                  )
                              }
-                             .forEach( songAlbumMapTable::upsert )
+                             .also( songAlbumMapTable::upsert )
                    }
 
                    alternatives = online.otherVersions
