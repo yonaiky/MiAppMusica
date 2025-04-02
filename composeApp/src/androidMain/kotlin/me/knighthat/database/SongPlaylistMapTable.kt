@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.take
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
-interface SongPlaylistMapTable: SqlTable<SongPlaylistMap> {
+interface SongPlaylistMapTable {
 
     /**
      * Song with [songId] will be removed from all playlists
