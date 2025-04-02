@@ -35,7 +35,6 @@ import me.knighthat.database.SongAlbumMapTable
 import me.knighthat.database.SongArtistMapTable
 import me.knighthat.database.SongPlaylistMapTable
 import me.knighthat.database.SongTable
-import me.knighthat.database.SqlTable
 import me.knighthat.database.migration.From10To11Migration
 import me.knighthat.database.migration.From11To12Migration
 import me.knighthat.database.migration.From14To15Migration
@@ -126,9 +125,8 @@ object Database {
     /**
      * Attempt to map [Song] to [Album].
      *
-     * [song] and [album] are ensured to be existed in the database
-     * with [SqlTable.insertIgnore] before attempting
-     * to map two together.
+     * [song] and [album] are ensured to be existed
+     * in the database before attempting to map two together.
      *
      * **_This method doesn't require to be called on worker
      * thread exclusively._**
@@ -178,9 +176,8 @@ object Database {
     /**
      * Attempt to map [Song] to [Artist].
      *
-     * [songs] and [artist] are ensured to be existed in the database
-     * with [SqlTable.insertIgnore] before attempting
-     * to map two together.
+     * [songs] and [artist] are ensured to be existed in
+     * the database before attempting to map two together.
      *
      * **_This method doesn't require to be called on worker
      * thread exclusively._**
@@ -238,9 +235,8 @@ object Database {
     /**
      * Attempt to map [Song] to [Playlist].
      *
-     * [songs] and [playlist] are ensured to be existed in the database
-     * with [SqlTable.insertIgnore] before attempting
-     * to map two together.
+     * [songs] and [playlist] are ensured to be existed in
+     * the database before attempting to map two together.
      *
      * **_This method doesn't require to be called on worker
      * thread exclusively._**
