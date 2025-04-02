@@ -14,8 +14,8 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -28,7 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
@@ -56,7 +56,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -70,7 +69,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
 import coil.compose.AsyncImage
@@ -104,16 +102,13 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
-import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
-import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToYtLikedSongs
 import it.fast4x.rimusic.utils.align
@@ -128,12 +123,10 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isNetworkConnected
-import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
@@ -257,15 +250,8 @@ fun PlaylistSongList(
 
     var searching by rememberSaveable { mutableStateOf(false) }
 
-    val songThumbnailSizeDp = Dimensions.thumbnails.song
-    val songThumbnailSizePx = songThumbnailSizeDp.px
-
     var isImportingPlaylist by rememberSaveable {
         mutableStateOf(false)
-    }
-
-    var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
     }
 
     var thumbnailRoundness by rememberPreference(
@@ -355,11 +341,9 @@ fun PlaylistSongList(
         ) {
             LazyColumn(
                 state = lazyListState,
-                //contentPadding = LocalPlayerAwareWindowInsets.current
-                //.only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
-                modifier = Modifier
-                    .background(colorPalette().background0)
-                    .fillMaxSize()
+                contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer),
+                modifier = Modifier.background( colorPalette().background0 )
+                                   .fillMaxSize()
             ) {
 
                 item(
@@ -508,7 +492,6 @@ fun PlaylistSongList(
                                     .combinedClickable(
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
-                                                downloadState = Download.STATE_DOWNLOADING
                                                 if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true)
                                                     playlistPage?.songs?.filter { it.asMediaItem.mediaId !in dislikedSongs }
                                                         ?.forEach {
@@ -540,7 +523,6 @@ fun PlaylistSongList(
                                     .combinedClickable(
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
-                                                downloadState = Download.STATE_DOWNLOADING
                                                 if (playlistPage?.songs?.isNotEmpty() == true)
                                                     playlistPage?.songs?.forEach {
                                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
@@ -1017,112 +999,60 @@ fun PlaylistSongList(
                     }
                 }
 
-                itemsIndexed( items = playlistSongs ) { index, song ->
-
-                    val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                    downloadState = getDownloadState(song.asMediaItem.mediaId)
-                    val isDownloaded = if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
+                items(
+                    items = playlistSongs,
+                    key = Innertube.SongItem::key
+                ) { ytSong ->
+                    val isLocal by remember { derivedStateOf { ytSong.asMediaItem.isLocal } }
+                    val isDownloaded = !isLocal && isDownloadedSong( ytSong.key )
 
                     SwipeablePlaylistItem(
-                        mediaItem = song.asMediaItem,
+                        mediaItem = ytSong.asMediaItem,
                         onPlayNext = {
-                            binder?.player?.addNext(song.asMediaItem)
+                            binder?.player?.addNext(ytSong.asMediaItem)
                         },
                         onDownload = {
-                            binder?.cache?.removeResource(song.asMediaItem.mediaId)
+                            binder?.cache?.removeResource( ytSong.key )
                             Database.asyncTransaction {
-                                formatTable.updateContentLengthOf( song.key )
+                                formatTable.updateContentLengthOf( ytSong.key )
                             }
 
                             if (!isLocal)
                                 manageDownload(
                                     context = context,
-                                    mediaItem = song.asMediaItem,
+                                    mediaItem = ytSong.asMediaItem,
                                     downloadState = isDownloaded
                                 )
                         },
                         onEnqueue = {
-                            binder?.player?.enqueue(song.asMediaItem)
+                            binder?.player?.enqueue(ytSong.asMediaItem)
                         }
                     ) {
-                        var forceRecompose by remember { mutableStateOf(false) }
-                        SongItem(
-                            song = song,
-                            onDownloadClick = {
-                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                Database.asyncTransaction {
-                                    formatTable.findBySongId( song.key )
-                                }
-
-                                if (!isLocal)
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = song.asMediaItem,
-                                        downloadState = isDownloaded
-                                    )
-                            },
-                            downloadState = getDownloadState(song.asMediaItem.mediaId),
-                            thumbnailSizePx = songThumbnailSizePx,
-                            thumbnailSizeDp = songThumbnailSizeDp,
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            NonQueuedMediaItemMenu(
-                                                navController = navController,
-                                                onDismiss = {
-                                                    menuState.hide()
-                                                    forceRecompose = true
-                                                },
-                                                mediaItem = song.asMediaItem,
-                                                disableScrollingText = disableScrollingText
-                                            )
-                                        };
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    },
-                                    onClick = {
-                                        if (song.asMediaItem.mediaId !in dislikedSongs) {
-                                            searching = false
-                                            filter = null
-                                            playlistPage?.songs?.filter { it.asMediaItem.mediaId !in dislikedSongs }
+                        me.knighthat.component.SongItem(
+                            song = ytSong.asSong,
+                            onClick = {
+                                if ( ytSong.key !in dislikedSongs ) {
+                                    searching = false
+                                    filter = null
+                                    playlistPage?.songs
+                                                ?.filter { it.key !in dislikedSongs }
                                                 ?.map(Innertube.SongItem::asMediaItem)
                                                 ?.let { mediaItems ->
                                                     binder?.stopRadio()
                                                     binder?.player?.forcePlayAtIndex(
                                                         mediaItems,
-                                                        mediaItems.indexOf(song.asMediaItem)
+                                                        mediaItems.indexOf( ytSong.asMediaItem )
                                                     )
                                                 }
-                                        } else
-                                            Toaster.e( R.string.disliked_this_song )
-                                    }
-                                ),
-                            disableScrollingText = disableScrollingText,
-                            isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false,
-                            forceRecompose = forceRecompose
+                                } else
+                                    Toaster.e( R.string.disliked_this_song )
+                            }
                         )
                     }
                 }
 
-                item(
-                    key = "footer",
-                    contentType = 0,
-                ) {
-                    Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
-                }
-
-                if ( playlistPage == null || continuation != null ) {
-                    item(key = "loading") {
-                        ShimmerHost(
-                            modifier = Modifier
-                                .fillParentMaxSize()
-                        ) {
-                            repeat(4) {
-                                SongItemPlaceholder()
-                            }
-                        }
-                    }
-                }
+                if ( playlistPage == null || continuation != null )
+                    item( "loading" ) { SongItemPlaceholder() }
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
