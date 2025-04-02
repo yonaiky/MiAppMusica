@@ -224,7 +224,7 @@ interface PlaylistTable {
      * @return whether a playlist with name [playlistName] exists in the database
      */
     @Query("""
-        SELECT COUNT(id) > 0
+        SELECT COUNT(*) > 0
         FROM Playlist
         WHERE name = :playlistName
     """)

@@ -3,8 +3,7 @@ package it.fast4x.rimusic.utils
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.R
@@ -12,27 +11,27 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.models.Playlist
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.flowOn
 import me.knighthat.utils.TimeDateUtils
 import java.time.LocalDate
 
-private fun addMonthlyPlaylist( from: LocalDate, to: LocalDate, playlistName: String ) =
-    runBlocking( Dispatchers.IO ) {
-
-        Database.eventTable
-                .findSongsMostPlayedBetween(
-                    from = TimeDateUtils.toStartDateMillis( from ),
-                    to = TimeDateUtils.toStartDateMillis( to )
-                )
-                .first()
-                .let {
-                    Database.mapIgnore(
+private suspend fun addMonthlyPlaylist( from: LocalDate, to: LocalDate, playlistName: String ) =
+    Database.eventTable
+            .findSongsMostPlayedBetween(
+                from = TimeDateUtils.toStartDateMillis( from ),
+                to = TimeDateUtils.toStartDateMillis( to )
+            )
+            .first()
+            .let {
+                Database.asyncTransaction {
+                    mapIgnore(
                         playlist = Playlist(name = playlistName),
                         songs = it.toTypedArray()
                     )
                 }
-    }
+            }
 
 @Composable
 fun CheckMonthlyPlaylist() {
@@ -46,15 +45,17 @@ fun CheckMonthlyPlaylist() {
         "$MONTHLY_PREFIX${thisMonth.year}${thisMonth.monthValue}"
     }
 
-    val isMonthlyPlaylistExist by remember {
+    LaunchedEffect( lastMonth, thisMonth ) {
         Database.playlistTable
                 .exists( playlistName )
-    }.collectAsState( false, Dispatchers.IO )
+                .flowOn( Dispatchers.IO )
+                .collectLatest { isMonthlyPlaylistExist ->
+                    // Force cancel this to prevent further updates
+                    if( isMonthlyPlaylistExist ) return@collectLatest
 
-    if( !isMonthlyPlaylistExist )
-        Database.asyncTransaction {
-            addMonthlyPlaylist( lastMonth, thisMonth, playlistName )
-        }
+                    addMonthlyPlaylist( lastMonth, thisMonth, playlistName )
+                }
+    }
 }
 
 @Composable
