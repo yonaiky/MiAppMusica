@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.Database.songPlaylistMapTable
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.models.Playlist
 import kotlinx.coroutines.Dispatchers
@@ -18,11 +17,8 @@ import kotlinx.coroutines.runBlocking
 import me.knighthat.utils.TimeDateUtils
 import java.time.LocalDate
 
-private fun addMonthlyPlaylist( from: LocalDate, to: LocalDate, playlistName: String ) {
-    val playlist = Playlist(name = playlistName)
-
+private fun addMonthlyPlaylist( from: LocalDate, to: LocalDate, playlistName: String ) =
     runBlocking( Dispatchers.IO ) {
-        val pId = Database.playlistTable.insert( playlist )
 
         Database.eventTable
                 .findSongsMostPlayedBetween(
@@ -30,11 +26,13 @@ private fun addMonthlyPlaylist( from: LocalDate, to: LocalDate, playlistName: St
                     to = TimeDateUtils.toStartDateMillis( to )
                 )
                 .first()
-                .forEach {
-                    songPlaylistMapTable.map( it.id, pId )
+                .let {
+                    Database.mapIgnore(
+                        playlist = Playlist(name = playlistName),
+                        songs = it.toTypedArray()
+                    )
                 }
     }
-}
 
 @Composable
 fun CheckMonthlyPlaylist() {
