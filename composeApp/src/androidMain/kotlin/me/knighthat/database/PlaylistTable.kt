@@ -1,8 +1,14 @@
 package me.knighthat.database
 
+import android.database.SQLException
 import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Update
+import androidx.room.Upsert
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
@@ -18,7 +24,7 @@ import kotlinx.coroutines.flow.take
 
 @Dao
 @RewriteQueriesToDropUnusedColumns
-interface PlaylistTable: SqlTable<Playlist> {
+interface PlaylistTable {
 
     /**
      * @return list of songs that were mapped to at least 1 playlist
@@ -128,6 +134,91 @@ interface PlaylistTable: SqlTable<Playlist> {
      */
     @Query("SELECT * FROM Playlist WHERE id = :playlistId")
     fun findById( playlistId: Long ): Flow<Playlist?>
+
+    /**
+     * Attempt to write [playlist] into database.
+     *
+     * ### Standalone use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * the process is cancel and passes exception to caller.
+     *
+     * ### Transaction use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * **the entire transaction rolls back** and passes exception to caller.
+     *
+     * > Note: Use this if inserting record is crucial for
+     * > the transaction to continue.
+     *
+     * @param playlist intended to insert in to database
+     * @return ROWID of this new record, throws exception when fail
+     * @throws SQLException when there's a conflict
+     */
+    @Insert
+    @Throws(SQLException::class)
+    fun insert( playlist: Playlist ): Long
+
+    /**
+     * Attempt to write [playlist] into database.
+     *
+     * ### Standalone use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * it'll simply be ignored.
+     *
+     * ### Transaction use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * it'll simply be ignored and the transaction continues.
+     *
+     * @param playlist data intended to insert in to database
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertIgnore( playlist: Playlist )
+
+    /**
+     * Attempt to write [playlist] into database.
+     *
+     * If [playlist] exist (determined by its primary key),
+     * existing record's columns will be replaced
+     * by provided [playlist]' data.
+     *
+     * @param playlist data intended to insert in to database
+     */
+    @Upsert
+    fun upsert( playlist: Playlist )
+
+    /**
+     * Attempt to replace a record's data with provided [playlist].
+     *
+     * ### Standalone use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * the process is cancel and passes exception to caller.
+     *
+     * ### Transaction use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * **the entire transaction rolls back** and passes exception to caller.
+     *
+     *
+     * @param playlist intended to update
+     * @return number of rows affected by the this operation
+     * @throws SQLException when there's a conflict
+     */
+    @Update
+    @Throws(SQLException::class)
+    fun update( playlist: Playlist ): Int
+
+    /**
+     * Attempt to remove a record from database.
+     *
+     * @param playlist intended to delete from database
+     * @return number of rows affected by the this operation
+     */
+    @Delete
+    fun delete( playlist: Playlist ): Int
 
     /**
      * @return whether a playlist with name [playlistName] exists in the database
