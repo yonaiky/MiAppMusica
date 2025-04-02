@@ -81,7 +81,7 @@ const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 @OptIn(UnstableApi::class)
 fun mediaItemToggleLike( mediaItem: MediaItem) {
     Database.asyncTransaction {
-        songTable.insertIgnore( mediaItem )
+        insertIgnore( mediaItem )
         songTable.toggleLike( mediaItem.mediaId )
 
         MyDownloadHelper.autoDownloadWhenLiked(
@@ -778,7 +778,7 @@ suspend fun getAlbumVersionFromVideo(song: Song,playlistId : Long, position : In
                     }
                 }
 
-                if (song.thumbnailUrl == "") Database.songTable.delete( song )
+                if (song.thumbnailUrl == "") songTable.delete( song )
             }
         } else if (song.id == ((cleanPrefix(song.title)+song.artistsText).filter {it.isLetterOrDigit()})){
             songNotFound = song.copy(id = shuffle(song.artistsText+random4Digit+cleanPrefix(song.title)+"56Music").filter{it.isLetterOrDigit()})
@@ -971,7 +971,9 @@ suspend fun addSongToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylist
 suspend fun addToYtLikedSong(mediaItem: MediaItem) {
     if( !isYouTubeSyncEnabled() ) return
 
-    Database.songTable.insertIgnore( mediaItem )
+    Database.asyncTransaction {
+        insertIgnore( mediaItem )
+    }
 
     val isSongLiked = Database.songTable.isLiked( mediaItem.mediaId ).first()
 
@@ -1003,7 +1005,7 @@ suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
         likeVideoOrSong( item.mediaId )
             .onSuccess {
                 Database.asyncTransaction {
-                    songTable.insertIgnore( item )
+                    insertIgnore( item )
                     songTable.likeState( item.mediaId, true )
                     MyDownloadHelper.autoDownloadWhenLiked(
                         context(),

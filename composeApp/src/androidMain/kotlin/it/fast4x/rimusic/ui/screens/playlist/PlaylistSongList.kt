@@ -747,17 +747,18 @@ fun PlaylistSongList(
                                                             )
                                                         }
 
-                                                        playlistPage?.songs
-                                                                    ?.map( Innertube.SongItem::asMediaItem )
-                                                                    ?.let {
-                                                                        val playlist = Playlist(
-                                                                            name = (playlistPage?.playlist?.title ?: ""),
-                                                                            browseId = browseId.substringAfter("VL"),
-                                                                            isYoutubePlaylist = true,
-                                                                            isEditable = false
-                                                                        )
-                                                                        Database.mapIgnore( playlist, *it.toTypedArray() )
-                                                                    }
+                                                        Database.asyncTransaction {
+                                                            val playlist = Playlist(
+                                                                name = (playlistPage?.playlist?.title ?: ""),
+                                                                browseId = browseId.substringAfter("VL"),
+                                                                isYoutubePlaylist = true,
+                                                                isEditable = false
+                                                            )
+
+                                                            playlistPage?.songs
+                                                                        ?.map( Innertube.SongItem::asMediaItem )
+                                                                        ?.let { mapIgnore( playlist, *it.toTypedArray() ) }
+                                                        }
                                                     }
                                                     Toaster.done()
                                                     saveCheck = !saveCheck

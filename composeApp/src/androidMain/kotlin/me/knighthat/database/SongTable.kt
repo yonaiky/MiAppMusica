@@ -1,7 +1,6 @@
 package me.knighthat.database
 
 import android.database.SQLException
-import androidx.media3.common.MediaItem
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -14,7 +13,6 @@ import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
-import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.durationToMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -122,24 +120,6 @@ interface SongTable {
         ) COLLATE NOCASE = trim(:artistName) COLLATE NOCASE
     """)
     fun findAllByArtist( artistName: String ): Flow<List<Song>>
-
-    /**
-     * Convert [MediaItem] into [Song] and attempt to it into database.
-     *
-     * ### Standalone use
-     *
-     * When error occurs and [SQLException] is thrown,
-     * it'll simply be ignored.
-     *
-     * ### Transaction use
-     *
-     * When error occurs and [SQLException] is thrown,
-     * it'll simply be ignored and the transaction continues.
-     *
-     * @param mediaItem intended to insert in to database
-     * @return ROWID of this new record, -1 if error occurs
-     */
-    fun insertIgnore( mediaItem: MediaItem ) = insertIgnore( mediaItem.asSong )
 
     /**
      * Attempt to write [Song] into database.

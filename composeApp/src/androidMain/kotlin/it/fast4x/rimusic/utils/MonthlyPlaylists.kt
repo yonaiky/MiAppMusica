@@ -47,8 +47,12 @@ fun CheckMonthlyPlaylist() {
 
             Timber.d("SongsMostPlayed ${songsMostPlayed.size}")
 
-            val playlist = Playlist(name = "${MONTHLY_PREFIX}${ym}")
-            Database.mapIgnore( playlist, *songsMostPlayed.toTypedArray() )
+            Database.asyncTransaction {
+                mapIgnore(
+                    playlist = Playlist(name = "${MONTHLY_PREFIX}${ym}"),
+                    songs = songsMostPlayed.toTypedArray()
+                )
+            }
         }
 }
 

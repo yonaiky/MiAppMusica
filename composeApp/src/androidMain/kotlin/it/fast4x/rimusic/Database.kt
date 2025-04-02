@@ -3,10 +3,8 @@ package it.fast4x.rimusic
 import androidx.compose.ui.util.fastZip
 import androidx.media3.common.MediaItem
 import androidx.room.AutoMigration
-import androidx.room.Dao
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.Transaction
 import androidx.room.TypeConverters
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
@@ -49,7 +47,6 @@ import me.knighthat.database.migration.From3To4Migration
 import me.knighthat.database.migration.From7To8Migration
 import me.knighthat.database.migration.From8To9Migration
 
-@Dao
 object Database {
     const val FILE_NAME = "data.db"
 
@@ -88,18 +85,10 @@ object Database {
      *
      * If [mediaItem] comes with album and artist(s) then
      * this method handles the insertion automatically.
-     *
-     * **_This method doesn't require to be called on worker
-     * thread exclusively._**
-     *
-     * > NOTE: This function is wrapped by transaction, any
-     * failure happens during insertion results in rollback
-     * to protect database integrity.
      */
-    @Transaction
     fun insertIgnore( mediaItem: MediaItem ) {
         // Insert song
-        songTable.insertIgnore( mediaItem )
+        songTable.insertIgnore( mediaItem.asSong )
 
         // Insert album
         mediaItem.mediaMetadata
@@ -112,14 +101,13 @@ object Database {
                      )
                  }
                  // Passing MediaItem causes infinite loop
-                 ?.let { mapIgnore( it, mediaItem.asSong ) }
+                 ?.let( albumTable::insertIgnore )
 
         // Insert artist
         val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames").orEmpty()
         val artistsIds = mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds").orEmpty()
         artistsNames.fastZip( artistsIds ) { name, id -> Artist( id, name ) }
-                    // Passing MediaItem causes infinite loop
-                    .forEach { mapIgnore( it, mediaItem.asSong ) }
+                    .forEach( artistTable::insertIgnore )
     }
 
     /**
@@ -128,19 +116,11 @@ object Database {
      * [song] and [album] are ensured to be existed
      * in the database before attempting to map two together.
      *
-     * **_This method doesn't require to be called on worker
-     * thread exclusively._**
-     *
-     * > NOTE: This function is wrapped by transaction, any
-     * failure happens during insertion results in rollback
-     * to protect database integrity.
-     *
      * @param album to map
      * @param song to map
      * @param position of song in album, **default** or `-1` results in
      * database puts song to next available position in map
      */
-    @Transaction
     fun mapIgnore( album: Album, song: Song, position: Int = -1 ) {
         albumTable.insertIgnore( album )
         songTable.insertIgnore( song )
@@ -154,22 +134,14 @@ object Database {
      * then [album] to ensure to be existed in the database  before
      * attempting to map two together.
      *
-     * **_This method doesn't require to be called on worker
-     * thread exclusively._**
-     *
-     * > NOTE: This function is wrapped by transaction, any
-     * failure happens during insertion results in rollback
-     * to protect database integrity.
-     *
      * @param album to map
      * @param mediaItem song to map
      * @param position of song in album, **default** or `-1` results in
      * database puts song to next available position in map
      */
-    @Transaction
     fun mapIgnore( album: Album, mediaItem: MediaItem, position: Int = -1 ) {
         albumTable.insertIgnore( album )
-        insertIgnore( mediaItem )
+        songTable.insertIgnore( mediaItem.asSong )
         songAlbumMapTable.map( mediaItem.mediaId, album.id, position )
     }
 
@@ -179,17 +151,9 @@ object Database {
      * [songs] and [artist] are ensured to be existed in
      * the database before attempting to map two together.
      *
-     * **_This method doesn't require to be called on worker
-     * thread exclusively._**
-     *
-     * > NOTE: This function is wrapped by transaction, any
-     * failure happens during insertion results in rollback
-     * to protect database integrity.
-     *
      * @param artist to map
      * @param songs to map
      */
-    @Transaction
     fun mapIgnore( artist: Artist, vararg songs: Song ) {
         if( songs.isEmpty() ) return
 
@@ -209,23 +173,15 @@ object Database {
      * then [artist] to ensure to be existed in the database  before
      * attempting to map two together.
      *
-     * **_This method doesn't require to be called on worker
-     * thread exclusively._**
-     *
-     * > NOTE: This function is wrapped by transaction, any
-     * failure happens during insertion results in rollback
-     * to protect database integrity.
-     *
      * @param artist to map
      * @param mediaItems list of songs to map
      */
-    @Transaction
     fun mapIgnore( artist: Artist, vararg mediaItems: MediaItem ) {
         if( mediaItems.isEmpty() ) return
 
         artistTable.insertIgnore( artist )
         mediaItems.forEach {
-            insertIgnore( it )
+            songTable.insertIgnore( it.asSong )
             songArtistMapTable.insertIgnore(
                 SongArtistMap(it.mediaId, artist.id)
             )
@@ -238,17 +194,9 @@ object Database {
      * [songs] and [playlist] are ensured to be existed in
      * the database before attempting to map two together.
      *
-     * **_This method doesn't require to be called on worker
-     * thread exclusively._**
-     *
-     * > NOTE: This function is wrapped by transaction, any
-     * failure happens during insertion results in rollback
-     * to protect database integrity.
-     *
      * @param playlist to map
      * @param songs to map
      */
-    @Transaction
     fun mapIgnore( playlist: Playlist, vararg songs: Song ) {
         if( songs.isEmpty() ) return
 
@@ -266,23 +214,15 @@ object Database {
      * then [playlist] to ensure to be existed in the database  before
      * attempting to map two together.
      *
-     * **_This method doesn't require to be called on worker
-     * thread exclusively._**
-     *
-     * > NOTE: This function is wrapped by transaction, any
-     * failure happens during insertion results in rollback
-     * to protect database integrity.
-     *
      * @param playlist to map
      * @param mediaItems list of songs to map
      */
-    @Transaction
     fun mapIgnore( playlist: Playlist, vararg mediaItems: MediaItem ) {
         if( mediaItems.isEmpty() ) return
 
         playlistTable.insertIgnore( playlist )
         mediaItems.forEach {
-            insertIgnore( it )
+            songTable.insertIgnore( it.asSong )
             songPlaylistMapTable.map( it.mediaId, playlist.id )
         }
     }
