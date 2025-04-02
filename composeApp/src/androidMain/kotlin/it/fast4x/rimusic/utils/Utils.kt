@@ -241,7 +241,6 @@ val SongEntity.asMediaItem: MediaItem
         .build()
 
 val MediaItem.asSong: Song
-    @UnstableApi
     get() = Song (
         id = mediaId,
         title = mediaMetadata.title.toString(),
