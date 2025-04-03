@@ -73,6 +73,7 @@ class ExportSettingsDialog private constructor(
             )
     }
 
+    override val extension: String = "xml"
     override val dialogTitle: String
         @Composable
         get() = stringResource( R.string.title_export_settings )

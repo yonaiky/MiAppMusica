@@ -64,6 +64,7 @@ class ExportDatabaseDialog private constructor(
             )
     }
 
+    override val extension: String = "sqlite"
     override val dialogTitle: String
         @Composable
         get() = stringResource( R.string.title_name_your_export )

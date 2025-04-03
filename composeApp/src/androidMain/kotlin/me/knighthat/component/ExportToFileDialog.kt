@@ -19,6 +19,7 @@ abstract class ExportToFileDialog(
     private val launcher: ManagedActivityResultLauncher<String, Uri?>
 ): TextInputDialog(InputDialogConstraints.ALL) {
 
+    abstract val extension: String
     override val keyboardOption: KeyboardOptions = KeyboardOptions.Default
     override val allowEmpty: Boolean = true
 
@@ -42,7 +43,7 @@ abstract class ExportToFileDialog(
         val fileName = newValue.ifBlank( ::defaultFileName )
 
         try {
-            launcher.launch( fileName )
+            launcher.launch( "$fileName.$extension" )
         } catch ( _: ActivityNotFoundException) {
             Toaster.e( R.string.info_not_find_app_open_doc )
         } finally { hideDialog() }
