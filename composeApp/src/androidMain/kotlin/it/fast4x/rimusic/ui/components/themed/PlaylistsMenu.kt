@@ -11,6 +11,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,7 +45,7 @@ class PlaylistsMenu private constructor(
     private val onFailure: (Throwable, PlaylistPreview) -> Unit,
     private val finalAction: (PlaylistPreview) -> Unit,
     override val menuState: MenuState,
-    override val styleState: MutableState<MenuStyle>
+    styleState: MutableState<MenuStyle>
 ): MenuIcon, Descriptive, Menu {
 
     companion object {
@@ -70,6 +71,8 @@ class PlaylistsMenu private constructor(
     override val menuIconTitle: String
         @Composable
         get() = stringResource( messageId )
+
+    override var menuStyle: MenuStyle by styleState
 
     private fun onAdd( preview: PlaylistPreview ) = Database.asyncTransaction {
         try {

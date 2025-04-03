@@ -32,17 +32,17 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 
 class PeriodSelector private constructor(
-    periodState: MutableState<StatisticsType>,
     override val menuState: MenuState,
-    override val styleState: MutableState<MenuStyle>,
+    periodState: MutableState<StatisticsType>,
+    styleState: MutableState<MenuStyle>,
 ): MenuIcon, Descriptive, Menu {
 
     companion object {
         @Composable
         operator fun invoke( prefKey: Preference.Key<StatisticsType> ): PeriodSelector =
             PeriodSelector(
-                Preference.remember( prefKey ),
                 LocalMenuState.current,
+                Preference.remember( prefKey ),
                 rememberPreference( menuStyleKey, MenuStyle.List )
             )
     }
@@ -54,6 +54,8 @@ class PeriodSelector private constructor(
     override val menuIconTitle: String
         @Composable
         get() = stringResource( messageId )
+
+    override var menuStyle: MenuStyle by styleState
 
     fun onDismiss( period: StatisticsType ) {
         this.period = period

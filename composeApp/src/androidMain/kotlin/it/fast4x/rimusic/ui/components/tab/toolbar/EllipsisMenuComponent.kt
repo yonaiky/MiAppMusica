@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.unit.dp
@@ -22,7 +24,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 class EllipsisMenuComponent private constructor(
     private val buttons: () -> List<Button>,
     override val menuState: MenuState,
-    override val styleState: MutableState<MenuStyle>
+    styleState: MutableState<MenuStyle>
 ) : Menu, Icon {
 
     companion object {
@@ -35,12 +37,9 @@ class EllipsisMenuComponent private constructor(
         )
     }
 
-    var style: MenuStyle = styleState.value
-        set(value) {
-            styleState.value = value
-            field = value
-        }
     override val iconId: Int = R.drawable.ellipsis_horizontal
+
+    override var menuStyle: MenuStyle by styleState
 
     override fun onShortClick() = openMenu()
 
@@ -77,7 +76,7 @@ class EllipsisMenuComponent private constructor(
 
     @Composable
     override fun MenuComponent() {
-        if( style == MenuStyle.Grid )
+        if( menuStyle == MenuStyle.Grid )
             GridMenu()
         else
             ListMenu()

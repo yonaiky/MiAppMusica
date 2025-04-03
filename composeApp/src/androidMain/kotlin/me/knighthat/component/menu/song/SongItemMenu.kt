@@ -26,6 +26,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -33,9 +34,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.kreate.android.R
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MenuStyle
@@ -64,7 +65,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.component.SongItem
 import me.knighthat.component.song.ChangeAuthorDialog
@@ -86,7 +86,7 @@ class SongItemMenu private constructor(
     private val navController: NavController,
     private val song: Song,
     override val menuState: MenuState,
-    override val styleState: MutableState<MenuStyle>
+    styleState: MutableState<MenuStyle>
 ): Menu {
 
     companion object {
@@ -115,6 +115,7 @@ class SongItemMenu private constructor(
     }
 
     lateinit var buttons: List<Button>
+    override var menuStyle: MenuStyle by styleState
 
     @Composable
     override fun ListMenu() {
@@ -304,7 +305,7 @@ class SongItemMenu private constructor(
                 HorizontalDivider( Modifier.height(1.dp) )
             }
 
-            if( styleState.value == MenuStyle.List )
+            if( menuStyle == MenuStyle.List )
                 ListMenu()
             else
                 GridMenu()
