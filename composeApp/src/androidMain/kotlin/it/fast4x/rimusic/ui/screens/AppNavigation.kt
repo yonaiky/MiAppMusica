@@ -18,7 +18,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -35,14 +34,13 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.enums.BuiltInPlaylist
-import it.fast4x.rimusic.enums.DeviceLists
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -54,14 +52,12 @@ import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.screens.album.AlbumScreen
 import it.fast4x.rimusic.ui.screens.artist.ArtistScreenModern
-import it.fast4x.rimusic.ui.screens.builtinplaylist.BuiltInPlaylistScreen
 import it.fast4x.rimusic.ui.screens.history.HistoryScreen
 import it.fast4x.rimusic.ui.screens.home.HomeScreen
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
 import it.fast4x.rimusic.ui.screens.mood.MoodScreen
 import it.fast4x.rimusic.ui.screens.mood.MoodsPageScreen
 import it.fast4x.rimusic.ui.screens.newreleases.NewreleasesScreen
-import it.fast4x.rimusic.ui.screens.ondevice.DeviceListSongsScreen
 import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.Queue
 import it.fast4x.rimusic.ui.screens.playlist.PlaylistScreen
@@ -90,18 +86,6 @@ fun AppNavigation(
     openTabFromShortcut: Int
 ) {
     val transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Scale)
-
-    @Composable
-    fun customScaffold(content: @Composable () -> Unit) {
-        Scaffold(
-            bottomBar = {  }
-        ) { paddingValues ->
-            Surface(
-                modifier = Modifier.padding(paddingValues),
-                content = content
-            )
-        }
-    }
 
     @Composable
     fun modalBottomSheetPage(content: @Composable () -> Unit) {
@@ -136,61 +120,39 @@ fun AppNavigation(
     val context = LocalContext.current
     clearPreference(context, homeScreenTabIndexKey)
 
+    val enterTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
+        {
+            when (transitionEffect) {
+                TransitionEffect.None -> EnterTransition.None
+                TransitionEffect.Expand -> expandIn(animationSpec = tween(350, easing = LinearOutSlowInEasing), expandFrom = Alignment.TopStart)
+                TransitionEffect.Fade -> fadeIn(animationSpec = tween(350))
+                TransitionEffect.Scale -> scaleIn(animationSpec = tween(350))
+                TransitionEffect.SlideVertical -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
+                TransitionEffect.SlideHorizontal -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            }
+        }
+    val exitTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
+        {
+            when (transitionEffect) {
+                TransitionEffect.None -> ExitTransition.None
+                TransitionEffect.Expand -> shrinkOut(animationSpec = tween(350, easing = FastOutSlowInEasing),shrinkTowards = Alignment.TopStart)
+                TransitionEffect.Fade -> fadeOut(animationSpec = tween(350))
+                TransitionEffect.Scale -> scaleOut(animationSpec = tween(350))
+                TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
+                TransitionEffect.SlideHorizontal -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
+        }
+
     NavHost(
         navController = navController,
         startDestination = NavRoutes.home.name,
-        enterTransition = {
-            when (transitionEffect) {
-                TransitionEffect.None -> EnterTransition.None
-                TransitionEffect.Expand -> expandIn(animationSpec = tween(350, easing = LinearOutSlowInEasing), expandFrom = Alignment.TopStart)
-                TransitionEffect.Fade -> fadeIn(animationSpec = tween(350))
-                TransitionEffect.Scale -> scaleIn(animationSpec = tween(350))
-                TransitionEffect.SlideVertical -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
-                TransitionEffect.SlideHorizontal -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-            }
-        },
-        exitTransition = {
-            when (transitionEffect) {
-                TransitionEffect.None -> ExitTransition.None
-                TransitionEffect.Expand -> shrinkOut(animationSpec = tween(350, easing = FastOutSlowInEasing),shrinkTowards = Alignment.TopStart)
-                TransitionEffect.Fade -> fadeOut(animationSpec = tween(350))
-                TransitionEffect.Scale -> scaleOut(animationSpec = tween(350))
-                TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
-                TransitionEffect.SlideHorizontal -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }
-        },
-        popEnterTransition = {
-            when (transitionEffect) {
-                TransitionEffect.None -> EnterTransition.None
-                TransitionEffect.Expand -> expandIn(animationSpec = tween(350, easing = LinearOutSlowInEasing), expandFrom = Alignment.TopStart)
-                TransitionEffect.Fade -> fadeIn(animationSpec = tween(350))
-                TransitionEffect.Scale -> scaleIn(animationSpec = tween(350))
-                TransitionEffect.SlideVertical -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
-                TransitionEffect.SlideHorizontal -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-            }
-        },
-        popExitTransition = {
-            when (transitionEffect) {
-                TransitionEffect.None -> ExitTransition.None
-                TransitionEffect.Expand -> shrinkOut(animationSpec = tween(350, easing = FastOutSlowInEasing),shrinkTowards = Alignment.TopStart)
-                TransitionEffect.Fade -> fadeOut(animationSpec = tween(350))
-                TransitionEffect.Scale -> scaleOut(animationSpec = tween(350))
-                TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
-                TransitionEffect.SlideHorizontal -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }
-        }
+        enterTransition = enterTransition,
+        exitTransition = exitTransition,
+        popEnterTransition = enterTransition,
+        popExitTransition = exitTransition
     ) {
-        val navigateToAlbum =
-            { browseId: String -> navController.navigate(route = "${NavRoutes.album.name}/$browseId") }
-        val navigateToArtist =
-            { browseId: String -> navController.navigate("${NavRoutes.artist.name}/$browseId") }
         val navigateToPlaylist =
             { browseId: String -> navController.navigate("${NavRoutes.playlist.name}/$browseId") }
-        val pop = {
-            if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) navController.popBackStack()
-        }
-
-
 
         composable(route = NavRoutes.home.name) {
             HomeScreen(
@@ -250,8 +212,6 @@ fun AppNavigation(
                 miniPlayer = miniPlayer,
             )
         }
-
-
 
         composable(
             route = "${NavRoutes.album.name}/{id}",
@@ -329,27 +289,6 @@ fun AppNavigation(
                 )
         }
 
-        /*
-        composable(
-            route = "settingsPage/{index}",
-            arguments = listOf(
-                navArgument(
-                    name = "index",
-                    builder = { type = NavType.IntType }
-                )
-            )
-        ) { navBackStackEntry ->
-            val index = navBackStackEntry.arguments?.getInt("index") ?: 0
-
-            PlayerScaffold {
-                SettingsPage(
-                    section = SettingsSection.entries[index],
-                    pop = popDestination
-                )
-            }
-        }
-         */
-
         composable(
             route = "${NavRoutes.search.name}?text={text}",
             arguments = listOf(
@@ -382,8 +321,7 @@ fun AppNavigation(
                             searchTable.insertIgnore( SearchQuery(query = query) )
                         }
                 },
-
-                )
+            )
         }
 
         composable(
@@ -402,24 +340,6 @@ fun AppNavigation(
                 miniPlayer = miniPlayer,
                 query = query,
                 onSearchAgain = {}
-            )
-        }
-
-        composable(
-            route = "${NavRoutes.builtInPlaylist.name}/{index}",
-            arguments = listOf(
-                navArgument(
-                    name = "index",
-                    builder = { type = NavType.IntType }
-                )
-            )
-        ) { navBackStackEntry ->
-            val index = navBackStackEntry.arguments?.getInt("index") ?: 0
-
-            BuiltInPlaylistScreen(
-                navController = navController,
-                builtInPlaylist = BuiltInPlaylist.entries[index],
-                miniPlayer = miniPlayer,
             )
         }
 
@@ -457,26 +377,8 @@ fun AppNavigation(
         composable(
             route = NavRoutes.moodsPage.name
         ) { navBackStackEntry ->
-            /*
-            SimpleScaffold(navController = navController) {
-                MoodsPage(
-                    navController = navController
-                )
-            }
-             */
             MoodsPageScreen(
                 navController = navController
-            )
-
-        }
-
-        composable(
-            route = NavRoutes.onDevice.name
-        ) { navBackStackEntry ->
-            DeviceListSongsScreen(
-                navController = navController,
-                deviceLists = DeviceLists.LocalSongs,
-                miniPlayer = miniPlayer,
             )
         }
 
