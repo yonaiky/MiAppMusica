@@ -44,7 +44,6 @@ import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.ArtistSortBy
 import it.fast4x.rimusic.enums.ArtistsType
 import it.fast4x.rimusic.enums.FilterBy
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -55,7 +54,6 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.ItemSize
-import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
 import it.fast4x.rimusic.ui.components.themed.FilterMenu
@@ -68,9 +66,9 @@ import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_SORT_BY
+import it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_SORT_ORDER
 import it.fast4x.rimusic.utils.Preference.HOME_ARTIST_ITEM_SIZE
-import it.fast4x.rimusic.utils.artistSortByKey
-import it.fast4x.rimusic.utils.artistSortOrderKey
 import it.fast4x.rimusic.utils.artistTypeKey
 import it.fast4x.rimusic.utils.autoSyncToolbutton
 import it.fast4x.rimusic.utils.autosyncKey
@@ -84,6 +82,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.knighthat.component.Sort
 import me.knighthat.component.tab.SongShuffler
 
 @ExperimentalMaterial3Api
@@ -119,11 +118,7 @@ fun HomeArtists(
 
     val search = Search.init()
 
-    val sort = Sort.init(
-        artistSortOrderKey,
-        ArtistSortBy.entries,
-        rememberPreference(artistSortByKey, ArtistSortBy.DateAdded)
-    )
+    val sort = Sort( HOME_ARTISTS_SORT_BY, HOME_ARTISTS_SORT_ORDER )
 
     val itemSize = ItemSize.init( HOME_ARTIST_ITEM_SIZE )
 

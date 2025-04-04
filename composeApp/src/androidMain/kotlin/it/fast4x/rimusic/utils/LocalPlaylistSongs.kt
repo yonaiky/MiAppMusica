@@ -1,31 +1,23 @@
 package it.fast4x.rimusic.utils
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
-import it.fast4x.rimusic.enums.MenuStyle
-import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.PipedSession
 import it.fast4x.rimusic.models.PlaylistPreview
-import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.MenuState
-import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.DualIcon
@@ -33,7 +25,6 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.themed.DeleteDialog
 import it.fast4x.rimusic.ui.components.themed.IDialog
-import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import kotlinx.coroutines.CoroutineScope
 import me.knighthat.utils.Toaster
 import java.util.UUID
@@ -78,55 +69,6 @@ class PositionLock private constructor(
         else
             isFirstIcon = !isFirstIcon
     }
-}
-
-class PlaylistSongsSort private constructor(
-    sortOrderState: MutableState<SortOrder>,
-    sortByState: MutableState<PlaylistSongSortBy>,
-    menuState: MenuState,
-    styleState: MutableState<MenuStyle>
-): Sort<PlaylistSongSortBy>( sortOrderState, PlaylistSongSortBy.entries, sortByState, menuState, styleState) {
-
-    companion object {
-        @JvmStatic
-        @Composable
-        fun init() = PlaylistSongsSort(
-            rememberPreference( songSortOrderKey, SortOrder.Descending ),
-            rememberPreference ( playlistSongSortByKey, PlaylistSongSortBy.Title ),
-            LocalMenuState.current,
-            rememberPreference( menuStyleKey, MenuStyle.List )
-        )
-    }
-
-    @Composable
-    override fun MenuComponent() {
-        super.Menu( sortByEntries ) {
-            MenuEntry(
-                painter = it.icon,
-                text = it.text,
-                onClick = {
-                    // Don't pass menuState::hide, it won't work
-                    menuState.hide()
-                    sortByState.value = it
-                }
-            )
-        }
-    }
-
-    @Composable
-    override fun ToolBarButton() {
-        super.ToolBarButton()
-
-        BasicText(
-            text = this.sortBy.text,
-            style = typography().xs.semiBold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.clickable { super.onLongClick() }
-        )
-    }
-
-    override fun onLongClick() { /* Does nothing */ }
 }
 
 @SuppressLint("ComposableNaming")

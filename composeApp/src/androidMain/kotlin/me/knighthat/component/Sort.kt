@@ -1,11 +1,9 @@
-package it.fast4x.rimusic.ui.components.tab
+package me.knighthat.component
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -31,114 +29,53 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import it.fast4x.rimusic.utils.Preference
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.enums.TextView
-import org.intellij.lang.annotations.MagicConstant
-import kotlin.enums.EnumEntries
 
-open class Sort<T: Enum<T>> protected constructor(
-    protected val sortOrderState: MutableState<SortOrder>,
-    protected val sortByEntries: EnumEntries<T>,
-    protected val sortByState: MutableState<T>,
+open class Sort<T: Enum<T>> (
     override val menuState: MenuState,
+    sortByState: MutableState<T>,
+    sortOrderState: MutableState<SortOrder>,
     styleState: MutableState<MenuStyle>
 ): MenuIcon, Clickable, Menu {
 
     companion object {
-        @JvmStatic
         @Composable
-        fun <T: Enum<T>> init(
-            @MagicConstant sortOrderKey: String,
-            sortByEnums: EnumEntries<T>,
-            sortByState: MutableState<T>
-        ): Sort<T> = Sort(
-                rememberPreference( sortOrderKey, SortOrder.Descending ),
-                sortByEnums,
-                sortByState,
-                LocalMenuState.current,
-                rememberPreference( menuStyleKey, MenuStyle.List )
-            )
+        inline operator fun<reified T: Enum<T>> invoke(
+            sortByPrefKey: Preference.Key<T>,
+            sortOrderPrefKey: Preference.Key<SortOrder>
+        ) = Sort(
+            LocalMenuState.current,
+            Preference.remember( sortByPrefKey ),
+            Preference.remember( sortOrderPrefKey ),
+            rememberPreference( menuStyleKey, MenuStyle.List )
+        )
     }
 
-    private val arrowDirection: State<Float>
+    open val arrowDirection: State<Float>
         @Composable
         get() = animateFloatAsState(
             targetValue = sortOrder.rotationZ,
             animationSpec = tween(durationMillis = 400, easing = LinearEasing),
             label = ""
         )
-
     override val iconId: Int = R.drawable.arrow_up
     override val menuIconTitle: String
         @Composable
         // TODO: Add string "sort_item"
         get() = stringResource( R.string.sorting_order )
 
-
-    var sortOrder: SortOrder = sortOrderState.value
-        set(value) {
-            sortOrderState.value = value
-            field = value
-        }
-    var sortBy: T = sortByState.value
-        set(value) {
-            sortByState.value = value
-            field = value
-        }
+    open var sortBy: T by sortByState
+    open var sortOrder: SortOrder by sortOrderState
     override var menuStyle: MenuStyle by styleState
 
-    @Composable
-    private fun <T: Enum<T>> Menu(
-        onDismiss: () -> Unit,
-        entries: EnumEntries<T>,
-        actions: (T) -> Unit
-    ) {
-        Menu( entries ) {
-            val icon =
-                if( it is Drawable)
-                    it.icon
-                else
-                    painterResource( R.drawable.text )
+    /** Flip oder. */
+    override fun onShortClick() { sortOrder = !sortOrder }
 
-            if( it is TextView)
-                MenuEntry(
-                    painter = icon,
-                    text = it.text,
-                    onClick = {
-                        onDismiss()
-                        actions( it )
-                    }
-                )
-        }
-    }
-
-    @Composable
-    protected fun <T: Enum<T>> Menu(
-        entries: EnumEntries<T>,
-        entry: @Composable ( T ) -> Unit
-    ) {
-        it.fast4x.rimusic.ui.components.themed.Menu {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(end = 12.dp)
-            ) {
-                BasicText(
-                    text = stringResource(R.string.sorting_order),
-                    style = typography().m.semiBold,
-                    modifier = Modifier.padding(
-                        vertical = 8.dp,
-                        horizontal = 24.dp
-                    )
-                )
-            }
-
-            Spacer(Modifier.height(8.dp))
-
-            entries.forEach { entry(it) }
-        }
-    }
+    override fun onLongClick() = openMenu()
 
     @Composable
     override fun ListMenu() { /* Does nothing */ }
@@ -147,17 +84,41 @@ open class Sort<T: Enum<T>> protected constructor(
     override fun GridMenu() { /* Does nothing */ }
 
     @Composable
-    override fun MenuComponent() {
-        Menu(
-            menuState::hide,
-            sortByEntries,
-        ) { sortBy = it }
-    }
+    override fun MenuComponent() =
+        it.fast4x.rimusic.ui.components.themed.Menu {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding( end = 12.dp )
+            ) {
+                BasicText(
+                    text = menuIconTitle,
+                    style = typography().m.semiBold,
+                    modifier = Modifier.padding(
+                        vertical = 8.dp,
+                        horizontal = 24.dp
+                    )
+                )
+            }
 
-    /** Flip oder. */
-    override fun onShortClick() { sortOrder = !sortOrder }
+            // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
+            sortBy.javaClass.enumConstants.forEach {
+                val icon =
+                    if( it is Drawable)
+                        it.icon
+                    else
+                        painterResource( R.drawable.text )
 
-    override fun onLongClick() = openMenu()
+                if( it is TextView)
+                    MenuEntry(
+                        painter = icon,
+                        text = it.text,
+                        onClick = {
+                            menuState.hide()
+                            sortBy = it
+                        }
+                    )
+            }
+        }
 
     @Composable
     override fun ToolBarButton() {

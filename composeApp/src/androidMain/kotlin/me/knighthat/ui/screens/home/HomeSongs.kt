@@ -50,7 +50,6 @@ import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Format
@@ -63,7 +62,6 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
@@ -80,6 +78,9 @@ import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import it.fast4x.rimusic.utils.Preference
+import it.fast4x.rimusic.utils.Preference.HOME_ON_DEVICE_SONGS_SORT_BY
+import it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_BY
+import it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_ORDER
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.builtInPlaylistKey
@@ -92,7 +93,6 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.includeLocalSongsKey
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
-import it.fast4x.rimusic.utils.onDeviceSongSortByKey
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
@@ -102,8 +102,6 @@ import it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import it.fast4x.rimusic.utils.showFloatingIconKey
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
-import it.fast4x.rimusic.utils.songSortByKey
-import it.fast4x.rimusic.utils.songSortOrderKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -113,6 +111,7 @@ import kotlinx.coroutines.runBlocking
 import me.knighthat.component.FolderItem
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
+import me.knighthat.component.Sort
 import me.knighthat.component.song.PeriodSelector
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DeleteHiddenSongsDialog
@@ -150,7 +149,6 @@ fun HomeSongs( navController: NavController ) {
     val includeLocalSongs by rememberPreference( includeLocalSongsKey, true )
     val maxTopPlaylistItems by rememberPreference( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
     val excludeSongWithDurationLimit by rememberPreference( excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled )
-    val odsSortBy by rememberPreference( onDeviceSongSortByKey, OnDeviceSongSortBy.DateAdded )
     val showFolder4LocalSongs by rememberPreference( showFoldersOnDeviceKey, false )
     //</editor-fold>
 
@@ -205,11 +203,8 @@ fun HomeSongs( navController: NavController ) {
     }
     //</editor-fold>
     //<editor-fold desc="Toolbar buttons">
-    val songSort = Sort.init(
-        songSortOrderKey,
-        SongSortBy.entries,
-        rememberPreference(songSortByKey, SongSortBy.DateAdded)
-    )
+    val songSort = Sort ( HOME_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
+    val odSort = Sort( HOME_ON_DEVICE_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
     val topPlaylists = PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
     val hiddenSongs = HiddenSongs()
     val search = Search.init()
@@ -268,7 +263,7 @@ fun HomeSongs( navController: NavController ) {
 
     // This phrase loads all songs across types into [items]
     // No filtration applied to this stage, only sort
-    LaunchedEffect( builtInPlaylist, topPlaylists.period, odsSortBy, songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
+    LaunchedEffect( builtInPlaylist, topPlaylists.period, odSort.sortBy, songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
         isLoading = true
         items = emptyList()
 
@@ -283,7 +278,7 @@ fun HomeSongs( navController: NavController ) {
                 limit = maxTopPlaylistItems.toInt()
             )
 
-            BuiltInPlaylist.OnDevice -> context.getLocalSongs( odsSortBy, songSort.sortOrder )
+            BuiltInPlaylist.OnDevice -> context.getLocalSongs( odSort.sortBy, songSort.sortOrder )
                                                .map {
                                                    songsOnDevice = it
                                                    it.keys.toList()

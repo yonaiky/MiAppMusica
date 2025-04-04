@@ -101,7 +101,6 @@ import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DeletePlaylist
-import it.fast4x.rimusic.utils.PlaylistSongsSort
 import it.fast4x.rimusic.utils.PositionLock
 import it.fast4x.rimusic.utils.Reposition
 import it.fast4x.rimusic.utils.addNext
@@ -143,6 +142,7 @@ import kotlinx.coroutines.withContext
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
 import me.knighthat.component.playlist.PinPlaylist
+import me.knighthat.component.playlist.PlaylistSongsSort
 import me.knighthat.component.playlist.RenamePlaylistDialog
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
@@ -159,7 +159,7 @@ import java.util.UUID
 @KotlinCsvExperimental
 @ExperimentalMaterialApi
 @ExperimentalTextApi
-@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation", "UnrememberedMutableState")
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi
@@ -192,7 +192,7 @@ fun LocalPlaylistSongs(
                 .findById( playlistId )
     }.collectAsState( null, Dispatchers.IO )
 
-    val sort = PlaylistSongsSort.init()
+    val sort = PlaylistSongsSort()
     val items by remember( sort.sortBy, sort.sortOrder ) {
         Database.songPlaylistMapTable
                 .sortSongs( playlistId, sort.sortBy, sort.sortOrder )

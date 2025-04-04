@@ -49,7 +49,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.AlbumsType
 import it.fast4x.rimusic.enums.FilterBy
 import it.fast4x.rimusic.enums.NavRoutes
@@ -63,7 +62,6 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.PullToRefreshBox
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.ItemSize
-import it.fast4x.rimusic.ui.components.tab.Sort
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
 import it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
@@ -78,11 +76,11 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_SORT_BY
 import it.fast4x.rimusic.utils.Preference.HOME_ALBUM_ITEM_SIZE
+import it.fast4x.rimusic.utils.Preference.HOME_ALBUM_SORT_ORDER
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToYtPlaylist
-import it.fast4x.rimusic.utils.albumSortByKey
-import it.fast4x.rimusic.utils.albumSortOrderKey
 import it.fast4x.rimusic.utils.albumTypeKey
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.autoSyncToolbutton
@@ -101,6 +99,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import me.knighthat.component.Sort
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.database.AlbumTable
 
@@ -136,11 +135,7 @@ fun HomeAlbums(
 
     val search = Search.init()
 
-    val sort = Sort.init(
-        albumSortOrderKey,
-        AlbumSortBy.entries,
-        rememberPreference(albumSortByKey, AlbumSortBy.DateAdded)
-    )
+    val sort = Sort( HOME_ALBUMS_SORT_BY, HOME_ALBUM_SORT_ORDER )
 
     val itemSize = ItemSize.init( HOME_ALBUM_ITEM_SIZE )
 
