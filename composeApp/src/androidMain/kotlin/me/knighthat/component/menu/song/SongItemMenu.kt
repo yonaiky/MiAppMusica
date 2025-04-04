@@ -4,19 +4,12 @@ import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.HorizontalDivider
@@ -29,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -67,6 +59,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.component.SongItem
+import me.knighthat.component.menu.GridMenu
+import me.knighthat.component.menu.ListMenu
 import me.knighthat.component.song.ChangeAuthorDialog
 import me.knighthat.component.song.ExportCacheDialog
 import me.knighthat.component.song.GoToAlbum
@@ -90,20 +84,6 @@ class SongItemMenu private constructor(
 ): Menu {
 
     companion object {
-        /**
-         * Maximum height can the content box take of the screen.
-         * Percentage format with value ranging from 0.0 to 1.0
-         * with 0.0 means 0% and 1.0 means 100%.
-         *
-         * **This value only accountable for the content box,
-         * song's preview takes about 10% of screen's height**
-         */
-        private const val CONTENT_HEIGHT_FRACTION = .4f
-
-        private const val CONTENT_HORIZONTAL_PADDING = 8
-
-        private const val CONTENT_TOP_PADDING = 20
-
         @Composable
         operator fun invoke( navController: NavController, song: Song ) : SongItemMenu =
             SongItemMenu(
@@ -118,51 +98,18 @@ class SongItemMenu private constructor(
     override var menuStyle: MenuStyle by styleState
 
     @Composable
-    override fun ListMenu() {
-        val screenHeight = LocalConfiguration.current.screenHeightDp
-
-        Column(
-            // With Song preview on top, it should take approx 50% of screen's height
-            Modifier
-                .heightIn(max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp)
-                .padding(
-                    start = CONTENT_HORIZONTAL_PADDING.dp,
-                    end = CONTENT_HORIZONTAL_PADDING.dp,
-                    top = CONTENT_TOP_PADDING.dp
-                    // bottom padding is handled by [Modifier#navigationBarsPadding]
-                )
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
-                .navigationBarsPadding(),
-        ) {
-            buttons.forEach {
-                if( it is MenuIcon )
-                    it.ListMenuItem()
-            }
+    override fun ListMenu() = ListMenu.Menu {
+        buttons.forEach {
+            if (it is MenuIcon)
+                it.ListMenuItem()
         }
     }
 
     @Composable
-    override fun GridMenu() {
-        val screenHeight = LocalConfiguration.current.screenHeightDp
-
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 120.dp),
-            contentPadding = PaddingValues(
-                start = CONTENT_HORIZONTAL_PADDING.dp,
-                end = CONTENT_HORIZONTAL_PADDING.dp,
-                top = CONTENT_TOP_PADDING.dp
-                // bottom padding is handled by [Modifier#navigationBarsPadding]
-            ),
-            // With Song preview on top, it should take approx 50% of screen's height
-            modifier = Modifier
-                .heightIn(max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp)
-                .navigationBarsPadding()
-        ) {
-            items( buttons, Button::hashCode ) {
-                if( it is MenuIcon)
-                    it.GridMenuItem()
-            }
+    override fun GridMenu() = GridMenu.Menu {
+        items(buttons, Button::hashCode) {
+            if (it is MenuIcon)
+                it.GridMenuItem()
         }
     }
 
