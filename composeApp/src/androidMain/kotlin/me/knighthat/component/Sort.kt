@@ -3,8 +3,10 @@ package me.knighthat.component
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -28,11 +30,12 @@ import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.utils.Preference
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.component.menu.GridMenu
+import me.knighthat.component.menu.ListMenu
 import me.knighthat.enums.TextView
 
 open class Sort<T: Enum<T>> (
@@ -78,10 +81,45 @@ open class Sort<T: Enum<T>> (
     override fun onLongClick() = openMenu()
 
     @Composable
-    override fun ListMenu() { /* Does nothing */ }
+    override fun ListMenu() = ListMenu.Menu {
+        // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
+        sortBy.javaClass.enumConstants.forEach {
+            ListMenu.Entry(
+                text = if (it is TextView) it.text else it.name,
+                icon = {
+                    TabToolBar.Icon(
+                        icon = if (it is Drawable) it.icon else painterResource(R.drawable.close),
+                        modifier = Modifier.clickable {
+                            menuState.hide()
+                            sortBy = it
+                        }
+                    )
+                }
+            )
+        }
+    }
 
     @Composable
-    override fun GridMenu() { /* Does nothing */ }
+    override fun GridMenu() = GridMenu.Menu {
+        items(
+            // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
+            items = sortBy.javaClass.enumConstants,
+            key = Enum<T>::ordinal
+        ) {
+            GridMenu.Entry(
+                text = if (it is TextView) it.text else it.name,
+                icon = {
+                    TabToolBar.Icon(
+                        icon = if (it is Drawable) it.icon else painterResource(R.drawable.close),
+                        modifier = Modifier.clickable {
+                            menuState.hide()
+                            sortBy = it
+                        }
+                    )
+                }
+            )
+        }
+    }
 
     @Composable
     override fun MenuComponent() =
@@ -100,24 +138,10 @@ open class Sort<T: Enum<T>> (
                 )
             }
 
-            // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
-            sortBy.javaClass.enumConstants.forEach {
-                val icon =
-                    if( it is Drawable)
-                        it.icon
-                    else
-                        painterResource( R.drawable.text )
-
-                if( it is TextView)
-                    MenuEntry(
-                        painter = icon,
-                        text = it.text,
-                        onClick = {
-                            menuState.hide()
-                            sortBy = it
-                        }
-                    )
-            }
+            if( menuStyle == MenuStyle.List )
+                ListMenu()
+            else
+                GridMenu()
         }
 
     @Composable
