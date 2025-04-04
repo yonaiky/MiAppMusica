@@ -61,7 +61,6 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -83,6 +82,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.Sort
+import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 
 @ExperimentalMaterial3Api
@@ -116,7 +116,7 @@ fun HomeArtists(
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    val search = Search.init()
+    val search = Search(lazyGridState)
 
     val sort = Sort( HOME_ARTISTS_SORT_BY, HOME_ARTISTS_SORT_ORDER )
 
@@ -152,15 +152,10 @@ fun HomeArtists(
         }
 
     }
-    LaunchedEffect( items, search.input ) {
-        val scrollIndex = lazyGridState.firstVisibleItemIndex
-        val scrollOffset = lazyGridState.firstVisibleItemScrollOffset
-
+    LaunchedEffect( items, search.inputValue ) {
         itemsOnDisplay = items.filter {
-            it.name?.contains( search.input, true ) ?: false
+            it.name?.contains( search.inputValue, true ) ?: false
         }
-
-        lazyGridState.scrollToItem( scrollIndex, scrollOffset )
     }
     if (items.any{it.thumbnailUrl == null}) {
         LaunchedEffect(Unit) {
@@ -308,7 +303,7 @@ fun HomeArtists(
                             alternative = true,
                             modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
                                                .clickable(onClick = {
-                                                   search.onItemSelected()
+                                                   search.hideIfEmpty()
                                                    onArtistClick( artist )
                                                }),
                             disableScrollingText = disableScrollingText,

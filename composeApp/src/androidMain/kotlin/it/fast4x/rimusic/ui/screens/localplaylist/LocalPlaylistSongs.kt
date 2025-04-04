@@ -93,7 +93,6 @@ import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.Playlist
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.components.themed.ResetThumbnail
-import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.components.themed.Synchronize
 import it.fast4x.rimusic.ui.components.themed.ThumbnailPicker
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -150,6 +149,7 @@ import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
+import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.utils.Toaster
 import timber.log.Timber
@@ -206,7 +206,7 @@ fun LocalPlaylistSongs(
     fun getSongs() = itemSelector.ifEmpty { itemsOnDisplay }
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
-    val search = Search.init()
+    val search = Search(lazyListState)
     val shuffle = SongShuffler ( ::getSongs )
     val renameDialog = RenamePlaylistDialog { playlist }
     val exportDialog = ExportSongsToCSVDialog(
@@ -441,7 +441,7 @@ fun LocalPlaylistSongs(
                  }
     }
     //</editor-fold>
-    LaunchedEffect( items, relatedSongs, search.input, parentalControlEnabled ) {
+    LaunchedEffect( items, relatedSongs, search.inputValue, parentalControlEnabled ) {
         items.toMutableList()
              .apply {
                  relatedSongs.forEach { (song, index) ->
@@ -456,8 +456,8 @@ fun LocalPlaylistSongs(
              .filter { song ->
                  // Without cleaning, user can search explicit songs with "e:"
                  // I kinda want this to be a feature, but it seems unnecessary
-                 val containsName = song.cleanTitle().contains(search.input, true)
-                 val containsArtist = song.artistsText?.contains(search.input, true) ?: false
+                 val containsName = song.cleanTitle().contains(search.inputValue, true)
+                 val containsArtist = song.artistsText?.contains(search.inputValue, true) ?: false
 
                  containsName || containsArtist
              }
@@ -837,7 +837,7 @@ fun LocalPlaylistSongs(
                                     we shouldn't disable [itemSelector]
                                  */
 
-                                search.onItemSelected()
+                                search.hideIfEmpty()
                             }
                         )
                     }

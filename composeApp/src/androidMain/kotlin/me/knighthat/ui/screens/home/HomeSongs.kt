@@ -71,7 +71,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.onOverlay
@@ -124,6 +123,7 @@ import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
+import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.database.ext.FormatWithSong
 import me.knighthat.utils.PathUtils
@@ -207,7 +207,7 @@ fun HomeSongs( navController: NavController ) {
     val odSort = Sort( HOME_ON_DEVICE_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
     val topPlaylists = PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
     val hiddenSongs = HiddenSongs()
-    val search = Search.init()
+    val search = Search(lazyListState)
     val hideSongDialog = HideSongDialog()
     val itemSelector = ItemSelector<Song>()
     val exportDialog = ExportSongsToCSVDialog(
@@ -316,21 +316,19 @@ fun HomeSongs( navController: NavController ) {
 
             else -> true
         }
-    LaunchedEffect( items, search.input, currentPath ) {
+    LaunchedEffect( items, search.inputValue, currentPath ) {
         items.filter( ::naturalFilter )
              .filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
              .filter {
                  // Without cleaning, user can search explicit songs with "e:"
                  // I kinda want this to be a feature, but it seems unnecessary
-                 val containsTitle = it.cleanTitle().contains( search.input, true )
-                 val containsArtist = it.artistsText?.contains( search.input, true ) ?: false
+                 val containsTitle = it.cleanTitle().contains( search.inputValue, true )
+                 val containsArtist = it.artistsText?.contains( search.inputValue, true ) ?: false
 
                  containsTitle || containsArtist
              }
             .let {
                 itemsOnDisplay = it
-
-                lazyListState.scrollToItem( 0 )
                 isLoading = false
             }
     }
@@ -523,7 +521,7 @@ fun HomeSongs( navController: NavController ) {
                                 }
                             },
                             onClick = {
-                                search.onItemSelected()
+                                search.hideIfEmpty()
 
                                 binder?.stopRadio()
                                 binder?.player?.forcePlayAtIndex( getMediaItems(), index )

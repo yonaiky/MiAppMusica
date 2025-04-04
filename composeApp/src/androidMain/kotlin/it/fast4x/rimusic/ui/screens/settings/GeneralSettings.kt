@@ -50,7 +50,6 @@ import it.fast4x.rimusic.enums.PresetsReverb
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -124,6 +123,7 @@ import it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
+import me.knighthat.component.tab.Search
 import me.knighthat.updater.Updater
 
 
@@ -167,7 +167,7 @@ fun GeneralSettings(
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
 
-    val search = Search.init()
+    val search = Search()
 
     var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
     var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
@@ -305,7 +305,7 @@ fun GeneralSettings(
         }
 
         SettingsEntryGroupText( stringResource(R.string.update) )
-        if( search.input.isBlank() || stringResource(R.string.update).contains( search.input, true ) )
+        if( search.inputValue.isBlank() || stringResource(R.string.update).contains( search.inputValue, true ) )
             Updater.SettingEntry()
 
         SettingsGroupSpacer()
@@ -313,7 +313,7 @@ fun GeneralSettings(
 
         SettingsDescription(text = stringResource(R.string.system_language)+": $systemLocale")
 
-        if (search.input.isBlank() || stringResource(R.string.app_language).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.app_language).contains(search.inputValue,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.app_language),
                 selectedValue = languageApp,
@@ -328,7 +328,7 @@ fun GeneralSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.player))
 
-        if (search.input.isBlank() || stringResource(R.string.notification_type).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.notification_type).contains(search.inputValue,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.notification_type),
                 selectedValue = notificationType,
@@ -343,7 +343,7 @@ fun GeneralSettings(
             ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
         }
 
-        if (search.input.isBlank() || stringResource(R.string.audio_quality_format).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.audio_quality_format).contains(search.inputValue,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.audio_quality_format),
                 selectedValue = audioQualityFormat,
@@ -365,7 +365,7 @@ fun GeneralSettings(
 
         }
 
-        if (search.input.isBlank() || stringResource(R.string.enable_connection_metered).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.enable_connection_metered).contains(search.inputValue,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.enable_connection_metered),
                 text = stringResource(R.string.info_enable_connection_metered),
@@ -377,7 +377,7 @@ fun GeneralSettings(
                 }
             )
 
-        if (search.input.isBlank() || stringResource(R.string.jump_previous).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.jump_previous).contains(search.inputValue,true)) {
             BasicText(
                 text = stringResource(R.string.jump_previous),
                 style = typography().xs.semiBold.copy(color = colorPalette().text),
@@ -406,7 +406,7 @@ fun GeneralSettings(
             )
         }
 
-        if (search.input.isBlank() || stringResource(R.string.min_listening_time).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.min_listening_time).contains(search.inputValue,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.min_listening_time),
                 selectedValue = exoPlayerMinTimeForEvent,
@@ -425,7 +425,7 @@ fun GeneralSettings(
             SettingsDescription(text = stringResource(R.string.is_min_list_time_for_tips_or_quick_pics))
         }
 
-        if (search.input.isBlank() || stringResource(R.string.min_listening_time).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.min_listening_time).contains(search.inputValue,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.exclude_songs_with_duration_limit),
                 selectedValue = excludeSongWithDurationLimit,
@@ -447,7 +447,7 @@ fun GeneralSettings(
             SettingsDescription(text = stringResource(R.string.exclude_songs_with_duration_limit_description))
         }
 
-        if (search.input.isBlank() || stringResource(R.string.pause_between_songs).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.pause_between_songs).contains(search.inputValue,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.pause_between_songs),
                 selectedValue = pauseBetweenSongs,
@@ -467,7 +467,7 @@ fun GeneralSettings(
                 }
             )
 
-        if (search.input.isBlank() || stringResource(R.string.player_pause_listen_history).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.player_pause_listen_history).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.player_pause_listen_history),
                 text = stringResource(R.string.player_pause_listen_history_info),
@@ -480,7 +480,7 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
-        if (search.input.isBlank() || stringResource(R.string.player_pause_on_volume_zero).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.player_pause_on_volume_zero).contains(search.inputValue,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.player_pause_on_volume_zero),
                 text = stringResource(R.string.info_pauses_player_when_volume_zero),
@@ -490,7 +490,7 @@ fun GeneralSettings(
                 }
             )
 
-        if (search.input.isBlank() || stringResource(R.string.effect_fade_audio).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.effect_fade_audio).contains(search.inputValue,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.effect_fade_audio),
                 selectedValue = playbackFadeAudioDuration,
@@ -533,7 +533,7 @@ fun GeneralSettings(
 
 
 
-            if (search.input.isBlank() || stringResource(R.string.player_keep_minimized).contains(search.input,true))
+            if (search.inputValue.isBlank() || stringResource(R.string.player_keep_minimized).contains(search.inputValue,true))
                 SwitchSettingEntry(
                     title = stringResource(R.string.player_keep_minimized),
                     text = stringResource(R.string.when_click_on_a_song_player_start_minimized),
@@ -544,7 +544,7 @@ fun GeneralSettings(
                 )
 
 
-        if (search.input.isBlank() || stringResource(R.string.player_collapsed_disable_swiping_down).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.player_collapsed_disable_swiping_down).contains(search.inputValue,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.player_collapsed_disable_swiping_down),
                 text = stringResource(R.string.avoid_closing_the_player_cleaning_queue_by_swiping_down),
@@ -554,7 +554,7 @@ fun GeneralSettings(
                 }
             )
 
-        if (search.input.isBlank() || stringResource(R.string.player_auto_load_songs_in_queue).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.player_auto_load_songs_in_queue).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.player_auto_load_songs_in_queue),
                 text = stringResource(R.string.player_auto_load_songs_in_queue_description),
@@ -567,7 +567,7 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false })
         }
 
-        if (search.input.isBlank() || stringResource(R.string.max_songs_in_queue).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.max_songs_in_queue).contains(search.inputValue,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.max_songs_in_queue),
                 selectedValue = maxSongsInQueue,
@@ -587,8 +587,8 @@ fun GeneralSettings(
                 }
             )
 
-        if (search.input.isBlank() || stringResource(R.string.discover).contains(
-                search.input,
+        if (search.inputValue.isBlank() || stringResource(R.string.discover).contains(
+                search.inputValue,
                 true
             )
         )
@@ -599,7 +599,7 @@ fun GeneralSettings(
                 onCheckedChange = { discoverIsEnabled = it }
             )
 
-        if (search.input.isBlank() || stringResource(R.string.playlistindicator).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.playlistindicator).contains(search.inputValue,true))
             SwitchSettingEntry(
                 title = stringResource(R.string.playlistindicator),
                 text = stringResource(R.string.playlistindicatorinfo),
@@ -609,7 +609,7 @@ fun GeneralSettings(
                 }
             )
 
-        if (search.input.isBlank() || stringResource(R.string.now_playing_indicator).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.now_playing_indicator).contains(search.inputValue,true))
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.now_playing_indicator),
                 selectedValue = nowPlayingIndicator,
@@ -617,7 +617,7 @@ fun GeneralSettings(
                 valueText = { it.text }
             )
 
-        if (search.input.isBlank() || stringResource(R.string.resume_playback).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.resume_playback).contains(search.inputValue,true)) {
             if (isAtLeastAndroid6) {
                 SwitchSettingEntry(
                     title = stringResource(R.string.resume_playback),
@@ -632,7 +632,7 @@ fun GeneralSettings(
             }
         }
 
-        if (search.input.isBlank() || stringResource(R.string.persistent_queue).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.persistent_queue).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.persistent_queue),
                 text = stringResource(R.string.save_and_restore_playing_songs),
@@ -662,7 +662,7 @@ fun GeneralSettings(
             }
         }
 
-        if (search.input.isBlank() || stringResource(R.string.close_app_with_back_button).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.close_app_with_back_button).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 isEnabled = Build.VERSION.SDK_INT >= 33,
                 title = stringResource(R.string.close_app_with_back_button),
@@ -677,7 +677,7 @@ fun GeneralSettings(
             RestartActivity(restartActivity, onRestart = { restartActivity = false })
         }
 
-        if (search.input.isBlank() || stringResource(R.string.close_background_player).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.close_background_player).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.close_background_player),
                 text = stringResource(R.string.when_app_swipe_out_from_task_manager),
@@ -690,7 +690,7 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
-        if (search.input.isBlank() || stringResource(R.string.skip_media_on_error).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.skip_media_on_error).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.skip_media_on_error),
                 text = stringResource(R.string.skip_media_on_error_description),
@@ -705,7 +705,7 @@ fun GeneralSettings(
 
         }
 
-        if (search.input.isBlank() || stringResource(R.string.skip_silence).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.skip_silence).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.skip_silence),
                 text = stringResource(R.string.skip_silent_parts_during_playback),
@@ -742,7 +742,7 @@ fun GeneralSettings(
 
         }
 
-        if (search.input.isBlank() || stringResource(R.string.loudness_normalization).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.loudness_normalization).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.loudness_normalization),
                 text = stringResource(R.string.autoadjust_the_volume),
@@ -774,7 +774,7 @@ fun GeneralSettings(
             }
         }
 
-        if (search.input.isBlank() || stringResource(R.string.settings_audio_bass_boost).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.settings_audio_bass_boost).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.settings_audio_bass_boost),
                 text = "",
@@ -806,7 +806,7 @@ fun GeneralSettings(
             }
         }
 
-        if (search.input.isBlank() || stringResource(R.string.settings_audio_reverb).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.settings_audio_reverb).contains(search.inputValue,true)) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.settings_audio_reverb),
                 text = stringResource(R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio),
@@ -822,7 +822,7 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
-        if (search.input.isBlank() || stringResource(R.string.settings_audio_focus).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.settings_audio_focus).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.settings_audio_focus),
                 text = stringResource(R.string.settings_audio_focus_info),
@@ -833,7 +833,7 @@ fun GeneralSettings(
             )
         }
 
-        if (search.input.isBlank() || stringResource(R.string.event_volumekeys).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.event_volumekeys).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.event_volumekeys),
                 text = stringResource(R.string.event_volumekeysinfo),
@@ -847,7 +847,7 @@ fun GeneralSettings(
         }
 
 
-        if (search.input.isBlank() || stringResource(R.string.event_shake).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.event_shake).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.event_shake),
                 text = stringResource(R.string.shake_to_change_song),
@@ -860,7 +860,7 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
-        if (search.input.isBlank() || stringResource(R.string.settings_enable_pip).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.settings_enable_pip).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.settings_enable_pip),
                 text = "",
@@ -906,7 +906,7 @@ fun GeneralSettings(
             }
         }
 
-        if (search.input.isBlank() || stringResource(R.string.settings_enable_autodownload_song).contains(search.input,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.settings_enable_autodownload_song).contains(search.inputValue,true)) {
             SwitchSettingEntry(
                 title = stringResource(R.string.settings_enable_autodownload_song),
                 text = "",
@@ -940,7 +940,7 @@ fun GeneralSettings(
             }
         }
 
-        if (search.input.isBlank() || stringResource(R.string.equalizer).contains(search.input,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.equalizer).contains(search.inputValue,true))
             SettingsEntry(
                 title = stringResource(R.string.equalizer),
                 text = stringResource(R.string.interact_with_the_system_equalizer),

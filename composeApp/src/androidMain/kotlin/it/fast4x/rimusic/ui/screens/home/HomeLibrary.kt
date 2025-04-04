@@ -53,7 +53,6 @@ import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
@@ -77,6 +76,7 @@ import kotlinx.coroutines.launch
 import me.knighthat.component.Sort
 import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
+import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 
 
@@ -103,7 +103,7 @@ fun HomeLibrary(
 
     var itemsOnDisplay by persistList<PlaylistPreview>("home/playlists/on_display")
 
-    val search = Search.init()
+    val search = Search(lazyGridState)
 
     val sort = Sort( HOME_LIBRARY_SORT_BY, HOME_LIBRARY_SORT_ORDER )
     val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
@@ -141,15 +141,10 @@ fun HomeLibrary(
                 .distinctUntilChanged()
                 .collect { items = it }
     }
-    LaunchedEffect( items, search.input ) {
-        val scrollIndex = lazyGridState.firstVisibleItemIndex
-        val scrollOffset = lazyGridState.firstVisibleItemScrollOffset
-
+    LaunchedEffect( items, search.inputValue ) {
         itemsOnDisplay = items.filter {
-            it.playlist.name.contains( search.input, true )
+            it.playlist.name.contains( search.inputValue, true )
         }
-
-        lazyGridState.scrollToItem( scrollIndex, scrollOffset )
     }
 
     // START: Additional playlists
@@ -266,7 +261,7 @@ fun HomeLibrary(
                                 .fillMaxSize()
                                 .animateItem(fadeInSpec = null, fadeOutSpec = null)
                                 .clickable(onClick = {
-                                    search.onItemSelected()
+                                    search.hideIfEmpty()
                                     onPlaylistClick(preview.playlist)
                                 }),
                             disableScrollingText = disableScrollingText,

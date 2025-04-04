@@ -71,7 +71,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -100,6 +99,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.knighthat.component.Sort
+import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.database.AlbumTable
 
@@ -120,7 +120,6 @@ fun HomeAlbums(
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
     val lazyGridState = rememberLazyGridState()
-    val coroutineScope = rememberCoroutineScope()
 
     // Settings
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
@@ -133,7 +132,7 @@ fun HomeAlbums(
 
     var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
 
-    val search = Search.init()
+    val search = Search(lazyGridState)
 
     val sort = Sort( HOME_ALBUMS_SORT_BY, HOME_ALBUM_SORT_ORDER )
 
@@ -168,17 +167,12 @@ fun HomeAlbums(
         }
 
     }
-    LaunchedEffect( items, search.input ) {
-        val scrollIndex = lazyGridState.firstVisibleItemIndex
-        val scrollOffset = lazyGridState.firstVisibleItemScrollOffset
-
+    LaunchedEffect( items, search.inputValue ) {
         itemsOnDisplay = items.filter {
-            it.title?.contains( search.input, true) ?: false
-                    || it.year?.contains( search.input, true) ?: false
-                    || it.authorsText?.contains( search.input, true) ?: false
+            it.title?.contains( search.inputValue, true) ?: false
+                    || it.year?.contains( search.inputValue, true) ?: false
+                    || it.authorsText?.contains( search.inputValue, true) ?: false
         }
-
-        lazyGridState.scrollToItem( scrollIndex, scrollOffset )
     }
 
     LaunchedEffect( Unit ) {
@@ -473,7 +467,7 @@ fun HomeAlbums(
                                         }
                                     },
                                     onClick = {
-                                        search.onItemSelected()
+                                        search.hideIfEmpty()
                                         onAlbumClick( album )
                                     }
                                 )

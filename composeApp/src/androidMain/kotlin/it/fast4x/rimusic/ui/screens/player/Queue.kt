@@ -74,7 +74,6 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.components.themed.Search
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.DisposableListener
@@ -96,6 +95,7 @@ import it.fast4x.rimusic.utils.windows
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
+import me.knighthat.component.tab.Search
 import me.knighthat.component.ui.screens.player.DeleteFromQueue
 import me.knighthat.component.ui.screens.player.Discover
 import me.knighthat.component.ui.screens.player.QueueArrow
@@ -160,22 +160,17 @@ fun Queue(
 
         fun getSongs() = itemSelector.ifEmpty { items }
 
-        val search = Search.init()
-        LaunchedEffect( items, search.input ) {
+        val search = Search(lazyListState)
+        LaunchedEffect( items, search.inputValue ) {
             items.filter {
                     // Without cleaning, user can search explicit songs with "e:"
                     // I kinda want this to be a feature, but it seems unnecessary
-                    val containsTitle = it.cleanTitle().contains( search.input, true )
-                    val containsArtist = it.artistsText?.contains( search.input, true ) ?: false
+                    val containsTitle = it.cleanTitle().contains( search.inputValue, true )
+                    val containsArtist = it.artistsText?.contains( search.inputValue, true ) ?: false
 
                     containsTitle || containsArtist
                 }
-                .let {
-                    itemsOnDisplay = it
-
-                    // Keep scroll at top to prevent weird artifact
-                    lazyListState.scrollToItem( 0, 0 )
-                }
+                .let { itemsOnDisplay = it }
         }
 
         val plistName = remember { mutableStateOf("") }
@@ -334,7 +329,7 @@ fun Queue(
                                         we shouldn't disable [itemSelector]
                                      */
 
-                                    search.onItemSelected()
+                                    search.hideIfEmpty()
                                 }
                             )
                         }
