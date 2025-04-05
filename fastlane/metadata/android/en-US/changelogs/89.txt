@@ -3,6 +3,7 @@ Added:
 - Song menu in quick picks tab
 - Extension to exported file
 - Grid/List style in sort menu
+- New relative play time icon and text
 
 Changes:
 - Song list only jumps to top with certain actions
