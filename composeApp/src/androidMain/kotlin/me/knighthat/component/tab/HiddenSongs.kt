@@ -32,7 +32,7 @@ class HiddenSongs private constructor(
 
     override var isFirstIcon: Boolean by firstIconState
 
-    fun isShown() = isFirstIcon
+    fun isHiddenExcluded(): Boolean = !isFirstIcon
 
     override fun onShortClick() { isFirstIcon = !isFirstIcon }
 }

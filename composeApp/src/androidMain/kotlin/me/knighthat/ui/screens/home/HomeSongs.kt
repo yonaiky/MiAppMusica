@@ -263,13 +263,13 @@ fun HomeSongs( navController: NavController ) {
 
     // This phrase loads all songs across types into [items]
     // No filtration applied to this stage, only sort
-    LaunchedEffect( builtInPlaylist, topPlaylists.period, odSort.sortBy, songSort.sortBy, songSort.sortOrder, hiddenSongs.isShown() ) {
+    LaunchedEffect( builtInPlaylist, topPlaylists.period, odSort.sortBy, songSort.sortBy, songSort.sortOrder, hiddenSongs.isHiddenExcluded() ) {
         isLoading = true
         items = emptyList()
 
         when( builtInPlaylist ) {
             BuiltInPlaylist.All, BuiltInPlaylist.Offline, BuiltInPlaylist.Downloaded ->
-                Database.songTable.sortAll( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isShown() )
+                Database.songTable.sortAll( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isHiddenExcluded() )
 
             BuiltInPlaylist.Favorites -> Database.songTable.sortFavorites( songSort.sortBy, songSort.sortOrder )
 

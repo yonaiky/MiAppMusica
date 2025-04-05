@@ -352,17 +352,17 @@ interface SongTable {
 
     //<editor-fold defaultstate="collapsed" desc="Sort all">
     fun sortAllByPlayTime( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
-        all( limit ).map { list ->
+        all( limit, excludeHidden ).map { list ->
             list.sortedBy( Song::totalPlayTimeMs )
         }
 
     fun sortAllByRelativePlayTime( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
-        all( limit ).map { list ->
+        all( limit, excludeHidden ).map { list ->
             list.sortedBy( Song::relativePlayTime )
         }
 
     fun sortAllByTitle( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
-        all( limit ).map { list ->
+        all( limit, excludeHidden ).map { list ->
             list.sortedBy( Song::cleanTitle )
         }
 
@@ -377,17 +377,17 @@ interface SongTable {
     fun sortAllByDatePlayed( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
 
     fun sortAllByLikedAt( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
-        all( limit ).map { list ->
+        all( limit, excludeHidden ).map { list ->
             list.sortedBy( Song::likedAt )
         }
 
     fun sortAllByArtist( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
-        all( limit ).map { list ->
+        all( limit, excludeHidden ).map { list ->
             list.sortedBy( Song::cleanArtistsText )
         }
 
     fun sortAllByDuration( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
-        all( limit ).map { list ->
+        all( limit, excludeHidden ).map { list ->
             list.sortedBy {
                 durationToMillis( it.durationText ?: "0:0" )
             }
