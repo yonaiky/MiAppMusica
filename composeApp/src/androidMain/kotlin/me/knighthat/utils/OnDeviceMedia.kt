@@ -59,8 +59,8 @@ private fun Context.getLocalSongs(
     uri: Uri,
     sortBy: OnDeviceSongSortBy,
     sortOrder: SortOrder
-): Map<Song, String> {
-    val results = mutableMapOf<Song, String>()
+): LinkedHashMap<Song, String> {
+    val results = linkedMapOf<Song, String>()
     val blacklistedPaths = blacklistedPaths( this )
 
     contentResolver.query(
@@ -132,7 +132,7 @@ private fun Context.getLocalSongs(
 fun Context.getLocalSongs(
     sortBy: OnDeviceSongSortBy,
     sortOrder: SortOrder
-): Flow<Map<Song, String>> = callbackFlow {
+): Flow<LinkedHashMap<Song, String>> = callbackFlow {
 
     val uri =
         if (isAtLeastAndroid10)
