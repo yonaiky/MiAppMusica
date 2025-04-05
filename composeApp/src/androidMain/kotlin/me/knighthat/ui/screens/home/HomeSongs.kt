@@ -20,7 +20,6 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
@@ -52,7 +53,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.Format
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -103,10 +103,9 @@ import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import it.fast4x.rimusic.utils.showMyTopPlaylistKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.onEach
 import me.knighthat.component.FolderItem
 import me.knighthat.component.ResetCache
 import me.knighthat.component.SongItem
@@ -154,22 +153,11 @@ fun HomeSongs( navController: NavController ) {
 
     var items by persistList<Song>( "home/songs" )
     var itemsOnDisplay by persistList<Song>( "home/songs/on_display" )
-    val formats by remember( builtInPlaylist ) {
-        if( builtInPlaylist != BuiltInPlaylist.Offline )
-            return@remember emptyFlow<List<Format>>()
-
-        Database.formatTable
-                .allWithSongs()
-                .distinctUntilChanged()
-                .map { list ->
-                    list.map( FormatWithSong::format )
-                }
-    }.collectAsState( emptyList(), Dispatchers.IO )
 
     var songsOnDevice by remember( builtInPlaylist ) {
         mutableStateOf( emptyMap<Song, String>() )
     }
-    var currentPath by remember( songsOnDevice.values ) {
+    var currentPath by remember( songsOnDevice ) {
         mutableStateOf( PathUtils.findCommonPath( songsOnDevice.values ) )
     }
 
@@ -265,60 +253,82 @@ fun HomeSongs( navController: NavController ) {
     // No filtration applied to this stage, only sort
     LaunchedEffect( builtInPlaylist, topPlaylists.period, odSort.sortBy, songSort.sortBy, songSort.sortOrder, hiddenSongs.isHiddenExcluded() ) {
         isLoading = true
-        items = emptyList()
 
-        when( builtInPlaylist ) {
-            BuiltInPlaylist.All, BuiltInPlaylist.Offline, BuiltInPlaylist.Downloaded ->
-                Database.songTable.sortAll( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isHiddenExcluded() )
+        val retrievedSongs = when( builtInPlaylist ) {
+            BuiltInPlaylist.All -> Database.songTable
+                                           .sortAll( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isHiddenExcluded() )
+                                           .map { list ->
+                                               // Include local songs if enabled
+                                               list.fastFilter {
+                                                   !includeLocalSongs || !it.id.startsWith( LOCAL_KEY_PREFIX, true )
+                                               }
+                                           }
+
+            BuiltInPlaylist.Downloaded -> {
+                // [MyDownloadHelper] provide a list of downloaded songs, which is faster to retrieve
+                // than using `Cache.isCached()` call
+                val downloaded: List<String> = MyDownloadHelper.downloads
+                                                               .value
+                                                               .values
+                                                               .filter { it.state == Download.STATE_COMPLETED }
+                                                               .fastMap { it.request.id }
+                Database.songTable
+                        .sortAll( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isHiddenExcluded() )
+                        .map { list ->
+                            list.fastFilter { it.id in downloaded }
+                        }
+            }
+
+            BuiltInPlaylist.Offline -> Database.formatTable
+                                               .sortAllWithSongs( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isHiddenExcluded() )
+                                               .map { list ->
+                                                   list.fastFilter {
+                                                       val contentLength = it.format.contentLength ?: return@fastFilter false
+                                                       binder?.cache?.isCached( it.song.id, 0, contentLength ) == true
+                                                   }.map( FormatWithSong::song )
+                                               }
 
             BuiltInPlaylist.Favorites -> Database.songTable.sortFavorites( songSort.sortBy, songSort.sortOrder )
 
-            BuiltInPlaylist.Top -> Database.eventTable.findSongsMostPlayedBetween(
-                from = topPlaylists.period.timeStampInMillis(),
-                limit = maxTopPlaylistItems.toInt()
-            )
+            BuiltInPlaylist.Top -> Database.eventTable
+                                           .findSongsMostPlayedBetween(
+                                               from = topPlaylists.period.timeStampInMillis(),
+                                               limit = maxTopPlaylistItems.toInt()
+                                           )
+                                           .map { list ->
+                                               // Exclude songs with duration higher than what [excludeSongWithDurationLimit] is
+                                               list.fastFilter { song ->
+                                                   excludeSongWithDurationLimit == DurationInMinutes.Disabled
+                                                           || song.durationText
+                                                                  ?.let { durationTextToMillis(it) < excludeSongWithDurationLimit.asMillis } == true
+                                               }
+                                           }
 
             BuiltInPlaylist.OnDevice -> context.getLocalSongs( odSort.sortBy, songSort.sortOrder )
                                                .map {
                                                    songsOnDevice = it
                                                    it.keys.toList()
                                                }
-        }.flowOn( Dispatchers.IO ).distinctUntilChanged().collect { items = it }
+        }
+
+        retrievedSongs.flowOn( Dispatchers.IO )
+                      .distinctUntilChanged()
+                      // Scroll list to top to prevent weird artifacts
+                      .onEach { lazyListState.scrollToItem( 0, 0 ) }
+                      .collect { items = it }
     }
 
-    // This phrase will filter out songs depends on search inputs, and natural filter
-    // parameters, such as get downloaded songs when [BuiltInPlaylist.Offline] is set.
-    fun naturalFilter( song: Song ): Boolean =
-        when( builtInPlaylist ) {
-            BuiltInPlaylist.All -> !includeLocalSongs || !song.id.startsWith( LOCAL_KEY_PREFIX )
-
-            BuiltInPlaylist.Offline -> runBlocking( Dispatchers.IO ) {
-                val contentLength = formats.firstOrNull { it.songId == song.id }?.contentLength
-                contentLength != null && binder?.cache?.isCached( song.id, 0, contentLength ) ?: false
-            }
-
-            BuiltInPlaylist.Downloaded -> MyDownloadHelper.downloads
-                                                          .value
-                                                          .values
-                                                          .filter { it.state == Download.STATE_COMPLETED }
-                                                          .any {
-                                                              it.request.id == song.id
-                                                          }
-
-            BuiltInPlaylist.Top ->
-                excludeSongWithDurationLimit == DurationInMinutes.Disabled
-                        || song.durationText?.let { durationTextToMillis(it) < excludeSongWithDurationLimit.asMillis } == true
-
-            BuiltInPlaylist.OnDevice ->
-                !showFolder4LocalSongs
-                        || currentPath.equals( songsOnDevice[song], true )
-                        || "$currentPath/".equals( songsOnDevice[song], true )
-
-            else -> true
-        }
     LaunchedEffect( items, search.inputValue, currentPath ) {
-        items.filter( ::naturalFilter )
-             .filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
+        items.filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
+             .filter {
+                 // [builtInPlaylist] must be in [BuiltInPlaylist.OnDevice]
+                 // [showFolder4LocalSongs] must be false and
+                 // this song must be inside [currentPath] to show song
+                 builtInPlaylist != BuiltInPlaylist.OnDevice
+                         || !showFolder4LocalSongs
+                         || currentPath.equals( songsOnDevice[it], true )
+                         || "$currentPath/".equals( songsOnDevice[it], true )
+             }
              .filter {
                  // Without cleaning, user can search explicit songs with "e:"
                  // I kinda want this to be a feature, but it seems unnecessary

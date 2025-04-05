@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 
@@ -88,14 +89,20 @@ object PathUtils {
         )
 
         val totalPaths = currentPath.split( "/" ).filter( String::isNotEmpty )
-        totalPaths.forEach { path: String ->
+        var fullPath = ""
+        totalPaths.fastForEach { path ->
+            fullPath += "/$path"
+
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 tint = colorPalette().accent,
                 contentDescription = null
             )
 
-            val capturedCurrentPath = remember { currentPath }
+            val capturedCurrentPath = remember {
+                // Remove prefix "/"
+                fullPath.drop(1)
+            }
             BasicText(
                 text = path,
                 style = typography().xs.copy(
