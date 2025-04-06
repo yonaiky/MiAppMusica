@@ -14,9 +14,9 @@ enum class HomeScreenTabs(
 
     Songs( R.string.songs ),
 
-    Artists( R.string.albums ),
+    Artists( R.string.artists ),
 
-    Albums( R.string.artists ),
+    Albums( R.string.albums ),
 
     Playlists( R.string.playlists ),
 
@@ -32,5 +32,4 @@ enum class HomeScreenTabs(
             Playlists -> 4
             Search -> 5
         }
-
 }
