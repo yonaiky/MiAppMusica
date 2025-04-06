@@ -279,8 +279,8 @@ interface SongTable {
         UPDATE Song
         SET likedAt = 
             CASE 
-                WHEN likedAt IS NULL THEN strftime('%s', 'now') * 1000
-                ELSE NULL
+                WHEN likedAt IS NOT NULL THEN NULL
+                ELSE strftime('%s', 'now') * 1000
             END
         WHERE id = :songId
     """)

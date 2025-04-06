@@ -44,14 +44,10 @@ import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.addNext
-import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
-import it.fast4x.rimusic.utils.isNetworkConnected
-import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
@@ -70,7 +66,7 @@ import me.knighthat.component.song.ResetSongDialog
 import me.knighthat.component.tab.DeleteSongDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Radio
-import me.knighthat.utils.Toaster
+import me.knighthat.sync.YouTubeSync
 import timber.log.Timber
 import java.util.Optional
 
@@ -216,14 +212,8 @@ class SongItemMenu private constructor(
                                 icon = if ( isLiked ) R.drawable.heart else R.drawable.heart_outline,
                                 color = colorPalette().favoritesIcon,
                                 onClick = {
-                                    if ( !isNetworkConnected( context ) && isYouTubeSyncEnabled() ) {
-                                        Toaster.noInternet()
-                                    } else if ( !isYouTubeSyncEnabled() ){
-                                        mediaItemToggleLike( song.asMediaItem )
-                                    } else {
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            addToYtLikedSong( song.asMediaItem )
-                                        }
+                                    CoroutineScope( Dispatchers.IO ).launch {
+                                        YouTubeSync.toggleSongLike( context, song.asMediaItem )
                                     }
                                 },
                                 modifier = Modifier.padding( all = 4.dp ).size( 20.dp )

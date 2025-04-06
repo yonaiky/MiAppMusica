@@ -57,7 +57,6 @@ import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.PIPED_PREFIX
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
@@ -73,16 +72,13 @@ import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addSongToYtPlaylist
-import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
-import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.manageDownload
-import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.playlistSortByKey
 import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.positionAndDurationState
@@ -94,7 +90,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import me.knighthat.utils.Toaster
+import me.knighthat.sync.YouTubeSync
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -402,15 +398,8 @@ fun MediaItemGridMenu (
                     icon = if ( isSongLiked ) R.drawable.heart else R.drawable.heart_outline,
                     color = colorPalette().favoritesIcon,
                     onClick = {
-                        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                            Toaster.noInternet()
-                        } else if (!isYouTubeSyncEnabled()){
-                            mediaItemToggleLike(mediaItem)
-                            updateData = !updateData
-                        } else {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                addToYtLikedSong(mediaItem)
-                            }
+                        CoroutineScope( Dispatchers.IO ).launch {
+                            YouTubeSync.toggleSongLike( context, mediaItem )
                         }
                     },
                     modifier = Modifier

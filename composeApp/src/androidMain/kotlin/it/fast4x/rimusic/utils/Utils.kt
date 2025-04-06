@@ -74,19 +74,6 @@ import kotlin.time.Duration.Companion.minutes
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 
-@OptIn(UnstableApi::class)
-fun mediaItemToggleLike( mediaItem: MediaItem) {
-    Database.asyncTransaction {
-        insertIgnore( mediaItem )
-        songTable.toggleLike( mediaItem.mediaId )
-
-        MyDownloadHelper.autoDownloadWhenLiked(
-            context(),
-            mediaItem
-        )
-    }
-}
-
 val Innertube.AlbumItem.asAlbum: Album
     get() = Album (
         id = key,

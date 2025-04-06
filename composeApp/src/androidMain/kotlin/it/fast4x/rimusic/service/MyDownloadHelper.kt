@@ -37,6 +37,7 @@ import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
 import it.fast4x.rimusic.utils.getEnum
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.removeDownload
 import it.fast4x.rimusic.utils.thumbnail
@@ -315,6 +316,21 @@ object MyDownloadHelper {
                 }
             }
         }
+    }
+
+    fun downloadOnLike( mediaItem: MediaItem, likeState: Boolean?, context: Context ) {
+        // Only continues when this setting is enabled
+        val isSettingEnabled = context.preferences.getBoolean( autoDownloadSongWhenLikedKey, false )
+        if( !isSettingEnabled || !isNetworkConnected( context ) )
+            return
+
+        // [likeState] is a tri-state value,
+        // only `true` represents like, so
+        // `true` must be value set to download
+        if( likeState == true )
+            autoDownload( context, mediaItem )
+        else
+            removeDownload( context, mediaItem )
     }
 
     fun autoDownloadWhenAlbumBookmarked(context: Context, mediaItems: List<MediaItem>) {

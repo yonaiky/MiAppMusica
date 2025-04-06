@@ -30,10 +30,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadService
-import app.kreate.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AlbumSwipeAction
 import it.fast4x.rimusic.enums.DownloadedStateMedia
@@ -41,15 +39,11 @@ import it.fast4x.rimusic.enums.PlaylistSwipeAction
 import it.fast4x.rimusic.enums.QueueSwipeAction
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.service.isLocal
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.albumSwipeLeftActionKey
 import it.fast4x.rimusic.utils.albumSwipeRightActionKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
-import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
-import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.playlistSwipeLeftActionKey
 import it.fast4x.rimusic.utils.playlistSwipeRightActionKey
 import it.fast4x.rimusic.utils.queueSwipeLeftActionKey
@@ -59,7 +53,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import me.knighthat.utils.Toaster
+import me.knighthat.sync.YouTubeSync
 
 @Composable
 fun SwipeableContent(
@@ -180,26 +174,8 @@ fun SwipeableQueueItem(
     }.collectAsState( null, Dispatchers.IO )
 
     val onFavourite: () -> Unit = {
-        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-            Toaster.noInternet()
-        } else if (!isYouTubeSyncEnabled()){
-            mediaItemToggleLike(mediaItem)
-            val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
-            val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
-
-            val messageId = when( songLikeState ) {
-                false -> R.string.removed_from_disliked
-                true -> R.string.added_to_favorites
-                null -> R.string.removed_from_favorites
-            }
-
-            Toaster.s(
-                "\"$mTitle - $mArtist\" ${context.getString(messageId)}"
-            )
-        } else {
-            CoroutineScope(Dispatchers.IO).launch {
-                addToYtLikedSong(mediaItem)
-            }
+        CoroutineScope( Dispatchers.IO ).launch {
+            YouTubeSync.toggleSongLike( context, mediaItem )
         }
     }
 
@@ -261,26 +237,8 @@ fun SwipeablePlaylistItem(
     }.collectAsState( null, Dispatchers.IO )
 
     val onFavourite: () -> Unit = {
-        if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-            Toaster.noInternet()
-        } else if (!isYouTubeSyncEnabled()){
-            mediaItemToggleLike(mediaItem)
-            val mTitle: String = mediaItem.mediaMetadata.title?.toString() ?: ""
-            val mArtist: String = mediaItem.mediaMetadata.artist?.toString() ?: ""
-
-            val messageId = when( songLikeState ) {
-                false -> R.string.removed_from_disliked
-                true -> R.string.added_to_favorites
-                null -> R.string.removed_from_favorites
-            }
-
-            Toaster.s(
-                "\"$mTitle - $mArtist\" ${context.getString(messageId)}"
-            )
-        } else {
-            CoroutineScope(Dispatchers.IO).launch {
-                addToYtLikedSong(mediaItem)
-            }
+        CoroutineScope( Dispatchers.IO ).launch {
+            YouTubeSync.toggleSongLike( context, mediaItem )
         }
     }
 

@@ -30,7 +30,6 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,7 +62,6 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.BackgroundProgress
@@ -73,12 +71,10 @@ import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
@@ -88,8 +84,6 @@ import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isExplicit
-import it.fast4x.rimusic.utils.isNetworkConnected
-import it.fast4x.rimusic.utils.mediaItemToggleLike
 import it.fast4x.rimusic.utils.miniPlayerTypeKey
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
@@ -102,6 +96,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
+import me.knighthat.sync.YouTubeSync
 import me.knighthat.utils.Toaster
 import kotlin.math.absoluteValue
 
@@ -169,34 +164,27 @@ fun MiniPlayer(
         MiniPlayerType.Modern
     )
 
-    var updateLike by rememberSaveable { mutableStateOf(false) }
-
-    LaunchedEffect(updateLike) {
-        if (updateLike) {
-            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                Toaster.noInternet()
-            } else if (!isYouTubeSyncEnabled()){
-                mediaItemToggleLike(mediaItem)
-                if ( isSongLiked )
-                    Toaster.n( R.string.removed_from_favorites )
-                else
-                    Toaster.n( R.string.added_to_favorites )
-            } else {
-                CoroutineScope(Dispatchers.IO).launch {
-                    addToYtLikedSong(mediaItem)
-                }
-            }
-            updateLike = false
+    fun toggleLike() {
+        CoroutineScope( Dispatchers.IO ).launch {
+            YouTubeSync.toggleSongLike( context, mediaItem )
         }
     }
 
     val positionAndDuration by binder.player.positionAndDurationState()
 
-
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.StartToEnd) if (miniPlayerType == MiniPlayerType.Essential) {updateLike = true;hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)} else {binder.player.seekToPrevious();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
-            else if (value == SwipeToDismissBoxValue.EndToStart) {binder.player.seekToNext();hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)}
+            if (value == SwipeToDismissBoxValue.StartToEnd)
+                if (miniPlayerType == MiniPlayerType.Essential)
+                    toggleLike()
+                else
+                    binder.player.seekToPrevious()
+            else
+                if (value == SwipeToDismissBoxValue.EndToStart)
+                    binder.player.seekToNext()
+
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+
             return@rememberSwipeToDismissBoxState false
         }
     )
@@ -447,9 +435,7 @@ fun MiniPlayer(
                  it.fast4x.rimusic.ui.components.themed.IconButton(
                      icon = if( isSongLiked ) getLikedIcon() else getUnlikedIcon(),
                      color = colorPalette().favoritesIcon,
-                     onClick = {
-                         updateLike = true
-                     },
+                     onClick = ::toggleLike,
                      modifier = Modifier
                          .rotate(rotationAngle)
                          .padding(horizontal = 2.dp, vertical = 8.dp)
