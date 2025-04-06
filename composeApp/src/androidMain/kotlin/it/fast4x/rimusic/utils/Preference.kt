@@ -31,7 +31,7 @@ object Preference {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sort order">
-    val HOME_SONGS_SORT_ORDER = Key( "HomeSongsSortBy", SortOrder.Ascending )
+    val HOME_SONGS_SORT_ORDER = Key( "HomeSongsSortOrder", SortOrder.Ascending )
     val HOME_ARTISTS_SORT_ORDER = Key( "PlaylistSongsSortOrder", SortOrder.Ascending )
     val HOME_ALBUM_SORT_ORDER = Key( "PlaylistSongsSortOrder", SortOrder.Ascending )
     val HOME_LIBRARY_SORT_ORDER = Key( "HomeLibrarySortOrder", SortOrder.Ascending )
