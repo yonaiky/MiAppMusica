@@ -64,10 +64,10 @@ interface SongPlaylistMapTable {
      */
     @Query("""
         SELECT DISTINCT S.*
-        FROM SongPlaylistMap smp
-        JOIN Song S ON S.id = smp.songId
-        WHERE smp.playlistId = :playlistId
-        ORDER BY S.ROWID
+        FROM SongPlaylistMap SPM
+        JOIN Song S ON S.id = SPM.songId
+        WHERE SPM.playlistId = :playlistId
+        ORDER BY SPM.ROWID
         LIMIT :limit
     """)
     fun allSongsOf( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
