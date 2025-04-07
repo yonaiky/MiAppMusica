@@ -49,6 +49,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.navigation.NavController
@@ -81,17 +82,17 @@ import it.fast4x.rimusic.utils.PositionLock
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
-import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enqueue
+import it.fast4x.rimusic.utils.findMediaItemIndexById
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
+import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
-import it.fast4x.rimusic.utils.windows
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.ItemSelector
@@ -122,20 +123,17 @@ fun Queue(
     val binder = LocalPlayerServiceBinder.current
     val player = binder?.player ?: return
 
-    // Settings
-    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-
     val rippleIndication = ripple(bounded = false)
 
     Box( Modifier.fillMaxSize() ) {
         var items by persist(
             tag = "queue/songs",
-            player.currentTimeline.windows.map { it.mediaItem.asSong }
+            player.currentTimeline.mediaItems.map( MediaItem::asSong )
         )
         player.DisposableListener {
             object : Player.Listener {
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
-                    items = timeline.windows.map { it.mediaItem.asSong }
+                    items = player.currentTimeline.mediaItems.map( MediaItem::asSong )
                 }
             }
         }
@@ -291,9 +289,20 @@ fun Queue(
                                     )
                             },
                             onRemoveFromQueue = {
-                                player.removeMediaItem(index)
+                                /*
+                                     Compose gotcha here, variables passed into this
+                                     block will be held through recomposition.
+
+                                     Meaning, if index at initialization is 0
+                                     then 0 will stay here through recomposition.
+
+                                     To bypass it, pass another function that requires
+                                     computation to extract data.
+                                 */
+                                val actualIndex = player.findMediaItemIndexById( song.id )
+                                player.removeMediaItem( actualIndex )
                                 Toaster.s(
-                                    "${context.resources.getString(R.string.deleted)} ${song.title}"
+                                    "${context.resources.getString(R.string.deleted)} ${song.cleanTitle()}"
                                 )
                             },
                             onEnqueue = {
