@@ -1765,7 +1765,9 @@ class PlayerServiceModern : MediaLibraryService(),
                     val songs = if (filterArtist.isEmpty()) it.process()
                     else it.process().filter { song -> song.mediaMetadata.artist == filterArtist }
 
-                    songs.forEach( Database::insertIgnore )
+                    Database.asyncTransaction {
+                        songs.forEach( ::insertIgnore )
+                    }
 
                     if (justAdd) {
                         player.addMediaItems(songs.drop(1))
