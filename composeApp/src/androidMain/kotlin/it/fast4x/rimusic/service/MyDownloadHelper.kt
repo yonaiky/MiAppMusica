@@ -25,8 +25,11 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongEntity
+import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.utils.DownloadSyncedLyrics
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioQualityFormatKey
 import it.fast4x.rimusic.utils.autoDownloadSongKey
@@ -53,6 +56,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.concurrent.Executors
 import kotlin.io.path.createTempDirectory
@@ -233,6 +237,11 @@ object MyDownloadHelper {
 
     fun addDownload(context: Context, mediaItem: MediaItem) {
         if (mediaItem.isLocal) return
+
+        if( !isNetworkConnected( context ) ) {
+            Toaster.noInternet()
+            return
+        }
 
         val downloadRequest = DownloadRequest
             .Builder(
