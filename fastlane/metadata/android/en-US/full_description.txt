@@ -8,7 +8,7 @@
   <li>Friendly designs</li>
   <li>Cache or download songs for offline playback</li>
   <li>Background playback</li>
-  <li>Statistics and reports (stored and process locally)</li>
+  <li>Statistics and reports (stored and processed locally)</li>
   <li>Various audio visualizers (some require mic permission, but disabled by default)</li>
   <li>Sleep timer</li>
   <li>Audio control: playback speed, pitch, normalization, skip silence</li>
