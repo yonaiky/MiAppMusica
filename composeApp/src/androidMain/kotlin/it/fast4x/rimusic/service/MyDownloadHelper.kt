@@ -341,5 +341,15 @@ object MyDownloadHelper {
         }
     }
 
+    fun handleDownload(context: Context, song: Song, removeIfDownloaded: Boolean = false ) {
+        if( song.isLocal ) return
 
+        val isDownloaded =
+            downloads.value.values.any{ it.state == Download.STATE_COMPLETED && it.request.id == song.id }
+
+        if( isDownloaded && removeIfDownloaded )
+            removeDownload( context, song.asMediaItem )
+        else if( !isDownloaded )
+            addDownload( context, song.asMediaItem )
+    }
 }
