@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
+import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastMap
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -32,7 +34,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_CACHED
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_DOWNLOADED
@@ -450,60 +451,45 @@ class MediaLibrarySessionCallback @Inject constructor(
             PlayerServiceModern.PLAYLIST -> {
                 val songId = path.getOrNull(2) ?: return@future defaultResult
                 val playlistId = path.getOrNull(1) ?: return@future defaultResult
-                val songs = when (playlistId) {
-                    ID_FAVORITES -> database.songTable.allFavorites().map{  list ->
-                        list.map { SongEntity(it) }.reversed()
-                    }
+                val songs = when ( playlistId ) {
+                    ID_FAVORITES -> database.songTable.allFavorites().map { it.reversed() }
                     ID_CACHED -> database.formatTable
                                          .allWithSongs()
                                          .map { list ->
-                                             list.filter {
+                                             list.fastFilter {
                                                      val contentLength = it.format.contentLength
                                                      contentLength != null && binder.cache.isCached( it.song.id, 0L, contentLength )
                                                  }
-                                                 .map { SongEntity(it.song) }
                                                  .reversed()
+                                                 .fastMap( FormatWithSong::song )
                                          }
-                    ID_TOP ->
-                        database.eventTable
-                                .findSongsMostPlayedBetween(
-                                    from = 0,
-                                    limit = context.preferences
-                                                   .getEnum( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
-                                                   .toInt()
-                                )
-                                .map { list ->
-                                    list.map { SongEntity(it) }
-                                }
-                    ID_ONDEVICE -> database.songTable.allOnDevice().map { list ->
-                        list.map { SongEntity(it) }
-                    }
+                    ID_TOP -> database.eventTable
+                                      // Already in DESC order, no need to reverse
+                                      .findSongsMostPlayedBetween(
+                                          from = 0,
+                                          limit = context.preferences
+                                                         .getEnum( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
+                                                         .toInt()
+                                      )
+                    ID_ONDEVICE -> database.songTable.allOnDevice()
                     ID_DOWNLOADED -> {
                         val downloads = downloadHelper.downloads.value
                         database.songTable
                                 .all( excludeHidden = false )
-                                .flowOn( Dispatchers.IO )
                                 .map { songs ->
-                                    songs.filter {
-                                            downloads[it.id]?.state == Download.STATE_COMPLETED
-                                        }
-                                        .sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
-                                        .map{ SongEntity(it) }
+                                    songs.fastFilter {
+                                             downloads[it.id]?.state == Download.STATE_COMPLETED
+                                         }
+                                         .sortedByDescending { downloads[it.id]?.updateTimeMs ?: 0L }
                                 }
                     }
 
                     else -> database.songPlaylistMapTable.allSongsOf( playlistId.toLong() )
-                        // TODO temporary
-                        .map { list ->
-                            list.map {
-                                SongEntity(song = it)
-                            }
-                        }
                 }.first()
 
                 MediaSession.MediaItemsWithStartPosition(
-                    songs.map { it.song.toMediaItem() },
-                    songs.indexOfFirst { it.song.id == songId }.takeIf { it != -1 } ?: 0,
+                    songs.map { it.toMediaItem() },
+                    songs.indexOfFirst { it.id == songId }.coerceAtLeast( 0 ),
                     startPositionMs
                 )
             }
