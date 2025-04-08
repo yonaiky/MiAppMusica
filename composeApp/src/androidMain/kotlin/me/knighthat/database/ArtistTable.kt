@@ -110,6 +110,18 @@ interface ArtistTable {
     fun insertIgnore( artist: Artist )
 
     /**
+     * Attempt to write the list of [Artist] to database.
+     *
+     * If record exist (determined by its primary key),
+     * existing record's columns will be replaced
+     * by provided data.
+     *
+     * @param artists list of [Artist] to insert to database
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertIgnore( artists: List<Artist> )
+
+    /**
      * Attempt to write [artist] into database.
      *
      * If [artist] exist (determined by its primary key),

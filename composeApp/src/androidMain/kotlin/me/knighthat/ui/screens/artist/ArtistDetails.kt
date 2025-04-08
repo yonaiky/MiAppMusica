@@ -52,6 +52,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import coil.compose.AsyncImagePainter
+import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -70,6 +71,8 @@ import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.items.AlbumItem
+import it.fast4x.rimusic.ui.items.ArtistItem
+import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
@@ -113,7 +116,9 @@ fun ArtistDetails(
     thumbnailPainter: AsyncImagePainter,
     description: String,
     albums: List<Album>,
-    singles: List<Album>
+    singles: List<Album>,
+    featuredOn: List<Innertube.PlaylistItem>,
+    fansMightAlsoLike: List<Artist>
 ) {
     artist ?: return
 
@@ -377,6 +382,60 @@ fun ArtistDetails(
                                 isYoutubeAlbum = album.isYoutubeAlbum,
                                 modifier = Modifier.clickable {
                                     navController.navigate("${NavRoutes.album.name}/${album.id}")
+                                }
+                            )
+                        }
+                    }
+                }
+
+            if( featuredOn.isNotEmpty() )
+                item( "featured_on" ) {
+                    BasicText(
+                        text = stringResource( R.string.artist_featured_on ),
+                        style = typography().m.semiBold.align( TextAlign.Start ),
+                        modifier = sectionTextModifier
+                    )
+
+                    LazyRow {
+                        items(
+                            items = featuredOn,
+                            key = Innertube.PlaylistItem::key
+                        ) { playlist ->
+                            PlaylistItem(
+                                playlist = playlist,
+                                alternative = true,
+                                thumbnailSizePx = albumThumbnailSizePx,
+                                thumbnailSizeDp = albumThumbnailSizeDp,
+                                disableScrollingText = disableScrollingText,
+                                modifier = Modifier.clickable {
+                                    navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
+                                }
+                            )
+                        }
+                    }
+                }
+
+            if( fansMightAlsoLike.isNotEmpty() )
+                item( "fans_might_also_like" ) {
+                    BasicText(
+                        text = stringResource( R.string.artist_fans_might_also_like ),
+                        style = typography().m.semiBold.align( TextAlign.Start ),
+                        modifier = sectionTextModifier
+                    )
+
+                    LazyRow {
+                        items(
+                            items = fansMightAlsoLike,
+                            key = Artist::id
+                        ) { artist ->
+                            ArtistItem(
+                                artist = artist,
+                                alternative = true,
+                                thumbnailSizePx = albumThumbnailSizePx,
+                                thumbnailSizeDp = albumThumbnailSizeDp,
+                                disableScrollingText = disableScrollingText,
+                                modifier = Modifier.clickable {
+                                    navController.navigate("${NavRoutes.artist.name}/${artist.id}")
                                 }
                             )
                         }

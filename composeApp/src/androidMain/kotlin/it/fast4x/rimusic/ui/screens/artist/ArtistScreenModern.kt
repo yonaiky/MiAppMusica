@@ -58,7 +58,6 @@ import kotlinx.coroutines.flow.flowOn
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.ui.screens.artist.ArtistDetails
 import me.knighthat.utils.PropUtils
-import timber.log.Timber
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -83,13 +82,19 @@ fun ArtistScreenModern(
                 .collect { artist = it }
     }
 
+    var description by remember { mutableStateOf( "" ) }
     var albums by remember {
         mutableStateOf( emptyList<Album>() )
     }
     var singles by remember {
         mutableStateOf( emptyList<Album>() )
     }
-    var description by remember { mutableStateOf( "" ) }
+    var featuredOn by remember {
+        mutableStateOf( emptyList<Innertube.PlaylistItem>() )
+    }
+    var fansMightAlsoLike by remember {
+        mutableStateOf( emptyList<Artist>() )
+    }
 
     LaunchedEffect( Unit ) {
         YtMusic.getArtistPage( browseId )
@@ -97,13 +102,16 @@ fun ArtistScreenModern(
 
                 // Adding singles to database is currently unsupported
                 online.sections
-                      .firstOrNull { it.title.startsWith( "Singles", true ) }
+                      .getOrNull( 2 )
                       ?.items
                       ?.map { (it as Innertube.AlbumItem).asAlbum }
-                      ?.let {
-                          Timber.tag("album_screen").d("Online singles size: ${it.size}")
-                          singles = it
-                      }
+                      ?.let { singles = it }
+
+                online.sections
+                      .getOrNull( 3 )
+                      ?.items
+                      ?.map { it as Innertube.PlaylistItem }
+                      ?.let { featuredOn = it }
 
                 online.description?.let { description = it }
 
@@ -118,24 +126,38 @@ fun ArtistScreenModern(
                     ))
 
                     online.sections
-                          .firstOrNull { it.title.startsWith( "Songs", true ) }
+                          .firstOrNull()
                           ?.items
-                          ?.reversed()        // Albums from YTM are sorted from latest to oldest
+                          ?.reversed()        // Songs from YTM are sorted from latest to oldest
                           ?.map { (it as Innertube.SongItem).asSong }
                           ?.also( songTable::upsert )
                           ?.map { SongArtistMap( it.id, browseId ) }
                           ?.also( songArtistMapTable::upsert )
 
                     online.sections
-                          .firstOrNull { it.title.startsWith( "Albums", true ) }
+                          .getOrNull( 1 )
                           ?.items
                           ?.reversed()        // Albums from YTM are sorted from latest to oldest
                           ?.map { (it as Innertube.AlbumItem).asAlbum }
                           ?.also {
-                              Timber.tag("album_screen").d("Online albums size: ${it.size}")
                               albums = it
                               albumTable.upsert( it )
                           }
+
+                    online.sections
+                          .getOrNull( 4 )
+                          ?.items
+                          ?.map {
+                              Artist(
+                                  id = it.key,
+                                  name = it.title,
+                                  thumbnailUrl = it.thumbnail?.url,
+                                  timestamp = System.currentTimeMillis(),
+                                  isYoutubeArtist = true
+                              )
+                          }
+                          ?.also( artistTable::insertIgnore )
+                          ?.let { fansMightAlsoLike = it }
                 }
             }
     }
@@ -230,7 +252,9 @@ fun ArtistScreenModern(
                                 thumbnailPainter = thumbnailPainter,
                                 description = description,
                                 albums = albums,
-                                singles = singles
+                                singles = singles,
+                                featuredOn = featuredOn,
+                                fansMightAlsoLike = fansMightAlsoLike
                             )
                         }
                     }

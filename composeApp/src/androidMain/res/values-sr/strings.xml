@@ -958,4 +958,6 @@
     <string name="relative_listening_time">Relative Listening Time</string>
     <string name="added_to_dislikes">Disliked %s</string>
     <string name="removed_from_dislikes">Removed %s from dislikes</string>
+    <string name="artist_featured_on">Featured on</string>
+    <string name="artist_fans_might_also_like">Fans might also like</string>
 </resources>
