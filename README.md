@@ -3,6 +3,10 @@
   <p>
     <b>Kreate</b> is a <a href="https://github.com/fast4x/RiMusic">RiMusic</a> folk with performance in mind
   </p>
+    
+  <br>
+
+  <a title="Crowdin" target="_blank" href="https://translate.kreate.knighthat.me/project/kreate"><img src="https://badges.crowdin.net/kreate/localized.svg"></a>
 </div>
 
 
@@ -115,6 +119,8 @@ For more details, check out [this article](https://kreate.knighthat.me/usr/how-t
 - **Ukrainian:** thanks to [Avin](https://crowdin.com/profile/avinateachip), [Michael Müller](https://crowdin.com/profile/xqzme1337), [NiXT0y](https://crowdin.com/profile/nixt0y), [Crayz310](https://github.com/Crayz310) 
 - **Vietnamese:** thanks to [teaminh](https://crowdin.com/profile/teaminh)
 
+> Don't see your langague here? [Request one](https://translate.kreate.knighthat.me/project/kreate) now.
+
 
 # 🤝 Contributing
 
@@ -128,7 +134,9 @@ For more details, please refer to [the documentation](https://kreate.knighthat.m
 
 ## To translate app
 
-To **translate** or **improve a translation**, please wait for an option to be available in near future.
+To **translate** or **improve a translation**, **fix typo**, or to **request new language**. 
+
+[![Translated with Crowdin](https://badges.crowdin.net/badge/light/crowdin-on-dark.png)](https://translate.kreate.knighthat.me/project/kreate)
 
 ## To write documentation
 
