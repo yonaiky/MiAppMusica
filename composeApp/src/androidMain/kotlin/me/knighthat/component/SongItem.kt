@@ -23,10 +23,8 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +50,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
@@ -63,14 +62,12 @@ import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
-import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.isNowPlaying
-import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.rememberPreference
@@ -306,33 +303,17 @@ fun SongItem(
 
                 // Show download icon when song is NOT local
                 if( !song.isLocal ) {
-                    // Temporal cache, acquire by listening to the song
-                    var cacheState by remember {
-                        mutableStateOf(DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED)
-                    }
-                    cacheState = downloadedStateMedia( song.id )
-                    // "Permanent" cache, requires explicit interaction to start downloading
-                    var downloadState by remember {
-                        mutableIntStateOf( Download.STATE_STOPPED )
-                    }
-                    downloadState = getDownloadState( song.id )
+                    val cacheState = downloadedStateMedia( song.id )
+                    val downloadState = getDownloadState( song.id )
 
-                    val icon =when( downloadState ) {
-                        Download.STATE_DOWNLOADING,
-                        Download.STATE_REMOVING     -> R.drawable.download_progress
-
+                    val icon = when( downloadState ) {
+                        Download.STATE_DOWNLOADING  -> R.drawable.download_progress
+                        Download.STATE_REMOVING     -> R.drawable.download
                         else                        -> cacheState.iconId
                     }
                     val color = when( cacheState ) {
                         DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED -> colorPalette().textDisabled
-
                         else                                          -> colorPalette().text
-                    }
-                    val isDownloaded = when( cacheState ) {
-                        DownloadedStateMedia.CACHED_AND_DOWNLOADED,
-                        DownloadedStateMedia.DOWNLOADED             -> true
-
-                        else                                        -> false
                     }
 
                     IconButton(
@@ -340,19 +321,13 @@ fun SongItem(
                         color = color,
                         modifier = Modifier.size( 20.dp ),
                         onClick = {
-                            val mediaItem = song.asMediaItem
-
                             // TODO: Confirmation dialog upon delete
-                            binder?.cache?.removeResource( mediaItem.mediaId )
+                            binder?.cache?.removeResource( song.id )
                             Database.asyncTransaction {
-                                formatTable.deleteBySongId( mediaItem.mediaId )
+                                formatTable.deleteBySongId( song.id )
                             }
 
-                            manageDownload(
-                                context = context,
-                                mediaItem = mediaItem,
-                                downloadState = isDownloaded
-                            )
+                            MyDownloadHelper.handleDownload( context, song, true )
                         }
                     )
                 }
