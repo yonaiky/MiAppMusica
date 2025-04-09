@@ -955,6 +955,7 @@
     <string name="title_import_migration_file">Import migration file</string>
     <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
     <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>
+    <string name="relative_listening_time">Relative Listening Time</string>
     <string name="added_to_dislikes">Disliked %s</string>
     <string name="removed_from_dislikes">Removed %s from dislikes</string>
     <string name="artist_featured_on">Featured on</string>
