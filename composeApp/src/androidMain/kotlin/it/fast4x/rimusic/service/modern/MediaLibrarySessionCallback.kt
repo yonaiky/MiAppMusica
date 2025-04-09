@@ -33,6 +33,7 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
+import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_CACHED
@@ -216,11 +217,16 @@ class MediaLibrarySessionCallback @Inject constructor(
                     )
                 )
 
-                PlayerServiceModern.SONG -> database
-                    .songTable
-                    .all( excludeHidden = false )
-                    .first()
-                    .map { it.toMediaItem(parentId) }
+                PlayerServiceModern.SONG -> database.eventTable
+                                                    .findSongsMostPlayedBetween( StatisticsType.OneMonth.timeStampInMillis() )
+                                                    .first()
+                                                    .ifEmpty {
+                                                        // Only here to avoid empty list
+                                                        database.eventTable
+                                                                .findSongsMostPlayedBetween( 0L )
+                                                                .first()
+                                                    }
+                                                    .map { it.toMediaItem(parentId) }
 
                 PlayerServiceModern.ARTIST -> database.artistTable.allFollowing().first().map { artist ->
                     browsableMediaItem(
