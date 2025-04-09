@@ -96,7 +96,6 @@ import it.fast4x.rimusic.models.PersistentQueue
 import it.fast4x.rimusic.models.PersistentSong
 import it.fast4x.rimusic.models.QueuedMediaItem
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
 import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
@@ -2058,10 +2057,6 @@ class PlayerService : InvincibleService(),
                 }
             }
         }
-
-        fun isCached(song: SongEntity) =
-            song.contentLength?.let { cache.isCached(song.song.id, 0L, it) } ?: false
-
     }
 
     private inner class SessionCallback(private val player: Player) :
