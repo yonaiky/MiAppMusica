@@ -1,26 +1,12 @@
 package it.fast4x.innertube.models
 
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.headers
-import io.ktor.client.utils.EmptyContent.contentType
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import io.ktor.http.headers
 import io.ktor.http.parameters
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.Innertube.cookie
-import it.fast4x.innertube.Innertube.cookieMap
-import it.fast4x.innertube.clients.YouTubeClient.Companion.WEB_REMIX
 import it.fast4x.innertube.clients.YouTubeLocale
 import it.fast4x.innertube.utils.LocalePreferences
-import it.fast4x.innertube.utils.parseCookieString
-import it.fast4x.innertube.utils.sha1
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 
 @Serializable
 data class Context(
@@ -37,8 +23,6 @@ data class Context(
         val platform: String? = null,
         val hl: String? = "en",
         val gl: String? = "US",
-        //val hl: String = Locale.getDefault().toLanguageTag(), //"en",
-        //val hl: String = Innertube.localeHl,
         val visitorData: String? = null, // = Innertube.DEFAULT_VISITOR_DATA,
         val androidSdkVersion: Int? = null,
         val userAgent: String? = null,
@@ -49,8 +33,6 @@ data class Context(
         val osVersion: String? = null,
         val acceptHeader: String? = null,
         val xClientName: Int? = null,
-        //val timeZone: String? = "UTC",
-        //val utcOffsetMinutes: Int? = 0,
         @Transient
         val api_key: String? = null
     ) {
@@ -111,7 +93,7 @@ data class Context(
 
     companion object {
 
-        const val USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0,gzip(gfe)"
+        const val USER_AGENT_WEB = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.3"
         private const val USER_AGENT_ANDROID = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Mobile Safari/537.36"
         private const val USER_AGENT_ANDROID_MUSIC = "com.google.android.youtube/19.29.1  (Linux; U; Android 11) gzip"
         private const val USER_AGENT_PLAYSTATION = "Mozilla/5.0 (PlayStation; PlayStation 4/12.00) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15"
@@ -124,7 +106,7 @@ data class Context(
         val DefaultWeb = Context(
             client = Client(
                 clientName = "WEB_REMIX",
-                clientVersion = "1.20250122.01.00",
+                clientVersion = "1.20250407.01.00",
                 platform = "DESKTOP",
                 //clientVersion = "1.20220606.03.00",
                 //clientVersion = "1.20230731.00.00",
@@ -136,44 +118,10 @@ data class Context(
             )
         )
 
-
-        //val hl = if (LocalePreferences.preference?.useLocale == true) LocalePreferences.preference!!.hl else ""
         val hl = LocalePreferences.preference?.hl
-        //val gl = LocalePreferences.preference?.gl
-
 
         val DefaultWebWithLocale = DefaultWeb.copy(
             client = DefaultWeb.client.copy(hl = hl)
-        )
-
-
-        val DefaultWebCreator = Context(
-            client = Client(
-                clientName = "WEB_CREATOR",
-                clientVersion = "1.20240918.03.00",
-                userAgent = USER_AGENT_WEB,
-                referer = REFERER_YOUTUBE_MUSIC,
-                api_key = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
-            )
-        )
-
-
-
-        val DefaultAndroid = Context(
-            client = Client(
-                clientName = "ANDROID_MUSIC",
-                clientVersion = "7.31.51",
-                //clientVersion = "6.33.52",
-                //clientVersion = "5.28.1",
-                //clientVersion = "5.22.1",
-                androidSdkVersion = 31,
-                platform = "MOBILE",
-                userAgent = USER_AGENT_ANDROID_MUSIC,
-                referer = REFERER_YOUTUBE_MUSIC,
-                visitorData = Innertube.visitorData,
-                api_key = "AIzaSyAOghZGza2MQSZkY_zfZ370N-PUdXEo8AI",
-                xClientName = 21
-            )
         )
 
         val DefaultIOS = Context(
@@ -190,17 +138,5 @@ data class Context(
                 xClientName = 5
             )
         )
-
-        val DefaultTVEmbedded = Context(
-            client = Client(
-                clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
-                clientVersion = "2.0",
-                xClientName = 85,
-                api_key = "AIzaSyDCU8hByM-4DrUqRUYnGn-3llEO78bcxq8",
-                platform = "TV",
-                userAgent = USER_AGENT_PLAYSTATION,
-            )
-        )
-
     }
 }
