@@ -721,8 +721,10 @@ fun HomeQuickPicks(
                                     thumbnailSizeDp = playlistThumbnailSizeDp,
                                     alternative = true,
                                     showSongsCount = false,
-                                    modifier = Modifier
-                                        .clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                    isYoutubePlaylist = true,
+                                    modifier = Modifier.clickable {
+                                        navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
+                                    },
                                     disableScrollingText = disableScrollingText
                                 )
                             }
