@@ -237,12 +237,14 @@ fun AppNavigation(
                     name = "id",
                     builder = {
                         type = NavType.StringType
-                        defaultValue = ""
                     }
                 ),
                 navArgument(
                     name = "params",
-                    builder = { type = NavType.StringType },
+                    builder = {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
                 )
             )
         ) { navBackStackEntry ->
