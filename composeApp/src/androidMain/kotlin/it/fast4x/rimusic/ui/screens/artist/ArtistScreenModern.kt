@@ -35,28 +35,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastAll
+import androidx.compose.ui.util.fastFirstOrNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.screens.artist.ArtistDetails
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.PlayerPosition
 import it.fast4x.rimusic.enums.TransitionEffect
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
-import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.ui.components.navigation.header.AppHeader
-import it.fast4x.rimusic.utils.asAlbum
-import it.fast4x.rimusic.utils.asSong
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.playerPositionKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.transitionEffectKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import me.knighthat.coil.ImageCacheFactory
-import me.knighthat.ui.screens.artist.ArtistDetails
 import me.knighthat.utils.PropUtils
 
 @UnstableApi
@@ -74,95 +74,45 @@ fun ArtistScreenModern(
     val transitionEffect by rememberPreference( transitionEffectKey, TransitionEffect.Scale )
     val playerPosition by rememberPreference( playerPositionKey, PlayerPosition.Bottom )
 
-    var artist: Artist? by remember { mutableStateOf( null ) }
+    var localArtist: Artist? by remember { mutableStateOf( null ) }
     LaunchedEffect( Unit ) {
         Database.artistTable
                 .findById( browseId )
                 .flowOn( Dispatchers.IO )
-                .collect { artist = it }
+                .collect { localArtist = it }
     }
-
-    var description by remember { mutableStateOf( "" ) }
-    var albums by remember {
-        mutableStateOf( emptyList<Album>() )
-    }
-    var singles by remember {
-        mutableStateOf( emptyList<Album>() )
-    }
-    var featuredOn by remember {
-        mutableStateOf( emptyList<Innertube.PlaylistItem>() )
-    }
-    var fansMightAlsoLike by remember {
-        mutableStateOf( emptyList<Artist>() )
-    }
+    var artistPage: ArtistPage? by remember { mutableStateOf( null ) }
 
     LaunchedEffect( Unit ) {
         YtMusic.getArtistPage( browseId )
-            .onSuccess { online ->
+               .onSuccess { online ->
+                   artistPage = online
 
-                // Adding singles to database is currently unsupported
-                online.sections
-                      .getOrNull( 2 )
-                      ?.items
-                      ?.map { (it as Innertube.AlbumItem).asAlbum }
-                      ?.let { singles = it }
+                   Database.asyncTransaction {
+                       val onlineArtist = Artist(
+                           id = browseId,
+                           name =  PropUtils.retainIfModified( localArtist?.name, online.artist.title ),
+                           thumbnailUrl = PropUtils.retainIfModified( localArtist?.thumbnailUrl, online.artist.thumbnail?.url ),
+                           timestamp = localArtist?.timestamp ?: System.currentTimeMillis(),
+                           bookmarkedAt = localArtist?.bookmarkedAt,
+                           isYoutubeArtist = localArtist?.isYoutubeArtist == true
+                       )
+                       artistTable.upsert( onlineArtist )
 
-                online.sections
-                      .getOrNull( 3 )
-                      ?.items
-                      ?.map { it as Innertube.PlaylistItem }
-                      ?.let { featuredOn = it }
-
-                online.description?.let { description = it }
-
-                Database.asyncTransaction {
-                    artistTable.upsert(Artist(
-                        id = browseId,
-                        name =  PropUtils.retainIfModified( artist?.name, online.artist.title ),
-                        thumbnailUrl = PropUtils.retainIfModified( artist?.thumbnailUrl, online.artist.thumbnail?.url ),
-                        timestamp = artist?.timestamp ?: System.currentTimeMillis(),
-                        bookmarkedAt = artist?.bookmarkedAt,
-                        isYoutubeArtist = artist?.isYoutubeArtist == true
-                    ))
-
-                    online.sections
-                          .firstOrNull()
-                          ?.items
-                          ?.reversed()        // Songs from YTM are sorted from latest to oldest
-                          ?.map { (it as Innertube.SongItem).asSong }
-                          ?.also( songTable::upsert )
-                          ?.map { SongArtistMap( it.id, browseId ) }
-                          ?.also( songArtistMapTable::upsert )
-
-                    online.sections
-                          .getOrNull( 1 )
-                          ?.items
-                          ?.reversed()        // Albums from YTM are sorted from latest to oldest
-                          ?.map { (it as Innertube.AlbumItem).asAlbum }
-                          ?.also {
-                              albums = it
-                              albumTable.upsert( it )
-                          }
-
-                    online.sections
-                          .getOrNull( 4 )
-                          ?.items
-                          ?.map {
-                              Artist(
-                                  id = it.key,
-                                  name = it.title,
-                                  thumbnailUrl = it.thumbnail?.url,
-                                  timestamp = System.currentTimeMillis(),
-                                  isYoutubeArtist = true
-                              )
-                          }
-                          ?.also( artistTable::insertIgnore )
-                          ?.let { fansMightAlsoLike = it }
-                }
-            }
+                       online.sections
+                             .fastFirstOrNull { section ->
+                                 section.items.fastAll { it is Innertube.SongItem }
+                             }
+                             ?.items
+                             ?.map { (it as Innertube.SongItem).asMediaItem }
+                             ?.also {
+                                 mapIgnore( onlineArtist, *it.toTypedArray() )
+                             }
+                   }
+               }
     }
 
-    val thumbnailPainter = ImageCacheFactory.Painter( artist?.thumbnailUrl )
+    val thumbnailPainter = ImageCacheFactory.Painter( localArtist?.thumbnailUrl )
 
     androidx.compose.material3.Scaffold(
         modifier = Modifier,
@@ -245,17 +195,7 @@ fun ArtistScreenModern(
                 ) { currentTabIndex ->
                     saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
                         when (currentTabIndex) {
-                            0 -> ArtistDetails(
-                                navController = navController,
-                                browseId = browseId,
-                                artist = artist,
-                                thumbnailPainter = thumbnailPainter,
-                                description = description,
-                                albums = albums,
-                                singles = singles,
-                                featuredOn = featuredOn,
-                                fansMightAlsoLike = fansMightAlsoLike
-                            )
+                            0 -> ArtistDetails( navController, localArtist, artistPage, thumbnailPainter )
                         }
                     }
                 }

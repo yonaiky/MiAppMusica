@@ -1,14 +1,13 @@
-package me.knighthat.ui.screens.artist
+package app.kreate.android.screens.artist
 
 import android.content.Intent
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,24 +22,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -48,12 +43,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastAll
+import androidx.compose.ui.util.fastFirstOrNull
+import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import coil.compose.AsyncImagePainter
 import it.fast4x.innertube.Innertube
-import it.fast4x.rimusic.Database
+import it.fast4x.innertube.requests.ArtistPage
+import it.fast4x.innertube.requests.ArtistSection
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
@@ -73,12 +72,13 @@ import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
+import it.fast4x.rimusic.utils.asAlbum
 import it.fast4x.rimusic.utils.asMediaItem
+import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -92,7 +92,6 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
@@ -111,16 +110,12 @@ import me.knighthat.component.ui.screens.album.Translate
 @Composable
 fun ArtistDetails(
     navController: NavController,
-    browseId: String,
-    artist: Artist?,
+    localArtist: Artist?,
+    artistPage: ArtistPage?,
     thumbnailPainter: AsyncImagePainter,
-    description: String,
-    albums: List<Album>,
-    singles: List<Album>,
-    featuredOn: List<Innertube.PlaylistItem>,
-    fansMightAlsoLike: List<Artist>
 ) {
-    artist ?: return
+    localArtist ?: return
+    artistPage ?: return
 
     // Essentials
     val context = LocalContext.current
@@ -128,32 +123,37 @@ fun ArtistDetails(
     val lazyListState = rememberLazyListState()
 
     // Settings
-    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
 
     val sectionTextModifier = Modifier
-        .padding(horizontal = 16.dp)
-        .padding(top = 24.dp, bottom = 8.dp)
+        .padding( horizontal = 16.dp )
+        .padding( top = 24.dp, bottom = 8.dp )
     val albumThumbnailSizeDp = 108.dp
     val albumThumbnailSizePx = albumThumbnailSizeDp.px
 
-    var showMoreSongs by rememberSaveable { mutableStateOf( false ) }
-    val songPreviews by remember( showMoreSongs ) {
-        val filterLimit = if( showMoreSongs ) Int.MAX_VALUE else 5
-        Database.songArtistMapTable
-                .allSongsBy( browseId, filterLimit )
-                .distinctUntilChanged()
-    }.collectAsState( emptyList(), Dispatchers.IO )
+    val songs = remember {
+        artistPage.sections
+                  .fastFirstOrNull { section ->
+                      section.items.fastAll { it is Innertube.SongItem }
+                  }
+                  ?.items
+                  ?.map {
+                      (it as Innertube.SongItem).asSong
+                  }
+                  .orEmpty()
+    }
 
+    //<editor-fold defaultstate="collapsed" desc="Buttons">
     val itemSelector = ItemSelector<Song>()
 
-    fun getSongs() = itemSelector.ifEmpty { songPreviews }
+    fun getSongs() = itemSelector.ifEmpty { songs }
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
-    val followButton = FollowButton { artist }
-    val shuffler = SongShuffler( ::getSongs )
-    val downloadAllDialog = DownloadAllSongsDialog( ::getSongs )
-    val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog( ::getSongs )
-    val radio = Radio( ::getSongs )
+    val followButton = FollowButton { localArtist }
+    val shuffler = SongShuffler(::getSongs)
+    val downloadAllDialog = DownloadAllSongsDialog(::getSongs)
+    val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog(::getSongs)
+    val radio = Radio(::getSongs)
     val playNext = PlayNext {
         getMediaItems().let {
             binder?.player?.addNext( it, appContext() )
@@ -170,6 +170,7 @@ fun ArtistDetails(
             itemSelector.isActive = false
         }
     }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Translator">
     val translate = Translate.init()
@@ -185,7 +186,7 @@ fun ArtistDetails(
     DynamicOrientationLayout( thumbnailPainter ) {
         LazyColumn(
             state = lazyListState,
-            userScrollEnabled = songPreviews.isNotEmpty(),
+            userScrollEnabled = artistPage.sections.isNotEmpty(),
             contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
         ) {
             item( "header" ) {
@@ -200,28 +201,37 @@ fun ArtistDetails(
                                                .align( Alignment.Center )
                                                .fadingEdge(
                                                    top = WindowInsets.systemBars
-                                                                     .asPaddingValues()
-                                                                     .calculateTopPadding() + Dimensions.fadeSpacingTop,
+                                                       .asPaddingValues()
+                                                       .calculateTopPadding() + Dimensions.fadeSpacingTop,
                                                    bottom = Dimensions.fadeSpacingBottom
                                                )
                         )
 
-                    AutoResizeText(
-                        text = cleanPrefix( artist?.name ?: "..." ),
-                        style = typography().l.semiBold,
-                        fontSizeRange = FontSizeRange(32.sp, 38.sp),
-                        fontWeight = typography().l.semiBold.fontWeight,
-                        fontFamily = typography().l.semiBold.fontFamily,
-                        color = typography().l.semiBold.color,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.align( Alignment.BottomCenter )
-                                           .padding( horizontal = 30.dp )
-                                           .conditional( !disableScrollingText ) {
-                                               basicMarquee( iterations = Int.MAX_VALUE )
-                                           }
-                    )
+                    Column( Modifier.align( Alignment.BottomCenter ) ) {
+                        AutoResizeText(
+                            text = cleanPrefix( localArtist.name ?: "..." ),
+                            style = typography().l.semiBold,
+                            fontSizeRange = FontSizeRange(32.sp, 38.sp),
+                            fontWeight = typography().l.semiBold.fontWeight,
+                            fontFamily = typography().l.semiBold.fontFamily,
+                            color = typography().l.semiBold.color,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding( horizontal = 30.dp )
+                                               .conditional( !disableScrollingText ) {
+                                                   basicMarquee( iterations = Int.MAX_VALUE )
+                                               }
+                                               .align( Alignment.CenterHorizontally )
+                        )
+
+                        BasicText(
+                            text = artistPage.subscribers.orEmpty(),
+                            style = typography().s.copy( colorPalette().textSecondary ),
+                            modifier = Modifier.align( Alignment.CenterHorizontally )
+                        )
+                    }
+
 
                     HeaderIconButton(
                         icon = R.drawable.share_social,
@@ -230,18 +240,16 @@ fun ArtistDetails(
                         modifier = Modifier.align( Alignment.TopEnd )
                                            .padding( top = 5.dp, end = 5.dp ),
                         onClick = {
-                            artist?.id?.let {
-                                val url = "https://music.youtube.com/channel/$it"
-                                val sendIntent = Intent().apply {
-                                    action = Intent.ACTION_SEND
-                                    type = "text/plain"
-                                    putExtra(Intent.EXTRA_TEXT, url)
-                                }
-
-                                context.startActivity(
-                                    Intent.createChooser( sendIntent, null )
-                                )
+                            val url = "https://music.youtube.com/channel/${localArtist.id}"
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, url)
                             }
+
+                            context.startActivity(
+                                Intent.createChooser( sendIntent, null )
+                            )
                         }
                     )
                 }
@@ -270,79 +278,70 @@ fun ArtistDetails(
                 }
             }
 
-            item( "songsTitle" ) {
-                val rotationAngle by animateFloatAsState(
-                    targetValue = if ( showMoreSongs ) 90f else 0f,
-                    animationSpec = tween(durationMillis = 200), label = ""
-                )
-
+            items(
+                items = artistPage.sections,
+                key = ArtistSection::title
+            ) { section ->
                 Row(
                     verticalAlignment = Alignment.Bottom,
                     modifier = sectionTextModifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = stringResource( R.string.songs ),
+                        text = section.title,
                         style = typography().m.semiBold,
                         modifier = Modifier.weight( 1f )
                     )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        tint = colorPalette().text,
-                        modifier = Modifier.clickable { showMoreSongs = !showMoreSongs }
-                            .rotate( rotationAngle )
-                    )
-                }
-            }
-            // Placeholders while songs are loading
-            if( songPreviews.isEmpty() )
-                items(
-                    count = 5,
-                    key = { index -> "song_placeholders_no$index" }
-                ) { SongItemPlaceholder() }
-            itemsIndexed(
-                items = songPreviews,
-                key = { _, song -> song.id }
-            ) { index, song ->
 
-                SwipeablePlaylistItem(
-                    mediaItem = song.asMediaItem,
-                    onPlayNext = {
-                        binder?.player?.addNext(song.asMediaItem)
+                    if( !section.items.any { it is Innertube.SongItem } )
+                        return@Row
+
+                    section.moreEndpoint?.browseId?.let {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = colorPalette().textSecondary,
+                            modifier = Modifier.clickable {
+                                val path = "$it?params=${section.moreEndpoint?.params}"
+                                navController.navigate("${NavRoutes.playlist.name}/$path")
+                            }
+                        )
                     }
-                ) {
-                    SongItem(
-                        song = song,
-                        itemSelector = itemSelector,
-                        navController = navController,
-                        showThumbnail = true,
-                        onClick = {
-                            binder?.stopRadio()
-                            binder?.player?.forcePlayAtIndex(
-                                songPreviews.map( Song::asMediaItem ),
-                                index
-                            )
-
-                            /*
-                                Due to the small size of checkboxes,
-                                we shouldn't disable [itemSelector]
-                             */
-                        }
-                    )
                 }
-            }
 
-            if( albums.isNotEmpty() )
-                item( "albums" ) {
-                    BasicText(
-                        text = stringResource( R.string.albums ),
-                        style = typography().m.semiBold.align( TextAlign.Start ),
-                        modifier = sectionTextModifier
-                    )
+                if( section.items.fastAll { it is Innertube.SongItem } )
+                    songs.forEachIndexed { index, song ->
+                        SwipeablePlaylistItem(
+                            mediaItem = song.asMediaItem,
+                            onPlayNext = {
+                                binder?.player?.addNext( song.asMediaItem )
+                            }
+                        ) {
+                            SongItem(
+                                song = song,
+                                itemSelector = itemSelector,
+                                navController = navController,
+                                showThumbnail = true,
+                                onClick = {
+                                    binder?.stopRadio()
+                                    binder?.player?.forcePlayAtIndex(
+                                        songs.map( Song::asMediaItem ),
+                                        index
+                                    )
 
+                                    /*
+                                        Due to the small size of checkboxes,
+                                        we shouldn't disable [itemSelector]
+                                     */
+                                }
+                            )
+                        }
+                    }
+
+                // Works on both Albums and Single/EPs
+                if( section.items.fastAll { it is Innertube.AlbumItem } )
                     LazyRow {
                         items(
-                            items = albums,
+                            items = section.items.fastMap { (it as Innertube.AlbumItem).asAlbum },
                             key = Album::id
                         ) { album ->
                             AlbumItem(
@@ -358,47 +357,11 @@ fun ArtistDetails(
                             )
                         }
                     }
-                }
 
-            if( singles.isNotEmpty() )
-                item( "singles" ) {
-                    BasicText(
-                        text = stringResource( R.string.singles ),
-                        style = typography().m.semiBold.align( TextAlign.Start ),
-                        modifier = sectionTextModifier
-                    )
-
+                if( section.items.fastAll { it is Innertube.PlaylistItem } )
                     LazyRow {
                         items(
-                            items = singles,
-                            key = Album::id
-                        ) { album ->
-                            AlbumItem(
-                                album = album,
-                                alternative = true,
-                                thumbnailSizePx = albumThumbnailSizePx,
-                                thumbnailSizeDp = albumThumbnailSizeDp,
-                                disableScrollingText = disableScrollingText,
-                                isYoutubeAlbum = album.isYoutubeAlbum,
-                                modifier = Modifier.clickable {
-                                    navController.navigate("${NavRoutes.album.name}/${album.id}")
-                                }
-                            )
-                        }
-                    }
-                }
-
-            if( featuredOn.isNotEmpty() )
-                item( "featured_on" ) {
-                    BasicText(
-                        text = stringResource( R.string.artist_featured_on ),
-                        style = typography().m.semiBold.align( TextAlign.Start ),
-                        modifier = sectionTextModifier
-                    )
-
-                    LazyRow {
-                        items(
-                            items = featuredOn,
+                            items = section.items.fastMap { it as Innertube.PlaylistItem },
                             key = Innertube.PlaylistItem::key
                         ) { playlist ->
                             PlaylistItem(
@@ -413,20 +376,12 @@ fun ArtistDetails(
                             )
                         }
                     }
-                }
 
-            if( fansMightAlsoLike.isNotEmpty() )
-                item( "fans_might_also_like" ) {
-                    BasicText(
-                        text = stringResource( R.string.artist_fans_might_also_like ),
-                        style = typography().m.semiBold.align( TextAlign.Start ),
-                        modifier = sectionTextModifier
-                    )
-
+                if( section.items.fastAll { it is Innertube.ArtistItem } )
                     LazyRow {
                         items(
-                            items = fansMightAlsoLike,
-                            key = Artist::id
+                            items = section.items.fastMap { it as Innertube.ArtistItem },
+                            key = Innertube.ArtistItem::key
                         ) { artist ->
                             ArtistItem(
                                 artist = artist,
@@ -435,15 +390,16 @@ fun ArtistDetails(
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
                                 modifier = Modifier.clickable {
-                                    navController.navigate("${NavRoutes.artist.name}/${artist.id}")
+                                    navController.navigate("${NavRoutes.artist.name}/${artist.key}")
                                 }
                             )
                         }
                     }
-                }
+            }
 
-            if( description.isNotBlank() )
+            if( !artistPage.description.isNullOrBlank() )
                 item( "description" ) {
+                    val description = artistPage.description.orEmpty()      // orEmpty should not be possible
                     // For some reason adding 2 "\n" makes double quotes appear
                     // on the same level as the last line of text
                     val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
@@ -481,7 +437,7 @@ fun ArtistDetails(
                         }
 
                         if ( translate.isActive ) {
-                            LaunchedEffect(Unit) {
+                            LaunchedEffect( Unit ) {
                                 val result = withContext( Dispatchers.IO ) {
                                     try {
                                         translator.translate(
