@@ -33,15 +33,12 @@ import me.knighthat.utils.Repository
 import me.knighthat.utils.Toaster
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okio.IOException
 import java.net.UnknownHostException
+import java.nio.file.NoSuchFileException
 import java.time.ZonedDateTime
 
 object Updater {
 
-    private val JSON = Json {
-        ignoreUnknownKeys = true
-    }
     private val isUpdatable: Boolean =
         !BuildConfig.DEBUG && !BuildConfig.VERSION_NAME.endsWith("fdroid", true )
 
@@ -64,7 +61,7 @@ object Updater {
         val fileName = "$appName-$buildType.apk"
         return assets.fastFirstOrNull {    // Experimental, revert to firstOrNull if needed
             it.name == fileName
-        } ?: throw IOException( "File $fileName is not available for download!" )
+        } ?: throw NoSuchFileException("")
     }
 
     /**
@@ -82,12 +79,22 @@ object Updater {
         val request = Request.Builder().url( url ).build()
         val response = client.newCall( request ).execute()
 
-        if( response.isSuccessful ) {
-            val resBody = response.body?.string() ?: return@withContext
-
-            val githubRelease = JSON.decodeFromString<GithubRelease>( resBody )
-            build = extractBuild( githubRelease.builds )
+        if( !response.isSuccessful ) {
+            Toaster.e( response.message )
+            return@withContext
         }
+
+        val resBody = response.body?.string()
+        if( resBody.isNullOrBlank() ) {
+            Toaster.i( R.string.info_no_update_available )
+            return@withContext
+        }
+
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
+        val githubRelease = json.decodeFromString<GithubRelease>( resBody )
+        build = extractBuild( githubRelease.builds )
     }
 
     fun checkForUpdate(
@@ -97,7 +104,7 @@ object Updater {
         if( !isUpdatable ) return@launch
 
         try {
-            if(!::build.isInitialized || isForced)
+            if( !::build.isInitialized || isForced )
                 fetchUpdate()
 
             /**
@@ -113,14 +120,12 @@ object Updater {
 
             NewUpdateAvailableDialog.isActive = upstreamBuildTime.isAfter( projBuildTime )
         } catch( e: Exception ) {
-            var message = appContext().resources.getString( R.string.error_unknown )
-
-            when( e ) {
-                is UnknownHostException -> message = appContext().resources.getString( R.string.error_no_internet )
-                else -> e.message?.let { message = it }
+            val message = when( e ) {
+                is UnknownHostException -> appContext().getString( R.string.error_no_internet )
+                is NoSuchFileException -> appContext().getString( R.string.info_no_update_available )
+                else -> e.message ?: appContext().getString( R.string.error_unknown )
             }
-
-            withContext( Dispatchers.Main ) { Toaster.e( message ) }
+            Toaster.e( message )
 
             NewUpdateAvailableDialog.isCancelled = true
         }
