@@ -8,9 +8,9 @@ enum class TransitionEffect(
     @field:StringRes override val textId: Int
 ): TextView {
 
-    SlideVertical( R.string.te_slide_horizontal ),
+    SlideVertical( R.string.te_slide_vertical ),
 
-    SlideHorizontal( R.string.te_slide_vertical ),
+    SlideHorizontal( R.string.te_slide_horizontal ),
 
     Scale( R.string.te_scale ),
 
