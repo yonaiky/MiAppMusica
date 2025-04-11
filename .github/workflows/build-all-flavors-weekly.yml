@@ -183,7 +183,7 @@ jobs:
           make-latest: "true"
           body: |
             <div align="center">
-              <img alt="app-logo" src="/fastlane/metadata/android/en-US/images/featureGraphic.png" />
+              <img alt="app-logo" src="https://raw.githubusercontent.com/knighthat/Kreate/refs/heads/main/fastlane/metadata/android/en-US/images/featureGraphic.png" />
               <p><b>Kreate</b> - by @knighthat</p>
             </div>
             
