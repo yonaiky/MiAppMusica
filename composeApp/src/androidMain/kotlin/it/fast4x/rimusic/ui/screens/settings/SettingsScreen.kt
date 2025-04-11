@@ -58,6 +58,7 @@ import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.utils.Toaster
 
 @ExperimentalMaterialApi
@@ -78,39 +79,41 @@ fun SettingsScreen(
         mutableStateOf(0)
     }
 
-            Skeleton(
-                navController,
-                tabIndex,
-                onTabChanged,
-                miniPlayer,
-                navBarContent = { item ->
-                    item(0, stringResource(R.string.tab_general), R.drawable.app_icon_monochrome_transparent)
-                    item(1, stringResource(R.string.ui_tab), R.drawable.ui)
-                    item(2, stringResource(R.string.player_appearance), R.drawable.color_palette)
-                    item(3, if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
-                    else stringResource(R.string.home), if (!isYouTubeLoggedIn()) R.drawable.sparkles
-                    else R.drawable.ytmusic)
-                    item(4, stringResource(R.string.tab_data), R.drawable.server)
-                    item(5, stringResource(R.string.tab_accounts), R.drawable.person)
-                    item(6, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
-                    item(7, stringResource(R.string.about), R.drawable.information)
+    Skeleton(
+        navController,
+        tabIndex,
+        onTabChanged,
+        miniPlayer,
+        navBarContent = { item ->
+            item(0, stringResource(R.string.tab_general), R.drawable.app_icon_monochrome_transparent)
+            item(1, stringResource(R.string.ui_tab), R.drawable.ui)
+            item(2, stringResource(R.string.player_appearance), R.drawable.color_palette)
+            item(3, if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
+            else stringResource(R.string.home), if (!isYouTubeLoggedIn()) R.drawable.sparkles
+            else R.drawable.ytmusic)
+            item(4, stringResource(R.string.tab_data), R.drawable.server)
+            item(5, stringResource(R.string.tab_accounts), R.drawable.person)
+            item(6, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
+            item(7, stringResource(R.string.about), R.drawable.information)
 
-                }
-            ) { currentTabIndex ->
-                saveableStateHolder.SaveableStateProvider(currentTabIndex) {
-                    when (currentTabIndex) {
-                        0 -> GeneralSettings(navController = navController)
-                        1 -> UiSettings(navController = navController)
-                        2 -> AppearanceSettings(navController = navController)
-                        3 -> QuickPicsSettings()
-                        4 -> DataSettings()
-                        5 -> AccountsSettings()
-                        6 -> OtherSettings()
-                        7 -> About()
+        }
+    ) { currentTabIndex ->
+        saveableStateHolder.SaveableStateProvider(currentTabIndex) {
+            when (currentTabIndex) {
+                0 -> GeneralSettings(navController = navController)
+                1 -> UiSettings(navController = navController)
+                2 -> AppearanceSettings(navController = navController)
+                3 -> QuickPicsSettings()
+                4 -> DataSettings()
+                5 -> AccountsSettings()
+                6 -> OtherSettings()
+                7 -> About()
 
-                    }
-                }
             }
+        }
+    }
+
+    RestartAppDialog.Render()
 }
 
 @Composable
