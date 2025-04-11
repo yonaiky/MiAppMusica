@@ -231,19 +231,27 @@ fun AppNavigation(
         }
 
         composable(
-            route = "${NavRoutes.playlist.name}/{id}",
+            route = "${NavRoutes.playlist.name}/{id}?params={params}",
             arguments = listOf(
                 navArgument(
                     name = "id",
-                    builder = { type = NavType.StringType }
+                    builder = {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                ),
+                navArgument(
+                    name = "params",
+                    builder = { type = NavType.StringType },
                 )
             )
         ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("id") ?: ""
+            val params = navBackStackEntry.arguments?.getString( "params" )
             PlaylistScreen(
                 navController = navController,
                 browseId = id,
-                params = null,
+                params = params,
                 miniPlayer = miniPlayer,
             )
         }
