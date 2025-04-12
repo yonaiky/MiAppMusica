@@ -71,7 +71,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.media3.session)
-            implementation(libs.kotlin.coroutines.guava)
+            implementation(libs.kotlinx.coroutines.guava)
             implementation(libs.newpipe.extractor)
             implementation(libs.nanojson)
             implementation(libs.androidx.webkit)

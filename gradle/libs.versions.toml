@@ -4,7 +4,6 @@ compose-plugin = "1.7.3"
 agp = "8.9.1"
 kotlin = "2.0.21"
 kotlin-ksp = "2.0.21-1.0.26"
-kotlin-coroutine = "1.10.1"
 kotlin-datetime = "0.6.2"
 compose = "1.7.8"
 compose-activity = "1.10.1"
@@ -40,15 +39,16 @@ gson = "2.12.1"
 mediaPlayerKMP = "2.0.9"
 navigationKMP = "2.9.0-alpha15"
 vlcj = "4.10.1"
-kotlinxCoroutinesSwing = "1.10.1"
+kotlinxCoroutines = "1.10.2"
 hilt = "2.56.1"
 hypnoticcanvas = "0.3.0"
 ksoup = "0.5.0"
 uiToolingPreviewAndroid = "1.7.8"
 
 [libraries]
-kotlin-coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutine"}
-kotlin-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "kotlin-coroutine" }
+kotlinx-coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines"}
+kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "kotlinxCoroutines" }
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swings", version = "kotlinxCoroutines" }
 kotlin-datetime = {group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlin-datetime"}
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
 compose-ui = {group = "androidx.compose.ui", name = "ui", version.ref = "compose"}
@@ -105,7 +105,6 @@ coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3"
 coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil3" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil3" }
 coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
-kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesSwing" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 hypnoticcanvas = {group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas", version.ref = "hypnoticcanvas"}
