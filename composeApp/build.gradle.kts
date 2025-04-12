@@ -149,6 +149,8 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             manifestPlaceholders["appName"] = "$APP_NAME-debug"
+
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
         }
 
         create( "full" ) {
