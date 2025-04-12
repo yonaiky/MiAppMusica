@@ -2,7 +2,6 @@ import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.time.Instant
 
 val APP_NAME = "Kreate"
 
@@ -133,9 +132,7 @@ android {
         /*
                 UNIVERSAL VARIABLES
          */
-        val buildTime = Instant.now().toString()
-        buildConfigField( "String", "BUILD_TIME", "\"$buildTime\"" )
-
+        buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
         buildConfigField( "String", "APP_NAME", "\"$APP_NAME\"" )
     }
 

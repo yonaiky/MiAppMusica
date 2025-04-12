@@ -27,6 +27,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
@@ -56,7 +57,7 @@ object NewUpdateAvailableDialog: Dialog {
      * restart, either by user or by setting it
      * programmatically.
      */
-    var isCancelled: Boolean by mutableStateOf( false )
+    var isCancelled: Boolean by mutableStateOf( !BuildConfig.IS_AUTOUPDATE )
 
     override val dialogTitle: String
         @Composable
