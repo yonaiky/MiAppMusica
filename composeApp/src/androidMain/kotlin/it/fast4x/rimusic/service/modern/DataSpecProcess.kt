@@ -26,6 +26,8 @@ import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoginEnabled
 import it.fast4x.rimusic.useYtLoginOnlyForBrowse
 import it.fast4x.rimusic.utils.getSignatureTimestampOrNull
 import it.fast4x.rimusic.utils.getStreamUrl
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import me.knighthat.invidious.Invidious
 import me.knighthat.invidious.request.player
 import me.knighthat.piped.Piped
@@ -265,12 +267,16 @@ suspend fun getInnerTubeStream(
                         }
                         .also {
                             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream song $videoId itag selected ${it}")
-                            //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                             Database.asyncTransaction {
+                                val isVideoExist = runBlocking {
+                                    songTable.exists( videoId ).first()
+                                }
+                                if( !isVideoExist ) return@asyncTransaction
+
                                 formatTable.upsert(
                                     Format(
                                         songId = videoId,
-                                        itag = it?.itag?.toInt(),
+                                        itag = it?.itag,
                                         mimeType = it?.mimeType,
                                         contentLength = it?.contentLength,
                                         bitrate = it?.bitrate?.toLong(),
@@ -279,7 +285,6 @@ suspend fun getInnerTubeStream(
                                     )
                                 )
                             }
-                            //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
                         }
                 }
                 "LOGIN_REQUIRED" -> throw LoginRequiredException()
