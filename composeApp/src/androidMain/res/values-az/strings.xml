@@ -45,7 +45,7 @@
     <string name="search_lyrics_online">Lirikaları onlayn axtar</string>
     <string name="fetch_lyrics_again">Lirikaları təkrar əldə et</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
+    <string name="itag">Etiket</string>
     <string name="bitrate">Bit sürəti</string>
     <string name="size">Həcm</string>
     <string name="cached">Toplanan</string>
