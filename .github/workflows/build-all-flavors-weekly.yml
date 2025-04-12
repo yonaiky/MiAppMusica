@@ -27,18 +27,23 @@ jobs:
         # Output of "October 2 2024" will be "20241002"
         run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
-  build_version:
+  versioning:
     name: Extract version
     runs-on: ubuntu-latest
-    # Set version as a variable
+    # Set versions as a variable
     outputs:
-      version: ${{ steps.version.outputs.version }}
+      # Current version in repository
+      downstream: ${{ steps.downstream.outputs.version }}
+      # Latest build's version
+      upstream: ${{ steps.upstream.outputs.version }}
+    env:
+      GITHUB_REPOSITORY: ${{ github.action_repository }}
 
     steps:
       - uses: actions/checkout@v4.2.1
 
-      - name: Get version
-        id: version
+      - name: Get downstream (local) version
+        id: downstream
         # Output is current version located inside composeApp/build.gradle.kts
         # android {
         #   defaultConfig {
@@ -47,7 +52,29 @@ jobs:
         # }
         run: echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '"' '{print $2}')" >> $GITHUB_OUTPUT
 
+      - name: Get upstream version
+        id: upstream
+        # Fetch tag_name of latest tag from GitHub.
+        # tag_name contains "v" prefix, so it must be removed
+        # before adding to GITHUB_OUTPUT
+        run: |
+          tag_name="$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest | jq -r .tag_name)"
+          echo "version=${tag_name#v}" >> $GITHUB_OUTPUT
+
+  verify-version:
+    needs: [versioning]
+    name: Verify versions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Whether build can proceed
+        run: |
+          if [ "${{ needs.versioning.outputs.downstream }}" = "${{ needs.versioning.outputs.upstream }}" ]; then
+            exit 1
+          fi
+          
   build-full:
+    needs: [verify-version]
     name: Build full version
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
@@ -84,6 +111,7 @@ jobs:
             composeApp/build/outputs/apk/full/*.apk
 
   build-minified:
+    needs: [verify-version]
     name: Build minified version
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
@@ -120,6 +148,7 @@ jobs:
             composeApp/build/outputs/apk/minified/*.apk
 
   build-no-autoupdate:
+    needs: [verify-version]
     name: Build no auto-update version
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
@@ -201,7 +230,7 @@ jobs:
           path: signed/*.apk
 
   upload-to-release:
-    needs: [build_time, build_version, sign-apks]
+    needs: [build_time, versioning, sign-apks]
     runs-on: ubuntu-latest
 
     steps:
@@ -215,8 +244,8 @@ jobs:
         with:
           files: '*.apk'
           # Name: v0.0.1-20250303 | Weekly Build
-          name: v${{ needs.build_version.outputs.version }}-${{ needs.build_time.outputs.date }} | Weekly Build
-          tag_name: v${{ needs.build_version.outputs.version }}
+          name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | Weekly Build
+          tag_name: v${{ needs.versioning.outputs.downstream }}
           make-latest: "true"
           body: |
             <div align="center">
