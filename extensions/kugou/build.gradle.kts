@@ -9,7 +9,7 @@ sourceSets.all {
 }
 
 dependencies {
-    implementation(libs.kotlin.coroutines)
+    implementation(libs.kotlinx.coroutines)
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)

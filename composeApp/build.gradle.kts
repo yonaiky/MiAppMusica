@@ -2,7 +2,6 @@ import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.time.Instant
 
 val APP_NAME = "Kreate"
 
@@ -72,7 +71,7 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.media3.session)
-            implementation(libs.kotlin.coroutines.guava)
+            implementation(libs.kotlinx.coroutines.guava)
             implementation(libs.newpipe.extractor)
             implementation(libs.nanojson)
             implementation(libs.androidx.webkit)
@@ -127,15 +126,13 @@ android {
         applicationId = "me.knighthat.kreate"
         minSdk = 21
         targetSdk = 35
-        versionCode = 89
-        versionName = "1.1.3"
+        versionCode = 90
+        versionName = "1.1.4"
 
         /*
                 UNIVERSAL VARIABLES
          */
-        val buildTime = Instant.now().toString()
-        buildConfigField( "String", "BUILD_TIME", "\"$buildTime\"" )
-
+        buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
         buildConfigField( "String", "APP_NAME", "\"$APP_NAME\"" )
     }
 
@@ -152,6 +149,8 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             manifestPlaceholders["appName"] = "$APP_NAME-debug"
+
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
         }
 
         create( "full" ) {
@@ -172,10 +171,16 @@ android {
             )
         }
 
+        create( "noAutoUpdate" ) {
+            initWith( maybeCreate("minified") )
+
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+        }
+
         // Specifically tailored to F-Droid build
         // inherited from minified build type
         release {
-            initWith( maybeCreate("minified") )
+            initWith( maybeCreate("noAutoUpdate") )
 
             // App's properties
             versionNameSuffix = "-fdroid"
@@ -194,7 +199,13 @@ android {
     applicationVariants.all {
         outputs.map { it as BaseVariantOutputImpl }
                .forEach { output ->
-                   output.outputFileName = "$APP_NAME-${buildType.name}.apk"
+                   val typeName =
+                       if( buildType.name == "noAutoUpdate" )
+                           "no-autoupdate"
+                       else
+                           buildType.name
+
+                   output.outputFileName = "$APP_NAME-$typeName.apk"
                }
     }
 

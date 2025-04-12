@@ -1,15 +1,11 @@
 package it.fast4x.innertube
 
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpStatusCode
 import it.fast4x.innertube.Innertube.getBestQuality
 import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.CreatePlaylistResponse
-import it.fast4x.innertube.models.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.getContinuation
 import it.fast4x.innertube.models.oddElements
@@ -22,8 +18,6 @@ import it.fast4x.innertube.requests.HomePage
 import it.fast4x.innertube.requests.NewReleaseAlbumPage
 import it.fast4x.innertube.requests.PlaylistContinuationPage
 import it.fast4x.innertube.requests.PlaylistPage
-import it.fast4x.innertube.utils.from
-import kotlinx.coroutines.delay
 
 object YtMusic {
 
@@ -203,7 +197,7 @@ object YtMusic {
             ),
             sections = sections,
             description = response.header?.musicImmersiveHeaderRenderer?.description?.runs?.firstOrNull()?.text,
-            subscribers = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer?.subscriberCountText?.text,
+            subscribers = response.header?.musicImmersiveHeaderRenderer?.subscriptionButton?.subscribeButtonRenderer?.longSubscriberCountText?.text,
             shuffleEndpoint = response.header?.musicImmersiveHeaderRenderer?.playButton?.buttonRenderer?.navigationEndpoint?.watchEndpoint,
             radioEndpoint = response.header?.musicImmersiveHeaderRenderer?.startRadioButton?.buttonRenderer?.navigationEndpoint?.watchEndpoint,
         )

@@ -26,9 +26,7 @@ import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.models.SongEntity
 import it.fast4x.rimusic.service.modern.isLocal
-import it.fast4x.rimusic.utils.DownloadSyncedLyrics
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.audioQualityFormatKey
@@ -36,6 +34,7 @@ import it.fast4x.rimusic.utils.autoDownloadSongKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenAlbumBookmarkedKey
 import it.fast4x.rimusic.utils.autoDownloadSongWhenLikedKey
 import it.fast4x.rimusic.utils.download
+import it.fast4x.rimusic.utils.downloadSyncedLyrics
 import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey
@@ -270,7 +269,7 @@ object MyDownloadHelper {
                 Timber.e("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
                 println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
             }
-            DownloadSyncedLyrics(it = SongEntity(mediaItem.asSong), coroutineScope = coroutineScope)
+            downloadSyncedLyrics( mediaItem.asSong )
             context.imageLoader.execute(
                 ImageRequest.Builder(context)
                     .networkCachePolicy(CachePolicy.ENABLED)

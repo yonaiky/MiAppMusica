@@ -200,6 +200,7 @@ import it.fast4x.rimusic.utils.useSystemFontKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
+import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.tab.Search
 import me.knighthat.utils.Toaster
 
@@ -862,9 +863,10 @@ fun UiSettings(
                         playerTimelineType = lastPlayerTimelineType
                         playerThumbnailSize = lastPlayerThumbnailSize
                         playerPlayButtonType = lastPlayerPlayButtonType
-
+                        navigationBarPosition = NavigationBarPosition.Bottom
                     }
 
+                    RestartAppDialog.showDialog()
                 },
                 valueText = { it.name }
             )

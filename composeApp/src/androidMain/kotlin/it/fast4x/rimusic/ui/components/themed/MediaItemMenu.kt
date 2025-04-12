@@ -53,7 +53,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
@@ -77,7 +76,6 @@ import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlaylistSortBy
 import it.fast4x.rimusic.enums.SortOrder
-import it.fast4x.rimusic.models.Folder
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
@@ -85,7 +83,6 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.items.FolderItem
 import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -732,64 +729,6 @@ fun MiniMediaItemMenu(
         modifier = modifier,
         disableScrollingText = disableScrollingText
     )
-}
-
-
-@UnstableApi
-@Composable
-fun FolderItemMenu(
-    folder: Folder,
-    thumbnailSizeDp: Dp,
-    onDismiss: () -> Unit,
-    onEnqueue: () -> Unit,
-    disableScrollingText: Boolean
-) {
-    val density = LocalDensity.current
-
-    Menu(
-        modifier = Modifier
-            .onPlaced { with(density) { it.size.height.toDp() } }
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-
-        ) {
-            Image(
-                painter = painterResource(R.drawable.chevron_down),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(colorPalette().text),
-                modifier = Modifier
-                    .absoluteOffset(0.dp, -10.dp)
-                    .align(Alignment.TopCenter)
-                    .size(30.dp)
-                    .clickable { onDismiss() }
-            )
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(end = 12.dp)
-        ) {
-            FolderItem(folder, thumbnailSizeDp, disableScrollingText = disableScrollingText)
-
-        }
-
-        Spacer(
-            modifier = Modifier
-                .height(8.dp)
-        )
-
-        MenuEntry(
-            icon = R.drawable.enqueue,
-            text = stringResource(R.string.enqueue),
-            onClick = {
-                onDismiss()
-                onEnqueue()
-            }
-        )
-    }
 }
 
 @ExperimentalTextApi

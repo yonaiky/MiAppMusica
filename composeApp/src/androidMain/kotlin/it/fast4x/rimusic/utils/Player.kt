@@ -184,6 +184,10 @@ fun Player.addNext(mediaItems: List<MediaItem>, context: Context? = null) {
 
     if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
         setMediaItems(filteredMediaItems.map { it.cleaned })
+
+        if( playbackState == Player.STATE_IDLE )
+            prepare()
+
         play()
     } else {
         addMediaItems(currentMediaItemIndex + 1, filteredMediaItems.map { it.cleaned })

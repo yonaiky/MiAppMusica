@@ -9,7 +9,7 @@ sourceSets.all {
 }
 
 dependencies {
-    implementation(libs.kotlin.coroutines)
+    implementation(libs.kotlinx.coroutines)
     implementation(projects.ktorClientBrotli)
     implementation(libs.kotlin.datetime)
     implementation(libs.ktor.client.core)

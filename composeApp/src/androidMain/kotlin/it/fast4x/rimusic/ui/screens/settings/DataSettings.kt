@@ -56,7 +56,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
 import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
@@ -421,8 +420,6 @@ fun DataSettings() {
 
 
         SettingsEntryGroupText(title = stringResource(R.string.title_backup_and_restore))
-
-        RestartAppDialog.Render()
 
         val exportDbDialog = ExportDatabaseDialog( context )
         exportDbDialog.Render()

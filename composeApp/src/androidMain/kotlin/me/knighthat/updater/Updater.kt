@@ -1,5 +1,6 @@
 package me.knighthat.updater
 
+import android.os.Looper
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -33,17 +34,11 @@ import me.knighthat.utils.Repository
 import me.knighthat.utils.Toaster
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okio.IOException
 import java.net.UnknownHostException
-import java.time.ZonedDateTime
+import java.nio.file.NoSuchFileException
 
 object Updater {
-
-    private val JSON = Json {
-        ignoreUnknownKeys = true
-    }
-    private val isUpdatable: Boolean =
-        !BuildConfig.DEBUG && !BuildConfig.VERSION_NAME.endsWith("fdroid", true )
+    private lateinit var tagName: String
 
     lateinit var build: GithubRelease.Build
 
@@ -64,8 +59,13 @@ object Updater {
         val fileName = "$appName-$buildType.apk"
         return assets.fastFirstOrNull {    // Experimental, revert to firstOrNull if needed
             it.name == fileName
-        } ?: throw IOException( "File $fileName is not available for download!" )
+        } ?: throw NoSuchFileException("")
     }
+
+    /**
+     * Turns `v1.0.0` to `1.0.0`, `1.0.0-m` to `1.0.0`
+     */
+    private fun trimVersion( versionStr: String ) = versionStr.removePrefix( "v" ).substringBefore( "-" )
 
     /**
      * Sends out requests to Github for latest version.
@@ -75,52 +75,53 @@ object Updater {
      * > **NOTE**: This is a blocking process, it should never run on UI thread
      */
     private suspend fun fetchUpdate() = withContext( Dispatchers.IO ) {
-        val client = OkHttpClient()
+        assert( Looper.myLooper() != Looper.getMainLooper() ) {
+            "Cannot run fetch update on main thread"
+        }
 
         // https://api.github.com/repos/knighthat/Kreate/releases/latest
         val url = "${Repository.GITHUB_API}/repos/${Repository.LATEST_TAG_URL}"
         val request = Request.Builder().url( url ).build()
-        val response = client.newCall( request ).execute()
+        val response = OkHttpClient().newCall( request ).execute()
 
-        if( response.isSuccessful ) {
-            val resBody = response.body?.string() ?: return@withContext
-
-            val githubRelease = JSON.decodeFromString<GithubRelease>( resBody )
-            build = extractBuild( githubRelease.builds )
+        if( !response.isSuccessful ) {
+            Toaster.e( response.message )
+            return@withContext
         }
+
+        val resBody = response.body?.string()
+        if( resBody.isNullOrBlank() ) {
+            Toaster.i( R.string.info_no_update_available )
+            return@withContext
+        }
+
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
+        val githubRelease = json.decodeFromString<GithubRelease>( resBody )
+        build = extractBuild( githubRelease.builds )
+        tagName = githubRelease.tagName
     }
 
     fun checkForUpdate(
         isForced: Boolean = false
     ) = CoroutineScope( Dispatchers.IO ).launch {
-        NewUpdateAvailableDialog.isCancelled = !isUpdatable
-        if( !isUpdatable ) return@launch
+        if( !BuildConfig.IS_AUTOUPDATE || NewUpdateAvailableDialog.isCancelled ) return@launch
 
         try {
-            if(!::build.isInitialized || isForced)
+            if( !::build.isInitialized || isForced )
                 fetchUpdate()
 
-            /**
-             * Project's build time will always be earlier APK creation time.
-             * Therefore, the app will recognize it is behind the update even
-             * when the user just updated.
-             *
-             * To counter this problem, time strings are converted into [ZonedDateTime]
-             * and apk creation time is subtracted an hour before the comparison.
-             */
-            val projBuildTime = ZonedDateTime.parse( BuildConfig.BUILD_TIME )
-            val upstreamBuildTime = build.buildTime.minusHours( 1L )
-
-            NewUpdateAvailableDialog.isActive = upstreamBuildTime.isAfter( projBuildTime )
+            NewUpdateAvailableDialog.isActive = trimVersion( BuildConfig.VERSION_NAME ) != trimVersion( tagName )
+            if( !NewUpdateAvailableDialog.isActive )
+                Toaster.i( R.string.info_no_update_available )
         } catch( e: Exception ) {
-            var message = appContext().resources.getString( R.string.error_unknown )
-
-            when( e ) {
-                is UnknownHostException -> message = appContext().resources.getString( R.string.error_no_internet )
-                else -> e.message?.let { message = it }
+            val message = when( e ) {
+                is UnknownHostException -> appContext().getString( R.string.error_no_internet )
+                is NoSuchFileException -> appContext().getString( R.string.info_no_update_available )
+                else -> e.message ?: appContext().getString( R.string.error_unknown )
             }
-
-            withContext( Dispatchers.Main ) { Toaster.e( message ) }
+            Toaster.e( message )
 
             NewUpdateAvailableDialog.isCancelled = true
         }
@@ -129,7 +130,7 @@ object Updater {
     @Composable
     fun SettingEntry() {
         var checkUpdateState by rememberPreference( checkUpdateStateKey, CheckUpdateState.Disabled )
-        if( !isUpdatable )
+        if( !BuildConfig.IS_AUTOUPDATE )
             checkUpdateState = CheckUpdateState.Disabled
 
         Row( Modifier.fillMaxWidth() ) {
@@ -138,12 +139,12 @@ object Updater {
                 selectedValue = checkUpdateState,
                 onValueSelected = { checkUpdateState = it },
                 valueText = { it.text },
-                isEnabled = isUpdatable,
+                isEnabled = BuildConfig.IS_AUTOUPDATE,
                 modifier = Modifier.weight( 1f )
             )
 
             AnimatedVisibility(
-                visible = checkUpdateState != CheckUpdateState.Disabled && isUpdatable,
+                visible = checkUpdateState != CheckUpdateState.Disabled && BuildConfig.IS_AUTOUPDATE,
                 // Slide in from right + fade in effect.
                 enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(initialAlpha = 0f),
                 // Slide out from left + fade out effect.
@@ -159,7 +160,7 @@ object Updater {
 
         SettingsDescription(
             stringResource(
-                if( isUpdatable )
+                if( BuildConfig.IS_AUTOUPDATE )
                     R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup
                 else
                     R.string.description_app_not_installed_by_apk

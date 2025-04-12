@@ -3,6 +3,10 @@
   <p>
     <b>Kreate</b> is a <a href="https://github.com/fast4x/RiMusic">RiMusic</a> folk with performance in mind
   </p>
+    
+  <br>
+
+  <a title="Crowdin" target="_blank" href="https://translate.kreate.knighthat.me/project/kreate"><img src="https://badges.crowdin.net/kreate/localized.svg"></a>
 </div>
 
 
@@ -91,7 +95,7 @@ For more details, check out [this article](https://kreate.knighthat.me/usr/how-t
 - **Hebrew:** thanks to [opcitgv](https://crowdin.com/profile/opcitgv), [TheCreeperDuck](https://crowdin.com/profile/thecreeperduck)
 - **Hindi:** thanks to [NikunjKhangwal](https://crowdin.com/profile/nikunjkhangwal), [Sharunkumar](https://crowdin.com/profile/sharunkumar), [Th3-C0der](https://github.com/Th3-C0der)
 - **Hungarìan:** thanks to [Zan1456](https://crowdin.com/profile/Zan1456), [Ndvok](https://crowdin.com/profile/ndvok)
-- **Italian:** thanks to [Fabio Iotti](https://crowdin.com/profile/bruce965), [agefcgo](https://crowdin.com/profile/agefcgo), [CiccioDerole](https://crowdin.com/profile/CiccioDerole), [fast4x](https://github.com/fast4x)
+- **Italian:** thanks to [Fabio Iotti](https://crowdin.com/profile/bruce965), [agefcgo](https://crowdin.com/profile/agefcgo), [CiccioDerole](https://crowdin.com/profile/CiccioDerole), [fast4x](https://github.com/fast4x), [Strange-IPmart ](https://github.com/Strange-IPmart)
 - **Indonesian:** thanks to [luthfialfarabi](https://crowdin.com/profile/luthfialfarabi), [teddysulaimanGL](https://github.com/teddysulaimanGL), [Fausta Ahmad](https://crowdin.com/profile/faustaahmad)  
 - **Interlingua** thanks to [softinterlingua](https://github.com/softinterlingua)
 - **Japanese:** thanks to [maboroshin](https://crowdin.com/profile/maboroshin), [Mid_Vur_Shaan](https://crowdin.com/profile/Mid_Vur_Shaan)
@@ -104,16 +108,18 @@ For more details, check out [this article](https://kreate.knighthat.me/usr/how-t
 - **Portuguese:** thanks to [Juan Ignacio Tejera](https://crowdin.com/profile/originaljuani), [ManuelCoimbra](https://crowdin.com/profile/ManuelCoimbra), [NEVARLeVrai](https://github.com/NEVARLeVrai)
 - **Portuguese, Brazilian:** thanks to [vs-machado](https://crowdin.com/profile/vs-machado), [luxdev01](https://crowdin.com/profile/luxdev01), [VitoriaLima1802](https://crowdin.com/profile/vitorialima1802), [xSyntheticWave](https://crowdin.com/profile/xSyntheticWave), [RegularWater](https://crowdin.com/profile/RegularWater), [NEVARLeVrai](https://github.com/NEVARLeVrai)
 - **Romanian:** thanks to [OrangeZXZ](https://github.com/OrangeZxZ)
-- **Russian:** thanks to [Eddisch](https://crowdin.com/profile/eddisch2010), [Michael Müller](https://crowdin.com/profile/xqzme1337), [HighMode](https://crowdin.com/profile/highmode), [koliwan](https://crowdin.com/profile/koliwan), [Nebula-Mechanica](https://crowdin.com/profile/Nebula-Mechanica), [Alnoer](https://crowdin.com/profile/Alnoer), [kptmx](https://crowdin.com/profile/kptmx), [Crayz310](https://github.com/Crayz310), [Vladimir](https://crowdin.com/profile/vladimir15426), [@siggi1984](https://github.com/siggi1984)
+- **Russian:** thanks to [Eddisch](https://crowdin.com/profile/eddisch2010), [Michael Müller](https://crowdin.com/profile/xqzme1337), [HighMode](https://crowdin.com/profile/highmode), [koliwan](https://crowdin.com/profile/koliwan), [Nebula-Mechanica](https://crowdin.com/profile/Nebula-Mechanica), [Alnoer](https://crowdin.com/profile/Alnoer), [kptmx](https://crowdin.com/profile/kptmx), [Crayz310](https://github.com/Crayz310), [Vladimir](https://crowdin.com/profile/vladimir15426), [siggi1984](https://github.com/siggi1984)
 - **Serbian (Cyrillic, Latin)** thanks to [IvanMaksimovic77](https://github.com/IvanMaksimovic77)
 - **Spanish:** thanks to [MS-PC](https://crowdin.com/profile/ms-pc), [Alejandro Moctezuma](https://crowdin.com/profile/alejandromoc), [Juan Ignacio Tejera](https://crowdin.com/profile/originaljuani), [iOSStarWorld](https://crowdin.com/profile/iosstarworld), [Corotyest](https://crowdin.com/profile/corotyest), [DanielSevillano](https://github.com/DanielSevillano), [Fabian Urra](https://crowdin.com/profile/nsagcl)
 - **Sinhala:** thanks to [VINULA2007](https://crowdin.com/profile/VINULA2007)
 - **Swedish:** thanks to [sebbe.ekman](https://crowdin.com/profile/sebbe.ekman), [Dženan](https://crowdin.com/profile/Dženan)
 - **Tamil** thanks to [Vignesh-p-s](https://crowdin.com/profile/vignesh-p-s)
-- **Turkish:** thanks to [abfreeman](https://github.com/abfreeman), [2010furs](https://github.com/2010furs), [Muha Aliss](https://crowdin.com/profile/muhaaliss)
+- **Turkish:** thanks to [abfreeman](https://github.com/abfreeman), [2010furs](https://github.com/2010furs), [Muha Aliss](https://crowdin.com/profile/muhaaliss), [mikropsoft](https://github.com/mikropsoft)
 - **Telugu** thanks to [SureshTimma](https://crowdin.com/profile/sureshtimma)
 - **Ukrainian:** thanks to [Avin](https://crowdin.com/profile/avinateachip), [Michael Müller](https://crowdin.com/profile/xqzme1337), [NiXT0y](https://crowdin.com/profile/nixt0y), [Crayz310](https://github.com/Crayz310) 
 - **Vietnamese:** thanks to [teaminh](https://crowdin.com/profile/teaminh)
+
+> Don't see your langague here? [Request one](https://translate.kreate.knighthat.me/project/kreate) now.
 
 
 # 🤝 Contributing
@@ -128,7 +134,9 @@ For more details, please refer to [the documentation](https://kreate.knighthat.m
 
 ## To translate app
 
-To **translate** or **improve a translation**, please wait for an option to be available in near future.
+To **translate** or **improve a translation**, **fix typo**, or to **request new language**. 
+
+[![Translated with Crowdin](https://badges.crowdin.net/badge/light/crowdin-on-dark.png)](https://translate.kreate.knighthat.me/project/kreate)
 
 ## To write documentation
 

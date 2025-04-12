@@ -4,20 +4,20 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -33,7 +34,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
@@ -42,6 +42,7 @@ import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.PlaylistPreview
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
@@ -54,11 +55,55 @@ import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
+import me.knighthat.coil.ImageCacheFactory
+
+val HTTP_REGEX = Regex("^https?://.*")
+val FOUR_CORNERS = listOf( Alignment.TopStart, Alignment.TopEnd, Alignment.BottomStart, Alignment.BottomEnd )
+
+@Composable
+fun RenderThumbnail(
+    thumbnailUrl: String,
+    contentDescription: String?,
+    contentScale: ContentScale,
+    modifier: Modifier = Modifier
+) {
+    if( thumbnailUrl.matches( HTTP_REGEX ) )
+        ImageCacheFactory.Thumbnail( thumbnailUrl, contentDescription, contentScale, modifier )
+    else
+        AsyncImage(
+            model = thumbnailUrl,
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+            modifier = modifier
+        )
+}
+
+@Composable
+private fun BoxWithConstraintsScope.ThumbnailRenderer(
+    thumbnailUrls: List<String>,
+    contentScale: ContentScale = ContentScale.Crop
+) {
+    if( thumbnailUrls.size >= 4 ) {
+        val halfWidth = maxWidth / 2
+        val halfHeight = maxHeight / 2
+
+        FOUR_CORNERS.forEachIndexed { index, corner ->
+            RenderThumbnail(
+                thumbnailUrl = thumbnailUrls[index],
+                contentDescription = corner.toString(),
+                contentScale = contentScale,
+                modifier = Modifier.size( halfWidth, halfHeight )
+                                   .align( corner )
+            )
+        }
+    }
+    else if( thumbnailUrls.isNotEmpty() )
+        RenderThumbnail( thumbnailUrls.first(), "fullSizeRender", contentScale )
+}
 
 @Composable
 fun PlaylistItem(
@@ -113,83 +158,24 @@ fun PlaylistItem(
 ) {
     val context = LocalContext.current
 
-    val playlistThumbnailUrl = remember { mutableStateOf("") }
-
-    fun initialisePlaylistThumbnail (){
-        val thumbnailName = "thumbnail/playlist_${playlist.playlist.id}"
-        val presentThumbnailUrl: String? = checkFileExists(context, thumbnailName)
-        if (presentThumbnailUrl != null) {
-            playlistThumbnailUrl.value = presentThumbnailUrl
-        }
-    }
-    initialisePlaylistThumbnail()
-
     val thumbnails by remember {
-        Database.songPlaylistMapTable
-                .sortSongsByPlayTime( playlist.playlist.id )
-                .distinctUntilChanged()
-                .map { list ->
-                    list.takeLast( 4 ).map {
-                        it.thumbnailUrl.thumbnail( thumbnailSizePx / 2 )
+        val customThumbnail = checkFileExists( context, "thumbnail/playlist_${playlist.playlist.id}" )
+
+        if( customThumbnail != null )
+            flowOf( listOf( customThumbnail ) )
+        else
+            Database.songPlaylistMapTable
+                    .sortSongsByPlayTime( playlist.playlist.id )
+                    .distinctUntilChanged()
+                    .map { list ->
+                        // Ensure it only takes not null thumbnailUrl
+                        list.mapNotNull( Song::thumbnailUrl ).takeLast( 4 )
                     }
-                }
-        }.collectAsState( emptyList(), Dispatchers.IO )
+    }.collectAsState( emptyList(), Dispatchers.IO )
 
     PlaylistItem(
         browseId = playlist.playlist.browseId,
-        thumbnailContent = {
-            if (playlistThumbnailUrl.value != "") {
-                AsyncImage(
-                    model = playlistThumbnailUrl.value,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            } else if (thumbnails.toSet().size == 1) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(thumbnails.first())
-                        .setHeader("User-Agent", "Mozilla/5.0")
-                        .build(), //thumbnails.first().thumbnail(thumbnailSizePx),
-                    onError = {error ->
-                        Timber.e("Failed AsyncImage in PlaylistItem ${error.result.throwable.stackTraceToString()}")
-                    },
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    //modifier = it KOTLIN 2
-                )
-            } else {
-                Box(
-                    modifier = Modifier // KOTLIN 2
-                        .fillMaxSize()
-                ) {
-                    listOf(
-                        Alignment.TopStart,
-                        Alignment.TopEnd,
-                        Alignment.BottomStart,
-                        Alignment.BottomEnd
-                    ).forEachIndexed { index, alignment ->
-                        val thumbnail = thumbnails.getOrNull(index)
-                        if (thumbnail != null)
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(thumbnail)
-                                    .setHeader("User-Agent", "Mozilla/5.0")
-                                    .build(),
-                                onError = {error ->
-                                    Timber.e("Failed AsyncImage 1 in PlaylistItem ${error.result.throwable.stackTraceToString()}")
-                                },
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .align(alignment)
-                                    .size(thumbnailSizeDp / 2)
-                            )
-                    }
-                }
-            }
-        },
+        thumbnailContent = { ThumbnailRenderer( thumbnails ) },
         songCount = playlist.songCount,
         name = playlist.playlist.name,
         channelName = null,
@@ -216,48 +202,20 @@ fun PlaylistItem(
     isEditable : Boolean = false
 ) {
     PlaylistItem(
-        thumbnailUrl = playlist.thumbnail?.url,
+        thumbnailContent = thumb@ {
+            val thumbnailUrl = playlist.thumbnail?.url ?: return@thumb
+
+            RenderThumbnail(
+                thumbnailUrl,
+                "${playlist.title}s_thumbnail",
+                ContentScale.FillHeight,
+                Modifier.fillMaxSize()
+            )
+        },
         songCount = playlist.songCount,
         showSongsCount = showSongsCount,
         name = playlist.info?.name,
         channelName = playlist.channel?.name,
-        thumbnailSizePx = thumbnailSizePx,
-        thumbnailSizeDp = thumbnailSizeDp,
-        modifier = modifier,
-        alternative = alternative,
-        disableScrollingText = disableScrollingText,
-        isYoutubePlaylist = isYoutubePlaylist,
-        isEditable = isEditable
-    )
-}
-
-@Composable
-fun PlaylistItem(
-    thumbnailUrl: String?,
-    songCount: Int?,
-    name: String?,
-    channelName: String?,
-    thumbnailSizePx: Int,
-    thumbnailSizeDp: Dp,
-    modifier: Modifier = Modifier,
-    alternative: Boolean = false,
-    showSongsCount: Boolean = true,
-    disableScrollingText: Boolean,
-    isYoutubePlaylist : Boolean = false,
-    isEditable : Boolean = false
-) {
-    PlaylistItem(
-        thumbnailContent = {
-            AsyncImage(
-                model = thumbnailUrl?.thumbnail(thumbnailSizePx),
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
-        },
-        songCount = songCount,
-        showSongsCount = showSongsCount,
-        name = name,
-        channelName = channelName,
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
@@ -270,7 +228,7 @@ fun PlaylistItem(
 @Composable
 fun PlaylistItem(
     browseId: String? = null,
-    thumbnailContent: @Composable BoxScope.() -> Unit,
+    thumbnailContent: @Composable BoxWithConstraintsScope.() -> Unit,
     songCount: Int?,
     name: String?,
     channelName: String?,
@@ -287,101 +245,58 @@ fun PlaylistItem(
         alternative = alternative,
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier
-    ) { //centeredModifier ->
-        Box(
-            modifier = Modifier
-                .clip(thumbnailShape())
-                .background(color = colorPalette().background4)
-                .requiredSize(thumbnailSizeDp)
+    ) {
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth()
+                               .aspectRatio( 1f )
+                               .clip( thumbnailShape() )
+                               .background( colorPalette().background4 )
         ) {
-            thumbnailContent(
-                /*
-                modifier = Modifier
-                    .fillMaxSize()
+            thumbnailContent()
 
-                 */
+            name ?: return@BoxWithConstraints
+            val (icon, color) = when {
+                name.startsWith( PIPED_PREFIX, true ) ->
+                    painterResource( R.drawable.piped_logo ) to colorPalette().red
+
+                name.startsWith( PINNED_PREFIX, true ) ->
+                    painterResource( R.drawable.pin ) to colorPalette().accent
+
+                name.startsWith( MONTHLY_PREFIX, true ) ->
+                    painterResource( R.drawable.stat_month ) to colorPalette().accent
+
+                isYoutubePlaylist ->
+                    painterResource( R.drawable.ytmusic ) to Color.Red.copy( .75f ).compositeOver( Color.White )
+
+                else ->
+                    ColorPainter(Color.Transparent) to Color.Transparent
+            }
+
+            Icon(
+                painter = icon,
+                contentDescription = "origin_indicator",
+                tint = color,
+                modifier = Modifier.size( 40.dp ).padding( all = 5.dp )
             )
 
-            name?.let {
-                if (it.startsWith(PIPED_PREFIX,0,true)) {
-                    Image(
-                        painter = painterResource(R.drawable.piped_logo),
-                        colorFilter = ColorFilter.tint(colorPalette().red),
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(all = 5.dp),
-                        contentDescription = "Background Image",
-                        contentScale = ContentScale.Fit
-                    )
-                }
-                if (it.startsWith(PINNED_PREFIX,0,true)) {
-                    Image(
-                        painter = painterResource(R.drawable.pin),
-                        colorFilter = ColorFilter.tint(colorPalette().accent),
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(all = 5.dp),
-                        contentDescription = "Background Image",
-                        contentScale = ContentScale.Fit
-                    )
-                }
-                if (it.startsWith(MONTHLY_PREFIX,0,true)) {
-                    Image(
-                        painter = painterResource(R.drawable.stat_month),
-                        colorFilter = ColorFilter.tint(colorPalette().accent),
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(all = 5.dp),
-                        contentDescription = "Background Image",
-                        contentScale = ContentScale.Fit
-                    )
-                }
+            songCount?.let {
+                if( !showSongsCount ) return@let
 
-            }
-            if ((browseId?.isNotEmpty() == true && name?.startsWith(PIPED_PREFIX) == false) || isYoutubePlaylist) {
-                Image(
-                    painter = painterResource(R.drawable.ytmusic),
-                    colorFilter = ColorFilter.tint(if (isYoutubePlaylist) Color.Red.copy(0.75f).compositeOver(Color.White) else colorPalette().text),
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(all = 5.dp),
-                    contentDescription = "Background Image",
-                    contentScale = ContentScale.Fit
+                BasicText(
+                    text = songCount.toString(),
+                    style = typography().xxs.medium.color( colorPalette().onOverlay ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding( all = 4.dp )
+                                       .background(
+                                           color = colorPalette().overlay,
+                                           shape = RoundedCornerShape(4.dp)
+                                       )
+                                       .padding( all = 6.dp)
+                                       .align(Alignment.BottomEnd)
                 )
             }
-
-            if (isYoutubePlaylist && !isEditable){
-                Image(
-                    painter = painterResource(R.drawable.locked),
-                    colorFilter = ColorFilter.tint(Color.Red),
-                    modifier = Modifier
-                        .padding(all = 5.dp)
-                        .background(colorPalette().text, CircleShape)
-                        .padding(all = 5.dp)
-                        .size(18.dp)
-                        .align(Alignment.BottomStart),
-                    contentDescription = "Background Image",
-                    contentScale = ContentScale.Fit
-                )
-            }
-
-            if (showSongsCount)
-                songCount?.let {
-                    BasicText(
-                        text = "$songCount",
-                        style = typography().xxs.medium.color(colorPalette().onOverlay),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .padding(all = 4.dp)
-                            .background(color = colorPalette().overlay, shape = RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 6.dp)
-                            .align(Alignment.BottomEnd)
-                    )
-                }
-
         }
-
 
         ItemInfoContainer(
             horizontalAlignment = if (alternative && channelName == null) Alignment.CenterHorizontally else Alignment.Start,

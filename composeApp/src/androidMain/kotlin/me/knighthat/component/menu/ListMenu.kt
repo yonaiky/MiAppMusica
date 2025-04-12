@@ -58,8 +58,8 @@ object ListMenu {
         icon: @Composable RowScope.() -> Unit,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
-        onLongClick: (() -> Unit)? = null,
         onClick: () -> Unit = {},
+        onLongClick: (() -> Unit)? = null,
         trailingContent: @Composable () -> Unit = {}
     ) = Row(
         verticalAlignment = Alignment.CenterVertically,
