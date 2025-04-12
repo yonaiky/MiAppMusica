@@ -169,10 +169,16 @@ android {
             )
         }
 
+        create( "noAutoUpdate" ) {
+            initWith( maybeCreate("minified") )
+
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+        }
+
         // Specifically tailored to F-Droid build
         // inherited from minified build type
         release {
-            initWith( maybeCreate("minified") )
+            initWith( maybeCreate("noAutoUpdate") )
 
             // App's properties
             versionNameSuffix = "-fdroid"
@@ -191,7 +197,13 @@ android {
     applicationVariants.all {
         outputs.map { it as BaseVariantOutputImpl }
                .forEach { output ->
-                   output.outputFileName = "$APP_NAME-${buildType.name}.apk"
+                   val typeName =
+                       if( buildType.name == "noAutoUpdate" )
+                           "no-autoupdate"
+                       else
+                           buildType.name
+
+                   output.outputFileName = "$APP_NAME-$typeName.apk"
                }
     }
 
