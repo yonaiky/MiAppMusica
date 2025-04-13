@@ -138,7 +138,7 @@
     <string name="error_the_original_video_source_of_this_song_has_been_deleted">La source vidéo originale de ce titre a été supprimée</string>
     <string name="error_this_song_cannot_be_played_due_to_server_restrictions">Ce titre ne peut pas être lue en raison de restrictions du serveur</string>
     <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">L\'identifiant vidéo retourné ne correspond pas à celui demandé</string>
-    <string name="error_an_unknown_playback_error_has_occurred">Une erreur de lecture inconnue s\'est produite, si le problème persiste signalé le problème</string>
+    <string name="error_an_unknown_playback_error_has_occurred">Une erreur de lecture inconnue s\'est produite, si le problème persiste signalez le problème</string>
     <string name="tips">Recommandations</string>
     <string name="is_min_list_time_for_tips_or_quick_pics">C\'est la durée d\'écoute minimale pour inclure le titre comme une suggestion possible pour la sélection rapide et les recommandations</string>
     <string name="min_listening_time">Durée d\'écoute minimale</string>
@@ -952,7 +952,7 @@ Volume BAS : titre précédent</string>
     <string name="restart_dialog_body">Please open %s again after!</string>
     <string name="title_export_settings">Export settings</string>
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
-    <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
+    <string name="description_exclude_credentials">Les identifiants comme la connexion à YouTube sont exclus pour des raisons de sécurité</string>
     <string name="title_import_settings">Import settings</string>
     <string name="restore_settings_from_file">Restore your settings from file created by \"%s\"</string>
     <string name="title_import_migration_file">Import migration file</string>
