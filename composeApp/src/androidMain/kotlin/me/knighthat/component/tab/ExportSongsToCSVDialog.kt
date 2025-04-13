@@ -64,9 +64,9 @@ class ExportSongsToCSVDialog private constructor(
 
         @Composable
         operator fun invoke(
-            playlistId: Long = -1,
             playlistName: String,
-            songs: () -> List<Song>
+            songs: () -> List<Song>,
+            playlistBrowseId: String = ""
         ) = ExportSongsToCSVDialog(
             // [playlistName] is an mutable object. Therefore,
             // if it was changed externally, this "remembered"
@@ -86,7 +86,7 @@ class ExportSongsToCSVDialog private constructor(
                 CoroutineScope( Dispatchers.IO ).launch {
                     val songsToWrite = songs().map {
                         SongCSV(
-                            playlistId = playlistId,
+                            playlistBrowseId = playlistBrowseId,
                             playlistName = playlistName,
                             song = it
                         )

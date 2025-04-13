@@ -210,7 +210,7 @@ fun LocalPlaylistSongs(
     val shuffle = SongShuffler ( ::getSongs )
     val renameDialog = RenamePlaylistDialog { playlist }
     val exportDialog = ExportSongsToCSVDialog(
-        playlistId = playlistId,
+        playlistBrowseId = playlist?.browseId.orEmpty(),
         playlistName = playlist?.name ?: "",
         songs = ::getSongs
     )

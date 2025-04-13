@@ -6,7 +6,7 @@ import it.fast4x.rimusic.utils.durationTextToMillis
 
 data class SongCSV(
     val songId: String,
-    val playlistId: Long,
+    val playlistBrowseId: String,
     val playlistName: String,
     val title: String,
     val artists: String,
@@ -15,10 +15,10 @@ data class SongCSV(
 ) {
     constructor(
         song: Song,
-        playlistId: Long = 0,
+        playlistBrowseId: String = "",
         playlistName: String = ""
     ): this(
-        playlistId = playlistId,
+        playlistBrowseId = playlistBrowseId,
         playlistName = playlistName,
         songId = song.id,
         title = song.title,
@@ -28,7 +28,7 @@ data class SongCSV(
     )
 
     fun write( writer: ICsvFileWriter ) {
-        writer.writeRow( playlistId, playlistName, songId, title, artists, duration, thumbnailUrl )
+        writer.writeRow( playlistBrowseId, playlistName, songId, title, artists, duration, thumbnailUrl )
         writer.flush()      // Always flush after write to prevent overlapping
     }
 }
