@@ -6,6 +6,7 @@ import androidx.room.AutoMigration
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.sqlite.db.SimpleSQLiteQuery
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
@@ -265,10 +266,10 @@ object Database {
             this.block()
         }
 
-    fun checkpoint() = _internal.openHelper
-                                      .writableDatabase
-                                      .query( "PRAGMA wal_checkpoint(FULL)" )
-                                      .close()
+    fun checkpoint() = _internal.query( SimpleSQLiteQuery("PRAGMA wal_checkpoint(FULL)") )
+                                     .use {
+                                         if( it.moveToFirst() ) it.getInt( 0 ) else -1
+                                     }
 
     fun close() = _internal.close()
 }
