@@ -21,19 +21,22 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SliderControl
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.blurStrengthKey
+import it.fast4x.rimusic.utils.playerBackdropKey
 import it.fast4x.rimusic.utils.rememberPreference
 import me.knighthat.component.dialog.Dialog
 
 class BlurAdjuster private constructor(
     activeState: MutableState<Boolean>,
-    strengthState: MutableState<Float>
+    strengthState: MutableState<Float>,
+    backdropState: MutableState<Float>
 ): Dialog {
 
     companion object {
         @Composable
         operator fun invoke() = BlurAdjuster(
             remember { mutableStateOf( false ) },
-            rememberPreference( blurStrengthKey, 25f )
+            rememberPreference( blurStrengthKey, 25f ),
+            rememberPreference( playerBackdropKey, 0f ),
         )
     }
 
@@ -42,6 +45,7 @@ class BlurAdjuster private constructor(
         get() = stringResource( R.string.controls_title_blur_effect )
 
     var strength: Float by strengthState
+    var backdrop: Float by backdropState
     override var isActive: Boolean by activeState
 
     fun onDismiss()  { isActive = false }
@@ -66,6 +70,27 @@ class BlurAdjuster private constructor(
                     onSlide = { strength = it },
                     onSlideComplete = {},
                     toDisplay = { "%.02f".format(it) },
+                    range = 0f..100f
+                )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                IconButton(
+                    onClick = { backdrop = 0f },
+                    icon = R.drawable.drop_half_fill,
+                    color = colorPalette().favoritesIcon,
+                    modifier = Modifier.size( 24.dp )
+                )
+
+                SliderControl(
+                    state = backdrop,
+                    onSlide = { backdrop = it },
+                    onSlideComplete = {},
+                    toDisplay = { "%.0f".format(it) },
                     range = 0f..100f
                 )
             }

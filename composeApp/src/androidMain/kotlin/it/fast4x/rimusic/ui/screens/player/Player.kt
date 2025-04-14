@@ -201,7 +201,6 @@ import it.fast4x.rimusic.utils.albumCoverRotationKey
 import it.fast4x.rimusic.utils.animatedGradientKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
 import it.fast4x.rimusic.utils.blackgradientKey
-import it.fast4x.rimusic.utils.blurDarkenFactorKey
 import it.fast4x.rimusic.utils.bottomgradientKey
 import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
@@ -351,7 +350,6 @@ fun Player(
 
     val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
-    val defaultDarkenFactor = 0.2f
     val defaultSpacing = 0f
     val defaultFade = 5f
     val defaultImageCoverSize = 50f
@@ -360,7 +358,6 @@ fun Player(
     var thumbnailFade  by rememberPreference(thumbnailFadeKey, defaultFade)
     var thumbnailFadeEx  by rememberPreference(thumbnailFadeExKey, defaultFade)
     var imageCoverSize by rememberPreference(VinylSizeKey, defaultImageCoverSize)
-    var blurDarkenFactor by rememberPreference(blurDarkenFactorKey, defaultDarkenFactor)
     var showThumbnailOffsetDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -945,6 +942,14 @@ fun Player(
                 blurAdjuster.strength
             else
                 0f
+        }
+    }
+    val backdropColor by remember {
+        derivedStateOf {
+            Color.Black.copy(
+                // Ensure value can't go outside by accident
+                alpha = (blurAdjuster.backdrop / 100f).coerceIn( 0f, 1f )
+            )
         }
     }
 
@@ -2026,6 +2031,10 @@ fun Player(
                  modifier = Modifier.fillMaxSize()
                                     .blur( blurRadius.dp )
              )
+             Box(
+                 Modifier.fillMaxSize()
+                         .background( backdropColor )
+             )
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -2619,6 +2628,11 @@ fun Player(
                    modifier = Modifier.fillMaxSize()
                                       .blur( blurRadius.dp )
                )
+               Box(
+                   Modifier.fillMaxSize()
+                           .background( backdropColor )
+               )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = containerModifier
