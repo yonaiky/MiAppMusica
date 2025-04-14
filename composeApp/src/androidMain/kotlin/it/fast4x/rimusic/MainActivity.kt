@@ -1035,14 +1035,6 @@ class MainActivity :
                             val isVideo = binder?.player?.currentMediaItem?.isVideo ?: false
                             val isVideoEnabled =
                                 preferences.getBoolean(showButtonPlayerVideoKey, false)
-                            val player: @Composable () -> Unit = {
-                                Player(
-                                    navController = navController,
-                                    onDismiss = {
-                                        showPlayer = false
-                                    }
-                                )
-                            }
 
                             val youtubePlayer: @Composable () -> Unit = {
                                 binder?.player?.currentMediaItem?.mediaId?.let {
@@ -1085,7 +1077,7 @@ class MainActivity :
                                     },
                                     shape = thumbnailRoundness.shape
                                 ) {
-                                    player()
+                                    Player( navController ) { showPlayer = false }
                                 }
                             }
 
