@@ -208,7 +208,7 @@ class Search private constructor(
                 singleLine = true,
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions( imeAction = ImeAction.Search ),
-                keyboardActions = KeyboardActions(onDone = {
+                keyboardActions = KeyboardActions(onSearch = {
                     isVisible = inputValue.isNotBlank()
                     isFocused = false
                     keyboardController?.hide()
