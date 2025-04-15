@@ -20,6 +20,16 @@ data class Song(
     val likedAt: Long? = null,
     val totalPlayTimeMs: Long = 0
 ) {
+    companion object {
+        fun makePlaceholder( id: String ) =
+            Song(
+                id = id,
+                title = "",
+                durationText = null,
+                thumbnailUrl = null
+            )
+    }
+
     val formattedTotalPlayTime: String
         get() {
             val seconds = totalPlayTimeMs / 1000
