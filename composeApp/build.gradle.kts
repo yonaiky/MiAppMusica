@@ -171,8 +171,11 @@ android {
             )
         }
 
-        create( "noAutoUpdate" ) {
+        create( "izzy" ) {
             initWith( maybeCreate("minified") )
+
+            // App's properties
+            versionNameSuffix = "-izzy"
 
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
         }

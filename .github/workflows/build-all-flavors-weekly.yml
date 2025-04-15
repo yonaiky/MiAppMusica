@@ -147,9 +147,9 @@ jobs:
           path: |
             composeApp/build/outputs/apk/minified/*.apk
 
-  build-no-autoupdate:
+  build-izzy:
     needs: [verify-version]
-    name: Build no auto-update version
+    name: Build Izzy version
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
@@ -175,21 +175,21 @@ jobs:
           restore-keys: gradle-${{ runner.os }}-
 
       - name: Build with Gradle
-        run: ./gradlew assembleNoAutoUpdate
+        run: ./gradlew assembleIzzy
 
       - name: Upload artifacts for signing
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: unsigned-no-autoupdate
+          name: unsigned-izzy
           path: |
-            composeApp/build/outputs/apk/noAutoUpdate/*.apk
+            composeApp/build/outputs/apk/izzy/*.apk
 
   sign-apks:
     name: Sign all built APKs
     needs:
       - build-full
       - build-minified
-      - build-no-autoupdate
+      - build-izzy
     runs-on: ubuntu-latest
 
     steps:
