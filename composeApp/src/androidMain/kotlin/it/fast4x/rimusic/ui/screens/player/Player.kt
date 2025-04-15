@@ -121,6 +121,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import androidx.compose.ui.util.fastZip
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
 import androidx.core.graphics.ColorUtils.colorToHSL
@@ -293,6 +294,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.player.BlurAdjuster
@@ -313,24 +315,79 @@ fun Player(
     navController: NavController,
     onDismiss: () -> Unit,
 ) {
+    // Essentails
+    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
     val menuState = LocalMenuState.current
-
-    val effectRotationEnabled by rememberPreference(effectRotationKey, true)
-
-    val playerThumbnailSize by rememberPreference(
-        playerThumbnailSizeKey,
-        PlayerThumbnailSize.Biggest
-    )
-    var playerThumbnailSizeL by rememberPreference(
-        playerThumbnailSizeLKey,
-        PlayerThumbnailSize.Biggest
-    )
-
+    val binder = LocalPlayerServiceBinder.current ?: return
+    // Settings
     val disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, false)
-    val binder = LocalPlayerServiceBinder.current
+    val effectRotationEnabled by rememberPreference(effectRotationKey, true)
+    val playerThumbnailSize by rememberPreference( playerThumbnailSizeKey, PlayerThumbnailSize.Biggest )
+    var playerThumbnailSizeL by rememberPreference( playerThumbnailSizeLKey, PlayerThumbnailSize.Biggest )
+    val showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
+    var thumbnailSpacing  by rememberPreference( thumbnailSpacingKey, 0f )
+    var thumbnailSpacingL  by rememberPreference( thumbnailSpacingLKey, 0f )
+    var thumbnailFade  by rememberPreference( thumbnailFadeKey, 5f )
+    var thumbnailFadeEx  by rememberPreference( thumbnailFadeExKey, 5f )
+    var imageCoverSize by rememberPreference( VinylSizeKey, 50f )
+    val visualizerEnabled by rememberPreference( visualizerEnabledKey, false )
+    val queueDurationExpanded by rememberPreference( queueDurationExpandedKey, true )
+    val miniQueueExpanded by rememberPreference( miniQueueExpandedKey, true )
+    val statsExpanded by rememberPreference( statsExpandedKey, true )
+    val actionExpanded by rememberPreference( actionExpandedKey, true )
+    val colorPaletteName by rememberPreference( colorPaletteNameKey, ColorPaletteName.Dynamic )
+    var showthumbnail by rememberPreference( showthumbnailKey, true )
+    val showButtonPlayerAddToPlaylist by rememberPreference( showButtonPlayerAddToPlaylistKey, true )
+    val showButtonPlayerArrow by rememberPreference( showButtonPlayerArrowKey, true )
+    val showButtonPlayerDownload by rememberPreference( showButtonPlayerDownloadKey, true )
+    val showButtonPlayerLoop by rememberPreference( showButtonPlayerLoopKey, true )
+    val showButtonPlayerLyrics by rememberPreference( showButtonPlayerLyricsKey, true )
+    val expandedplayertoggle by rememberPreference( expandedplayertoggleKey, true )
+    val showButtonPlayerShuffle by rememberPreference( showButtonPlayerShuffleKey, true )
+    val showButtonPlayerSleepTimer by rememberPreference( showButtonPlayerSleepTimerKey, false )
+    val showButtonPlayerMenu by rememberPreference( showButtonPlayerMenuKey, false )
+    val showButtonPlayerStartRadio by rememberPreference( showButtonPlayerStartRadioKey, false )
+    val showButtonPlayerSystemEqualizer by rememberPreference( showButtonPlayerSystemEqualizerKey, false )
+    val showButtonPlayerVideo by rememberPreference( showButtonPlayerVideoKey, false )
+    val showTotalTimeQueue by rememberPreference( showTotalTimeQueueKey, true )
+    val backgroundProgress by rememberPreference( backgroundProgressKey, BackgroundProgress.MiniPlayer )
+    var queueLoopType by rememberPreference( queueLoopTypeKey, defaultValue = QueueLoopType.Default )
+    val showsongs by rememberPreference( showsongsKey, SongsNumber.`2` )
+    val showalbumcover by rememberPreference( showalbumcoverKey, true )
+    val tapqueue by rememberPreference( tapqueueKey, true )
+    val swipeUpQueue by rememberPreference( swipeUpQueueKey, true )
+    val playerType by rememberPreference( playerTypeKey, PlayerType.Essential )
+    val queueType by rememberPreference( queueTypeKey, QueueType.Essential )
+    val noblur by rememberPreference( noblurKey, true )
+    val fadingedge by rememberPreference( fadingedgeKey, false )
+    val colorPaletteMode by rememberPreference( colorPaletteModeKey, ColorPaletteMode.Dark )
+    val playerBackgroundColors by rememberPreference( playerBackgroundColorsKey, PlayerBackgroundColors.BlurredCoverColor )
+    val animatedGradient by rememberPreference( animatedGradientKey, AnimatedGradient.Linear )
+    val thumbnailTapEnabled by rememberPreference( thumbnailTapEnabledKey, true )
+    val showNextSongsInPlayer by rememberPreference( showNextSongsInPlayerKey, false )
+    val transparentBackgroundActionBarPlayer by rememberPreference( transparentBackgroundPlayerActionBarKey, false )
+    val showTopActionsBar by rememberPreference( showTopActionsBarKey, true )
+    val blackgradient by rememberPreference( blackgradientKey, false )
+    val bottomgradient by rememberPreference( bottomgradientKey, false )
+    val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
+    var discoverIsEnabled by rememberPreference( discoverKey, false )
+    val titleExpanded by rememberPreference( titleExpandedKey, true )
+    val timelineExpanded by rememberPreference( timelineExpandedKey, true )
+    val controlsExpanded by rememberPreference( controlsExpandedKey, true )
+    val showCoverThumbnailAnimation by rememberPreference( showCoverThumbnailAnimationKey, false )
+    var coverThumbnailAnimation by rememberPreference( coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl )
+    var albumCoverRotation by rememberPreference( albumCoverRotationKey, false )
+    val textoutline by rememberPreference( textoutlineKey, false )
+    val playlistindicator by rememberPreference( playlistindicatorKey, false )
+    val carousel by rememberPreference( carouselKey, true )
+    val carouselSize by rememberPreference( carouselSizeKey, CarouselSize.Biggest )
+    var showButtonPlayerDiscover by rememberPreference( showButtonPlayerDiscoverKey, false )
+    val actionspacedevenly by rememberPreference( actionspacedevenlyKey, false )
+    var expandedplayer by rememberPreference( expandedplayerKey, false )
 
-    binder?.player ?: return
+
     if (binder.player.currentTimeline.windowCount == 0) return
 
     var nullableMediaItem by remember {
@@ -348,23 +405,13 @@ fun Player(
         animationSpec = tween(durationMillis = 200), label = ""
     )
 
-    val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
 
-    val defaultSpacing = 0f
-    val defaultFade = 5f
-    val defaultImageCoverSize = 50f
-    var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, defaultSpacing)
-    var thumbnailSpacingL  by rememberPreference(thumbnailSpacingLKey, defaultSpacing)
-    var thumbnailFade  by rememberPreference(thumbnailFadeKey, defaultFade)
-    var thumbnailFadeEx  by rememberPreference(thumbnailFadeExKey, defaultFade)
-    var imageCoverSize by rememberPreference(VinylSizeKey, defaultImageCoverSize)
     var showThumbnailOffsetDialog by rememberSaveable {
         mutableStateOf(false)
     }
     var isShowingLyrics by rememberSaveable {
         mutableStateOf(false)
     }
-    val showvisthumbnail by rememberPreference(showvisthumbnailKey, false)
     var isShowingVisualizer by remember {
         mutableStateOf(false)
     }
@@ -381,10 +428,6 @@ fun Player(
         )
     }
 
-
-
-    val context = LocalContext.current
-
     var mediaItems by remember {
         mutableStateOf(binder.player.currentTimeline.mediaItems)
     }
@@ -395,12 +438,6 @@ fun Player(
     var playerError by remember {
         mutableStateOf<PlaybackException?>(binder.player.playerError)
     }
-
-    val queueDurationExpanded by rememberPreference(queueDurationExpandedKey, true)
-    val miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
-    val statsExpanded by rememberPreference(statsExpandedKey, true)
-    val actionExpanded by rememberPreference(actionExpandedKey, true)
-    val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
 
     fun PagerState.offsetForPage(page: Int) = (currentPage - page) + currentPageOffsetFraction
 
@@ -497,20 +534,6 @@ fun Player(
 
     val windowInsets = WindowInsets.systemBars
 
-    var artistsInfo by remember {
-        mutableStateOf(
-            mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")?.let { artistNames ->
-                mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.let { artistIds ->
-                    artistNames.zip(artistIds).map { (authorName, authorId) ->
-                        Info(authorId, authorName)
-                    }
-                }
-            }
-        )
-    }
-    val actionspacedevenly by rememberPreference(actionspacedevenlyKey, false)
-    var expandedplayer by rememberPreference(expandedplayerKey, false)
-
     var updateBrush by remember { mutableStateOf(false) }
 
     if (showlyricsthumbnail) expandedplayer = false
@@ -519,36 +542,32 @@ fun Player(
         updateBrush = true
     }
 
+    val artistInfos by remember( mediaItem ) {
+        val ids = mediaItem.mediaMetadata.extras?.getStringArrayList( "artistIds" ).orEmpty()
+        val names = mediaItem.mediaMetadata.extras?.getStringArrayList( "artistNames" ).orEmpty()
 
-    val ExistIdsExtras =
-        mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.size.toString()
+        if( ids.isNotEmpty() )
+            return@remember flowOf (
+                ids.fastZip( names ) { id, name -> Info(id, name) }
+            )
 
-    var artistIds = arrayListOf<String>()
-    var artistNames = arrayListOf<String>()
-
-
-    artistsInfo?.forEach { (id) -> artistIds = arrayListOf(id) }
-    if (ExistIdsExtras.equals(0)
-            .not()
-    ) mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds")?.toCollection(artistIds)
-
-    artistsInfo?.forEach { (name) -> artistNames = arrayListOf(name) }
-    if (ExistIdsExtras.equals(0)
-            .not()
-    ) mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames")?.toCollection(artistNames)
-
-
-
-    if (artistsInfo?.isEmpty() == true && ExistIdsExtras.equals(0).not()) {
-        artistsInfo = artistNames.let { artistNames ->
-            artistIds.let { artistIds ->
-                artistNames.zip(artistIds).map {
-                    Info(it.second, it.first)
+        Database.songArtistMapTable
+                .findArtistsOf( mediaItem.mediaId )
+                .distinctUntilChanged()
+                .map { list ->
+                    list.map { Info(it.id, it.name) }
                 }
-            }
-        }
-    }
-    val albumId = mediaItem.mediaMetadata.extras?.getString("albumId")
+    }.collectAsState( emptyList(), Dispatchers.IO )
+    val albumId by remember( mediaItem ) {
+        val result = mediaItem.mediaMetadata.extras?.getString("albumId")
+        if( !result.isNullOrBlank() )
+            return@remember flowOf( result )
+
+        Database.songAlbumMapTable
+                .findAlbumOf( mediaItem.mediaId )
+                .map { it?.id }
+    }.collectAsState( null, Dispatchers.IO )
+
 
     var downloadState by remember {
         mutableStateOf(Download.STATE_STOPPED)
@@ -557,43 +576,10 @@ fun Player(
 
     var isDownloaded by rememberSaveable { mutableStateOf(false) }
     isDownloaded = isDownloadedSong(mediaItem.mediaId)
-    var showthumbnail by rememberPreference(showthumbnailKey, true)
 
-    val showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
-    val showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
-    val showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
-    val showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
-    val showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
-    val expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
-    val showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
-    val showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
-    val showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
-    val showButtonPlayerStartRadio by rememberPreference(showButtonPlayerStartRadioKey, false)
-    val showButtonPlayerSystemEqualizer by rememberPreference(
-        showButtonPlayerSystemEqualizerKey,
-        false
-    )
-    val showButtonPlayerVideo by rememberPreference(showButtonPlayerVideoKey, false)
-
-    val showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
-    val backgroundProgress by rememberPreference(
-        backgroundProgressKey,
-        BackgroundProgress.MiniPlayer
-    )
-
-    var queueLoopType by rememberPreference(queueLoopTypeKey, defaultValue = QueueLoopType.Default)
     var showCircularSlider by remember {
         mutableStateOf(false)
     }
-    val showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
-    val showalbumcover by rememberPreference(showalbumcoverKey, true)
-    val tapqueue by rememberPreference(tapqueueKey, true)
-    val swipeUpQueue by rememberPreference(swipeUpQueueKey, true)
-    val playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
-    val queueType by rememberPreference(queueTypeKey, QueueType.Essential)
-    val noblur by rememberPreference(noblurKey, true)
-    val fadingedge by rememberPreference(fadingedgeKey, false)
-    val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -751,9 +737,6 @@ fun Player(
     var darkMuted by remember{ mutableStateOf(0) }
 
 
-
-    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
-
     @Composable
     fun saturate(color : Int): Color {
         val colorHSL by remember { mutableStateOf(floatArrayOf(0f, 0f, 0f)) }
@@ -776,14 +759,7 @@ fun Player(
         )
     }
 
-    val playerBackgroundColors by rememberPreference(
-        playerBackgroundColorsKey,
-        PlayerBackgroundColors.BlurredCoverColor
-    )
-    val animatedGradient by rememberPreference(
-        animatedGradientKey,
-        AnimatedGradient.Linear
-    )
+
     val isGradientBackgroundEnabled =
         playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
@@ -887,36 +863,19 @@ fun Player(
         mutableStateOf(false)
     }
 
-    val thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, true)
-    val showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
-
     var showQueue by rememberSaveable { mutableStateOf(false) }
     var showFullLyrics by rememberSaveable { mutableStateOf(false) }
     var showSearchEntity by rememberSaveable { mutableStateOf(false) }
-
-    val transparentBackgroundActionBarPlayer by rememberPreference(transparentBackgroundPlayerActionBarKey, false)
-    val showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
 
     var containerModifier = Modifier
         //.padding(bottom = bottomDp)
         .padding(bottom = 0.dp)
     var deltaX by remember { mutableStateOf(0f) }
-    val blackgradient by rememberPreference(blackgradientKey, false)
-    val bottomgradient by rememberPreference(bottomgradientKey, false)
-    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    var discoverIsEnabled by rememberPreference(discoverKey, false)
-    val titleExpanded by rememberPreference(titleExpandedKey, true)
-    val timelineExpanded by rememberPreference(timelineExpandedKey, true)
-    val controlsExpanded by rememberPreference(controlsExpandedKey, true)
-
-    val showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
-    var coverThumbnailAnimation by rememberPreference(coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl)
 
     var valueGrad by remember{ mutableStateOf(2) }
     val gradients = enumValues<AnimatedGradient>()
     var tempGradient by remember{ mutableStateOf(AnimatedGradient.Linear) }
-    var albumCoverRotation by rememberPreference(albumCoverRotationKey, false)
     var circleOffsetY by remember {mutableStateOf(0f)}
 
     @Composable
@@ -1294,7 +1253,7 @@ fun Player(
             mediaId = mediaItem.mediaId,
             title = mediaItem.mediaMetadata.title?.toString() ?: "",
             artist = mediaItem.mediaMetadata.artist?.toString(),
-            artistIds = artistsInfo,
+            artistIds = artistInfos,
             albumId = albumId,
             shouldBePlaying = shouldBePlaying,
             position = positionAndDuration.first,
@@ -1304,16 +1263,10 @@ fun Player(
             isExplicit = mediaItem.isExplicit
         )
     }
-    val textoutline by rememberPreference(textoutlineKey, false)
 
     val isSongMappedToPlaylist by remember( mediaItem.mediaId ) {
         Database.songPlaylistMapTable.isMapped( mediaItem.mediaId )
     }.collectAsState( false, Dispatchers.IO )
-    val playlistindicator by rememberPreference(playlistindicatorKey, false)
-    val carousel by rememberPreference(carouselKey, true)
-    val carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
-
-    var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
 
     blurAdjuster.Render()
 
@@ -2373,7 +2326,7 @@ fun Player(
                                     mediaId = mediaItem.mediaId,
                                     title = player.getMediaItemAt(index).mediaMetadata.title?.toString(),
                                     artist = player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
-                                    artistIds = artistsInfo,
+                                    artistIds = artistInfos,
                                     albumId = albumId,
                                     shouldBePlaying = shouldBePlaying,
                                     position = positionAndDuration.first,
@@ -2584,7 +2537,7 @@ fun Player(
                                             mediaId = mediaItem.mediaId,
                                             title = player.getMediaItemAt(it).mediaMetadata.title?.toString(),
                                             artist = player.getMediaItemAt(it).mediaMetadata.artist?.toString(),
-                                            artistIds = artistsInfo,
+                                            artistIds = artistInfos,
                                             albumId = albumId,
                                             shouldBePlaying = shouldBePlaying,
                                             position = positionAndDuration.first,
@@ -3055,7 +3008,7 @@ fun Player(
                                     mediaId = mediaItem.mediaId,
                                     title = player.getMediaItemAt(index).mediaMetadata.title?.toString(),
                                     artist = player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
-                                    artistIds = artistsInfo,
+                                    artistIds = artistInfos,
                                     albumId = albumId,
                                     shouldBePlaying = shouldBePlaying,
                                     position = positionAndDuration.first,

@@ -64,6 +64,19 @@ interface SongArtistMapTable {
     fun allSongsBy( artistId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
+     * @return all [Artist]s featured in this song
+     */
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Artist A
+        JOIN SongArtistMap SAM ON SAM.artistId = A.id
+        WHERE SAM.songId = :songId
+        ORDER BY A.ROWID
+        LIMIT :limit
+    """)
+    fun findArtistsOf( songId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
+
+    /**
      * Delete all mappings where songs aren't exist in `Song` table
      *
      * @return number of rows affected by this operation
