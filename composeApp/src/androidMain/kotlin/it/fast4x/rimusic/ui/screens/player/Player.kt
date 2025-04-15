@@ -540,6 +540,8 @@ fun Player(
 
     LaunchedEffect(mediaItem.mediaId) {
         updateBrush = true
+
+        Database.updateSongInDatabase( mediaItem.mediaId )
     }
 
     val artistInfos by remember( mediaItem ) {

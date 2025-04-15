@@ -8,9 +8,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.PlayerResponse
-import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.models.bodies.PlayerBody
-import it.fast4x.innertube.requests.nextPage
 import it.fast4x.innertube.requests.player
 import it.fast4x.innertube.requests.playerAdvanced
 import it.fast4x.rimusic.Database
@@ -18,7 +16,6 @@ import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.extensions.webpotoken.advancedPoTokenPlayer
 import it.fast4x.rimusic.isConnectionMeteredEnabled
 import it.fast4x.rimusic.models.Format
-import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.NoInternetException
 import it.fast4x.rimusic.service.TimeoutException
@@ -28,18 +25,14 @@ import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoginEnabled
 import it.fast4x.rimusic.useYtLoginOnlyForBrowse
-import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.getSignatureTimestampOrNull
 import it.fast4x.rimusic.utils.getStreamUrl
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import me.knighthat.invidious.Invidious
 import me.knighthat.invidious.request.player
 import me.knighthat.piped.Piped
 import me.knighthat.piped.request.player
-import me.knighthat.utils.PropUtils
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -99,68 +92,12 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
     }
 }
 
-/**
- * [Innertube.player] doesn't return everything about a song,
- * [Innertube.next] is an additional step to retrieve extra
- * information. I.E. individual artists featured in the song,
- * album this song belongs to, etc.
- */
-private fun updateSongInDatabase( videoId: String ) =
-    Database.asyncTransaction {
-        val nextPage: Innertube.NextPage?
-        val dbSong: Song
-
-        // This block is already running in worker thread,
-        // therefore, UI thread won't be blocked by this
-        runBlocking( Dispatchers.IO ) {
-            nextPage = Innertube.nextPage( NextBody(videoId = videoId) )?.getOrNull()
-            dbSong = songTable.findById(videoId).first() ?: Song.makePlaceholder(videoId)
-        }
-
-        // Do nothing if YT doesn't return anything for NextPage
-        nextPage ?: return@asyncTransaction
-
-        nextPage.itemsPage
-                ?.items
-                ?.firstOrNull()
-                ?.also {
-                    // This will ignore Song insert if exists
-                    insertIgnore( it.asMediaItem )
-
-                    // This updates Song properties to the one fetched
-                    // from the internet, while keeping "modified" properties intact
-                    val fetchedSong = it.asSong
-                    songTable.upsert(
-                        Song(
-                            id = videoId,
-                            title = PropUtils.retainIfModified( dbSong.title, fetchedSong.title ).orEmpty(),
-                            artistsText = PropUtils.retainIfModified(
-                                dbSong.artistsText,
-                                fetchedSong.artistsText
-                            ),
-                            durationText = PropUtils.retainIfModified(
-                                dbSong.durationText,
-                                fetchedSong.durationText
-                            ),
-                            thumbnailUrl = PropUtils.retainIfModified(
-                                dbSong.thumbnailUrl,
-                                fetchedSong.thumbnailUrl
-                            ),
-                            likedAt = dbSong.likedAt,
-                            totalPlayTimeMs = dbSong.totalPlayTimeMs
-                        )
-                    )
-                }
-    }
-
 @OptIn(UnstableApi::class)
 suspend fun getAvancedInnerTubeStream(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): PlayerResponse.StreamingData.Format? {
-    updateSongInDatabase( videoId )
-
     return advancedPoTokenPlayer(
         body = PlayerBody(videoId = videoId),
     ).fold(
@@ -246,8 +183,6 @@ suspend fun getInnerTubeStream(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): PlayerResponse.StreamingData.Format? {
-    updateSongInDatabase( videoId )
-
     return Innertube.playerAdvanced(
         body = PlayerBody(videoId = videoId),
         withLogin =  (!useYtLoginOnlyForBrowse() && isYouTubeLoginEnabled() && isYouTubeLoggedIn()),
@@ -326,8 +261,6 @@ suspend fun getInnerTubeFormatUrl(
     connectionMetered: Boolean,
     signatureTimestamp: Int? = getSignatureTimestampOrNull(videoId)
 ): PlayerResponse.StreamingData.Format? {
-    updateSongInDatabase( videoId )
-
     return Innertube.player(
         body = PlayerBody(videoId = videoId),
         //TODO manage login
@@ -401,8 +334,6 @@ private suspend fun getPipedFormatUrl(
     videoId: String,
     audioQualityFormat: AudioQualityFormat
 ): Uri {
-    updateSongInDatabase( videoId )
-
     val format = Piped.player( videoId )?.fold(
         {
             when (audioQualityFormat) {
@@ -443,8 +374,6 @@ private suspend fun getInvidiousFormatUrl(
     videoId: String,
     audioQualityFormat: AudioQualityFormat
 ): Uri {
-    updateSongInDatabase( videoId )
-
     val format = Invidious.player( videoId )?.fold(
         {
             when( audioQualityFormat ){
