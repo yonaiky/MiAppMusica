@@ -3,7 +3,6 @@ package me.knighthat.component
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.items
@@ -88,12 +87,15 @@ open class Sort<T: Enum<T>> (
                 text = if (it is TextView) it.text else it.name,
                 icon = {
                     TabToolBar.Icon(
-                        icon = if (it is Drawable) it.icon else painterResource(R.drawable.close),
-                        modifier = Modifier.clickable {
-                            menuState.hide()
-                            sortBy = it
-                        }
+                        if( it is Drawable )
+                            it.icon
+                        else
+                            painterResource( R.drawable.close )
                     )
+                },
+                onClick = {
+                    menuState.hide()
+                    sortBy = it
                 }
             )
         }
@@ -110,12 +112,16 @@ open class Sort<T: Enum<T>> (
                 text = if (it is TextView) it.text else it.name,
                 icon = {
                     TabToolBar.Icon(
-                        icon = if (it is Drawable) it.icon else painterResource(R.drawable.close),
-                        modifier = Modifier.clickable {
-                            menuState.hide()
-                            sortBy = it
-                        }
+                        icon =
+                            if( it is Drawable )
+                                it.icon
+                            else
+                                painterResource( R.drawable.close )
                     )
+                },
+                onClick = {
+                    menuState.hide()
+                    sortBy = it
                 }
             )
         }

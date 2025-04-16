@@ -28,7 +28,6 @@ import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.rememberPreference
 import me.knighthat.component.menu.MenuConstants.CONTENT_HEIGHT_FRACTION
-import me.knighthat.component.menu.MenuConstants.CONTENT_HORIZONTAL_PADDING
 import me.knighthat.component.menu.MenuConstants.CONTENT_TOP_PADDING
 
 object ListMenu {
@@ -40,8 +39,6 @@ object ListMenu {
         Column(
             Modifier.heightIn( max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp )
                     .padding(
-                        start = CONTENT_HORIZONTAL_PADDING.dp,
-                        end = CONTENT_HORIZONTAL_PADDING.dp,
                         top = CONTENT_TOP_PADDING.dp
                         // bottom padding is handled by [Modifier#navigationBarsPadding]
                     )
@@ -66,12 +63,12 @@ object ListMenu {
         horizontalArrangement = Arrangement.spacedBy( 24.dp ),
         modifier = modifier.fillMaxWidth()
                            .alpha( if (enabled) 1f else 0.4f )
-                           .padding( horizontal = 24.dp )
                            .combinedClickable(
                                enabled = enabled,
                                onClick = onClick,
                                onLongClick = onLongClick
                            )
+                           .padding( horizontal = 24.dp )
     ) {
         icon()
 
