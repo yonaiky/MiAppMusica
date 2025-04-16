@@ -959,6 +959,7 @@ class MainActivity :
                 if (intent.action in arrayOf(
                         action_songs,
                         action_albums,
+                        actions_artists,
                         action_library,
                         action_search
                     )
@@ -967,6 +968,7 @@ class MainActivity :
                         when (intent?.action) {
                             action_songs -> HomeScreenTabs.Songs.index
                             action_albums -> HomeScreenTabs.Albums.index
+                            actions_artists -> HomeScreenTabs.Artists.index
                             action_library -> HomeScreenTabs.Playlists.index
                             action_search -> -2
                             else -> -1
@@ -1341,6 +1343,7 @@ class MainActivity :
         const val action_search = "it.fast4x.rimusic.action.search"
         const val action_songs = "it.fast4x.rimusic.action.songs"
         const val action_albums = "it.fast4x.rimusic.action.albums"
+        const val actions_artists = "it.fast4x.rimusic.action.artists"
         const val action_library = "it.fast4x.rimusic.action.library"
         const val action_copy_crash_log = "it.fast4x.rimusic.action.copy_crash_log"
     }
