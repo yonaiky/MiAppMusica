@@ -140,7 +140,7 @@ class ImportSongsFromCSV(
     }
 
     override val supportedMimes: Array<String> = arrayOf("text/csv", "text/comma-separated-values")
-    override val iconId: Int = R.drawable.resource_import
+    override val iconId: Int = R.drawable.import_outline
     override val messageId: Int = R.string.import_playlist
     override val menuIconTitle: String
         @Composable

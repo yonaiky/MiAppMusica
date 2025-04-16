@@ -198,7 +198,7 @@ class MediaLibrarySessionCallback @Inject constructor(
                         PlayerServiceModern.ARTIST,
                         context.getString(R.string.artists),
                         null,
-                        drawableUri(R.drawable.artists),
+                        drawableUri(R.drawable.people),
                         MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS
                     ),
                     browsableMediaItem(

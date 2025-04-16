@@ -479,7 +479,7 @@ fun PlaylistsItemMenu(
 
                     onSelectUnselect?.let { onSelectUnselect ->
                         MenuEntry(
-                            icon = R.drawable.checked,
+                            icon = R.drawable.checked_filled,
                             text = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}",
                             onClick = {
                                 onDismiss()
@@ -489,7 +489,7 @@ fun PlaylistsItemMenu(
                     }
                     onSelect?.let { onSelect ->
                         MenuEntry(
-                            icon = R.drawable.checked,
+                            icon = R.drawable.checked_filled,
                             text = stringResource(R.string.item_select),
                             onClick = {
                                 onDismiss()
@@ -661,7 +661,7 @@ fun PlaylistsItemMenu(
 
                     onExport?.let { onExport ->
                         MenuEntry(
-                            icon = R.drawable.export,
+                            icon = R.drawable.export_outline,
                             text = stringResource(R.string.export_playlist),
                             onClick = {
                                 onDismiss()
@@ -672,7 +672,7 @@ fun PlaylistsItemMenu(
 
                     onImport?.let { onImport ->
                         MenuEntry(
-                            icon = R.drawable.resource_import,
+                            icon = R.drawable.import_outline,
                             text = stringResource(R.string.import_playlist),
                             onClick = {
                                 onDismiss()
@@ -682,7 +682,7 @@ fun PlaylistsItemMenu(
                     }
                     onImportFavorites?.let {
                         MenuEntry(
-                            icon = R.drawable.resource_import,
+                            icon = R.drawable.import_outline,
                             text = stringResource(R.string.import_favorites),
                             onClick = {
                                 onDismiss()

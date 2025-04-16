@@ -404,7 +404,7 @@ fun PlaylistsItemGridMenu(
 
                 onSelectUnselect?.let { onSelectUnselect ->
                     GridMenuItem(
-                        icon = R.drawable.checked,
+                        icon = R.drawable.checked_filled,
                         title = R.string.item_select,
                         titleString = selectText,
                         colorIcon = colorPalette.text,
@@ -586,7 +586,7 @@ fun PlaylistsItemGridMenu(
 
                 onExport?.let { onExport ->
                     GridMenuItem(
-                        icon = R.drawable.export,
+                        icon = R.drawable.export_outline,
                         title = R.string.export_playlist,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
@@ -599,7 +599,7 @@ fun PlaylistsItemGridMenu(
 
                 onImport?.let { onImport ->
                     GridMenuItem(
-                        icon = R.drawable.resource_import,
+                        icon = R.drawable.import_outline,
                         title = R.string.import_playlist,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,
@@ -612,7 +612,7 @@ fun PlaylistsItemGridMenu(
 
                 onImportFavorites?.let { onImport ->
                     GridMenuItem(
-                        icon = R.drawable.resource_import,
+                        icon = R.drawable.import_outline,
                         title = R.string.import_favorites,
                         colorIcon = colorPalette.text,
                         colorText = colorPalette.text,

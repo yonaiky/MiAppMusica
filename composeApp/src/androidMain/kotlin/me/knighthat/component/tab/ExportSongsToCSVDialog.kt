@@ -103,7 +103,7 @@ class ExportSongsToCSVDialog private constructor(
     }
 
     override val extension: String = "csv"
-    override val iconId: Int = R.drawable.export
+    override val iconId: Int = R.drawable.export_outline
     override val messageId: Int = R.string.export_playlist
     override val dialogTitle: String
         @Composable

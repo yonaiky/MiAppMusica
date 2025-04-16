@@ -97,7 +97,7 @@ class ExportCacheDialog(
     }
 
     override val extension: String = "m4a"
-    override val iconId: Int = R.drawable.export
+    override val iconId: Int = R.drawable.export_outline
     override val messageId: Int = R.string.info_export_cached_or_downloaded_song
     override val dialogTitle: String
         @Composable

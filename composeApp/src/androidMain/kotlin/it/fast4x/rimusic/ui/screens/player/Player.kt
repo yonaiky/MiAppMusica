@@ -1693,7 +1693,7 @@ fun Player(
                         if (!isLandscape || ((playerType == PlayerType.Essential) && !showthumbnail))
                          if (expandedplayertoggle && !showlyricsthumbnail)
                             IconButton(
-                                icon = R.drawable.minmax,
+                                icon = R.drawable.maximize,
                                 color = if (expandedplayer) colorPalette().accent else Color.Gray,
                                 enabled = true,
                                 onClick = {

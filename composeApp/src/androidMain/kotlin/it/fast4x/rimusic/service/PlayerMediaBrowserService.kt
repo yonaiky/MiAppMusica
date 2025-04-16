@@ -265,7 +265,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.artists)
                 .setTitle((this as Context).resources.getString(R.string.artists))
-                .setIconUri(uriFor(R.drawable.artists))
+                .setIconUri(uriFor(R.drawable.people))
                 .build(),
             MediaItem.FLAG_BROWSABLE
         )
@@ -343,7 +343,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                     if (playlist.name.startsWith(MONTHLY_PREFIX)) playlist.name.replace(
                         MONTHLY_PREFIX,"1:",true) else playlist.name)
                 .setSubtitle("$songCount ${(this@PlayerMediaBrowserService as Context).resources.getString(R.string.songs)}")
-                .setIconUri(uriFor(if (playlist.name.startsWith(PINNED_PREFIX)) R.drawable.pin else
+                .setIconUri(uriFor(if (playlist.name.startsWith(PINNED_PREFIX)) R.drawable.pin_filled else
                     if (playlist.name.startsWith(MONTHLY_PREFIX)) R.drawable.stat_month else R.drawable.playlist))
                 .build(),
             MediaItem.FLAG_PLAYABLE
@@ -355,7 +355,7 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                 .setMediaId(mediaId)
                 .setTitle(if (description.title.toString().startsWith("0:")) description.title.toString().substringAfter("0:") else
                     if (description.title.toString().startsWith("1:")) getTitleMonthlyPlaylistFromContext(description.title.toString().substringAfter("1:"), this@PlayerMediaBrowserService) else description.title.toString())
-                .setIconUri(uriFor(if (description.title.toString().startsWith("0:")) R.drawable.pin else
+                .setIconUri(uriFor(if (description.title.toString().startsWith("0:")) R.drawable.pin_filled else
                     if (description.title.toString().startsWith("1:")) R.drawable.stat_month else R.drawable.playlist))
                 .build(),
             MediaItem.FLAG_PLAYABLE

@@ -1557,7 +1557,7 @@ fun MediaItemMenu(
                 if (!isLocal) onGoToArtist?.let { onGoToArtist ->
                     artists.forEach { artist ->
                         MenuEntry(
-                            icon = R.drawable.artists,
+                            icon = R.drawable.people,
                             text = stringResource(R.string.more_of) + " ${artist.name}",
                             onClick = {
                                 onDismiss()

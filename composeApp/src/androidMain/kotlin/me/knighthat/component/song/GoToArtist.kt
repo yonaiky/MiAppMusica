@@ -29,7 +29,7 @@ class GoToArtist private constructor(
             GoToArtist( navController, getSong )
     }
 
-    override val iconId: Int = R.drawable.artists
+    override val iconId: Int = R.drawable.people
     // TODO: Add string "About this artist"
     override val messageId: Int = R.string.artists
     override val menuIconTitle: String

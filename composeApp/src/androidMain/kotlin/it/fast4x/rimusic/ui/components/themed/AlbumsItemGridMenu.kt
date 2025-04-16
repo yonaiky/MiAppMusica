@@ -381,7 +381,7 @@ fun AlbumsItemGridMenu(
 
                     onSelectUnselect?.let { onSelectUnselect ->
                         GridMenuItem(
-                            icon = R.drawable.checked,
+                            icon = R.drawable.checked_filled,
                             title = R.string.item_select,
                             titleString = selectText,
                             colorIcon = color,

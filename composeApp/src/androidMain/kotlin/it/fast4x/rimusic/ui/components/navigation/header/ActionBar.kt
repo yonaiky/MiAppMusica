@@ -59,7 +59,7 @@ private fun HamburgerMenu(
     if (isPipSupported && enablePictureInPicture)
         menu.add(
             DropdownMenu.Item(
-                R.drawable.picture,
+                R.drawable.images_sharp,
                 R.string.menu_go_to_picture_in_picture
             ) { pipHandler.enterPictureInPictureMode() }
         )
