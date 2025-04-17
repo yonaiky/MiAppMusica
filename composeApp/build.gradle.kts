@@ -14,13 +14,11 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.room)
     alias(libs.plugins.hilt)
-    //alias(libs.plugins.conveyor)
 }
 
 repositories {
     google()
     mavenCentral()
-    //mavenLocal()
     maven { url = uri("https://jitpack.io") }
 }
 
@@ -62,11 +60,6 @@ kotlin {
                 exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
             }
             */
-
-
-
-
-
         }
 
         androidMain.dependencies {
@@ -216,24 +209,16 @@ android {
         kotlin.srcDir("src/$name/kotlin")
     }
 
-
-
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-//    }
-
     androidResources {
         generateLocaleConfig = true
     }
 }
-
-
 
 java {
     toolchain {
@@ -246,17 +231,9 @@ compose.desktop {
 
         mainClass = "MainKt"
 
-
         //conveyor
         version = "0.0.1"
         group = "rimusic"
-/*
-
-        nativeDistributions {
-            vendor = "fast4x RiMusic"
-            description = "Desktop music player"
-        }
-        */
 
         //jpackage
         nativeDistributions {
@@ -267,22 +244,7 @@ compose.desktop {
             targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             packageName = "RiMusic.DesktopApp"
             packageVersion = "0.0.1"
-
-            /*
-            val iconsRoot = project.file("desktop-icons")
-            windows {
-                iconFile.set(iconsRoot.resolve("icon-windows.ico"))
-            }
-            macOS {
-                iconFile.set(iconsRoot.resolve("icon-mac.icns"))
-            }
-            linux {
-                iconFile.set(iconsRoot.resolve("icon-linux.png"))
-            }
-
-             */
         }
-
     }
 }
 
@@ -293,20 +255,6 @@ compose.resources {
 
 room {
     schemaDirectory("$projectDir/schemas")
-}
-
-dependencies {
-
-    listOf(
-        "kspAndroid",
-         "ksp",
-        //"kspIosSimulatorArm64",
-        //"kspIosX64",
-        //"kspIosArm64"
-    ).forEach {
-        add(it, libs.room.compiler)
-    }
-
 }
 
 dependencies {
@@ -355,8 +303,6 @@ dependencies {
     implementation(projects.lrclib)
     implementation(projects.piped)
 
-
-//    coreLibraryDesugaring(libs.desugaring)
     coreLibraryDesugaring(libs.desugaring.nio)
 
     // Debug only
