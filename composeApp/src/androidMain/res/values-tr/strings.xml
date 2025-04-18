@@ -960,4 +960,5 @@
     <string name="removed_from_dislikes">%s beğenilmeyenlerden kaldırıldı</string>
     <string name="artist_featured_on">Öne çıkan</string>
     <string name="artist_fans_might_also_like">Hayranların da beğenebileceği</string>
+    <string name="update_changelogs">%s changelogs</string>
 </resources>
