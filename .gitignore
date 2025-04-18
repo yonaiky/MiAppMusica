@@ -17,6 +17,7 @@
 ###      ANDROID
 **APK keystore/
 .DS_Store
+composeApp/src/androidMain/res/raw/release_notes.txt
 
 ###      PROPERTIES
 **local.properties

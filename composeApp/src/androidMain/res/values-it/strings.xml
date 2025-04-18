@@ -960,4 +960,5 @@
     <string name="removed_from_dislikes">Rimosso %s dai non piacuti</string>
     <string name="artist_featured_on">In evidenza su</string>
     <string name="artist_fans_might_also_like">Potrebbe anche piacere ai fan</string>
+    <string name="update_changelogs">%s changelogs</string>
 </resources>

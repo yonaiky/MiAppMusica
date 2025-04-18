@@ -960,4 +960,5 @@
     <string name="removed_from_dislikes">%s foi removido dos não curtidos</string>
     <string name="artist_featured_on">Em destaque</string>
     <string name="artist_fans_might_also_like">Fãs também podem gostar de</string>
+    <string name="update_changelogs">%s changelogs</string>
 </resources>
