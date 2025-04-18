@@ -117,7 +117,7 @@ interface AlbumTable {
      *
      * @param album intended to update
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateReplace( album: Album )
 
     /**

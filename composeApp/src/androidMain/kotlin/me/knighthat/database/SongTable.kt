@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Update
 import androidx.room.Upsert
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.enums.SongSortBy
@@ -156,7 +157,7 @@ interface SongTable {
      * @param song intended to update
      * @return number of rows affected by the this operation
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateReplace( song: Song )
 
     /**
