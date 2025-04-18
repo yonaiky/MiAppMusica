@@ -6,7 +6,13 @@
     
   <br>
 
-  <a title="Crowdin" target="_blank" href="https://translate.kreate.knighthat.me/project/kreate"><img src="https://badges.crowdin.net/kreate/localized.svg"></a>
+  <a title="Get latest version" target="_blank" href="https://github.com/knighthat/kreate/releases/latest">
+    <img src="https://api.knighthat.me/kreate/downloads/latest" alt="latest version download count" />
+  </a>
+  <a title="Crowdin" target="_blank" href="https://translate.kreate.knighthat.me/project/kreate">
+    <img src="https://badges.crowdin.net/kreate/localized.svg" alt="localization progress">
+  </a>
+  <img src="https://api.knighthat.me/kreate/downloads/total" alt="latest version download count" />
 </div>
 
 
