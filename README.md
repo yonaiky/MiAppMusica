@@ -6,13 +6,9 @@
     
   <br>
 
-  <a title="Get latest version" target="_blank" href="https://github.com/knighthat/kreate/releases/latest">
-    <img src="https://api.knighthat.me/kreate/downloads/latest" alt="latest version download count" />
-  </a>
-  <a title="Crowdin" target="_blank" href="https://translate.kreate.knighthat.me/project/kreate">
-    <img src="https://badges.crowdin.net/kreate/localized.svg" alt="localization progress">
-  </a>
-  <img src="https://api.knighthat.me/kreate/downloads/total" alt="latest version download count" />
+  [![Latest version download count](https://api.knighthat.me/kreate/downloads/latest)](https://github.com/knighthat/kreate/releases/latest)
+  [![Localization progress](https://badges.crowdin.net/kreate/localized.svg)](https://translate.kreate.knighthat.me/project/kreate)
+  ![Total download count](https://api.knighthat.me/kreate/downloads/total)
 </div>
 
 
