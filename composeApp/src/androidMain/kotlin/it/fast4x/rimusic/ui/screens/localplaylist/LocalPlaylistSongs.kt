@@ -75,6 +75,7 @@ import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.service.isLocal
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
@@ -101,7 +102,6 @@ import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DeletePlaylist
 import it.fast4x.rimusic.utils.PositionLock
-import it.fast4x.rimusic.utils.Reposition
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
@@ -119,6 +119,7 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getPipedSession
+import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
@@ -143,6 +144,7 @@ import me.knighthat.component.SongItem
 import me.knighthat.component.playlist.PinPlaylist
 import me.knighthat.component.playlist.PlaylistSongsSort
 import me.knighthat.component.playlist.RenamePlaylistDialog
+import me.knighthat.component.playlist.Reposition
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
@@ -210,7 +212,7 @@ fun LocalPlaylistSongs(
     val shuffle = SongShuffler ( ::getSongs )
     val renameDialog = RenamePlaylistDialog { playlist }
     val exportDialog = ExportSongsToCSVDialog(
-        playlistId = playlistId,
+        playlistBrowseId = playlist?.browseId.orEmpty(),
         playlistName = playlist?.name ?: "",
         songs = ::getSongs
     )
@@ -491,9 +493,22 @@ fun LocalPlaylistSongs(
         lazyListState = lazyListState,
         key = items,
         onDragEnd = { fromIndex, toIndex ->
-            //Log.d("mediaItem","reoder playlist $playlistId, from $fromIndex, to $toIndex")
             Database.asyncTransaction {
-                songPlaylistMapTable.move( playlistId, fromIndex, toIndex )
+                if( !isAtLeastAndroid12 ) {
+                    // This block should function exactly to the SQL statement
+                    // Except it's slower
+                    val mutableItems = items.toMutableList()
+                    val movedSong = mutableItems.removeAt( fromIndex )
+                    mutableItems.add( toIndex, movedSong )
+
+                    mutableItems.mapIndexed { index, song ->
+                                    SongPlaylistMap( song.id, playlistId, index )
+                                }
+                                .also( songPlaylistMapTable::updateReplace )
+                } else
+                    // SQL statement makes faster adjustment with better optimization
+                    // Unfortunately, it requires Android 31+ to work.
+                    songPlaylistMapTable.move( playlistId, fromIndex, toIndex )
             }
         },
         extraItemCount = 1

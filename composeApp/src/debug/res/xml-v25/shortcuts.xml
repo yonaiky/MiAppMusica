@@ -7,21 +7,9 @@
         android:shortcutShortLabel="@string/search">
         <intent
             android:targetClass="it.fast4x.rimusic.MainActivity"
-            android:targetPackage="it.fast4x.rimusic.debug"
+            android:targetPackage="me.knighthat.kreate.debug"
             android:action="it.fast4x.rimusic.action.search" />
     </shortcut>
-    <!--
-    <shortcut
-        android:shortcutId="songs"
-        android:enabled="true"
-        android:icon="@drawable/disc"
-        android:shortcutShortLabel="@string/songs">
-        <intent
-            android:targetClass="it.fast4x.rimusic.MainActivity"
-            android:targetPackage="it.fast4x.rimusic.debug"
-            android:action="it.fast4x.rimusic.action.songs" />
-    </shortcut>
-    -->
     <shortcut
         android:shortcutId="albums"
         android:enabled="true"
@@ -29,8 +17,18 @@
         android:shortcutShortLabel="@string/albums">
         <intent
             android:targetClass="it.fast4x.rimusic.MainActivity"
-            android:targetPackage="it.fast4x.rimusic.debug"
+            android:targetPackage="me.knighthat.kreate.debug"
             android:action="it.fast4x.rimusic.action.albums" />
+    </shortcut>
+    <shortcut
+            android:shortcutId="artists"
+            android:enabled="true"
+            android:icon="@drawable/people"
+            android:shortcutShortLabel="@string/artists">
+        <intent
+                android:targetClass="it.fast4x.rimusic.MainActivity"
+                android:targetPackage="me.knighthat.kreate.debug"
+                android:action="it.fast4x.rimusic.action.artists" />
     </shortcut>
     <shortcut
         android:shortcutId="library"
@@ -39,7 +37,7 @@
         android:shortcutShortLabel="@string/playlists">
         <intent
             android:targetClass="it.fast4x.rimusic.MainActivity"
-            android:targetPackage="it.fast4x.rimusic.debug"
+            android:targetPackage="me.knighthat.kreate.debug"
             android:action="it.fast4x.rimusic.action.library" />
     </shortcut>
     <shortcut
@@ -49,7 +47,7 @@
         android:shortcutShortLabel="@string/copy_crash_log_to_clipboard">
         <intent
             android:targetClass="it.fast4x.rimusic.MainActivity"
-            android:targetPackage="it.fast4x.rimusic.debug"
+            android:targetPackage="me.knighthat.kreate.debug"
             android:action="it.fast4x.rimusic.action.copy_crash_log" />
     </shortcut>
 </shortcuts>

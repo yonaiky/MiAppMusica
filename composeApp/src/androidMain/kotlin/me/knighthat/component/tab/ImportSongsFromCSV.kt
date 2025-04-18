@@ -6,7 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.util.fastForEach
+import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastMap
 import app.kreate.android.R
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.knighthat.component.ImportFromFile
+import me.knighthat.utils.DurationUtils
 import me.knighthat.utils.Toaster
 import me.knighthat.utils.csv.SongCSV
 import java.io.InputStream
@@ -48,51 +49,51 @@ class ImportSongsFromCSV(
         private fun parseFromCsvFile( inputStream: InputStream ): List<SongCSV> =
             csvReader().readAllWithHeader(inputStream)
                        .fastMap { row ->      // Experimental, revert back to [map] if needed
+
+                           // Previous version of Kreate uses "PlaylistBrowseId" as playlistId,
+                           // this is wrong and must be correct to empty string before inserting
+                           // to the database
+                           var browseId = row["PlaylistBrowseId"].orEmpty()
+                           if( browseId.toLongOrNull() != null )
+                               browseId = ""
+
+                           // For backward compatibility, RiMusic exports duration
+                           // in human-readable format "00:00" while Kreate exports
+                           // in seconds.
+                           val rawDuration = row["Duration"].orEmpty()
+                           val convertedDuration =
+                               if( !DurationUtils.isHumanReadable( rawDuration ) )
+                                   formatAsDuration( rawDuration.toLong().times( 1000 ) )
+                               else
+                                   rawDuration
+
                            SongCSV(
-                               playlistId = (row["PlaylistBrowseId"] ?: "-1").toLong(),
-                               playlistName = row["PlaylistName"] ?: "",
-                               songId = row["MediaId"] ?: "",
-                               title = row["Title"] ?: "",
-                               artists = row["Artists"] ?: "",
-                               thumbnailUrl = row["ThumbnailUrl"] ?: "",
-                               duration = (row["Duration"]?.toLong() ?: 0L).run {
-                                   // Duration is saved as second
-                                   formatAsDuration(this.times(1000L))
-                               }
+                               playlistBrowseId = browseId,
+                               playlistName = row["PlaylistName"].orEmpty(),
+                               songId = row["MediaId"].orEmpty(),
+                               title = row["Title"].orEmpty(),
+                               artists = row["Artists"].orEmpty(),
+                               thumbnailUrl = row["ThumbnailUrl"].orEmpty(),
+                               duration = convertedDuration
                            )
                        }
                        .toList()        // Make it immutable
 
-        private fun importSongs( songs: List<SongCSV> ): Unit =
-            Database.asyncTransaction {
-                songs.fastForEach {
-                    // Skip this song if it doesn't have id
-                    if( it.songId.isBlank() ) return@fastForEach
-
-                    this.songTable.upsert(      // Existing songs should be replaced by the one defined in CSV file, else, insert it.
-                        Song(
-                            id = it.songId,
-                            title = it.title,
-                            artistsText = it.artists,
-                            thumbnailUrl = it.thumbnailUrl,
-                            durationText = it.duration,
-                            totalPlayTimeMs = 1L       // Bypass hidden song checker
-                        )
-                    )
-
-                    // '-1' playlistId indicates song doesn't belong to any playlist
-                    if( it.playlistId != -1L && it.playlistName.isNotBlank() ) {
-                        playlistTable.upsert(       // Existing playlists should be replaced by the one defined in CSV file, else, insert it.
-                            Playlist( it.playlistId, it.playlistName )
-                        )
-
-                        songPlaylistMapTable.map( it.songId, it.playlistId )
-                    }
-                }
-
-                // Show message when it's done
-                Toaster.done()
-            }
+        private fun processSongs( songs: List<SongCSV> ): Map<Pair<String, String>, List<Song>> =
+            songs.fastFilter { it.songId.isNotBlank() }
+                 .groupBy { it.playlistName to it.playlistBrowseId }
+                 .mapValues { (_, songs) ->
+                     songs.fastMap {
+                         Song(
+                             id = it.songId,
+                             title = it.title,
+                             artistsText = it.artists,
+                             thumbnailUrl = it.thumbnailUrl,
+                             durationText = it.duration,
+                             totalPlayTimeMs = 1L       // Bypass hidden song checker
+                         )
+                     }
+                 }
 
         @Composable
         operator fun invoke() = ImportSongsFromCSV(
@@ -105,17 +106,41 @@ class ImportSongsFromCSV(
                 // Run in background to prevent UI thread
                 // from freezing due to large file.
                 CoroutineScope( Dispatchers.IO ).launch {
+                    // Songs with no playlist
+                    val straySongs = mutableListOf<Song>()
+                    val combos = mutableMapOf<Playlist, List<Song>>()
+
                     appContext().contentResolver
                                 .openInputStream( uri )
                                 ?.use( ::parseFromCsvFile )       // Use [use] because it closes stream on exit
-                                ?.also( ::importSongs )
+                                ?.let( ::processSongs )
+                                ?.forEach { (playlist, songs) ->
+                                    if( playlist.first.isNotBlank() ) {
+                                        val realPlaylist = Playlist(name = playlist.first, browseId = playlist.second)
+                                        combos[realPlaylist] = songs
+                                    } else
+                                        straySongs.addAll( songs )
+                                }
+
+                    Database.asyncTransaction {
+                        songTable.upsert( straySongs )
+
+                        combos.forEach { (playlist, songs) ->
+                            songTable.upsert( songs )       // Upsert first to override existing songs
+                            mapIgnore( playlist, *songs.toTypedArray() )
+                        }
+
+                        // Show message when it's done
+                        Toaster.done()
+                    }
+
                 }
             }
         )
     }
 
     override val supportedMimes: Array<String> = arrayOf("text/csv", "text/comma-separated-values")
-    override val iconId: Int = R.drawable.resource_import
+    override val iconId: Int = R.drawable.import_outline
     override val messageId: Int = R.string.import_playlist
     override val menuIconTitle: String
         @Composable

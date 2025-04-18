@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
-import androidx.room.Upsert
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongArtistMap
@@ -35,17 +34,22 @@ interface SongArtistMapTable {
     fun insertIgnore( songArtistMap: SongArtistMap )
 
     /**
-     * Attempt to write the list of [SongArtistMap] to database.
+     * Attempt to write list of [SongArtistMap] into database.
      *
-     * If record exist (determined by its primary key),
-     * existing record's columns will be replaced
-     * by provided data.
+     * ### Standalone use
      *
-     * @param songArtistMap list of [SongArtistMap] to insert to database
-     * @return list of ROWID of successfully modified [SongArtistMap]
+     * When error occurs and [SQLException] is thrown,
+     * it'll simply be ignored.
+     *
+     * ### Transaction use
+     *
+     * When error occurs and [SQLException] is thrown,
+     * it'll simply be ignored and the transaction continues.
+     *
+     * @param songArtistMaps data intended to insert in to database
      */
-    @Upsert
-    fun upsert( songArtistMap: List<SongArtistMap> ): List<Long>
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertIgnore( songArtistMaps: List<SongArtistMap> )
 
     /**
      * @param artistId of artist to look for
@@ -62,6 +66,19 @@ interface SongArtistMapTable {
         LIMIT :limit
     """)
     fun allSongsBy( artistId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
+
+    /**
+     * @return all [Artist]s featured in this song
+     */
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Artist A
+        JOIN SongArtistMap SAM ON SAM.artistId = A.id
+        WHERE SAM.songId = :songId
+        ORDER BY A.ROWID
+        LIMIT :limit
+    """)
+    fun findArtistsOf( songId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
 
     /**
      * Delete all mappings where songs aren't exist in `Song` table

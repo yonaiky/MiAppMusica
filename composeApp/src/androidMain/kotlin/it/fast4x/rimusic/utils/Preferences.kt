@@ -9,14 +9,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.edit
-import com.google.gson.Gson
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.HomePage
 import it.fast4x.rimusic.models.Song
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
 import timber.log.Timber
 
 const val lastPlayerThumbnailSizeKey = "lastPlayerThumbnailSize"
@@ -142,7 +138,7 @@ const val playbackDurationKey = "playbackDuration"
 const val blurStrengthKey = "blurScale"
 //const val blurStrength2Key = "blurScale"
 const val blurDarkenFactorKey = "blurDarkenFactor"
-const val playbackFadeDurationKey = "playbackFadeDuration"
+const val playerBackdropKey = "playerBackdrop"
 const val playbackFadeAudioDurationKey = "playbackFadeAudioDuration"
 const val showTotalTimeQueueKey = "showTotalTimeQueue"
 const val backgroundProgressKey = "backgroundProgress"

@@ -3,6 +3,7 @@ package it.fast4x.rimusic.service.modern
 import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
+import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSpec
 import it.fast4x.innertube.Innertube
@@ -56,17 +57,15 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
         return dataSpec //.withUri(Uri.parse(dataSpec.uri.toString()))
     }
 
-    //var dataSpecReturn: DataSpec = dataSpec
     try {
-        //runBlocking(Dispatchers.IO) {
-            //if loggedin use advanced player with webPotoken and new newpipe extractor
-            val format = if (!isYouTubeLoggedIn()) getInnerTubeStream(videoId, audioQualityFormat, connectionMetered)
-            else getAvancedInnerTubeStream(videoId, audioQualityFormat, connectionMetered)
+        val format =
+            if ( isYouTubeLoggedIn() )
+                getAvancedInnerTubeStream(videoId, audioQualityFormat, connectionMetered)
+            else
+                getInnerTubeStream(videoId, audioQualityFormat, connectionMetered)
 
-            println("PlayerServiceModern DataSpecProcess Playing song ${videoId} from url=${format?.url}")
-            return dataSpec.withUri(Uri.parse(format?.url)).subrange(dataSpec.uriPositionOffset, chunkLength)
-        //}
-
+        println("PlayerServiceModern DataSpecProcess Playing song $videoId from url=${format?.url}")
+        return dataSpec.withUri(Uri.parse(format?.url)).subrange(dataSpec.uriPositionOffset, chunkLength)
 
     } catch ( e: LoginRequiredException ) {
         try {
@@ -87,27 +86,6 @@ internal suspend fun PlayerServiceModern.dataSpecProcess(
         println("PlayerServiceModern DataSpecProcess Error: ${e.stackTraceToString()}")
         val format = getInnerTubeStream(videoId, audioQualityFormat, connectionMetered)
         return dataSpec.withUri(Uri.parse(format?.url)).subrange(dataSpec.uriPositionOffset, chunkLength)
-
-//        println("PlayerServiceModern DataSpecProcess Playing song $videoId from ALTERNATIVE url")
-//        val alternativeUrl = "https://jossred.josprox.com/yt/stream/$videoId"
-//        return dataSpec.withUri(alternativeUrl.toUri())
-
-        // Temporary disabled piped and invidious
-//        try {
-//            // Switch to Piped
-//            val formatUrl = getPipedFormatUrl( videoId, audioQualityFormat )
-//
-//            println("PlayerServiceModern DataSpecProcess Playing song $videoId from url $formatUrl")
-//            return dataSpec.withUri( formatUrl )
-//
-//        } catch ( e: NoSuchElementException ) {
-//            // Switch to Invidious
-//            val formatUrl = getInvidiousFormatUrl( videoId, audioQualityFormat )
-//
-//            println("PlayerServiceModern DataSpecProcess Playing song $videoId from url $formatUrl")
-//            return dataSpec.withUri( formatUrl )
-//        }
-
     } catch ( e: Exception ) {
         // Rethrow exception if it's not handled
         throw e
@@ -125,7 +103,6 @@ suspend fun getAvancedInnerTubeStream(
     ).fold(
         { playerResponse ->
             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream playabilityStatus ${playerResponse.second?.playabilityStatus?.status} for song $videoId from adaptiveFormats itag ${playerResponse.second?.streamingData?.adaptiveFormats?.map { it.itag }}")
-            //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream playabilityStatus ${playerResponse.second?.playabilityStatus?.status} for song $videoId from formats itag ${playerResponse.second?.streamingData?.formats?.map { it.itag }}")
             when(playerResponse.second?.playabilityStatus?.status) {
                 "OK" -> {
                     // SELECT FORMAT BY ITAG
@@ -136,60 +113,44 @@ suspend fun getAvancedInnerTubeStream(
                         AudioQualityFormat.Medium -> playerResponse.second?.streamingData?.mediumQualityFormat
                         AudioQualityFormat.Low -> playerResponse.second?.streamingData?.lowestQualityFormat
                     }
-                        // *********************
-
-                        // SELECT FORMAT BY BITRATE
-//                    val selectedFormat = playerResponse.streamingData?.formats?.filter { it.isAudio }
-//                        ?: playerResponse.streamingData?.adaptiveFormats?.map { it.asFormat }?.filter { it.isAudio }
-//                    playerResponse.streamingData?.adaptiveFormats
-//                        ?.filter { it.isAudio }
-//                        ?.maxByOrNull {
-//                            ( it.bitrate?.times(
-//                                when (audioQualityFormat) {
-//                                    AudioQualityFormat.Auto -> if (!isConnectionMeteredEnabled() && !connectionMetered) 2 else 1
-//                                    AudioQualityFormat.High -> 2
-//                                    AudioQualityFormat.Medium -> 1
-//                                    AudioQualityFormat.Low -> 0
-//                                }
-//                            ) ?: 0 ) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
-//                        }
-                        // *********************
-
-                        .let {
-                            it?.copy(url = getStreamUrl(it, videoId))
+                    .let {
+                        it?.copy(url = getStreamUrl(it, videoId))
+                    }
+                    .let {
+                        if (playerResponse.first != null) {
+                            it?.copy(url = it.url?.plus("&cpn=${playerResponse.first}&range=0-${it.contentLength ?: 10000000}"))
+                        } else {
+                            it?.copy(url = it.url?.plus("&range=0-${it.contentLength ?: 10000000}"))
                         }
-                        .let {
-                            if (playerResponse.first != null) {
-                                it?.copy(url = it.url?.plus("&cpn=${playerResponse.first}&range=0-${it.contentLength ?: 10000000}"))
-                            } else {
-                                it?.copy(url = it.url?.plus("&range=0-${it.contentLength ?: 10000000}"))
+                    }
+                    .let {
+                        if (playerResponse.third != null)
+                            it?.copy(url = it.url?.plus("&pot=${playerResponse.third}"))
+                        else it
+                    }
+                    .also {
+                        println("PlayerServiceModern MyDownloadHelper DataSpecProcess getAdvancedInnerTubeStream url ${it?.url}")
+
+                        println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream song $videoId itag selected ${it}")
+                        Database.asyncTransaction {
+                            val isVideoExist = runBlocking {
+                                songTable.exists( videoId ).first()
                             }
-                        }
-                        .let {
-                            if (playerResponse.third != null)
-                                it?.copy(url = it.url?.plus("&pot=${playerResponse.third}"))
-                            else it
-                        }
-                        .also {
-                            println("PlayerServiceModern MyDownloadHelper DataSpecProcess getAdvancedInnerTubeStream url ${it?.url}")
+                            if( !isVideoExist ) return@asyncTransaction
 
-                            println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream song $videoId itag selected ${it}")
-                            //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
-                            Database.asyncTransaction {
-                                formatTable.upsert(
-                                    Format(
-                                        songId = videoId,
-                                        itag = it?.itag?.toInt(),
-                                        mimeType = it?.mimeType,
-                                        contentLength = it?.contentLength,
-                                        bitrate = it?.bitrate?.toLong(),
-                                        lastModified = it?.lastModified,
-                                        loudnessDb = it?.loudnessDb?.toFloat()
-                                    )
+                            formatTable.upsert(
+                                Format(
+                                    songId = videoId,
+                                    itag = it?.itag?.toInt(),
+                                    mimeType = it?.mimeType,
+                                    contentLength = it?.contentLength,
+                                    bitrate = it?.bitrate?.toLong(),
+                                    lastModified = it?.lastModified,
+                                    loudnessDb = it?.loudnessDb?.toFloat()
                                 )
-                            }
-                            //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
+                            )
                         }
+                    }
                 }
                 "LOGIN_REQUIRED" -> throw LoginRequiredException()
                 "UNPLAYABLE" -> throw UnplayableException()
@@ -228,7 +189,6 @@ suspend fun getInnerTubeStream(
     ).fold(
         { playerResponse ->
             println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream playabilityStatus ${playerResponse.second?.playabilityStatus?.status} for song $videoId from adaptiveFormats itag ${playerResponse.second?.streamingData?.adaptiveFormats?.map { it.itag }}")
-            //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream playabilityStatus ${playerResponse.second?.playabilityStatus?.status} for song $videoId from formats itag ${playerResponse.second?.streamingData?.formats?.map { it.itag }}")
             when(playerResponse.second?.playabilityStatus?.status) {
                 "OK" -> {
                     // SELECT FORMAT BY ITAG
@@ -239,53 +199,34 @@ suspend fun getInnerTubeStream(
                         AudioQualityFormat.Medium -> playerResponse.second?.streamingData?.mediumQualityFormat
                         AudioQualityFormat.Low -> playerResponse.second?.streamingData?.lowestQualityFormat
                     }
-                        // *********************
-
-                        // SELECT FORMAT BY BITRATE
-//                    val selectedFormat = playerResponse.streamingData?.formats?.filter { it.isAudio }
-//                        ?: playerResponse.streamingData?.adaptiveFormats?.map { it.asFormat }?.filter { it.isAudio }
-//                    playerResponse.streamingData?.adaptiveFormats
-//                        ?.filter { it.isAudio }
-//                        ?.maxByOrNull {
-//                            ( it.bitrate?.times(
-//                                when (audioQualityFormat) {
-//                                    AudioQualityFormat.Auto -> if (!isConnectionMeteredEnabled() && !connectionMetered) 2 else 1
-//                                    AudioQualityFormat.High -> 2
-//                                    AudioQualityFormat.Medium -> 1
-//                                    AudioQualityFormat.Low -> 0
-//                                }
-//                            ) ?: 0 ) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
-//                        }
-                        // *********************
-
-                        .let {
-                            if (playerResponse.first != null) {
-                                it?.copy(url = it.url?.plus("&cpn=${playerResponse.first}&range=0-${it.contentLength ?: 10000000}"))
-                            } else {
-                                it?.copy(url = it.url?.plus("&range=0-${it.contentLength ?: 10000000}"))
-                            }
+                    .let {
+                        if (playerResponse.first != null) {
+                            it?.copy(url = it.url?.plus("&cpn=${playerResponse.first}&range=0-${it.contentLength ?: 10000000}"))
+                        } else {
+                            it?.copy(url = it.url?.plus("&range=0-${it.contentLength ?: 10000000}"))
                         }
-                        .also {
-                            println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream song $videoId itag selected ${it}")
-                            Database.asyncTransaction {
-                                val isVideoExist = runBlocking {
-                                    songTable.exists( videoId ).first()
-                                }
-                                if( !isVideoExist ) return@asyncTransaction
+                    }
+                    .also {
+                        println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnerTubeStream song $videoId itag selected ${it}")
+                        Database.asyncTransaction {
+                            val isVideoExist = runBlocking {
+                                songTable.exists( videoId ).first()
+                            }
+                            if( !isVideoExist ) return@asyncTransaction
 
-                                formatTable.upsert(
-                                    Format(
-                                        songId = videoId,
-                                        itag = it?.itag,
-                                        mimeType = it?.mimeType,
-                                        contentLength = it?.contentLength,
-                                        bitrate = it?.bitrate?.toLong(),
-                                        lastModified = it?.lastModified,
-                                        loudnessDb = it?.loudnessDb?.toFloat()
-                                    )
+                            formatTable.upsert(
+                                Format(
+                                    songId = videoId,
+                                    itag = it?.itag,
+                                    mimeType = it?.mimeType,
+                                    contentLength = it?.contentLength,
+                                    bitrate = it?.bitrate?.toLong(),
+                                    lastModified = it?.lastModified,
+                                    loudnessDb = it?.loudnessDb?.toFloat()
                                 )
-                            }
+                            )
                         }
+                    }
                 }
                 "LOGIN_REQUIRED" -> throw LoginRequiredException()
                 "UNPLAYABLE" -> throw UnplayableException()
@@ -339,44 +280,21 @@ suspend fun getInnerTubeFormatUrl(
                         AudioQualityFormat.Medium -> playerResponse.streamingData?.mediumQualityFormat
                         AudioQualityFormat.Low -> playerResponse.streamingData?.lowestQualityFormat
                     }
-                    // *********************
-
-                    // SELECT FORMAT BY BITRATE
-//                    val selectedFormat = playerResponse.streamingData?.formats?.filter { it.isAudio }
-//                        ?: playerResponse.streamingData?.adaptiveFormats?.map { it.asFormat }?.filter { it.isAudio }
-//                    playerResponse.streamingData?.adaptiveFormats
-//                        ?.filter { it.isAudio }
-//                        ?.maxByOrNull {
-//                            ( it.bitrate?.times(
-//                                when (audioQualityFormat) {
-//                                    AudioQualityFormat.Auto -> if (!isConnectionMeteredEnabled() && !connectionMetered) 2 else 1
-//                                    AudioQualityFormat.High -> 2
-//                                    AudioQualityFormat.Medium -> 1
-//                                    AudioQualityFormat.Low -> 0
-//                                }
-//                            ) ?: 0 ) + (if (it.mimeType.startsWith("audio/webm")) 10240 else 0)
-//                        }
-                    // *********************
-
-                        .let {
-                            it?.copy(url = getStreamUrl(it, videoId))
-                        }
-//                    .let {
-//                        // recover streaming url with newpipe extractor and specify range to avoid YouTube's throttling
-//                        if (it?.url != null)
-//                            it.copy(url = "${it.url}&range=0-${it.contentLength ?: 10000000}")
-//                        else
-//                            it?.copy(url = getStreamUrl(it, videoId))
-//
-//                    }
+                    .let {
+                        it?.copy(url = getStreamUrl(it, videoId))
+                    }
                     .also {
                         println("PlayerServiceModern MyDownloadHelper DataSpecProcess getInnertubeFormat song $videoId itag selected ${it}")
-                        //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat before upsert format $it")
                         Database.asyncTransaction {
+                            val isVideoExist = runBlocking {
+                                songTable.exists( videoId ).first()
+                            }
+                            if( !isVideoExist ) return@asyncTransaction
+
                             formatTable.upsert(
                                 Format(
                                     songId = videoId,
-                                    itag = it?.itag?.toInt(),
+                                    itag = it?.itag,
                                     mimeType = it?.mimeType,
                                     contentLength = it?.contentLength,
                                     bitrate = it?.bitrate?.toLong(),
@@ -385,7 +303,6 @@ suspend fun getInnerTubeFormatUrl(
                                 )
                             )
                         }
-                        //println("PlayerServiceModern MyDownloadHelper DataSpecProcess getMediaFormat after upsert format $it")
                     }
                 }
                 "LOGIN_REQUIRED" -> throw LoginRequiredException()
@@ -425,8 +342,12 @@ private suspend fun getPipedFormatUrl(
                 AudioQualityFormat.Medium -> it?.mediumQualityFormat
                 AudioQualityFormat.Low -> it?.lowestQualityFormat
             }.also {
-                //println("PlayerService MyDownloadHelper DataSpecProcess getPipedFormatUrl before upsert format $it")
                 Database.asyncTransaction {
+                    val isVideoExist = runBlocking {
+                        songTable.exists( videoId ).first()
+                    }
+                    if( !isVideoExist ) return@asyncTransaction
+
                     formatTable.upsert(
                         Format(
                             songId = videoId,
@@ -437,7 +358,6 @@ private suspend fun getPipedFormatUrl(
                         )
                     )
                 }
-                //println("PlayerService MyDownloadHelper DataSpecProcess getPipedFormatUrl after upsert format $it")
             }
         },
         {
@@ -447,7 +367,7 @@ private suspend fun getPipedFormatUrl(
     )
 
     // Return parsed URL to play song or throw error if none of the responses is valid
-    return Uri.parse( format?.url ) ?: throw NoSuchElementException( "Could not find any playable format from Piped ($videoId)" )
+    return format?.url?.toUri() ?: throw NoSuchElementException( "Could not find any playable format from Piped ($videoId)" )
 }
 
 private suspend fun getInvidiousFormatUrl(
@@ -462,8 +382,12 @@ private suspend fun getInvidiousFormatUrl(
                 AudioQualityFormat.Medium -> it?.mediumQualityFormat
                 AudioQualityFormat.Low -> it?.lowestQualityFormat
             }.also {
-                //println("PlayerService MyDownloadHelper DataSpecProcess getInvidiousFormatUrl before upsert format $it")
                 Database.asyncTransaction {
+                    val isVideoExist = runBlocking {
+                        songTable.exists( videoId ).first()
+                    }
+                    if( !isVideoExist ) return@asyncTransaction
+
                     formatTable.upsert(
                         Format(
                             songId = videoId,
@@ -473,7 +397,6 @@ private suspend fun getInvidiousFormatUrl(
                         )
                     )
                 }
-                //println("PlayerService MyDownloadHelper DataSpecProcess getInvidiousFormatUrl after upsert format $it")
             }
         },
         {
@@ -483,7 +406,7 @@ private suspend fun getInvidiousFormatUrl(
     )
 
     // Return parsed URL to play song or throw error if none of the responses is valid
-    return Uri.parse( format?.url ) ?: throw NoSuchElementException( "Could not find any playable format from Invidious ($videoId)" )
+    return format?.url?.toUri() ?: throw NoSuchElementException( "Could not find any playable format from Invidious ($videoId)" )
 }
 
 

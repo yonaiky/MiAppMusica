@@ -90,7 +90,7 @@ fun HomeScreen(
             if (enableQuickPicksPage)
                 Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
             Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
-            Item(2, stringResource(R.string.artists), R.drawable.artists)
+            Item(2, stringResource(R.string.artists), R.drawable.people)
             Item(3, stringResource(R.string.albums), R.drawable.album)
             Item(4, stringResource(R.string.playlists), R.drawable.library)
         }

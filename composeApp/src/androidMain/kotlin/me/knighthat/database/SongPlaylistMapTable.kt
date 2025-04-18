@@ -1,8 +1,12 @@
 package me.knighthat.database
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Dao
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
+import androidx.room.Update
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.enums.SortOrder
@@ -72,6 +76,9 @@ interface SongPlaylistMapTable {
     """)
     fun allSongsOf( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateReplace( songPlaylistMaps: List<SongPlaylistMap> ): Int
+
     /**
      * @param songId of playlist to look for
      * @param playlistId playlist to look into
@@ -124,6 +131,7 @@ interface SongPlaylistMapTable {
      *
      * @return number of rows affected by this operation
      */
+    @RequiresApi(Build.VERSION_CODES.R)
     @Query("""
         UPDATE SongPlaylistMap 
         SET position = shuffled.new_position
@@ -146,6 +154,7 @@ interface SongPlaylistMapTable {
      *
      * @return number of rows affected by this operation
      */
+    @RequiresApi(Build.VERSION_CODES.S)
     @Query("""
         UPDATE SongPlaylistMap
         SET position = updated.new_position

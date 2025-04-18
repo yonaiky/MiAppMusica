@@ -260,7 +260,7 @@ fun PlaylistItem(
                     painterResource( R.drawable.piped_logo ) to colorPalette().red
 
                 name.startsWith( PINNED_PREFIX, true ) ->
-                    painterResource( R.drawable.pin ) to colorPalette().accent
+                    painterResource( R.drawable.pin_filled ) to colorPalette().accent
 
                 name.startsWith( MONTHLY_PREFIX, true ) ->
                     painterResource( R.drawable.stat_month ) to colorPalette().accent

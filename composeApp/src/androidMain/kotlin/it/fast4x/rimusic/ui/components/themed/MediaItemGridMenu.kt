@@ -950,7 +950,7 @@ fun MediaItemGridMenu (
                     onGoToArtist?.let { onGoToArtist ->
                         artists.forEach { artist ->
                             GridMenuItem(
-                                icon = R.drawable.artists,
+                                icon = R.drawable.people,
                                 title = R.string.more_of,
                                 titleString = artist.name ?: "",
                                 colorIcon = colorPalette.text,

@@ -113,8 +113,10 @@ object Updater {
                 fetchUpdate()
 
             NewUpdateAvailableDialog.isActive = trimVersion( BuildConfig.VERSION_NAME ) != trimVersion( tagName )
-            if( !NewUpdateAvailableDialog.isActive )
+            if( !NewUpdateAvailableDialog.isActive ) {
                 Toaster.i( R.string.info_no_update_available )
+                NewUpdateAvailableDialog.isCancelled = true
+            }
         } catch( e: Exception ) {
             val message = when( e ) {
                 is UnknownHostException -> appContext().getString( R.string.error_no_internet )

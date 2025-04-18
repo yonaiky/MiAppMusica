@@ -43,7 +43,7 @@ class ItemSelector<E> private constructor(
         }
 
     override val iconId: Int
-        get() = if( isActive ) R.drawable.checked else R.drawable.unchecked
+        get() = if( isActive ) R.drawable.checked_filled else R.drawable.unchecked_outline
     override val messageId: Int
         get() = if ( isActive ) R.string.item_deselect else R.string.item_select
     override val menuIconTitle: String

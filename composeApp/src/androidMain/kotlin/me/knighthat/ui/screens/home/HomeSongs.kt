@@ -251,7 +251,7 @@ fun HomeSongs( navController: NavController ) {
 
     // This phrase loads all songs across types into [items]
     // No filtration applied to this stage, only sort
-    LaunchedEffect( builtInPlaylist, topPlaylists.period, odSort.sortBy, songSort.sortBy, songSort.sortOrder, hiddenSongs.isHiddenExcluded() ) {
+    LaunchedEffect( builtInPlaylist, topPlaylists.period, odSort.sortBy, songSort.sortBy, songSort.sortOrder, hiddenSongs.isFirstIcon ) {
         isLoading = true
 
         val retrievedSongs = when( builtInPlaylist ) {
@@ -273,7 +273,7 @@ fun HomeSongs( navController: NavController ) {
                                                                .filter { it.state == Download.STATE_COMPLETED }
                                                                .fastMap { it.request.id }
                 Database.songTable
-                        .sortAll( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isHiddenExcluded() )
+                        .sortAll( songSort.sortBy, songSort.sortOrder )
                         .map { list ->
                             list.fastFilter { it.id in downloaded }
                         }
@@ -382,8 +382,7 @@ fun HomeSongs( navController: NavController ) {
                     this.add( locator )
                     this.add( downloadAllDialog )
                     this.add( deleteDownloadsDialog )
-                    //this.add( deleteSongDialog )
-                    if (builtInPlaylist == BuiltInPlaylist.All || builtInPlaylist == BuiltInPlaylist.Downloaded)
+                    if (builtInPlaylist == BuiltInPlaylist.All )
                         this.add( hiddenSongs )
                     this.add( shuffle )
                     this.add( itemSelector )

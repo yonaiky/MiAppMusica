@@ -58,7 +58,6 @@ import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
 import it.fast4x.rimusic.ui.screens.mood.MoodScreen
 import it.fast4x.rimusic.ui.screens.mood.MoodsPageScreen
 import it.fast4x.rimusic.ui.screens.newreleases.NewreleasesScreen
-import it.fast4x.rimusic.ui.screens.player.Player
 import it.fast4x.rimusic.ui.screens.player.Queue
 import it.fast4x.rimusic.ui.screens.playlist.PlaylistScreen
 import it.fast4x.rimusic.ui.screens.podcast.PodcastScreen
@@ -183,15 +182,6 @@ fun AppNavigation(
                     navController = navController,
                     onDismiss = {},
                     onDiscoverClick = {}
-                )
-            }
-        }
-
-        composable(route = NavRoutes.player.name) {
-            modalBottomSheetPage {
-                Player(
-                    navController = navController,
-                    onDismiss = {}
                 )
             }
         }

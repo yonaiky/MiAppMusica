@@ -6,6 +6,11 @@ import androidx.room.AutoMigration
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.sqlite.db.SimpleSQLiteQuery
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.nextPage
+import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
@@ -19,7 +24,11 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import me.knighthat.database.AlbumTable
 import me.knighthat.database.ArtistTable
 import me.knighthat.database.Converters
@@ -46,6 +55,7 @@ import me.knighthat.database.migration.From26To27Migration
 import me.knighthat.database.migration.From3To4Migration
 import me.knighthat.database.migration.From7To8Migration
 import me.knighthat.database.migration.From8To9Migration
+import me.knighthat.utils.PropUtils
 
 object Database {
     const val FILE_NAME = "data.db"
@@ -81,6 +91,60 @@ object Database {
     //**********************************************
 
     /**
+     * [Innertube.player] doesn't return everything about a song,
+     * [Innertube.next] is an additional step to retrieve extra
+     * information. I.E. individual artists featured in the song,
+     * album this song belongs to, etc.
+     */
+    fun updateSongInDatabase( videoId: String ) =
+        asyncTransaction {
+            val nextPage: Innertube.NextPage?
+            val dbSong: Song
+
+            // This block is already running in worker thread,
+            // therefore, UI thread won't be blocked by this
+            runBlocking( Dispatchers.IO ) {
+                nextPage = Innertube.nextPage( NextBody(videoId = videoId) )?.getOrNull()
+                dbSong = songTable.findById(videoId).first() ?: Song.makePlaceholder(videoId)
+            }
+
+            // Do nothing if YT doesn't return anything for NextPage
+            nextPage ?: return@asyncTransaction
+
+            nextPage.itemsPage
+                    ?.items
+                    ?.firstOrNull()
+                    ?.also {
+                        // This will ignore Song insert if exists
+                        insertIgnore( it.asMediaItem )
+
+                        // This updates Song properties to the one fetched
+                        // from the internet, while keeping "modified" properties intact
+                        val fetchedSong = it.asSong
+                        songTable.upsert(
+                            Song(
+                                id = videoId,
+                                title = PropUtils.retainIfModified( dbSong.title, fetchedSong.title ).orEmpty(),
+                                artistsText = PropUtils.retainIfModified(
+                                    dbSong.artistsText,
+                                    fetchedSong.artistsText
+                                ),
+                                durationText = PropUtils.retainIfModified(
+                                    dbSong.durationText,
+                                    fetchedSong.durationText
+                                ),
+                                thumbnailUrl = PropUtils.retainIfModified(
+                                    dbSong.thumbnailUrl,
+                                    fetchedSong.thumbnailUrl
+                                ),
+                                likedAt = dbSong.likedAt,
+                                totalPlayTimeMs = dbSong.totalPlayTimeMs
+                            )
+                        )
+                    }
+        }
+
+    /**
      * Attempt to insert a [MediaItem] into `Song` table
      *
      * If [mediaItem] comes with album and artist(s) then
@@ -101,13 +165,18 @@ object Database {
                      )
                  }
                  // Passing MediaItem causes infinite loop
-                 ?.let( albumTable::insertIgnore )
+                 ?.also( albumTable::insertIgnore )
+                 ?.also {
+                     songAlbumMapTable.map( mediaItem.mediaId, it.id )
+                 }
 
         // Insert artist
         val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames").orEmpty()
         val artistsIds = mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds").orEmpty()
         artistsNames.fastZip( artistsIds ) { name, id -> Artist( id, name ) }
-                    .forEach( artistTable::insertIgnore )
+                    .also( artistTable::insertIgnore )
+                    .map { SongArtistMap(mediaItem.mediaId, it.id) }
+                    .also( songArtistMapTable::insertIgnore )
     }
 
     /**
@@ -265,10 +334,10 @@ object Database {
             this.block()
         }
 
-    fun checkpoint() = _internal.openHelper
-                                      .writableDatabase
-                                      .query( "PRAGMA wal_checkpoint(FULL)" )
-                                      .close()
+    fun checkpoint() = _internal.query( SimpleSQLiteQuery("PRAGMA wal_checkpoint(FULL)") )
+                                     .use {
+                                         if( it.moveToFirst() ) it.getInt( 0 ) else -1
+                                     }
 
     fun close() = _internal.close()
 }

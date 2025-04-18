@@ -12,7 +12,6 @@ enum class NavRoutes {
     history,
     localPlaylist,
     mood,
-    player,
     playlist,
     queue,
     search,

@@ -68,6 +68,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastDistinctBy
+import androidx.compose.ui.util.fastFilter
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
@@ -147,6 +149,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
+import me.knighthat.component.SongItem
 import me.knighthat.utils.Toaster
 
 
@@ -200,7 +203,9 @@ fun PlaylistSongList(
                     if( continuation == null )
                         playlistPage = onlinePlaylist
 
-                    playlistSongs += onlinePlaylist.songs.filter { !parentalControlEnabled || !it.explicit }
+                    playlistSongs += onlinePlaylist.songs
+                                                   .fastFilter { !parentalControlEnabled || !it.explicit }
+                                                   .fastDistinctBy( Innertube.SongItem::key )
                     continuation = onlinePlaylist.songsContinuation
                 }.exceptionOrNull()?.printStackTrace()
             }
@@ -1029,7 +1034,7 @@ fun PlaylistSongList(
                             binder?.player?.enqueue(ytSong.asMediaItem)
                         }
                     ) {
-                        me.knighthat.component.SongItem(
+                        SongItem(
                             song = ytSong.asSong,
                             onClick = {
                                 if ( ytSong.key !in dislikedSongs ) {

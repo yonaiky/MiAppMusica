@@ -68,6 +68,18 @@ interface SongAlbumMapTable {
     """)
     fun allSongsOf( albumId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
+    /**
+     * @return [Album] that the song belongs to
+     */
+    @Query("""
+        SELECT A.*
+        FROM Album A
+        JOIN SongAlbumMap SAM ON SAM.albumId = A.id
+        WHERE SAM.songId = :songId
+        LIMIT :limit
+    """)
+    fun findAlbumOf( songId: String, limit: Int = Int.MAX_VALUE ): Flow<Album?>
+
     @Query("""
         INSERT OR IGNORE INTO SongAlbumMap ( songId, albumId, position )
         VALUES( 
