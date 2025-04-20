@@ -85,7 +85,7 @@ fun SettingsScreen(
         onTabChanged,
         miniPlayer,
         navBarContent = { item ->
-            item(0, stringResource(R.string.tab_general), R.drawable.app_icon_monochrome_transparent)
+            item(0, stringResource(R.string.tab_general), R.drawable.ic_launcher_monochrome)
             item(1, stringResource(R.string.ui_tab), R.drawable.ui)
             item(2, stringResource(R.string.player_appearance), R.drawable.color_palette)
             item(3, if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)

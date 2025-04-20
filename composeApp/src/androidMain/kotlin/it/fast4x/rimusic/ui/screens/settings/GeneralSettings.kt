@@ -254,7 +254,7 @@ fun GeneralSettings(
     ) {
         HeaderWithIcon(
             title = stringResource(R.string.tab_general),
-            iconId = R.drawable.app_icon_monochrome_transparent,
+            iconId = R.drawable.ic_launcher_monochrome,
             enabled = false,
             showIcon = true,
             modifier = Modifier,
