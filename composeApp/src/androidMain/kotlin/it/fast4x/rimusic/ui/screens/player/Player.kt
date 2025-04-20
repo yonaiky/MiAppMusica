@@ -3,7 +3,6 @@ package it.fast4x.rimusic.ui.screens.player
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.RenderEffect
 import android.media.audiofx.AudioEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -68,7 +67,6 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -82,7 +80,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
@@ -100,7 +97,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asComposeRenderEffect
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
@@ -134,8 +130,8 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import app.kreate.android.R
-import app.kreate.android.drawable.APP_ICON_BITMAP
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
+import app.kreate.android.screens.player.background.BlurredCover
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.BlackCherryCosmos
 import com.mikepenz.hypnoticcanvas.shaders.GlossyGradients
@@ -899,22 +895,6 @@ fun Player(
     }
 
     val blurAdjuster = BlurAdjuster()
-    val blurRadius by remember {
-        derivedStateOf {
-            if( showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur )
-                blurAdjuster.strength
-            else
-                0f
-        }
-    }
-    val backdropColor by remember {
-        derivedStateOf {
-            Color.Black.copy(
-                // Ensure value can't go outside by accident
-                alpha = (blurAdjuster.backdrop / 100f).coerceIn( 0f, 1f )
-            )
-        }
-    }
 
     if (!isGradientBackgroundEnabled) {
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || (showthumbnail && (!albumCoverRotation)))) {
@@ -1924,11 +1904,13 @@ fun Player(
                          }
                      }
 
-                     Image(
-                         painter = ImageCacheFactory.Painter(
-                             thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
-                         ),
-                         contentDescription = "",
+                     BlurredCover(
+                         thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString(),
+                         blurAdjuster = blurAdjuster,
+                         showThumbnail = showthumbnail,
+                         noBlur = noblur,
+                         isShowingLyrics = isShowingLyrics,
+                         isShowingVisualizer = isShowingVisualizer,
                          contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
                          modifier = Modifier.fillMaxWidth()
                                             .zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
@@ -1956,7 +1938,6 @@ fun Player(
                                                     blurAdjuster.isActive = showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
                                                 }
                                             )
-                                            .blur( blurRadius.dp )
                      )
                  }
 
@@ -1979,18 +1960,15 @@ fun Player(
                      )){}
              }
 
-             Image(
-                 painter = ImageCacheFactory.Painter(
-                     binder.player.mediaMetadata.artworkUri.toString()
-                 ),
-                 contentDescription = "blurred_background",
+             BlurredCover(
+                 thumbnailUrl = binder.player.mediaMetadata.artworkUri.toString(),
+                 blurAdjuster = blurAdjuster,
+                 showThumbnail = showthumbnail,
+                 noBlur = noblur,
+                 isShowingLyrics = isShowingLyrics,
+                 isShowingVisualizer = isShowingVisualizer,
                  contentScale = ContentScale.FillHeight,
                  modifier = Modifier.fillMaxSize()
-                                    .blur( blurRadius.dp )
-             )
-             Box(
-                 Modifier.fillMaxSize()
-                         .background( backdropColor )
              )
 
             Row(
@@ -2435,90 +2413,92 @@ fun Player(
                                     }
                                 }
                         ) {
-                            Image(
-                                painter = ImageCacheFactory.Painter(
-                                    binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
-                                ),
-                               contentDescription = "",
-                               contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
-                               modifier = Modifier.fillMaxHeight()
-                                                  .conditional(albumCoverRotation) {
-                                                      graphicsLayer {
-                                                          scaleX = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
-                                                          scaleY = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
-                                                          rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
-                                                      }
-                                                  }
-                                                  .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Fade && !showthumbnail){
-                                                      graphicsLayer {
-                                                          val pageOffset = pagerStateFS.currentPageOffsetFraction
-                                                          translationX = pageOffset * size.width
-                                                          alpha = 1 - pageOffset.absoluteValue
-                                                      }
-                                                  }
-                                                  .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Carousel && isDraggedFS) { //by sinasamaki
-                                                      graphicsLayer {
-                                                          val startOffset = pagerStateFS.startOffsetForPage(it)
-                                                          translationX = size.width * (startOffset * .99f)
-                                                          alpha = (2f - startOffset) / 2f
-                                                          val blur = (startOffset * 20f).coerceAtLeast(0.1f)
-                                                          renderEffect = RenderEffect
-                                                              .createBlurEffect(
-                                                                  blur, blur, android.graphics.Shader.TileMode.DECAL
-                                                              ).asComposeRenderEffect()
-                                                          val scale = 1f - (startOffset * .1f)
-                                                          scaleX = scale
-                                                          scaleY = scale
-                                                      }
-                                                  }
-                                                  .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Circle && !showthumbnail){ //by sinasamaki
-                                                      graphicsLayer {
-                                                          val pageOffset = pagerStateFS.offsetForPage(it)
-                                                          translationX = size.width * pageOffset
+                            BlurredCover(
+                                thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString(),
+                                blurAdjuster = blurAdjuster,
+                                showThumbnail = showthumbnail,
+                                noBlur = noblur,
+                                isShowingLyrics = isShowingLyrics,
+                                isShowingVisualizer = isShowingVisualizer,
+                                contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
+                                modifier = Modifier.fillMaxHeight()
+                                                   .conditional(albumCoverRotation) {
+                                                       graphicsLayer {
+                                                           scaleX = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
+                                                           scaleY = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
+                                                           rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
+                                                       }
+                                                   }
+                                                   .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Fade && !showthumbnail){
+                                                       graphicsLayer {
+                                                           val pageOffset = pagerStateFS.currentPageOffsetFraction
+                                                           translationX = pageOffset * size.width
+                                                           alpha = 1 - pageOffset.absoluteValue
+                                                       }
+                                                   }
+                                                   .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Carousel && isDraggedFS) { //by sinasamaki
+                                                       graphicsLayer {
+                                                           val startOffset = pagerStateFS.startOffsetForPage(it)
+                                                           translationX = size.width * (startOffset * .99f)
+                                                           alpha = (2f - startOffset) / 2f
+                                                           val blur = (startOffset * 20f).coerceAtLeast(0.1f)
+                                                           renderEffect = RenderEffect
+                                                               .createBlurEffect(
+                                                                   blur, blur, android.graphics.Shader.TileMode.DECAL
+                                                               ).asComposeRenderEffect()
+                                                           val scale = 1f - (startOffset * .1f)
+                                                           scaleX = scale
+                                                           scaleY = scale
+                                                       }
+                                                   }
+                                                   .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Circle && !showthumbnail){ //by sinasamaki
+                                                       graphicsLayer {
+                                                           val pageOffset = pagerStateFS.offsetForPage(it)
+                                                           translationX = size.width * pageOffset
 
-                                                          val endOffset = pagerStateFS.endOffsetForPage(it)
-                                                          shadowElevation = 20f
+                                                           val endOffset = pagerStateFS.endOffsetForPage(it)
+                                                           shadowElevation = 20f
 
-                                                          shape = CirclePath(
-                                                              progress = 1f - endOffset.absoluteValue,
-                                                              origin = Offset(
-                                                                  size.width,
-                                                                  circleOffsetY,
-                                                              )
-                                                          )
+                                                           shape = CirclePath(
+                                                               progress = 1f - endOffset.absoluteValue,
+                                                               origin = Offset(
+                                                                   size.width,
+                                                                   circleOffsetY,
+                                                               )
+                                                           )
 
-                                                          clip = true
+                                                           clip = true
 
-                                                          val absoluteOffset = pagerStateFS.offsetForPage(it).absoluteValue
-                                                          val scale = 1f + (absoluteOffset.absoluteValue * .4f)
+                                                           val absoluteOffset = pagerStateFS.offsetForPage(it).absoluteValue
+                                                           val scale = 1f + (absoluteOffset.absoluteValue * .4f)
 
-                                                          scaleX = scale
-                                                          scaleY = scale
+                                                           scaleX = scale
+                                                           scaleY = scale
 
-                                                          val startOffset = pagerStateFS.startOffsetForPage(it)
-                                                          alpha = (2f - startOffset) / 2f
-                                                      }
-                                                  }
-                                                  .clip(RoundedCornerShape(20.dp))
-                                                  .combinedClickable(
-                                                      interactionSource = remember { MutableInteractionSource() },
-                                                      indication = null,
-                                                      onClick = {
-                                                          if (thumbnailTapEnabled && !showthumbnail) {
-                                                              if (isShowingVisualizer) isShowingVisualizer = false
-                                                              isShowingLyrics = !isShowingLyrics
-                                                          }
-                                                      },
-                                                      onDoubleClick = {
-                                                          if (!showlyricsthumbnail && !showvisthumbnail)
-                                                              showthumbnail = !showthumbnail
-                                                      },
-                                                      onLongClick = {
-                                                          blurAdjuster.isActive = showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
-                                                      }
-                                                  )
-                                                 .blur( blurRadius.dp )
+                                                           val startOffset = pagerStateFS.startOffsetForPage(it)
+                                                           alpha = (2f - startOffset) / 2f
+                                                       }
+                                                   }
+                                                   .clip(RoundedCornerShape(20.dp))
+                                                   .combinedClickable(
+                                                       interactionSource = remember { MutableInteractionSource() },
+                                                       indication = null,
+                                                       onClick = {
+                                                           if (thumbnailTapEnabled && !showthumbnail) {
+                                                               if (isShowingVisualizer) isShowingVisualizer = false
+                                                               isShowingLyrics = !isShowingLyrics
+                                                           }
+                                                       },
+                                                       onDoubleClick = {
+                                                           if (!showlyricsthumbnail && !showvisthumbnail)
+                                                               showthumbnail = !showthumbnail
+                                                       },
+                                                       onLongClick = {
+                                                           blurAdjuster.isActive = showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
+                                                       }
+                                                   )
                             )
+
                             if ((swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Scale) && isDraggedFS){
                                 Column {
                                     Spacer(modifier = Modifier
@@ -2576,18 +2556,15 @@ fun Player(
                         )){}
                 }
 
-               Image(
-                   painter = ImageCacheFactory.Painter(
-                       binder.player.mediaMetadata.artworkUri.toString()
-                   ),
-                   contentDescription = "blurred_background",
+               BlurredCover(
+                   thumbnailUrl = binder.player.mediaMetadata.artworkUri.toString(),
+                   blurAdjuster = blurAdjuster,
+                   showThumbnail = showthumbnail,
+                   noBlur = noblur,
+                   isShowingLyrics = isShowingLyrics,
+                   isShowingVisualizer = isShowingVisualizer,
                    contentScale = ContentScale.FillHeight,
                    modifier = Modifier.fillMaxSize()
-                                      .blur( blurRadius.dp )
-               )
-               Box(
-                   Modifier.fillMaxSize()
-                           .background( backdropColor )
                )
 
             Column(
