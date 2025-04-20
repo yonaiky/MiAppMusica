@@ -134,6 +134,8 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import app.kreate.android.R
+import app.kreate.android.drawable.APP_ICON_BITMAP
+import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.BlackCherryCosmos
 import com.mikepenz.hypnoticcanvas.shaders.GlossyGradients
@@ -2636,13 +2638,8 @@ fun Player(
                                     .size(24.dp)
                             )
 
-
-                        val iconBitmap = remember {
-                            BitmapFactory.decodeResource( context.resources, R.drawable.app_icon_nodpi )
-                                         .asImageBitmap()
-                        }
                         Image(
-                            bitmap = iconBitmap,
+                            bitmap = APP_ICON_IMAGE_BITMAP,
                             contentDescription = "app icon in player",
                             modifier = Modifier.size( 24.dp )
                                                .clickable {

@@ -211,6 +211,6 @@
             android:resource="@xml/automotive_app_desc"/>
 
         <meta-data android:name="com.google.android.gms.car.notification.SmallIcon"
-            android:resource="@drawable/app_icon_nodpi" />
+            android:resource="@drawable/ic_launcher" />
     </application>
 </manifest>

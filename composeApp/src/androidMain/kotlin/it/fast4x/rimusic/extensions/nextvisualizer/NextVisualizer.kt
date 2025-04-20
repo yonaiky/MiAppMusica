@@ -3,7 +3,6 @@ package it.fast4x.rimusic.extensions.nextvisualizer
 import android.Manifest
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.net.Uri
 import android.provider.Settings
@@ -38,6 +37,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
+import app.kreate.android.drawable.APP_ICON_BITMAP
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.extensions.nextvisualizer.painters.Painter
@@ -237,10 +237,7 @@ fun getVisualizers(): List<Painter> {
     val ampR = 3f
     val yR = 0.2f
     val color = colorPalette().text.hashCode()
-    val logoBitmapCover = remember {
-        BitmapFactory.decodeResource( context.resources, R.drawable.app_icon_nodpi )
-    }
-    var bitmapCover by remember { mutableStateOf(logoBitmapCover) }
+    var bitmapCover by remember { mutableStateOf( APP_ICON_BITMAP ) }
     val binder = LocalPlayerServiceBinder.current
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
@@ -278,7 +275,7 @@ fun getVisualizers(): List<Painter> {
                                 .resize(1200, 1200)
                         )
                     } catch (e: Exception) {
-                        bitmapCover = logoBitmapCover
+                        bitmapCover = APP_ICON_BITMAP
                         Timber.e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
                     }
                 }
