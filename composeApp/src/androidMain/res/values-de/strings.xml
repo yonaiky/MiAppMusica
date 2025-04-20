@@ -913,7 +913,7 @@
     <string name="settings_audio_reverb">Audio reverb</string>
     <string name="settings_audio_reverb_info_apply_a_depth_effect_to_the_audio">Tiefeneffekt auf Audio anwenden</string>
     <string name="settings_audio_focus">Audio focus</string>
-    <string name="settings_audio_focus_info">Allows automatic pause and resume playback after a call for example</string>
+    <string name="settings_audio_focus_info">Ermöglicht das automatische Anhalten und Fortsetzen der Wiedergabe, z. B. aufgrund eines Anrufs</string>
     <string name="please_wait">Bitte warten</string>
     <string name="songs_liked_yt">Song(s) are Liked in YouTube</string>
     <string name="song_unliked_yt">Song is Unliked in YouTube</string>
