@@ -163,6 +163,7 @@ Submit your designs by [opening a ticket](https://github.com/knighthat/Kreate/is
 - [**KuGou**](https://www.kugou.com): Lyrics provider
 - [**LrcLib**](https://lrclib.net): Lyrics provider
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): A shader modifier for Compose Multiplatform / Jetpack Compose
+- [**MedieroAF**](https://github.com/MedieroAF): App logo
 
 
 # ⚠️ Disclaimer
