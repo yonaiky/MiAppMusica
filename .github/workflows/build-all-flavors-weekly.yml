@@ -81,7 +81,7 @@ jobs:
 
       - name: Whether changelogs exists
         run: |
-          if [ ! -e "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}" ]; then
+          if [ ! -e "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" ]; then
             exit 1
           fi
 
