@@ -6,7 +6,9 @@
     
   <br>
 
-  <a title="Crowdin" target="_blank" href="https://translate.kreate.knighthat.me/project/kreate"><img src="https://badges.crowdin.net/kreate/localized.svg"></a>
+  [![Latest version download count](https://api.knighthat.me/kreate/downloads/latest)](https://github.com/knighthat/kreate/releases/latest)
+  [![Localization progress](https://badges.crowdin.net/kreate/localized.svg)](https://translate.kreate.knighthat.me/project/kreate)
+  ![Total download count](https://api.knighthat.me/kreate/downloads/total)
 </div>
 
 

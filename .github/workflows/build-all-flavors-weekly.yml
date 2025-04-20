@@ -34,6 +34,8 @@ jobs:
     outputs:
       # Current version in repository
       downstream: ${{ steps.downstream.outputs.version }}
+      # Current version code in repository
+      code: ${{ steps.downstream.outputs.code }}
       # Latest build's version
       upstream: ${{ steps.upstream.outputs.version }}
     env:
@@ -50,7 +52,9 @@ jobs:
         #     versionName = "..."
         #   }
         # }
-        run: echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '"' '{print $2}')" >> $GITHUB_OUTPUT
+        run: |
+          echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '"' '{print $2}')" >> $GITHUB_OUTPUT
+          echo "version=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | awk -F '"' '{print $2}')" >> $GITHUB_OUTPUT
 
       - name: Get upstream version
         id: upstream
@@ -72,15 +76,27 @@ jobs:
           if [ "${{ needs.versioning.outputs.downstream }}" = "${{ needs.versioning.outputs.upstream }}" ]; then
             exit 1
           fi
-          
+
+      - uses: actions/checkout@v4.2.1
+
+      - name: Whether changelogs exists
+        run: |
+          if [ ! -e "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}" ]; then
+            exit 1
+          fi
+
   build-full:
-    needs: [verify-version]
+    needs: [versioning, verify-version]
     name: Build full version
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
     steps:
       - uses: actions/checkout@v4.2.1
+
+      - name: Copy changelogs into res/raw
+        # Job should be canceled if file doesn't exist
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v4.7.1
@@ -111,13 +127,17 @@ jobs:
             composeApp/build/outputs/apk/full/*.apk
 
   build-minified:
-    needs: [verify-version]
+    needs: [versioning, verify-version]
     name: Build minified version
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
     steps:
       - uses: actions/checkout@v4.2.1
+
+      - name: Copy changelogs into res/raw
+        # Job should be canceled if file doesn't exist
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v4.7.1
@@ -148,13 +168,17 @@ jobs:
             composeApp/build/outputs/apk/minified/*.apk
 
   build-izzy:
-    needs: [verify-version]
+    needs: [versioning, verify-version]
     name: Build Izzy version
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
     steps:
       - uses: actions/checkout@v4.2.1
+
+      - name: Copy changelogs into res/raw
+        # Job should be canceled if file doesn't exist
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v4.7.1
@@ -269,6 +293,11 @@ jobs:
             `full` version is still uploaded to help people who have trouble installing `minified` version.
 
             > [This article](https://kreate.knighthat.me/usr/faq/minified_and_full) explains this matter in detail.
+            
+            ## What's `Kreate-izzy.apk`
+            
+            This is APK built specifically for IzzyOnDroid with update checker disabled. You shouldn't
+            download this version here.
             
             ## Verification
             
