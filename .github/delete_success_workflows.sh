@@ -16,7 +16,22 @@ select(
   .conclusion == "success" and
   (now - (.updated_at | fromdate)) >= (14 * 86400)
 ) |
-.id' workflows.json > success_workflows.txt
+.id' workflows.json >> success_workflows.txt
+
+# Filter all issue-triggered workflows
+# as long as it's not failed.
+# What workflows eligible to be deleted:
+# - Triggered by an issue
+# - Must be "completed"
+# - Conclusion is anything but "failure"
+jq -r '
+.workflow_runs[] |
+select(
+  .event == "issues" and
+  .status == "completed" and
+  .conclusion != "failure"
+) |
+.id' workflows.json >> success_workflows.txt
 
 
 # Send delete requests
@@ -30,6 +45,9 @@ while IFS= read -r line; do
     break
   fi
 
-  gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/runs/$line" --silent
+  gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/runs/$line"
+
+  # Add some delay so GitHub API doesn't get overloadded
+  sleep 1
 
 done < success_workflows.txt
