@@ -18,3 +18,4 @@ Fixed:
 - Click search on keyboard didn't close keyboard on some instances
 - App shortcuts
 - Useless repeat button in player
+- Song removed from playlist if reset in menu
