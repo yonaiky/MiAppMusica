@@ -123,6 +123,7 @@ import it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import it.fast4x.rimusic.utils.skipSilenceKey
 import it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import it.fast4x.rimusic.utils.volumeNormalizationKey
+import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.tab.Search
 import me.knighthat.updater.Updater
 
@@ -317,7 +318,11 @@ fun GeneralSettings(
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.app_language),
                 selectedValue = languageApp,
-                onValueSelected = {languageApp = it },
+                onValueSelected = {
+                    languageApp = it
+
+                    RestartAppDialog.showDialog()
+                },
                 valueText = {
                     languageDestinationName(it)
                 }
