@@ -118,6 +118,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import me.knighthat.sync.YouTubeSync
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.time.LocalTime.now
@@ -1143,17 +1144,8 @@ fun MediaItemMenu(
                             color = colorPalette().favoritesIcon,
                             //color = if (likedAt == null) colorPalette().textDisabled else colorPalette().text,
                             onClick = {
-                                if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                    Toaster.noInternet()
-                                } else if (!isYouTubeSyncEnabled()){
-                                    Database.asyncTransaction {
-                                        songTable.rotateLikeState( mediaItem.mediaId )
-                                        MyDownloadHelper.autoDownloadWhenLiked(context(), mediaItem)
-                                    }
-                                } else {
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        addToYtLikedSong(mediaItem)
-                                    }
+                                CoroutineScope( Dispatchers.IO ).launch {
+                                    YouTubeSync.toggleSongLike( appContext(), mediaItem )
                                 }
                             },
                             modifier = Modifier

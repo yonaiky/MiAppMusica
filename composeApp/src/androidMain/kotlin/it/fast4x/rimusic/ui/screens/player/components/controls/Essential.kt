@@ -51,11 +51,9 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
-import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
@@ -66,16 +64,13 @@ import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.ui.UiMedia
-import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import it.fast4x.rimusic.ui.screens.player.bounceClick
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.HorizontalfadingEdge2
-import it.fast4x.rimusic.utils.addToYtLikedSong
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.buttonStateKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
@@ -84,7 +79,6 @@ import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getUnlikedIcon
-import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.jumpPreviousKey
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
@@ -99,7 +93,7 @@ import it.fast4x.rimusic.utils.textoutlineKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import me.knighthat.utils.Toaster
+import me.knighthat.sync.YouTubeSync
 
 
 @UnstableApi
@@ -257,25 +251,10 @@ fun InfoAlbumAndArtistEssential(
                         color = colorPalette().favoritesIcon,
                         icon = getLikeState(mediaId),
                         onClick = {
-                            if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                                Toaster.noInternet()
-                            } else if (!isYouTubeSyncEnabled()){
-                                Database.asyncTransaction {
-                                    songTable.rotateLikeState( mediaId )
-                                }
-                            } else {
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    if (currentMediaItem != null) {
-                                        addToYtLikedSong(currentMediaItem)
-                                    }
-                                }
+                            CoroutineScope( Dispatchers.IO ).launch {
+                                YouTubeSync.toggleSongLike( appContext(), currentMediaItem ?: return@launch )
                             }
-                            if (currentMediaItem != null) {
-                                MyDownloadHelper.autoDownloadWhenLiked(
-                                    context(),
-                                    currentMediaItem
-                                )
-                            }
+
                             if (effectRotationEnabled) isRotated = !isRotated
                         },
                         modifier = Modifier
@@ -430,25 +409,10 @@ fun ControlsEssential(
             color = colorPalette().favoritesIcon,
             icon = getLikeState(mediaId),
             onClick = {
-                if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
-                    Toaster.noInternet()
-                } else if (!isYouTubeSyncEnabled()){
-                    Database.asyncTransaction {
-                        songTable.rotateLikeState( mediaId )
-                    }
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (currentMediaItem != null) {
-                            addToYtLikedSong(currentMediaItem)
-                        }
-                    }
+                CoroutineScope( Dispatchers.IO ).launch {
+                    YouTubeSync.toggleSongLike( appContext(), currentMediaItem ?: return@launch )
                 }
-                if (currentMediaItem != null) {
-                    MyDownloadHelper.autoDownloadWhenLiked(
-                        context(),
-                        currentMediaItem
-                    )
-                }
+
                 if (effectRotationEnabled) isRotated = !isRotated
             },
             modifier = Modifier
