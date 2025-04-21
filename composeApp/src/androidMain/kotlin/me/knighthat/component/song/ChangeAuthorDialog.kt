@@ -26,7 +26,7 @@ class ChangeAuthorDialog private constructor(
             ChangeAuthorDialog(
                 remember { mutableStateOf(false) },
                 remember {
-                    mutableStateOf( TextFieldValue(getSong()?.artistsText ?: "") )
+                    mutableStateOf( TextFieldValue(getSong()?.cleanArtistsText() ?: "") )
                 },
                 getSong
             )
@@ -46,7 +46,7 @@ class ChangeAuthorDialog private constructor(
         super.hideDialog()
         // Always reset string so when dialog turns
         // back on it will not show previous value.
-        value = TextFieldValue(getSong()?.artistsText ?: "")
+        value = TextFieldValue(getSong()?.cleanArtistsText() ?: "")
     }
 
     override fun onSet( newValue: String ) {

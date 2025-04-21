@@ -34,7 +34,7 @@ class GoToArtist private constructor(
     override val messageId: Int = R.string.artists
     override val menuIconTitle: String
         @Composable
-        get() = appContext().getString( R.string.about ) + " ${getSong().artistsText}"
+        get() = appContext().getString( R.string.about ) + " ${getSong().cleanArtistsText()}"
 
     override fun onShortClick() {
         val song = getSong()
@@ -48,7 +48,7 @@ class GoToArtist private constructor(
 
             // If artist isn't stored inside database, attempt to fetch
             if( result == null ) {
-                Toaster.n( R.string.looking_up_artist_online, song.artistsText )
+                Toaster.n( R.string.looking_up_artist_online, song.cleanArtistsText() )
 
                 Innertube.player(videoId = song.id)
                          .onSuccess { response ->

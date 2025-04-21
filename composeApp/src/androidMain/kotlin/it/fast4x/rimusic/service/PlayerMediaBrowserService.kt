@@ -132,8 +132,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
                 MediaItem(
                     MediaDescriptionCompat.Builder()
                         .setMediaId(MediaId.forSearched(it.id))
-                        .setTitle(it.title)
-                        .setSubtitle(it.artistsText)
+                        .setTitle(it.cleanTitle())
+                        .setSubtitle(it.cleanArtistsText())
                         .setIconUri(it.thumbnailUrl?.toUri())
                         .build(),
                     MediaItem.FLAG_PLAYABLE
@@ -327,8 +327,8 @@ class PlayerMediaBrowserService : MediaBrowserServiceCompat(), ServiceConnection
         inline get() = MediaItem(
             MediaDescriptionCompat.Builder()
                 .setMediaId(MediaId.forSong(id))
-                .setTitle(title)
-                .setSubtitle(artistsText)
+                .setTitle(cleanTitle())
+                .setSubtitle(cleanArtistsText())
                 .setIconUri(thumbnailUrl?.toUri())
                 .build(),
             MediaItem.FLAG_PLAYABLE

@@ -57,8 +57,8 @@ class GoToAlbum private constructor(
             if( result == null ) {
                 Toaster.n( R.string.looking_up_album_from_the_internet )
 
-                var songTitle = song.title
-                var songArtists = song.artistsText ?: ""
+                var songTitle = song.cleanTitle()
+                var songArtists = song.cleanArtistsText()
                 /**
                  * Non-default title can lead to different results, therefore,
                  * a fetch for original title must be made.
