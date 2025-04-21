@@ -114,9 +114,6 @@ suspend fun getAvancedInnerTubeStream(
                         AudioQualityFormat.Low -> playerResponse.second?.streamingData?.lowestQualityFormat
                     }
                     .let {
-                        it?.copy(url = getStreamUrl(it, videoId))
-                    }
-                    .let {
                         if (playerResponse.first != null) {
                             it?.copy(url = it.url?.plus("&cpn=${playerResponse.first}&range=0-${it.contentLength ?: 10000000}"))
                         } else {
