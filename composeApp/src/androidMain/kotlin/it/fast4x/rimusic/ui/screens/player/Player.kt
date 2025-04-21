@@ -1222,30 +1222,23 @@ fun Player(
 
     }
 
-
-    val controlsContent: @Composable (
-        modifier: Modifier
-    ) -> Unit = { modifierValue ->
+    @Composable
+    fun Controller( mediaItem: MediaItem, modifier: Modifier ) {
         Controls(
             navController = navController,
             onCollapse = onDismiss,
-            expandedplayer = expandedplayer,
+            onBlurScaleChange = { blurAdjuster.strength = it },
+            expandPlayer = expandedplayer,
             titleExpanded = titleExpanded,
             timelineExpanded = timelineExpanded,
             controlsExpanded = controlsExpanded,
             isShowingLyrics = isShowingLyrics,
-            media = mediaItem.toUiMedia(positionAndDuration.second),
-            mediaId = mediaItem.mediaId,
-            title = cleanPrefix( mediaItem.mediaMetadata.title.toString() ),
-            artist = cleanPrefix( mediaItem.mediaMetadata.artist.toString() ),
+            mediaItem = mediaItem,
             artistIds = artistInfos,
             albumId = albumId,
             shouldBePlaying = shouldBePlaying,
-            position = positionAndDuration.first,
-            duration = positionAndDuration.second,
-            modifier = modifierValue,
-            onBlurScaleChange = { blurAdjuster.strength = it },
-            isExplicit = mediaItem.isExplicit
+            positionAndDuration = positionAndDuration,
+            modifier = modifier,
         )
     }
 
@@ -2285,12 +2278,12 @@ fun Player(
                         }
                     }
                     if (playerType == PlayerType.Essential || isShowingVisualizer) {
-                        controlsContent(
-                            Modifier
-                                .padding(vertical = 8.dp)
-                                .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
-                                .conditional(playerType == PlayerType.Essential) { weight(1f) }
-
+                        Controller(
+                            mediaItem,
+                            Modifier.padding(vertical = 8.dp)
+                                    .conditional( playerType == PlayerType.Essential ) {
+                                        fillMaxHeight().weight( 1f )
+                                    }
                         )
                     } else {
                         val index = (
@@ -2305,26 +2298,9 @@ fun Player(
                                 pagerState.currentPage
                         ).coerceIn( 0, player.mediaItemCount - 1 )
 
-                        Controls(
-                            navController = navController,
-                            onCollapse = onDismiss,
-                            expandedplayer = expandedplayer,
-                            titleExpanded = titleExpanded,
-                            timelineExpanded = timelineExpanded,
-                            controlsExpanded = controlsExpanded,
-                            isShowingLyrics = isShowingLyrics,
-                            media = mediaItem.toUiMedia(positionAndDuration.second),
-                            mediaId = mediaItem.mediaId,
-                            title = cleanPrefix( player.getMediaItemAt(index).mediaMetadata.title.toString() ),
-                            artist = cleanPrefix( player.getMediaItemAt(index).mediaMetadata.artist.toString() ),
-                            artistIds = artistInfos,
-                            albumId = albumId,
-                            shouldBePlaying = shouldBePlaying,
-                            position = positionAndDuration.first,
-                            duration = positionAndDuration.second,
-                            modifier = Modifier.padding( vertical = 8.dp ),
-                            onBlurScaleChange = { blurAdjuster.strength = it },
-                            isExplicit = mediaItem.isExplicit
+                        Controller(
+                            player.getMediaItemAt(index),
+                            Modifier.padding( vertical = 8.dp )
                         )
                     }
                     if (!showthumbnail || playerType == PlayerType.Modern) {
@@ -2968,12 +2944,10 @@ fun Player(
                 Box(modifier = Modifier
                     .conditional(!expandedplayer && (!isShowingLyrics || showlyricsthumbnail)){weight(1f)}) {
                     if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
-                        controlsContent(
-                            Modifier
-                                .padding(vertical = 4.dp)
-                                .fillMaxWidth()
-                            //.weight(1f)
-
+                        Controller(
+                            mediaItem,
+                            Modifier.padding( vertical = 4.dp )
+                                    .fillMaxWidth()
                         )
                     } else if (!(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Scale && isDraggedFS)){
                         val index = (
@@ -2988,27 +2962,10 @@ fun Player(
                                     pagerState.currentPage
                         ).coerceIn( 0, player.mediaItemCount - 1 )
 
-                        Controls(
-                            navController = navController,
-                            onCollapse = onDismiss,
-                            expandedplayer = expandedplayer,
-                            titleExpanded = titleExpanded,
-                            timelineExpanded = timelineExpanded,
-                            controlsExpanded = controlsExpanded,
-                            isShowingLyrics = isShowingLyrics,
-                            media = mediaItem.toUiMedia(positionAndDuration.second),
-                            mediaId = mediaItem.mediaId,
-                            title = cleanPrefix( player.getMediaItemAt(index).mediaMetadata.title.toString() ),
-                            artist = cleanPrefix( player.getMediaItemAt(index).mediaMetadata.artist.toString() ),
-                            artistIds = artistInfos,
-                            albumId = albumId,
-                            shouldBePlaying = shouldBePlaying,
-                            position = positionAndDuration.first,
-                            duration = positionAndDuration.second,
-                            modifier = Modifier.padding( vertical = 4.dp )
-                                               .fillMaxWidth(),
-                            onBlurScaleChange = { blurAdjuster.strength = it },
-                            isExplicit = mediaItem.isExplicit
+                        Controller(
+                            player.getMediaItemAt(index),
+                            Modifier.padding( vertical = 4.dp )
+                                    .fillMaxWidth()
                         )
                     }
                 }

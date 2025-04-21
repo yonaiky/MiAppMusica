@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,10 +32,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.ButtonState
 import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.enums.PlayerInfoType
@@ -45,6 +46,7 @@ import it.fast4x.rimusic.enums.PlayerTimelineSize
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.ui.UiMedia
+import it.fast4x.rimusic.models.ui.toUiMedia
 import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtistEssential
 import it.fast4x.rimusic.ui.screens.player.components.controls.InfoAlbumAndArtistModern
 import it.fast4x.rimusic.utils.GetControls
@@ -54,6 +56,7 @@ import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.playerControlsTypeKey
 import it.fast4x.rimusic.utils.playerInfoTypeKey
@@ -68,8 +71,48 @@ import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 
+@ExperimentalAnimationApi
+@ExperimentalFoundationApi
+@UnstableApi
+@ExperimentalTextApi
+@Composable
+fun Controls(
+    navController: NavController,
+    onCollapse: () -> Unit,
+    onBlurScaleChange: (Float) -> Unit,
+    expandPlayer: Boolean,
+    titleExpanded: Boolean,
+    timelineExpanded: Boolean,
+    controlsExpanded: Boolean,
+    isShowingLyrics: Boolean,
+    mediaItem: MediaItem,
+    artistIds: List<Info>?,
+    albumId: String?,
+    shouldBePlaying: Boolean,
+    positionAndDuration: Pair<Long, Long>,
+    modifier: Modifier = Modifier
+) = Controls(
+    navController = navController,
+    onCollapse = onCollapse,
+    onBlurScaleChange = onBlurScaleChange,
+    expandedplayer = expandPlayer,
+    titleExpanded = titleExpanded,
+    timelineExpanded = timelineExpanded,
+    controlsExpanded = controlsExpanded,
+    isShowingLyrics = isShowingLyrics,
+    media = mediaItem.toUiMedia( positionAndDuration.second ),
+    mediaId = mediaItem.mediaId,
+    title = cleanPrefix( mediaItem.mediaMetadata.title.toString() ),
+    artist = cleanPrefix( mediaItem.mediaMetadata.artist.toString() ),
+    artistIds = artistIds,
+    albumId = albumId,
+    shouldBePlaying = shouldBePlaying,
+    position = positionAndDuration.first,
+    duration = positionAndDuration.second,
+    isExplicit = mediaItem.isExplicit,
+    modifier = modifier
+)
 
-@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
