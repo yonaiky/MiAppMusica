@@ -906,7 +906,7 @@
     <string name="unlink_from_ytm">Unlink from Youtube Library</string>
     <string name="unlink_from_yt">Unlink from Youtube</string>
     <string name="yt_playlist_limited">YouTube Wiedergabelisten sind auf 5000 Titel begrenzt</string>
-    <string name="songs_added_in_yt">songs are added in the YouTube Playlist. Repeat the process if there are any Missing Songs</string>
+    <string name="songs_added_in_yt">Titel werden der YouTube Wiedergabeliste hinzugefügt. Wiederhole den Vorgang falls noch Titel fehlen</string>
     <string name="songs_adding_in_yt">Titel werden der YTM Wiedergabeliste hinzugefügt</string>
     <string name="settings_audio_bass_boost">Bassverstärkung</string>
     <string name="settings_bass_boost_level">Bassverstärkungspegel</string>
@@ -945,8 +945,8 @@
     <string name="export_cached">Export cached</string>
     <string name="info_export_cached_or_downloaded_song">Export cached or downloaded song</string>
     <string name="song_must_be_cached_or_downloaded_to_export">Song must be cached or downloaded to export</string>
-    <string name="title_restart_required">Restart required</string>
-    <string name="restart_dialog_body">Please open %s again after!</string>
+    <string name="title_restart_required">Neustart erforderlich</string>
+    <string name="restart_dialog_body">Bitte öffne %s anschließend erneut!</string>
     <string name="title_export_settings">Einstellungen exportieren</string>
     <string name="store_settings_in_a_file">Einstellungen werden in einer Datei gesichert</string>
     <string name="description_exclude_credentials">Anmeldedaten wie zum Beispiel zu YouTube sind aus Sicherheitsgründen ausgeschlossen</string>
