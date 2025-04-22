@@ -1,12 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.graphics.RenderEffect
-import android.media.audiofx.AudioEffect
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -20,11 +15,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -46,13 +39,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -60,10 +51,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -73,7 +62,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -126,12 +114,12 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import app.kreate.android.R
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.kreate.android.screens.player.background.BlurredCover
+import app.kreate.android.themed.rimusic.screen.player.ActionBar
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.BlackCherryCosmos
 import com.mikepenz.hypnoticcanvas.shaders.GlossyGradients
@@ -145,7 +133,6 @@ import com.mikepenz.hypnoticcanvas.shaders.OilFlow
 import com.mikepenz.hypnoticcanvas.shaders.PurpleLiquid
 import com.mikepenz.hypnoticcanvas.shaders.Shader
 import com.mikepenz.hypnoticcanvas.shaders.Stage
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appRunningInBackground
@@ -155,14 +142,12 @@ import it.fast4x.rimusic.enums.AnimatedGradient
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ColorPaletteMode
-import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.QueueType
-import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.SwipeAnimationNoThumbnail
 import it.fast4x.rimusic.enums.ThumbnailCoverType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -173,11 +158,9 @@ import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
-import it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
@@ -193,9 +176,6 @@ import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.SearchYoutubeEntity
 import it.fast4x.rimusic.utils.VerticalfadingEdge2
 import it.fast4x.rimusic.utils.VinylSizeKey
-import it.fast4x.rimusic.utils.actionExpandedKey
-import it.fast4x.rimusic.utils.actionspacedevenlyKey
-import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.albumCoverRotationKey
 import it.fast4x.rimusic.utils.animatedGradientKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
@@ -205,7 +185,6 @@ import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
-import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.coverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.currentWindow
@@ -216,20 +195,15 @@ import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.expandedplayerKey
-import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getBitmapFromUrl
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.horizontalFadingEdge
-import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
-import it.fast4x.rimusic.utils.miniQueueExpandedKey
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playAtIndex
 import it.fast4x.rimusic.utils.playNext
@@ -238,42 +212,23 @@ import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.playerTypeKey
-import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.queueDurationExpandedKey
 import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
-import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
-import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
-import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
-import it.fast4x.rimusic.utils.showButtonPlayerDownloadKey
-import it.fast4x.rimusic.utils.showButtonPlayerLoopKey
-import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
-import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
-import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
-import it.fast4x.rimusic.utils.showButtonPlayerStartRadioKey
-import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
-import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
-import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
-import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
-import it.fast4x.rimusic.utils.showsongsKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
-import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.statsExpandedKey
 import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.swipeAnimationsNoThumbnailKey
-import it.fast4x.rimusic.utils.swipeUpQueueKey
-import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailFadeExKey
@@ -286,14 +241,11 @@ import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.timelineExpandedKey
 import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.topPaddingKey
-import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
-import it.fast4x.rimusic.utils.visualizerEnabledKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.player.BlurAdjuster
 import me.knighthat.utils.Toaster
@@ -330,32 +282,13 @@ fun Player(
     var thumbnailFade  by rememberPreference( thumbnailFadeKey, 5f )
     var thumbnailFadeEx  by rememberPreference( thumbnailFadeExKey, 5f )
     var imageCoverSize by rememberPreference( VinylSizeKey, 50f )
-    val visualizerEnabled by rememberPreference( visualizerEnabledKey, false )
     val queueDurationExpanded by rememberPreference( queueDurationExpandedKey, true )
-    val miniQueueExpanded by rememberPreference( miniQueueExpandedKey, true )
     val statsExpanded by rememberPreference( statsExpandedKey, true )
-    val actionExpanded by rememberPreference( actionExpandedKey, true )
-    val colorPaletteName by rememberPreference( colorPaletteNameKey, ColorPaletteName.Dynamic )
     var showthumbnail by rememberPreference( showthumbnailKey, true )
-    val showButtonPlayerAddToPlaylist by rememberPreference( showButtonPlayerAddToPlaylistKey, true )
-    val showButtonPlayerArrow by rememberPreference( showButtonPlayerArrowKey, true )
-    val showButtonPlayerDownload by rememberPreference( showButtonPlayerDownloadKey, true )
-    val showButtonPlayerLoop by rememberPreference( showButtonPlayerLoopKey, true )
-    val showButtonPlayerLyrics by rememberPreference( showButtonPlayerLyricsKey, true )
-    val expandedplayertoggle by rememberPreference( expandedplayertoggleKey, true )
-    val showButtonPlayerShuffle by rememberPreference( showButtonPlayerShuffleKey, true )
-    val showButtonPlayerSleepTimer by rememberPreference( showButtonPlayerSleepTimerKey, false )
     val showButtonPlayerMenu by rememberPreference( showButtonPlayerMenuKey, false )
-    val showButtonPlayerStartRadio by rememberPreference( showButtonPlayerStartRadioKey, false )
-    val showButtonPlayerSystemEqualizer by rememberPreference( showButtonPlayerSystemEqualizerKey, false )
-    val showButtonPlayerVideo by rememberPreference( showButtonPlayerVideoKey, false )
     val showTotalTimeQueue by rememberPreference( showTotalTimeQueueKey, true )
     val backgroundProgress by rememberPreference( backgroundProgressKey, BackgroundProgress.MiniPlayer )
-    var queueLoopType by rememberPreference( queueLoopTypeKey, defaultValue = QueueLoopType.Default )
-    val showsongs by rememberPreference( showsongsKey, SongsNumber.`2` )
-    val showalbumcover by rememberPreference( showalbumcoverKey, true )
-    val tapqueue by rememberPreference( tapqueueKey, true )
-    val swipeUpQueue by rememberPreference( swipeUpQueueKey, true )
+    var queueLoopState = rememberPreference( queueLoopTypeKey, defaultValue = QueueLoopType.Default )
     val playerType by rememberPreference( playerTypeKey, PlayerType.Essential )
     val queueType by rememberPreference( queueTypeKey, QueueType.Essential )
     val noblur by rememberPreference( noblurKey, true )
@@ -364,13 +297,11 @@ fun Player(
     val playerBackgroundColors by rememberPreference( playerBackgroundColorsKey, PlayerBackgroundColors.BlurredCoverColor )
     val animatedGradient by rememberPreference( animatedGradientKey, AnimatedGradient.Linear )
     val thumbnailTapEnabled by rememberPreference( thumbnailTapEnabledKey, true )
-    val showNextSongsInPlayer by rememberPreference( showNextSongsInPlayerKey, false )
-    val transparentBackgroundActionBarPlayer by rememberPreference( transparentBackgroundPlayerActionBarKey, false )
     val showTopActionsBar by rememberPreference( showTopActionsBarKey, true )
     val blackgradient by rememberPreference( blackgradientKey, false )
     val bottomgradient by rememberPreference( bottomgradientKey, false )
     val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
-    var discoverIsEnabled by rememberPreference( discoverKey, false )
+    var discoverState = rememberPreference( discoverKey, false )
     val titleExpanded by rememberPreference( titleExpandedKey, true )
     val timelineExpanded by rememberPreference( timelineExpandedKey, true )
     val controlsExpanded by rememberPreference( controlsExpandedKey, true )
@@ -378,12 +309,8 @@ fun Player(
     var coverThumbnailAnimation by rememberPreference( coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl )
     var albumCoverRotation by rememberPreference( albumCoverRotationKey, false )
     val textoutline by rememberPreference( textoutlineKey, false )
-    val playlistindicator by rememberPreference( playlistindicatorKey, false )
     val carousel by rememberPreference( carouselKey, true )
     val carouselSize by rememberPreference( carouselSizeKey, CarouselSize.Biggest )
-    var showButtonPlayerDiscover by rememberPreference( showButtonPlayerDiscoverKey, false )
-    val actionspacedevenly by rememberPreference( actionspacedevenlyKey, false )
-    var expandedplayer by rememberPreference( expandedplayerKey, false )
     val clickLyricsText by rememberPreference( clickOnLyricsTextKey, true )
     var extraspace by rememberPreference( extraspaceKey, false )
     val thumbnailRoundness by rememberPreference( thumbnailRoundnessKey, ThumbnailRoundness.Heavy )
@@ -391,6 +318,8 @@ fun Player(
     val statsfornerds by rememberPreference( statsfornerdsKey, false )
     val topPadding by rememberPreference( topPaddingKey, true )
     var swipeAnimationNoThumbnail by rememberPreference( swipeAnimationsNoThumbnailKey, SwipeAnimationNoThumbnail.Sliding )
+    val expandPlayerState = rememberPreference( expandedplayerKey, false )
+    var expandedplayer by expandPlayerState
 
 
     if (binder.player.currentTimeline.windowCount == 0) return
@@ -403,21 +332,29 @@ fun Player(
         mutableStateOf(binder.player.shouldBePlaying)
     }
 
-
-    var isRotated by rememberSaveable { mutableStateOf(false) }
+    val rotateState = rememberSaveable { mutableStateOf( false ) }
+    var isRotated by rotateState
     val rotationAngle by animateFloatAsState(
         targetValue = if (isRotated) 360F else 0f,
         animationSpec = tween(durationMillis = 200), label = ""
     )
 
+    val showQueueState = rememberSaveable { mutableStateOf( false ) }
+    var showQueue by showQueueState
+
+    val showSearchEntityState = rememberSaveable { mutableStateOf( false ) }
+    var showSearchEntity by showSearchEntityState
+
+    val showVisualizerState = rememberSaveable { mutableStateOf( false ) }
+    var isShowingVisualizer by showVisualizerState
+
+    val showSleepTimerState = rememberSaveable { mutableStateOf( false ) }
+    var isShowingSleepTimerDialog by showSleepTimerState
+
+    val showLyricsState = rememberSaveable { mutableStateOf( false ) }
+    var isShowingLyrics by showLyricsState
 
     var showThumbnailOffsetDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isShowingLyrics by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isShowingVisualizer by remember {
         mutableStateOf(false)
     }
 
@@ -505,10 +442,6 @@ fun Player(
     val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
     val isDraggedFS by pagerStateFS.interactionSource.collectIsDraggedAsState()
 
-    var isShowingSleepTimerDialog by remember {
-        mutableStateOf(false)
-    }
-
     var delayedSleepTimer by remember {
         mutableStateOf(false)
     }
@@ -566,15 +499,6 @@ fun Player(
                 .findAlbumOf( mediaItem.mediaId )
                 .map { it?.id }
     }.collectAsState( null, Dispatchers.IO )
-
-
-    var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
-    }
-    downloadState = getDownloadState(mediaItem.mediaId)
-
-    var isDownloaded by rememberSaveable { mutableStateOf(false) }
-    isDownloaded = isDownloadedSong(mediaItem.mediaId)
 
     var showCircularSlider by remember {
         mutableStateOf(false)
@@ -815,8 +739,6 @@ fun Player(
         mutableStateOf(false)
     }
 
-    var showQueue by rememberSaveable { mutableStateOf(false) }
-    var showSearchEntity by rememberSaveable { mutableStateOf(false) }
 
     var containerModifier = Modifier
         .padding(bottom = 0.dp)
@@ -878,7 +800,8 @@ fun Player(
                             showthumbnail = !showthumbnail
                     },
                     onLongClick = {
-                        blurAdjuster.isActive = showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
+                        blurAdjuster.isActive =
+                            showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
                     }
                 )
                 .pointerInput(Unit) {
@@ -1167,583 +1090,26 @@ fun Player(
         )
     }
 
-    val isSongMappedToPlaylist by remember( mediaItem.mediaId ) {
-        Database.songPlaylistMapTable.isMapped( mediaItem.mediaId )
-    }.collectAsState( false, Dispatchers.IO )
-
     blurAdjuster.Render()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val actionsBarContent: @Composable () -> Unit = {
-            if ((!showButtonPlayerDownload &&
-                !showButtonPlayerAddToPlaylist &&
-                !showButtonPlayerLoop &&
-                !showButtonPlayerShuffle &&
-                !showButtonPlayerLyrics &&
-                !showButtonPlayerSleepTimer &&
-                !showButtonPlayerSystemEqualizer &&
-                !showButtonPlayerArrow &&
-                !showButtonPlayerMenu &&
-                !showButtonPlayerStartRadio &&
-                !expandedplayertoggle &&
-                !showButtonPlayerDiscover &&
-                !showButtonPlayerVideo) ||
-                (!showlyricsthumbnail && isShowingLyrics && !actionExpanded)
-            ) {
-            } else
-            Row(
-                modifier = Modifier
-                    .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
-                    .requiredHeight(if (showNextSongsInPlayer && (showlyricsthumbnail || (!isShowingLyrics || miniQueueExpanded))) 90.dp else 50.dp)
-                    .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-                    .conditional(tapqueue) { clickable { showQueue = true } }
-                    .background(
-                        colorPalette().background2.copy(
-                            alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
-                        )
-                    )
-                    .pointerInput(Unit) {
-                        if (swipeUpQueue)
-                            detectVerticalDragGestures(
-                                onVerticalDrag = { _, dragAmount ->
-                                    if (dragAmount < 0) showQueue = true
-                                }
-                            )
-                    },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    if (showNextSongsInPlayer) {
-                        if (showlyricsthumbnail || !isShowingLyrics || miniQueueExpanded) {
-                            Row(
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier
-                                    //.background(colorPalette().background2.copy(alpha = 0.3f))
-                                    .background(
-                                        colorPalette().background2.copy(
-                                            alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f
-                                        )
-                                    )
-                                    .padding(horizontal = 12.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                val nextMediaItemIndex = binder.player.nextMediaItemIndex
-                                val pagerStateQueue =
-                                    rememberPagerState(pageCount = { mediaItems.size })
-                                val scope = rememberCoroutineScope()
-                                val fling = PagerDefaults.flingBehavior(
-                                    state = pagerStateQueue,
-                                    snapPositionalThreshold = 0.15f,
-                                    pagerSnapDistance = PagerSnapDistance.atMost( showsongs.toInt() )
-                                )
-                                pagerStateQueue.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex + 1)
-
-                                Row(
-                                    modifier = Modifier
-                                        .padding(vertical = 7.5.dp)
-                                        .weight(0.07f)
-                                        .conditional(pagerStateQueue.currentPage == binder.player.currentMediaItemIndex){padding(horizontal = 3.dp)}
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = if (pagerStateQueue.currentPage > binder.player.currentMediaItemIndex) R.drawable.chevron_forward
-                                                                       else if (pagerStateQueue.currentPage == binder.player.currentMediaItemIndex) R.drawable.play
-                                                                       else R.drawable.chevron_back),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(25.dp)
-                                            .clip(CircleShape)
-                                            .clickable(
-                                                indication = ripple(bounded = false),
-                                                interactionSource = remember { MutableInteractionSource() },
-                                                onClick = {
-                                                    scope.launch {
-                                                        if (!appRunningInBackground) {
-                                                            pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                        } else {
-                                                            pagerStateQueue.scrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                        }
-                                                    }
-                                                }
-                                            ),
-                                        tint = colorPalette().accent
-                                    )
-                                }
-
-                                val threePagesPerViewport = object : PageSize {
-                                    override fun Density.calculateMainAxisPageSize(
-                                        availableSpace: Int,
-                                        pageSpacing: Int
-                                    ): Int {
-                                        return if  (showsongs == SongsNumber.`1`) availableSpace else ((availableSpace - 2 * pageSpacing) / (showsongs.toInt()))
-                                    }
-                                }
-
-                                HorizontalPager(
-                                    state = pagerStateQueue,
-                                    pageSize = threePagesPerViewport,
-                                    pageSpacing = 10.dp,
-                                    flingBehavior = fling,
-                                    modifier = Modifier.weight(1f)
-                                ) { index ->
-                                    Row(
-                                        horizontalArrangement = Arrangement.Center,
-                                        modifier = Modifier
-                                            .combinedClickable(
-                                                onClick = {
-                                                    binder.player.playAtIndex(index)
-                                                },
-                                                onLongClick = {
-                                                    if (index < mediaItems.size) {
-                                                        binder.player.addNext(
-                                                            binder.player.getMediaItemAt(index)
-                                                        )
-                                                        scope.launch {
-                                                            if (!appRunningInBackground) {
-                                                                pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                            } else {
-                                                                pagerStateQueue.scrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                            }
-                                                        }
-                                                        Toaster.s( R.string.addednext )
-//                                                        hapticFeedback.performHapticFeedback(
-//                                                            HapticFeedbackType.LongPress
-//                                                        )
-                                                    }
-                                                }
-                                            )
-                                        //.width(IntrinsicSize.Min)
-                                    ) {
-                                        if (showalbumcover) {
-                                            Box(
-                                                modifier = Modifier.align( Alignment.CenterVertically )
-                                            ) {
-                                                ImageCacheFactory.Thumbnail(
-                                                    thumbnailUrl = binder.player
-                                                                         .getMediaItemAt( index )
-                                                                         .mediaMetadata
-                                                                         .artworkUri
-                                                                         .toString(),
-                                                    contentDescription = "song_pos_$index",
-                                                    modifier = Modifier.padding( end = 5.dp )
-                                                                       .clip( RoundedCornerShape(5.dp) )
-                                                                       .size( 30.dp )
-                                                )
-                                            }
-                                        }
-                                        Column(
-                                            verticalArrangement = Arrangement.Center,
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            modifier = Modifier
-                                                .height(40.dp)
-                                                .fillMaxWidth()
-                                        ) {
-                                            Box(
-
-                                            ) {
-                                                BasicText(
-                                                    text = cleanPrefix(
-                                                        binder.player.getMediaItemAt(
-                                                            index
-                                                            //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                        ).mediaMetadata.title?.toString()
-                                                            ?: ""
-                                                    ),
-                                                    style = TextStyle(
-                                                        color = colorPalette().text,
-                                                        fontSize = typography().xxxs.semiBold.fontSize,
-                                                    ),
-                                                    maxLines = 1,
-                                                    //overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                                )
-                                                BasicText(
-                                                    text = cleanPrefix(
-                                                        binder.player.getMediaItemAt(
-                                                            index
-                                                            //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                        ).mediaMetadata.title?.toString()
-                                                            ?: ""
-                                                    ),
-                                                    style = TextStyle(
-                                                        drawStyle = Stroke(
-                                                            width = 0.25f,
-                                                            join = StrokeJoin.Round
-                                                        ),
-                                                        color = if (!textoutline) Color.Transparent
-                                                        else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
-                                                            0.65f
-                                                        )
-                                                        else Color.Black,
-                                                        fontSize = typography().xxxs.semiBold.fontSize,
-                                                    ),
-                                                    maxLines = 1,
-                                                    //overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                                )
-                                            }
-
-                                            Box(
-
-                                            ) {
-                                                BasicText(
-                                                    text = binder.player.getMediaItemAt(
-                                                        index
-                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                    ).mediaMetadata.artist?.toString()
-                                                        ?: "",
-                                                    style = TextStyle(
-                                                        color = colorPalette().text,
-                                                        fontSize = typography().xxxs.semiBold.fontSize,
-                                                    ),
-                                                    maxLines = 1,
-                                                    //overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                                )
-                                                BasicText(
-                                                    text = binder.player.getMediaItemAt(
-                                                        index
-                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                    ).mediaMetadata.artist?.toString()
-                                                        ?: "",
-                                                    style = TextStyle(
-                                                        drawStyle = Stroke(
-                                                            width = 0.25f,
-                                                            join = StrokeJoin.Round
-                                                        ),
-                                                        color = if (!textoutline) Color.Transparent
-                                                        else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
-                                                            0.65f
-                                                        )
-                                                        else Color.Black,
-                                                        fontSize = typography().xxxs.semiBold.fontSize,
-                                                    ),
-                                                    maxLines = 1,
-                                                    //overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                                if (showsongs == SongsNumber.`1`) {
-                                    IconButton(
-                                        icon = R.drawable.trash,
-                                        color = Color.White,
-                                        enabled = true,
-                                        onClick = {
-                                            binder.player.removeMediaItem(nextMediaItemIndex)
-                                        },
-                                        modifier = Modifier
-                                            .weight(0.07f)
-                                            .size(40.dp)
-                                            .padding(vertical = 7.5.dp),
-                                    )
-                                }
-
-                            }
-                        }
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = if (actionspacedevenly) Arrangement.SpaceEvenly else Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .fillMaxWidth()
-                    ) {
-                        if (showButtonPlayerVideo)
-                            IconButton(
-                                icon = R.drawable.video,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    binder.callPause {}
-                                    showSearchEntity = true
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerDiscover)
-                            IconButton(
-                                icon = R.drawable.star_brilliant,
-                                color = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .combinedClickable(
-                                        onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                        onLongClick = {
-                                            Toaster.i( R.string.discoverinfo )
-                                        }
-                                    )
-                            )
-
-
-                        if (showButtonPlayerDownload)
-                            DownloadStateIconButton(
-                                icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                                color = if (isDownloaded) colorPalette().accent else Color.Gray,
-                                downloadState = downloadState,
-                                onClick = {
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = mediaItem,
-                                        downloadState = isDownloaded
-                                    )
-                                },
-                                onCancelButtonClicked = {
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = mediaItem,
-                                        downloadState = true
-                                    )
-                                },
-                                modifier = Modifier
-                                    //.padding(start = 12.dp)
-                                    .size(24.dp)
-                            )
-
-
-                        if (showButtonPlayerAddToPlaylist)
-                            IconButton(
-                                icon = R.drawable.add_in_playlist,
-                                color = if ( isSongMappedToPlaylist && playlistindicator )
-                                    if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text
-                                    else colorPalette().accent,
-                                onClick = {
-                                    menuState.display {
-                                        AddToPlaylistPlayerMenu(
-                                            navController = navController,
-                                            onDismiss = {
-                                                menuState.hide()
-                                            },
-                                            mediaItem = mediaItem,
-                                            binder = binder,
-                                            onClosePlayer = {
-                                                onDismiss()
-                                            },
-                                        )
-                                    }
-                                },
-                                modifier = Modifier
-                                    //.padding(horizontal = 4.dp)
-                                    .size(24.dp)
-                                    .conditional( isSongMappedToPlaylist && playlistindicator ) {
-                                        background(
-                                            color.accent,
-                                            CircleShape
-                                        )
-                                    }
-                                    .conditional( isSongMappedToPlaylist && playlistindicator ) {
-                                        padding(
-                                            all = 5.dp
-                                        )
-                                    }
-                            )
-
-
-
-                        if (showButtonPlayerLoop)
-                            IconButton(
-                                icon = queueLoopType.iconId,
-                                color = colorPalette().accent,
-                                onClick = {
-                                    queueLoopType = queueLoopType.next()
-                                    if (effectRotationEnabled) isRotated = !isRotated
-                                },
-                                modifier = Modifier
-                                    //.padding(horizontal = 4.dp)
-                                    .size(24.dp)
-                            )
-
-                        if (showButtonPlayerShuffle)
-                            IconButton(
-                                icon = R.drawable.shuffle,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    binder.player.shuffleQueue()
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerLyrics)
-                            IconButton(
-                                icon = R.drawable.song_lyrics,
-                                color = if (isShowingLyrics)  colorPalette().accent else Color.Gray,
-                                enabled = true,
-                                onClick = {
-                                    if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
-                                    isShowingLyrics = !isShowingLyrics
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-                        if (!isLandscape || ((playerType == PlayerType.Essential) && !showthumbnail))
-                         if (expandedplayertoggle && !showlyricsthumbnail)
-                            IconButton(
-                                icon = R.drawable.maximize,
-                                color = if (expandedplayer) colorPalette().accent else Color.Gray,
-                                enabled = true,
-                                onClick = {
-                                    expandedplayer = !expandedplayer
-                                },
-                                modifier = Modifier
-                                    .size(20.dp),
-                            )
-
-
-                        if (visualizerEnabled)
-                            IconButton(
-                                icon = R.drawable.sound_effect,
-                                color = if (isShowingVisualizer) colorPalette().text else colorPalette().textDisabled,
-                                enabled = true,
-                                onClick = {
-                                    if (isShowingLyrics) isShowingLyrics = !isShowingLyrics
-                                    isShowingVisualizer = !isShowingVisualizer
-                                },
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-
-
-                        if (showButtonPlayerSleepTimer)
-                            IconButton(
-                                icon = R.drawable.sleep,
-                                color = if (sleepTimerMillisLeft != null) colorPalette().accent else Color.Gray,
-                                enabled = true,
-                                onClick = {
-                                    isShowingSleepTimerDialog = true
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerSystemEqualizer) {
-                            val activityResultLauncher =
-                                rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-
-                            IconButton(
-                                icon = R.drawable.equalizer,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    try {
-                                        activityResultLauncher.launch(
-                                            Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                                                putExtra(
-                                                    AudioEffect.EXTRA_AUDIO_SESSION,
-                                                    binder.player.audioSessionId
-                                                )
-                                                putExtra(
-                                                    AudioEffect.EXTRA_PACKAGE_NAME,
-                                                    context.packageName
-                                                )
-                                                putExtra(
-                                                    AudioEffect.EXTRA_CONTENT_TYPE,
-                                                    AudioEffect.CONTENT_TYPE_MUSIC
-                                                )
-                                            }
-                                        )
-                                    } catch (e: ActivityNotFoundException) {
-                                        Toaster.e( R.string.info_not_find_application_audio )
-                                    }
-                                },
-                                modifier = Modifier
-                                    .size(20.dp),
-                            )
-                        }
-
-                        if (showButtonPlayerStartRadio)
-                            IconButton(
-                                icon = R.drawable.radio,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    binder.stopRadio()
-                                    binder.player.seamlessPlay(mediaItem)
-                                    binder.setupRadio(
-                                        NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
-                                    )
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerArrow)
-                            IconButton(
-                                icon = R.drawable.chevron_up,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    showQueue = true
-                                },
-                                modifier = Modifier
-                                    //.padding(end = 12.dp)
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerMenu && !isLandscape)
-                            IconButton(
-                                icon = R.drawable.ellipsis_vertical,
-                                color = colorPalette().accent,
-                                onClick = {
-                                    menuState.display {
-                                        PlayerMenu(
-                                            navController = navController,
-                                            onDismiss = menuState::hide,
-                                            mediaItem = mediaItem,
-                                            binder = binder,
-                                            onClosePlayer = {
-                                                onDismiss()
-                                            },
-                                            disableScrollingText = disableScrollingText
-                                        )
-                                    }
-                                },
-                                modifier = Modifier
-                                    //.padding(end = 12.dp)
-                                    .size(24.dp)
-                            )
-
-
-                        if (isLandscape) {
-                            IconButton(
-                                icon = R.drawable.ellipsis_horizontal,
-                                color = colorPalette().accent,
-                                onClick = {
-                                    menuState.display {
-                                        PlayerMenu(
-                                            navController = navController,
-                                            onDismiss = menuState::hide,
-                                            mediaItem = mediaItem,
-                                            binder = binder,
-                                            onClosePlayer = {
-                                                onDismiss()
-                                            },
-                                            disableScrollingText = disableScrollingText
-                                        )
-                                    }
-                                },
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-                    }
-
-
-                }
-            }
-        }
+        @Composable
+        fun ActionsBar() = ActionBar(
+            navController,
+            showQueueState,
+            showSearchEntityState,
+            rotateState,
+            showVisualizerState,
+            showSleepTimerState,
+            showLyricsState,
+            discoverState,
+            queueLoopState,
+            expandPlayerState,
+            onDismiss
+        )
 
         val player = binder.player
 
@@ -2208,7 +1574,7 @@ fun Player(
                             onDismiss = {}
                         )
                     }
-                    actionsBarContent()
+                    ActionsBar()
                 }
             }
          }
@@ -2868,7 +2234,7 @@ fun Player(
                         )
                     }
                 }
-                actionsBarContent()
+                ActionsBar()
               }
             }
            }
@@ -2894,11 +2260,11 @@ fun Player(
             Queue(
                 navController = navController,
                 onDismiss = {
-                    queueLoopType = it
+                    queueLoopState.value = it
                     showQueue = false
                 },
                 onDiscoverClick = {
-                    discoverIsEnabled = it
+                    discoverState.value = it
                 }
             )
         }
