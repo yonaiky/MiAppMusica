@@ -964,4 +964,5 @@ Volume BAS : titre précédent</string>
     <string name="artist_featured_on">Featured on</string>
     <string name="artist_fans_might_also_like">Fans might also like</string>
     <string name="update_changelogs">%s changelogs</string>
+    <string name="rotating_cover_title">Rotating album cover</string>
 </resources>
