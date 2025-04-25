@@ -4,14 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.forcePlayFromBeginning
 
 @UnstableApi
 class Radio private constructor(
@@ -35,14 +32,6 @@ class Radio private constructor(
         get() = stringResource( messageId )
 
     override fun onShortClick() {
-        // Capture list here to prevent
-        // unequals lists between calls.
-        val songs = songs().map( Song::asMediaItem )
-
-        binder?.stopRadio()
-        binder?.player?.forcePlayFromBeginning( songs )
-        binder?.setupRadio(
-            NavigationEndpoint.Endpoint.Watch( videoId = songs.first().mediaId )
-        )
+        binder?.startRadio( songs().random(), true )
     }
 }
