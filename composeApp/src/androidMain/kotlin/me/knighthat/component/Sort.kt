@@ -5,8 +5,10 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -19,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.Drawable
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.SortOrder
@@ -86,11 +89,15 @@ open class Sort<T: Enum<T>> (
             ListMenu.Entry(
                 text = if (it is TextView) it.text else it.name,
                 icon = {
-                    TabToolBar.Icon(
-                        if( it is Drawable )
-                            it.icon
-                        else
-                            painterResource( R.drawable.close )
+                    Icon(
+                        painter =
+                            if( it is Drawable )
+                                it.icon
+                            else
+                                painterResource( R.drawable.close ),
+                        contentDescription = it.name,
+                        tint = colorPalette().text,
+                        modifier = Modifier.size( TabToolBar.TOOLBAR_ICON_SIZE )
                     )
                 },
                 onClick = {
@@ -111,12 +118,15 @@ open class Sort<T: Enum<T>> (
             GridMenu.Entry(
                 text = if (it is TextView) it.text else it.name,
                 icon = {
-                    TabToolBar.Icon(
-                        icon =
+                    Icon(
+                        painter =
                             if( it is Drawable )
                                 it.icon
                             else
-                                painterResource( R.drawable.close )
+                                painterResource( R.drawable.close ),
+                        contentDescription = it.name,
+                        tint = colorPalette().text,
+                        modifier = Modifier.size( TabToolBar.TOOLBAR_ICON_SIZE )
                     )
                 },
                 onClick = {
@@ -159,9 +169,7 @@ open class Sort<T: Enum<T>> (
             color,
             sizeDp,
             isEnabled,
-            this.modifier.graphicsLayer { rotationZ = animatedArrow },
-            this::onShortClick,
-            this::onLongClick
+            this.modifier.graphicsLayer { rotationZ = animatedArrow }
         )
     }
 }
