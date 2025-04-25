@@ -113,6 +113,7 @@ import it.fast4x.rimusic.utils.showButtonPlayerStartRadioKey
 import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
+import it.fast4x.rimusic.utils.showPlaybackSpeedButtonKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showsongsKey
@@ -127,6 +128,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
+import me.knighthat.component.player.PlaybackSpeed
 import me.knighthat.utils.Toaster
 
 @ExperimentalTextApi
@@ -670,6 +672,14 @@ fun BoxScope.ActionBar(
                         },
                         modifier = Modifier.size( 24.dp )
                     )
+
+                val showPlaybackSpeedButton by rememberPreference( showPlaybackSpeedButtonKey, false )
+                if( showPlaybackSpeedButton ) {
+                    val playbackSpeed = remember { PlaybackSpeed() }
+
+                    playbackSpeed.Render()
+                    playbackSpeed.ToolBarButton()
+                }
 
                 val showButtonPlayerArrow by rememberPreference( showButtonPlayerArrowKey, true )
                 if (showButtonPlayerArrow)
