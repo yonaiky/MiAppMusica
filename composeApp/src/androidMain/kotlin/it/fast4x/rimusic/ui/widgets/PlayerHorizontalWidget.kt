@@ -3,6 +3,7 @@ package it.fast4x.rimusic.ui.widgets
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.OptIn
+import androidx.core.graphics.createBitmap
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
@@ -27,7 +28,7 @@ class PlayerHorizontalWidget: GlanceAppWidget() {
         val songTitleKey = stringPreferencesKey("songTitleKey")
         val songArtistKey = stringPreferencesKey("songArtistKey")
         val isPlayingKey = booleanPreferencesKey("isPlayingKey")
-        var widgetBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        var widgetBitmap = createBitmap(1, 1)
         lateinit var widgetPlayer: ExoPlayer
     }
 
@@ -59,7 +60,7 @@ class PlayerHorizontalWidget: GlanceAppWidget() {
         updateAppWidgetState(context, PreferencesGlanceStateDefinition, glanceId) { preferences ->
             preferences.toMutablePreferences().apply {
                 this[songTitleKey] = cleanPrefix(songTitle)
-                this[songArtistKey] = songArtist
+                this[songArtistKey] = cleanPrefix(songArtist)
                 this[isPlayingKey] = isPlaying
             }
         }

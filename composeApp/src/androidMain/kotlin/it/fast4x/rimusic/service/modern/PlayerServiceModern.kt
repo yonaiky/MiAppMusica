@@ -777,10 +777,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 fadeIn = true
             )
 
-        //val totalPlayTimeMs = player.totalBufferedDuration.toString()
-        //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
-        //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
-
+        updateWidgets()
 
         super.onIsPlayingChanged(isPlaying)
     }
@@ -1941,6 +1938,9 @@ class PlayerServiceModern : MediaLibraryService(),
             println("PlayerServiceModern actionSearch")
         }
 
+        fun updateWidgets() {
+
+        }
     }
 
     @JvmInline
