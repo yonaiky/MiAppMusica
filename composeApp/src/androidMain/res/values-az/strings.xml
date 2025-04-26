@@ -960,7 +960,7 @@
     <string name="removed_from_dislikes">%s bəyənilməyənlərdən silindi</string>
     <string name="artist_featured_on">Seçilmişdir</string>
     <string name="artist_fans_might_also_like">Pərəstişkarlar da bəyənə bilər</string>
-    <string name="update_changelogs">%s changelogs</string>
+    <string name="update_changelogs">%s dəyişiklik qeydləri</string>
     <string name="rotating_cover_title">Rotating album cover</string>
     <string name="title_playback_speed">Playback speed</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
