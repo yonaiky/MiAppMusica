@@ -1,13 +1,7 @@
 package it.fast4x.rimusic.ui.screens.player
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.RenderEffect
-import android.media.audiofx.AudioEffect
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -21,11 +15,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -47,13 +39,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -61,28 +51,23 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
@@ -100,7 +85,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asComposeRenderEffect
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
@@ -130,10 +114,12 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import app.kreate.android.R
+import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
+import app.kreate.android.screens.player.background.BlurredCover
+import app.kreate.android.themed.rimusic.screen.player.ActionBar
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.BlackCherryCosmos
 import com.mikepenz.hypnoticcanvas.shaders.GlossyGradients
@@ -145,8 +131,8 @@ import com.mikepenz.hypnoticcanvas.shaders.MeshGradient
 import com.mikepenz.hypnoticcanvas.shaders.MesmerizingLens
 import com.mikepenz.hypnoticcanvas.shaders.OilFlow
 import com.mikepenz.hypnoticcanvas.shaders.PurpleLiquid
+import com.mikepenz.hypnoticcanvas.shaders.Shader
 import com.mikepenz.hypnoticcanvas.shaders.Stage
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appRunningInBackground
@@ -156,14 +142,12 @@ import it.fast4x.rimusic.enums.AnimatedGradient
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ColorPaletteMode
-import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.QueueType
-import it.fast4x.rimusic.enums.SongsNumber
 import it.fast4x.rimusic.enums.SwipeAnimationNoThumbnail
 import it.fast4x.rimusic.enums.ThumbnailCoverType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -174,11 +158,9 @@ import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.CircularSlider
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
-import it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
@@ -190,14 +172,10 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
-import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.SearchYoutubeEntity
 import it.fast4x.rimusic.utils.VerticalfadingEdge2
 import it.fast4x.rimusic.utils.VinylSizeKey
-import it.fast4x.rimusic.utils.actionExpandedKey
-import it.fast4x.rimusic.utils.actionspacedevenlyKey
-import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.albumCoverRotationKey
 import it.fast4x.rimusic.utils.animatedGradientKey
 import it.fast4x.rimusic.utils.backgroundProgressKey
@@ -207,7 +185,6 @@ import it.fast4x.rimusic.utils.carouselKey
 import it.fast4x.rimusic.utils.carouselSizeKey
 import it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import it.fast4x.rimusic.utils.colorPaletteModeKey
-import it.fast4x.rimusic.utils.colorPaletteNameKey
 import it.fast4x.rimusic.utils.controlsExpandedKey
 import it.fast4x.rimusic.utils.coverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.currentWindow
@@ -218,20 +195,15 @@ import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.expandedplayerKey
-import it.fast4x.rimusic.utils.expandedplayertoggleKey
 import it.fast4x.rimusic.utils.extraspaceKey
 import it.fast4x.rimusic.utils.fadingedgeKey
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getBitmapFromUrl
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.horizontalFadingEdge
-import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
-import it.fast4x.rimusic.utils.miniQueueExpandedKey
 import it.fast4x.rimusic.utils.noblurKey
 import it.fast4x.rimusic.utils.playAtIndex
 import it.fast4x.rimusic.utils.playNext
@@ -240,42 +212,23 @@ import it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import it.fast4x.rimusic.utils.playerTypeKey
-import it.fast4x.rimusic.utils.playlistindicatorKey
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.queueDurationExpandedKey
 import it.fast4x.rimusic.utils.queueLoopTypeKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.seamlessPlay
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
-import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
-import it.fast4x.rimusic.utils.showButtonPlayerArrowKey
-import it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
-import it.fast4x.rimusic.utils.showButtonPlayerDownloadKey
-import it.fast4x.rimusic.utils.showButtonPlayerLoopKey
-import it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerMenuKey
-import it.fast4x.rimusic.utils.showButtonPlayerShuffleKey
-import it.fast4x.rimusic.utils.showButtonPlayerSleepTimerKey
-import it.fast4x.rimusic.utils.showButtonPlayerStartRadioKey
-import it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
-import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
-import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
-import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
-import it.fast4x.rimusic.utils.showsongsKey
 import it.fast4x.rimusic.utils.showthumbnailKey
 import it.fast4x.rimusic.utils.showvisthumbnailKey
-import it.fast4x.rimusic.utils.shuffleQueue
 import it.fast4x.rimusic.utils.statsExpandedKey
 import it.fast4x.rimusic.utils.statsfornerdsKey
 import it.fast4x.rimusic.utils.swipeAnimationsNoThumbnailKey
-import it.fast4x.rimusic.utils.swipeUpQueueKey
-import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.thumbnail
 import it.fast4x.rimusic.utils.thumbnailFadeExKey
@@ -288,14 +241,11 @@ import it.fast4x.rimusic.utils.thumbnailTypeKey
 import it.fast4x.rimusic.utils.timelineExpandedKey
 import it.fast4x.rimusic.utils.titleExpandedKey
 import it.fast4x.rimusic.utils.topPaddingKey
-import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
-import it.fast4x.rimusic.utils.visualizerEnabledKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.player.BlurAdjuster
 import me.knighthat.utils.Toaster
@@ -332,32 +282,13 @@ fun Player(
     var thumbnailFade  by rememberPreference( thumbnailFadeKey, 5f )
     var thumbnailFadeEx  by rememberPreference( thumbnailFadeExKey, 5f )
     var imageCoverSize by rememberPreference( VinylSizeKey, 50f )
-    val visualizerEnabled by rememberPreference( visualizerEnabledKey, false )
     val queueDurationExpanded by rememberPreference( queueDurationExpandedKey, true )
-    val miniQueueExpanded by rememberPreference( miniQueueExpandedKey, true )
     val statsExpanded by rememberPreference( statsExpandedKey, true )
-    val actionExpanded by rememberPreference( actionExpandedKey, true )
-    val colorPaletteName by rememberPreference( colorPaletteNameKey, ColorPaletteName.Dynamic )
     var showthumbnail by rememberPreference( showthumbnailKey, true )
-    val showButtonPlayerAddToPlaylist by rememberPreference( showButtonPlayerAddToPlaylistKey, true )
-    val showButtonPlayerArrow by rememberPreference( showButtonPlayerArrowKey, true )
-    val showButtonPlayerDownload by rememberPreference( showButtonPlayerDownloadKey, true )
-    val showButtonPlayerLoop by rememberPreference( showButtonPlayerLoopKey, true )
-    val showButtonPlayerLyrics by rememberPreference( showButtonPlayerLyricsKey, true )
-    val expandedplayertoggle by rememberPreference( expandedplayertoggleKey, true )
-    val showButtonPlayerShuffle by rememberPreference( showButtonPlayerShuffleKey, true )
-    val showButtonPlayerSleepTimer by rememberPreference( showButtonPlayerSleepTimerKey, false )
     val showButtonPlayerMenu by rememberPreference( showButtonPlayerMenuKey, false )
-    val showButtonPlayerStartRadio by rememberPreference( showButtonPlayerStartRadioKey, false )
-    val showButtonPlayerSystemEqualizer by rememberPreference( showButtonPlayerSystemEqualizerKey, false )
-    val showButtonPlayerVideo by rememberPreference( showButtonPlayerVideoKey, false )
     val showTotalTimeQueue by rememberPreference( showTotalTimeQueueKey, true )
     val backgroundProgress by rememberPreference( backgroundProgressKey, BackgroundProgress.MiniPlayer )
-    var queueLoopType by rememberPreference( queueLoopTypeKey, defaultValue = QueueLoopType.Default )
-    val showsongs by rememberPreference( showsongsKey, SongsNumber.`2` )
-    val showalbumcover by rememberPreference( showalbumcoverKey, true )
-    val tapqueue by rememberPreference( tapqueueKey, true )
-    val swipeUpQueue by rememberPreference( swipeUpQueueKey, true )
+    var queueLoopState = rememberPreference( queueLoopTypeKey, defaultValue = QueueLoopType.Default )
     val playerType by rememberPreference( playerTypeKey, PlayerType.Essential )
     val queueType by rememberPreference( queueTypeKey, QueueType.Essential )
     val noblur by rememberPreference( noblurKey, true )
@@ -366,13 +297,11 @@ fun Player(
     val playerBackgroundColors by rememberPreference( playerBackgroundColorsKey, PlayerBackgroundColors.BlurredCoverColor )
     val animatedGradient by rememberPreference( animatedGradientKey, AnimatedGradient.Linear )
     val thumbnailTapEnabled by rememberPreference( thumbnailTapEnabledKey, true )
-    val showNextSongsInPlayer by rememberPreference( showNextSongsInPlayerKey, false )
-    val transparentBackgroundActionBarPlayer by rememberPreference( transparentBackgroundPlayerActionBarKey, false )
     val showTopActionsBar by rememberPreference( showTopActionsBarKey, true )
     val blackgradient by rememberPreference( blackgradientKey, false )
     val bottomgradient by rememberPreference( bottomgradientKey, false )
     val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
-    var discoverIsEnabled by rememberPreference( discoverKey, false )
+    var discoverState = rememberPreference( discoverKey, false )
     val titleExpanded by rememberPreference( titleExpandedKey, true )
     val timelineExpanded by rememberPreference( timelineExpandedKey, true )
     val controlsExpanded by rememberPreference( controlsExpandedKey, true )
@@ -380,12 +309,17 @@ fun Player(
     var coverThumbnailAnimation by rememberPreference( coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl )
     var albumCoverRotation by rememberPreference( albumCoverRotationKey, false )
     val textoutline by rememberPreference( textoutlineKey, false )
-    val playlistindicator by rememberPreference( playlistindicatorKey, false )
     val carousel by rememberPreference( carouselKey, true )
     val carouselSize by rememberPreference( carouselSizeKey, CarouselSize.Biggest )
-    var showButtonPlayerDiscover by rememberPreference( showButtonPlayerDiscoverKey, false )
-    val actionspacedevenly by rememberPreference( actionspacedevenlyKey, false )
-    var expandedplayer by rememberPreference( expandedplayerKey, false )
+    val clickLyricsText by rememberPreference( clickOnLyricsTextKey, true )
+    var extraspace by rememberPreference( extraspaceKey, false )
+    val thumbnailRoundness by rememberPreference( thumbnailRoundnessKey, ThumbnailRoundness.Heavy )
+    val thumbnailType by rememberPreference( thumbnailTypeKey, ThumbnailType.Modern )
+    val statsfornerds by rememberPreference( statsfornerdsKey, false )
+    val topPadding by rememberPreference( topPaddingKey, true )
+    var swipeAnimationNoThumbnail by rememberPreference( swipeAnimationsNoThumbnailKey, SwipeAnimationNoThumbnail.Sliding )
+    val expandPlayerState = rememberPreference( expandedplayerKey, false )
+    var expandedplayer by expandPlayerState
 
 
     if (binder.player.currentTimeline.windowCount == 0) return
@@ -398,21 +332,29 @@ fun Player(
         mutableStateOf(binder.player.shouldBePlaying)
     }
 
-
-    var isRotated by rememberSaveable { mutableStateOf(false) }
+    val rotateState = rememberSaveable { mutableStateOf( false ) }
+    var isRotated by rotateState
     val rotationAngle by animateFloatAsState(
         targetValue = if (isRotated) 360F else 0f,
         animationSpec = tween(durationMillis = 200), label = ""
     )
 
+    val showQueueState = rememberSaveable { mutableStateOf( false ) }
+    var showQueue by showQueueState
+
+    val showSearchEntityState = rememberSaveable { mutableStateOf( false ) }
+    var showSearchEntity by showSearchEntityState
+
+    val showVisualizerState = rememberSaveable { mutableStateOf( false ) }
+    var isShowingVisualizer by showVisualizerState
+
+    val showSleepTimerState = rememberSaveable { mutableStateOf( false ) }
+    var isShowingSleepTimerDialog by showSleepTimerState
+
+    val showLyricsState = rememberSaveable { mutableStateOf( false ) }
+    var isShowingLyrics by showLyricsState
 
     var showThumbnailOffsetDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isShowingLyrics by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isShowingVisualizer by remember {
         mutableStateOf(false)
     }
 
@@ -431,10 +373,6 @@ fun Player(
     var mediaItems by remember {
         mutableStateOf(binder.player.currentTimeline.mediaItems)
     }
-    var mediaItemIndex by remember {
-        mutableIntStateOf(if (binder.player.mediaItemCount == 0) -1 else binder.player.currentMediaItemIndex)
-    }
-
     var playerError by remember {
         mutableStateOf<PlaybackException?>(binder.player.playerError)
     }
@@ -480,37 +418,29 @@ fun Player(
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                shouldBePlaying = if (playerError == null) binder.player.shouldBePlaying else false
+                shouldBePlaying = playerError == null && binder.player.shouldBePlaying
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 playerError = binder.player.playerError
-                shouldBePlaying = if (playerError == null) binder.player.shouldBePlaying else false
+                shouldBePlaying = playerError == null && binder.player.shouldBePlaying
             }
             override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                 mediaItems = timeline.mediaItems
-                mediaItemIndex = binder.player.currentMediaItemIndex
             }
             override fun onPlayerError(playbackException: PlaybackException) {
                 playerError = playbackException
-                //binder.stopRadio()
             }
         }
     }
 
-    val mediaItem = nullableMediaItem ?: return
+    val
+            mediaItem = nullableMediaItem ?: return
 
     val pagerState = rememberPagerState(pageCount = { mediaItems.size })
     val pagerStateFS = rememberPagerState(pageCount = { mediaItems.size })
     val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
     val isDraggedFS by pagerStateFS.interactionSource.collectIsDraggedAsState()
-
-    //Temporaly commented for debug
-    //playerError?.let { PlayerError(error = it) }
-
-    var isShowingSleepTimerDialog by remember {
-        mutableStateOf(false)
-    }
 
     var delayedSleepTimer by remember {
         mutableStateOf(false)
@@ -569,15 +499,6 @@ fun Player(
                 .findAlbumOf( mediaItem.mediaId )
                 .map { it?.id }
     }.collectAsState( null, Dispatchers.IO )
-
-
-    var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
-    }
-    downloadState = getDownloadState(mediaItem.mediaId)
-
-    var isDownloaded by rememberSaveable { mutableStateOf(false) }
-    isDownloaded = isDownloadedSong(mediaItem.mediaId)
 
     var showCircularSlider by remember {
         mutableStateOf(false)
@@ -767,18 +688,13 @@ fun Player(
                 playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient
 
-
-
-        //val context = LocalContext.current
-        //println("Player before getting dynamic color ${dynamicColorPalette}")
         println("Player url mediaitem ${mediaItem.mediaMetadata.artworkUri}")
         println("Player url binder ${binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri}")
-        val isSystemDarkMode = isSystemInDarkTheme()
-        LaunchedEffect(mediaItem.mediaId, updateBrush) {
-            if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
-                playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
-                playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient || updateBrush
-            ) {
+    LaunchedEffect(mediaItem.mediaId, updateBrush) {
+        if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
+            playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
+            playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient || updateBrush
+        ) {
             try {
                 val bitmap = getBitmapFromUrl(
                     context,
@@ -789,7 +705,7 @@ fun Player(
                     bitmap,
                     !lightTheme
                 ) ?: color
-                println("Player INSIDE getting dynamic color ${dynamicColorPalette}")
+                println("Player INSIDE getting dynamic color $dynamicColorPalette")
 
                 val palette = Palette.from(bitmap).generate()
 
@@ -805,52 +721,11 @@ fun Player(
                 dynamicColorPalette = color
                 println("Player Error getting dynamic color ${e.printStackTrace()}")
             }
-
         }
-        println("Player after getting dynamic color ${dynamicColorPalette}")
+        println("Player after getting dynamic color $dynamicColorPalette")
     }
 
     var sizeShader by remember { mutableStateOf(Size.Zero) }
-
-    val shaderA = LinearGradientShader(
-        Offset(sizeShader.width / 2f, 0f),
-        Offset(sizeShader.width / 2f, sizeShader.height),
-        listOf(
-            dynamicColorPalette.background2,
-            colorPalette().background2,
-        ),
-        listOf(0f, 1f)
-    )
-
-    val shaderB = LinearGradientShader(
-        Offset(sizeShader.width / 2f, 0f),
-        Offset(sizeShader.width / 2f, sizeShader.height),
-        listOf(
-            colorPalette().background1,
-            dynamicColorPalette.accent,
-        ),
-        listOf(0f, 1f)
-    )
-
-    val shaderMask = LinearGradientShader(
-        Offset(sizeShader.width / 2f, 0f),
-        Offset(sizeShader.width / 2f, sizeShader.height),
-        listOf(
-            //Color.White,
-            colorPalette().background2,
-            Color.Transparent,
-        ),
-        listOf(0f, 1f)
-    )
-
-    val brushA by animateBrushRotation(shaderA, sizeShader, 20_000, true)
-    val brushB by animateBrushRotation(shaderB, sizeShader, 12_000, false)
-    val brushMask by animateBrushRotation(shaderMask, sizeShader, 15_000, true)
-    /*  */
-
-    val (thumbnailSizeDp, thumbnailSizePx) = Dimensions.thumbnails.player.song.let {
-        it to (it - 64.dp).px
-    }
 
     var totalPlayTimes = 0L
     mediaItems.forEach {
@@ -858,19 +733,14 @@ fun Player(
             durationTextToMillis(it1)
         }?.toLong() ?: 0
     }
-//    println("mediaItem totalPlayTimes $totalPlayTimes")
 
 
     var isShowingStatsForNerds by rememberSaveable {
         mutableStateOf(false)
     }
 
-    var showQueue by rememberSaveable { mutableStateOf(false) }
-    var showFullLyrics by rememberSaveable { mutableStateOf(false) }
-    var showSearchEntity by rememberSaveable { mutableStateOf(false) }
 
     var containerModifier = Modifier
-        //.padding(bottom = bottomDp)
         .padding(bottom = 0.dp)
     var deltaX by remember { mutableStateOf(0f) }
 
@@ -897,22 +767,6 @@ fun Player(
     }
 
     val blurAdjuster = BlurAdjuster()
-    val blurRadius by remember {
-        derivedStateOf {
-            if( showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur )
-                blurAdjuster.strength
-            else
-                0f
-        }
-    }
-    val backdropColor by remember {
-        derivedStateOf {
-            Color.Black.copy(
-                // Ensure value can't go outside by accident
-                alpha = (blurAdjuster.backdrop / 100f).coerceIn( 0f, 1f )
-            )
-        }
-    }
 
     if (!isGradientBackgroundEnabled) {
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor && (playerType == PlayerType.Essential || (showthumbnail && (!albumCoverRotation)))) {
@@ -946,25 +800,23 @@ fun Player(
                             showthumbnail = !showthumbnail
                     },
                     onLongClick = {
-                        blurAdjuster.isActive = showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
+                        blurAdjuster.isActive =
+                            showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
                     }
                 )
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures(
-                        onHorizontalDrag = { change, dragAmount ->
+                        onHorizontalDrag = { _, dragAmount ->
                             deltaX = dragAmount
                         },
                         onDragStart = {
-                            //Log.d("mediaItemGesture","ondragStart offset ${it}")
                         },
                         onDragEnd = {
                             if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                 if (deltaX > 5) {
                                     binder.player.playPrevious()
-                                    //Log.d("mediaItem","Swipe to LEFT")
                                 } else if (deltaX < -5) {
                                     binder.player.playNext()
-                                    //Log.d("mediaItem","Swipe to RIGHT")
                                 }
 
                             }
@@ -979,7 +831,7 @@ fun Player(
                 .drawBehind {
                     val colors = listOf(Color(dominant),Color(vibrant),Color(lightVibrant),Color(darkVibrant),Color(muted),Color(lightMuted),Color(darkMuted))
                     val boxheight = (size.height)/7
-                    colors.forEachIndexed {i, color ->
+                    colors.forEachIndexed {i, _ ->
                         drawRect(
                             color = colors[i],
                             topLeft = Offset(0f,i*boxheight),
@@ -996,26 +848,68 @@ fun Player(
         }
     } else {
         when (playerBackgroundColors) {
-
             PlayerBackgroundColors.AnimatedGradient -> {
-                if (animatedGradient == AnimatedGradient.FluidCoverColorGradient ||
-                    animatedGradient == AnimatedGradient.FluidThemeColorGradient) {
-                    containerModifier = containerModifier
-                            .onSizeChanged {
-                                sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                            }
+                var background by remember {
+                    mutableStateOf( Color.Transparent )
+                }
+                var shaderCondition by remember {
+                    mutableStateOf( true )
+                }
+                var shader: Shader? by remember {
+                    mutableStateOf( null )
+                }
+                val type = remember( animatedGradient, tempGradient ) {
+                    if( animatedGradient == AnimatedGradient.Random )
+                        tempGradient
+                    else
+                        animatedGradient
+                }
+
+                when( type ) {
+                    AnimatedGradient.FluidThemeColorGradient, AnimatedGradient.FluidCoverColorGradient -> {
+                        val shaderA = LinearGradientShader(
+                            Offset(sizeShader.width / 2f, 0f),
+                            Offset(sizeShader.width / 2f, sizeShader.height),
+                            listOf(
+                                dynamicColorPalette.background2,
+                                colorPalette().background2,
+                            ),
+                            listOf(0f, 1f)
+                        )
+                        val brushA by animateBrushRotation(shaderA, sizeShader, 20_000, true)
+
+                        val shaderB = LinearGradientShader(
+                            Offset(sizeShader.width / 2f, 0f),
+                            Offset(sizeShader.width / 2f, sizeShader.height),
+                            listOf(
+                                colorPalette().background1,
+                                dynamicColorPalette.accent,
+                            ),
+                            listOf(0f, 1f)
+                        )
+                        val brushB by animateBrushRotation(shaderB, sizeShader, 12_000, false)
+
+                        val shaderMask = LinearGradientShader(
+                            Offset(sizeShader.width / 2f, 0f),
+                            Offset(sizeShader.width / 2f, sizeShader.height),
+                            listOf(
+                                //Color.White,
+                                colorPalette().background2,
+                                Color.Transparent,
+                            ),
+                            listOf(0f, 1f)
+                        )
+                        val brushMask by animateBrushRotation(shaderMask, sizeShader, 15_000, true)
+
+                        containerModifier = containerModifier
                             .drawBehind {
                                 drawRect(brush = brushA)
                                 drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
                                 drawRect(brush = brushB, blendMode = BlendMode.DstAtop)
                             }
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[2]) || animatedGradient == AnimatedGradient.Linear){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .animatedGradient(
+                    }
+                    AnimatedGradient.Linear -> {
+                        containerModifier = containerModifier.animatedGradient(
                             binder.player.isPlaying,
                             saturate(dominant).darkenBy(),
                             saturate(vibrant).darkenBy(),
@@ -1025,129 +919,75 @@ fun Player(
                             saturate(lightMuted).darkenBy(),
                             saturate(darkMuted).darkenBy()
                         )
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[3]) || animatedGradient == AnimatedGradient.Mesh) {
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .conditional(!appRunningInBackground) {
-                            shaderBackground(
-                                MeshGradient(
-                                    arrayOf(
-                                        saturate(vibrant).darkenBy(),
-                                        saturate(lightVibrant).darkenBy(),
-                                        saturate(darkVibrant).darkenBy(),
-                                        saturate(muted).darkenBy(),
-                                        saturate(lightMuted).darkenBy(),
-                                        saturate(darkMuted).darkenBy(),
-                                        saturate(dominant).darkenBy()
-                                    ),
-                                    scale = 1f
-                                )
-                            )
-                        }
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[4]) || animatedGradient == AnimatedGradient.MesmerizingLens){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            MesmerizingLens
+                    }
+                    AnimatedGradient.Mesh -> {
+                        shaderCondition = !appRunningInBackground
+                        shader = MeshGradient(
+                            colors = arrayOf(
+                                saturate(vibrant).darkenBy(),
+                                saturate(lightVibrant).darkenBy(),
+                                saturate(darkVibrant).darkenBy(),
+                                saturate(muted).darkenBy(),
+                                saturate(lightMuted).darkenBy(),
+                                saturate(darkMuted).darkenBy(),
+                                saturate(dominant).darkenBy()
+                            ),
+                            scale = 1f
                         )
+                    }
+                    AnimatedGradient.MesmerizingLens -> shader = MesmerizingLens
+                    AnimatedGradient.GlossyGradients -> {
+                        if( !lightTheme )
+                            background = Color.Black.copy(.2f)
+                        shader = GlossyGradients
+                    }
+                    AnimatedGradient.GradientFlow -> {
+                        if( !lightTheme )
+                            background = Color.Black.copy(.2f)
+                        shader = GradientFlow
+                    }
+                    AnimatedGradient.PurpleLiquid -> shader = PurpleLiquid
+                    AnimatedGradient.InkFlow -> {
+                        if( lightTheme )
+                            background = Color.White.copy(.4f)
+                        shader = InkFlow
+                    }
+                    AnimatedGradient.OilFlow -> {
+                        if( lightTheme )
+                            background = Color.White.copy(.4f)
+                        shader = OilFlow
+                    }
+                    AnimatedGradient.IceReflection -> {
+                        background = if( !lightTheme ) Color.Black.copy( .3f ) else Color.White.copy( .4f )
+                        shader = IceReflection
+                    }
+                    AnimatedGradient.Stage -> {
+                        if( !lightTheme )
+                            background = Color.Black.copy( .3f )
+                        shader = Stage
+                    }
+                    AnimatedGradient.GoldenMagma -> {
+                        background = if( !lightTheme ) Color.Black.copy( .2f ) else Color.White.copy( .3f )
+                        shader = GoldenMagma
+                    }
+                    AnimatedGradient.BlackCherryCosmos -> {
+                        if( lightTheme )
+                            background = Color.White.copy( .35f )
+                        shader = BlackCherryCosmos
+                    }
+                    // if [animatedGradient] is [AnimatedGradient.Random] then it should choose
+                    // [tempGradient]. If [tempGradient] is [AnimatedGradient.Random], you have
+                    // a problem.
+                    AnimatedGradient.Random -> throw IllegalStateException("Anything but this")
                 }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[5]) || animatedGradient == AnimatedGradient.GlossyGradients){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            GlossyGradients
-                        )
-                        .background(if (!lightTheme) Color.Black.copy(0.2f) else Color.Transparent)
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[6]) || animatedGradient == AnimatedGradient.GradientFlow){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            GradientFlow
-                        )
-                        .background(if (!lightTheme) Color.Black.copy(0.2f) else Color.Transparent)
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[7]) || animatedGradient == AnimatedGradient.PurpleLiquid){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            PurpleLiquid
-                        )
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[8]) || animatedGradient == AnimatedGradient.InkFlow){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            InkFlow
-                        )
-                        .background(if (lightTheme) Color.White.copy(0.4f) else Color.Transparent)
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[9]) || animatedGradient == AnimatedGradient.OilFlow){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            OilFlow
-                        )
-                        .background(if (lightTheme) Color.White.copy(0.4f) else Color.Transparent)
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[10]) || animatedGradient == AnimatedGradient.IceReflection){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            IceReflection
-                        )
-                        .background(if (!lightTheme) Color.Black.copy(0.3f) else Color.Transparent)
-                        .background(if (lightTheme) Color.White.copy(0.4f) else Color.Transparent)
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[11]) || animatedGradient == AnimatedGradient.Stage){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            Stage
-                        )
-                        .background(if (!lightTheme) Color.Black.copy(0.3f) else Color.Transparent)
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[12]) || animatedGradient == AnimatedGradient.GoldenMagma){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            GoldenMagma
-                        )
-                        .background(if (!lightTheme) Color.Black.copy(0.2f) else Color.Transparent)
-                        .background(if (lightTheme) Color.White.copy(0.3f) else Color.Transparent)
-                }
-                else if ((animatedGradient == AnimatedGradient.Random && tempGradient == gradients[13]) || animatedGradient == AnimatedGradient.BlackCherryCosmos){
-                    containerModifier = containerModifier
-                        .onSizeChanged {
-                            sizeShader = Size(it.width.toFloat(), it.height.toFloat())
-                        }
-                        .shaderBackground(
-                            BlackCherryCosmos
-                        )
-                        .background(if (lightTheme) Color.White.copy(0.35f) else Color.Transparent)
-                }
+
+                containerModifier = containerModifier.conditional( shaderCondition && shader != null ) {
+                                                         shaderBackground( shader!! )
+                                                     }
+                                                     .background( background )
+                                                     .onSizeChanged {
+                                                         sizeShader = Size( it.width.toFloat(), it.height.toFloat() )
+                                                     }
             }
 
             else -> {
@@ -1156,8 +996,6 @@ fun Player(
                         Brush.verticalGradient(
                             0.5f to if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) dynamicColorPalette.background1 else colorPalette().background1,
                             1.0f to if (blackgradient) Color.Black else colorPalette().background2,
-                            //0.0f to colorPalette().background0,
-                            //1.0f to colorPalette().background2,
                             startY = 0.0f,
                             endY = 1500.0f
                         )
@@ -1168,9 +1006,7 @@ fun Player(
 
     }
 
-    val thumbnailContent: @Composable (
-        //modifier: Modifier
-    ) -> Unit = { //innerModifier ->
+    val thumbnailContent: @Composable () -> Unit = {
         var deltaX by remember { mutableStateOf(0f) }
 
         val isSongLiked by remember( mediaItem.mediaId ) {
@@ -1188,9 +1024,7 @@ fun Player(
                 isShowingVisualizer = isShowingVisualizer,
                 onShowEqualizer = { isShowingVisualizer = it },
                 showthumbnail = showthumbnail,
-                onMaximize = {
-                    showFullLyrics = true
-                },
+                onMaximize = {},
                 onDoubleTap = {
                     val currentMediaItem = binder.player.currentMediaItem
                     Database.asyncTransaction {
@@ -1208,20 +1042,17 @@ fun Player(
                     //.nestedScroll( connection = scrollConnection )
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures(
-                            onHorizontalDrag = { change, dragAmount ->
+                            onHorizontalDrag = { _, dragAmount ->
                                 deltaX = dragAmount
                             },
                             onDragStart = {
-                                //Log.d("mediaItemGesture","ondragStart offset ${it}")
                             },
                             onDragEnd = {
                                 if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
                                     if (deltaX > 5) {
                                         binder.player.playPrevious()
-                                        //Log.d("mediaItem","Swipe to LEFT")
                                     } else if (deltaX < -5) {
                                         binder.player.playNext()
-                                        //Log.d("mediaItem","Swipe to RIGHT")
                                     }
 
                                 }
@@ -1239,36 +1070,25 @@ fun Player(
 
     }
 
-
-    val controlsContent: @Composable (
-        modifier: Modifier
-    ) -> Unit = { modifierValue ->
+    @Composable
+    fun Controller( mediaItem: MediaItem, modifier: Modifier ) {
         Controls(
             navController = navController,
             onCollapse = onDismiss,
-            expandedplayer = expandedplayer,
+            onBlurScaleChange = { blurAdjuster.strength = it },
+            expandPlayer = expandedplayer,
             titleExpanded = titleExpanded,
             timelineExpanded = timelineExpanded,
             controlsExpanded = controlsExpanded,
             isShowingLyrics = isShowingLyrics,
-            media = mediaItem.toUiMedia(positionAndDuration.second),
-            mediaId = mediaItem.mediaId,
-            title = mediaItem.mediaMetadata.title?.toString() ?: "",
-            artist = mediaItem.mediaMetadata.artist?.toString(),
+            mediaItem = mediaItem,
             artistIds = artistInfos,
             albumId = albumId,
             shouldBePlaying = shouldBePlaying,
-            position = positionAndDuration.first,
-            duration = positionAndDuration.second,
-            modifier = modifierValue,
-            onBlurScaleChange = { blurAdjuster.strength = it },
-            isExplicit = mediaItem.isExplicit
+            positionAndDuration = positionAndDuration,
+            modifier = modifier,
         )
     }
-
-    val isSongMappedToPlaylist by remember( mediaItem.mediaId ) {
-        Database.songPlaylistMapTable.isMapped( mediaItem.mediaId )
-    }.collectAsState( false, Dispatchers.IO )
 
     blurAdjuster.Render()
 
@@ -1276,590 +1096,22 @@ fun Player(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val actionsBarContent: @Composable () -> Unit = {
-            if ((!showButtonPlayerDownload &&
-                !showButtonPlayerAddToPlaylist &&
-                !showButtonPlayerLoop &&
-                !showButtonPlayerShuffle &&
-                !showButtonPlayerLyrics &&
-                !showButtonPlayerSleepTimer &&
-                !showButtonPlayerSystemEqualizer &&
-                !showButtonPlayerArrow &&
-                !showButtonPlayerMenu &&
-                !showButtonPlayerStartRadio &&
-                !expandedplayertoggle &&
-                !showButtonPlayerDiscover &&
-                !showButtonPlayerVideo) ||
-                (!showlyricsthumbnail && isShowingLyrics && !actionExpanded)
-            ) {
-                Row(
-                ) {
-                }
-            } else
-            Row(
-                modifier = Modifier
-                    .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
-                    .requiredHeight(if (showNextSongsInPlayer && (showlyricsthumbnail || (!isShowingLyrics || miniQueueExpanded))) 90.dp else 50.dp)
-                    .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-                    .conditional(tapqueue) { clickable { showQueue = true } }
-                    .background(
-                        colorPalette().background2.copy(
-                            alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f // 0.0 > 0.1
-                        )
-                    )
-                    .pointerInput(Unit) {
-                        if (swipeUpQueue)
-                            detectVerticalDragGestures(
-                                onVerticalDrag = { _, dragAmount ->
-                                    if (dragAmount < 0) showQueue = true
-                                }
-                            )
-                    },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    if (showNextSongsInPlayer) {
-                        if (showlyricsthumbnail || !isShowingLyrics || miniQueueExpanded) {
-                            Row(
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier
-                                    //.background(colorPalette().background2.copy(alpha = 0.3f))
-                                    .background(
-                                        colorPalette().background2.copy(
-                                            alpha = if (transparentBackgroundActionBarPlayer) 0.0f else 0.3f
-                                        )
-                                    )
-                                    .padding(horizontal = 12.dp)
-                                    .fillMaxWidth()
-                            ) {
-                                val nextMediaItemIndex = binder.player.nextMediaItemIndex
-                                val pagerStateQueue =
-                                    rememberPagerState(pageCount = { mediaItems.size })
-                                val scope = rememberCoroutineScope()
-                                val fling = PagerDefaults.flingBehavior(
-                                    state = pagerStateQueue,
-                                    snapPositionalThreshold = 0.15f,
-                                    pagerSnapDistance = PagerSnapDistance.atMost( showsongs.toInt() )
-                                )
-                                pagerStateQueue.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex + 1)
+        @Composable
+        fun ActionsBar() = ActionBar(
+            navController,
+            showQueueState,
+            showSearchEntityState,
+            rotateState,
+            showVisualizerState,
+            showSleepTimerState,
+            showLyricsState,
+            discoverState,
+            queueLoopState,
+            expandPlayerState,
+            onDismiss
+        )
 
-                                Row(
-                                    modifier = Modifier
-                                        .padding(vertical = 7.5.dp)
-                                        .weight(0.07f)
-                                        .conditional(pagerStateQueue.currentPage == binder.player.currentMediaItemIndex){padding(horizontal = 3.dp)}
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = if (pagerStateQueue.currentPage > binder.player.currentMediaItemIndex) R.drawable.chevron_forward
-                                                                       else if (pagerStateQueue.currentPage == binder.player.currentMediaItemIndex) R.drawable.play
-                                                                       else R.drawable.chevron_back),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(25.dp)
-                                            .clip(CircleShape)
-                                            .clickable(
-                                                indication = ripple(bounded = false),
-                                                interactionSource = remember { MutableInteractionSource() },
-                                                onClick = {
-                                                    scope.launch {
-                                                        if (!appRunningInBackground) {
-                                                            pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                        } else {
-                                                            pagerStateQueue.scrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                        }
-                                                    }
-                                                }
-                                            ),
-                                        tint = colorPalette().accent
-                                    )
-                                }
-
-                                val threePagesPerViewport = object : PageSize {
-                                    override fun Density.calculateMainAxisPageSize(
-                                        availableSpace: Int,
-                                        pageSpacing: Int
-                                    ): Int {
-                                        return if  (showsongs == SongsNumber.`1`) availableSpace else ((availableSpace - 2 * pageSpacing) / (showsongs.toInt()))
-                                    }
-                                }
-
-                                HorizontalPager(
-                                    state = pagerStateQueue,
-                                    pageSize = threePagesPerViewport,
-                                    pageSpacing = 10.dp,
-                                    flingBehavior = fling,
-                                    modifier = Modifier.weight(1f)
-                                ) { index ->
-                                    Row(
-                                        horizontalArrangement = Arrangement.Center,
-                                        modifier = Modifier
-                                            .combinedClickable(
-                                                onClick = {
-                                                    binder.player.playAtIndex(index)
-                                                },
-                                                onLongClick = {
-                                                    if (index < mediaItems.size) {
-                                                        binder.player.addNext(
-                                                            binder.player.getMediaItemAt(index)
-                                                        )
-                                                        scope.launch {
-                                                            if (!appRunningInBackground) {
-                                                                pagerStateQueue.animateScrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                            } else {
-                                                                pagerStateQueue.scrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                            }
-                                                        }
-                                                        Toaster.s( R.string.addednext )
-//                                                        hapticFeedback.performHapticFeedback(
-//                                                            HapticFeedbackType.LongPress
-//                                                        )
-                                                    }
-                                                }
-                                            )
-                                        //.width(IntrinsicSize.Min)
-                                    ) {
-                                        if (showalbumcover) {
-                                            Box(
-                                                modifier = Modifier.align( Alignment.CenterVertically )
-                                            ) {
-                                                ImageCacheFactory.Thumbnail(
-                                                    thumbnailUrl = binder.player
-                                                                         .getMediaItemAt( index )
-                                                                         .mediaMetadata
-                                                                         .artworkUri
-                                                                         .toString(),
-                                                    contentDescription = "song_pos_$index",
-                                                    modifier = Modifier.padding( end = 5.dp )
-                                                                       .clip( RoundedCornerShape(5.dp) )
-                                                                       .size( 30.dp )
-                                                )
-                                            }
-                                        }
-                                        Column(
-                                            verticalArrangement = Arrangement.Center,
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            modifier = Modifier
-                                                .height(40.dp)
-                                                .fillMaxWidth()
-                                        ) {
-                                            Box(
-
-                                            ) {
-                                                BasicText(
-                                                    text = cleanPrefix(
-                                                        binder.player.getMediaItemAt(
-                                                            index
-                                                            //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                        ).mediaMetadata.title?.toString()
-                                                            ?: ""
-                                                    ),
-                                                    style = TextStyle(
-                                                        color = colorPalette().text,
-                                                        fontSize = typography().xxxs.semiBold.fontSize,
-                                                    ),
-                                                    maxLines = 1,
-                                                    //overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                                )
-                                                BasicText(
-                                                    text = cleanPrefix(
-                                                        binder.player.getMediaItemAt(
-                                                            index
-                                                            //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                        ).mediaMetadata.title?.toString()
-                                                            ?: ""
-                                                    ),
-                                                    style = TextStyle(
-                                                        drawStyle = Stroke(
-                                                            width = 0.25f,
-                                                            join = StrokeJoin.Round
-                                                        ),
-                                                        color = if (!textoutline) Color.Transparent
-                                                        else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
-                                                            0.65f
-                                                        )
-                                                        else Color.Black,
-                                                        fontSize = typography().xxxs.semiBold.fontSize,
-                                                    ),
-                                                    maxLines = 1,
-                                                    //overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                                )
-                                            }
-
-                                            Box(
-
-                                            ) {
-                                                BasicText(
-                                                    text = binder.player.getMediaItemAt(
-                                                        index
-                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                    ).mediaMetadata.artist?.toString()
-                                                        ?: "",
-                                                    style = TextStyle(
-                                                        color = colorPalette().text,
-                                                        fontSize = typography().xxxs.semiBold.fontSize,
-                                                    ),
-                                                    maxLines = 1,
-                                                    //overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                                )
-                                                BasicText(
-                                                    text = binder.player.getMediaItemAt(
-                                                        index
-                                                        //if (it + 1 <= mediaItems.size - 1) it + 1 else it
-                                                    ).mediaMetadata.artist?.toString()
-                                                        ?: "",
-                                                    style = TextStyle(
-                                                        drawStyle = Stroke(
-                                                            width = 0.25f,
-                                                            join = StrokeJoin.Round
-                                                        ),
-                                                        color = if (!textoutline) Color.Transparent
-                                                        else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(
-                                                            0.65f
-                                                        )
-                                                        else Color.Black,
-                                                        fontSize = typography().xxxs.semiBold.fontSize,
-                                                    ),
-                                                    maxLines = 1,
-                                                    //overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                                if (showsongs == SongsNumber.`1`) {
-                                    IconButton(
-                                        icon = R.drawable.trash,
-                                        color = Color.White,
-                                        enabled = true,
-                                        onClick = {
-                                            binder.player.removeMediaItem(nextMediaItemIndex)
-                                        },
-                                        modifier = Modifier
-                                            .weight(0.07f)
-                                            .size(40.dp)
-                                            .padding(vertical = 7.5.dp),
-                                    )
-                                }
-
-                            }
-                        }
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = if (actionspacedevenly) Arrangement.SpaceEvenly else Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp)
-                            .fillMaxWidth()
-                    ) {
-                        if (showButtonPlayerVideo)
-                            IconButton(
-                                icon = R.drawable.video,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    binder.callPause {}
-                                    showSearchEntity = true
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerDiscover)
-                            IconButton(
-                                icon = R.drawable.star_brilliant,
-                                color = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .combinedClickable(
-                                        onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                        onLongClick = {
-                                            Toaster.i( R.string.discoverinfo )
-                                        }
-                                    )
-                            )
-
-
-                        if (showButtonPlayerDownload)
-                            DownloadStateIconButton(
-                                icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
-                                color = if (isDownloaded) colorPalette().accent else Color.Gray,
-                                downloadState = downloadState,
-                                onClick = {
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = mediaItem,
-                                        downloadState = isDownloaded
-                                    )
-                                },
-                                onCancelButtonClicked = {
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = mediaItem,
-                                        downloadState = true
-                                    )
-                                },
-                                modifier = Modifier
-                                    //.padding(start = 12.dp)
-                                    .size(24.dp)
-                            )
-
-
-                        if (showButtonPlayerAddToPlaylist)
-                            IconButton(
-                                icon = R.drawable.add_in_playlist,
-                                color = if ( isSongMappedToPlaylist && playlistindicator )
-                                    if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text
-                                    else colorPalette().accent,
-                                onClick = {
-                                    menuState.display {
-                                        AddToPlaylistPlayerMenu(
-                                            navController = navController,
-                                            onDismiss = {
-                                                menuState.hide()
-                                            },
-                                            mediaItem = mediaItem,
-                                            binder = binder,
-                                            onClosePlayer = {
-                                                onDismiss()
-                                            },
-                                        )
-                                    }
-                                },
-                                modifier = Modifier
-                                    //.padding(horizontal = 4.dp)
-                                    .size(24.dp)
-                                    .conditional( isSongMappedToPlaylist && playlistindicator ) {
-                                        background(
-                                            color.accent,
-                                            CircleShape
-                                        )
-                                    }
-                                    .conditional( isSongMappedToPlaylist && playlistindicator ) {
-                                        padding(
-                                            all = 5.dp
-                                        )
-                                    }
-                            )
-
-
-
-                        if (showButtonPlayerLoop)
-                            IconButton(
-                                icon = queueLoopType.iconId,
-                                color = colorPalette().accent,
-                                onClick = {
-                                    queueLoopType = queueLoopType.next()
-                                    if (effectRotationEnabled) isRotated = !isRotated
-                                },
-                                modifier = Modifier
-                                    //.padding(horizontal = 4.dp)
-                                    .size(24.dp)
-                            )
-
-                        if (showButtonPlayerShuffle)
-                            IconButton(
-                                icon = R.drawable.shuffle,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    binder.player.shuffleQueue()
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerLyrics)
-                            IconButton(
-                                icon = R.drawable.song_lyrics,
-                                color = if (isShowingLyrics)  colorPalette().accent else Color.Gray,
-                                enabled = true,
-                                onClick = {
-                                    if (isShowingVisualizer) isShowingVisualizer = !isShowingVisualizer
-                                    isShowingLyrics = !isShowingLyrics
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-                        if (!isLandscape || ((playerType == PlayerType.Essential) && !showthumbnail))
-                         if (expandedplayertoggle && !showlyricsthumbnail)
-                            IconButton(
-                                icon = R.drawable.maximize,
-                                color = if (expandedplayer) colorPalette().accent else Color.Gray,
-                                enabled = true,
-                                onClick = {
-                                    expandedplayer = !expandedplayer
-                                },
-                                modifier = Modifier
-                                    .size(20.dp),
-                            )
-
-
-                        if (visualizerEnabled)
-                            IconButton(
-                                icon = R.drawable.sound_effect,
-                                color = if (isShowingVisualizer) colorPalette().text else colorPalette().textDisabled,
-                                enabled = true,
-                                onClick = {
-                                    if (isShowingLyrics) isShowingLyrics = !isShowingLyrics
-                                    isShowingVisualizer = !isShowingVisualizer
-                                },
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-
-
-                        if (showButtonPlayerSleepTimer)
-                            IconButton(
-                                icon = R.drawable.sleep,
-                                color = if (sleepTimerMillisLeft != null) colorPalette().accent else Color.Gray,
-                                enabled = true,
-                                onClick = {
-                                    isShowingSleepTimerDialog = true
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerSystemEqualizer) {
-                            val activityResultLauncher =
-                                rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-
-                            IconButton(
-                                icon = R.drawable.equalizer,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    try {
-                                        activityResultLauncher.launch(
-                                            Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                                                putExtra(
-                                                    AudioEffect.EXTRA_AUDIO_SESSION,
-                                                    binder.player.audioSessionId
-                                                )
-                                                putExtra(
-                                                    AudioEffect.EXTRA_PACKAGE_NAME,
-                                                    context.packageName
-                                                )
-                                                putExtra(
-                                                    AudioEffect.EXTRA_CONTENT_TYPE,
-                                                    AudioEffect.CONTENT_TYPE_MUSIC
-                                                )
-                                            }
-                                        )
-                                    } catch (e: ActivityNotFoundException) {
-                                        Toaster.e( R.string.info_not_find_application_audio )
-                                    }
-                                },
-                                modifier = Modifier
-                                    .size(20.dp),
-                            )
-                        }
-
-                        if (showButtonPlayerStartRadio)
-                            IconButton(
-                                icon = R.drawable.radio,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    binder.stopRadio()
-                                    binder.player.seamlessPlay(mediaItem)
-                                    binder.setupRadio(
-                                        NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
-                                    )
-                                },
-                                modifier = Modifier
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerArrow)
-                            IconButton(
-                                icon = R.drawable.chevron_up,
-                                color = colorPalette().accent,
-                                enabled = true,
-                                onClick = {
-                                    showQueue = true
-                                },
-                                modifier = Modifier
-                                    //.padding(end = 12.dp)
-                                    .size(24.dp),
-                            )
-
-                        if (showButtonPlayerMenu && !isLandscape)
-                            IconButton(
-                                icon = R.drawable.ellipsis_vertical,
-                                color = colorPalette().accent,
-                                onClick = {
-                                    menuState.display {
-                                        PlayerMenu(
-                                            navController = navController,
-                                            onDismiss = menuState::hide,
-                                            mediaItem = mediaItem,
-                                            binder = binder,
-                                            onClosePlayer = {
-                                                onDismiss()
-                                            },
-                                            disableScrollingText = disableScrollingText
-                                        )
-                                    }
-                                },
-                                modifier = Modifier
-                                    //.padding(end = 12.dp)
-                                    .size(24.dp)
-                            )
-
-
-                        if (isLandscape) {
-                            IconButton(
-                                icon = R.drawable.ellipsis_horizontal,
-                                color = colorPalette().accent,
-                                onClick = {
-                                    menuState.display {
-                                        PlayerMenu(
-                                            navController = navController,
-                                            onDismiss = menuState::hide,
-                                            mediaItem = mediaItem,
-                                            binder = binder,
-                                            onClosePlayer = {
-                                                onDismiss()
-                                            },
-                                            disableScrollingText = disableScrollingText
-                                        )
-                                    }
-                                },
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-                    }
-
-
-                }
-            }
-        }
-
-        val player = binder.player ?: return
-        val clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
-        var extraspace by rememberPreference(extraspaceKey, false)
-
-        val nextmedia = if(binder.player.mediaItemCount > 1
-            && binder.player.currentMediaItemIndex + 1 < binder.player.mediaItemCount )
-            binder.player.getMediaItemAt(binder.player.currentMediaItemIndex + 1) else MediaItem.EMPTY
-
-        val thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
-        val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
-        val statsfornerds by rememberPreference(statsfornerdsKey, false)
-        val topPadding by rememberPreference(topPaddingKey, true)
-        var swipeAnimationNoThumbnail by rememberPreference(swipeAnimationsNoThumbnailKey, SwipeAnimationNoThumbnail.Sliding)
+        val player = binder.player
 
         if (isLandscape) {
          Box{
@@ -1886,7 +1138,7 @@ fun Player(
                      flingBehavior = fling,
                      userScrollEnabled = !(albumCoverRotation && (isShowingLyrics || showthumbnail)),
                      modifier = Modifier
-                 ) { it ->
+                 ) {
 
                      var currentRotation by remember {
                          mutableFloatStateOf(0f)
@@ -1922,11 +1174,13 @@ fun Player(
                          }
                      }
 
-                     Image(
-                         painter = ImageCacheFactory.Painter(
-                             thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
-                         ),
-                         contentDescription = "",
+                     BlurredCover(
+                         thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString(),
+                         blurAdjuster = blurAdjuster,
+                         showThumbnail = showthumbnail,
+                         noBlur = noblur,
+                         isShowingLyrics = isShowingLyrics,
+                         isShowingVisualizer = isShowingVisualizer,
                          contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
                          modifier = Modifier.fillMaxWidth()
                                             .zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
@@ -1954,7 +1208,6 @@ fun Player(
                                                     blurAdjuster.isActive = showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
                                                 }
                                             )
-                                            .blur( blurRadius.dp )
                      )
                  }
 
@@ -1977,18 +1230,15 @@ fun Player(
                      )){}
              }
 
-             Image(
-                 painter = ImageCacheFactory.Painter(
-                     binder.player.mediaMetadata.artworkUri.toString()
-                 ),
-                 contentDescription = "blurred_background",
+             BlurredCover(
+                 thumbnailUrl = binder.player.mediaMetadata.artworkUri.toString(),
+                 blurAdjuster = blurAdjuster,
+                 showThumbnail = showthumbnail,
+                 noBlur = noblur,
+                 isShowingLyrics = isShowingLyrics,
+                 isShowingVisualizer = isShowingVisualizer,
                  contentScale = ContentScale.FillHeight,
                  modifier = Modifier.fillMaxSize()
-                                    .blur( blurRadius.dp )
-             )
-             Box(
-                 Modifier.fillMaxSize()
-                         .background( backdropColor )
              )
 
             Row(
@@ -2034,7 +1284,7 @@ fun Player(
                                 .fillMaxWidth(0.5f)
                                 .pointerInput(Unit) {
                                     detectHorizontalDragGestures(
-                                        onHorizontalDrag = { change, dragAmount ->
+                                        onHorizontalDrag = { _, dragAmount ->
                                             deltaX = dragAmount
                                         },
                                         onDragStart = {
@@ -2082,7 +1332,7 @@ fun Player(
                                 modifier = Modifier
                                     .pointerInput(Unit) {
                                         detectHorizontalDragGestures(
-                                            onHorizontalDrag = { change, dragAmount ->
+                                            onHorizontalDrag = { _, dragAmount ->
                                                 deltaX = dragAmount
                                             },
                                             onDragStart = {
@@ -2118,165 +1368,153 @@ fun Player(
                             .weight(1f)*/
                              //.padding(vertical = 10.dp)
                          ) {
-                             if (showthumbnail) {
-                                 if (!isShowingVisualizer) {
-                                     val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
-                                     val pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp)
+                             if ( showthumbnail && !isShowingVisualizer ) {
+                                 val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
+                                 val pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp)
 
-                                     LaunchedEffect(pagerState, binder.player.currentMediaItemIndex) {
-                                         if (appRunningInBackground || isShowingLyrics) {
-                                             pagerState.scrollToPage(binder.player.currentMediaItemIndex)
-                                         } else {
-                                             pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
-                                         }
-                                     }
-
-                                     LaunchedEffect(pagerState) {
-                                         var previousPage = pagerState.settledPage
-                                         snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
-                                             if (previousPage != it) {
-                                                 if (it != binder.player.currentMediaItemIndex) binder.player.playAtIndex(it)
-                                             }
-                                             previousPage = it
-                                         }
-                                     }
-                                     HorizontalPager(
-                                         state = pagerState,
-                                         pageSize = PageSize.Fixed(thumbnailSizeDp),
-                                         pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp),
-                                         contentPadding = PaddingValues(start = ((maxWidth - maxHeight)/2).coerceAtLeast(0.dp), end = ((maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp).coerceAtLeast(0.dp)),
-                                         beyondViewportPageCount = 3,
-                                         flingBehavior = fling,
-                                         userScrollEnabled = !disablePlayerHorizontalSwipe,
-                                         modifier = Modifier
-                                             .padding(
-                                                 all = (if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(
-                                                     0.dp
-                                                 )
-                                             )
-                                             .conditional(fadingedge) {horizontalFadingEdge()}
-                                         ) {
-                                         it ->
-
-                                         val coverPainter = ImageCacheFactory.Painter(
-                                             binder.player.getMediaItemAt( it ).mediaMetadata.artworkUri.toString()
-                                         )
-
-                                         val coverModifier = Modifier
-                                             .aspectRatio(1f)
-                                             .padding(all = playerThumbnailSizeL.size.dp)
-                                             .graphicsLayer {
-                                                 val pageOffSet =
-                                                     ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
-                                                 alpha = lerp(
-                                                     start = 0.9f,
-                                                     stop = 1f,
-                                                     fraction = 1f - pageOffSet.coerceIn(0f,1f)
-                                                 )
-                                                 scaleY = lerp(
-                                                     start = 0.85f,
-                                                     stop = 1f,
-                                                     fraction = 1f - pageOffSet.coerceIn(0f,5f)
-                                                 )
-                                                 scaleX = lerp(
-                                                     start = 0.85f,
-                                                     stop = 1f,
-                                                     fraction = 1f - pageOffSet.coerceIn(0f,5f)
-                                                 )
-                                             }
-                                             .conditional(thumbnailType == ThumbnailType.Modern) {
-                                                 padding(
-                                                     all = 10.dp
-                                                 )
-                                             }
-                                             .conditional(thumbnailType == ThumbnailType.Modern) {
-                                                 doubleShadowDrop(
-                                                     if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape,
-                                                     4.dp,
-                                                     8.dp
-                                                 )
-                                             }
-                                             .clip(thumbnailRoundness.shape)
-                                             .combinedClickable(
-                                                 interactionSource = remember { MutableInteractionSource() },
-                                                 indication = null,
-                                                 onClick = {
-                                                     if (it == pagerState.settledPage && thumbnailTapEnabled) {
-                                                         if (isShowingVisualizer) isShowingVisualizer =
-                                                             false
-                                                         isShowingLyrics = !isShowingLyrics
-                                                     }
-                                                     if (it != pagerState.settledPage) {
-                                                         binder.player.playAtIndex(it)
-                                                     }
-                                                 },
-                                                 onLongClick = {
-                                                     if (it == pagerState.settledPage)
-                                                         showThumbnailOffsetDialog = true
-                                                 }
-                                             )
-
-                                         if (showCoverThumbnailAnimation)
-                                             RotateThumbnailCoverAnimationModern(
-                                                 painter = coverPainter,
-                                                 isSongPlaying = player.isPlaying,
-                                                 modifier = coverModifier
-                                                     .zIndex(
-                                                         if (it == pagerState.currentPage) 1f
-                                                         else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                         else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                         else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                         else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                         else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                         else 0.57f
-                                                     ),
-                                                 state = pagerState,
-                                                 it = it,
-                                                 imageCoverSize = imageCoverSize,
-                                                 type = coverThumbnailAnimation
-                                             )
-                                         else
-                                             Box(
-                                                 modifier = Modifier
-                                                     .zIndex(
-                                                         if (it == pagerState.currentPage) 1f
-                                                         else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                         else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                         else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                         else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                         else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                         else 0.57f
-                                                     )
-                                             ) {
-                                                 Image(
-                                                     painter = coverPainter,
-                                                     contentDescription = "",
-                                                     contentScale = ContentScale.Fit,
-                                                     modifier = coverModifier
-                                                 )
-                                                 if (isDragged && it == binder.player.currentMediaItemIndex) {
-                                                     Box(modifier = Modifier
-                                                         .align(Alignment.Center)
-                                                         .matchParentSize()
-                                                     ) {
-                                                         NowPlayingSongIndicator(
-                                                             binder.player.getMediaItemAt(
-                                                                 binder.player.currentMediaItemIndex
-                                                             ).mediaId, binder.player,
-                                                             Dimensions.thumbnails.album
-                                                         )
-                                                     }
-                                                 }
-                                             }
+                                 LaunchedEffect(pagerState, binder.player.currentMediaItemIndex) {
+                                     if (appRunningInBackground || isShowingLyrics) {
+                                         pagerState.scrollToPage(binder.player.currentMediaItemIndex)
+                                     } else {
+                                         pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
                                      }
                                  }
-                            }
+
+                                 LaunchedEffect(pagerState) {
+                                     var previousPage = pagerState.settledPage
+                                     snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
+                                         if ( previousPage != it && it != binder.player.currentMediaItemIndex )
+                                             binder.player.playAtIndex(it)
+                                         previousPage = it
+                                     }
+                                 }
+                                 HorizontalPager(
+                                     state = pagerState,
+                                     pageSize = PageSize.Fixed( Dimensions.thumbnails.player.song ),
+                                     pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp),
+                                     contentPadding = PaddingValues(start = ((maxWidth - maxHeight)/2).coerceAtLeast(0.dp), end = ((maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp).coerceAtLeast(0.dp)),
+                                     beyondViewportPageCount = 3,
+                                     flingBehavior = fling,
+                                     userScrollEnabled = !disablePlayerHorizontalSwipe,
+                                     modifier = Modifier
+                                         .padding(
+                                             all = (if (thumbnailType == ThumbnailType.Modern) -(10.dp) else 0.dp).coerceAtLeast(
+                                                 0.dp
+                                             )
+                                         )
+                                         .conditional(fadingedge) {horizontalFadingEdge()}
+                                     ) {
+
+                                     val coverPainter = ImageCacheFactory.Painter(
+                                         binder.player.getMediaItemAt( it ).mediaMetadata.artworkUri.toString()
+                                     )
+
+                                     val coverModifier = Modifier
+                                         .aspectRatio(1f)
+                                         .padding(all = playerThumbnailSizeL.size.dp)
+                                         .graphicsLayer {
+                                             val pageOffSet =
+                                                 ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
+                                             alpha = lerp(
+                                                 start = 0.9f,
+                                                 stop = 1f,
+                                                 fraction = 1f - pageOffSet.coerceIn(0f,1f)
+                                             )
+                                             scaleY = lerp(
+                                                 start = 0.85f,
+                                                 stop = 1f,
+                                                 fraction = 1f - pageOffSet.coerceIn(0f,5f)
+                                             )
+                                             scaleX = lerp(
+                                                 start = 0.85f,
+                                                 stop = 1f,
+                                                 fraction = 1f - pageOffSet.coerceIn(0f,5f)
+                                             )
+                                         }
+                                         .conditional(thumbnailType == ThumbnailType.Modern) {
+                                             padding(
+                                                 all = 10.dp
+                                             )
+                                         }
+                                         .conditional(thumbnailType == ThumbnailType.Modern) {
+                                             doubleShadowDrop(
+                                                 if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape,
+                                                 4.dp,
+                                                 8.dp
+                                             )
+                                         }
+                                         .clip(thumbnailRoundness.shape)
+                                         .combinedClickable(
+                                             interactionSource = remember { MutableInteractionSource() },
+                                             indication = null,
+                                             onClick = {
+                                                 if (it == pagerState.settledPage && thumbnailTapEnabled) {
+                                                     if (isShowingVisualizer) isShowingVisualizer =
+                                                         false
+                                                     isShowingLyrics = !isShowingLyrics
+                                                 }
+                                                 if (it != pagerState.settledPage) {
+                                                     binder.player.playAtIndex(it)
+                                                 }
+                                             },
+                                             onLongClick = {
+                                                 if (it == pagerState.settledPage)
+                                                     showThumbnailOffsetDialog = true
+                                             }
+                                         )
+
+                                     val zIndex = remember( it, pagerState.currentPage ) {
+                                         when {
+                                             it == pagerState.currentPage                                             -> 1f
+                                             it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1) -> .85f
+                                             it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2) -> .78f
+                                             it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3) -> .73f
+                                             it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4) -> .68f
+                                             it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5) -> .63f
+                                             else                                                                     -> .57f
+                                         }
+                                     }
+
+                                     if (showCoverThumbnailAnimation)
+                                         RotateThumbnailCoverAnimationModern(
+                                             painter = coverPainter,
+                                             isSongPlaying = player.isPlaying,
+                                             modifier = coverModifier.zIndex(zIndex),
+                                             state = pagerState,
+                                             it = it,
+                                             imageCoverSize = imageCoverSize,
+                                             type = coverThumbnailAnimation
+                                         )
+                                     else
+                                         Box( Modifier.zIndex( zIndex )) {
+                                             Image(
+                                                 painter = coverPainter,
+                                                 contentDescription = "",
+                                                 contentScale = ContentScale.Fit,
+                                                 modifier = coverModifier
+                                             )
+                                             if (isDragged && it == binder.player.currentMediaItemIndex) {
+                                                 Box(modifier = Modifier
+                                                     .align(Alignment.Center)
+                                                     .matchParentSize()
+                                                 ) {
+                                                     NowPlayingSongIndicator(
+                                                         binder.player.getMediaItemAt(
+                                                             binder.player.currentMediaItemIndex
+                                                         ).mediaId, binder.player,
+                                                         Dimensions.thumbnails.album
+                                                     )
+                                                 }
+                                             }
+                                         }
+                                 }
+                             }
                             if (isShowingVisualizer) {
                                 Box(
                                     modifier = Modifier
                                         .pointerInput(Unit) {
                                             detectHorizontalDragGestures(
-                                                onHorizontalDrag = { change, dragAmount ->
+                                                onHorizontalDrag = { _, dragAmount ->
                                                     deltaX = dragAmount
                                                 },
                                                 onDragStart = {
@@ -2304,41 +1542,30 @@ fun Player(
                         }
                     }
                     if (playerType == PlayerType.Essential || isShowingVisualizer) {
-                        controlsContent(
-                            Modifier
-                                .padding(vertical = 8.dp)
-                                .conditional(playerType == PlayerType.Essential) { fillMaxHeight() }
-                                .conditional(playerType == PlayerType.Essential) { weight(1f) }
-
+                        Controller(
+                            mediaItem,
+                            Modifier.padding(vertical = 8.dp)
+                                    .conditional( playerType == PlayerType.Essential ) {
+                                        fillMaxHeight().weight( 1f )
+                                    }
                         )
                     } else {
+                        val index = (
+                            if (!showthumbnail) {
+                                if (pagerStateFS.currentPage > binder.player.currentTimeline.windowCount)
+                                    0
+                                else
+                                    pagerStateFS.currentPage
+                            } else if (pagerState.currentPage > binder.player.currentTimeline.windowCount) {
+                                0
+                            } else
+                                pagerState.currentPage
+                        ).coerceIn( 0, player.mediaItemCount - 1 )
 
-                                val index = (if (!showthumbnail) {if (pagerStateFS.currentPage > binder.player.currentTimeline.windowCount) 0 else pagerStateFS.currentPage}
-                                else if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else pagerState.currentPage).coerceIn(0,(player.mediaItemCount) -1)
-
-                                Controls(
-                                    navController = navController,
-                                    onCollapse = onDismiss,
-                                    expandedplayer = expandedplayer,
-                                    titleExpanded = titleExpanded,
-                                    timelineExpanded = timelineExpanded,
-                                    controlsExpanded = controlsExpanded,
-                                    isShowingLyrics = isShowingLyrics,
-                                    media = mediaItem.toUiMedia(positionAndDuration.second),
-                                    mediaId = mediaItem.mediaId,
-                                    title = player.getMediaItemAt(index).mediaMetadata.title?.toString(),
-                                    artist = player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
-                                    artistIds = artistInfos,
-                                    albumId = albumId,
-                                    shouldBePlaying = shouldBePlaying,
-                                    position = positionAndDuration.first,
-                                    duration = positionAndDuration.second,
-                                    modifier = Modifier
-                                        .padding(vertical = 8.dp),
-                                    onBlurScaleChange = { blurAdjuster.strength = it },
-                                    isExplicit = mediaItem.isExplicit
-                                )
-
+                        Controller(
+                            player.getMediaItemAt(index),
+                            Modifier.padding( vertical = 8.dp )
+                        )
                     }
                     if (!showthumbnail || playerType == PlayerType.Modern) {
                         StatsForNerds(
@@ -2347,7 +1574,7 @@ fun Player(
                             onDismiss = {}
                         )
                     }
-                    actionsBarContent()
+                    ActionsBar()
                 }
             }
          }
@@ -2385,7 +1612,7 @@ fun Player(
                                 circleOffsetY = it.y
                                 false
                             }
-                    ) { it ->
+                    ) {
 
                         var currentRotation by remember {
                             mutableFloatStateOf(0f)
@@ -2433,90 +1660,92 @@ fun Player(
                                     }
                                 }
                         ) {
-                            Image(
-                                painter = ImageCacheFactory.Painter(
-                                    binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
-                                ),
-                               contentDescription = "",
-                               contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
-                               modifier = Modifier.fillMaxHeight()
-                                                  .conditional(albumCoverRotation) {
-                                                      graphicsLayer {
-                                                          scaleX = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
-                                                          scaleY = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
-                                                          rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
-                                                      }
-                                                  }
-                                                  .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Fade && !showthumbnail){
-                                                      graphicsLayer {
-                                                          val pageOffset = pagerStateFS.currentPageOffsetFraction
-                                                          translationX = pageOffset * size.width
-                                                          alpha = 1 - pageOffset.absoluteValue
-                                                      }
-                                                  }
-                                                  .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Carousel && isDraggedFS) { //by sinasamaki
-                                                      graphicsLayer {
-                                                          val startOffset = pagerStateFS.startOffsetForPage(it)
-                                                          translationX = size.width * (startOffset * .99f)
-                                                          alpha = (2f - startOffset) / 2f
-                                                          val blur = (startOffset * 20f).coerceAtLeast(0.1f)
-                                                          renderEffect = RenderEffect
-                                                              .createBlurEffect(
-                                                                  blur, blur, android.graphics.Shader.TileMode.DECAL
-                                                              ).asComposeRenderEffect()
-                                                          val scale = 1f - (startOffset * .1f)
-                                                          scaleX = scale
-                                                          scaleY = scale
-                                                      }
-                                                  }
-                                                  .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Circle && !showthumbnail){ //by sinasamaki
-                                                      graphicsLayer {
-                                                          val pageOffset = pagerStateFS.offsetForPage(it)
-                                                          translationX = size.width * pageOffset
+                            BlurredCover(
+                                thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString(),
+                                blurAdjuster = blurAdjuster,
+                                showThumbnail = showthumbnail,
+                                noBlur = noblur,
+                                isShowingLyrics = isShowingLyrics,
+                                isShowingVisualizer = isShowingVisualizer,
+                                contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
+                                modifier = Modifier.fillMaxHeight()
+                                                   .conditional(albumCoverRotation) {
+                                                       graphicsLayer {
+                                                           scaleX = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
+                                                           scaleY = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
+                                                           rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
+                                                       }
+                                                   }
+                                                   .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Fade && !showthumbnail){
+                                                       graphicsLayer {
+                                                           val pageOffset = pagerStateFS.currentPageOffsetFraction
+                                                           translationX = pageOffset * size.width
+                                                           alpha = 1 - pageOffset.absoluteValue
+                                                       }
+                                                   }
+                                                   .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Carousel && isDraggedFS) { //by sinasamaki
+                                                       graphicsLayer {
+                                                           val startOffset = pagerStateFS.startOffsetForPage(it)
+                                                           translationX = size.width * (startOffset * .99f)
+                                                           alpha = (2f - startOffset) / 2f
+                                                           val blur = (startOffset * 20f).coerceAtLeast(0.1f)
+                                                           renderEffect = RenderEffect
+                                                               .createBlurEffect(
+                                                                   blur, blur, android.graphics.Shader.TileMode.DECAL
+                                                               ).asComposeRenderEffect()
+                                                           val scale = 1f - (startOffset * .1f)
+                                                           scaleX = scale
+                                                           scaleY = scale
+                                                       }
+                                                   }
+                                                   .conditional(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Circle && !showthumbnail){ //by sinasamaki
+                                                       graphicsLayer {
+                                                           val pageOffset = pagerStateFS.offsetForPage(it)
+                                                           translationX = size.width * pageOffset
 
-                                                          val endOffset = pagerStateFS.endOffsetForPage(it)
-                                                          shadowElevation = 20f
+                                                           val endOffset = pagerStateFS.endOffsetForPage(it)
+                                                           shadowElevation = 20f
 
-                                                          shape = CirclePath(
-                                                              progress = 1f - endOffset.absoluteValue,
-                                                              origin = Offset(
-                                                                  size.width,
-                                                                  circleOffsetY,
-                                                              )
-                                                          )
+                                                           shape = CirclePath(
+                                                               progress = 1f - endOffset.absoluteValue,
+                                                               origin = Offset(
+                                                                   size.width,
+                                                                   circleOffsetY,
+                                                               )
+                                                           )
 
-                                                          clip = true
+                                                           clip = true
 
-                                                          val absoluteOffset = pagerStateFS.offsetForPage(it).absoluteValue
-                                                          val scale = 1f + (absoluteOffset.absoluteValue * .4f)
+                                                           val absoluteOffset = pagerStateFS.offsetForPage(it).absoluteValue
+                                                           val scale = 1f + (absoluteOffset.absoluteValue * .4f)
 
-                                                          scaleX = scale
-                                                          scaleY = scale
+                                                           scaleX = scale
+                                                           scaleY = scale
 
-                                                          val startOffset = pagerStateFS.startOffsetForPage(it)
-                                                          alpha = (2f - startOffset) / 2f
-                                                      }
-                                                  }
-                                                  .clip(RoundedCornerShape(20.dp))
-                                                  .combinedClickable(
-                                                      interactionSource = remember { MutableInteractionSource() },
-                                                      indication = null,
-                                                      onClick = {
-                                                          if (thumbnailTapEnabled && !showthumbnail) {
-                                                              if (isShowingVisualizer) isShowingVisualizer = false
-                                                              isShowingLyrics = !isShowingLyrics
-                                                          }
-                                                      },
-                                                      onDoubleClick = {
-                                                          if (!showlyricsthumbnail && !showvisthumbnail)
-                                                              showthumbnail = !showthumbnail
-                                                      },
-                                                      onLongClick = {
-                                                          blurAdjuster.isActive = showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
-                                                      }
-                                                  )
-                                                 .blur( blurRadius.dp )
+                                                           val startOffset = pagerStateFS.startOffsetForPage(it)
+                                                           alpha = (2f - startOffset) / 2f
+                                                       }
+                                                   }
+                                                   .clip(RoundedCornerShape(20.dp))
+                                                   .combinedClickable(
+                                                       interactionSource = remember { MutableInteractionSource() },
+                                                       indication = null,
+                                                       onClick = {
+                                                           if (thumbnailTapEnabled && !showthumbnail) {
+                                                               if (isShowingVisualizer) isShowingVisualizer = false
+                                                               isShowingLyrics = !isShowingLyrics
+                                                           }
+                                                       },
+                                                       onDoubleClick = {
+                                                           if (!showlyricsthumbnail && !showvisthumbnail)
+                                                               showthumbnail = !showthumbnail
+                                                       },
+                                                       onLongClick = {
+                                                           blurAdjuster.isActive = showthumbnail || (isShowingLyrics && !isShowingVisualizer) || !noblur
+                                                       }
+                                                   )
                             )
+
                             if ((swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Scale) && isDraggedFS){
                                 Column {
                                     Spacer(modifier = Modifier
@@ -2537,8 +1766,8 @@ fun Player(
                                             isShowingLyrics = isShowingLyrics,
                                             media = mediaItem.toUiMedia(positionAndDuration.second),
                                             mediaId = mediaItem.mediaId,
-                                            title = player.getMediaItemAt(it).mediaMetadata.title?.toString(),
-                                            artist = player.getMediaItemAt(it).mediaMetadata.artist?.toString(),
+                                            title = cleanPrefix( player.getMediaItemAt(it).mediaMetadata.title.toString() ),
+                                            artist = cleanPrefix( player.getMediaItemAt(it).mediaMetadata.artist.toString() ),
                                             artistIds = artistInfos,
                                             albumId = albumId,
                                             shouldBePlaying = shouldBePlaying,
@@ -2574,18 +1803,15 @@ fun Player(
                         )){}
                 }
 
-               Image(
-                   painter = ImageCacheFactory.Painter(
-                       binder.player.mediaMetadata.artworkUri.toString()
-                   ),
-                   contentDescription = "blurred_background",
+               BlurredCover(
+                   thumbnailUrl = binder.player.mediaMetadata.artworkUri.toString(),
+                   blurAdjuster = blurAdjuster,
+                   showThumbnail = showthumbnail,
+                   noBlur = noblur,
+                   isShowingLyrics = isShowingLyrics,
+                   isShowingVisualizer = isShowingVisualizer,
                    contentScale = ContentScale.FillHeight,
                    modifier = Modifier.fillMaxSize()
-                                      .blur( blurRadius.dp )
-               )
-               Box(
-                   Modifier.fillMaxSize()
-                           .background( backdropColor )
                )
 
             Column(
@@ -2636,13 +1862,8 @@ fun Player(
                                     .size(24.dp)
                             )
 
-
-                        val iconBitmap = remember {
-                            BitmapFactory.decodeResource( context.resources, R.drawable.app_icon_nodpi )
-                                         .asImageBitmap()
-                        }
                         Image(
-                            bitmap = iconBitmap,
+                            bitmap = APP_ICON_IMAGE_BITMAP,
                             contentDescription = "app icon in player",
                             modifier = Modifier.size( 24.dp )
                                                .clickable {
@@ -2718,9 +1939,8 @@ fun Player(
                                  LaunchedEffect(pagerState) {
                                      var previousPage = pagerState.settledPage
                                      snapshotFlow { pagerState.settledPage }.distinctUntilChanged().collect {
-                                         if (previousPage != it) {
-                                             if (it != binder.player.currentMediaItemIndex) binder.player.playAtIndex(it)
-                                         }
+                                         if ( previousPage != it && it != binder.player.currentMediaItemIndex )
+                                             binder.player.playAtIndex(it)
                                          previousPage = it
                                      }
                                  }
@@ -2754,7 +1974,7 @@ fun Player(
                                          .conditional(fadingedge) {
                                              VerticalfadingEdge2(fade = (if (expandedplayer) thumbnailFadeEx else thumbnailFade)*0.05f,showTopActionsBar,topPadding,expandedplayer)
                                          }
-                                 ){ it ->
+                                 ){
 
                                      val coverPainter = ImageCacheFactory.Painter(
                                          binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
@@ -2817,38 +2037,30 @@ fun Player(
                                              }
                                          )
 
+                                     val zIndex = remember( it, pagerState.currentPage ) {
+                                         when {
+                                             it == pagerState.currentPage                                             -> 1f
+                                             it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1) -> .85f
+                                             it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2) -> .78f
+                                             it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3) -> .73f
+                                             it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4) -> .68f
+                                             it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5) -> .63f
+                                             else                                                                     -> .57f
+                                         }
+                                     }
+
                                      if (showCoverThumbnailAnimation)
                                          RotateThumbnailCoverAnimationModern(
                                              painter = coverPainter,
                                              isSongPlaying = player.isPlaying,
-                                             modifier = coverModifier
-                                                 .zIndex(
-                                                     if (it == pagerState.currentPage) 1f
-                                                     else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                     else 0.57f
-                                                 ),
+                                             modifier = coverModifier.zIndex( zIndex ),
                                              state = pagerState,
                                              it = it,
                                              imageCoverSize = imageCoverSize,
                                              type = coverThumbnailAnimation
                                          )
                                      else
-                                         Box(
-                                             modifier = Modifier
-                                                 .zIndex(
-                                                     if (it == pagerState.currentPage) 1f
-                                                     else if (it == (pagerState.currentPage + 1) || it == (pagerState.currentPage - 1)) 0.85f
-                                                     else if (it == (pagerState.currentPage + 2) || it == (pagerState.currentPage - 2)) 0.78f
-                                                     else if (it == (pagerState.currentPage + 3) || it == (pagerState.currentPage - 3)) 0.73f
-                                                     else if (it == (pagerState.currentPage + 4) || it == (pagerState.currentPage - 4)) 0.68f
-                                                     else if (it == (pagerState.currentPage + 5) || it == (pagerState.currentPage - 5)) 0.63f
-                                                     else 0.57f
-                                                 )
-                                         ) {
+                                         Box( Modifier.zIndex( zIndex ) ) {
                                              Image(
                                                  painter = coverPainter,
                                                  contentDescription = "",
@@ -2880,7 +2092,7 @@ fun Player(
                         modifier = Modifier
                             .pointerInput(Unit) {
                                 detectHorizontalDragGestures(
-                                    onHorizontalDrag = { change, dragAmount ->
+                                    onHorizontalDrag = { _, dragAmount ->
                                         deltaX = dragAmount
                                     },
                                     onDragStart = {
@@ -2987,42 +2199,29 @@ fun Player(
                 Box(modifier = Modifier
                     .conditional(!expandedplayer && (!isShowingLyrics || showlyricsthumbnail)){weight(1f)}) {
                     if (playerType == PlayerType.Essential || isShowingLyrics || isShowingVisualizer) {
-                        controlsContent(
-                            Modifier
-                                .padding(vertical = 4.dp)
-                                .fillMaxWidth()
-                            //.weight(1f)
-
+                        Controller(
+                            mediaItem,
+                            Modifier.padding( vertical = 4.dp )
+                                    .fillMaxWidth()
                         )
                     } else if (!(swipeAnimationNoThumbnail == SwipeAnimationNoThumbnail.Scale && isDraggedFS)){
-                                val index = (if (!showthumbnail) {if (pagerStateFS.currentPage > binder.player.currentTimeline.windowCount) 0 else pagerStateFS.currentPage}
-                                            else if (pagerState.currentPage > binder.player.currentTimeline.windowCount) 0 else pagerState.currentPage).coerceIn(0,(player.mediaItemCount) -1)
+                        val index = (
+                                if (!showthumbnail) {
+                                    if (pagerStateFS.currentPage > binder.player.currentTimeline.windowCount)
+                                        0
+                                    else
+                                        pagerStateFS.currentPage
+                                } else if (pagerState.currentPage > binder.player.currentTimeline.windowCount) {
+                                    0
+                                } else
+                                    pagerState.currentPage
+                        ).coerceIn( 0, player.mediaItemCount - 1 )
 
-                                Controls(
-                                    navController = navController,
-                                    onCollapse = onDismiss,
-                                    expandedplayer = expandedplayer,
-                                    titleExpanded = titleExpanded,
-                                    timelineExpanded = timelineExpanded,
-                                    controlsExpanded = controlsExpanded,
-                                    isShowingLyrics = isShowingLyrics,
-                                    media = mediaItem.toUiMedia(positionAndDuration.second),
-                                    mediaId = mediaItem.mediaId,
-                                    title = player.getMediaItemAt(index).mediaMetadata.title?.toString(),
-                                    artist = player.getMediaItemAt(index).mediaMetadata.artist?.toString(),
-                                    artistIds = artistInfos,
-                                    albumId = albumId,
-                                    shouldBePlaying = shouldBePlaying,
-                                    position = positionAndDuration.first,
-                                    duration = positionAndDuration.second,
-                                    modifier = Modifier
-                                        .padding(vertical = 4.dp)
-                                        .fillMaxWidth(),
-                                            //.weight(1f),
-                                        onBlurScaleChange = { blurAdjuster.strength = it },
-                                    isExplicit = mediaItem.isExplicit
-                                )
-
+                        Controller(
+                            player.getMediaItemAt(index),
+                            Modifier.padding( vertical = 4.dp )
+                                    .fillMaxWidth()
+                        )
                     }
                 }
 
@@ -3035,7 +2234,7 @@ fun Player(
                         )
                     }
                 }
-                actionsBarContent()
+                ActionsBar()
               }
             }
            }
@@ -3061,11 +2260,11 @@ fun Player(
             Queue(
                 navController = navController,
                 onDismiss = {
-                    queueLoopType = it
+                    queueLoopState.value = it
                     showQueue = false
                 },
                 onDiscoverClick = {
-                    discoverIsEnabled = it
+                    discoverState.value = it
                 }
             )
         }
@@ -3101,7 +2300,7 @@ fun Player(
 
 @Composable
 @androidx.annotation.OptIn(UnstableApi::class)
-private fun PagerState.LaunchedEffectScrollToPage(
+fun PagerState.LaunchedEffectScrollToPage(
     index: Int
 ) {
     val pagerState = this

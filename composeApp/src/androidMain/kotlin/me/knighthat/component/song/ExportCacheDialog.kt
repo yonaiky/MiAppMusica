@@ -80,7 +80,7 @@ class ExportCacheDialog(
         ): ExportCacheDialog = ExportCacheDialog(
             remember { mutableStateOf(false) },
             remember( getSong().title ) {
-                mutableStateOf( TextFieldValue("${getSong().title} - ${getSong().artistsText}") )
+                mutableStateOf( TextFieldValue("${getSong().title} - ${getSong().cleanArtistsText()}") )
             },
             rememberLauncherForActivityResult(
                 ActivityResultContracts.CreateDocument( "audio/mp4" )
@@ -109,5 +109,5 @@ class ExportCacheDialog(
     override fun onShortClick() = showDialog()
 
     override fun defaultFileName(): String =
-        with( getSong() ) { "$title - $artistsText" }
+        with( getSong() ) { "$title - ${cleanArtistsText()}" }
 }

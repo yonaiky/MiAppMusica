@@ -280,7 +280,7 @@ fun SongItem(
             Row( verticalAlignment = Alignment.CenterVertically ) {
                 // Song's author
                 SongText(
-                    text = song.artistsText.toString(),
+                    text = song.cleanArtistsText(),
                     style = typography().xs.semiBold.secondary,
                     overflow = TextOverflow.Clip,
                     modifier = Modifier.weight( 1f )

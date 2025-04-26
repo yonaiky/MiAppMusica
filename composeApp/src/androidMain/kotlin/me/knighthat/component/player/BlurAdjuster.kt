@@ -1,9 +1,12 @@
 package me.knighthat.component.player
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -16,19 +19,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SliderControl
+import it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.blurStrengthKey
 import it.fast4x.rimusic.utils.playerBackdropKey
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.rotatingAlbumCoverKey
 import me.knighthat.component.dialog.Dialog
 
 class BlurAdjuster private constructor(
     activeState: MutableState<Boolean>,
     strengthState: MutableState<Float>,
-    backdropState: MutableState<Float>
+    backdropState: MutableState<Float>,
+    rotatingCoverState: MutableState<Boolean>
 ): Dialog {
 
     companion object {
@@ -37,6 +42,7 @@ class BlurAdjuster private constructor(
             remember { mutableStateOf( false ) },
             rememberPreference( blurStrengthKey, 25f ),
             rememberPreference( playerBackdropKey, 0f ),
+            rememberPreference( rotatingAlbumCoverKey, false )
         )
     }
 
@@ -46,13 +52,20 @@ class BlurAdjuster private constructor(
 
     var strength: Float by strengthState
     var backdrop: Float by backdropState
+    var isCoverRotating: Boolean by rotatingCoverState
     override var isActive: Boolean by activeState
 
     fun onDismiss()  { isActive = false }
 
     @Composable
     override fun DialogBody() {
-        DefaultDialog( ::onDismiss ) {
+        Column(
+            modifier = Modifier.wrapContentSize()
+                               .padding( horizontal = 8.dp ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
+            //<editor-fold defaultstate="collapsed" desc="Blur slider">
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -62,7 +75,7 @@ class BlurAdjuster private constructor(
                     onClick = { strength = 25f },
                     icon = R.drawable.drop_blur,
                     color = colorPalette().favoritesIcon,
-                    modifier = Modifier.size( 24.dp )
+                    modifier = Modifier.size(24.dp)
                 )
 
                 SliderControl(
@@ -73,7 +86,8 @@ class BlurAdjuster private constructor(
                     range = 0f..100f
                 )
             }
-
+            //</editor-fold>
+            //<editor-fold defaultstate="collapsed" desc="Backdrop slider">
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -92,6 +106,26 @@ class BlurAdjuster private constructor(
                     onSlideComplete = {},
                     toDisplay = { "%.0f".format(it) },
                     range = 0f..100f
+                )
+            }
+            //</editor-fold>
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                IconButton(
+                    onClick = { backdrop = 0f },
+                    icon = R.drawable.image,
+                    color = colorPalette().favoritesIcon,
+                    modifier = Modifier.size( 24.dp )
+                )
+
+                SwitchSettingEntry(
+                    title = stringResource( R.string.rotating_cover_title ),
+                    text = "",
+                    isChecked = isCoverRotating,
+                    onCheckedChange = { isCoverRotating = it }
                 )
             }
         }

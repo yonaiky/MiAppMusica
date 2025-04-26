@@ -31,7 +31,7 @@ For more details, check out [this article](https://kreate.knighthat.me/usr/how-t
 [![Get it on F-Droid](./assets/get-it-on/F-Droid.png)](https://f-droid.org/packages/me.knighthat.kreate)
 [![Get it on OpenApk](./assets/get-it-on/OpenAPK.png)](https://www.openapk.net/kreate/me.knighthat.kreate/)
 [![Get it on AndroidFreeware](./assets/get-it-on/AndroidFreeware.png)](https://www.androidfreeware.net/download-kreate-apk.html)
-
+[![Get it on IzzyOnDroid](./assets/get-it-on/IzzyOnDroid.png)](https://apt.izzysoft.de/fdroid/index/apk/me.knighthat.kreate)
 
 
 # ✨ Features
@@ -163,6 +163,7 @@ Submit your designs by [opening a ticket](https://github.com/knighthat/Kreate/is
 - [**KuGou**](https://www.kugou.com): Lyrics provider
 - [**LrcLib**](https://lrclib.net): Lyrics provider
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): A shader modifier for Compose Multiplatform / Jetpack Compose
+- [**MedieroAF**](https://github.com/MedieroAF): App logo
 
 
 # ⚠️ Disclaimer

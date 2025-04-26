@@ -459,7 +459,7 @@ fun LocalPlaylistSongs(
                  // Without cleaning, user can search explicit songs with "e:"
                  // I kinda want this to be a feature, but it seems unnecessary
                  val containsName = song.cleanTitle().contains(search.inputValue, true)
-                 val containsArtist = song.artistsText?.contains(search.inputValue, true) ?: false
+                 val containsArtist = song.cleanArtistsText().contains(search.inputValue, true)
 
                  containsName || containsArtist
              }

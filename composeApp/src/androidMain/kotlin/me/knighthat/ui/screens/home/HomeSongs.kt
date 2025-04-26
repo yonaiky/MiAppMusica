@@ -333,7 +333,7 @@ fun HomeSongs( navController: NavController ) {
                  // Without cleaning, user can search explicit songs with "e:"
                  // I kinda want this to be a feature, but it seems unnecessary
                  val containsTitle = it.cleanTitle().contains( search.inputValue, true )
-                 val containsArtist = it.artistsText?.contains( search.inputValue, true ) ?: false
+                 val containsArtist = it.cleanArtistsText().contains( search.inputValue, true )
 
                  containsTitle || containsArtist
              }

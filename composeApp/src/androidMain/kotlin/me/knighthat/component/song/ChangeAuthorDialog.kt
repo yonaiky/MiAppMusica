@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
+import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.models.Song
 import me.knighthat.component.RenameDialog
 import me.knighthat.utils.Toaster
@@ -25,7 +26,7 @@ class ChangeAuthorDialog private constructor(
             ChangeAuthorDialog(
                 remember { mutableStateOf(false) },
                 remember {
-                    mutableStateOf( TextFieldValue(getSong()?.artistsText ?: "") )
+                    mutableStateOf( TextFieldValue(getSong()?.cleanArtistsText() ?: "") )
                 },
                 getSong
             )
@@ -45,7 +46,7 @@ class ChangeAuthorDialog private constructor(
         super.hideDialog()
         // Always reset string so when dialog turns
         // back on it will not show previous value.
-        value = TextFieldValue(getSong()?.artistsText ?: "")
+        value = TextFieldValue(getSong()?.cleanArtistsText() ?: "")
     }
 
     override fun onSet( newValue: String ) {
@@ -54,7 +55,7 @@ class ChangeAuthorDialog private constructor(
 
         val song = getSong() ?: return
         Database.asyncTransaction {
-            songTable.updateArtists( song.id, newValue )
+            songTable.updateArtists( song.id, "$MODIFIED_PREFIX$newValue" )
             Toaster.done()
         }
 

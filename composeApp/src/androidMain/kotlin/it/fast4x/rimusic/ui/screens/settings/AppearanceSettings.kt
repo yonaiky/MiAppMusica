@@ -110,6 +110,7 @@ import it.fast4x.rimusic.utils.prevNextSongsKey
 import it.fast4x.rimusic.utils.queueDurationExpandedKey
 import it.fast4x.rimusic.utils.queueTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.rotatingAlbumCoverKey
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showBackgroundLyricsKey
 import it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
@@ -128,6 +129,7 @@ import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
+import it.fast4x.rimusic.utils.showPlaybackSpeedButtonKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
@@ -1370,6 +1372,18 @@ fun AppearanceSettings(
                     modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) 25.dp else 0.dp)
                 )
         }
+        var isRotatingCoverEnabled by rememberPreference( rotatingAlbumCoverKey, false )
+        AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor ) {
+            if ( search.inputValue.isBlank() || stringResource( R.string.rotating_cover_title ).contains(search.inputValue, true) )
+                SwitchSettingEntry(
+                    title = stringResource( R.string.rotating_cover_title ),
+                    text = "",
+                    isChecked = isRotatingCoverEnabled,
+                    onCheckedChange = { isRotatingCoverEnabled = it },
+                    modifier = Modifier.padding( start = 25.dp )
+                )
+        }
+
 
         if ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient))
             if (search.inputValue.isBlank() || stringResource(R.string.blackgradient).contains(
@@ -1942,6 +1956,14 @@ fun AppearanceSettings(
 
         }
 
+        var showPlaybackSpeedButton by rememberPreference( showPlaybackSpeedButtonKey, false )
+        if( search.inputValue.isBlank() || stringResource( R.string.title_playback_speed ).contains( search.inputValue, true ) )
+            SwitchSettingEntry(
+                title = stringResource( R.string.title_playback_speed ),
+                text = stringResource( R.string.description_playback_speed ),
+                isChecked = showPlaybackSpeedButton,
+                onCheckedChange = { showPlaybackSpeedButton = it }
+            )
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.notification_player))

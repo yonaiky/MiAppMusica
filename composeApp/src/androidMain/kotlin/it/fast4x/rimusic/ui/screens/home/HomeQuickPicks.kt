@@ -57,7 +57,6 @@ import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.HomePage
 import it.fast4x.innertube.requests.chartsPageComplete
@@ -535,11 +534,7 @@ fun HomeQuickPicks(
                                     song = song,
                                     navController = navController,
                                     onClick = {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlay( song.asMediaItem )
-                                        binder?.setupRadio(
-                                            NavigationEndpoint.Endpoint.Watch( song.id )
-                                        )
+                                        binder?.startRadio( song, true )
                                     },
                                     modifier = Modifier.width( itemInHorizontalGridWidth )
                                 )
@@ -562,11 +557,7 @@ fun HomeQuickPicks(
                                     song = song,
                                     navController = navController,
                                     onClick = {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlay( song.asMediaItem )
-                                        binder?.setupRadio(
-                                            NavigationEndpoint.Endpoint.Watch( song.id )
-                                        )
+                                        binder?.startRadio( song, true )
                                     },
                                     modifier = Modifier.width( itemInHorizontalGridWidth )
                                 )

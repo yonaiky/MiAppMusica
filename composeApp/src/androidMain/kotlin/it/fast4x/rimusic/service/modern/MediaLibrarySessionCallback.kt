@@ -545,9 +545,9 @@ class MediaLibrarySessionCallback @Inject constructor(
             .setMediaId("$path/$id")
             .setMediaMetadata(
                 MediaMetadata.Builder()
-                    .setTitle(cleanPrefix(title))
-                    .setSubtitle(artistsText)
-                    .setArtist(artistsText)
+                    .setTitle(cleanTitle())
+                    .setSubtitle(cleanArtistsText())
+                    .setArtist(cleanArtistsText())
                     .setArtworkUri(thumbnailUrl?.toUri())
                     .setIsPlayable(true)
                     .setIsBrowsable(false)
@@ -563,9 +563,9 @@ class MediaLibrarySessionCallback @Inject constructor(
             .setCustomCacheKey(id)
             .setMediaMetadata(
                 MediaMetadata.Builder()
-                    .setTitle(cleanPrefix(title))
-                    .setSubtitle(artistsText)
-                    .setArtist(artistsText)
+                    .setTitle(cleanTitle())
+                    .setSubtitle(cleanArtistsText())
+                    .setArtist(cleanArtistsText())
                     .setArtworkUri(thumbnailUrl?.toUri())
                     .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
                     .setExtras(

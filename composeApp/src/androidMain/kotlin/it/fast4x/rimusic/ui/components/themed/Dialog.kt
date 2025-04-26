@@ -1870,7 +1870,7 @@ fun SongMatchingDialog(
                 return filteredText
             }
             var songsList by remember { mutableStateOf<List<Innertube.SongItem?>>(emptyList()) }
-            var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.title)} ${songToRematch.artistsText}"))}
+            var searchText by remember {mutableStateOf(filteredText("${cleanPrefix(songToRematch.cleanTitle())} ${songToRematch.cleanArtistsText()}"))}
             var startSearch by remember { mutableStateOf(false) }
 
             LaunchedEffect(Unit,startSearch) {
@@ -1956,7 +1956,7 @@ fun SongMatchingDialog(
                             .fillMaxWidth()
                     ) {
                         BasicText(
-                            text = songToRematch.artistsText ?: "",
+                            text = songToRematch.cleanArtistsText(),
                             style = typography().s.semiBold.secondary,
                             maxLines = 1,
                             overflow = TextOverflow.Clip,
@@ -2120,7 +2120,7 @@ fun SongMatchingDialog(
                                             .fillMaxWidth()
                                     ) {
                                         BasicText(
-                                            text = song.asSong.artistsText ?: "",
+                                            text = song.asSong.cleanArtistsText(),
                                             style = typography().xs.semiBold.secondary,
                                             maxLines = 1,
                                             overflow = TextOverflow.Clip,

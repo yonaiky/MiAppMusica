@@ -47,37 +47,38 @@ class ImportSongsFromCSV(
 
     companion object {
         private fun parseFromCsvFile( inputStream: InputStream ): List<SongCSV> =
-            csvReader().readAllWithHeader(inputStream)
-                       .fastMap { row ->      // Experimental, revert back to [map] if needed
+            csvReader { skipEmptyLine = true }
+                      .readAllWithHeader(inputStream)
+                      .fastMap { row ->      // Experimental, revert back to [map] if needed
 
-                           // Previous version of Kreate uses "PlaylistBrowseId" as playlistId,
-                           // this is wrong and must be correct to empty string before inserting
-                           // to the database
-                           var browseId = row["PlaylistBrowseId"].orEmpty()
-                           if( browseId.toLongOrNull() != null )
-                               browseId = ""
+                          // Previous version of Kreate uses "PlaylistBrowseId" as playlistId,
+                          // this is wrong and must be correct to empty string before inserting
+                          // to the database
+                          var browseId = row["PlaylistBrowseId"].orEmpty()
+                          if( browseId.toLongOrNull() != null )
+                              browseId = ""
 
-                           // For backward compatibility, RiMusic exports duration
-                           // in human-readable format "00:00" while Kreate exports
-                           // in seconds.
-                           val rawDuration = row["Duration"].orEmpty()
-                           val convertedDuration =
-                               if( !DurationUtils.isHumanReadable( rawDuration ) )
-                                   formatAsDuration( rawDuration.toLong().times( 1000 ) )
-                               else
-                                   rawDuration
+                          // For backward compatibility, RiMusic exports duration
+                          // in human-readable format "00:00" while Kreate exports
+                          // in seconds.
+                          val rawDuration = row["Duration"].orEmpty()
+                          val convertedDuration =
+                              if( !DurationUtils.isHumanReadable( rawDuration ) )
+                                  formatAsDuration( rawDuration.toLong().times( 1000 ) )
+                              else
+                                  rawDuration
 
-                           SongCSV(
-                               playlistBrowseId = browseId,
-                               playlistName = row["PlaylistName"].orEmpty(),
-                               songId = row["MediaId"].orEmpty(),
-                               title = row["Title"].orEmpty(),
-                               artists = row["Artists"].orEmpty(),
-                               thumbnailUrl = row["ThumbnailUrl"].orEmpty(),
-                               duration = convertedDuration
-                           )
-                       }
-                       .toList()        // Make it immutable
+                          SongCSV(
+                              playlistBrowseId = browseId,
+                              playlistName = row["PlaylistName"].orEmpty(),
+                              songId = row["MediaId"].orEmpty(),
+                              title = row["Title"].orEmpty(),
+                              artists = row["Artists"].orEmpty(),
+                              thumbnailUrl = row["ThumbnailUrl"].orEmpty(),
+                              duration = convertedDuration
+                          )
+                      }
+                      .toList()        // Make it immutable
 
         private fun processSongs( songs: List<SongCSV> ): Map<Pair<String, String>, List<Song>> =
             songs.fastFilter { it.songId.isNotBlank() }

@@ -82,7 +82,9 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.NavigationEndpoint
+import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.nextPage
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.Database
@@ -136,6 +138,7 @@ import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
+import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
@@ -318,7 +321,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 // DEFAULT NOTIFICATION PROVIDER MODDED
                 setMediaNotificationProvider(CustomMediaNotificationProvider(this)
                     .apply {
-                        setSmallIcon(R.drawable.app_icon_monochrome_transparent)
+                        setSmallIcon(R.drawable.ic_launcher_monochrome)
                     }
                 )
             }
@@ -774,10 +777,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 fadeIn = true
             )
 
-        //val totalPlayTimeMs = player.totalBufferedDuration.toString()
-        //Log.d("mediaEvent","isPlaying "+isPlaying.toString() + " buffered duration "+totalPlayTimeMs)
-        //Log.d("mediaItem","onIsPlayingChanged isPlaying $isPlaying audioSession ${player.audioSessionId}")
-
+        updateWidgets()
 
         super.onIsPlayingChanged(isPlaying)
     }
@@ -1210,7 +1210,7 @@ class PlayerServiceModern : MediaLibraryService(),
             .setOnlyAlertOnce(true)
             .setShowWhen(false)
             .setSmallIcon(player.playerError?.let { R.drawable.alert_circle }
-                ?: R.drawable.app_icon_monochrome_transparent)
+                ?: R.drawable.ic_launcher_monochrome)
             .setOngoing(false)
             .setContentIntent(activityPendingIntent<MainActivity>(
                 flags = PendingIntent.FLAG_UPDATE_CURRENT
@@ -1723,7 +1723,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     .setAutoCancel(true)
                     .setOnlyAlertOnce(true)
                     .setShowWhen(true)
-                    .setSmallIcon(R.drawable.app_icon_monochrome_transparent)
+                    .setSmallIcon(R.drawable.ic_launcher_monochrome)
                     .build()
 
                 notificationManager?.notify(SleepTimerNotificationId, notification)
@@ -1777,6 +1777,62 @@ class PlayerServiceModern : MediaLibraryService(),
                     radio = it
                     isLoadingRadio = false
                 }
+            }
+        }
+
+        /**
+         * Contains 2 major steps:
+         * 1. Fetch YouTube Music for **playlistId** of this song
+         * 2. Use said **playlistId** to get more songs
+         *
+         * **_playlistId_** isn't the playlist this song belongs to,
+         * but rather the "mood", "style", or "vibe" matches this song.
+         */
+        fun startRadio( song: Song, append: Boolean ) {
+            this.stopRadio()
+
+            if( append )
+                player.forcePlay( song.asMediaItem )
+
+            // Prevent UI from freezing up while data is being fetched
+            coroutineScope.launch {
+                var playlistId = ""
+
+                // Retrieve "playlistId" by sending song's id to "next" endpoint
+                Innertube.nextPage( NextBody(videoId = song.id) )
+                         ?.getOrNull()
+                         ?.itemsPage
+                         ?.items
+                         ?.firstOrNull()
+                         ?.let { it.info?.endpoint?.playlistId }
+                         ?.also { playlistId = it }
+
+                // This time add "playlistId" to the search to get more songs
+                if( playlistId.isNotBlank() )
+                    Innertube.nextPage( NextBody(videoId = song.id, playlistId = playlistId) )
+                             ?.getOrNull()
+                             ?.itemsPage
+                             ?.items
+                             ?.map( Innertube.SongItem::asMediaItem )
+                             ?.let { relatedSongs ->
+                                 Database.asyncTransaction {
+                                     relatedSongs.forEach( ::insertIgnore )
+                                 }
+
+                                 // Songs with the same id as provided [Song] should be removed.
+                                 // The song usually lives at the the first index, but this
+                                 // way is safer to implement, as it can live through changes in position.
+                                 relatedSongs.dropWhile { append && it.mediaId == song.id }
+                             }
+                             ?.also {
+                                 // Any call to [player] must happen on Main thread
+                                 withContext( Dispatchers.Main ) {
+                                     if( append )
+                                         player.addMediaItems( it )
+                                     else
+                                         player.forcePlayFromBeginning( it )
+                                 }
+                             }
             }
         }
 
@@ -1882,6 +1938,9 @@ class PlayerServiceModern : MediaLibraryService(),
             println("PlayerServiceModern actionSearch")
         }
 
+        fun updateWidgets() {
+
+        }
     }
 
     @JvmInline

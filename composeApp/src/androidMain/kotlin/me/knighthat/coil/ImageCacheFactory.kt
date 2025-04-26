@@ -94,6 +94,35 @@ object ImageCacheFactory {
     }
 
     @Composable
+    fun Thumbnail(
+        thumbnailUrl: String?,
+        contentDescription: String? = null,
+        contentScale: ContentScale = ContentScale.FillBounds,
+        transformations: List<Transformation> = emptyList(),
+        modifier: Modifier = Modifier.clip( thumbnailShape() )
+            .fillMaxSize()
+    ) {
+        /*
+         * TODO: Make a simple system to detect network speed and/or
+         * TODO: data saver that automatically lower the quality to
+         * TODO: reduce loading time and to preserve data usage.
+         */
+        val request = ImageRequest.Builder( appContext() )
+                                                  .data( thumbnailUrl.thumbnail( THUMBNAIL_SIZE ) )
+                                                  .diskCacheKey( thumbnailUrl )
+                                                  .transformations( transformations )
+                                                  .build()
+
+        AsyncImage(
+            model = request,
+            imageLoader = LOADER,
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+            modifier = modifier
+        )
+    }
+
+    @Composable
     fun Painter(
         thumbnailUrl: String?,
         contentScale: ContentScale = ContentScale.FillBounds,

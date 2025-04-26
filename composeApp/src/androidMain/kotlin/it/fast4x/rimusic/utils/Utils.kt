@@ -555,7 +555,7 @@ suspend fun downloadSyncedLyrics( song: Song ) {
 
     var fetchedLyrics: Lyrics? = null
     LrcLib.lyrics(
-        artist = song.artistsText.orEmpty(),
+        artist = song.cleanArtistsText(),
         title = song.cleanTitle(),
         duration = durationTextToMillis( song.durationText.orEmpty() ).milliseconds
     )?.onSuccess {
@@ -567,7 +567,7 @@ suspend fun downloadSyncedLyrics( song: Song ) {
     }?.onFailure {
         // Try out different source for lyrics
         KuGou.lyrics(
-            artist = song.artistsText.orEmpty(),
+            artist = song.cleanArtistsText(),
             title = song.cleanTitle(),
             duration = durationTextToMillis( song.durationText.orEmpty() ) / 1000
         )?.onSuccess {

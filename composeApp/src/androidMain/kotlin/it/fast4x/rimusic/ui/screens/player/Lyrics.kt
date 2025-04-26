@@ -351,7 +351,7 @@ fun Lyrics(
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
         val mediaMetadata = mediaMetadataProvider()
-        var artistName by rememberSaveable { mutableStateOf(mediaMetadata.artist?.toString().orEmpty())}
+        var artistName by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.artist?.toString().orEmpty()))}
         var title by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.title?.toString().orEmpty()))}
         var lyricsSize by rememberPreference(lyricsSizeKey, 20f)
         var lyricsSizeL by rememberPreference(lyricsSizeLKey, 20f)
@@ -493,14 +493,17 @@ fun Lyrics(
                                             }
 
                                     isError = false
-                                    Database.lyricsTable.upsert(
-                                        Lyrics(
-                                            songId = mediaId,
-                                            fixed = currentLyrics?.fixed,
-                                            synced = it?.text.orEmpty()
-                                        )
-                                    )
                                     checkedLyricsLrc = true
+
+                                    Database.asyncTransaction {
+                                        lyricsTable.upsert(
+                                            Lyrics(
+                                                songId = mediaId,
+                                                fixed = currentLyrics?.fixed,
+                                                synced = it?.text.orEmpty()
+                                            )
+                                        )
+                                    }
                                 }?.onFailure {
                                     if (playerEnableLyricsPopupMessage)
                                         coroutineScope.launch {
@@ -539,14 +542,16 @@ fun Lyrics(
                                                     }
 
                                             isError = false
-                                            Database.lyricsTable.upsert(
-                                                Lyrics(
-                                                    songId = mediaId,
-                                                    fixed = currentLyrics?.fixed,
-                                                    synced = it?.value.orEmpty()
-                                                )
-                                            )
                                             checkedLyricsKugou = true
+                                            Database.asyncTransaction {
+                                                lyricsTable.upsert(
+                                                    Lyrics(
+                                                        songId = mediaId,
+                                                        fixed = currentLyrics?.fixed,
+                                                        synced = it?.value.orEmpty()
+                                                    )
+                                                )
+                                            }
                                         }?.onFailure {
                                             if (playerEnableLyricsPopupMessage)
                                                 coroutineScope.launch {
@@ -573,13 +578,15 @@ fun Lyrics(
                             kotlin.runCatching {
                                 Innertube.lyrics(NextBody(videoId = mediaId))
                                     ?.onSuccess { fixedLyrics ->
-                                        Database.lyricsTable.upsert(
-                                            Lyrics(
-                                                songId = mediaId,
-                                                fixed = fixedLyrics ?: "",
-                                                synced = currentLyrics?.synced
+                                        Database.asyncTransaction {
+                                            lyricsTable.upsert(
+                                                Lyrics(
+                                                    songId = mediaId,
+                                                    fixed = fixedLyrics ?: "",
+                                                    synced = currentLyrics?.synced
+                                                )
                                             )
-                                        )
+                                        }
                                     }?.onFailure {
                                     isError = true
                                 }

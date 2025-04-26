@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.components.navigation.header
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -17,12 +16,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.typography
@@ -74,10 +73,7 @@ private fun AppLogo(
     )
 
     Image(
-        // Due to the complexity of rasterized image, it must be converted into
-        // bitmap before rendering
-        bitmap = BitmapFactory.decodeResource( context.resources, R.drawable.app_icon_nodpi )
-                              .asImageBitmap(),
+        bitmap = APP_ICON_IMAGE_BITMAP,
         contentDescription = "App's icon",
         modifier = modifier.size( 36.dp )
     )
