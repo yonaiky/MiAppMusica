@@ -13,17 +13,6 @@ concurrency:
   cancel-in-progress: false  # Don't cancel any in-progress runs in this group
 
 jobs:
-  # Delete all artifacts that were created
-  # 3 weeks or longer.
-  clean-artifacts:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Remove old builds
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: '3 weeks'
-
   remove-success-workflows:
     runs-on: ubuntu-latest
     env:
