@@ -169,7 +169,9 @@ open class Sort<T: Enum<T>> (
             color,
             sizeDp,
             isEnabled,
-            this.modifier.graphicsLayer { rotationZ = animatedArrow }
+            this.modifier.graphicsLayer { rotationZ = animatedArrow },
+            this::onShortClick,
+            this::onLongClick
         )
     }
 }
