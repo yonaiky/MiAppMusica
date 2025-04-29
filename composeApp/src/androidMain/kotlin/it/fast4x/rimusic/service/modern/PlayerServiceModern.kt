@@ -881,37 +881,14 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     }
 
-    private fun loadFromRadio(reason: Int) {
-        if (!preferences.getBoolean(autoLoadSongsInQueueKey, true)) return
-        /*
-        // Old feature add songs only if radio is started by user and when last song in player is played
-        radio?.let { radio ->
-            if (player.mediaItemCount - player.currentMediaItemIndex == 1) {
-                coroutineScope.launch(Dispatchers.Main) {
-                    player.addMediaItems(radio.process())
-                }
-            }
-        }
+    private fun loadFromRadio( reason: Int ) {
+        val isEnabled = preferences.getBoolean( autoLoadSongsInQueueKey, true )
+        val isRepeatTransition = reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT
 
-         */
-        val isDiscoverEnabled = applicationContext.preferences.getBoolean(discoverKey, false)
-        if (reason != Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT &&
-            player.mediaItemCount - player.currentMediaItemIndex <= if (
-                isDiscoverEnabled) 10 else 3
-        ) {
-            if (radio == null && !binder.isLoadingRadio) {
-                player.currentMediaItem?.let( binder::startRadio )
-            } else {
-                radio?.let { radio ->
-                    //if (player.mediaItemCount - player.currentMediaItemIndex <= 3) {
-                    coroutineScope.launch(Dispatchers.Main) {
-                        if (player.playbackState != STATE_IDLE)
-                            player.addMediaItems(radio.process())
-                    }
-                    //}
-                }
+        if( isEnabled && !isRepeatTransition && !binder.isLoadingRadio )
+            player.currentMediaItem?.let {
+                binder.startRadio( it, true )
             }
-        }
     }
 
     private fun maybeBassBoost() {
