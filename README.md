@@ -12,18 +12,6 @@
 </div>
 
 
-# ❗ IMPORTANT
-
-> Updated March 14 2025
-
-The app is now officially released under new ID. Therefore, fresh installation is required.
-
-Fortunately, @knighthat has introduced migration system to help you transfer data from old Kreate
-to new app effortlessly.
-
-For more details, check out [this article](https://kreate.knighthat.me/usr/how-to-migrate).
-
-
 # 📲 Installation
 
 [![Get it on Github](./assets/get-it-on/GitHub.png)](https://github.com/knighthat/RiMusic/releases/latest)
