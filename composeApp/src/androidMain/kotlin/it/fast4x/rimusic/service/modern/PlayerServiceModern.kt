@@ -42,7 +42,6 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
-import androidx.media3.common.Player.STATE_IDLE
 import androidx.media3.common.Timeline
 import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.Log
@@ -128,7 +127,6 @@ import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import it.fast4x.rimusic.utils.collect
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
-import it.fast4x.rimusic.utils.discoverKey
 import it.fast4x.rimusic.utils.enableWallpaperKey
 import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
@@ -1710,43 +1708,6 @@ class PlayerServiceModern : MediaLibraryService(),
         var isLoadingRadio by mutableStateOf(false)
             private set
 
-
-        @UnstableApi
-        private fun startRadio(endpoint: NavigationEndpoint.Endpoint.Watch?, justAdd: Boolean, filterArtist: String = "") {
-            radioJob?.cancel()
-            radio = null
-            val isDiscoverEnabled = applicationContext.preferences.getBoolean(discoverKey, false)
-            YouTubeRadio(
-                endpoint?.videoId,
-                endpoint?.playlistId,
-                endpoint?.playlistSetVideoId,
-                endpoint?.params,
-                isDiscoverEnabled,
-                applicationContext,
-                binder,
-                coroutineScope
-            ).let {
-                isLoadingRadio = true
-                radioJob = coroutineScope.launch(Dispatchers.Main) {
-
-                    val songs = if (filterArtist.isEmpty()) it.process()
-                    else it.process().filter { song -> song.mediaMetadata.artist == filterArtist }
-
-                    Database.asyncTransaction {
-                        songs.forEach( ::insertIgnore )
-                    }
-
-                    if (justAdd) {
-                        player.addMediaItems(songs.drop(1))
-                    } else {
-                        player.forcePlayFromBeginning(songs)
-                    }
-                    radio = it
-                    isLoadingRadio = false
-                }
-            }
-        }
-
         /**
          * Contains 2 major steps:
          * 1. Fetch YouTube Music for **playlistId** of this song
@@ -1757,16 +1718,16 @@ class PlayerServiceModern : MediaLibraryService(),
          */
         fun startRadio(
             mediaItem: MediaItem,
-            append: Boolean = true,
+            append: Boolean = false,
             endpoint: NavigationEndpoint.Endpoint.Watch? = null
         ) {
             this.stopRadio()
 
-            if( append )
+            if( !append || player.currentMediaItem == null )
                 player.forcePlay( mediaItem )
 
             // Prevent UI from freezing up while data is being fetched
-            coroutineScope.launch {
+            radioJob = coroutineScope.launch {
                 isLoadingRadio = true
 
                 var playlistId = endpoint?.playlistId
@@ -1814,7 +1775,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
         fun startRadio(
             song: Song,
-            append: Boolean = true,
+            append: Boolean = false,
             endpoint: NavigationEndpoint.Endpoint.Watch? = null
         ) = startRadio( song.asMediaItem, append, endpoint )
 
