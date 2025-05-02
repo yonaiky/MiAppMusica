@@ -154,6 +154,19 @@ Submit your designs by [opening a ticket](https://github.com/knighthat/Kreate/is
 - [**MedieroAF**](https://github.com/MedieroAF): App logo
 
 
+# 💸 Donation
+
+> Help me keep the project running longer.
+> This is completely optional, you don't have to pay to use/unlock any feature.
+
+| Platform | Address |
+| -------- | --- |
+| Liberapay | https://liberapay.com/knighthat |
+| Patreon | https://patreon.com/knighthat |
+| Monero | 44G5dUFTbFWYfZAk69irnDUCTNZzP5viNTmkGpCNCLHjjYQq7jjRTWoYTH1aY8P841hExP31Qxg2hXPtxreKu11zCYdxQUj |
+| Bitcoin | 1GpZUvhdVkCFxqF4vuaiFxtBTxB3L94vnK |
+
+
 # ⚠️ Disclaimer
 
 This project is built on top of [RiMusic](https://github.com/fast4x/RiMusic) but has no relation to the original author.
