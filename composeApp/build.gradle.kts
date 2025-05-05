@@ -282,7 +282,6 @@ dependencies {
     implementation(libs.androidmaterial)
     implementation(libs.timber)
     implementation(libs.crypto)
-    implementation(libs.logging.interceptor)
     implementation(libs.math3)
     implementation(libs.toasty)
     implementation(libs.androidyoutubeplayer)
@@ -299,6 +298,7 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     implementation(projects.innertube)
+    implementation(projects.oldtube)
     implementation(projects.kugou)
     implementation(projects.lrclib)
     implementation(projects.piped)

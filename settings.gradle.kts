@@ -20,8 +20,8 @@ dependencyResolutionManagement {
 rootProject.name = "Kreate"
 include(":composeApp")
 // Projects from extensions
-include(":innertube")
-project(":innertube").projectDir = file("extensions/innertube")
+include(":oldtube")
+project(":oldtube").projectDir = file("extensions/innertube")
 include(":ktor-client-brotli")
 project(":ktor-client-brotli").projectDir = file("extensions/ktor-client-brotli")
 include(":kugou")
@@ -32,4 +32,6 @@ include(":piped")
 project(":piped").projectDir = file("extensions/piped")
 include(":invidious")
 project(":invidious").projectDir = file("extensions/invidious")
-
+// Submodules
+include(":innertube")
+project(":innertube").projectDir = file("modules/innertube")
