@@ -24,6 +24,7 @@ import it.fast4x.rimusic.context
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
+import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.addToPipedPlaylist
@@ -58,7 +59,7 @@ fun PlayerMenu(
     onMatchingSong: (() -> Unit)? = null,
     disableScrollingText: Boolean
     ) {
-
+    val menuState = LocalMenuState.current
     val menuStyle by rememberPreference(
         menuStyleKey,
         MenuStyle.List
@@ -98,6 +99,8 @@ fun PlayerMenu(
             onDismiss = onDismiss,
             onStartRadio = {
                 binder.startRadio( mediaItem )
+
+                menuState.hide()
             },
             onGoToEqualizer = launchEqualizer,
             /*
@@ -125,6 +128,8 @@ fun PlayerMenu(
             mediaItem = mediaItem,
             onStartRadio = {
                 binder.startRadio( mediaItem )
+
+                menuState.hide()
             },
             onGoToEqualizer = launchEqualizer,
             onShowSleepTimer = {},
