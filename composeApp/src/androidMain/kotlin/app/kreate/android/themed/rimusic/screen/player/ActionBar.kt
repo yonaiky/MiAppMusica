@@ -39,6 +39,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -56,6 +57,9 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
@@ -77,6 +81,7 @@ import it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import it.fast4x.rimusic.ui.screens.player.LaunchedEffectScrollToPage
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.blackgradientKey
@@ -148,11 +153,19 @@ fun BoxScope.ActionBar(
 ) {
     // Essentials
     val context = LocalContext.current
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
     val menuState = LocalMenuState.current
 
     val mediaItem = binder?.player?.currentMediaItem ?: return
-    val mediaItems = binder.player.mediaItems
+    var mediaItems by remember { mutableStateOf( emptyList<MediaItem>() ) }
+
+    binder.player.DisposableListener {
+        object : Player.Listener {
+            override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+                mediaItems = timeline.mediaItems
+            }
+        }
+    }
 
     val playerBackgroundColors by rememberPreference( playerBackgroundColorsKey, PlayerBackgroundColors.BlurredCoverColor )
     val blackGradient by rememberPreference( blackgradientKey, false )
@@ -284,9 +297,7 @@ fun BoxScope.ActionBar(
                         flingBehavior = fling,
                         modifier = Modifier.weight(1f)
                     ) { index ->
-                        val mediaItemAtIndex by remember {
-                            derivedStateOf { binder.player.getMediaItemAt( pagerStateQueue.currentPage ) }
-                        }
+                        val mediaItemAtIndex by remember { derivedStateOf { mediaItems[index] } }
 
                         Row(
                             horizontalArrangement = Arrangement.Center,
@@ -316,11 +327,9 @@ fun BoxScope.ActionBar(
                             if ( showAlbumCover )
                                 Box( Modifier.align(Alignment.CenterVertically) ) {
                                     ImageCacheFactory.Thumbnail(
-                                        thumbnailUrl = binder.player
-                                                             .getMediaItemAt( index )
-                                                             .mediaMetadata
-                                                             .artworkUri
-                                                             .toString(),
+                                        thumbnailUrl = mediaItemAtIndex.mediaMetadata
+                                                                       .artworkUri
+                                                                       .toString(),
                                         contentDescription = "song_pos_$index",
                                         modifier = Modifier.padding( end = 5.dp )
                                                            .clip( RoundedCornerShape(5.dp) )
@@ -708,10 +717,11 @@ fun BoxScope.ActionBar(
                                 )
                             }
                         },
-                        modifier = Modifier.size( 24.dp )
-                                           .graphicsLayer {
-                                               rotationZ = if ( isInLandscape ) 90f else 0f
-                                           }
+                        modifier = Modifier
+                            .size(24.dp)
+                            .graphicsLayer {
+                                rotationZ = if (isInLandscape) 90f else 0f
+                            }
                     )
                 }
             }
