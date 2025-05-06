@@ -134,7 +134,6 @@ import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import it.fast4x.rimusic.utils.forcePlay
-import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
@@ -1723,7 +1722,8 @@ class PlayerServiceModern : MediaLibraryService(),
         ) {
             this.stopRadio()
 
-            if( !append || player.currentMediaItem == null )
+            // Play song immediately while other songs are being loaded
+            if( player.currentMediaItem?.mediaId != mediaItem.mediaId )
                 player.forcePlay( mediaItem )
 
             // Prevent UI from freezing up while data is being fetched
@@ -1757,15 +1757,30 @@ class PlayerServiceModern : MediaLibraryService(),
                                  // Songs with the same id as provided [Song] should be removed.
                                  // The song usually lives at the the first index, but this
                                  // way is safer to implement, as it can live through changes in position.
-                                 relatedSongs.dropWhile { append && it.mediaId == mediaItem.mediaId }
+                                 relatedSongs.dropWhile { it.mediaId == mediaItem.mediaId }
                              }
                              ?.also {
                                  // Any call to [player] must happen on Main thread
                                  withContext( Dispatchers.Main ) {
-                                     if( append )
-                                         player.addMediaItems( it )
-                                     else
-                                         player.forcePlayFromBeginning( it )
+                                    /*
+                                        There are 2 possible outcomes when append is not enabled.
+                                        User starts radio on currently playing song,
+                                        or on a completely different song.
+
+                                        When radio is activated on the same song, remain position
+                                        of currently playing song, delete next songs, and append
+                                        it with new songs.
+
+                                        When new song is used for radio, replace entire queue with new songs.
+                                      */
+                                     val curIndex = player.currentMediaItemIndex
+                                     val endIndex = player.mediaItemCount
+                                     if( !append && player.mediaItemCount > 1 ) {
+                                         player.moveMediaItem( curIndex, 0 )
+                                         player.removeMediaItems( curIndex + 1, endIndex )
+                                     }
+
+                                     player.addMediaItems(it)
                                  }
                              }
 
