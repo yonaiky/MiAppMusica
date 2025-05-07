@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -25,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
 import it.fast4x.compose.persist.persist
@@ -64,7 +61,6 @@ import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -100,9 +96,6 @@ fun SearchResultScreen(
     val saveableStateHolder = rememberSaveableStateHolder()
     val (tabIndex, onTabIndexChanges) = rememberPreference(searchResultScreenTabIndexKey, 0)
 
-    var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
-    }
     val hapticFeedback = LocalHapticFeedback.current
 
     val isVideoEnabled = LocalContext.current.preferences.getBoolean(showButtonPlayerVideoKey, false)
@@ -172,7 +165,6 @@ fun SearchResultScreen(
                             if (parentalControlEnabled && song.explicit)
                                 return@ItemsPage
 
-                            downloadState = getDownloadState(song.asMediaItem.mediaId)
                             val isDownloaded =
                                 isDownloadedSong(song.asMediaItem.mediaId)
 
@@ -200,7 +192,7 @@ fun SearchResultScreen(
                                     song = song.asSong,
                                     navController = navController,
                                     onClick = {
-                                        binder?.startRadio( song.asMediaItem, true, song.info?.endpoint )
+                                        binder?.startRadio( song.asMediaItem, false, song.info?.endpoint )
                                     }
                                 )
                             }
