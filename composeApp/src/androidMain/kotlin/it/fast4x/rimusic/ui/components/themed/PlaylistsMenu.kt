@@ -88,15 +88,13 @@ class PlaylistsMenu private constructor(
     @Composable
     private fun PlaylistCard( playlistPreview: PlaylistPreview ) {
         val playlist = playlistPreview.playlist
-        val songsCount = playlistPreview.songCount
 
         MenuEntry(
             icon = R.drawable.add_in_playlist,
             text = playlist.name.substringAfter( PINNED_PREFIX ),
-            secondaryText = "$songsCount ${stringResource( R.string.songs )}",
+            secondaryText = "${playlistPreview.songCount} ${stringResource( R.string.songs )}",
             onClick = {
                 onAdd( playlistPreview )
-                menuState.hide()
             },
             trailingContent = {
                 IconButton(
@@ -104,7 +102,7 @@ class PlaylistsMenu private constructor(
                     color = colorPalette().text,
                     onClick = {
                         menuState.hide()
-                        navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlistPreview.playlist.id}")
+                        navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.id}")
                     },
                     modifier = Modifier.size( 24.dp )
                 )
@@ -152,7 +150,8 @@ class PlaylistsMenu private constructor(
                     onClick = ::onShortClick,
                     icon = R.drawable.chevron_back,
                     color = colorPalette().textSecondary,
-                    modifier = Modifier.padding(all = 4.dp)
+                    modifier = Modifier
+                        .padding(all = 4.dp)
                         .size(20.dp)
                 )
 
