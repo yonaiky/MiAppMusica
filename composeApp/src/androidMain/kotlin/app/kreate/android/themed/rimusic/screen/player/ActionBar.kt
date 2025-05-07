@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -131,6 +132,20 @@ import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.player.PlaybackSpeed
 import me.knighthat.utils.Toaster
 
+private class PagerViewPort(
+    private val showSongsState: MutableState<SongsNumber>,
+    private val pagerState: PagerState,
+): PageSize {
+
+    override fun Density.calculateMainAxisPageSize( availableSpace: Int, pageSpacing: Int ): Int {
+        val canShow = minOf( showSongsState.value.toInt() , pagerState.pageCount )
+        return if( canShow > 1 )
+            (availableSpace - 2 * pageSpacing) / canShow
+        else
+            availableSpace
+    }
+}
+
 @ExperimentalTextApi
 @ExperimentalAnimationApi
 @UnstableApi
@@ -163,7 +178,6 @@ fun BoxScope.ActionBar(
     val tapQueue by rememberPreference( tapqueueKey, true )
     val transparentBackgroundActionBarPlayer by rememberPreference( transparentBackgroundPlayerActionBarKey, false )
     val swipeUpQueue by rememberPreference( swipeUpQueueKey, true )
-    val showSongs by rememberPreference( showsongsKey, SongsNumber.`2` )
     val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
 
     var showQueue by showQueueState
@@ -284,21 +298,14 @@ fun BoxScope.ActionBar(
                         )
                     }
 
-                    val threePagesPerViewport = object : PageSize {
-                        override fun Density.calculateMainAxisPageSize(
-                            availableSpace: Int,
-                            pageSpacing: Int
-                        ): Int {
-                            val canShow by derivedStateOf {
-                                minOf( showSongs.toInt() , pagerStateQueue.pageCount ).coerceAtLeast( 1 )
-                            }
-                            return (availableSpace - 2 * pageSpacing) / canShow
-                        }
+                    val showSongsState = rememberPreference( showsongsKey, SongsNumber.`2` )
+                    val viewPort = remember {
+                        PagerViewPort( showSongsState, pagerStateQueue )
                     }
 
                     HorizontalPager(
                         state = pagerStateQueue,
-                        pageSize = threePagesPerViewport,
+                        pageSize = viewPort,
                         pageSpacing = 10.dp,
                         modifier = Modifier.weight(1f)
                     ) { index ->
@@ -424,7 +431,8 @@ fun BoxScope.ActionBar(
                             }
                         }
                     }
-                    if ( showSongs == SongsNumber.`1` )
+
+                    if ( showSongsState.value == SongsNumber.`1` )
                         IconButton(
                             icon = R.drawable.trash,
                             color = Color.White,
