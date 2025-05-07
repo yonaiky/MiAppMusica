@@ -119,7 +119,7 @@ import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.getPipedSession
-import it.fast4x.rimusic.utils.isAtLeastAndroid12
+import it.fast4x.rimusic.utils.isAtLeastAndroid14
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.isRecommendationEnabledKey
@@ -494,7 +494,7 @@ fun LocalPlaylistSongs(
         key = items,
         onDragEnd = { fromIndex, toIndex ->
             Database.asyncTransaction {
-                if( !isAtLeastAndroid12 ) {
+                if( !isAtLeastAndroid14 ) {
                     // This block should function exactly to the SQL statement
                     // Except it's slower
                     val mutableItems = items.toMutableList()

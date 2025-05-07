@@ -131,7 +131,7 @@ interface SongPlaylistMapTable {
      *
      * @return number of rows affected by this operation
      */
-    @RequiresApi(Build.VERSION_CODES.R)
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     @Query("""
         UPDATE SongPlaylistMap 
         SET position = shuffled.new_position
@@ -154,7 +154,7 @@ interface SongPlaylistMapTable {
      *
      * @return number of rows affected by this operation
      */
-    @RequiresApi(Build.VERSION_CODES.S)
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     @Query("""
         UPDATE SongPlaylistMap
         SET position = updated.new_position

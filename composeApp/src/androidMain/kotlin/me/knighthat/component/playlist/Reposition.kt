@@ -15,7 +15,7 @@ import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.utils.isAtLeastAndroid11
+import it.fast4x.rimusic.utils.isAtLeastAndroid14
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -52,7 +52,7 @@ class Reposition private constructor(
 
     override fun onConfirm() {
         Database.asyncTransaction {
-            if( isAtLeastAndroid11 )
+            if( isAtLeastAndroid14 )
                 songPlaylistMapTable.shufflePositions( playlistId )
             else
                 // This is a slower version, kept for backward-compatibility
