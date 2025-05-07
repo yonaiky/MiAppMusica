@@ -26,20 +26,19 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -65,7 +64,6 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.appRunningInBackground
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
@@ -80,7 +78,6 @@ import it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
 import it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlayerMenu
-import it.fast4x.rimusic.ui.screens.player.LaunchedEffectScrollToPage
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.actionspacedevenlyKey
 import it.fast4x.rimusic.utils.addNext
@@ -157,15 +154,6 @@ fun BoxScope.ActionBar(
     val menuState = LocalMenuState.current
 
     val mediaItem = binder?.player?.currentMediaItem ?: return
-    var mediaItems by remember { mutableStateOf( emptyList<MediaItem>() ) }
-
-    binder.player.DisposableListener {
-        object : Player.Listener {
-            override fun onTimelineChanged(timeline: Timeline, reason: Int) {
-                mediaItems = timeline.mediaItems
-            }
-        }
-    }
 
     val playerBackgroundColors by rememberPreference( playerBackgroundColorsKey, PlayerBackgroundColors.BlurredCoverColor )
     val blackGradient by rememberPreference( blackgradientKey, false )
@@ -231,52 +219,67 @@ fun BoxScope.ActionBar(
                         .padding(horizontal = 12.dp)
                         .fillMaxWidth()
                 ) {
-                    val nextMediaItemIndex = binder.player.nextMediaItemIndex
-                    val pagerStateQueue =
-                        rememberPagerState(pageCount = { mediaItems.size })
-                    val scope = rememberCoroutineScope()
-                    val fling = PagerDefaults.flingBehavior(
-                        state = pagerStateQueue,
-                        snapPositionalThreshold = 0.15f,
-                        pagerSnapDistance = PagerSnapDistance.atMost(showSongs.toInt())
-                    )
-                    pagerStateQueue.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex + 1)
+                    var currentIndex by remember { mutableIntStateOf( binder.player.currentMediaItemIndex ) }
+                    var nextIndex by remember { mutableIntStateOf( binder.player.nextMediaItemIndex ) }
+                    val mediaItems = remember { mutableStateListOf<MediaItem>() }
+
+                    val pagerStateQueue = rememberPagerState( pageCount = { mediaItems.size } )
+                    fun scrollTo( page: Int ) =
+                        pagerStateQueue.requestScrollToPage(
+                            page.coerceIn( 0, pagerStateQueue.pageCount )
+                        )
+
+                    binder.player.DisposableListener {
+                        object : Player.Listener {
+                            override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+                                mediaItems.clear()
+                                mediaItems.addAll( timeline.mediaItems )
+
+                                scrollTo( nextIndex )
+                            }
+
+                            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                                currentIndex = binder.player.currentMediaItemIndex
+                                nextIndex = binder.player.nextMediaItemIndex
+
+                                scrollTo( nextIndex )
+                            }
+                        }
+                    }
+
+                    LaunchedEffect( binder.player.mediaItems ) {
+                        mediaItems.clear()
+                        mediaItems.addAll( binder.player.mediaItems )
+                    }
 
                     Row(
                         modifier = Modifier
                             .padding(vertical = 7.5.dp)
                             .weight(0.07f)
-                            .conditional(pagerStateQueue.currentPage == binder.player.currentMediaItemIndex) {
+                            .conditional( pagerStateQueue.currentPage == currentIndex ) {
                                 padding(
                                     horizontal = 3.dp
                                 )
                             }
                     ) {
+                        val coroutine = rememberCoroutineScope()
+
                         Icon(
                             painter = painterResource(
-                                id = if (pagerStateQueue.currentPage > binder.player.currentMediaItemIndex) R.drawable.chevron_forward
-                                else if (pagerStateQueue.currentPage == binder.player.currentMediaItemIndex) R.drawable.play
+                                id = if ( pagerStateQueue.currentPage > currentIndex ) R.drawable.chevron_forward
+                                else if ( pagerStateQueue.currentPage == currentIndex ) R.drawable.play
                                 else R.drawable.chevron_back
                             ),
                             contentDescription = null,
-                            modifier = Modifier
-                                .size(25.dp)
-                                .clip(CircleShape)
-                                .clickable(
-                                    indication = ripple(bounded = false),
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    onClick = {
-                                        scope.launch {
-                                            if (!appRunningInBackground) {
-                                                pagerStateQueue.animateScrollToPage(
-                                                    binder.player.currentMediaItemIndex + 1
-                                                )
-                                            } else {
-                                                pagerStateQueue.scrollToPage(binder.player.currentMediaItemIndex + 1)
-                                            }
-                                        }
-                                    }
-                                ),
+                            modifier = Modifier.size( 25.dp )
+                                               .clickable(
+                                                   interactionSource = remember { MutableInteractionSource() },
+                                                   indication = null,
+                                               ) {
+                                                   coroutine.launch {
+                                                       pagerStateQueue.animateScrollToPage( currentIndex )
+                                                   }
+                                               },
                             tint = colorPalette().accent
                         )
                     }
@@ -286,7 +289,10 @@ fun BoxScope.ActionBar(
                             availableSpace: Int,
                             pageSpacing: Int
                         ): Int {
-                            return if (showSongs == SongsNumber.`1`) availableSpace else ((availableSpace - 2 * pageSpacing) / (showSongs.toInt()))
+                            val canShow by derivedStateOf {
+                                minOf( showSongs.toInt() , pagerStateQueue.pageCount ).coerceAtLeast( 1 )
+                            }
+                            return (availableSpace - 2 * pageSpacing) / canShow
                         }
                     }
 
@@ -294,7 +300,6 @@ fun BoxScope.ActionBar(
                         state = pagerStateQueue,
                         pageSize = threePagesPerViewport,
                         pageSpacing = 10.dp,
-                        flingBehavior = fling,
                         modifier = Modifier.weight(1f)
                     ) { index ->
                         val mediaItemAtIndex by remember { derivedStateOf { mediaItems[index] } }
@@ -307,17 +312,8 @@ fun BoxScope.ActionBar(
                                         binder.player.playAtIndex(index)
                                     },
                                     onLongClick = {
-                                        if (index < mediaItems.size) {
+                                        if ( index < mediaItems.size ) {
                                             binder.player.addNext( mediaItemAtIndex )
-                                            scope.launch {
-                                                if (!appRunningInBackground) {
-                                                    pagerStateQueue.animateScrollToPage(
-                                                        binder.player.currentMediaItemIndex + 1
-                                                    )
-                                                } else {
-                                                    pagerStateQueue.scrollToPage(binder.player.currentMediaItemIndex + 1)
-                                                }
-                                            }
                                             Toaster.s( R.string.addednext )
                                         }
                                     }
@@ -331,17 +327,19 @@ fun BoxScope.ActionBar(
                                                                        .artworkUri
                                                                        .toString(),
                                         contentDescription = "song_pos_$index",
-                                        modifier = Modifier.padding( end = 5.dp )
-                                                           .clip( RoundedCornerShape(5.dp) )
-                                                           .size( 30.dp )
+                                        modifier = Modifier
+                                            .padding(end = 5.dp)
+                                            .clip(RoundedCornerShape(5.dp))
+                                            .size(30.dp)
                                     )
                                 }
 
                             Column(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.height( 40.dp )
-                                                   .fillMaxWidth()
+                                modifier = Modifier
+                                    .height(40.dp)
+                                    .fillMaxWidth()
                             ) {
                                 val colorPaletteMode by rememberPreference( colorPaletteModeKey, ColorPaletteMode.Dark )
                                 val textOutline by rememberPreference( textoutlineKey, false )
@@ -432,11 +430,12 @@ fun BoxScope.ActionBar(
                             color = Color.White,
                             enabled = true,
                             onClick = {
-                                binder.player.removeMediaItem( nextMediaItemIndex )
+                                binder.player.removeMediaItem( nextIndex )
                             },
-                            modifier = Modifier.weight( .07f )
-                                               .size( 40.dp )
-                                               .padding( vertical = 7.5.dp )
+                            modifier = Modifier
+                                .weight(.07f)
+                                .size(40.dp)
+                                .padding(vertical = 7.5.dp)
                         )
                 }
             }
@@ -445,8 +444,9 @@ fun BoxScope.ActionBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = if (actionsSpaceEvenly) Arrangement.SpaceEvenly else Arrangement.SpaceBetween,
-                modifier = Modifier.padding( horizontal = 12.dp )
-                                   .fillMaxWidth()
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .fillMaxWidth()
             ) {
                 val showButtonPlayerVideo by rememberPreference( showButtonPlayerVideoKey, false )
                 if (showButtonPlayerVideo)
@@ -468,13 +468,14 @@ fun BoxScope.ActionBar(
                         icon = R.drawable.star_brilliant,
                         color = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled,
                         onClick = {},
-                        modifier = Modifier.size( 24.dp )
-                                           .combinedClickable(
-                                               onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                               onLongClick = {
-                                                   Toaster.i( R.string.discoverinfo )
-                                               }
-                                           )
+                        modifier = Modifier
+                            .size(24.dp)
+                            .combinedClickable(
+                                onClick = { discoverIsEnabled = !discoverIsEnabled },
+                                onLongClick = {
+                                    Toaster.i(R.string.discoverinfo)
+                                }
+                            )
                     )
                 }
 
@@ -538,10 +539,11 @@ fun BoxScope.ActionBar(
                                 )
                             }
                         },
-                        modifier = Modifier.size( 24.dp )
-                                           .conditional( isSongMappedToPlaylist && showPlaylistIndicator ) {
-                                               background( color.accent, CircleShape ).padding( all = 5.dp )
-                                           }
+                        modifier = Modifier
+                            .size(24.dp)
+                            .conditional(isSongMappedToPlaylist && showPlaylistIndicator) {
+                                background(color.accent, CircleShape).padding(all = 5.dp)
+                            }
                     )
                 }
 
