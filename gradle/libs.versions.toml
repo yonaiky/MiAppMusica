@@ -45,6 +45,7 @@ uiToolingPreviewAndroid = "1.8.0"
 jetbrains-annotations = "24.1.0"
 lombok = "1.18.34"
 junit5 = "5.11.3"
+webkit = "1.13.0"
 
 
 [libraries]
@@ -82,7 +83,7 @@ palette = { group = "androidx.palette", name = "palette", version.ref = "palette
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout" }
 crypto = {  group = "androidx.security", name = "security-crypto", version.ref = "crypto" }
 glance-widgets = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
-androidx-webkit = { group = "androidx.webkit", name = "webkit", version = "1.13.0" }
+androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 
 # Ktor
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
