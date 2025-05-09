@@ -40,9 +40,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -176,6 +177,15 @@ import timber.log.Timber
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+
+val textFieldColors: TextFieldColors
+    @Composable
+    get() = TextFieldDefaults.colors(
+        unfocusedTextColor =  colorPalette().text,
+        focusedTextColor = colorPalette().text,
+        unfocusedIndicatorColor = colorPalette().text,
+        focusedIndicatorColor = colorPalette().text
+    )
 
 
 @UnstableApi
@@ -644,7 +654,7 @@ fun Lyrics(
                                 title = it
                             },
                             singleLine = true,
-                            colors = TextFieldDefaults.textFieldColors(textColor = colorPalette().text, unfocusedIndicatorColor = colorPalette().text),
+                            colors = textFieldColors,
                             modifier = Modifier
                                 .padding(horizontal = 6.dp)
                                 .weight(1f)
@@ -655,7 +665,7 @@ fun Lyrics(
                                 artistName = it
                             },
                             singleLine = true,
-                            colors = TextFieldDefaults.textFieldColors(textColor = colorPalette().text, unfocusedIndicatorColor = colorPalette().text),
+                            colors = textFieldColors,
                             modifier = Modifier
                                 .padding(horizontal = 6.dp)
                                 .weight(1f)
@@ -753,10 +763,7 @@ fun Lyrics(
                                                 title = it
                                             },
                                             singleLine = true,
-                                            colors = TextFieldDefaults.textFieldColors(
-                                                textColor = colorPalette().text,
-                                                unfocusedIndicatorColor = colorPalette().text
-                                            ),
+                                            colors = textFieldColors,
                                             modifier = Modifier
                                                 .padding(horizontal = 6.dp)
                                                 .weight(1f)
@@ -767,10 +774,7 @@ fun Lyrics(
                                                 artistName = it
                                             },
                                             singleLine = true,
-                                            colors = TextFieldDefaults.textFieldColors(
-                                                textColor = colorPalette().text,
-                                                unfocusedIndicatorColor = colorPalette().text
-                                            ),
+                                            colors = textFieldColors,
                                             modifier = Modifier
                                                 .padding(horizontal = 6.dp)
                                                 .weight(1f)

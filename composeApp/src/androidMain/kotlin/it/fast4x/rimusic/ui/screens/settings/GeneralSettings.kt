@@ -14,8 +14,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -404,7 +404,12 @@ fun GeneralSettings(
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
-                colors = TextFieldDefaults.textFieldColors(textColor = colorPalette().text, unfocusedIndicatorColor = colorPalette().text),
+                colors = TextFieldDefaults.colors(
+                    unfocusedTextColor = colorPalette().text,
+                    focusedTextColor = colorPalette().text,
+                    focusedIndicatorColor = colorPalette().text,
+                    unfocusedIndicatorColor = colorPalette().text
+                ),
                 modifier = Modifier
                     .padding(start = 12.dp)
                     //.padding(all = 12.dp)

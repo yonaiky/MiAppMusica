@@ -25,9 +25,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Surface
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -115,7 +115,7 @@ fun FullScreenDialog(showDialog: MutableState<Boolean>, text: String) {
                             )
                             Button(
                                 onClick = { showDialog.value = false },
-                                colors = ButtonDefaults.buttonColors(backgroundColor = PacmanPink)
+                                colors = ButtonDefaults.buttonColors( containerColor = PacmanPink )
                             ) {
                                 Text(
                                     text = "Close",
@@ -505,7 +505,7 @@ fun Controls(
             Modifier
                 .clip(CircleShape)
                 .align(Alignment.CenterVertically),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
         ) {
             Text(
                 text = if (gameStatsModel.isGameStarted.value) "Stop" else "Start",

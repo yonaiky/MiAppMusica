@@ -43,13 +43,13 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -119,6 +119,7 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import it.fast4x.rimusic.ui.styling.ColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
@@ -168,6 +169,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+
+@Composable
+fun textFieldColors( colorPalette: ColorPalette, errorText: String ) =
+    TextFieldDefaults.colors(
+        focusedPlaceholderColor = colorPalette.textDisabled,
+        unfocusedPlaceholderColor = colorPalette.textDisabled,
+        cursorColor = colorPalette.text,
+        focusedTextColor = colorPalette.text,
+        unfocusedTextColor = colorPalette.text,
+        focusedContainerColor = if ( errorText.isEmpty() ) colorPalette.background1 else colorPalette.red,
+        unfocusedContainerColor = if ( errorText.isEmpty() ) colorPalette.background1 else colorPalette.red,
+        focusedIndicatorColor = colorPalette.accent,
+        unfocusedIndicatorColor = colorPalette.textDisabled
+    )
 
 @Composable
 fun TextFieldDialog(
@@ -708,14 +723,7 @@ inline fun InputNumericDialog(
                         shape = thumbnailShape
                     ),
                      */
-                    colors = TextFieldDefaults.textFieldColors(
-                        placeholderColor = colorPalette().textDisabled,
-                        cursorColor = colorPalette().text,
-                        textColor = colorPalette().text,
-                        backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
-                        focusedIndicatorColor = colorPalette().accent,
-                        unfocusedIndicatorColor = colorPalette().textDisabled
-                    ),
+                    colors = textFieldColors( colorPalette(), txtFieldError.value ),
                     leadingIcon = {
 /*
                         Image(
@@ -839,14 +847,7 @@ inline fun InputTextDialog(
                     modifier = Modifier
                         .fillMaxWidth(0.9f),
                     maxLines = 20,
-                    colors = TextFieldDefaults.textFieldColors(
-                        placeholderColor = colorPalette().textDisabled,
-                        cursorColor = colorPalette().text,
-                        textColor = colorPalette().text,
-                        backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
-                        focusedIndicatorColor = colorPalette().accent,
-                        unfocusedIndicatorColor = colorPalette().textDisabled
-                    ),
+                    colors = textFieldColors( colorPalette(), txtFieldError.value ),
                     leadingIcon = {
                         /*
                         Image(
@@ -1984,10 +1985,7 @@ fun SongMatchingDialog(
                         searchText = it
                     },
                     singleLine = true,
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = colorPalette().text,
-                        unfocusedIndicatorColor = colorPalette().text
-                    ),
+                    colors = textFieldColors( colorPalette(), "" ),
                     modifier = Modifier
                         .padding(horizontal = 6.dp)
                         .weight(1f)

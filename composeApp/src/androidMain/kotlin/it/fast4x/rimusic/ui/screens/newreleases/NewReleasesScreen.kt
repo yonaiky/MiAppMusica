@@ -2,7 +2,6 @@ package it.fast4x.rimusic.ui.screens.newreleases
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +17,6 @@ import app.kreate.android.R
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.rimusic.ui.components.Skeleton
 
-@ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
 @ExperimentalComposeUiApi

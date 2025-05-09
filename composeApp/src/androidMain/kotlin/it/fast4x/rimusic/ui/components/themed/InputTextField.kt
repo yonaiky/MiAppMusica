@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,11 +78,14 @@ inline fun InputTextField(
                 modifier = Modifier
                     //.padding(horizontal = 30.dp)
                     .fillMaxWidth(0.7f),
-                colors = TextFieldDefaults.textFieldColors(
-                    placeholderColor = colorPalette().textDisabled,
+                colors = TextFieldDefaults.colors(
+                    focusedPlaceholderColor = colorPalette().textDisabled,
+                    unfocusedPlaceholderColor = colorPalette().textDisabled,
                     cursorColor = colorPalette().text,
-                    textColor = colorPalette().text,
-                    backgroundColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
+                    focusedTextColor = colorPalette().text,
+                    unfocusedTextColor = colorPalette().text,
+                    focusedContainerColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
+                    unfocusedContainerColor = if (txtFieldError.value.isEmpty()) colorPalette().background1 else colorPalette().red,
                     focusedIndicatorColor = colorPalette().accent,
                     unfocusedIndicatorColor = colorPalette().textDisabled
                 ),

@@ -2,7 +2,6 @@ package it.fast4x.rimusic.ui.screens.playlist
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -13,7 +12,6 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import it.fast4x.rimusic.ui.components.Skeleton
 
-@ExperimentalMaterialApi
 @ExperimentalTextApi
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi

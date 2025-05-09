@@ -45,7 +45,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.RippleConfiguration
@@ -293,7 +292,6 @@ class MainActivity :
         }
     }
 
-    @ExperimentalMaterialApi
     @ExperimentalTextApi
     @UnstableApi
     @ExperimentalComposeUiApi

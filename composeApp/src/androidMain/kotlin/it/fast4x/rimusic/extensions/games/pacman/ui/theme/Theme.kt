@@ -1,30 +1,21 @@
 package it.fast4x.rimusic.extensions.games.pacman.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = PacmanYellow,
-    primaryVariant = PacmanWhite,
-    secondary = PacmanBackground
+    onPrimary = PacmanWhite,
+    secondary = PacmanBackground,
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = PacmanYellow,
-    primaryVariant = PacmanWhite,
-    secondary = PacmanBackground
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    onPrimary = PacmanWhite,
+    secondary = PacmanBackground,
 )
 
 @Composable
@@ -39,7 +30,7 @@ fun PacmanComposeTheme(
     }
 
     MaterialTheme(
-        colors = colors,
+        colorScheme = colors,
         typography = Typography,
         shapes = Shapes,
         content = content

@@ -271,7 +271,6 @@ dependencies {
     implementation(libs.media3.datasource.okhttp)
     implementation(libs.appcompat)
     implementation(libs.appcompat.resources)
-    implementation(libs.material)
     implementation(libs.material3)
     implementation(libs.constraintlayout)
     implementation(libs.compose.animation)
