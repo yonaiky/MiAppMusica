@@ -46,6 +46,7 @@ jobs:
           # Always have a hard-coded limit of how many commits to fetch.
           # Better idea to fetch the whole thing but fetch time goes BRRRRRR.
           fetch-depth: 300
+          submodules: true
 
       #
       # Explanations:
@@ -90,6 +91,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Set up JDK
         uses: actions/setup-java@v4.7.1
