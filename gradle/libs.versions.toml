@@ -52,7 +52,7 @@ webkit = "1.13.0"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "kotlinxCoroutines" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swings", version = "kotlinxCoroutines" }
-kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlin-datetime" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlin-datetime" }
 
 # Compose
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
@@ -76,12 +76,12 @@ media3-datasource-okhttp = { group = "androidx.media3", name = "media3-datasourc
 material3 = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3" }
 
 # Androidx
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-appcompat-resources = { group = "androidx.appcompat", name = "appcompat-resources", version.ref = "appcompat" }
-palette = { group = "androidx.palette", name = "palette", version.ref = "palette" }
-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout" }
-crypto = {  group = "androidx.security", name = "security-crypto", version.ref = "crypto" }
-glance-widgets = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-appcompat-resources = { group = "androidx.appcompat", name = "appcompat-resources", version.ref = "appcompat" }
+androidx-palette = { group = "androidx.palette", name = "palette", version.ref = "palette" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout" }
+androidx-crypto = {  group = "androidx.security", name = "security-crypto", version.ref = "crypto" }
+androidx-glance-widgets = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 
 # Ktor
@@ -95,7 +95,6 @@ ktor-serialization-kotlinx-xml = { group = "io.ktor", name = "ktor-serialization
 ktor-serialization-kotlinx-protobuf = { group = "io.ktor", name = "ktor-serialization-kotlinx-protobuf", version.ref = "ktor" }
 
 # Jetbrains Compose
-androidmaterial = { group = "com.google.android.material", name = "material", version.ref = "androidmaterial" }
 material-icon-desktop = { group = "org.jetbrains.compose.material", name = "material-icons-extended-desktop", version.ref = "materialdesktop" }
 navigation-kmp = {  group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigationKMP" }
 
@@ -131,10 +130,13 @@ ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling
 junit5-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit5" }
 junit5-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit5" }
 
+# MonetCompat
+monetcompat = {  group = "com.github.KieronQuinn", name = "MonetCompat", version.ref = "monetcompat" }
+androidmaterial = { group = "com.google.android.material", name = "material", version.ref = "androidmaterial" }     # Required by MoneyCompat for some reason
+
 # Extras
 translator = {  group = "com.github.therealbush", name = "translator", version.ref = "translator" }
 kotlin-csv = {  group = "com.github.doyaaaaaken", name = "kotlin-csv-jvm", version.ref = "kotlin-csv" }
-monetcompat = {  group = "com.github.KieronQuinn", name = "MonetCompat", version.ref = "monetcompat" }
 timber = {  group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 math3 = { group = "org.apache.commons", name = "commons-math3", version.ref = "math3" }
 toasty = { group = "com.github.GrenderG", name = "Toasty", version.ref = "toasty" }

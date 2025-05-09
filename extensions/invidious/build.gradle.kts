@@ -11,7 +11,7 @@ sourceSets.all {
 dependencies {
     implementation(libs.kotlinx.coroutines)
     implementation(projects.ktorClientBrotli)
-    implementation(libs.kotlin.datetime)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.client.content.negotiation)
