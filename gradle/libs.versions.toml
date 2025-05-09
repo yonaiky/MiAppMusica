@@ -59,9 +59,6 @@ kotlin-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", 
 # Compose
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose" }
-compose-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "compose" }
-compose-ripple = { group = "androidx.compose.material", name = "material-ripple", version.ref = "compose" }
 compose-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "compose-activity" }
 compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose" }
 compose-runtime-livedata = {  group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose" }

@@ -68,6 +68,9 @@ kotlin {
             implementation(libs.newpipe.extractor)
             implementation(libs.nanojson)
             implementation(libs.androidx.webkit)
+
+            // Related to built-in game, maybe removed in future?
+            implementation(libs.compose.runtime.livedata)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -261,8 +264,6 @@ dependencies {
     implementation(libs.compose.activity)
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui)
-    implementation(libs.compose.ui.util)
-    implementation(libs.compose.ripple)
     implementation(libs.compose.shimmer)
     implementation(libs.compose.coil)
     implementation(libs.palette)
@@ -273,9 +274,7 @@ dependencies {
     implementation(libs.media)
     implementation(libs.material)
     implementation(libs.material3)
-    implementation(libs.compose.ui.graphics.android)
     implementation(libs.constraintlayout)
-    implementation(libs.compose.runtime.livedata)
     implementation(libs.compose.animation)
     implementation(libs.kotlin.csv)
     implementation(libs.monetcompat)
