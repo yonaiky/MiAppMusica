@@ -13,7 +13,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.room)
-    alias(libs.plugins.hilt)
 }
 
 repositories {
@@ -290,9 +289,6 @@ dependencies {
 
     implementation(libs.room)
     ksp(libs.room.compiler)
-
-    implementation(libs.hilt)
-    ksp(libs.hilt.compiler)
 
     implementation(projects.innertube)
     implementation(projects.oldtube)

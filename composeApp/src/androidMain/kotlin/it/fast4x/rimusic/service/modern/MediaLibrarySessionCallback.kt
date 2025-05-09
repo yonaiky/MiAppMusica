@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
-import dagger.hilt.android.qualifiers.ApplicationContext
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.searchPage
@@ -56,11 +55,10 @@ import kotlinx.coroutines.guava.future
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import me.knighthat.database.ext.FormatWithSong
-import javax.inject.Inject
 
 @UnstableApi
-class MediaLibrarySessionCallback @Inject constructor(
-    @ApplicationContext val context: Context,
+class MediaLibrarySessionCallback(
+    val context: Context,
     val database: Database,
     val downloadHelper: MyDownloadHelper
 ) : MediaLibrarySession.Callback {
