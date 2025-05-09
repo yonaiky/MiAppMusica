@@ -44,9 +44,9 @@ import it.fast4x.rimusic.context
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.service.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.service.isLocal
+import it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
+import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.delay
