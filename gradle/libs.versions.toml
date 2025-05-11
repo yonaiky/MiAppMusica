@@ -132,7 +132,7 @@ junit5-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-eng
 
 # MonetCompat
 monetcompat = {  group = "com.github.KieronQuinn", name = "MonetCompat", version.ref = "monetcompat" }
-androidmaterial = { group = "com.google.android.material", name = "material", version.ref = "androidmaterial" }     # Required by MoneyCompat for some reason
+androidmaterial = { group = "com.google.android.material", name = "material", version.ref = "androidmaterial" }     # Required by MonetCompat for some reason
 
 # Extras
 translator = {  group = "com.github.therealbush", name = "translator", version.ref = "translator" }
