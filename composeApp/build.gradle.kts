@@ -6,13 +6,18 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 val APP_NAME = "Kreate"
 
 plugins {
-    alias(libs.plugins.android.application)
+    // Multiplatform
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.jetbrains.compose)
+
+    // Android
+    alias(libs.plugins.android.application)
     alias(libs.plugins.room)
+
+
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 repositories {
