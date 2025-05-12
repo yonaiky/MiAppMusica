@@ -4,17 +4,19 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Context.AUDIO_SERVICE
 import android.media.AudioManager
-import androidx.media3.exoplayer.ExoPlayer
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.MainThread
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
-import it.fast4x.rimusic.utils.playbackVolumeKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -110,31 +112,45 @@ fun MedleyMode(binder: PlayerServiceModern.Binder?, seconds: Int) {
     }
 }
 
-fun startFadeAnimator(
-    player: ExoPlayer,
-    duration: Int,
-    fadeIn: Boolean, /* fadeIn -> true  fadeOut -> false*/
-    callback: Runnable? = null, /* Code to run when Animator Ends*/
-) {
-    //println("mediaItem startFadeAnimator: fadeIn $fadeIn duration $duration callback $callback")
-    val fadeDuration = duration.toLong()
-    if (fadeDuration == 0L) {
-        callback?.run()
+@MainThread
+fun ExoPlayer.fadeInEffect( duration: Long ) {
+    if( isPlaying ) return
+    if( duration == 0L ) {
+        if( playbackState == Player.STATE_IDLE )
+            prepare()
+        play()
         return
     }
-    // Using global volume as max/min value
-    // so fading wouldn't make the audio louder
-    val startValue = if (fadeIn) 0f else player.getGlobalVolume()
-    val endValue = if (fadeIn) player.getGlobalVolume() else 0f
-    val animator = ValueAnimator.ofFloat(startValue, endValue)
-    animator.duration = fadeDuration
-    if (fadeIn) player.volume = startValue
-    animator.addUpdateListener { animation: ValueAnimator ->
-            player.volume = animation.animatedValue as Float
+
+    val animator = ValueAnimator.ofFloat( 0f, getGlobalVolume() )
+    animator.duration = duration
+    animator.addUpdateListener {
+        volume = it.animatedValue as Float
+    }
+    animator.doOnStart {
+        if (playbackState == Player.STATE_IDLE)
+            prepare()
+        play()
+    }
+    animator.start()
+}
+
+@MainThread
+fun ExoPlayer.fadeOutEffect( duration: Long ) {
+    if( !isPlaying ) return
+    if( duration == 0L ) {
+        pause()
+        return
+    }
+
+    val animator = ValueAnimator.ofFloat( getGlobalVolume(), 0f )
+    animator.duration = duration
+    animator.addUpdateListener {
+        volume = it.animatedValue as Float
     }
     animator.doOnEnd {
-        callback?.run()
-        player.restoreGlobalVolume()
+        pause()
+        restoreGlobalVolume()
     }
     animator.start()
 }

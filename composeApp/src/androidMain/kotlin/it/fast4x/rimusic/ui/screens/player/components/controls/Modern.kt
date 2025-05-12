@@ -45,7 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
@@ -438,13 +437,9 @@ fun ControlsModern(
                      interactionSource = remember { MutableInteractionSource() },
                      onClick = {
                          if (shouldBePlaying) {
-                             //binder.player.pause()
-                             binder.callPause({ binder.player.pause() } )
+                             binder.gracefulPause()
                          } else {
-                             if (binder.player.playbackState == Player.STATE_IDLE) {
-                                 binder.player.prepare()
-                             }
-                             binder.player.play()
+                             binder.gracefulPlay()
                          }
                          if (effectRotationEnabled) isRotated = !isRotated
                      },
@@ -505,13 +500,9 @@ fun ControlsModern(
                       interactionSource = remember { MutableInteractionSource() },
                       onClick = {
                           if (shouldBePlaying) {
-                              //binder.player.pause()
-                              binder.callPause({ binder.player.pause() } )
+                              binder.gracefulPause()
                           } else {
-                              if (binder.player.playbackState == Player.STATE_IDLE) {
-                                  binder.player.prepare()
-                              }
-                              binder.player.play()
+                              binder.gracefulPlay()
                           }
                           if (effectRotationEnabled) isRotated = !isRotated
                       },
@@ -679,15 +670,9 @@ fun ControlsModern(
                           indication = null,
                           onClick = {
                               if (shouldBePlaying) {
-                                  //binder.player.pause()
-                                  binder.callPause({} )
+                                  binder.gracefulPause()
                               } else {
-                                  /*
-                                  if (binder.player.playbackState == Player.STATE_IDLE) {
-                                      binder.player.prepare()
-                                  }
-                                   */
-                                  binder.player.play()
+                                  binder.gracefulPlay()
                               }
                               if (effectRotationEnabled) isRotated = !isRotated
                           },

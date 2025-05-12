@@ -1838,7 +1838,7 @@ fun Lyrics(
                                     interactionSource = remember { MutableInteractionSource() },
                                     onClick = {
                                         if (binder?.player?.isPlaying == true) {
-                                            binder.callPause({})
+                                            binder.gracefulPause()
                                         } else {
                                             binder?.player?.play()
                                         }

@@ -133,6 +133,8 @@ import it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import it.fast4x.rimusic.utils.exoPlayerCustomCacheKey
 import it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
+import it.fast4x.rimusic.utils.fadeInEffect
+import it.fast4x.rimusic.utils.fadeOutEffect
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
@@ -168,7 +170,6 @@ import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import it.fast4x.rimusic.utils.skipSilenceKey
-import it.fast4x.rimusic.utils.startFadeAnimator
 import it.fast4x.rimusic.utils.timer
 import it.fast4x.rimusic.utils.toggleRepeatMode
 import it.fast4x.rimusic.utils.toggleShuffleMode
@@ -288,9 +289,8 @@ class PlayerServiceModern : MediaLibraryService(),
                 println("PlayerServiceModern network status: $isAvailable")
                 if (isAvailable && waitingForNetwork.value) {
                     waitingForNetwork.value = false
-                    withContext(Dispatchers.Main) {
-                        player.prepare()
-                        player.play()
+                    withContext( Dispatchers.Main ) {
+                        binder.gracefulPlay()
                     }
                 }
             }
@@ -435,7 +435,7 @@ class PlayerServiceModern : MediaLibraryService(),
             toggleRepeat = ::toggleRepeat
             toggleShuffle = ::toggleShuffle
             startRadio = ::startRadio
-            callPause = ::callActionPause
+            callPause = binder::gracefulPause
             actionSearch = ::actionSearch
         }
 
@@ -694,10 +694,10 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
         if (preferences.getBoolean(isPauseOnVolumeZeroEnabledKey, false)) {
             if (player.isPlaying && currentVolume < 1) {
-                binder.callPause {}
+                binder.gracefulPause()
                 pausedByZeroVolume = true
             } else if (pausedByZeroVolume && currentVolume >= 1) {
-                binder.player.play()
+                binder.gracefulPlay()
                 pausedByZeroVolume = false
             }
         }
@@ -755,26 +755,7 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     @UnstableApi
-    override fun onIsPlayingChanged(isPlaying: Boolean) {
-        val fadeDisabled = preferences.getEnum(
-            playbackFadeAudioDurationKey,
-            DurationInMilliseconds.Disabled
-        ) == DurationInMilliseconds.Disabled
-        val duration = preferences.getEnum(
-            playbackFadeAudioDurationKey,
-            DurationInMilliseconds.Disabled
-        ).asMillis
-        if (isPlaying && !fadeDisabled)
-            startFadeAnimator(
-                player = binder.player,
-                duration = duration.toInt(),
-                fadeIn = true
-            )
-
-        updateWidgets()
-
-        super.onIsPlayingChanged(isPlaying)
-    }
+    override fun onIsPlayingChanged(isPlaying: Boolean) = updateWidgets()
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
@@ -811,24 +792,6 @@ class PlayerServiceModern : MediaLibraryService(),
             player.play()
             return
         }
-
-        /*
-        if (error.errorCode in PlayerErrorsToSkip) {
-            //println("mediaItem onPlayerError recovered occurred 2000 errorCodeName ${error.errorCodeName}")
-            player.pause()
-            player.prepare()
-            player.forceSeekToNext()
-            player.play()
-
-            showSmartMessage(
-                message = getString(
-                    R.string.skip_media_on_notavailable_message,
-                ))
-
-            return
-        }
-         */
-
 
         if (!preferences.getBoolean(skipMediaOnErrorKey, false) || !player.hasNextMediaItem())
             return
@@ -1332,10 +1295,6 @@ class PlayerServiceModern : MediaLibraryService(),
         player.currentMediaItem?.let( binder::startRadio )
     }
 
-    fun callActionPause() {
-        binder.callPause({})
-    }
-
     private fun showSmartMessage( message: String ) = Toaster.i(message)
 
     @MainThread
@@ -1345,13 +1304,9 @@ class PlayerServiceModern : MediaLibraryService(),
             binder.player.mediaMetadata.artist.toString(),
             binder.player.isPlaying
         )
+
         val actions = Triple(
-            {
-                if( status.third )
-                    binder.callPause {}
-                else
-                    binder.player.play()
-            },
+            if( status.third ) binder::gracefulPause else binder::gracefulPlay,
             binder.player::seekToPrevious,
             binder.player::seekToNext
         )
@@ -1439,11 +1394,8 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     private fun maybeResumePlaybackOnStart() {
-        if(!isPersistentQueueEnabled || !preferences.getBoolean(resumePlaybackOnStartKey, false)) return
-
-        if(!player.isPlaying) {
-            player.play()
-        }
+        if( isPersistentQueueEnabled || preferences.getBoolean(resumePlaybackOnStartKey, false) )
+            binder.gracefulPlay()
     }
 
     @ExperimentalCoroutinesApi
@@ -1622,8 +1574,8 @@ class PlayerServiceModern : MediaLibraryService(),
         @FlowPreview
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                Action.pause.value -> binder.callPause({ player.pause() } )
-                Action.play.value -> player.play()
+                Action.pause.value -> binder.gracefulPause()
+                Action.play.value -> binder.gracefulPlay()
                 Action.next.value -> player.playNext()
                 Action.previous.value -> player.playPrevious()
                 Action.like.value -> {
@@ -1807,27 +1759,22 @@ class PlayerServiceModern : MediaLibraryService(),
             radio = null
         }
 
-        fun callPause(onPause: () -> Unit) {
-            val fadeDisabled = preferences.getEnum(
-                playbackFadeAudioDurationKey,
-                DurationInMilliseconds.Disabled
-            ) == DurationInMilliseconds.Disabled
-            val duration = preferences.getEnum(
-                playbackFadeAudioDurationKey,
-                DurationInMilliseconds.Disabled
-            ).asMillis
-            if (player.isPlaying) {
-                if (fadeDisabled) {
-                    player.pause()
-                    onPause()
-                } else {
-                    //fadeOut
-                    startFadeAnimator(player, duration.toInt(), false) {
-                        player.pause()
-                        onPause()
-                    }
-                }
-            }
+        /**
+         * Pause with fade out effect
+         */
+        @MainThread
+        fun gracefulPause() {
+            val duration = preferences.getEnum( playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled )
+            player.fadeOutEffect( duration.asMillis )
+        }
+
+        /**
+         * Start playing with fade in effect
+         */
+        @MainThread
+        fun gracefulPlay() {
+            val duration = preferences.getEnum( playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled )
+            player.fadeInEffect( duration.asMillis )
         }
 
         /**

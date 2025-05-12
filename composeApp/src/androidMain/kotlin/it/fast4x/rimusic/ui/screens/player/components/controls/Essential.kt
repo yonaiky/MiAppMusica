@@ -465,15 +465,9 @@ fun ControlsEssential(
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
                     if (shouldBePlaying) {
-                        //binder.player.pause()
-                        binder.callPause({} )
+                        binder.gracefulPause()
                     } else {
-                        /*
-                        if (binder.player.playbackState == Player.STATE_IDLE) {
-                            binder.player.prepare()
-                        }
-                         */
-                        binder.player.play()
+                        binder.gracefulPlay()
                     }
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
