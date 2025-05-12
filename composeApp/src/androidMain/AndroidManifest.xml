@@ -144,7 +144,7 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <receiver android:name="it.fast4x.rimusic.ui.widgets.PlayerVerticalWidgetReceiver"
+        <receiver android:name=".widget.VerticalWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -153,7 +153,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/player_vertical_widget_info" />
         </receiver>
-        <receiver android:name="it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidgetReceiver"
+        <receiver android:name=".widget.HorizontalWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

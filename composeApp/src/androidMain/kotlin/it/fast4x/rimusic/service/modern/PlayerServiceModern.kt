@@ -26,6 +26,7 @@ import android.media.audiofx.PresetReverb
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.MainThread
 import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -77,6 +78,7 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaStyleNotificationHelper
 import androidx.media3.session.SessionToken
 import app.kreate.android.R
+import app.kreate.android.widget.Widget
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.Innertube
@@ -111,8 +113,6 @@ import it.fast4x.rimusic.models.asMediaItem
 import it.fast4x.rimusic.service.BitmapProvider
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
-import it.fast4x.rimusic.ui.widgets.PlayerHorizontalWidget
-import it.fast4x.rimusic.ui.widgets.PlayerVerticalWidget
 import it.fast4x.rimusic.utils.CoilBitmapLoader
 import it.fast4x.rimusic.utils.TimerJob
 import it.fast4x.rimusic.utils.YouTubeRadio
@@ -196,6 +196,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -265,8 +267,6 @@ class PlayerServiceModern : MediaLibraryService(),
     private val waitingForNetwork = MutableStateFlow(false)
 
     private var notificationManager: NotificationManager? = null
-    private val playerVerticalWidget = PlayerVerticalWidget()
-    private val playerHorizontalWidget = PlayerHorizontalWidget()
 
     private lateinit var notificationActionReceiver: NotificationActionReceiver
 
@@ -1338,28 +1338,35 @@ class PlayerServiceModern : MediaLibraryService(),
 
     private fun showSmartMessage( message: String ) = Toaster.i(message)
 
+    @MainThread
     fun updateWidgets() {
+        val status = Triple(
+            binder.player.mediaMetadata.title.toString(),
+            binder.player.mediaMetadata.artist.toString(),
+            binder.player.isPlaying
+        )
+        val actions = Triple(
+            {
+                if( status.third )
+                    binder.callPause {}
+                else
+                    binder.player.play()
+            },
+            binder.player::seekToPrevious,
+            binder.player::seekToNext
+        )
 
-        val songTitle = player.mediaMetadata.title.toString()
-        val songArtist = player.mediaMetadata.artist.toString()
-        val isPlaying = player.isPlaying
-        coroutineScope.launch {
-            playerVerticalWidget.updateInfo(
-                context = applicationContext,
-                songTitle = songTitle,
-                songArtist = songArtist,
-                isPlaying = isPlaying,
-                bitmap = bitmapProvider.bitmap,
-                player = player
-            )
-            playerHorizontalWidget.updateInfo(
-                context = applicationContext,
-                songTitle = songTitle,
-                songArtist = songArtist,
-                isPlaying = isPlaying,
-                bitmap = bitmapProvider.bitmap,
-                player = player
-            )
+        CoroutineScope( Dispatchers.IO ).launch {
+            // Save bitmap to file
+            val file = File( cacheDir, "widget_thumbnail.png" )
+            FileOutputStream(file).use { outStream ->
+                bitmapProvider.bitmap.compress( Bitmap.CompressFormat.PNG, 50, outStream )
+            }
+
+            withContext( Dispatchers.Default ) {
+                Widget.Vertical.update( applicationContext, actions, status, file )
+                Widget.Horizontal.update( applicationContext, actions, status, file )
+            }
         }
     }
 
