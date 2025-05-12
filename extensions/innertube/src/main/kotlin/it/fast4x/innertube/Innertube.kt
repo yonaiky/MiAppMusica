@@ -76,6 +76,7 @@ import java.util.Locale
 
 object Innertube {
 
+    private const val YOUTUBE_MUSIC_HOST = "music.youtube.com"
     private const val VISITOR_DATA_PREFIX = "Cgt"
     const val DEFAULT_VISITOR_DATA = "CgtMN0FkbDFaWERfdyi8t4u7BjIKCgJWThIEGgAgWQ%3D%3D"
 
@@ -115,10 +116,8 @@ object Innertube {
         }
 
         defaultRequest {
-            //url("https//music.youtube.com")
-            url(scheme = "https", host ="music.youtube.com") {
+            url( "https", YOUTUBE_MUSIC_HOST ) {
                 headers.append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                //headers.append("X-Goog-Api-Key", "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8")
                 parameters.append("prettyPrint", "false")
             }
         }
@@ -490,7 +489,7 @@ object Innertube {
         return response
     }
 
-    suspend fun getSwJsData() = client.get("https://music.youtube.com/sw.js_data")
+    suspend fun getSwJsData() = client.get("https://$YOUTUBE_MUSIC_HOST/sw.js_data")
 
     suspend fun visitorData(): Result<String> = runCatching {
         Json.parseToJsonElement(getSwJsData().bodyAsText().substring(5))
@@ -505,7 +504,7 @@ object Innertube {
         headers {
             append("X-YouTube-Client-Name", "${clientType.xClientName ?: 1}")
             append("X-YouTube-Client-Version", clientType.clientVersion)
-            append("X-Origin", "https://music.youtube.com")
+            append("X-Origin", "https://$YOUTUBE_MUSIC_HOST")
             if (clientType.referer != null) {
                 append("Referer", clientType.referer)
             }
@@ -518,7 +517,7 @@ object Innertube {
                     if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
                     val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
-                    val sapisidHash = sha1("$currentTime $sapisidCookie https://music.youtube.com")
+                    val sapisidHash = sha1("$currentTime $sapisidCookie https://$YOUTUBE_MUSIC_HOST")
                     append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
                 }
             }
@@ -535,7 +534,7 @@ object Innertube {
                 append("X-Youtube-Bootstrap-Logged-In", "true")
             append("X-YouTube-Client-Name", clientType.xClientName.toString())
             append("X-YouTube-Client-Version", clientType.clientVersion)
-            append("X-Origin", "https://music.youtube.com")
+            append("X-Origin", "https://$YOUTUBE_MUSIC_HOST")
             if (clientType.referer != null) {
                 append("Referer", clientType.referer)
             }
@@ -547,7 +546,7 @@ object Innertube {
                     append("cookie", cookie)
                     if ("SAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://music.youtube.com")
+                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://$YOUTUBE_MUSIC_HOST")
                     append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash SAPISID1PHASH ${currentTime}_$sapisidHash SAPISID3PHASH ${currentTime}_$sapisidHash")
                 }
             }
@@ -861,7 +860,7 @@ object Innertube {
         client.post(player) {
             accept(ContentType.Application.Json)
             contentType(ContentType.Application.Json)
-            header("Host", "music.youtube.com")
+            header("Host", YOUTUBE_MUSIC_HOST)
             setBody(
                 PlayerBody(
                     context = DefaultIOS,
@@ -883,8 +882,8 @@ object Innertube {
         contentType( ContentType.Application.Json)
 
         headers {
-            append( HttpHeaders.Host, "music.youtube.com" )
-            append( HttpHeaders.Origin, "https://music.youtube.com" )
+            append( HttpHeaders.Host, YOUTUBE_MUSIC_HOST )
+            append( HttpHeaders.Origin, "https://$YOUTUBE_MUSIC_HOST" )
             append( HttpHeaders.UserAgent, IOS.userAgent )
             append( HttpHeaders.SetCookie, cookie )
             append("Sec-Fetch-Mode", "navigate")
