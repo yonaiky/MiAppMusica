@@ -82,8 +82,6 @@ object Innertube {
 
     @OptIn(ExperimentalSerializationApi::class)
     val client = HttpClient(OkHttp) {
-        //BrowserUserAgent()
-
         expectSuccess = true
 
         install(ContentNegotiation) {
@@ -133,14 +131,11 @@ object Innertube {
     var locale = YouTubeLocale(
         gl = Locale.getDefault().country,
         hl = Locale.getDefault().toLanguageTag()
-        //gl = LocalePreferences.preference?.gl ?: "US",
-        //hl = LocalePreferences.preference?.hl ?: "en"
     )
     var visitorData: String = YoutubePreferences.preference?.visitordata.toString()
     var dataSyncId: String? = YoutubePreferences.preference?.dataSyncId.toString()
 
     var cookieMap = emptyMap<String, String>()
-    //var cookie: String? = YoutubePreferences.preference?.cookie
     var cookie: String? = YoutubePreferences.preference?.cookie
         set(value) {
             field = value
@@ -249,7 +244,6 @@ object Innertube {
         val explicit: Boolean = false,
         val setVideoId: String? = null
     ) : Item() {
-        //override val key get() = info!!.endpoint!!.videoId!!
         override val key get() = info?.endpoint?.videoId ?: ""
         override val title get() = info?.name
 
@@ -411,7 +405,6 @@ object Innertube {
 
     data class Podcast(
         val title: String,
-        //val author: ArtistItem,
         val author: String?,
         val authorThumbnail: String?,
         val thumbnail: List<Thumbnail>,
@@ -420,7 +413,6 @@ object Innertube {
     ) {
         data class EpisodeItem(
             val title: String,
-            //val author: ArtistItem,
             val author: String?,
             val description: String?,
             val thumbnail: List<Thumbnail>,
@@ -466,14 +458,6 @@ object Innertube {
             .actions?.get(0)?.openPopupAction?.popup?.multiPageMenuRenderer
             ?.header?.activeAccountHeaderRenderer
             ?.toAccountInfo()
-    }
-
-    suspend fun accountInfoList(): Result<List<AccountInfo?>?> = runCatching {
-        accountMenu()
-            .body<AccountMenuResponse>()
-            .actions?.get(0)?.openPopupAction?.popup?.multiPageMenuRenderer
-            ?.header?.activeAccountHeaderRenderer
-            ?.toAccountInfoList()
     }
 
     suspend fun accountMenu(): HttpResponse {
@@ -678,7 +662,7 @@ object Innertube {
         setLogin(setLogin = true)
         setBody(
             SubscribeBody(
-                context = Context.DefaultWeb,
+                context = DefaultWeb,
                 channelIds = listOf(channelId)
             )
         )
@@ -690,7 +674,7 @@ object Innertube {
         setLogin(setLogin = true)
         setBody(
             SubscribeBody(
-                context = Context.DefaultWeb,
+                context = DefaultWeb,
                 channelIds = listOf(channelId)
             )
         )
@@ -703,7 +687,7 @@ object Innertube {
         setLogin(setLogin = true)
         setBody(
             LikeBody(
-                context = Context.DefaultWeb,
+                context = DefaultWeb,
                 target = LikeBody.Target.PlaylistTarget(playlistId = playlistId)
             )
         )
@@ -715,7 +699,7 @@ object Innertube {
         setLogin(setLogin = true)
         setBody(
             LikeBody(
-                context = Context.DefaultWeb,
+                context = DefaultWeb,
                 target = LikeBody.Target.PlaylistTarget(playlistId = playlistId)
             )
         )
@@ -727,7 +711,7 @@ object Innertube {
         setLogin(setLogin = true)
         setBody(
             LikeBody(
-                context = Context.DefaultWeb,
+                context = DefaultWeb,
                 target = LikeBody.Target.VideoTarget(videoId = videoId)
             )
         )
@@ -739,16 +723,14 @@ object Innertube {
         setLogin(setLogin = true)
         setBody(
             LikeBody(
-                context = Context.DefaultWeb,
+                context = DefaultWeb,
                 target = LikeBody.Target.VideoTarget(videoId = videoId)
             )
         )
     }
 
-
-
     suspend fun browse(
-        ytClient: Client = Context.DefaultWeb.client,
+        ytClient: Client = DefaultWeb.client,
         browseId: String? = null,
         params: String? = null,
         continuation: String? = null,
@@ -767,15 +749,6 @@ object Innertube {
         if (continuation != null) {
             parameter("type", "next")
         }
-    }
-
-    suspend fun customBrowse(
-        browseId: String? = null,
-        params: String? = null,
-        continuation: String? = null,
-        setLogin: Boolean = true,
-    ) = runCatching {
-        browse(Context.DefaultWeb.client, browseId, params, continuation, setLogin).body<BrowseResponse>()
     }
 
     suspend fun player(
@@ -1163,28 +1136,6 @@ object Innertube {
                             },
                         ),
                     )
-
-
-
-//            listUrlSig = decodedSigResponse.streamingData
-//                            ?.adaptiveFormats
-//                            ?.mapNotNull { it.url }
-//                            ?.toMutableList() ?: mutableListOf<String>()
-//                            .apply {
-//                                decodedSigResponse.streamingData
-//                                    ?.formats
-//                                    ?.mapNotNull { it.url }
-//                                    ?.let { addAll(it) }
-//                            }
-
-
-//                val firstThumb =
-//                    decodedSigResponse.videoDetails
-//                        ?.thumbnail
-//                        ?.thumbnails
-//                        ?.firstOrNull()
-//                val thumbnails =
-//                    if (firstThumb?.height == firstThumb?.width && firstThumb != null) MediaType.Song else MediaType.Video
 
                 println("PLAYERADVANCED player return Triple")
 
