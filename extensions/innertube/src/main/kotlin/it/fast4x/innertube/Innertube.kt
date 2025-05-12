@@ -40,6 +40,7 @@ import it.fast4x.innertube.models.Context.Companion.DefaultWeb
 import it.fast4x.innertube.models.GridRenderer
 import it.fast4x.innertube.models.MediaType
 import it.fast4x.innertube.models.MusicNavigationButtonRenderer
+import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.PipedResponse
 import it.fast4x.innertube.models.PlayerResponse
@@ -51,10 +52,9 @@ import it.fast4x.innertube.models.bodies.Action
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.CreatePlaylistBody
 import it.fast4x.innertube.models.bodies.EditPlaylistBody
+import it.fast4x.innertube.models.bodies.LikeBody
 import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.bodies.PlaylistDeleteBody
-import it.fast4x.innertube.models.MusicShelfRenderer
-import it.fast4x.innertube.models.bodies.LikeBody
 import it.fast4x.innertube.models.bodies.SubscribeBody
 import it.fast4x.innertube.utils.NewPipeUtils
 import it.fast4x.innertube.utils.NewPipeUtils.decodeSignatureCipher
@@ -73,7 +73,6 @@ import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.XML
 import java.net.Proxy
 import java.util.Locale
-import kotlin.random.Random
 
 object Innertube {
 
@@ -458,6 +457,9 @@ object Innertube {
         val playbackTracking: PlayerResponse.PlaybackTracking? = null
     )
 
+    private const val CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    private fun randomString( length: Int ): String =
+        (1..length).map { CHARS.random() }.joinToString("")
 
     suspend fun accountInfo(): Result<AccountInfo?> = runCatching {
         accountMenu()
@@ -869,40 +871,39 @@ object Innertube {
             )
         }
 
-    suspend fun noLogInPlayer(
+    suspend fun iosPlayer(
         videoId: String,
+        playlistId: String?,
         cookie: String,
-        visitorData: String?,
         poToken: String,
-    ) = client.post("https://www.youtube.com/youtubei/v1/player") {
-        accept(ContentType.Application.Json)
-        contentType(ContentType.Application.Json)
-        header("Host", "www.youtube.com")
-        header("Origin", "https://www.youtube.com")
-        header("Sec-Fetch-Mode", "navigate")
-        header(HttpHeaders.UserAgent, IOS.userAgent)
-        header(
-            "Set-Cookie",
-            cookie,
-        )
-        header("X-Goog-Visitor-Id", visitorData ?: this@Innertube.visitorData)
-        header("X-YouTube-Client-Name", IOS.clientName)
-        header("X-YouTube-Client-Version", IOS.clientVersion)
+        cpn: String,
+        visitorData: String = Innertube.visitorData,
+   ) = client.post( player ) {
+        accept( ContentType.Application.Json )
+        contentType( ContentType.Application.Json)
+
+        headers {
+            append( HttpHeaders.Host, "music.youtube.com" )
+            append( HttpHeaders.Origin, "https://music.youtube.com" )
+            append( HttpHeaders.UserAgent, IOS.userAgent )
+            append( HttpHeaders.SetCookie, cookie )
+            append("Sec-Fetch-Mode", "navigate")
+            append( "X-Goog-Visitor-Id", visitorData )
+            append( "X-YouTube-Client-Name", IOS.clientName )
+            append( "X-YouTube-Client-Version", IOS.clientVersion )
+        }
+
         setBody(
             PlayerBody(
                 context = DefaultIOS,
-                playlistId = null,
-                cpn = null,
+                playlistId = playlistId,
+                cpn = cpn,
                 videoId = videoId,
                 playbackContext = PlayerBody.PlaybackContext(),
-                serviceIntegrityDimensions =
-                PlayerBody.ServiceIntegrityDimensions(
-                    poToken = poToken,
-                ),
+                serviceIntegrityDimensions = PlayerBody.ServiceIntegrityDimensions(poToken),
             ),
         )
-        parameter("prettyPrint", false)
-    }
+   }
 
     suspend fun ghostRequest(
         videoId: String,
@@ -1046,16 +1047,7 @@ object Innertube {
     ): Result<Triple<String?, PlayerResponse?, MediaType>> =
         runCatching {
             println("PLAYERADVANCED player $videoId $playlistId withLogin $withLogin")
-            val cpn =
-                (1..16)
-                    .map {
-                        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"[
-                            Random.Default.nextInt(
-                                0,
-                                64,
-                            ),
-                        ]
-                    }.joinToString("")
+            val cpn = randomString( 16 )
             val now = System.currentTimeMillis()
             val poToken =
                 if (now < poTokenObject.second) {
@@ -1082,7 +1074,7 @@ object Innertube {
                 println("PLAYERADVANCED player with login $withLogin")
                 val (tempCookie, visitorData, playbackTracking) = getVisitorData(videoId, playlistId)
 
-                val playerResponse = noLogInPlayer(videoId, tempCookie, visitorData, poToken ?: "").body<PlayerResponse>()
+                val playerResponse = iosPlayer( videoId, playlistId, tempCookie, poToken.orEmpty(), visitorData ).body<PlayerResponse>()
                 println("PLAYERADVANCED player Player Response $playerResponse")
                 println("PLAYERADVANCED player Thumbnails " + playerResponse.videoDetails?.thumbnail)
                 println("PLAYERADVANCED player Player Response status: ${playerResponse.playabilityStatus?.status}")
