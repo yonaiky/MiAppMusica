@@ -751,50 +751,6 @@ object Innertube {
         }
     }
 
-    suspend fun player(
-        videoId: String,
-        playlistId: String?,
-        signatureTimestamp: Int?,
-    ) = client.post(player) {
-        setLogin(setLogin = true)
-        setBody(
-            PlayerBody(
-                videoId = videoId,
-                playlistId = playlistId,
-                playbackContext =
-                if (signatureTimestamp != null) {
-                    PlayerBody.PlaybackContext(PlayerBody.PlaybackContext.ContentPlaybackContext(
-                        signatureTimestamp = signatureTimestamp
-                    ))
-                } else null
-            ),
-        )
-    }
-
-    suspend fun playerWithWebPoToken(
-        videoId: String,
-        playlistId: String?,
-        signatureTimestamp: Int?,
-        webPlayerPot: String? = null
-    ) = client.post(player) {
-        setLogin(setLogin = true)
-        setBody(
-            PlayerBody(
-                videoId = videoId,
-                playlistId = playlistId,
-                playbackContext =
-                if (signatureTimestamp != null) {
-                    PlayerBody.PlaybackContext(PlayerBody.PlaybackContext.ContentPlaybackContext(
-                        signatureTimestamp = signatureTimestamp
-                    ))
-                } else null,
-                serviceIntegrityDimensions = if (webPlayerPot != null) {
-                    PlayerBody.ServiceIntegrityDimensions(webPlayerPot)
-                } else null
-            ),
-        )
-    }
-
     suspend fun playerWithPotoken(
         videoId: String,
         playlistId: String?,
@@ -828,20 +784,6 @@ object Innertube {
             ),
         )
     }
-
-    suspend fun noLogInPlayer(videoId: String) =
-        client.post(player) {
-            accept(ContentType.Application.Json)
-            contentType(ContentType.Application.Json)
-            header("Host", YOUTUBE_MUSIC_HOST)
-            setBody(
-                PlayerBody(
-                    context = DefaultIOS,
-                    playlistId = null,
-                    videoId = videoId,
-                ),
-            )
-        }
 
     suspend fun iosPlayer(
         videoId: String,
@@ -944,7 +886,7 @@ object Innertube {
         contentType(ContentType.Application.Json)
     }
 
-    public suspend fun getVisitorData(
+    suspend fun getVisitorData(
         videoId: String,
         playlistId: String?,
     ): Triple<String, String, PlayerResponse.PlaybackTracking?> {

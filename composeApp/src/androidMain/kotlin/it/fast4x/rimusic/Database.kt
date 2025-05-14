@@ -10,7 +10,6 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
-import it.fast4x.innertube.requests.player
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
