@@ -8,6 +8,7 @@ import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
+import app.kreate.android.utils.CharUtils
 import com.google.gson.Gson
 import com.grack.nanojson.JsonObject
 import io.ktor.client.statement.bodyAsText
@@ -39,9 +40,6 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 private const val CHUNK_LENGTH = 512 * 1024L     // 512Kb
 
 //<editor-fold defaultstate="collapsed" desc="Extractors">
-private const val CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-private fun randomString( length: Int ): String = (1..length).map { CHARS.random() }.joinToString("")
-
 private val jsonParser =
     Json {
         ignoreUnknownKeys = true
@@ -116,7 +114,7 @@ fun getAndroidReelFormatUrl(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): Uri {
-    val cpn = randomString( 16 )
+    val cpn = CharUtils.randomString( 16 )
     val response = YoutubeStreamHelper.getAndroidReelPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn )
     return getFormatUrl( videoId, cpn, response, audioQualityFormat, connectionMetered )
 }
@@ -147,6 +145,7 @@ suspend fun getIosFormatUrl(
 ): Uri {
     val cpn = randomString( 16 )
     val (_, visitorData, _) = Innertube.getVisitorData( videoId, null )
+    val cpn = CharUtils.randomString( 16 )
     val playerRequestToken = generateIosPoToken().orEmpty()
     val poTokenResult = PoTokenResult(visitorData, playerRequestToken, null )
     val response = YoutubeStreamHelper.getIosPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn, poTokenResult )
