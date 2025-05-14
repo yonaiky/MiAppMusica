@@ -8,6 +8,7 @@ import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
+import app.kreate.android.network.innertube.Store
 import app.kreate.android.utils.CharUtils
 import com.google.gson.Gson
 import com.grack.nanojson.JsonObject
@@ -143,9 +144,8 @@ suspend fun getIosFormatUrl(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): Uri {
-    val cpn = randomString( 16 )
-    val (_, visitorData, _) = Innertube.getVisitorData( videoId, null )
     val cpn = CharUtils.randomString( 16 )
+    val visitorData = Store.getVisitorData()
     val playerRequestToken = generateIosPoToken().orEmpty()
     val poTokenResult = PoTokenResult(visitorData, playerRequestToken, null )
     val response = YoutubeStreamHelper.getIosPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn, poTokenResult )

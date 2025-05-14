@@ -91,6 +91,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
+import app.kreate.android.network.innertube.Store
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
@@ -503,11 +504,8 @@ class MainActivity :
                         defaultValue = Innertube.DEFAULT_VISITOR_DATA
                     )
 
-                    if (visitorData.isEmpty()) runBlocking {
-                        Innertube.visitorData().getOrNull()?.also {
-                            visitorData = it
-                        }
-                    }
+                    if (visitorData.isEmpty())
+                        runBlocking { visitorData = Store.getVisitorData() }
 
                     YoutubePreferences.preference =
                         YoutubePreferenceItem(
