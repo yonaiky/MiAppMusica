@@ -145,8 +145,12 @@ class SongItemMenu private constructor(
         val deleteSongDialog = DeleteSongDialog().apply {
             song = Optional.of( this@SongItemMenu.song )
         }
-        val goToArtist = GoToArtist( navController ) { song }
-        val goToAlbum = GoToAlbum( navController ) { song }
+        val goToArtist = remember {
+            GoToArtist( navController, song )
+        }
+        val goToAlbum = remember {
+            GoToAlbum( navController, song )
+        }
         val resetDialog = ResetSongDialog( song )
         val exportCacheDialog = ExportCacheDialog( binder ) { song }
 
