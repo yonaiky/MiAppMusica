@@ -1,7 +1,5 @@
 package it.fast4x.innertube
 
-import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlHandler
-import com.mohamedrejeb.ksoup.html.parser.KsoupHtmlParser
 import com.zionhuang.innertube.pages.LibraryContinuationPage
 import com.zionhuang.innertube.pages.LibraryPage
 import io.ktor.client.HttpClient
@@ -12,8 +10,6 @@ import io.ktor.client.plugins.compression.brotli
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.accept
-import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
@@ -28,23 +24,17 @@ import io.ktor.http.userAgent
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.serialization.kotlinx.protobuf.protobuf
 import io.ktor.serialization.kotlinx.xml.xml
-import it.fast4x.innertube.clients.YouTubeClient.Companion.IOS
 import it.fast4x.innertube.clients.YouTubeLocale
 import it.fast4x.innertube.models.AccountInfo
 import it.fast4x.innertube.models.AccountMenuResponse
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.Context.Client
-import it.fast4x.innertube.models.Context.Companion.DefaultIOS
 import it.fast4x.innertube.models.Context.Companion.DefaultWeb
 import it.fast4x.innertube.models.GridRenderer
-import it.fast4x.innertube.models.MediaType
 import it.fast4x.innertube.models.MusicNavigationButtonRenderer
 import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
-import it.fast4x.innertube.models.PipedResponse
-import it.fast4x.innertube.models.PlayerResponse
-import it.fast4x.innertube.models.ResponseContext
 import it.fast4x.innertube.models.Runs
 import it.fast4x.innertube.models.Thumbnail
 import it.fast4x.innertube.models.bodies.AccountMenuBody
@@ -53,11 +43,8 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.CreatePlaylistBody
 import it.fast4x.innertube.models.bodies.EditPlaylistBody
 import it.fast4x.innertube.models.bodies.LikeBody
-import it.fast4x.innertube.models.bodies.PlayerBody
 import it.fast4x.innertube.models.bodies.PlaylistDeleteBody
 import it.fast4x.innertube.models.bodies.SubscribeBody
-import it.fast4x.innertube.utils.NewPipeUtils
-import it.fast4x.innertube.utils.NewPipeUtils.decodeSignatureCipher
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.YoutubePreferences
 import it.fast4x.innertube.utils.getProxy
@@ -66,9 +53,6 @@ import it.fast4x.innertube.utils.sha1
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonPrimitive
 import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.XML
 import java.net.Proxy
@@ -144,39 +128,6 @@ object Innertube {
 
     private var poTokenChallengeRequestKey = "O43z0dpjhgX20SCx4KAo"
 
-    private val listPipedInstances =
-        listOf(
-            "https://pipedapi.nosebs.ru",
-            "https://pipedapi.kavin.rocks",
-            "https://pipedapi.tokhmi.xyz",
-            "https://pipedapi.syncpundit.io",
-            "https://pipedapi.leptons.xyz",
-            "https://pipedapi.r4fo.com",
-            "https://yapi.vyper.me",
-            "https://pipedapi-libre.kavin.rocks",
-        )
-
-    /**
-     * Json deserializer for PO token request
-     */
-    private val poTokenJsonDeserializer =
-        Json {
-            ignoreUnknownKeys = true
-            encodeDefaults = true
-            coerceInputValues = true
-            useArrayPolymorphism = true
-        }
-
-    private fun String.getPoToken(): String? =
-        this
-            .replace("[", "")
-            .replace("]", "")
-            .split(",")
-            .findLast { it.contains("\"") }
-            ?.replace("\"", "")
-
-    private var poTokenObject: Pair<String?, Long> = Pair(null, 0)
-
     internal const val browse = "/youtubei/v1/browse"
     internal const val next = "/youtubei/v1/next"
     internal const val player = "/youtubei/v1/player"
@@ -191,8 +142,6 @@ object Innertube {
     internal const val unsubscribe = "/youtubei/v1/subscription/unsubscribe"
     internal const val like = "/youtubei/v1/like/like"
     internal const val removelike = "/youtubei/v1/like/removelike"
-
-
 
     internal const val musicResponsiveListItemRendererMask = "musicResponsiveListItemRenderer(flexColumns,fixedColumns,thumbnail,navigationEndpoint,badges)"
     internal const val musicTwoRowItemRendererMask = "musicTwoRowItemRenderer(thumbnailRenderer,title,subtitle,navigationEndpoint)"
@@ -442,16 +391,6 @@ object Innertube {
     fun List<Thumbnail>.getBestQuality() =
         maxByOrNull { (it.width ?: 0) * (it.height ?: 0) }
 
-    @Serializable
-    data class GhostResponse(
-        val responseContext: ResponseContext,
-        val playbackTracking: PlayerResponse.PlaybackTracking? = null
-    )
-
-    private const val CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    private fun randomString( length: Int ): String =
-        (1..length).map { CHARS.random() }.joinToString("")
-
     suspend fun accountInfo(): Result<AccountInfo?> = runCatching {
         accountMenu()
             .body<AccountMenuResponse>()
@@ -471,16 +410,6 @@ object Innertube {
         println("YoutubeLogin Innertube accountMenu RESPONSE: ${response.bodyAsText()}")
 
         return response
-    }
-
-    suspend fun getSwJsData() = client.get("https://$YOUTUBE_MUSIC_HOST/sw.js_data")
-
-    suspend fun visitorData(): Result<String> = runCatching {
-        Json.parseToJsonElement(getSwJsData().bodyAsText().substring(5))
-            .jsonArray[0]
-            .jsonArray[2]
-            .jsonArray.first { (it as? JsonPrimitive)?.content?.startsWith(VISITOR_DATA_PREFIX) == true }
-            .jsonPrimitive.content
     }
 
     fun HttpRequestBuilder.setLogin(clientType: Client = DefaultWeb.client, setLogin: Boolean = false) {
@@ -503,35 +432,6 @@ object Innertube {
                     val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
                     val sapisidHash = sha1("$currentTime $sapisidCookie https://$YOUTUBE_MUSIC_HOST")
                     append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
-                }
-            }
-        }
-        clientType.userAgent?.let { userAgent(it) }
-        parameter("prettyPrint", false)
-
-    }
-
-    fun HttpRequestBuilder.setHeaders(clientType: Client = DefaultWeb.client, setLogin: Boolean = false) {
-        contentType(ContentType.Application.Json)
-        headers {
-            if (setLogin)
-                append("X-Youtube-Bootstrap-Logged-In", "true")
-            append("X-YouTube-Client-Name", clientType.xClientName.toString())
-            append("X-YouTube-Client-Version", clientType.clientVersion)
-            append("X-Origin", "https://$YOUTUBE_MUSIC_HOST")
-            if (clientType.referer != null) {
-                append("Referer", clientType.referer)
-            }
-            if (setLogin) {
-                cookie?.let { cookie ->
-                    cookieMap = parseCookieString(cookie)
-                    append("X-Goog-Authuser", "6")
-                    append("X-Goog-Visitor-Id", visitorData)
-                    append("cookie", cookie)
-                    if ("SAPISID" !in cookieMap) return@let
-                    val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidHash = sha1("$currentTime ${cookieMap["SAPISID"]} https://$YOUTUBE_MUSIC_HOST")
-                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash SAPISID1PHASH ${currentTime}_$sapisidHash SAPISID3PHASH ${currentTime}_$sapisidHash")
                 }
             }
         }
@@ -751,96 +651,6 @@ object Innertube {
         }
     }
 
-    suspend fun playerWithPotoken(
-        videoId: String,
-        playlistId: String?,
-        cpn: String?,
-        poToken: String? = null,
-        signatureTimestamp: Int? = null,
-        params: String? = null,
-    ) = client.post(player) {
-        setHeaders(setLogin = true)
-        setBody(
-            PlayerBody(
-                videoId = videoId,
-                playlistId = playlistId,
-                cpn = cpn,
-                params = params,
-                playbackContext =
-                PlayerBody.PlaybackContext(
-                    contentPlaybackContext =
-                    PlayerBody.PlaybackContext.ContentPlaybackContext(
-                        signatureTimestamp = signatureTimestamp ?: 20073,
-                    ),
-                ),
-                serviceIntegrityDimensions =
-                if (poToken != null) {
-                    PlayerBody.ServiceIntegrityDimensions(
-                        poToken = poToken,
-                    )
-                } else {
-                    null
-                },
-            ),
-        )
-    }
-
-    suspend fun iosPlayer(
-        videoId: String,
-        playlistId: String?,
-        cookie: String,
-        poToken: String,
-        cpn: String,
-        visitorData: String = Innertube.visitorData,
-   ) = client.post( player ) {
-        accept( ContentType.Application.Json )
-        contentType( ContentType.Application.Json)
-
-        headers {
-            append( HttpHeaders.Host, YOUTUBE_MUSIC_HOST )
-            append( HttpHeaders.Origin, "https://$YOUTUBE_MUSIC_HOST" )
-            append( HttpHeaders.UserAgent, IOS.userAgent )
-            append( HttpHeaders.SetCookie, cookie )
-            append("Sec-Fetch-Mode", "navigate")
-            append( "X-Goog-Visitor-Id", visitorData )
-            append( "X-YouTube-Client-Name", IOS.clientName )
-            append( "X-YouTube-Client-Version", IOS.clientVersion )
-        }
-
-        setBody(
-            PlayerBody(
-                context = DefaultIOS,
-                playlistId = playlistId,
-                cpn = cpn,
-                videoId = videoId,
-                playbackContext = PlayerBody.PlaybackContext(),
-                serviceIntegrityDimensions = PlayerBody.ServiceIntegrityDimensions(poToken),
-            ),
-        )
-   }
-
-    suspend fun ghostRequest(
-        videoId: String,
-        playlistId: String?,
-    ) = client
-        .get(
-            "https://www.youtube.com/watch?v=$videoId&bpctr=9999999999&has_verified=1"
-                .let {
-                    if (playlistId != null) "$it&list=$playlistId" else it
-                },
-        ) {
-            headers {
-                header("Connection", "close")
-                header("Host", "www.youtube.com")
-                header("Cookie", if (cookie.isNullOrEmpty()) "PREF=hl=en&tz=UTC; SOCS=CAI" else cookie)
-                header("Sec-Fetch-Mode", "navigate")
-                header(
-                    "User-Agent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36",
-                )
-            }
-        }
-
     private fun HttpRequestBuilder.poHeader() {
         headers {
             header("accept", "*/*")
@@ -878,252 +688,6 @@ object Innertube {
             poHeader()
             setBody("[\"$poTokenChallengeRequestKey\", \"$challenge\"]")
         }
-
-    suspend fun pipedStreams(
-        videoId: String,
-        pipedInstance: String,
-    ) = client.get("$pipedInstance/streams/$videoId") {
-        contentType(ContentType.Application.Json)
-    }
-
-    suspend fun getVisitorData(
-        videoId: String,
-        playlistId: String?,
-    ): Triple<String, String, PlayerResponse.PlaybackTracking?> {
-        try {
-            val pId = if (playlistId?.startsWith("VL") == true) playlistId.removeRange(0..1) else playlistId
-            val ghostRequest = ghostRequest(videoId, pId)
-            val cookie =
-                "PREF=hl=en&tz=UTC; SOCS=CAI; ${ghostRequest.headers
-                    .getAll("set-cookie")
-                    ?.map {
-                        it.split(";").first()
-                    }?.filter {
-                        it.lastOrNull() != '='
-                    }?.joinToString("; ")}"
-            var response = ""
-            var data = ""
-            val ksoupHtmlParser =
-                KsoupHtmlParser(
-                    object : KsoupHtmlHandler {
-                        override fun onText(text: String) {
-                            super.onText(text)
-                            if (text.contains("var ytInitialPlayerResponse")) {
-                                val temp = text.replace("var ytInitialPlayerResponse = ", "").split(";var").firstOrNull()
-                                temp?.let {
-                                    response = it.trimIndent()
-                                }
-                            } else if (text.contains("var ytInitialData = ")) {
-                                val temp = text.replace("var ytInitialData = ", "").dropLast(1)
-                                temp.let {
-                                    data = it.trimIndent()
-                                }
-                            }
-                        }
-                    },
-                )
-            ksoupHtmlParser.write(ghostRequest.bodyAsText())
-            ksoupHtmlParser.end()
-            val ytInitialData = poTokenJsonDeserializer.decodeFromString<GhostResponse>(data)
-            val ytInitialPlayerResponse = poTokenJsonDeserializer.decodeFromString<GhostResponse>(response)
-            val playbackTracking = ytInitialPlayerResponse.playbackTracking
-            val loggedIn =
-                ytInitialData.responseContext.serviceTrackingParams
-                    ?.find { it.service == "GFEEDBACK" }
-                    ?.params
-                    ?.find { it.key == "logged_in" }
-                    ?.value == "1"
-            println("Innertube getVisitorData Logged In $loggedIn")
-            val visitorData =
-                ytInitialPlayerResponse.responseContext.serviceTrackingParams
-                    ?.find { it.service == "GFEEDBACK" }
-                    ?.params
-                    ?.find { it.key == "visitor_data" }
-                    ?.value
-                    ?: ytInitialData.responseContext.webResponseContextExtensionData
-                        ?.ytConfigData
-                        ?.visitorData
-            println("Innertube getVisitorData Visitor Data $visitorData")
-            println("Innertube getVisitorData New Cookie $cookie")
-            println("Innertube getVisitorData Playback Tracking $playbackTracking")
-            if (!visitorData.isNullOrEmpty()) this@Innertube.visitorData = visitorData
-            return Triple(cookie, visitorData ?: this@Innertube.visitorData, playbackTracking)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return Triple("", "", null)
-        }
-    }
-
-    suspend fun player(
-        videoId: String,
-        playlistId: String? = null,
-        withLogin: Boolean = false,
-    ): Result<Triple<String?, PlayerResponse?, MediaType>> =
-        runCatching {
-            println("PLAYERADVANCED player $videoId $playlistId withLogin $withLogin")
-            val cpn = randomString( 16 )
-            val now = System.currentTimeMillis()
-            val poToken =
-                if (now < poTokenObject.second) {
-                    println("PLAYERADVANCED player Use saved PoToken")
-                    poTokenObject.first
-                } else {
-                    createPoTokenChallenge()
-                        .bodyAsText()
-                        .let { challenge ->
-                            val listChallenge = poTokenJsonDeserializer.decodeFromString<List<String?>>(challenge)
-                            listChallenge.filterIsInstance<String>().firstOrNull()
-                        }?.let { poTokenChallenge ->
-                            generatePoToken(poTokenChallenge).bodyAsText().getPoToken().also { poToken ->
-                                if (poToken != null) {
-                                    poTokenObject = Pair(poToken, now + 21600000)
-                                }
-                            }
-                        }
-                }
-            println("PLAYERADVANCED player PoToken $poToken")
-
-            // if no login required, use noLoginPlyer with potoken (potoken is required in online also with login enabled... dev console shows that)
-            if (!withLogin) {
-                println("PLAYERADVANCED player with login $withLogin")
-                val (tempCookie, visitorData, playbackTracking) = getVisitorData(videoId, playlistId)
-
-                val playerResponse = iosPlayer( videoId, playlistId, tempCookie, poToken.orEmpty(), visitorData ).body<PlayerResponse>()
-                println("PLAYERADVANCED player Player Response $playerResponse")
-                println("PLAYERADVANCED player Thumbnails " + playerResponse.videoDetails?.thumbnail)
-                println("PLAYERADVANCED player Player Response status: ${playerResponse.playabilityStatus?.status}")
-                val firstThumb =
-                    playerResponse.videoDetails
-                        ?.thumbnail
-                        ?.thumbnails
-                        ?.firstOrNull()
-                val thumbnails =
-                    if (firstThumb?.height == firstThumb?.width && firstThumb != null) MediaType.Song else MediaType.Video
-                val formatList = playerResponse.streamingData?.formats?.map { Pair(it.itag, it.isAudio) }
-                println("PLAYERADVANCED player Player Response formatList $formatList")
-                val adaptiveFormatsList = playerResponse.streamingData?.adaptiveFormats?.map { Pair(it.itag, it.isAudio) }
-                println("PLAYERADVANCED player Player Response adaptiveFormat $adaptiveFormatsList")
-
-                if (playerResponse.playabilityStatus?.status == "OK" && (formatList != null || adaptiveFormatsList != null)) {
-                    return@runCatching Triple(
-                        cpn,
-                        playerResponse.copy(
-                            videoDetails = playerResponse.videoDetails?.copy(),
-                            playbackTracking = playbackTracking ?: playerResponse.playbackTracking,
-                        ),
-                        thumbnails,
-                    )
-                } else {
-                    for (instance in listPipedInstances) {
-                        try {
-                            val piped = pipedStreams(videoId, instance).body<PipedResponse>()
-                            val audioStreams = piped.audioStreams
-                            val videoStreams = piped.videoStreams
-                            val stream = audioStreams + videoStreams
-                            return@runCatching Triple(
-                                null,
-                                playerResponse.copy(
-                                    streamingData =
-                                    PlayerResponse.StreamingData(
-                                        formats = stream.toListFormat(),
-                                        adaptiveFormats = stream.toListFormat(),
-                                        expiresInSeconds = 0,
-                                    ),
-                                    videoDetails = playerResponse.videoDetails?.copy(),
-                                    playbackTracking = playbackTracking ?: playerResponse.playbackTracking,
-                                ),
-                                thumbnails,
-                            )
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                            continue
-                        }
-                    }
-                }
-                throw Exception(playerResponse.playabilityStatus?.status ?: "PLAYERADVANCED player ERROR Unknown error")
-            } else {
-                //WITH LOGIN
-                val sigTimestamp = NewPipeUtils.getSignatureTimestamp(videoId).getOrNull()
-                println("PLAYERADVANCED player with login $withLogin sigTimestamp $sigTimestamp")
-
-                val sigResponse = playerWithPotoken(
-                    videoId = videoId,
-                    playlistId = playlistId,
-                    cpn = cpn,
-                    signatureTimestamp = sigTimestamp,
-                    poToken = poToken,
-                    params = null
-                ).body<PlayerResponse>()
-                println("PLAYERADVANCED player sigResponse $sigResponse")
-
-                val decodedSigResponse =
-                    sigResponse.copy(
-                        streamingData =
-                        sigResponse.streamingData?.copy(
-                            formats =
-                            sigResponse.streamingData.formats?.map { format ->
-                                format.copy(
-                                    url = format.signatureCipher?.let {
-                                        decodeSignatureCipher(videoId, it)
-                                    },
-                                )
-                            },
-                            adaptiveFormats =
-                            sigResponse.streamingData.adaptiveFormats?.map { adaptiveFormats ->
-                                adaptiveFormats.copy(
-                                    url = adaptiveFormats.signatureCipher?.let {
-                                        decodeSignatureCipher(videoId, it)
-                                    },
-                                )
-                            },
-                        ),
-                    )
-
-                println("PLAYERADVANCED player return Triple")
-
-                return@runCatching Triple(
-                    cpn,
-                    decodedSigResponse.copy(
-                        videoDetails = decodedSigResponse.videoDetails?.copy(),
-                        playbackTracking = decodedSigResponse.playbackTracking,
-                    ),
-                    MediaType.Song
-                )
-            }
-        }.onFailure {
-            println("PLAYERADVANCED player ERROR ${it.stackTraceToString()}")
-        }
-
-
-    private fun List<PipedResponse.AudioStream>.toListFormat(): List<PlayerResponse.StreamingData.Format> {
-        val list = mutableListOf<PlayerResponse.StreamingData.Format>()
-        this.forEach {
-            list.add(
-                PlayerResponse.StreamingData.Format(
-                    itag = it.itag,
-                    url = it.url,
-                    mimeType = it.mimeType ?: "",
-                    bitrate = it.bitrate,
-                    width = it.width,
-                    height = it.height,
-                    contentLength = it.contentLength.toLong(),
-                    quality = it.quality,
-                    fps = it.fps,
-                    qualityLabel = "",
-                    averageBitrate = it.bitrate,
-                    audioQuality = it.quality,
-                    approxDurationMs = "",
-                    audioSampleRate = 0,
-                    audioChannels = 0,
-                    loudnessDb = 0.0,
-                    lastModified = 0,
-                    signatureCipher = null,
-                ),
-            )
-        }
-
-        return list
-    }
 
     suspend fun library(browseId: String, tabIndex: Int = 0) = runCatching {
         val response = browse(
