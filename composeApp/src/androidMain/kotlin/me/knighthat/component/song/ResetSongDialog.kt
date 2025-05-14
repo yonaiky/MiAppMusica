@@ -5,10 +5,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.util.fastAny
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
-import it.fast4x.innertube.Innertube
+import app.kreate.android.utils.CharUtils
+import com.google.gson.Gson
+import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.models.Song
@@ -18,10 +21,13 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import me.knighthat.component.dialog.CheckboxDialog
 import me.knighthat.utils.Toaster
 import org.jetbrains.annotations.Contract
-import timber.log.Timber
+import org.schabi.newpipe.extractor.localization.ContentCountry
+import org.schabi.newpipe.extractor.localization.Localization
+import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 import java.util.Optional
 
 @UnstableApi
@@ -112,39 +118,34 @@ class ResetSongDialog private constructor(
             var song = this@ResetSongDialog.song.get()
 
             val fetchIds = arrayOf(TITLE_CHECKBOX_ID, AUTHORS_CHECKBOX_ID, THUMBNAIL_CHECKBOX_ID)
-            // [Array.fastAny] is in experimental stage, revert to [Array.any] if needed
-            if( items.filter { it.id in fetchIds }.fastAny { it.selected } )
-                /*
-                 * Reset "title", "authors", and "thumbnail".
-                 *
-                 * Topology: If any of the related checkboxes is selected,
-                 * then fetch the internet for up-to-date information.
-                 * If checkbox is ticked, then replace that property with
-                 * newly fetched information.
-                 */
-                Innertube.player( videoId = song.id )
-                         .onSuccess { response ->
-                             val videoDetails = response.second?.videoDetails ?: return@launch
+            if( items.fastAny { it.id in fetchIds && it.selected } ) {
+                val locale = Locale.current
+                val response = YoutubeStreamHelper.getAndroidReelPlayerResponse(
+                    ContentCountry( locale.region ),
+                    Localization( locale.language ),
+                    song.id,
+                    CharUtils.randomString( 16 )
+                )
+                val jsonString = Gson().toJson( response.getObject("videoDetails") )
+                val videoDetails = Json {
+                    ignoreUnknownKeys = true
+                    explicitNulls = false
+                }.decodeFromString<PlayerResponse.VideoDetails>( jsonString )
 
-                             @Contract("_,null->null")
-                             fun <T> getProperty( itemId: String, result: T? ): T? =
-                                 if (items.first { it.id == itemId }.selected) result else null
+                @Contract("_,null->null")
+                fun <T> getProperty( itemId: String, result: T? ): T? =
+                    if ( items.first { it.id == itemId }.selected ) result else null
 
-                             val title = getProperty( TITLE_CHECKBOX_ID, videoDetails.title )
-                             val authors = getProperty( AUTHORS_CHECKBOX_ID, videoDetails.author )
-                             val thumbnailUrl = getProperty( THUMBNAIL_CHECKBOX_ID, videoDetails.thumbnail?.thumbnails?.last()?.url )
+                val title = getProperty( TITLE_CHECKBOX_ID, videoDetails.title )
+                val authors = getProperty( AUTHORS_CHECKBOX_ID, videoDetails.author )
+                val thumbnailUrl = getProperty( THUMBNAIL_CHECKBOX_ID, videoDetails.thumbnail?.thumbnails?.last()?.url )
 
-                             song = song.copy(
-                                 title = title ?: song.title,
-                                 artistsText = authors ?: song.artistsText,
-                                 thumbnailUrl = thumbnailUrl ?: song.thumbnailUrl,
-                             )
-
-                             Timber.tag("reset_dialog").d( "Song: $song" )
-                         }
-                         .onFailure {
-                             Timber.tag("reset_dialog").d( it )
-                         }
+                song = song.copy(
+                    title = title ?: song.title,
+                    artistsText = authors ?: song.artistsText,
+                    thumbnailUrl = thumbnailUrl ?: song.thumbnailUrl,
+                )
+            }
 
             if( items.first { it.id == PLAYTIME_CHECKBOX_ID }.selected )
                 song = song.copy( totalPlayTimeMs = 0L )
