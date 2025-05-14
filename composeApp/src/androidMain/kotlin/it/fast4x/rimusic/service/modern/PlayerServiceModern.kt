@@ -27,7 +27,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.MainThread
-import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -48,7 +47,6 @@ import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
-import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.NoOpCacheEvictor
@@ -212,9 +210,6 @@ import android.os.Binder as AndroidBinder
 
 
 const val LOCAL_KEY_PREFIX = "local:"
-
-@get:OptIn(UnstableApi::class)
-val DataSpec.isLocal get() = key?.startsWith(LOCAL_KEY_PREFIX) == true
 
 val MediaItem.isLocal get() = mediaId.startsWith(LOCAL_KEY_PREFIX)
 val Song.isLocal get() = id.startsWith(LOCAL_KEY_PREFIX)
