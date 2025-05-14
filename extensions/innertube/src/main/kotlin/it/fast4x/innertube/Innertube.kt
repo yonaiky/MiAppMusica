@@ -944,7 +944,7 @@ object Innertube {
         contentType(ContentType.Application.Json)
     }
 
-    private suspend fun getVisitorData(
+    public suspend fun getVisitorData(
         videoId: String,
         playlistId: String?,
     ): Triple<String, String, PlayerResponse.PlaybackTracking?> {
