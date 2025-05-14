@@ -17,7 +17,7 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerMana
 import java.io.IOException
 import java.net.Proxy
 
-private class NewPipeDownloaderImpl(proxy: Proxy?) : Downloader() {
+class NewPipeDownloaderImpl(proxy: Proxy?) : Downloader() {
 
     private val client = OkHttpClient.Builder()
         .proxy(proxy)

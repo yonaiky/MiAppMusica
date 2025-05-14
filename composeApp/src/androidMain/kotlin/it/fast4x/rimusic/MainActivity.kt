@@ -105,6 +105,7 @@ import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.song
 import it.fast4x.innertube.utils.LocalePreferenceItem
 import it.fast4x.innertube.utils.LocalePreferences
+import it.fast4x.innertube.utils.NewPipeDownloaderImpl
 import it.fast4x.innertube.utils.ProxyPreferenceItem
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.YoutubePreferenceItem
@@ -234,6 +235,7 @@ import me.knighthat.invidious.Invidious
 import me.knighthat.piped.Piped
 import me.knighthat.utils.Toaster
 import okhttp3.OkHttpClient
+import org.schabi.newpipe.extractor.NewPipe
 import timber.log.Timber
 import java.net.Proxy
 import java.util.Locale
@@ -447,7 +449,9 @@ class MainActivity :
                 } else
                     Toaster.e( "Your Proxy Hostname is invalid, please check it" )
             }
-            //if (getBoolean(isEnabledDiscoveryLangCodeKey, true))
+
+            val proxy = Innertube.proxy ?: Proxy.NO_PROXY
+            NewPipe.init( NewPipeDownloaderImpl(proxy) )
         }
 
         setContent {
