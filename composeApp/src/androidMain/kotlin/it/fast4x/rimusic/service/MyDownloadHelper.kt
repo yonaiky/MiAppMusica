@@ -18,6 +18,7 @@ import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.Requirements
+import app.kreate.android.service.createDataSourceFactory
 import coil.imageLoader
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -185,7 +186,6 @@ object MyDownloadHelper {
                 getDatabaseProvider(context),
                 getDownloadCache(context),
                 createDataSourceFactory(),
-                //Executor(Runnable::run)
                 executor
             ).apply {
                 maxParallelDownloads = 3
