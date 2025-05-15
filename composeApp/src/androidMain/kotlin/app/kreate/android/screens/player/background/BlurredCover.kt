@@ -44,8 +44,14 @@ private fun BlurFilter(
     modifier = Modifier.fillMaxSize(),
     contentAlignment = Alignment.Center
 ) {
-    // Adapt to any changes of screen's resolution
-    val size by remember { derivedStateOf { maxOf( maxWidth, maxHeight ) } }
+    /**
+     * Adapt to any changes of screen's resolution.
+     * [derivedStateOf] don't work because both values
+     * aren't observable - issue #266 (Android 26-)
+     */
+    val size = remember( maxWidth, maxHeight ) {
+        maxOf( maxWidth, maxHeight )
+    }
     // Probably not a best fit, but it gets the job done
     val scale = with(LocalDensity.current) {
         val w = maxWidth.toPx()
