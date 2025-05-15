@@ -90,7 +90,7 @@ private fun getFormatUrl(
 
     val format = extractFormat( playerResponse.streamingData, audioQualityFormat, connectionMetered )
     Database.asyncTransaction {
-        formatTable.insertIgnore(Format(
+        formatTable.upsert(Format(
             videoId,
             format?.itag,
             format?.mimeType,
@@ -171,7 +171,7 @@ fun DataSpec.process(
         }
     }
 
-    withUri( formatUri ).subrange( uriPositionOffset )
+    withUri( formatUri ).subrange( uriPositionOffset, CHUNK_LENGTH )
 }
 
 //<editor-fold defaultstate="collapsed" desc="Data source factories">
