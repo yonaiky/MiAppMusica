@@ -1182,8 +1182,7 @@ fun Player(
                          isShowingLyrics = isShowingLyrics,
                          isShowingVisualizer = isShowingVisualizer,
                          contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
-                         modifier = Modifier.fillMaxWidth()
-                                            .zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
+                         modifier = Modifier.zIndex(if (it == pagerStateFS.currentPage) 1f else 0.9f)
                                             .conditional(albumCoverRotation) {
                                                 graphicsLayer {
                                                     scaleX = if (isShowingLyrics || showthumbnail) (screenWidth/screenHeight) + 0.5f else 1f
@@ -1237,8 +1236,7 @@ fun Player(
                  noBlur = noblur,
                  isShowingLyrics = isShowingLyrics,
                  isShowingVisualizer = isShowingVisualizer,
-                 contentScale = ContentScale.FillHeight,
-                 modifier = Modifier.fillMaxSize()
+                 contentScale = ContentScale.FillHeight
              )
 
             Row(
@@ -1668,8 +1666,7 @@ fun Player(
                                 isShowingLyrics = isShowingLyrics,
                                 isShowingVisualizer = isShowingVisualizer,
                                 contentScale = if (albumCoverRotation && (isShowingLyrics || showthumbnail)) ContentScale.Fit else ContentScale.Crop,
-                                modifier = Modifier.fillMaxHeight()
-                                                   .conditional(albumCoverRotation) {
+                                modifier = Modifier.conditional(albumCoverRotation) {
                                                        graphicsLayer {
                                                            scaleX = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
                                                            scaleY = if (isShowingLyrics || showthumbnail) (screenHeight / screenWidth) + 0.5f else 1f
@@ -1810,8 +1807,7 @@ fun Player(
                    noBlur = noblur,
                    isShowingLyrics = isShowingLyrics,
                    isShowingVisualizer = isShowingVisualizer,
-                   contentScale = ContentScale.FillHeight,
-                   modifier = Modifier.fillMaxSize()
+                   contentScale = ContentScale.FillHeight
                )
 
             Column(
