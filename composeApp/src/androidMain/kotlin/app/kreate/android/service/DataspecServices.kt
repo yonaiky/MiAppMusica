@@ -26,7 +26,6 @@ import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.UnknownException
 import it.fast4x.rimusic.service.UnplayableException
-import it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.utils.isConnectionMetered
 import it.fast4x.rimusic.utils.okHttpDataSourceFactory
@@ -224,10 +223,9 @@ fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory =
     ) { dataSpec: DataSpec ->
         val videoId = dataSpec.uri.toString().substringAfter("watch?v=")
 
-        val isLocal = videoId.startsWith( LOCAL_KEY_PREFIX, true )
         val isDownloaded = downloadCache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
 
-        return@Factory if( isLocal || isDownloaded )
+        return@Factory if( isDownloaded )
             // No need to fetch online for already cached data
             dataSpec
         else
