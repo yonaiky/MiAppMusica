@@ -2,6 +2,7 @@ package app.kreate.android.service
 
 import android.content.ContentResolver
 import android.net.Uri
+import androidx.compose.ui.util.fastMaxBy
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -17,16 +18,20 @@ import io.ktor.client.statement.bodyAsText
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.Innertube.createPoTokenChallenge
 import it.fast4x.innertube.models.PlayerResponse
+import it.fast4x.innertube.models.Thumbnail
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.isConnectionMeteredEnabled
 import it.fast4x.rimusic.models.Format
+import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.LoginRequiredException
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.UnknownException
 import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
+import it.fast4x.rimusic.utils.durationTextToMillis
+import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.isConnectionMetered
 import it.fast4x.rimusic.utils.okHttpDataSourceFactory
 import kotlinx.coroutines.Dispatchers
@@ -90,15 +95,35 @@ private fun getFormatUrl(
 
     val format = extractFormat( playerResponse.streamingData, audioQualityFormat, connectionMetered )
     Database.asyncTransaction {
-        formatTable.insertIgnore(Format(
-            videoId,
-            format?.itag,
-            format?.mimeType,
-            format?.bitrate?.toLong(),
-            format?.contentLength,
-            format?.lastModified,
-            format?.loudnessDb?.toFloat()
-        ))
+        playerResponse.videoDetails
+                      ?.let {
+                          val durationMillis = durationTextToMillis( it.lengthSeconds.orEmpty() )
+                          val thumbnail: Thumbnail? = it.thumbnail
+                                                        ?.thumbnails
+                                                        ?.fastMaxBy{ thumbnail ->
+                                                            thumbnail.height ?: 0
+                                                        }
+                          Song(
+                              id = videoId,
+                              title = it.title.orEmpty(),
+                              artistsText = it.author,
+                              durationText = formatAsDuration( durationMillis ),
+                              thumbnailUrl = thumbnail?.url,
+                          )
+                      }
+                      ?.also( songTable::upsert )
+                      ?.also {
+                          // Only add format when song is added to the database
+                          formatTable.insertIgnore(Format(
+                              videoId,
+                              format?.itag,
+                              format?.mimeType,
+                              format?.bitrate?.toLong(),
+                              format?.contentLength,
+                              format?.lastModified,
+                              format?.loudnessDb?.toFloat()
+                          ))
+                      }
     }
 
     return YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, format?.url.orEmpty() )
