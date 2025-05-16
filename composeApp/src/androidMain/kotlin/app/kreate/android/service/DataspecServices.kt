@@ -54,6 +54,12 @@ private val jsonParser =
         explicitNulls = false
     }
 
+/**
+ * Store id of song just added to the database by [getFormatUrl].
+ * This is created to reduce load to Room
+ */
+private lateinit var justAdded: String
+
 @UnstableApi
 private fun checkPlayability( playabilityStatus: PlayerResponse.PlayabilityStatus? ) {
     if( playabilityStatus?.status != "OK" )
@@ -95,6 +101,9 @@ private fun getFormatUrl(
 
     val format = extractFormat( playerResponse.streamingData, audioQualityFormat, connectionMetered )
     Database.asyncTransaction {
+        // Skip this step if it was added previously
+        if( ::justAdded.isInitialized && justAdded == videoId ) return@asyncTransaction
+
         playerResponse.videoDetails
                       ?.let {
                           val durationMillis = durationTextToMillis( it.lengthSeconds.orEmpty() )
@@ -124,6 +133,8 @@ private fun getFormatUrl(
                               format?.loudnessDb?.toFloat()
                           ))
                       }
+
+        justAdded = videoId
     }
 
     return YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, format?.url.orEmpty() )
