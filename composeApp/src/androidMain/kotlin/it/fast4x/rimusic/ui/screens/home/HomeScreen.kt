@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.screen.home.HomeSongsScreen
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
@@ -34,7 +35,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.knighthat.ui.screens.home.HomeSongs
 import me.knighthat.utils.Toaster
 import kotlin.system.exitProcess
 
@@ -119,7 +119,7 @@ fun HomeScreen(
 
                 )
 
-                1 -> HomeSongs( navController )
+                1 -> HomeSongsScreen( navController )
 
                 2 -> HomeArtists(
                     onArtistClick = {
