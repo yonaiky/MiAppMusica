@@ -242,25 +242,17 @@ fun BoxScope.ActionBar(
                     val mediaItems = remember { mutableStateListOf<MediaItem>() }
 
                     val pagerStateQueue = rememberPagerState( pageCount = { mediaItems.size } )
-                    fun scrollTo( page: Int ) =
-                        pagerStateQueue.requestScrollToPage(
-                            page.coerceIn( 0, pagerStateQueue.pageCount )
-                        )
 
                     binder.player.DisposableListener {
                         object : Player.Listener {
                             override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                                 mediaItems.clear()
                                 mediaItems.addAll( timeline.mediaItems )
-
-                                scrollTo( nextIndex )
                             }
 
                             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                                 currentIndex = binder.player.currentMediaItemIndex
                                 nextIndex = binder.player.nextMediaItemIndex
-
-                                scrollTo( nextIndex )
                             }
                         }
                     }
@@ -268,6 +260,10 @@ fun BoxScope.ActionBar(
                     LaunchedEffect( binder.player.mediaItems ) {
                         mediaItems.clear()
                         mediaItems.addAll( binder.player.mediaItems )
+
+                        pagerStateQueue.requestScrollToPage(
+                            nextIndex.coerceIn( 0, pagerStateQueue.pageCount )
+                        )
                     }
 
                     Row(
