@@ -1,5 +1,6 @@
 package app.kreate.android.service
 
+import android.content.ContentResolver
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
@@ -198,7 +199,7 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory =
 
         val videoId = dataSpec.uri.toString().substringAfter("watch?v=")
 
-        val isLocal = videoId.startsWith( LOCAL_KEY_PREFIX, true )
+        val isLocal = dataSpec.uri.scheme == ContentResolver.SCHEME_CONTENT || dataSpec.uri.scheme == ContentResolver.SCHEME_FILE
         val isCached = cache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
         val isDownloaded = downloadCache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
 
