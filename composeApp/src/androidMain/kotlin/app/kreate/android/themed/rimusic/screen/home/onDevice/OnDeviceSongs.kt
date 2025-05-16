@@ -1,5 +1,9 @@
 package app.kreate.android.themed.rimusic.screen.home.onDevice
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,10 +15,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.util.fastMap
+import androidx.core.content.ContextCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import it.fast4x.rimusic.EXPLICIT_PREFIX
@@ -29,6 +35,7 @@ import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlayAtIndex
+import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showFoldersOnDeviceKey
@@ -40,6 +47,7 @@ import me.knighthat.component.Sort
 import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.Search
 import me.knighthat.utils.PathUtils
+import me.knighthat.utils.Toaster
 import me.knighthat.utils.getLocalSongs
 
 @UnstableApi
@@ -70,9 +78,21 @@ fun OnDeviceSong(
         mutableStateOf( PathUtils.findCommonPath( songsOnDevice.values ) )
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Permission handler">
+    val permission = rememberSaveable {
+        if( isAtLeastAndroid13 ) Manifest.permission.READ_MEDIA_AUDIO else Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+    var isPermissionGranted by remember { mutableStateOf(
+        ContextCompat.checkSelfPermission( context, permission ) == PackageManager.PERMISSION_GRANTED
+    ) }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isPermissionGranted = it }
+    //</editor-fold>
+
     val odSort = Sort( HOME_ON_DEVICE_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
 
-    LaunchedEffect( odSort.sortBy, odSort.sortOrder ) {
+    LaunchedEffect( isPermissionGranted, odSort.sortBy, odSort.sortOrder ) {
         context.getLocalSongs( odSort.sortBy, odSort.sortOrder )
                .distinctUntilChanged()
                .onEach { lazyListState.scrollToItem( 0, 0 ) }
@@ -106,13 +126,21 @@ fun OnDeviceSong(
     }
     LaunchedEffect( Unit ) {
         buttons.add( 0, odSort )
+
+        if( isPermissionGranted ) return@LaunchedEffect
+
+        try {
+            permissionLauncher.launch( permission )
+        } catch ( e: Exception ) {
+            e.message?.let( Toaster::e )
+        }
     }
 
     LazyColumn(
         state = lazyListState,
         contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
     ) {
-        if( showFolder4LocalSongs ) {
+        if( showFolder4LocalSongs && songsOnDevice.isNotEmpty() ) {
             item( "folder_paths" ) {
                 PathUtils.AddressBar(
                     paths = songsOnDevice.values,
