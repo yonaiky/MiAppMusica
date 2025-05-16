@@ -17,10 +17,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
@@ -185,34 +189,34 @@ fun BoxScope.ActionBar(
     var isShowingLyrics by showLyricsState
 
     Row(
-        modifier = Modifier
-            .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
-            .requiredHeight(if (showNextSongsInPlayer && (showLyricsThumbnail || (!isShowingLyrics || miniQueueExpanded))) 90.dp else 50.dp)
-            .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-            .clickable( enabled = tapQueue ) {
-                showQueue = true
-            }
-            .background(
-                colorPalette().background2.copy(
-                    alpha =
-                        if (transparentBackgroundActionBarPlayer
-                            || (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
-                                    || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)
-                                )
-                            && blackGradient)
-                            0.0f
-                        else
-                            0.7f // 0.0 > 0.1
-                )
-            )
-            .pointerInput(Unit) {
-                if (swipeUpQueue)
-                    detectVerticalDragGestures(
-                        onVerticalDrag = { _, dragAmount ->
-                            if (dragAmount < 0) showQueue = true
-                        }
-                    )
-            },
+        modifier = Modifier.padding( if( isLandscape ) WindowInsets.navigationBars.asPaddingValues() else PaddingValues() )
+                           .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
+                           .requiredHeight(if (showNextSongsInPlayer && (showLyricsThumbnail || (!isShowingLyrics || miniQueueExpanded))) 90.dp else 50.dp)
+                           .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                           .clickable( enabled = tapQueue ) {
+                               showQueue = true
+                           }
+                           .background(
+                               colorPalette().background2.copy(
+                                   alpha =
+                                       if (transparentBackgroundActionBarPlayer
+                                           || (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
+                                                   || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)
+                                               )
+                                           && blackGradient)
+                                           0.0f
+                                       else
+                                           0.7f // 0.0 > 0.1
+                               )
+                           )
+                           .pointerInput(Unit) {
+                               if (swipeUpQueue)
+                                   detectVerticalDragGestures(
+                                       onVerticalDrag = { _, dragAmount ->
+                                           if (dragAmount < 0) showQueue = true
+                                       }
+                                   )
+                           },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
