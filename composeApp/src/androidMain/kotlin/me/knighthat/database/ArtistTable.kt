@@ -113,8 +113,7 @@ interface ArtistTable {
      * Attempt to write the list of [Artist] to database.
      *
      * If record exist (determined by its primary key),
-     * existing record's columns will be replaced
-     * by provided data.
+     * it'll simply be ignored and the transaction continues.
      *
      * @param artists list of [Artist] to insert to database
      */
@@ -132,6 +131,18 @@ interface ArtistTable {
      */
     @Upsert
     fun upsert( artist: Artist )
+
+    /**
+     * Attempt to write the list of [Artist] to database.
+     *
+     * If record exist (determined by its primary key),
+     * existing record's columns will be replaced
+     * by provided data.
+     *
+     * @param artists list of [Artist] to insert to database
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun upsert( artists: List<Artist> )
 
     /**
      * Attempt to replace a record's data with provided [artist].
