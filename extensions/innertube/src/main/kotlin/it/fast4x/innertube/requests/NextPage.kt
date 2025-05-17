@@ -8,9 +8,7 @@ import it.fast4x.innertube.models.ContinuationResponse
 import it.fast4x.innertube.models.NextResponse
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.NextBody
-import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.runCatchingNonCancellable
-
 
 
 suspend fun Innertube.nextPage(body: NextBody): Result<Innertube.NextPage>? =
@@ -81,7 +79,7 @@ private fun NextResponse.MusicQueueRenderer.Content.PlaylistPanelRenderer?.toSon
         items = this
             ?.contents
             ?.mapNotNull(NextResponse.MusicQueueRenderer.Content.PlaylistPanelRenderer.Content::playlistPanelVideoRenderer)
-            ?.mapNotNull(Innertube.SongItem::from),
+            ?.map(Innertube.SongItem::parse),
         continuation = this
             ?.continuations
             ?.firstOrNull()

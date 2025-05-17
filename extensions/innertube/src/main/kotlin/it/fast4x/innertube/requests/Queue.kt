@@ -6,7 +6,6 @@ import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.GetQueueResponse
 import it.fast4x.innertube.models.bodies.QueueBody
-import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.runCatchingNonCancellable
 
 suspend fun Innertube.queue(body: QueueBody) = runCatchingNonCancellable {
@@ -21,7 +20,7 @@ suspend fun Innertube.queue(body: QueueBody) = runCatchingNonCancellable {
             queueData
                 .content
                 ?.playlistPanelVideoRenderer
-                ?.let(Innertube.SongItem::from)
+                ?.let(Innertube.SongItem::parse)
         }
 }
 

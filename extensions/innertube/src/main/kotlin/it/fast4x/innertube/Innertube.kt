@@ -35,6 +35,7 @@ import it.fast4x.innertube.models.GridRenderer
 import it.fast4x.innertube.models.MusicNavigationButtonRenderer
 import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
+import it.fast4x.innertube.models.PlaylistPanelVideoRenderer
 import it.fast4x.innertube.models.Runs
 import it.fast4x.innertube.models.Thumbnail
 import it.fast4x.innertube.models.bodies.AccountMenuBody
@@ -145,7 +146,7 @@ object Innertube {
 
     internal const val musicResponsiveListItemRendererMask = "musicResponsiveListItemRenderer(flexColumns,fixedColumns,thumbnail,navigationEndpoint,badges)"
     internal const val musicTwoRowItemRendererMask = "musicTwoRowItemRenderer(thumbnailRenderer,title,subtitle,navigationEndpoint)"
-    const val playlistPanelVideoRendererMask = "playlistPanelVideoRenderer(title,navigationEndpoint,longBylineText,shortBylineText,thumbnail,lengthText)"
+    const val playlistPanelVideoRendererMask = "playlistPanelVideoRenderer(title,navigationEndpoint,longBylineText,shortBylineText,thumbnail,lengthText,badges)"
 
     internal fun HttpRequestBuilder.mask(value: String = "*") =
         header("X-Goog-FieldMask", value)
@@ -196,7 +197,55 @@ object Innertube {
         override val key get() = info?.endpoint?.videoId ?: ""
         override val title get() = info?.name
 
-        companion object
+        companion object {
+
+            fun parse( plRenderer: PlaylistPanelVideoRenderer ): SongItem {
+                val watchEndpoint = plRenderer.navigationEndpoint?.watchEndpoint
+                requireNotNull( watchEndpoint?.videoId )
+
+                //<editor-fold defaultstate="collapsed" desc="Author & album parser">
+                val authors = mutableListOf<Info<NavigationEndpoint.Endpoint.Browse>>()
+                var album: Info<NavigationEndpoint.Endpoint.Browse>? = null
+                plRenderer.longBylineText
+                          ?.runs
+                          ?.filter { it.navigationEndpoint != null }
+                          ?.groupBy {
+                              it.navigationEndpoint
+                                  ?.browseEndpoint
+                                  ?.browseEndpointContextSupportedConfigs
+                                  ?.browseEndpointContextMusicConfig
+                                  ?.pageType
+                          }
+                          ?.mapNotNull { (pageType, runs) ->
+                              when (pageType) {
+                                  "MUSIC_PAGE_TYPE_ARTIST" -> authors.addAll( runs.map( ::Info ) )
+                                  "MUSIC_PAGE_TYPE_ALBUM"  -> album = runs.firstOrNull()?.let( ::Info )
+                                  else -> return@mapNotNull
+                              } 
+                          }
+                //</editor-fold>
+                
+                return SongItem(
+                    info = Info(
+                        // Mustn't add [EXPLICIT_KEY_PREFIX] here
+                        name = plRenderer.title?.text.orEmpty(),
+                        endpoint = watchEndpoint
+                    ),
+                    authors = authors,
+                    album = album,
+                    durationText = plRenderer.lengthText?.text,
+                    thumbnail = plRenderer.thumbnail
+                                          ?.thumbnails
+                                          ?.maxByOrNull {
+                                              it.height ?: 0
+                                          },
+                    explicit = plRenderer.badges
+                                         .any {
+                                             it.musicInlineBadgeRenderer?.icon?.iconType == "MUSIC_EXPLICIT_BADGE"
+                                         }
+                )
+            }
+        }
     }
 
     @Serializable
