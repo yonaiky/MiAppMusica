@@ -8,6 +8,7 @@ data class PlaylistPanelVideoRenderer(
     val longBylineText: Runs?,
     val shortBylineText: Runs?,
     val lengthText: Runs?,
+    val badges: List<Badges> = emptyList(),
     val navigationEndpoint: NavigationEndpoint?,
     val thumbnail: ThumbnailRenderer.MusicThumbnailRenderer.Thumbnail?,
 )
