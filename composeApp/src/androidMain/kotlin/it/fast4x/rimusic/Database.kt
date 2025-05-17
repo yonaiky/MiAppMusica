@@ -1,5 +1,7 @@
 package it.fast4x.rimusic
 
+import androidx.compose.ui.util.fastForEach
+import androidx.compose.ui.util.fastMapNotNull
 import androidx.compose.ui.util.fastZip
 import androidx.media3.common.MediaItem
 import androidx.room.AutoMigration
@@ -8,8 +10,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SimpleSQLiteQuery
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.NextBody
-import it.fast4x.innertube.requests.nextPage
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
@@ -23,9 +23,7 @@ import it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
-import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import me.knighthat.database.AlbumTable
@@ -89,59 +87,72 @@ object Database {
 
     //**********************************************
 
-    /**
-     * [Innertube.player] doesn't return everything about a song,
-     * [Innertube.next] is an additional step to retrieve extra
-     * information. I.E. individual artists featured in the song,
-     * album this song belongs to, etc.
-     */
-    fun updateSongInDatabase( videoId: String ) =
-        asyncTransaction {
-            val nextPage: Innertube.NextPage?
-            val dbSong: Song
+    fun upsert( songItem: Innertube.SongItem ) = asyncTransaction {
+        val song =  songItem.asSong
 
-            // This block is already running in worker thread,
-            // therefore, UI thread won't be blocked by this
-            runBlocking( Dispatchers.IO ) {
-                nextPage = Innertube.nextPage( NextBody(videoId = videoId) )?.getOrNull()
-                dbSong = songTable.findById(videoId).first() ?: Song.makePlaceholder(videoId)
-            }
-
-            // Do nothing if YT doesn't return anything for NextPage
-            nextPage ?: return@asyncTransaction
-
-            nextPage.itemsPage
-                    ?.items
-                    ?.firstOrNull()
-                    ?.also {
-                        // This will ignore Song insert if exists
-                        insertIgnore( it.asMediaItem )
-
-                        // This updates Song properties to the one fetched
-                        // from the internet, while keeping "modified" properties intact
-                        val fetchedSong = it.asSong
-                        songTable.upsert(
-                            Song(
-                                id = videoId,
-                                title = PropUtils.retainIfModified( dbSong.title, fetchedSong.title ).orEmpty(),
-                                artistsText = PropUtils.retainIfModified(
-                                    dbSong.artistsText,
-                                    fetchedSong.artistsText
-                                ),
-                                durationText = PropUtils.retainIfModified(
-                                    dbSong.durationText,
-                                    fetchedSong.durationText
-                                ),
-                                thumbnailUrl = PropUtils.retainIfModified(
-                                    dbSong.thumbnailUrl,
-                                    fetchedSong.thumbnailUrl
-                                ),
-                                likedAt = dbSong.likedAt,
-                                totalPlayTimeMs = dbSong.totalPlayTimeMs
-                            )
-                        )
-                    }
+        //<editor-fold defaultstate="collapsed" desc="Upsert song">
+        val dbSong = runBlocking {
+            songTable.findById( song.id ).first()
         }
+        songTable.upsert(Song(
+            id = song.id,
+            title = PropUtils.retainIfModified( dbSong?.title, song.title ).orEmpty(),
+            artistsText = PropUtils.retainIfModified( dbSong?.artistsText, song.artistsText ),
+            durationText = song.durationText,       // Force update to new duration text
+            thumbnailUrl = PropUtils.retainIfModified( dbSong?.thumbnailUrl, song.thumbnailUrl ),
+            likedAt = song.likedAt,
+            totalPlayTimeMs = song.totalPlayTimeMs
+        ))
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="Upsert artists">
+        songItem.authors
+                ?.fastMapNotNull {
+                    val browseId = it.endpoint?.browseId ?: return@fastMapNotNull null
+
+                    val dbArtist = runBlocking {
+                        artistTable.findById( browseId ).first()
+                    }
+
+                    Artist(
+                        id = browseId,
+                        name = PropUtils.retainIfModified( dbArtist?.name, it.name ),
+                        thumbnailUrl = dbArtist?.thumbnailUrl,
+                        timestamp = dbArtist?.timestamp,
+                        bookmarkedAt = dbArtist?.bookmarkedAt,
+                        isYoutubeArtist = dbArtist?.isYoutubeArtist == true
+                    )
+                }
+                ?.also( artistTable::upsert )
+                ?.fastForEach { mapIgnore( it, song ) }
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="Upsert album">
+        songItem.album
+                ?.let {
+                    val browseId = it.endpoint?.browseId ?: return@let
+
+                    val dbAlbum = runBlocking {
+                        albumTable.findById( browseId ).first()
+                    }
+
+                    val fetchedAlbum = Album(
+                        id = browseId,
+                        title = PropUtils.retainIfModified( dbAlbum?.title, it.name ),
+                        thumbnailUrl = PropUtils.retainIfModified( dbAlbum?.thumbnailUrl, song.thumbnailUrl ),
+                        year = dbAlbum?.year,
+                        authorsText = PropUtils.retainIfModified( dbAlbum?.title, it.name ),
+                        shareUrl = dbAlbum?.shareUrl,
+                        timestamp = dbAlbum?.timestamp,
+                        bookmarkedAt = dbAlbum?.bookmarkedAt,
+                        isYoutubeAlbum = dbAlbum?.isYoutubeAlbum == true
+                    )
+
+                    albumTable.upsert( fetchedAlbum )
+                    mapIgnore( fetchedAlbum, song )
+                }
+        //</editor-fold>
+    }
 
     /**
      * Attempt to insert a [MediaItem] into `Song` table
