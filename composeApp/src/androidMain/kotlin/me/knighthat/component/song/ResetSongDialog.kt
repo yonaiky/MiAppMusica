@@ -5,29 +5,25 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.util.fastAny
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
-import app.kreate.android.utils.CharUtils
-import com.google.gson.Gson
-import it.fast4x.innertube.models.PlayerResponse
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.nextPage
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import it.fast4x.rimusic.utils.asSong
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import me.knighthat.component.dialog.CheckboxDialog
 import me.knighthat.utils.Toaster
 import org.jetbrains.annotations.Contract
-import org.schabi.newpipe.extractor.localization.ContentCountry
-import org.schabi.newpipe.extractor.localization.Localization
-import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 import java.util.Optional
 
 @UnstableApi
@@ -119,26 +115,20 @@ class ResetSongDialog private constructor(
 
             val fetchIds = arrayOf(TITLE_CHECKBOX_ID, AUTHORS_CHECKBOX_ID, THUMBNAIL_CHECKBOX_ID)
             if( items.fastAny { it.id in fetchIds && it.selected } ) {
-                val locale = Locale.current
-                val response = YoutubeStreamHelper.getAndroidReelPlayerResponse(
-                    ContentCountry( locale.region ),
-                    Localization( locale.language ),
-                    song.id,
-                    CharUtils.randomString( 16 )
-                )
-                val jsonString = Gson().toJson( response.getObject("videoDetails") )
-                val videoDetails = Json {
-                    ignoreUnknownKeys = true
-                    explicitNulls = false
-                }.decodeFromString<PlayerResponse.VideoDetails>( jsonString )
+                val fetchedSong: Song? = Innertube.nextPage( NextBody(videoId = song.id) )
+                                                  ?.getOrNull()
+                                                  ?.itemsPage
+                                                  ?.items
+                                                  ?.firstOrNull()
+                                                  ?.asSong
 
                 @Contract("_,null->null")
                 fun <T> getProperty( itemId: String, result: T? ): T? =
                     if ( items.first { it.id == itemId }.selected ) result else null
 
-                val title = getProperty( TITLE_CHECKBOX_ID, videoDetails.title )
-                val authors = getProperty( AUTHORS_CHECKBOX_ID, videoDetails.author )
-                val thumbnailUrl = getProperty( THUMBNAIL_CHECKBOX_ID, videoDetails.thumbnail?.thumbnails?.last()?.url )
+                val title = getProperty( TITLE_CHECKBOX_ID, fetchedSong?.title )
+                val authors = getProperty( AUTHORS_CHECKBOX_ID, fetchedSong?.artistsText )
+                val thumbnailUrl = getProperty( THUMBNAIL_CHECKBOX_ID, fetchedSong?.thumbnailUrl )
 
                 song = song.copy(
                     title = title ?: song.title,
