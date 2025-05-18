@@ -9,13 +9,19 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -28,14 +34,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
@@ -51,8 +60,11 @@ import it.fast4x.rimusic.ui.components.SeekBarCustom
 import it.fast4x.rimusic.ui.components.SeekBarThin
 import it.fast4x.rimusic.ui.components.SeekBarWaved
 import it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+const val DURATION_INDICATOR_HEIGHT = 20
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -283,7 +295,6 @@ fun GetSeekBar(
             .height(8.dp)
     )
 
-
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -291,6 +302,27 @@ fun GetSeekBar(
             .padding(horizontal = 10.dp)
             .fillMaxWidth()
     ) {
+        Button(
+            onClick = {
+                binder.player.seekTo( position - 5000 )
+            },
+            contentPadding = PaddingValues(),
+            colors = ButtonDefaults.buttonColors().copy(
+                containerColor = Color.Transparent
+            ),
+            modifier = Modifier.size( DURATION_INDICATOR_HEIGHT.dp )
+                               .align( Alignment.CenterVertically )
+        ) {
+            Icon(
+                painter = painterResource( R.drawable.play_forward ),
+                tint = colorPalette().favoritesIcon,
+                contentDescription = "Rewind 5 seconds",
+                modifier = Modifier.rotate( 180f )
+            )
+        }
+
+        Spacer( Modifier.width( 5.dp ) )
+
         val outlineColor =
             if ( colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && !isSystemInDarkTheme()) )
                 Color.White.copy( 0.5f )
@@ -301,7 +333,8 @@ fun GetSeekBar(
 
         // Scrubbing position
         Box(
-            modifier = Modifier.weight( 1f ),
+            modifier = Modifier.weight( 1f )
+                               .height( DURATION_INDICATOR_HEIGHT.dp ),
             contentAlignment = Alignment.CenterStart
         ) {
             val toDisplay by remember( position ) {
@@ -339,7 +372,8 @@ fun GetSeekBar(
 
         // Remaining duration
         Box(
-            modifier = Modifier.weight( 1f ),
+            modifier = Modifier.weight( 1f )
+                               .height( DURATION_INDICATOR_HEIGHT.dp ),
             contentAlignment = Alignment.Center
         ) {
             val positionAndDuration by binder.player.positionAndDurationState()
@@ -397,7 +431,8 @@ fun GetSeekBar(
 
         // Song's duration
         Box(
-            modifier = Modifier.weight( 1f ),
+            modifier = Modifier.weight( 1f )
+                               .height( DURATION_INDICATOR_HEIGHT.dp ),
             contentAlignment = Alignment.CenterEnd
         ) {
             val toDisplay = remember( duration ) {
@@ -430,6 +465,25 @@ fun GetSeekBar(
                                     ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+            )
+        }
+
+        Spacer( Modifier.width( 5.dp ) )
+
+        Button(
+            onClick = {
+                binder.player.seekTo( position + 5000 )
+            },
+            contentPadding = PaddingValues(),
+            colors = ButtonDefaults.buttonColors().copy(
+                containerColor = Color.Transparent
+            ),
+            modifier = Modifier.size( DURATION_INDICATOR_HEIGHT.dp )
+        ) {
+            Icon(
+                painter = painterResource( R.drawable.play_forward ),
+                tint = colorPalette().favoritesIcon,
+                contentDescription = "Forward 5 seconds"
             )
         }
     }
