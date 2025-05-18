@@ -5,11 +5,11 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,8 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ripple
@@ -38,6 +36,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -302,24 +301,27 @@ fun GetSeekBar(
             .padding(horizontal = 10.dp)
             .fillMaxWidth()
     ) {
-        Button(
-            onClick = {
-                binder.player.seekTo( position - 5000 )
-            },
-            contentPadding = PaddingValues(),
-            colors = ButtonDefaults.buttonColors().copy(
-                containerColor = Color.Transparent
-            ),
-            modifier = Modifier.size( DURATION_INDICATOR_HEIGHT.dp )
+        Icon(
+            painter = painterResource( R.drawable.play_forward ),
+            tint = colorPalette().favoritesIcon,
+            contentDescription = "Rewind 5 seconds",
+            modifier = Modifier.rotate( 180f )
+                               .size( DURATION_INDICATOR_HEIGHT.dp )
                                .align( Alignment.CenterVertically )
-        ) {
-            Icon(
-                painter = painterResource( R.drawable.play_forward ),
-                tint = colorPalette().favoritesIcon,
-                contentDescription = "Rewind 5 seconds",
-                modifier = Modifier.rotate( 180f )
-            )
-        }
+                               .pointerInput( position ) {
+                                   detectTapGestures(
+                                       onTap = {
+                                           binder.player.seekTo( position - 5000 )
+                                       },
+                                       onDoubleTap = {
+                                           binder.player.seekTo( position - 10_000 )
+                                       },
+                                       onLongPress = {
+                                           binder.player.seekTo( position - 30_000 )
+                                       }
+                                   )
+                               }
+        )
 
         Spacer( Modifier.width( 5.dp ) )
 
@@ -470,21 +472,24 @@ fun GetSeekBar(
 
         Spacer( Modifier.width( 5.dp ) )
 
-        Button(
-            onClick = {
-                binder.player.seekTo( position + 5000 )
-            },
-            contentPadding = PaddingValues(),
-            colors = ButtonDefaults.buttonColors().copy(
-                containerColor = Color.Transparent
-            ),
+        Icon(
+            painter = painterResource( R.drawable.play_forward ),
+            tint = colorPalette().favoritesIcon,
+            contentDescription = "Forward 5 seconds",
             modifier = Modifier.size( DURATION_INDICATOR_HEIGHT.dp )
-        ) {
-            Icon(
-                painter = painterResource( R.drawable.play_forward ),
-                tint = colorPalette().favoritesIcon,
-                contentDescription = "Forward 5 seconds"
-            )
-        }
+                               .pointerInput( position ) {
+                                   detectTapGestures(
+                                       onTap = {
+                                           binder.player.seekTo( position + 5000 )
+                                       },
+                                       onDoubleTap = {
+                                           binder.player.seekTo( position + 10_000 )
+                                       },
+                                       onLongPress = {
+                                           binder.player.seekTo( position + 30_000 )
+                                       }
+                                   )
+                               }
+        )
     }
 }
