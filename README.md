@@ -12,7 +12,7 @@
 
   <br>
 
-  [![Discord badge](https://dcbadge.limes.pink/api/server/https://discord.gg/cZ35BPNXQp?theme=default-inverted)](https://discord.gg/cZ35BPNXQp)
+  [![Discord badge](https://dcbadge.limes.pink/api/server/https://discord.gg/WYr9ZgJzpx?theme=default-inverted)](https://discord.gg/WYr9ZgJzpx)
 
 </div>
 
@@ -64,7 +64,7 @@ Discord server is public, join now!
 
 # Social media
 
-- [Discord](https://discord.gg/cZ35BPNXQp)
+- [Discord](https://discord.gg/WYr9ZgJzpx)
 
 
 # 📷 Screenshots
