@@ -5,13 +5,23 @@
   </p>
     
   <br>
+  
+  [![Latest version download count](https://api.knighthat.me/kreate/downloads/latest)](https://github.com/knighthat/kreate/releases/latest)
+  [![Localization progress](https://badges.crowdin.net/kreate/localized.svg)](https://translate.kreate.knighthat.me/project/kreate)
+  ![Total download count](https://api.knighthat.me/kreate/downloads/total)
 
-[![Latest version download count](https://api.knighthat.me/kreate/downloads/latest)](https://github.com/knighthat/kreate/releases/latest)
-[![Localization progress](https://badges.crowdin.net/kreate/localized.svg)](https://translate.kreate.knighthat.me/project/kreate)
-![Total download count](https://api.knighthat.me/kreate/downloads/total)
+  <br>
+
+  [![Discord badge](https://dcbadge.limes.pink/api/server/https://discord.gg/cZ35BPNXQp?theme=default-inverted)](https://discord.gg/cZ35BPNXQp)
 
 </div>
 
+
+# Announcement - First social media
+
+Discord server is public, join now!
+
+[![Discord badge](https://dcbadge.limes.pink/api/server/https://discord.gg/cZ35BPNXQp?theme=default-inverted)](https://discord.gg/cZ35BPNXQp)  <-- Click me
 
 # 📲 Installation
 
@@ -50,6 +60,11 @@
 - Export settings
 - Weekly update
 - Plays music even with no internet connection
+
+
+# Social media
+
+- [Discord](https://discord.gg/cZ35BPNXQp)
 
 
 # 📷 Screenshots
