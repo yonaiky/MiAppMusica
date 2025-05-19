@@ -139,8 +139,6 @@ fun OnDeviceSong(
                .onEach { lazyListState.scrollToItem( 0, 0 ) }
                .collect {
                    songsOnDevice = it
-
-                   it.keys.toList()
                }
     }
     LaunchedEffect( songsOnDevice, search.inputValue, currentPath ) {
