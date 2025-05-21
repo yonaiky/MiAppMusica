@@ -9,10 +9,13 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import me.knighthat.utils.Toaster
+import org.jetbrains.annotations.Blocking
 
 object Store {
 
-    const val DEFAULT = "CgtMN0FkbDFaWERfdyi8t4u7BjIKCgJWThIEGgAgWQ%3D%3D"
+    private const val DEFAULT_VISITOR_DATA = "CgtMN0FkbDFaWERfdyi8t4u7BjIKCgJWThIEGgAgWQ%3D%3D"
+    private const val DEFAULT_COOKIE = "PREF=hl=en&tz=UTC; SOCS=CAI"
 
     private val REGEXES_VISITOR_DATA = listOf(
         Regex("\\{\"key\":\"visitor_data\",\"value\":\"(Cgt.*?%3D%3D)\"\\}"),
@@ -23,52 +26,70 @@ object Store {
     private lateinit var visitorData: String
     private lateinit var cookie: String
 
+    @Blocking
     private suspend fun fetchIfNeeded() {
         if( ::ghostResponseBody.isInitialized && ::ghostResponseHeaders.isInitialized )
             return
 
-        val response =
+        runCatching {
             Innertube.client.get("https://www.youtube.com/watch?v=dQw4w9WgXcQ&bpctr=9999999999&has_verified=1") {
                 headers {
                     append( HttpHeaders.Connection, "Close" )
                     append( HttpHeaders.Host, "https://www.youtube.com" )
-                    append( HttpHeaders.Cookie, "PREF=hl=en&tz=UTC; SOCS=CAI" )
+                    append( HttpHeaders.Cookie, DEFAULT_COOKIE )
                     append( HttpHeaders.UserAgent, Context.USER_AGENT_WEB )
                     append( "Sec-Fetch-Mode", "navigate" )
                 }
             }
-
-        // Cache for later use
-        ghostResponseHeaders = response.headers
-        ghostResponseBody = response.bodyAsText()
+        }.fold(
+            onSuccess = {
+                // Cache for later use
+                ghostResponseHeaders = it.headers
+                ghostResponseBody = it.bodyAsText()
+            },
+            onFailure = {
+                Toaster.e("Failed to get visitorData")
+                it.printStackTrace()
+            }
+        )
     }
 
+    @Blocking
     fun getVisitorData(): String {
         if( ::visitorData.isInitialized )
             return visitorData
 
         runBlocking( Dispatchers.IO ) { fetchIfNeeded() }
 
-        val matchedGroup = REGEXES_VISITOR_DATA.firstNotNullOfOrNull { regex ->
-            regex.find( ghostResponseBody )?.groupValues?.getOrNull( 1 )
-        }
-        visitorData = matchedGroup ?: DEFAULT
+        if( ::ghostResponseBody.isInitialized )
+            REGEXES_VISITOR_DATA.firstNotNullOfOrNull { regex ->
+                                    regex.find( ghostResponseBody )
+                                         ?.groupValues
+                                         ?.getOrNull( 1 )
+                                }
+                                ?.let { visitorData = it }
+        else
+            visitorData = DEFAULT_VISITOR_DATA
 
         return visitorData
     }
 
+    @Blocking
     fun getCookie(): String {
         if( ::cookie.isInitialized )
             return cookie
 
         runBlocking( Dispatchers.IO ) { fetchIfNeeded() }
 
-        val headerCookie: String = ghostResponseHeaders.getAll(HttpHeaders.SetCookie)
-                                                       .orEmpty()
-                                                       .joinToString("; ") {
-                                                           it.split(";").first()
-                                                       }
-        cookie = "PREF=hl=en&tz=UTC; SOCS=CAI; $headerCookie"
+        if( ::ghostResponseHeaders.isInitialized )
+            ghostResponseHeaders.getAll(HttpHeaders.SetCookie)
+                                .orEmpty()
+                                .joinToString("; ") {
+                                    it.split(";").first()
+                                }
+                                .let { cookie = "$DEFAULT_COOKIE; $it" }
+        else
+            cookie = DEFAULT_COOKIE
 
         return cookie
     }
