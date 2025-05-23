@@ -11,20 +11,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import me.knighthat.utils.Toaster
 import org.jetbrains.annotations.Blocking
+import org.schabi.newpipe.extractor.localization.ContentCountry
+import org.schabi.newpipe.extractor.localization.Localization
+import org.schabi.newpipe.extractor.services.youtube.InnertubeClientRequestInfo
+import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 
 object Store {
 
-    private const val DEFAULT_VISITOR_DATA = "CgtMN0FkbDFaWERfdyi8t4u7BjIKCgJWThIEGgAgWQ%3D%3D"
     private const val DEFAULT_COOKIE = "PREF=hl=en&tz=UTC; SOCS=CAI"
 
-    private val REGEXES_VISITOR_DATA = listOf(
-        Regex("\\{\"key\":\"visitor_data\",\"value\":\"(Cgt.*?%3D%3D)\"\\}"),
-        Regex(",\"VISITOR_DATA\":\"(Cgt.*?%3D%3D)\",")
-    )
     private lateinit var ghostResponseHeaders: Headers
     private lateinit var ghostResponseBody: String
-    private lateinit var visitorData: String
     private lateinit var cookie: String
+
+    private lateinit var iosVisitorData: String
 
     @Blocking
     private suspend fun fetchIfNeeded() {
@@ -54,24 +54,25 @@ object Store {
         )
     }
 
-    @Blocking
-    fun getVisitorData(): String {
-        if( ::visitorData.isInitialized )
-            return visitorData
+    fun getIosVisitorData(): String {
+        if( ::iosVisitorData.isInitialized )
+            return iosVisitorData
 
-        runBlocking( Dispatchers.IO ) { fetchIfNeeded() }
+        val headers: MutableMap<String, List<String>> = mutableMapOf()
+        headers["User-Agent"] = listOf( YoutubeParsingHelper.getIosUserAgent( Localization.DEFAULT ) )
+        headers.putAll(YoutubeParsingHelper.getOriginReferrerHeaders("https://www.youtube.com"))
 
-        if( ::ghostResponseBody.isInitialized )
-            REGEXES_VISITOR_DATA.firstNotNullOfOrNull { regex ->
-                                    regex.find( ghostResponseBody )
-                                         ?.groupValues
-                                         ?.getOrNull( 1 )
-                                }
-                                ?.let { visitorData = it }
-        else
-            visitorData = DEFAULT_VISITOR_DATA
+        iosVisitorData = YoutubeParsingHelper.getVisitorDataFromInnertube(
+            InnertubeClientRequestInfo.ofIosClient(),
+            Localization.DEFAULT,
+            ContentCountry.DEFAULT,
+            headers,
+            YoutubeParsingHelper.YOUTUBEI_V1_URL,
+            null,
+            false
+        )
 
-        return visitorData
+        return iosVisitorData
     }
 
     @Blocking
