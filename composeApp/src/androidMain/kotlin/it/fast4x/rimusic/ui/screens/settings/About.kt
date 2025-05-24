@@ -184,6 +184,14 @@ fun About() {
         )
 
         SettingsEntry(
+            title = stringResource( R.string.word_documentation ),
+            text = stringResource( R.string.opens_link_in_web_browser ),
+            onClick = {
+                uriHandler.openUri( "https://kreate.knighthat.me" )
+            }
+        )
+
+        SettingsEntry(
             title = stringResource(R.string.report_an_issue),
             text = stringResource(R.string.you_will_be_redirected_to_github),
             onClick = {
