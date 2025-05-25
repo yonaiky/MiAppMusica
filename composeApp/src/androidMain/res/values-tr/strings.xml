@@ -965,6 +965,6 @@
     <string name="title_playback_speed">Çalma hızı</string>
     <string name="description_playback_speed">Şarkının ne kadar yavaş/hızlı gittiğini ayarla</string>
     <string name="log_in_to_ytm">Daha fazla içerik için YTM hesabınıza giriş yapın</string>
-    <string name="word_documentation">Documentation</string>
-    <string name="opens_link_in_web_browser">Opens link in web browser</string>
+    <string name="word_documentation">Dökümantasyon</string>
+    <string name="opens_link_in_web_browser">Bağlantıyı web tarayıcısında açar</string>
 </resources>
