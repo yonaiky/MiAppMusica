@@ -965,6 +965,6 @@
     <string name="title_playback_speed">Wiedergabegeschwindigkeit</string>
     <string name="description_playback_speed">Festlegen, wie langsam oder schnell der Titel laufen soll</string>
     <string name="log_in_to_ytm">Log in to your YTM account for more content</string>
-    <string name="word_documentation">Documentation</string>
-    <string name="opens_link_in_web_browser">Opens link in web browser</string>
+    <string name="word_documentation">Dokumentation</string>
+    <string name="opens_link_in_web_browser">Öffnet den Link im Webbrowser</string>
 </resources>
