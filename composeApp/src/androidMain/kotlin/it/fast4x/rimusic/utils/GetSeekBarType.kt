@@ -83,7 +83,6 @@ fun GetSeekBar(
     val scope = rememberCoroutineScope()
     val animatedPosition = remember { Animatable(position.toFloat()) }
     var isSeeking by remember { mutableStateOf(false) }
-    val showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
 
     val compositionLaunched = isCompositionLaunched()
     LaunchedEffect(mediaId) {
@@ -373,62 +372,67 @@ fun GetSeekBar(
         }
 
         // Remaining duration
-        Box(
-            modifier = Modifier.weight( 1f )
-                               .height( DURATION_INDICATOR_HEIGHT.dp ),
-            contentAlignment = Alignment.Center
-        ) {
-            val positionAndDuration by binder.player.positionAndDurationState()
-            val timeRemaining by remember { derivedStateOf {
-                positionAndDuration.second - positionAndDuration.first
-            } }
-            var isPaused by remember { mutableStateOf( false ) }
-
-            val pauseBetweenSongs by rememberPreference( pauseBetweenSongsKey, PauseBetweenSongs.`0` )
-            if( pauseBetweenSongs != PauseBetweenSongs.`0` )
-                LaunchedEffect( timeRemaining ) {
-                    if ( timeRemaining < 500 ) {
-                        isPaused = true
-                        binder.player.pause()
-                        delay( pauseBetweenSongs.asMillis )
-                        binder.player.play()
-                        isPaused = false
+        val showRemainingSongTime by rememberPreference( showRemainingSongTimeKey, true )
+        if( showRemainingSongTime ) {
+            Box(
+                modifier = Modifier.weight(1f)
+                                   .height(DURATION_INDICATOR_HEIGHT.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                val positionAndDuration by binder.player.positionAndDurationState()
+                val timeRemaining by remember {
+                    derivedStateOf {
+                        positionAndDuration.second - positionAndDuration.first
                     }
                 }
+                var isPaused by remember { mutableStateOf(false) }
 
-            if( isPaused ) return@Box
+                val pauseBetweenSongs by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
+                if(pauseBetweenSongs != PauseBetweenSongs.`0`)
+                    LaunchedEffect(timeRemaining) {
+                        if(timeRemaining < 500) {
+                            isPaused = true
+                            binder.player.pause()
+                            delay(pauseBetweenSongs.asMillis)
+                            binder.player.play()
+                            isPaused = false
+                        }
+                    }
 
-            val toDisplay by remember {
-                derivedStateOf { formatAsDuration( timeRemaining ) }
-            }
+                if(isPaused) return@Box
 
-            // Main text
-            BasicText(
-                text = toDisplay,
-                style = typography().xxs.semiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = ripple(false),
-                    onClick = {binder.player.seekTo(position - 5000)}
+                val toDisplay by remember {
+                    derivedStateOf { formatAsDuration(timeRemaining) }
+                }
+
+                // Main text
+                BasicText(
+                    text = toDisplay,
+                    style = typography().xxs.semiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = ripple(false),
+                        onClick = { binder.player.seekTo(position - 5000) }
+                    )
                 )
-            )
 
-            // Outline (if applicable)
-            BasicText(
-                text = toDisplay,
-                style = typography().xxs
-                                    .semiBold
-                                    .merge(
-                                        TextStyle(
-                                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                                            color = outlineColor
-                                        )
-                                    ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                // Outline (if applicable)
+                BasicText(
+                    text = toDisplay,
+                    style = typography().xxs
+                                        .semiBold
+                                        .merge(
+                                            TextStyle(
+                                                drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                                                color = outlineColor
+                                            )
+                                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
 
         // Song's duration
