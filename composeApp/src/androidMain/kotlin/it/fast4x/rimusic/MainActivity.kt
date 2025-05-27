@@ -91,6 +91,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
+import app.kreate.android.Threads
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
@@ -1287,6 +1288,9 @@ class MainActivity :
         runCatching {
             monet.removeMonetColorsChangedListener(this)
             _monet = null
+
+            // Close threads
+            Threads.DATASPEC_DISPATCHER.close()
         }.onFailure {
             Timber.e("MainActivity.onDestroy removeMonetColorsChangedListener ${it.stackTraceToString()}")
         }
