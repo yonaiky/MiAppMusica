@@ -1,0 +1,280 @@
+package app.kreate.android.themed.rimusic.screen.player.timeline
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
+import app.kreate.android.R
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.ColorPaletteMode
+import it.fast4x.rimusic.enums.PauseBetweenSongs
+import it.fast4x.rimusic.service.modern.PlayerServiceModern
+import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.utils.DURATION_INDICATOR_HEIGHT
+import it.fast4x.rimusic.utils.colorPaletteModeKey
+import it.fast4x.rimusic.utils.formatAsDuration
+import it.fast4x.rimusic.utils.pauseBetweenSongsKey
+import it.fast4x.rimusic.utils.positionAndDurationState
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.showRemainingSongTimeKey
+import it.fast4x.rimusic.utils.textoutlineKey
+import kotlinx.coroutines.delay
+
+@UnstableApi
+@Composable
+fun DurationIndicator(
+    binder: PlayerServiceModern.Binder,
+    scrubbingPosition: Long?,
+    position: Long,
+    duration: Long
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding( horizontal = 10.dp )
+                           .fillMaxWidth()
+    ) {
+        Icon(
+            painter = painterResource( R.drawable.play_forward ),
+            tint = colorPalette().favoritesIcon,
+            contentDescription = "Rewind 5 seconds",
+            modifier = Modifier.rotate( 180f )
+                               .size( DURATION_INDICATOR_HEIGHT.dp )
+                               .align( Alignment.CenterVertically )
+                               .combinedClickable(
+                                   interactionSource = remember { MutableInteractionSource() },
+                                   indication = null,
+                                   role = Role.Button,
+                                   onClickLabel = "Rewind 5 seconds",
+                                   onClick = {
+                                       val newPosition = maxOf(position - 5000, 0)
+                                       binder.player.seekTo(newPosition)
+                                   },
+                                   onDoubleClick = {
+                                       val newPosition = maxOf(position - 10_000, 0)
+                                       binder.player.seekTo(newPosition)
+                                   },
+                                   onLongClickLabel = "Rewind 30 seconds",
+                                   onLongClick = {
+                                       val newPosition = maxOf(position - 30_000, 0)
+                                       binder.player.seekTo(newPosition)
+                                   }
+                               )
+        )
+
+        Spacer( Modifier.width( 5.dp ) )
+
+        val colorPaletteMode by rememberPreference( colorPaletteModeKey, ColorPaletteMode.Dark )
+        val textOutline by rememberPreference( textoutlineKey, false )
+        val outlineColor =
+            if ( colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && !isSystemInDarkTheme()) )
+                Color.White.copy( 0.5f )
+            else if( !textOutline )
+                Color.Transparent
+            else
+                Color.Black
+
+        // Scrubbing position
+        Box(
+            modifier = Modifier.weight( 1f )
+                               .height( DURATION_INDICATOR_HEIGHT.dp ),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            val toDisplay by remember( position ) {
+                derivedStateOf { formatAsDuration( scrubbingPosition ?: position ) }
+            }
+
+            // Main text
+            BasicText(
+                text = toDisplay,
+                style = typography().xxs.semiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(false),
+                    onClick = {binder.player.seekTo(position - 5000)}
+                )
+            )
+
+            // Outline (if applicable)
+            BasicText(
+                text = toDisplay,
+                style = typography().xxs
+                                    .semiBold
+                                    .merge(
+                                        TextStyle(
+                                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                                            color = outlineColor
+                                        )
+                                    ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+
+        // Remaining duration
+        val showRemainingSongTime by rememberPreference( showRemainingSongTimeKey, true )
+        if( showRemainingSongTime ) {
+            Box(
+                modifier = Modifier.weight( 1f )
+                                   .height( DURATION_INDICATOR_HEIGHT.dp ),
+                contentAlignment = Alignment.Center
+            ) {
+                val positionAndDuration by binder.player.positionAndDurationState()
+                val timeRemaining by remember {
+                    derivedStateOf {
+                        positionAndDuration.second - positionAndDuration.first
+                    }
+                }
+                var isPaused by remember { mutableStateOf(false) }
+
+                val pauseBetweenSongs by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
+                if(pauseBetweenSongs != PauseBetweenSongs.`0`)
+                    LaunchedEffect(timeRemaining) {
+                        if(timeRemaining < 500) {
+                            isPaused = true
+                            binder.player.pause()
+                            delay(pauseBetweenSongs.asMillis)
+                            binder.player.play()
+                            isPaused = false
+                        }
+                    }
+
+                if(isPaused) return@Box
+
+                val toDisplay by remember {
+                    derivedStateOf { formatAsDuration(timeRemaining) }
+                }
+
+                // Main text
+                BasicText(
+                    text = toDisplay,
+                    style = typography().xxs.semiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = ripple(false),
+                        onClick = { binder.player.seekTo(position - 5000) }
+                    )
+                )
+
+                // Outline (if applicable)
+                BasicText(
+                    text = toDisplay,
+                    style = typography().xxs
+                                        .semiBold
+                                        .merge(
+                                            TextStyle(
+                                                drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                                                color = outlineColor
+                                            )
+                                        ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+
+        // Song's duration
+        Box(
+            modifier = Modifier.weight( 1f )
+                               .height( DURATION_INDICATOR_HEIGHT.dp ),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            val toDisplay = remember( duration ) {
+                if( duration <= 0 ) "--:--" else formatAsDuration( duration )
+            }
+
+            // Main text
+            BasicText(
+                text = toDisplay,
+                style = typography().xxs.semiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = ripple(false),
+                    onClick = { binder.player.seekTo(position - 5000) }
+                )
+            )
+
+            // Outline (if applicable)
+            BasicText(
+                text = toDisplay,
+                style = typography().xxs
+                                    .semiBold
+                                    .merge(
+                                        TextStyle(
+                                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                                            color = outlineColor
+                                        )
+                                    ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+
+        Spacer( Modifier.width( 5.dp ) )
+
+        Icon(
+            painter = painterResource( R.drawable.play_forward ),
+            tint = colorPalette().favoritesIcon,
+            contentDescription = "Forward 5 seconds",
+            modifier = Modifier.size( DURATION_INDICATOR_HEIGHT.dp )
+                               .combinedClickable(
+                                   interactionSource = remember { MutableInteractionSource() },
+                                   indication =  null,
+                                   role = Role.Button,
+                                   onClickLabel = "Forward 5 seconds",
+                                   onClick = {
+                                       val newPosition = minOf(position + 5000, duration)
+                                       binder.player.seekTo(newPosition)
+                                   },
+                                   onDoubleClick = {
+                                       val newPosition = minOf( position + 10_000, duration )
+                                       binder.player.seekTo( newPosition )
+                                   },
+                                   onLongClickLabel = "Forward 30 seconds",
+                                   onLongClick = {
+                                       val newPosition = minOf( position + 30_000, duration )
+                                       binder.player.seekTo( newPosition )
+                                   }
+                               )
+        )
+    }
+}
