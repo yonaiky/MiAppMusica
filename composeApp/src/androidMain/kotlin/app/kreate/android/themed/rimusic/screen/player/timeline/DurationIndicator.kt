@@ -7,6 +7,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -52,6 +53,55 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlinx.coroutines.delay
+import kotlin.math.min
+
+/**
+ * Adjust timeline based on provided values.
+ *
+ * @param operation of [Long] to get desired position (either [Long.plus] or [Long.minus])
+ * @param valueSelector takes a value between position and [comparedValue] to ensure position isn't outside of allowed range
+ * @param comparedValue either end of position, this value sets the limit for calculated position
+ */
+@UnstableApi
+@Composable
+private fun RowScope.SkipTimeButton(
+    binder: PlayerServiceModern.Binder,
+    position: Long,
+    operation: Long.(Long) -> Long,
+    valueSelector: (Long, Long) -> Long,
+    comparedValue: Long,
+    contentDescription: String,
+    onClickLabel: String,
+    onLongClickLabel: String,
+    modifier: Modifier = Modifier,
+    tapAdjustment: Long = 5_000L,
+    doubleTapAdjustment: Long = 10_000L,
+    longTapAdjustment: Long = 30_000L
+) {
+    fun seekTo( adjustment: Long ) {
+        val adjustedPosition = position.operation( adjustment )
+        val newPosition = valueSelector( adjustedPosition, comparedValue )
+        binder.player.seekTo( newPosition )
+    }
+
+    Icon(
+        painter = painterResource( R.drawable.play_forward ),
+        tint = colorPalette().favoritesIcon,
+        contentDescription = contentDescription,
+        modifier = modifier.size( DURATION_INDICATOR_HEIGHT.dp )
+                           .align( Alignment.CenterVertically )
+                           .combinedClickable(
+                               interactionSource = remember { MutableInteractionSource() },
+                               indication = null,
+                               role = Role.Button,
+                               onClickLabel = onClickLabel,
+                               onClick = { seekTo(tapAdjustment) },
+                               onDoubleClick = { seekTo(doubleTapAdjustment) },
+                               onLongClickLabel = onLongClickLabel,
+                               onLongClick = { seekTo(longTapAdjustment) }
+                           )
+    )
+}
 
 @UnstableApi
 @Composable
@@ -67,32 +117,8 @@ fun DurationIndicator(
         modifier = Modifier.padding( horizontal = 10.dp )
                            .fillMaxWidth()
     ) {
-        Icon(
-            painter = painterResource( R.drawable.play_forward ),
-            tint = colorPalette().favoritesIcon,
-            contentDescription = "Rewind 5 seconds",
-            modifier = Modifier.rotate( 180f )
-                               .size( DURATION_INDICATOR_HEIGHT.dp )
-                               .align( Alignment.CenterVertically )
-                               .combinedClickable(
-                                   interactionSource = remember { MutableInteractionSource() },
-                                   indication = null,
-                                   role = Role.Button,
-                                   onClickLabel = "Rewind 5 seconds",
-                                   onClick = {
-                                       val newPosition = maxOf(position - 5000, 0)
-                                       binder.player.seekTo(newPosition)
-                                   },
-                                   onDoubleClick = {
-                                       val newPosition = maxOf(position - 10_000, 0)
-                                       binder.player.seekTo(newPosition)
-                                   },
-                                   onLongClickLabel = "Rewind 30 seconds",
-                                   onLongClick = {
-                                       val newPosition = maxOf(position - 30_000, 0)
-                                       binder.player.seekTo(newPosition)
-                                   }
-                               )
+        SkipTimeButton(
+            binder, position, Long::minus, ::maxOf, 0, "Rewind", "Rewind 5 seconds", "Rewinds 30 seconds", Modifier.rotate( 180f )
         )
 
         Spacer( Modifier.width( 5.dp ) )
@@ -185,12 +211,7 @@ fun DurationIndicator(
                     text = toDisplay,
                     style = typography().xxs.semiBold,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = ripple(false),
-                        onClick = { binder.player.seekTo(position - 5000) }
-                    )
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 // Outline (if applicable)
@@ -225,12 +246,7 @@ fun DurationIndicator(
                 text = toDisplay,
                 style = typography().xxs.semiBold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = ripple(false),
-                    onClick = { binder.player.seekTo(position - 5000) }
-                )
+                overflow = TextOverflow.Ellipsis
             )
 
             // Outline (if applicable)
@@ -251,30 +267,8 @@ fun DurationIndicator(
 
         Spacer( Modifier.width( 5.dp ) )
 
-        Icon(
-            painter = painterResource( R.drawable.play_forward ),
-            tint = colorPalette().favoritesIcon,
-            contentDescription = "Forward 5 seconds",
-            modifier = Modifier.size( DURATION_INDICATOR_HEIGHT.dp )
-                               .combinedClickable(
-                                   interactionSource = remember { MutableInteractionSource() },
-                                   indication =  null,
-                                   role = Role.Button,
-                                   onClickLabel = "Forward 5 seconds",
-                                   onClick = {
-                                       val newPosition = minOf(position + 5000, duration)
-                                       binder.player.seekTo(newPosition)
-                                   },
-                                   onDoubleClick = {
-                                       val newPosition = minOf( position + 10_000, duration )
-                                       binder.player.seekTo( newPosition )
-                                   },
-                                   onLongClickLabel = "Forward 30 seconds",
-                                   onLongClick = {
-                                       val newPosition = minOf( position + 30_000, duration )
-                                       binder.player.seekTo( newPosition )
-                                   }
-                               )
+        SkipTimeButton(
+            binder, position, Long::plus, ::minOf, duration, "Forward", "Forward 5 seconds", "Forward 30 seconds"
         )
     }
 }
