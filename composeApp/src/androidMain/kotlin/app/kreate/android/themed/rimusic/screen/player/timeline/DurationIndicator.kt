@@ -198,7 +198,7 @@ fun DurationIndicator(
                 val positionAndDuration by binder.player.positionAndDurationState()
                 val timeRemaining by remember {
                     derivedStateOf {
-                        positionAndDuration.second - positionAndDuration.first
+                        (positionAndDuration.second - positionAndDuration.first).coerceAtLeast( 0 )
                     }
                 }
                 var isPaused by remember { mutableStateOf(false) }
