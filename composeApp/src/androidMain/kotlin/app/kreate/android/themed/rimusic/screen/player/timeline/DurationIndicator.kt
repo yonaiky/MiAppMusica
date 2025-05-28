@@ -1,6 +1,5 @@
 package app.kreate.android.themed.rimusic.screen.player.timeline
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -16,9 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +53,6 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import kotlinx.coroutines.delay
-import kotlin.math.min
 
 /**
  * Adjust timeline based on provided values.
@@ -103,6 +102,50 @@ private fun RowScope.SkipTimeButton(
     )
 }
 
+@Composable
+private fun outlineColorState(): State<Color> {
+    val colorPaletteMode by rememberPreference( colorPaletteModeKey, ColorPaletteMode.Dark )
+    val textOutline by rememberPreference( textoutlineKey, false )
+    val isDarkTheme = isSystemInDarkTheme()
+
+    return remember {
+        derivedStateOf {
+            if ( colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && !isDarkTheme) )
+                Color.White.copy( 0.5f )
+            else if( !textOutline )
+                Color.Transparent
+            else
+                Color.Black
+        }
+    }
+}
+
+@Composable
+private fun OutlinedText( text: String, outlineColor: Color ) {
+    // Main text
+    BasicText(
+        text = text,
+        style = typography().xxs.semiBold,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+
+    // Outline
+    BasicText(
+        text = text,
+        style = typography().xxs
+                            .semiBold
+                            .merge(
+                                TextStyle(
+                                    drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
+                                    color = outlineColor
+                                )
+                            ),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
 @UnstableApi
 @Composable
 fun DurationIndicator(
@@ -123,15 +166,14 @@ fun DurationIndicator(
 
         Spacer( Modifier.width( 5.dp ) )
 
-        val colorPaletteMode by rememberPreference( colorPaletteModeKey, ColorPaletteMode.Dark )
-        val textOutline by rememberPreference( textoutlineKey, false )
-        val outlineColor =
-            if ( colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && !isSystemInDarkTheme()) )
-                Color.White.copy( 0.5f )
-            else if( !textOutline )
-                Color.Transparent
-            else
-                Color.Black
+        /**
+         * Current implement of [rememberPreference] creates new [MutableState]
+         * each time the function is called. To prevent creation of multiple instances,
+         * this variable is placed in parent class and passed to each [OutlinedText].
+         *
+         * When it's updated, all [OutlinedText] are updated as well.
+         */
+        val outlineColor by outlineColorState()
 
         // Scrubbing position
         Box(
@@ -142,34 +184,7 @@ fun DurationIndicator(
             val toDisplay by remember( position ) {
                 derivedStateOf { formatAsDuration( scrubbingPosition ?: position ) }
             }
-
-            // Main text
-            BasicText(
-                text = toDisplay,
-                style = typography().xxs.semiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = ripple(false),
-                    onClick = {binder.player.seekTo(position - 5000)}
-                )
-            )
-
-            // Outline (if applicable)
-            BasicText(
-                text = toDisplay,
-                style = typography().xxs
-                                    .semiBold
-                                    .merge(
-                                        TextStyle(
-                                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                                            color = outlineColor
-                                        )
-                                    ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            OutlinedText( toDisplay, outlineColor )
         }
 
         // Remaining duration
@@ -205,29 +220,7 @@ fun DurationIndicator(
                 val toDisplay by remember {
                     derivedStateOf { formatAsDuration(timeRemaining) }
                 }
-
-                // Main text
-                BasicText(
-                    text = toDisplay,
-                    style = typography().xxs.semiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                // Outline (if applicable)
-                BasicText(
-                    text = toDisplay,
-                    style = typography().xxs
-                                        .semiBold
-                                        .merge(
-                                            TextStyle(
-                                                drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                                                color = outlineColor
-                                            )
-                                        ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                OutlinedText( toDisplay, outlineColor )
             }
         }
 
@@ -240,29 +233,7 @@ fun DurationIndicator(
             val toDisplay = remember( duration ) {
                 if( duration <= 0 ) "--:--" else formatAsDuration( duration )
             }
-
-            // Main text
-            BasicText(
-                text = toDisplay,
-                style = typography().xxs.semiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            // Outline (if applicable)
-            BasicText(
-                text = toDisplay,
-                style = typography().xxs
-                                    .semiBold
-                                    .merge(
-                                        TextStyle(
-                                            drawStyle = Stroke(width = 1.0f, join = StrokeJoin.Round),
-                                            color = outlineColor
-                                        )
-                                    ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            OutlinedText( toDisplay, outlineColor )
         }
 
         Spacer( Modifier.width( 5.dp ) )
