@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -38,6 +39,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -307,19 +309,25 @@ fun GetSeekBar(
             modifier = Modifier.rotate( 180f )
                                .size( DURATION_INDICATOR_HEIGHT.dp )
                                .align( Alignment.CenterVertically )
-                               .pointerInput( position ) {
-                                   detectTapGestures(
-                                       onTap = {
-                                           binder.player.seekTo( position - 5000 )
-                                       },
-                                       onDoubleTap = {
-                                           binder.player.seekTo( position - 10_000 )
-                                       },
-                                       onLongPress = {
-                                           binder.player.seekTo( position - 30_000 )
-                                       }
-                                   )
-                               }
+                               .combinedClickable(
+                                   interactionSource = remember { MutableInteractionSource() },
+                                   indication = null,
+                                   role = Role.Button,
+                                   onClickLabel = "Rewind 5 seconds",
+                                   onClick = {
+                                       val newPosition = maxOf(position - 5000, 0)
+                                       binder.player.seekTo(newPosition)
+                                   },
+                                   onDoubleClick = {
+                                       val newPosition = maxOf(position - 10_000, 0)
+                                       binder.player.seekTo(newPosition)
+                                   },
+                                   onLongClickLabel = "Rewind 30 seconds",
+                                   onLongClick = {
+                                       val newPosition = maxOf(position - 30_000, 0)
+                                       binder.player.seekTo(newPosition)
+                                   }
+                               )
         )
 
         Spacer( Modifier.width( 5.dp ) )
@@ -481,19 +489,25 @@ fun GetSeekBar(
             tint = colorPalette().favoritesIcon,
             contentDescription = "Forward 5 seconds",
             modifier = Modifier.size( DURATION_INDICATOR_HEIGHT.dp )
-                               .pointerInput( position ) {
-                                   detectTapGestures(
-                                       onTap = {
-                                           binder.player.seekTo( position + 5000 )
-                                       },
-                                       onDoubleTap = {
-                                           binder.player.seekTo( position + 10_000 )
-                                       },
-                                       onLongPress = {
-                                           binder.player.seekTo( position + 30_000 )
-                                       }
-                                   )
-                               }
+                               .combinedClickable(
+                                   interactionSource = remember { MutableInteractionSource() },
+                                   indication =  null,
+                                   role = Role.Button,
+                                   onClickLabel = "Forward 5 seconds",
+                                   onClick = {
+                                       val newPosition = minOf(position + 5000, duration)
+                                       binder.player.seekTo(newPosition)
+                                   },
+                                   onDoubleClick = {
+                                       val newPosition = minOf( position + 10_000, duration )
+                                       binder.player.seekTo( newPosition )
+                                   },
+                                   onLongClickLabel = "Forward 30 seconds",
+                                   onLongClick = {
+                                       val newPosition = minOf( position + 30_000, duration )
+                                       binder.player.seekTo( newPosition )
+                                   }
+                               )
         )
     }
 }
