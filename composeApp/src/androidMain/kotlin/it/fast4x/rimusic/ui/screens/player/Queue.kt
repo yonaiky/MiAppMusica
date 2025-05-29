@@ -183,7 +183,6 @@ fun Queue(
             if( itemSelector.isEmpty() ) {
                 player.stop()
                 player.clearMediaItems()
-                player.release()
             } else
                 itemSelector.map( items::indexOf )
                             .sorted()
