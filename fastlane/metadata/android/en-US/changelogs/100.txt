@@ -1,0 +1,12 @@
+Added:
+- Locator button in queue
+
+Fixed:
+- Cached songs don't get updated data
+- Remaining time showed despite disabled in settings
+- Forward/Rewind buttons behaved abnormally
+- Remaining time showed large negative number at the beginning of the song
+- App crashed while changing language
+
+Changed:
+- Improved performance/Reduce wait time when there's a large playlist to play
