@@ -37,7 +37,7 @@
     <string name="artist_no_release_album">Cet artiste n’a sorti aucun album</string>
     <string name="artist_no_release_single">Cet artiste n’a sorti aucun titre</string>
     <string name="delete_playlist">Voulez-vous vraiment supprimer cette playlist ?</string>
-    <string name="sync">Synchroniser</string>
+    <string name="sync">Synchronise</string>
     <string name="rename">Renommer</string>
     <string name="delete">Supprimer</string>
     <string name="enter_the_lyrics">Entrer les paroles</string>
@@ -969,5 +969,5 @@ Volume BAS : titre précédent</string>
     <string name="description_playback_speed">Ajuster la vitesse / la lenteur du titre</string>
     <string name="log_in_to_ytm">Connectez-vous à votre compte YTM pour plus de contenu</string>
     <string name="word_documentation">Documentation</string>
-    <string name="opens_link_in_web_browser">Ouvre le lien dans le navigateur Web</string>
+    <string name="opens_link_in_web_browser">Opens link in web browser</string>
 </resources>
