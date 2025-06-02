@@ -18,13 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirstOrNull
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
+import app.kreate.android.Settings
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.ui.screens.settings.EnumValueSelectorSettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.SettingsDescription
-import it.fast4x.rimusic.utils.checkUpdateStateKey
-import it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -131,7 +130,7 @@ object Updater {
 
     @Composable
     fun SettingEntry() {
-        var checkUpdateState by rememberPreference( checkUpdateStateKey, CheckUpdateState.Disabled )
+        var checkUpdateState by Settings.CHECK_UPDATE
         if( !BuildConfig.IS_AUTOUPDATE )
             checkUpdateState = CheckUpdateState.Disabled
 

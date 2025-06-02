@@ -22,15 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
+import app.kreate.android.Settings
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.PlayEventsType
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.enableQuickPicksPageKey
-import it.fast4x.rimusic.utils.playEventsTypeKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.showChartsKey
 import it.fast4x.rimusic.utils.showMonthlyPlaylistInQuickPicksKey
@@ -48,10 +47,7 @@ import me.knighthat.utils.Toaster
 @UnstableApi
 @Composable
 fun  QuickPicsSettings() {
-    var playEventType by rememberPreference(
-        playEventsTypeKey,
-        PlayEventsType.MostPlayed
-    )
+    var playEventType by Settings.QUICK_PICKS_TYPE
     var showTips by rememberPreference(showTipsKey, true)
     var showRelatedAlbums by rememberPreference(showRelatedAlbumsKey, true)
     var showSimilarArtists by rememberPreference(showSimilarArtistsKey, true)

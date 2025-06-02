@@ -39,6 +39,7 @@ import androidx.compose.ui.util.fastAll
 import androidx.compose.ui.util.fastFirstOrNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Settings
 import app.kreate.android.screens.artist.ArtistDetails
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
@@ -51,9 +52,6 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.playerPositionKey
-import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.transitionEffectKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import me.knighthat.coil.ImageCacheFactory
@@ -71,8 +69,8 @@ fun ArtistScreenModern(
     val saveableStateHolder = rememberSaveableStateHolder()
 
     // Settings
-    val transitionEffect by rememberPreference( transitionEffectKey, TransitionEffect.Scale )
-    val playerPosition by rememberPreference( playerPositionKey, PlayerPosition.Bottom )
+    val transitionEffect by Settings.TRANSITION_EFFECT
+    val playerPosition by Settings.MINI_PLAYER_POSITION
 
     var localArtist: Artist? by remember { mutableStateOf( null ) }
     LaunchedEffect( Unit ) {
