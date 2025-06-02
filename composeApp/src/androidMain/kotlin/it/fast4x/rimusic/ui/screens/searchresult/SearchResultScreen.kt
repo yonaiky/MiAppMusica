@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.Settings
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -57,17 +58,13 @@ import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
-import it.fast4x.rimusic.utils.disableScrollingTextKey
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
-import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.playVideo
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.searchResultScreenTabIndexKey
-import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -96,10 +93,10 @@ fun SearchResultScreen(
 
     val hapticFeedback = LocalHapticFeedback.current
 
-    val isVideoEnabled = LocalContext.current.preferences.getBoolean(showButtonPlayerVideoKey, false)
-    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    val isVideoEnabled by Settings.PLAYER_ACTION_TOGGLE_VIDEO
+    val parentalControlEnabled by Settings.PARENTAL_CONTROL
 
-    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
 
     val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit = {
         Title(

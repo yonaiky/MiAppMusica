@@ -61,13 +61,8 @@ import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
-import it.fast4x.rimusic.utils.enableYouTubeLoginKey
-import it.fast4x.rimusic.utils.enableYouTubeSyncKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid81
-import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
-import it.fast4x.rimusic.utils.isPipedCustomEnabledKey
-import it.fast4x.rimusic.utils.isPipedEnabledKey
 import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
 import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.pipedInstanceNameKey
@@ -76,7 +71,6 @@ import it.fast4x.rimusic.utils.pipedUsernameKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.restartActivityKey
 import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import it.fast4x.rimusic.utils.ytAccountEmailKey
 import it.fast4x.rimusic.utils.ytAccountNameKey
@@ -97,7 +91,7 @@ fun AccountsSettings() {
     val context = LocalContext.current
     val thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
 
-    var restartActivity by rememberPreference(restartActivityKey, false)
+    var restartActivity by Settings.RESTART_ACTIVITY
     var restartService by rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -136,8 +130,8 @@ fun AccountsSettings() {
         /****** YOUTUBE LOGIN ******/
 
         //var useYtLoginOnlyForBrowse by rememberPreference(useYtLoginOnlyForBrowseKey, false)
-        var isYouTubeLoginEnabled by rememberPreference(enableYouTubeLoginKey, false)
-        var isYouTubeSyncEnabled by rememberPreference(enableYouTubeSyncKey, false)
+        var isYouTubeLoginEnabled by Settings.YOUTUBE_LOGIN
+        var isYouTubeSyncEnabled by Settings.YOUTUBE_PLAYLISTS_SYNC
         var loginYouTube by remember { mutableStateOf(false) }
         var visitorData by rememberPreference(key = ytVisitorDataKey, defaultValue = "")
         var dataSyncId by rememberPreference(key = ytDataSyncIdKey, defaultValue = "")
@@ -305,8 +299,8 @@ fun AccountsSettings() {
 
     // rememberEncryptedPreference only works correct with API 24 and up
     if (isAtLeastAndroid7) {
-        var isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-        var isPipedCustomEnabled by rememberPreference(isPipedCustomEnabledKey, false)
+        var isPipedEnabled by Settings.ENABLE_PIPED
+        var isPipedCustomEnabled by Settings.IS_CUSTOM_PIPED
         var pipedUsername by rememberEncryptedPreference(pipedUsernameKey, "")
         var pipedPassword by rememberEncryptedPreference(pipedPasswordKey, "")
         var pipedInstanceName by rememberEncryptedPreference(pipedInstanceNameKey, "")
@@ -527,7 +521,7 @@ fun AccountsSettings() {
 
     // rememberEncryptedPreference only works correct with API 24 and up
     if (isAtLeastAndroid7) {
-        var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
+        var isDiscordPresenceEnabled by Settings.DISCORD_LOGIN
         var loginDiscord by remember { mutableStateOf(false) }
         var discordPersonalAccessToken by rememberEncryptedPreference(
             key = discordPersonalAccessTokenKey,
@@ -601,13 +595,10 @@ fun AccountsSettings() {
 
 }
 
-fun isYouTubeLoginEnabled(): Boolean {
-    val isYouTubeLoginEnabled = appContext().preferences.getBoolean(enableYouTubeLoginKey, false)
-    return isYouTubeLoginEnabled
-}
+fun isYouTubeLoginEnabled(): Boolean = Settings.YOUTUBE_LOGIN.value
 
 fun isYouTubeSyncEnabled(): Boolean {
-    val isYouTubeSyncEnabled = appContext().preferences.getBoolean(enableYouTubeSyncKey, false)
+    val isYouTubeSyncEnabled by Settings.YOUTUBE_PLAYLISTS_SYNC
     return isYouTubeSyncEnabled && isYouTubeLoggedIn() && isYouTubeLoginEnabled()
 }
 

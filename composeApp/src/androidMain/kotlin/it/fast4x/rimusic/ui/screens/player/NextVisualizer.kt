@@ -30,13 +30,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
+import app.kreate.android.Settings.PLAYER_VISUALIZER
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isCompositionLaunched
-import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.visualizerEnabledKey
 
 @UnstableApi
 @Composable
@@ -45,7 +44,7 @@ fun NextVisualizer(
 ) {
 
     val context = LocalContext.current
-    val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
+    val visualizerEnabled by PLAYER_VISUALIZER
 
     if (visualizerEnabled) {
 
