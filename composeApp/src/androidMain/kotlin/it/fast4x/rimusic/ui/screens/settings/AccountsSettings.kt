@@ -46,7 +46,6 @@ import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Instance
 import it.fast4x.piped.models.Session
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
@@ -68,16 +67,7 @@ import it.fast4x.rimusic.utils.pipedApiTokenKey
 import it.fast4x.rimusic.utils.pipedInstanceNameKey
 import it.fast4x.rimusic.utils.pipedPasswordKey
 import it.fast4x.rimusic.utils.pipedUsernameKey
-import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
-import it.fast4x.rimusic.utils.rememberPreference
-import it.fast4x.rimusic.utils.ytAccountChannelHandleKey
-import it.fast4x.rimusic.utils.ytAccountEmailKey
-import it.fast4x.rimusic.utils.ytAccountNameKey
-import it.fast4x.rimusic.utils.ytAccountThumbnailKey
-import it.fast4x.rimusic.utils.ytCookieKey
-import it.fast4x.rimusic.utils.ytDataSyncIdKey
-import it.fast4x.rimusic.utils.ytVisitorDataKey
 import kotlinx.coroutines.launch
 import me.knighthat.utils.Toaster
 import timber.log.Timber
@@ -133,16 +123,13 @@ fun AccountsSettings() {
         var isYouTubeLoginEnabled by Settings.YOUTUBE_LOGIN
         var isYouTubeSyncEnabled by Settings.YOUTUBE_PLAYLISTS_SYNC
         var loginYouTube by remember { mutableStateOf(false) }
-        var visitorData by rememberPreference(key = ytVisitorDataKey, defaultValue = "")
-        var dataSyncId by rememberPreference(key = ytDataSyncIdKey, defaultValue = "")
-        var cookie by rememberPreference(key = ytCookieKey, defaultValue = "")
-        var accountName by rememberPreference(key = ytAccountNameKey, defaultValue = "")
-        var accountEmail by rememberPreference(key = ytAccountEmailKey, defaultValue = "")
-        var accountChannelHandle by rememberPreference(
-            key = ytAccountChannelHandleKey,
-            defaultValue = ""
-        )
-        var accountThumbnail by rememberPreference(key = ytAccountThumbnailKey, defaultValue = "")
+        var visitorData by Settings.YOUTUBE_VISITOR_DATA
+        var dataSyncId by Settings.YOUTUBE_SYNC_ID
+        var cookie by Settings.YOUTUBE_COOKIES
+        var accountName by Settings.YOUTUBE_ACCOUNT_NAME
+        var accountEmail by Settings.YOUTUBE_ACCOUNT_EMAIL
+        var accountChannelHandle by Settings.YOUTUBE_SELF_CHANNEL_HANDLE
+        var accountThumbnail by Settings.YOUTUBE_ACCOUNT_AVATAR
         var isLoggedIn = remember(cookie) {
             "SAPISID" in parseCookieString(cookie)
         }
@@ -603,7 +590,7 @@ fun isYouTubeSyncEnabled(): Boolean {
 }
 
 fun isYouTubeLoggedIn(): Boolean {
-    val cookie = appContext().preferences.getString(ytCookieKey, "")
+    val cookie by Settings.YOUTUBE_COOKIES
     val isLoggedIn = cookie?.let { parseCookieString(it) }?.contains("SAPISID") == true
     return isLoggedIn
 }
