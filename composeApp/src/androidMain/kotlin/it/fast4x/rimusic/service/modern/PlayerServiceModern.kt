@@ -254,6 +254,13 @@ class PlayerServiceModern : MediaLibraryService(),
 
     @kotlin.OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     override fun onCreate() {
+        // When persistent queue is enabled, Android
+        // will start this service before MainApplication,
+        // this will cause [Settings.preferences] to
+        // throw error because it isn't init yet.
+        // Problem can be solved by loading it here
+        Settings.load( this )
+
         super.onCreate()
 
         // Enable Android Auto if disabled, REQUIRE ENABLING DEV MODE IN ANDROID AUTO
