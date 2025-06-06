@@ -30,6 +30,7 @@ import androidx.annotation.MainThread
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.util.fastMap
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.media3.common.AudioAttributes
@@ -1669,10 +1670,15 @@ class PlayerServiceModern : MediaLibraryService(),
                                      relatedSongs.forEach( ::insertIgnore )
                                  }
 
+                                 // Any call to [player] must happen on Main thread
+                                 val currentQueue = withContext( Dispatchers.Main ) {
+                                     player.mediaItems.fastMap( MediaItem::mediaId )
+                                 }
+
                                  // Songs with the same id as provided [Song] should be removed.
                                  // The song usually lives at the the first index, but this
                                  // way is safer to implement, as it can live through changes in position.
-                                 relatedSongs.dropWhile { it.mediaId == mediaItem.mediaId }
+                                 relatedSongs.dropWhile { it.mediaId == mediaItem.mediaId || it.mediaId in currentQueue }
                              }
                              ?.also {
                                  // Any call to [player] must happen on Main thread
