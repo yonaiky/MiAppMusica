@@ -799,10 +799,19 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     private fun loadFromRadio( reason: Int ) {
-        val isEnabled by Settings.QUEUE_AUTO_APPEND
-        val isRepeatTransition = reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT
+        // Don't fetch more item if:
+        // - Feature is disabled
+        // - When song is repeated
+        // - Start new queue
+        if( !Settings.QUEUE_AUTO_APPEND.value
+            || reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT
+            || reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED
+        ) return
 
-        if( isEnabled && !isRepeatTransition && !binder.isLoadingRadio )
+        val positionToLast = player.mediaItemCount - player.currentMediaItemIndex
+        // Make sure only add when about 10 songs to the last song in queue
+        // TODO: Add slider in settings to let user change number of songs
+        if( positionToLast <= 10 && !binder.isLoadingRadio )
             player.currentMediaItem?.let {
                 binder.startRadio( it, true )
             }
