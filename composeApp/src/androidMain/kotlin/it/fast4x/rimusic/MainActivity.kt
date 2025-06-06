@@ -143,7 +143,6 @@ import it.fast4x.rimusic.utils.InitDownloader
 import it.fast4x.rimusic.utils.LocalMonetCompat
 import it.fast4x.rimusic.utils.OkHttpRequest
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.effectRotationKey
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
@@ -154,12 +153,9 @@ import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.isVideo
 import it.fast4x.rimusic.utils.loadAppLog
 import it.fast4x.rimusic.utils.playNext
-import it.fast4x.rimusic.utils.playerBackgroundColorsKey
-import it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import it.fast4x.rimusic.utils.preferences
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.setDefaultPalette
-import it.fast4x.rimusic.utils.showSearchTabKey
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
@@ -591,13 +587,10 @@ class MainActivity :
                                 )
                             }
 
-                            effectRotationKey,
                             Settings.PLAYER_PORTRAIT_THUMBNAIL_SIZE.key,
-                            playerVisualizerTypeKey,
                             Settings.MAIN_THEME.key,
                             Settings.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED.key,
                             Settings.MINI_DISABLE_SWIPE_DOWN_TO_DISMISS.key,
-                            showSearchTabKey,
                             Settings.NAVIGATION_BAR_POSITION.key,
                             Settings.NAVIGATION_BAR_TYPE.key,
                             Settings.PLAYER_SHOW_TOTAL_QUEUE_TIME.key,
@@ -1105,9 +1098,6 @@ class MainActivity :
                 }
                 intentUriData = null
             }
-
-
-            //throw RuntimeException("This is a simulated exception to crash");
         }
     }
 
