@@ -52,6 +52,7 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.Settings
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistSongsSort
+import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.compose.persist.persistList
 import it.fast4x.compose.reordering.draggedItem
@@ -101,7 +102,6 @@ import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DeletePlaylist
-import it.fast4x.rimusic.utils.PositionLock
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToPipedPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
@@ -245,7 +245,7 @@ fun LocalPlaylistSongs(
         }
     }
     val pin = PinPlaylist( playlist )
-    val positionLock = PositionLock.init( sort.sortOrder )
+    val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
     LaunchedEffect( itemSelector.isActive ) {
         // Setting this field to true means disable it
         if( itemSelector.isActive )
