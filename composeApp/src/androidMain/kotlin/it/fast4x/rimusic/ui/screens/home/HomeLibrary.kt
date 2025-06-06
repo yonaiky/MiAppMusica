@@ -162,8 +162,7 @@ fun HomeLibrary(
     // END - New playlist
 
     // START - Monthly playlist
-    val enableCreateMonthlyPlaylists by Settings.MONTHLY_PLAYLIST_COMPILATION
-    if (enableCreateMonthlyPlaylists)
+    if ( Settings.MONTHLY_PLAYLIST_COMPILATION.value )
         CheckMonthlyPlaylist()
     // END - Monthly playlist
 
