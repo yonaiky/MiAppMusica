@@ -1,0 +1,8 @@
+Changed:
+- Prevent constant fail message when there's no internet connection
+- Settings logic system
+- Reworked open from shortcuts
+
+Fixed:
+- "On device" showed up despite being disabled
+- Song's title showed  "e:" on explicit songs
