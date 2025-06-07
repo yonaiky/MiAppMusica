@@ -1,0 +1,47 @@
+name: Close stale tickets weekly
+
+on:
+  schedule:
+    - cron: '0 3 * * 4'  # Every Thursday at 3 AM
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  issue-tickets:
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: write
+      issues: write
+
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-issue-stale: 7
+          close-issue-message: This ticket is now closed due to no input
+          stale-issue-label: stale
+          close-issue-reason: completed
+          exempt-issue-labels: question,open,enhancement
+          any-of-issue-labels: stale,external,invalid,not_our_fault
+          remove-issue-stale-when-updated: false
+          exempt-all-issue-assignees: true
+
+  pr-tickets:
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-pr-stale: 14
+          days-before-pr-close: 7
+          close-pr-message: This ticket is now closed due to no input
+          stale-pr-label: stale
+          exempt-pr-labels: translation,dependencies,open
+          any-of-pr-labels: borked
+          remove-pr-stale-when-updated: false
+          exempt-all-pr-assignees: true
