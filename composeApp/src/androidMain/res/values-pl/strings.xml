@@ -625,7 +625,7 @@
     <string name="set_cache_location">Lokalizacja cache</string>
     <string name="info_private_cache_location_can_t_cleaned">Prywatna lokalizacja cache; nie może być wyczyszczona przez system</string>
     <string name="error_file_unsupported_format">Ten plik wydaje się mieć nieobsługiwany format</string>
-    <string name="charts">Wykresy</string>
+    <string name="charts">Listy przebojów</string>
     <string name="thumbnailtype">Typ miniatury</string>
     <string name="showvisthumbnail">Pokaż miniaturę dla wizualizatora</string>
     <string name="androidheadunit">Jednostka główna Androida</string>
