@@ -55,7 +55,7 @@ object ListMenu {
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
         onClick: () -> Unit = {},
-        onLongClick: (() -> Unit)? = null,
+        onLongClick: () -> Unit = {},
         trailingContent: @Composable () -> Unit = {}
     ) = Row(
         verticalAlignment = Alignment.CenterVertically,
