@@ -81,7 +81,6 @@ import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.enqueue
@@ -236,7 +235,7 @@ fun Queue(
             ) {
                 itemsIndexed(
                     items = itemsOnDisplay,
-                    key = { _, song -> song.id }
+                    key = { index, song -> "%s-%d".format( System.identityHashCode( song ), index ) }
                 ) { index, song ->
 
                     val isLocal by remember { derivedStateOf { song.isLocal } }
@@ -276,10 +275,7 @@ fun Queue(
                         SwipeableQueueItem(
                             mediaItem = mediaItem,
                             onPlayNext = {
-                                binder.player.addNext(
-                                    mediaItem,
-                                    context
-                                )
+                                binder.player.moveMediaItem( index, binder.player.currentMediaItemIndex )
                             },
                             onDownload = {
                                 binder.cache.removeResource(song.id)
