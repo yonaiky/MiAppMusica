@@ -51,6 +51,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistSongsSort
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
@@ -138,7 +139,6 @@ import me.knighthat.component.playlist.Reposition
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
-import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Search
@@ -193,7 +193,9 @@ fun LocalPlaylistSongs(
     }.collectAsState( emptyList(), Dispatchers.IO )
     var itemsOnDisplay by persistList<Song>("localPlaylist/$playlistId/songs/on_display")
 
-    val itemSelector = ItemSelector<Song>()
+    val itemSelector = remember {
+        ItemSelector( menuState ) { addAll( itemsOnDisplay ) }
+    }
 
     fun getSongs() = itemSelector.ifEmpty { itemsOnDisplay }
     fun getMediaItems() = getSongs().map( Song::asMediaItem )

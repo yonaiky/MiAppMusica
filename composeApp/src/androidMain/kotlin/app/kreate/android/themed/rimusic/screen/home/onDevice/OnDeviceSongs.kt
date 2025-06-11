@@ -48,6 +48,7 @@ import app.kreate.android.Settings.HOME_ON_DEVICE_SONGS_SORT_BY
 import app.kreate.android.Settings.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS
 import app.kreate.android.Settings.HOME_SONGS_SORT_ORDER
 import app.kreate.android.Settings.PARENTAL_CONTROL
+import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -68,7 +69,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
 import me.knighthat.component.FolderItem
 import me.knighthat.component.SongItem
-import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.Search
 import me.knighthat.utils.PathUtils
 import me.knighthat.utils.Toaster

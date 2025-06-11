@@ -55,6 +55,7 @@ import androidx.media3.common.Timeline
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
@@ -69,6 +70,7 @@ import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -92,7 +94,6 @@ import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.shouldBePlaying
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ExportSongsToCSVDialog
-import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Search
 import me.knighthat.component.ui.screens.player.DeleteFromQueue
@@ -120,6 +121,7 @@ fun Queue(
     val windowInsets = WindowInsets.systemBars
     val binder = LocalPlayerServiceBinder.current
     val player = binder?.player ?: return
+    val menuState = LocalMenuState.current
 
     val rippleIndication = ripple(bounded = false)
 
@@ -147,7 +149,9 @@ fun Queue(
 
         val positionLock = remember { PositionLock() }
 
-        val itemSelector = ItemSelector<Song>()
+        val itemSelector = remember {
+            ItemSelector( menuState ) { addAll( itemsOnDisplay ) }
+        }
         LaunchedEffect( itemSelector.isActive ) {
             // Setting this field to true means disable it
             if( itemSelector.isActive )

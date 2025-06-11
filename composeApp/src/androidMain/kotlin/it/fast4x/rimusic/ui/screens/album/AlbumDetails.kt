@@ -48,6 +48,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.rimusic.component.ItemSelector
 import coil.compose.AsyncImagePainter
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.innertube.Innertube
@@ -62,6 +63,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
@@ -104,7 +106,6 @@ import me.knighthat.component.SongItem
 import me.knighthat.component.album.AlbumModifier
 import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
-import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
@@ -135,6 +136,7 @@ fun AlbumDetails(
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val lazyListState = rememberLazyListState()
+    val menuState = LocalMenuState.current
 
     // Settings
     val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
@@ -145,7 +147,9 @@ fun AlbumDetails(
                 .distinctUntilChanged()
     }.collectAsState( emptyList(), Dispatchers.IO )
 
-    val itemSelector = ItemSelector<Song>()
+    val itemSelector = remember {
+        ItemSelector( menuState ) { addAll( items ) }
+    }
 
     fun getSongs() = itemSelector.ifEmpty { items }
     fun getMediaItems() = getSongs().map( Song::asMediaItem )

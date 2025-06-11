@@ -25,6 +25,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.screen.home.onDevice.OnDeviceSong
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -36,6 +37,7 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.ui.components.ButtonsRow
+import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -52,7 +54,6 @@ import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
 import me.knighthat.component.ResetCache
 import me.knighthat.component.tab.ImportSongsFromCSV
-import me.knighthat.component.tab.ItemSelector
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Search
@@ -68,12 +69,15 @@ fun HomeSongsScreen(navController: NavController ) {
     // Essentials
     val binder = LocalPlayerServiceBinder.current
     val lazyListState = rememberLazyListState()
+    val menuState = LocalMenuState.current
 
     var builtInPlaylist by Settings.HOME_SONGS_TYPE
 
     val itemsOnDisplayState = remember { mutableStateListOf<Song>() }
 
-    val itemSelector = ItemSelector<Song>()
+    val itemSelector = remember {
+        ItemSelector( menuState ) { addAll( itemsOnDisplayState ) }
+    }
     fun getSongs() = itemSelector.ifEmpty { itemsOnDisplayState }.toList()
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
