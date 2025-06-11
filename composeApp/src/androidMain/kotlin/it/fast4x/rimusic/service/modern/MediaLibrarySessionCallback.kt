@@ -40,6 +40,7 @@ import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_DOWNLOADED
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_FAVORITES
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_ONDEVICE
 import it.fast4x.rimusic.service.modern.MediaSessionConstants.ID_TOP
+import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -548,26 +549,19 @@ class MediaLibrarySessionCallback(
             )
             .build()
 
-    private fun Song.toMediaItem(isFromPersistentQueue: Boolean = false) =
-        MediaItem.Builder()
-            .setMediaId(id)
-            .setUri(id)
-            .setCustomCacheKey(id)
-            .setMediaMetadata(
-                MediaMetadata.Builder()
-                    .setTitle(cleanTitle())
-                    .setSubtitle(cleanArtistsText())
-                    .setArtist(cleanArtistsText())
-                    .setArtworkUri(thumbnailUrl?.toUri())
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
-                    .setExtras(
-                        Bundle().apply {
-                            putBoolean(Settings.ENABLE_PERSISTENT_QUEUE.key, isFromPersistentQueue)
-                        }
-                    )
-                    .build()
-            )
-            .build()
+    private fun Song.toMediaItem( isFromPersistentQueue: Boolean = false ): MediaItem {
+        val bundle = Bundle().apply {
+            putBoolean( Settings.ENABLE_PERSISTENT_QUEUE.key, isFromPersistentQueue )
+        }
+
+        val mediaItem = asMediaItem
+        val metadata: MediaMetadata = mediaItem.mediaMetadata
+                                               .buildUpon()
+                                               .setExtras( bundle )
+                                               .build()
+
+        return mediaItem.buildUpon().setMediaMetadata( metadata ).build()
+    }
 
     private fun getCountCachedSongs() =
         database.formatTable
