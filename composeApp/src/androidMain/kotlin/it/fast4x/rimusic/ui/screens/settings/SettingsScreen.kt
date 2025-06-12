@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -70,12 +71,8 @@ fun SettingsScreen(
     navController: NavController,
     miniPlayer: @Composable () -> Unit = {},
 ) {
-    //val context = LocalContext.current
     val saveableStateHolder = rememberSaveableStateHolder()
-
-    val (tabIndex, onTabChanged) = rememberSaveable {
-        mutableStateOf(0)
-    }
+    val (tabIndex, onTabChanged) = rememberSaveable { mutableIntStateOf(0) }
 
     Skeleton(
         navController,
@@ -83,12 +80,13 @@ fun SettingsScreen(
         onTabChanged,
         miniPlayer,
         navBarContent = { item ->
-            item(0, stringResource(R.string.tab_general), R.drawable.ic_launcher_monochrome)
+            item(0, stringResource(R.string.tab_general), R.drawable.app_icon_monochrome)
             item(1, stringResource(R.string.ui_tab), R.drawable.ui)
             item(2, stringResource(R.string.player_appearance), R.drawable.color_palette)
-            item(3, if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
-            else stringResource(R.string.home), if (!isYouTubeLoggedIn()) R.drawable.sparkles
-            else R.drawable.ytmusic)
+            if( isYouTubeLoggedIn() )
+                item(3, stringResource(R.string.home), R.drawable.ytmusic)
+            else
+                item(3, stringResource(R.string.quick_picks), R.drawable.sparkles)
             item(4, stringResource(R.string.tab_data), R.drawable.server)
             item(5, stringResource(R.string.tab_accounts), R.drawable.person)
             item(6, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
@@ -106,7 +104,6 @@ fun SettingsScreen(
                 5 -> AccountsSettings()
                 6 -> OtherSettings()
                 7 -> About()
-
             }
         }
     }
