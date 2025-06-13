@@ -23,12 +23,10 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.thumbnail
 import it.fast4x.rimusic.thumbnailShape
-import it.fast4x.rimusic.utils.preferences
 
 object ImageCacheFactory {
 
-    private val DISK_CACHE: DiskCache by lazy {
-        val preferences = appContext().preferences
+    val DISK_CACHE: DiskCache by lazy {
         val diskSize by Settings.THUMBNAIL_CACHE_SIZE
 
         DiskCache.Builder()

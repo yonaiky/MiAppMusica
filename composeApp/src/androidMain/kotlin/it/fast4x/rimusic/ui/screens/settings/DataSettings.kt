@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
 import app.kreate.android.Settings
-import coil.Coil
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -48,6 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.export.ExportDatabaseDialog
 import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
@@ -150,9 +150,7 @@ fun DataSettings() {
                            onDismiss = {
                                cleanCacheImages = false
                            },
-                           onConfirm = {
-                               Coil.imageLoader(context).diskCache?.clear()
-                           }
+                           onConfirm = ImageCacheFactory.DISK_CACHE::clear
         )
     }
 
@@ -190,64 +188,63 @@ fun DataSettings() {
 
         SettingsDescription(text = stringResource(R.string.cache_cleared))
 
-        Coil.imageLoader(context).diskCache?.let { diskCache ->
-            val diskCacheSize = remember(diskCache.size, cleanCacheImages) {
-                diskCache.size
-            }
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.cache))
 
-            SettingsGroupSpacer()
-            SettingsEntryGroupText(title = stringResource(R.string.cache))
 
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.image_cache_max_size),
-                                           titleSecondary = when (coilDiskCacheMaxSize) {
-                                               CoilDiskCacheMaxSize.Custom -> Formatter.formatShortFileSize(context, diskCacheSize) +
-                                               "/${Formatter.formatShortFileSize(context, coilCustomDiskCache.toLong() * 1000 * 1000)}" +
-                                               stringResource(R.string.used)
-                                               else -> Formatter.formatShortFileSize(context, diskCacheSize) +
-                                                   stringResource(R.string.used) +
-                                                   " (${diskCacheSize * 100 / coilDiskCacheMaxSize.bytes}%)"
-                                           },
-                                           trailingContent = {
-                                               HeaderIconButton(
-                                                   icon = R.drawable.trash,
-                                                   enabled = true,
-                                                   color = colorPalette().text,
-                                                                onClick = { cleanCacheImages = true }
-                                               )
-                                           },
-                                           selectedValue = coilDiskCacheMaxSize,
-                                           onValueSelected = {
-                                               coilDiskCacheMaxSize = it
-                                               if (coilDiskCacheMaxSize == CoilDiskCacheMaxSize.Custom)
-                                                   showCoilCustomDiskCacheDialog = true
+        val diskCacheSize = remember( ImageCacheFactory.DISK_CACHE.size, cleanCacheImages) {
+            ImageCacheFactory.DISK_CACHE.size
+        }
 
-                                                   restartService = true
-                                           },
-                                           valueText = { it.text }
+        EnumValueSelectorSettingsEntry(
+            title = stringResource(R.string.image_cache_max_size),
+                                       titleSecondary = when (coilDiskCacheMaxSize) {
+                                           CoilDiskCacheMaxSize.Custom -> Formatter.formatShortFileSize(context, diskCacheSize) +
+                                           "/${Formatter.formatShortFileSize(context, coilCustomDiskCache.toLong() * 1000 * 1000)}" +
+                                           stringResource(R.string.used)
+                                           else -> Formatter.formatShortFileSize(context, diskCacheSize) +
+                                               stringResource(R.string.used) +
+                                               " (${diskCacheSize * 100 / coilDiskCacheMaxSize.bytes}%)"
+                                       },
+                                       trailingContent = {
+                                           HeaderIconButton(
+                                               icon = R.drawable.trash,
+                                               enabled = true,
+                                               color = colorPalette().text,
+                                                            onClick = { cleanCacheImages = true }
+                                           )
+                                       },
+                                       selectedValue = coilDiskCacheMaxSize,
+                                       onValueSelected = {
+                                           coilDiskCacheMaxSize = it
+                                           if (coilDiskCacheMaxSize == CoilDiskCacheMaxSize.Custom)
+                                               showCoilCustomDiskCacheDialog = true
+
+                                               restartService = true
+                                       },
+                                       valueText = { it.text }
+        )
+        RestartPlayerService(restartService, onRestart = { restartService = false } )
+
+        if (showCoilCustomDiskCacheDialog) {
+            InputNumericDialog(
+                title = stringResource(R.string.set_custom_cache),
+                               placeholder = stringResource(R.string.enter_value_in_mb),
+                               value = coilCustomDiskCache.toString(),
+                               valueMin = "32",
+                               valueMax = "10000",
+                               onDismiss = { showCoilCustomDiskCacheDialog = false },
+                               setValue = {
+                                   //Log.d("customCache", it)
+                                   coilCustomDiskCache = it.toInt()
+                                   showCoilCustomDiskCacheDialog = false
+                                   restartService = true
+                               }
             )
             RestartPlayerService(restartService, onRestart = { restartService = false } )
-
-            if (showCoilCustomDiskCacheDialog) {
-                InputNumericDialog(
-                    title = stringResource(R.string.set_custom_cache),
-                                   placeholder = stringResource(R.string.enter_value_in_mb),
-                                   value = coilCustomDiskCache.toString(),
-                                   valueMin = "32",
-                                   valueMax = "10000",
-                                   onDismiss = { showCoilCustomDiskCacheDialog = false },
-                                   setValue = {
-                                       //Log.d("customCache", it)
-                                       coilCustomDiskCache = it.toInt()
-                                       showCoilCustomDiskCacheDialog = false
-                                       restartService = true
-                                   }
-                )
-                RestartPlayerService(restartService, onRestart = { restartService = false } )
-            }
-
-            CacheSpaceIndicator(cacheType = CacheType.Images, horizontalPadding = 20.dp)
         }
+
+        CacheSpaceIndicator(cacheType = CacheType.Images, horizontalPadding = 20.dp)
 
         binder?.cache?.let { cache ->
             val diskCacheSize = remember(cache.cacheSpace, cleanCacheOfflineSongs) {
