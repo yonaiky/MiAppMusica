@@ -96,7 +96,7 @@ fun SettingsScreen(
     ) { currentTabIndex ->
         saveableStateHolder.SaveableStateProvider(currentTabIndex) {
             when (currentTabIndex) {
-                0 -> GeneralSettings(navController = navController)
+                0 -> app.kreate.android.themed.common.screens.settings.general.GeneralSettings( navController )
                 1 -> UiSettings(navController = navController)
                 2 -> AppearanceSettings(navController = navController)
                 3 -> QuickPicsSettings()

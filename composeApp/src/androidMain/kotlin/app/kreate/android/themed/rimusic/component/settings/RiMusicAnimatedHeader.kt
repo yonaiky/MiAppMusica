@@ -1,14 +1,15 @@
-package app.kreate.android.themed.vimusic.common.settings
+package app.kreate.android.themed.rimusic.component.settings
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,11 +27,11 @@ private fun SettingEntrySearch.AnimatedHeader() {
         targetState = isVisible,
         transitionSpec = {
             if ( targetState ) {
-                slideInVertically { height -> height } + fadeIn() togetherWith
-                        slideOutVertically { height -> -height } + fadeOut()
+                slideInVertically { height -> height } + expandHorizontally() + fadeIn() togetherWith
+                        slideOutVertically { height -> -height } + shrinkHorizontally() + fadeOut()
             } else {
-                slideInVertically { height -> -height } + fadeIn() togetherWith
-                        slideOutVertically { height -> height } + fadeOut()
+                slideInVertically { height -> -height } + expandHorizontally() + fadeIn() togetherWith
+                        slideOutVertically { height -> height } + shrinkHorizontally() + fadeOut()
             }.using(
                 // Disable clipping since the faded slide-in/out should
                 // be displayed out of bounds.
@@ -42,30 +43,24 @@ private fun SettingEntrySearch.AnimatedHeader() {
         if (target)
             SearchBar()
         else
-            HeaderText( TextAlign.End, Modifier.fillMaxWidth() )
+            HeaderText( TextAlign.End )
     }
 }
 
 @Composable
-fun SettingEntrySearch.ViMusicAnimatedHeader() {
+fun SettingEntrySearch.RiMusicAnimatedHeader() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier.padding( bottom = 25.dp )
                            .fillMaxWidth()
                            .height( 40.dp )
                            .padding( horizontal = 10.dp )
-
     ) {
-        Box(
-            contentAlignment = Alignment.CenterEnd,
-            modifier = Modifier.weight( 1f )
-        ) {
-            AnimatedHeader()
-        }
         HeaderIcon(
-            Modifier.padding( start = SettingEntrySearch.ICON_PADDING.dp )
+            Modifier.padding( end = SettingEntrySearch.ICON_PADDING.dp )
                     .align( Alignment.CenterVertically )
         )
+        AnimatedHeader()
     }
 }

@@ -39,8 +39,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
-import app.kreate.android.themed.common.screens.settings.RiMusicAnimatedHeader
-import app.kreate.android.themed.vimusic.common.settings.ViMusicAnimatedHeader
+import app.kreate.android.themed.rimusic.component.settings.RiMusicAnimatedHeader
+import app.kreate.android.themed.vimusic.component.settings.ViMusicAnimatedHeader
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.typography
