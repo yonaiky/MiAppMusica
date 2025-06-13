@@ -107,9 +107,10 @@ class SettingEntrySearch(
         }
     }
 
+    fun contains( text: String ) = inputValue.isBlank() || text.contains( inputValue, true )
+
     @Composable
-    fun contains( @StringRes textId: Int ) =
-        inputValue.isBlank() || stringResource( textId ).contains( inputValue, true )
+    fun contains( @StringRes textId: Int ) = contains( stringResource( textId ) )
 
     @Composable
     fun HeaderIcon( modifier: Modifier ) =
