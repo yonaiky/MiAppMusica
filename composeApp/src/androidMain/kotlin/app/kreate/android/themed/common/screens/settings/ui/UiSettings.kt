@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
 import it.fast4x.rimusic.colorPalette
@@ -40,7 +41,6 @@ import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.screens.settings.EnumValueSelectorSettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import me.knighthat.component.dialog.RestartAppDialog
@@ -126,160 +126,116 @@ fun UiSettings() {
                 var showthumbnail by Settings.PLAYER_SHOW_THUMBNAIL
                 var keepPlayerMinimized by Settings.PLAYER_KEEP_MINIMIZED
 
-                var uiType by Settings.MAIN_THEME
                 if( search.contains( R.string.interface_in_use ) )
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.interface_in_use),
-                        selectedValue = uiType,
-                        onValueSelected = {
-                            uiType = it
-                            if (uiType == UiType.ViMusic) {
-                                disablePlayerHorizontalSwipe = true
-                                playerTimelineType = PlayerTimelineType.FakeAudioBar
-                                visualizerEnabled = false
-                                playerThumbnailSize = PlayerThumbnailSize.Medium
-                                thumbnailTapEnabled = true
-                                showSearchTab = true
-                                showStatsInNavbar = true
-                                navigationBarPosition = NavigationBarPosition.Left
-                                showTopActionsBar = false
-                                playerType = PlayerType.Modern
-                                queueType = QueueType.Modern
-                                fadingedge = false
-                                carousel = true
-                                carouselSize = CarouselSize.Medium
-                                thumbnailType = ThumbnailType.Essential
-                                playerTimelineSize = PlayerTimelineSize.Medium
-                                playerInfoShowIcons = true
-                                miniPlayerType = MiniPlayerType.Modern
-                                playerSwapControlsWithTimeline = false
-                                transparentBackgroundActionBarPlayer = false
-                                playerControlsType = PlayerControlsType.Essential
-                                playerPlayButtonType = PlayerPlayButtonType.Disabled
-                                buttonzoomout = true
-                                iconLikeType = IconLikeType.Essential
-                                playerBackgroundColors = PlayerBackgroundColors.CoverColorGradient
-                                blackgradient = true
-                                showTotalTimeQueue = false
-                                showRemainingSongTime = false
-                                showNextSongsInPlayer = false
-                                disableScrollingText = false
-                                effectRotationEnabled = true
-                                clickLyricsText = true
-                                playerEnableLyricsPopupMessage = true
-                                backgroundProgress = BackgroundProgress.MiniPlayer
-                                transparentBackgroundActionBarPlayer = true
-                                actionspacedevenly = false
-                                tapqueue = false
-                                swipeUpQueue = true
-                                showButtonPlayerDiscover = false
-                                showButtonPlayerDownload = false
-                                showButtonPlayerAddToPlaylist = false
-                                showButtonPlayerLoop = false
-                                showButtonPlayerShuffle = false
-                                showButtonPlayerLyrics = false
-                                expandedplayertoggle = false
-                                showButtonPlayerSleepTimer = false
-                                showButtonPlayerSystemEqualizer = false
-                                showButtonPlayerArrow = false
-                                showButtonPlayerShuffle = false
-                                showButtonPlayerMenu = true
-                                showthumbnail = true
-                                keepPlayerMinimized = false
-                            } else {
-                                disablePlayerHorizontalSwipe = false
-                                navigationBarPosition = NavigationBarPosition.Bottom
-                            }
-
-                            RestartAppDialog.showDialog()
-                        },
-                        valueText = { it.name }
-                    )
+                    SettingComponents.EnumEntry(
+                        Settings.MAIN_THEME,
+                        R.string.interface_in_use,
+                        action = SettingComponents.Action.RESTART_APP
+                    ) {
+                        if ( it == UiType.ViMusic ) {
+                            disablePlayerHorizontalSwipe = true
+                            playerTimelineType = PlayerTimelineType.FakeAudioBar
+                            visualizerEnabled = false
+                            playerThumbnailSize = PlayerThumbnailSize.Medium
+                            thumbnailTapEnabled = true
+                            showSearchTab = true
+                            showStatsInNavbar = true
+                            navigationBarPosition = NavigationBarPosition.Left
+                            showTopActionsBar = false
+                            playerType = PlayerType.Modern
+                            queueType = QueueType.Modern
+                            fadingedge = false
+                            carousel = true
+                            carouselSize = CarouselSize.Medium
+                            thumbnailType = ThumbnailType.Essential
+                            playerTimelineSize = PlayerTimelineSize.Medium
+                            playerInfoShowIcons = true
+                            miniPlayerType = MiniPlayerType.Modern
+                            playerSwapControlsWithTimeline = false
+                            transparentBackgroundActionBarPlayer = false
+                            playerControlsType = PlayerControlsType.Essential
+                            playerPlayButtonType = PlayerPlayButtonType.Disabled
+                            buttonzoomout = true
+                            iconLikeType = IconLikeType.Essential
+                            playerBackgroundColors = PlayerBackgroundColors.CoverColorGradient
+                            blackgradient = true
+                            showTotalTimeQueue = false
+                            showRemainingSongTime = false
+                            showNextSongsInPlayer = false
+                            disableScrollingText = false
+                            effectRotationEnabled = true
+                            clickLyricsText = true
+                            playerEnableLyricsPopupMessage = true
+                            backgroundProgress = BackgroundProgress.MiniPlayer
+                            transparentBackgroundActionBarPlayer = true
+                            actionspacedevenly = false
+                            tapqueue = false
+                            swipeUpQueue = true
+                            showButtonPlayerDiscover = false
+                            showButtonPlayerDownload = false
+                            showButtonPlayerAddToPlaylist = false
+                            showButtonPlayerLoop = false
+                            showButtonPlayerShuffle = false
+                            showButtonPlayerLyrics = false
+                            expandedplayertoggle = false
+                            showButtonPlayerSleepTimer = false
+                            showButtonPlayerSystemEqualizer = false
+                            showButtonPlayerArrow = false
+                            showButtonPlayerShuffle = false
+                            showButtonPlayerMenu = true
+                            showthumbnail = true
+                            keepPlayerMinimized = false
+                        } else {
+                            disablePlayerHorizontalSwipe = false
+                            navigationBarPosition = NavigationBarPosition.Bottom
+                        }
+                    }
 
                 if( search.contains( R.string.theme ) ) {
                     ThemeSettings()
                 }
-                if( search.contains( R.string.theme_mode ) ) {
-                    var colorPaletteName by Settings.COLOR_PALETTE
-                    var colorPaletteMode by Settings.THEME_MODE
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.theme),
-                        selectedValue = colorPaletteName,
-                        onValueSelected = {
-                            colorPaletteName = it
+                if( search.contains( R.string.theme_mode ) )
+                    SettingComponents.EnumEntry(
+                        preference = Settings.COLOR_PALETTE,
+                        titleId = R.string.theme,
+                        onValueChanged = {
                             when (it) {
                                 ColorPaletteName.PureBlack,
-                                ColorPaletteName.ModernBlack -> colorPaletteMode = ColorPaletteMode.System
-                                else -> {}
+                                ColorPaletteName.ModernBlack -> Settings.THEME_MODE.value = ColorPaletteMode.System
+                                else -> { /* Does nothing */ }
                             }
-                        },
-                        valueText = { it.text }
+                        }
                     )
-                }
-                if( search.contains( R.string.navigation_bar_position ) ) {
-                    var navigationBarPosition by Settings.NAVIGATION_BAR_POSITION
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.navigation_bar_position),
-                        selectedValue = navigationBarPosition,
-                        onValueSelected = { navigationBarPosition = it },
-                        // As of version 0.6.53, changing navigation bar to top or bottom
-                        // while using ViMusic theme breaks the UI
-                        isEnabled = uiType != UiType.ViMusic,
-                        valueText = { it.text }
+                if( search.contains( R.string.navigation_bar_position ) )
+                    SettingComponents.EnumEntry(
+                        Settings.NAVIGATION_BAR_POSITION,
+                        R.string.navigation_bar_position
                     )
-                }
-                if( search.contains( R.string.navigation_bar_type ) ) {
-                    var navigationBarType by Settings.NAVIGATION_BAR_TYPE
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.navigation_bar_type),
-                        selectedValue = navigationBarType,
-                        onValueSelected = { navigationBarType = it },
-                        valueText = { it.text }
+                if( search.contains( R.string.navigation_bar_type ) )
+                    SettingComponents.EnumEntry(
+                        Settings.NAVIGATION_BAR_TYPE,
+                        R.string.navigation_bar_type
                     )
-                }
-                if( search.contains( R.string.player_position ) ) {
-                    var playerPosition by Settings.MINI_PLAYER_POSITION
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.player_position),
-                        selectedValue = playerPosition,
-                        onValueSelected = { playerPosition = it },
-                        valueText = { it.text }
+                if( search.contains( R.string.player_position ) )
+                    SettingComponents.EnumEntry(
+                        Settings.MINI_PLAYER_POSITION,
+                        R.string.player_position
                     )
-                }
-                if( search.contains( R.string.menu_style ) ) {
-                    var menuStyle by Settings.MENU_STYLE
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.menu_style),
-                        selectedValue = menuStyle,
-                        onValueSelected = { menuStyle = it },
-                        valueText = { it.text }
+                if( search.contains( R.string.menu_style ) )
+                    SettingComponents.EnumEntry(
+                        Settings.MENU_STYLE,
+                        R.string.menu_style
                     )
-                }
-                if( search.contains( R.string.default_page ) ) {
-                    var indexNavigationTab by Settings.STARTUP_SCREEN
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.default_page),
-                        selectedValue = indexNavigationTab,
-                        onValueSelected = {indexNavigationTab = it},
-                        valueText = { it.text }
+                if( search.contains( R.string.default_page ) )
+                    SettingComponents.EnumEntry(
+                        Settings.STARTUP_SCREEN,
+                        R.string.default_page
                     )
-                }
-                if( search.contains( R.string.transition_effect ) ) {
-                    var transitionEffect by Settings.TRANSITION_EFFECT
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.transition_effect),
-                        selectedValue = transitionEffect,
-                        onValueSelected = { transitionEffect = it },
-                        valueText = { it.text }
+                if( search.contains( R.string.transition_effect ) )
+                    SettingComponents.EnumEntry(
+                        Settings.TRANSITION_EFFECT,
+                        R.string.transition_effect
                     )
-                }
                 if( UiType.ViMusic.isCurrent() && search.contains( R.string.vimusic_show_search_button_in_navigation_bar ) ) {
                     SwitchSettingEntry(
                         title = stringResource(R.string.vimusic_show_search_button_in_navigation_bar),
@@ -307,16 +263,11 @@ fun UiSettings() {
                     )
 
                 }
-                if( search.contains( R.string.settings_use_font_type ) ) {
-                    var fontType by Settings.FONT
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.settings_use_font_type),
-                        selectedValue = fontType,
-                        onValueSelected = { fontType = it },
-                        valueText = { it.name }
+                if( search.contains( R.string.settings_use_font_type ) )
+                    SettingComponents.EnumEntry(
+                        Settings.FONT,
+                        R.string.settings_use_font_type
                     )
-                }
                 if( search.contains( R.string.use_system_font ) ) {
                     var useSystemFont by Settings.USE_SYSTEM_FONT
 
@@ -441,28 +392,18 @@ fun UiSettings() {
                 }
             }
             section( R.string.smart_recommendations ) {
-                if( search.contains( R.string.statistics_max_number_of_items ) ) {
-                    var recommendationsNumber by Settings.MAX_NUMBER_OF_SMART_RECOMMENDATIONS
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.statistics_max_number_of_items),
-                        selectedValue = recommendationsNumber,
-                        onValueSelected = { recommendationsNumber = it },
-                        valueText = { it.name }
+                if( search.contains( R.string.statistics_max_number_of_items ) )
+                    SettingComponents.EnumEntry(
+                        Settings.MAX_NUMBER_OF_SMART_RECOMMENDATIONS,
+                        R.string.statistics_max_number_of_items
                     )
-                }
             }
             section( R.string.statistics ) {
-                if( search.contains( R.string.statistics_max_number_of_items ) ) {
-                    var maxStatisticsItems by Settings.MAX_NUMBER_OF_STATISTIC_ITEMS
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.statistics_max_number_of_items),
-                        selectedValue = maxStatisticsItems,
-                        onValueSelected = { maxStatisticsItems = it },
-                        valueText = { it.name }
+                if( search.contains( R.string.statistics_max_number_of_items ) )
+                    SettingComponents.EnumEntry(
+                        Settings.MAX_NUMBER_OF_STATISTIC_ITEMS,
+                        R.string.statistics_max_number_of_items
                     )
-                }
                 if( search.contains( R.string.listening_time ) ) {
                     var showStatsListeningTime by Settings.SHOW_LISTENING_STATS
 
@@ -477,16 +418,11 @@ fun UiSettings() {
                 }
             }
             section( R.string.playlist_top ) {
-                if( search.contains( R.string.statistics_max_number_of_items ) ) {
-                    var maxTopPlaylistItems by Settings.MAX_NUMBER_OF_TOP_PLAYED
-
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.statistics_max_number_of_items),
-                        selectedValue = maxTopPlaylistItems,
-                        onValueSelected = { maxTopPlaylistItems = it },
-                        valueText = { it.name }
+                if( search.contains( R.string.statistics_max_number_of_items ) )
+                    SettingComponents.EnumEntry(
+                        Settings.MAX_NUMBER_OF_TOP_PLAYED,
+                        R.string.statistics_max_number_of_items
                     )
-                }
             }
         }
     }

@@ -12,29 +12,26 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.screens.settings.EnumValueSelectorSettingsEntry
-import it.fast4x.rimusic.ui.screens.settings.ImportantSettingsDescription
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.languageDestinationName
-import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.updater.Updater
 
 @UnstableApi
@@ -77,35 +74,21 @@ fun GeneralSettings( navController: NavController ) {
             }
 
             section( R.string.languages, sysLocaleText ) {
-                var languageApp by Settings.APP_LANGUAGE
-
                 if( search.contains( R.string.app_language ) )
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.app_language),
-                        selectedValue = languageApp,
-                        onValueSelected = {
-                            languageApp = it
-
-                            RestartAppDialog.showDialog()
-                        },
-                        valueText = {
-                            languageDestinationName(it)
-                        }
+                    SettingComponents.EnumEntry(
+                        Settings.APP_LANGUAGE,
+                        R.string.app_language,
+                        getName = { languageDestinationName(it) },
+                        action = SettingComponents.Action.RESTART_APP
                     )
             }
 
             section( R.string.notification_type, R.string.notification_type_info ) {
-                ImportantSettingsDescription( stringResource(R.string.restarting_rimusic_is_required) )
-
-                var notificationType by Settings.NOTIFICATION_TYPE
                 if( search.contains( R.string.notification_type ) )
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource( R.string.notification_type ),
-                        selectedValue = notificationType,
-                        onValueSelected = {
-                            notificationType = it
-                        },
-                        valueText = { it.textName }
+                    SettingComponents.EnumEntry(
+                        Settings.NOTIFICATION_TYPE,
+                        R.string.notification_type,
+                        action = SettingComponents.Action.RESTART_APP
                     )
             }
 

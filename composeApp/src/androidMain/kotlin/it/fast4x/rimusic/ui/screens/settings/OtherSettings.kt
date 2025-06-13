@@ -39,6 +39,8 @@ import app.kreate.android.Settings.PLAYER_EXTRA_SPACE
 import app.kreate.android.Settings.PROXY_HOST
 import app.kreate.android.Settings.PROXY_PORT
 import app.kreate.android.Settings.PROXY_SCHEME
+import app.kreate.android.themed.common.component.settings.SettingComponents
+import io.ktor.client.engine.ProxyType
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ValidationType
@@ -51,6 +53,7 @@ import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import me.knighthat.utils.Toaster
 import java.io.File
+import java.net.Proxy
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +97,6 @@ fun OtherSettings() {
     var isProxyEnabled by IS_PROXY_ENABLED
     var proxyHost by PROXY_HOST
     var proxyPort by PROXY_PORT
-    var proxyMode by PROXY_SCHEME
 
     var defaultFolder by LOCAL_SONGS_FOLDER
 
@@ -285,10 +287,10 @@ fun OtherSettings() {
 
     AnimatedVisibility(visible = isProxyEnabled) {
         Column {
-            EnumValueSelectorSettingsEntry(title = stringResource(R.string.proxy_mode),
-                selectedValue = proxyMode,
-                onValueSelected = { proxyMode = it },
-                valueText = { it.name }
+            SettingComponents.EnumEntry(
+                PROXY_SCHEME,
+                R.string.proxy_mode,
+                { it.name }
             )
             TextDialogSettingEntry(
                 title = stringResource(R.string.proxy_host),

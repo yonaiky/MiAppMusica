@@ -22,13 +22,13 @@ import androidx.core.text.isDigitsOnly
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.PipModule
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.screens.settings.EnumValueSelectorSettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.SliderSettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry
@@ -46,17 +46,10 @@ fun PlayerSettings(
     onRestartServiceChange: (Boolean) -> Unit
 ) {
     if( search.contains( R.string.audio_quality_format ) ) {
-        var audioQualityFormat by Settings.AUDIO_QUALITY
-
-        EnumValueSelectorSettingsEntry(
-            title = stringResource(R.string.audio_quality_format),
-            selectedValue = audioQualityFormat,
-            onValueSelected = {
-                audioQualityFormat = it
-                onRestartServiceChange(true)
-            },
-            valueText = { it.text }
-        )
+        SettingComponents.EnumEntry(
+            Settings.AUDIO_QUALITY,
+            R.string.audio_quality_format
+        ) { onRestartServiceChange( true ) }
 
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
@@ -111,34 +104,24 @@ fun PlayerSettings(
         )
     }
     if( search.contains( R.string.min_listening_time ) ) {
-        var exoPlayerMinTimeForEvent by Settings.QUICK_PICKS_MIN_DURATION
-        EnumValueSelectorSettingsEntry(
-            title = stringResource(R.string.min_listening_time),
-            text = stringResource( R.string.is_min_list_time_for_tips_or_quick_pics ),
-            selectedValue = exoPlayerMinTimeForEvent,
-            onValueSelected = { exoPlayerMinTimeForEvent = it },
-            valueText = { it.text }
+        SettingComponents.EnumEntry(
+            Settings.QUICK_PICKS_MIN_DURATION,
+            R.string.min_listening_time
+        )
+        SettingComponents.Description( R.string.is_min_list_time_for_tips_or_quick_pics )
+
+        SettingComponents.EnumEntry(
+            Settings.LIMIT_SONGS_WITH_DURATION,
+            R.string.exclude_songs_with_duration_limit
+        )
+        SettingComponents.Description( R.string.exclude_songs_with_duration_limit_description )
+    }
+    if( search.contains( R.string.pause_between_songs ) )
+        SettingComponents.EnumEntry(
+            Settings.PAUSE_BETWEEN_SONGS,
+            R.string.pause_between_songs
         )
 
-        var excludeSongWithDurationLimit by Settings.LIMIT_SONGS_WITH_DURATION
-        EnumValueSelectorSettingsEntry(
-            title = stringResource(R.string.exclude_songs_with_duration_limit),
-            text = stringResource( R.string.exclude_songs_with_duration_limit_description ),
-            selectedValue = excludeSongWithDurationLimit,
-            onValueSelected = { excludeSongWithDurationLimit = it },
-            valueText = { it.text }
-        )
-    }
-    if( search.contains( R.string.pause_between_songs ) ) {
-        var pauseBetweenSongs by Settings.PAUSE_BETWEEN_SONGS
-
-        EnumValueSelectorSettingsEntry(
-            title = stringResource( R.string.pause_between_songs ),
-            selectedValue = pauseBetweenSongs,
-            onValueSelected = { pauseBetweenSongs = it },
-            valueText = { it.text }
-        )
-    }
     if( search.contains( R.string.player_pause_listen_history ) ) {
         var pauseListenHistory by Settings.PAUSE_HISTORY
         SwitchSettingEntry(
@@ -165,15 +148,11 @@ fun PlayerSettings(
         )
     }
     if( search.contains( R.string.effect_fade_audio ) ) {
-        var playbackFadeAudioDuration by Settings.AUDIO_FADE_DURATION
-
-        EnumValueSelectorSettingsEntry(
-            title = stringResource(R.string.effect_fade_audio),
-            text = stringResource(R.string.effect_fade_audio_description),
-            selectedValue = playbackFadeAudioDuration,
-            onValueSelected = { playbackFadeAudioDuration = it },
-            valueText = { it.text }
+        SettingComponents.EnumEntry(
+            Settings.AUDIO_FADE_DURATION,
+            R.string.effect_fade_audio
         )
+        SettingComponents.Description( R.string.effect_fade_audio_description )
     }
     if( search.contains( R.string.player_keep_minimized ) ) {
         var keepPlayerMinimized by Settings.PLAYER_KEEP_MINIMIZED
@@ -213,16 +192,11 @@ fun PlayerSettings(
         )
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
     }
-    if( search.contains( R.string.max_songs_in_queue ) ) {
-        var maxSongsInQueue by Settings.MAX_NUMBER_OF_SONG_IN_QUEUE
-
-        EnumValueSelectorSettingsEntry(
-            title = stringResource(R.string.max_songs_in_queue),
-            selectedValue = maxSongsInQueue,
-            onValueSelected = { maxSongsInQueue = it },
-            valueText = { it.text }
+    if( search.contains( R.string.max_songs_in_queue ) )
+        SettingComponents.EnumEntry(
+            Settings.MAX_NUMBER_OF_SONG_IN_QUEUE,
+            R.string.max_songs_in_queue
         )
-    }
     if( search.contains( R.string.discover ) ) {
         var discoverIsEnabled by Settings.ENABLE_DISCOVER
 
@@ -245,16 +219,11 @@ fun PlayerSettings(
             }
         )
     }
-    if( search.contains( R.string.now_playing_indicator ) ) {
-        var nowPlayingIndicator by Settings.NOW_PLAYING_INDICATOR
-
-        EnumValueSelectorSettingsEntry(
-            title = stringResource(R.string.now_playing_indicator),
-            selectedValue = nowPlayingIndicator,
-            onValueSelected = { nowPlayingIndicator = it },
-            valueText = { it.text }
+    if( search.contains( R.string.now_playing_indicator ) )
+        SettingComponents.EnumEntry(
+            Settings.NOW_PLAYING_INDICATOR,
+            R.string.now_playing_indicator
         )
-    }
     if( isAtLeastAndroid6 && search.contains( R.string.resume_playback ) ) {
         var resumePlaybackWhenDeviceConnected by Settings.RESUME_PLAYBACK_WHEN_CONNECT_TO_AUDIO_DEVICE
 
@@ -451,20 +420,12 @@ fun PlayerSettings(
         }
     }
     if( search.contains( R.string.settings_audio_reverb ) ) {
-        var audioReverb by Settings.AUDIO_REVERB_PRESET
+        SettingComponents.EnumEntry(
+            Settings.AUDIO_REVERB_PRESET,
+            R.string.settings_audio_reverb
+        ) { onRestartServiceChange( true ) }
+        SettingComponents.Description( R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio )
 
-        EnumValueSelectorSettingsEntry(
-            title = stringResource(R.string.settings_audio_reverb),
-            text = stringResource(R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio),
-            selectedValue = audioReverb,
-            onValueSelected = {
-                audioReverb = it
-                onRestartServiceChange( true )
-            },
-            valueText = {
-                it.textName
-            }
-        )
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
     if( search.contains( R.string.settings_audio_focus ) ) {
@@ -524,24 +485,12 @@ fun PlayerSettings(
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                var pipModule by Settings.PIP_MODULE
-
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.settings_pip_module),
-                    selectedValue = pipModule,
-                    onValueSelected = {
-                        pipModule = it
-                        onRestartServiceChange( true )
-                    },
-                    valueText = {
-                        when (it) {
-                            PipModule.Cover -> stringResource(R.string.pipmodule_cover)
-                        }
-                    }
-                )
+                SettingComponents.EnumEntry(
+                    Settings.PIP_MODULE,
+                    R.string.settings_pip_module
+                ) { onRestartServiceChange( true ) }
 
                 var enablePictureInPictureAuto by Settings.IS_AUTO_PIP_ENABLED
-
                 SwitchSettingEntry(
                     isEnabled = isAtLeastAndroid12,
                     title = stringResource(R.string.settings_enable_pip_auto),

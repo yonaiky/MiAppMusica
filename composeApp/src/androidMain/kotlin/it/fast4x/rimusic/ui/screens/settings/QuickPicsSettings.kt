@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -36,7 +37,6 @@ import me.knighthat.utils.Toaster
 @UnstableApi
 @Composable
 fun  QuickPicsSettings() {
-    var playEventType by Settings.QUICK_PICKS_TYPE
     var showTips by Settings.QUICK_PICKS_SHOW_TIPS
     var showRelatedAlbums by Settings.QUICK_PICKS_SHOW_RELATED_ALBUMS
     var showSimilarArtists by Settings.QUICK_PICKS_SHOW_RELATED_ARTISTS
@@ -138,12 +138,7 @@ fun  QuickPicsSettings() {
             enter = fadeIn(tween(100)),
             exit = fadeOut(tween(100)),
         ) {
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.tips),
-                selectedValue = playEventType,
-                onValueSelected = { playEventType = it },
-                valueText = { it.text }
-            )
+            SettingComponents.EnumEntry( Settings.QUICK_PICKS_TYPE, R.string.tips )
         }
 
         //SettingsGroupSpacer()

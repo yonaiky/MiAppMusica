@@ -14,12 +14,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import it.fast4x.rimusic.ui.screens.settings.ColorSettingEntry
-import it.fast4x.rimusic.ui.screens.settings.EnumValueSelectorSettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.ImportantSettingsDescription
 import it.fast4x.rimusic.ui.screens.settings.SettingsEntryGroupText
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
@@ -95,19 +95,13 @@ fun ThemeSettings(modifier: Modifier = Modifier) {
         )
     }
 
-    EnumValueSelectorSettingsEntry(
-        title = stringResource(R.string.theme),
-        selectedValue = colorPaletteName,
-        onValueSelected = {
-            colorPaletteName = it
-            when (it) {
-                ColorPaletteName.PureBlack,
-                ColorPaletteName.ModernBlack -> colorPaletteMode = ColorPaletteMode.System
-                else -> {}
-            }
-        },
-        valueText = { it.text }
-    )
+    SettingComponents.EnumEntry(
+        Settings.COLOR_PALETTE,
+        R.string.theme
+    ) {
+        if( colorPaletteName == ColorPaletteName.ModernBlack )
+            colorPaletteMode = ColorPaletteMode.System
+    }
 
     AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.CustomColor) {
         Column{

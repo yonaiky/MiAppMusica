@@ -29,6 +29,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AnimatedGradient
 import it.fast4x.rimusic.enums.BackgroundProgress
@@ -216,7 +217,6 @@ fun AppearanceSettings(
     */
     var playerTimelineType by Settings.PLAYER_TIMELINE_TYPE
     var playerThumbnailSize by Settings.PLAYER_PORTRAIT_THUMBNAIL_SIZE
-    var playerThumbnailSizeL by Settings.PLAYER_LANDSCAPE_THUMBNAIL_SIZE
     var playerTimelineSize by Settings.PLAYER_TIMELINE_SIZE
     //
 
@@ -238,7 +238,6 @@ fun AppearanceSettings(
     val navigationBarPosition by Settings.NAVIGATION_BAR_POSITION
     //var isGradientBackgroundEnabled by rememberPreference(isGradientBackgroundEnabledKey, false)
     var showTotalTimeQueue by Settings.PLAYER_SHOW_TOTAL_QUEUE_TIME
-    var backgroundProgress by Settings.MINI_PLAYER_PROGRESS_BAR
     var showNextSongsInPlayer by Settings.PLAYER_SHOW_NEXT_IN_QUEUE
     var showRemainingSongTime by Settings.PLAYER_SHOW_SONGS_REMAINING_TIME
     var clickLyricsText by Settings.LYRICS_JUMP_ON_TAP
@@ -248,14 +247,12 @@ fun AppearanceSettings(
 
     var thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
 
-    var miniPlayerType by Settings.MINI_PLAYER_TYPE
     var playerBackgroundColors by Settings.PLAYER_BACKGROUND
 
     var showTopActionsBar by Settings.PLAYER_SHOW_TOP_ACTIONS_BAR
     var playerControlsType by Settings.PLAYER_CONTROLS_TYPE
     var playerInfoType by Settings.PLAYER_INFO_TYPE
     var transparentBackgroundActionBarPlayer by Settings.PLAYER_TRANSPARENT_ACTIONS_BAR
-    var iconLikeType by Settings.LIKE_ICON
     var playerSwapControlsWithTimeline by Settings.PLAYER_IS_CONTROL_AND_TIMELINE_SWAPPED
     var playerEnableLyricsPopupMessage by Settings.PLAYER_ACTION_LYRICS_POPUP_MESSAGE
     var actionspacedevenly by Settings.PLAYER_ACTION_BUTTONS_SPACED_EVENLY
@@ -263,14 +260,12 @@ fun AppearanceSettings(
     var showvisthumbnail by Settings.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER
     var buttonzoomout by Settings.ZOOM_OUT_ANIMATION
     var thumbnailpause by Settings.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE
-    var showsongs by Settings.MAX_NUMBER_OF_NEXT_IN_QUEUE
     var showalbumcover by Settings.PLAYER_SHOW_NEXT_IN_QUEUE_THUMBNAIL
     var tapqueue by Settings.PLAYER_ACTIONS_BAR_TAP_TO_OPEN_QUEUE
     var swipeUpQueue by Settings.PLAYER_ACTIONS_BAR_SWIPE_UP_TO_OPEN_QUEUE
     var statsfornerds by Settings.PLAYER_STATS_FOR_NERDS
 
     var playerType by Settings.PLAYER_TYPE
-    var queueType by Settings.QUEUE_TYPE
     var noblur by Settings.PLAYER_BACKGROUND_BLUR
     var fadingedge by Settings.PLAYER_BACKGROUND_FADING_EDGE
     var carousel by Settings.PLAYER_THUMBNAILS_CAROUSEL
@@ -284,12 +279,8 @@ fun AppearanceSettings(
     var statsExpanded by Settings.PLAYER_IS_STATS_FOR_NERDS_EXPANDED
     var restartService by rememberSaveable { mutableStateOf(false) }
     var showCoverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_ANIMATION
-    var coverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_TYPE
 
-    var notificationPlayerFirstIcon by Settings.MEDIA_NOTIFICATION_FIRST_ICON
-    var notificationPlayerSecondIcon by Settings.MEDIA_NOTIFICATION_SECOND_ICON
     var enableWallpaper by Settings.ENABLE_WALLPAPER
-    var wallpaperType by Settings.WALLPAPER_TYPE
     var topPadding by Settings.PLAYER_TOP_PADDING
     var animatedGradient by Settings.ANIMATED_GRADIENT
     var appearanceChooser by remember{ mutableStateOf(false)}
@@ -350,7 +341,6 @@ fun AppearanceSettings(
         var thumbnailSpacing  by Settings.PLAYER_THUMBNAIL_SPACING
         var colorPaletteName by Settings.COLOR_PALETTE
         var colorPaletteMode by Settings.THEME_MODE
-        var swipeAnimationNoThumbnail by Settings.PLAYER_NO_THUMBNAIL_SWIPE_ANIMATION
 
         if (appearanceChooser){
             AppearancePresetDialog(
@@ -677,13 +667,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.playertype),
-                selectedValue = playerType,
-                onValueSelected = {
-                    playerType = it
-                },
-                valueText = { it.text },
+            SettingComponents.EnumEntry(
+                Settings.PLAYER_TYPE,
+                R.string.playertype
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.queuetype).contains(
@@ -691,13 +677,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.queuetype),
-                selectedValue = queueType,
-                onValueSelected = {
-                    queueType = it
-                },
-                valueText = { it.text },
+            SettingComponents.EnumEntry(
+                Settings.QUEUE_TYPE,
+                R.string.queuetype
             )
 
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
@@ -719,20 +701,15 @@ fun AppearanceSettings(
                     true
                 )
             )
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.swipe_Animation_No_Thumbnail),
-                    selectedValue = swipeAnimationNoThumbnail,
-                    onValueSelected = { swipeAnimationNoThumbnail = it },
-                    valueText = {
-                        when (it) {
-                            SwipeAnimationNoThumbnail.Sliding -> stringResource(R.string.te_slide_vertical)
-                            SwipeAnimationNoThumbnail.Fade -> stringResource(R.string.te_fade)
-                            SwipeAnimationNoThumbnail.Scale -> stringResource(R.string.te_scale)
-                            SwipeAnimationNoThumbnail.Carousel -> stringResource(R.string.carousel)
-                            SwipeAnimationNoThumbnail.Circle -> stringResource(R.string.vt_circular)
-                        }
-                    },
-                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                SettingComponents.EnumEntry(
+                    Settings.PLAYER_NO_THUMBNAIL_SWIPE_ANIMATION,
+                    R.string.swipe_Animation_No_Thumbnail,
+                    Modifier.padding(
+                        start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                            25.dp
+                        else
+                            0.dp
+                    ),
                 )
         }
         AnimatedVisibility(visible = showthumbnail) {
@@ -771,12 +748,15 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        EnumValueSelectorSettingsEntry(
-                            title = stringResource(R.string.carouselsize),
-                            selectedValue = carouselSize,
-                            onValueSelected = { carouselSize = it },
-                            valueText = { it.text },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        SettingComponents.EnumEntry(
+                            Settings.CAROUSEL_SIZE,
+                            R.string.carouselsize,
+                            Modifier.padding(
+                                start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                                    25.dp
+                                else
+                                    0.dp
+                            ),
                         )
                 }
                 if (playerType == PlayerType.Essential) {
@@ -836,12 +816,15 @@ fun AppearanceSettings(
                     )
                     AnimatedVisibility(visible = showCoverThumbnailAnimation) {
                         Column {
-                            EnumValueSelectorSettingsEntry(
-                                title = stringResource(R.string.cover_thumbnail_animation_type),
-                                selectedValue = coverThumbnailAnimation,
-                                onValueSelected = { coverThumbnailAnimation = it },
-                                valueText = { it.text },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 50.dp else 25.dp)
+                            SettingComponents.EnumEntry(
+                                Settings.PLAYER_THUMBNAIL_TYPE,
+                                R.string.cover_thumbnail_animation_type,
+                                Modifier.padding(
+                                    start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                                        50.dp
+                                    else
+                                        25.dp
+                                )
                             )
                         }
                     }
@@ -853,12 +836,15 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        EnumValueSelectorSettingsEntry(
-                            title = stringResource(R.string.player_thumbnail_size),
-                            selectedValue = playerThumbnailSizeL,
-                            onValueSelected = { playerThumbnailSizeL = it },
-                            valueText = { it.text },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        SettingComponents.EnumEntry(
+                            Settings.PLAYER_LANDSCAPE_THUMBNAIL_SIZE,
+                            R.string.player_thumbnail_size,
+                            Modifier.padding(
+                                start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                                    25.dp
+                                else
+                                    0.dp
+                            )
                         )
                 } else {
                     if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
@@ -866,12 +852,15 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        EnumValueSelectorSettingsEntry(
-                            title = stringResource(R.string.player_thumbnail_size),
-                            selectedValue = playerThumbnailSize,
-                            onValueSelected = { playerThumbnailSize = it },
-                            valueText = { it.text },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        SettingComponents.EnumEntry(
+                            Settings.PLAYER_PORTRAIT_THUMBNAIL_SIZE,
+                            R.string.player_thumbnail_size,
+                            Modifier.padding(
+                                start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                                    25.dp
+                                else
+                                    0.dp
+                            )
                         )
                 }
                 if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(
@@ -879,14 +868,15 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.thumbnailtype),
-                        selectedValue = thumbnailType,
-                        onValueSelected = {
-                            thumbnailType = it
-                        },
-                        valueText = { it.text },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                    SettingComponents.EnumEntry(
+                        Settings.THUMBNAIL_TYPE,
+                        R.string.thumbnailtype,
+                        Modifier.padding(
+                            start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                                25.dp
+                            else
+                                0.dp
+                        )
                     )
 
                 if (search.inputValue.isBlank() || stringResource(R.string.thumbnail_roundness).contains(
@@ -894,10 +884,15 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.thumbnail_roundness),
-                        selectedValue = thumbnailRoundness,
-                        onValueSelected = { thumbnailRoundness = it },
+                    SettingComponents.EnumEntry(
+                        Settings.THUMBNAIL_BORDER_RADIUS,
+                        R.string.thumbnail_roundness,
+                        Modifier.padding(
+                            start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                                25.dp
+                            else
+                                0.dp
+                        ),
                         trailingContent = {
                             Spacer(
                                 modifier = Modifier
@@ -912,9 +907,7 @@ fun AppearanceSettings(
                                     )
                                     .size(36.dp)
                             )
-                        },
-                        valueText = { it.text },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        }
                     )
             }
         }
@@ -954,11 +947,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.timelinesize),
-                selectedValue = playerTimelineSize,
-                onValueSelected = { playerTimelineSize = it },
-                valueText = { it.text }
+            SettingComponents.EnumEntry(
+                Settings.PLAYER_TIMELINE_SIZE,
+                R.string.timelinesize
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.pinfo_type).contains(
@@ -966,13 +957,9 @@ fun AppearanceSettings(
                 true
             )
         ) {
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.pinfo_type),
-                selectedValue = playerInfoType,
-                onValueSelected = {
-                    playerInfoType = it
-                },
-                valueText = { it.text },
+            SettingComponents.EnumEntry(
+                Settings.PLAYER_INFO_TYPE,
+                R.string.pinfo_type
             )
             SettingsDescription(text = stringResource(R.string.pinfo_album_and_artist_name))
 
@@ -1003,13 +990,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.miniplayertype),
-                selectedValue = miniPlayerType,
-                onValueSelected = {
-                    miniPlayerType = it
-                },
-                valueText = { it.text },
+            SettingComponents.EnumEntry(
+                Settings.MINI_PLAYER_TYPE,
+                R.string.miniplayertype
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.player_swap_controls_with_timeline).contains(
@@ -1029,11 +1012,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.timeline),
-                selectedValue = playerTimelineType,
-                onValueSelected = { playerTimelineType = it },
-                valueText = { it.text }
+            SettingComponents.EnumEntry(
+                Settings.PLAYER_TIMELINE_TYPE,
+                R.string.timeline
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.transparentbar).contains(
@@ -1053,13 +1034,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.pcontrols_type),
-                selectedValue = playerControlsType,
-                onValueSelected = {
-                    playerControlsType = it
-                },
-                valueText = { it.text }
+            SettingComponents.EnumEntry(
+                Settings.PLAYER_CONTROLS_TYPE,
+                R.string.pcontrols_type
             )
 
 
@@ -1068,13 +1045,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.play_button),
-                selectedValue = playerPlayButtonType,
-                onValueSelected = {
-                    playerPlayButtonType = it
-                },
-                valueText = { it.text }
+            SettingComponents.EnumEntry(
+                Settings.PLAYER_PLAY_BUTTON_TYPE,
+                R.string.play_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.buttonzoomout).contains(
@@ -1089,44 +1062,24 @@ fun AppearanceSettings(
                 onCheckedChange = { buttonzoomout = it }
             )
 
-
         if (search.inputValue.isBlank() || stringResource(R.string.play_button).contains(
                 search.inputValue,
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.icon_like_button),
-                selectedValue = iconLikeType,
-                onValueSelected = {
-                    iconLikeType = it
-                },
-                valueText = { it.text },
+            SettingComponents.EnumEntry(
+                Settings.LIKE_ICON,
+                R.string.play_button
             )
-
-        /*
-
-        if (filter.isNullOrBlank() || stringResource(R.string.use_gradient_background).contains(filterCharSequence,true))
-            SwitchSettingEntry(
-                title = stringResource(R.string.use_gradient_background),
-                text = "",
-                isChecked = isGradientBackgroundEnabled,
-                onCheckedChange = { isGradientBackgroundEnabled = it }
-            )
-         */
 
         if (search.inputValue.isBlank() || stringResource(R.string.background_colors).contains(
                 search.inputValue,
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.background_colors),
-                selectedValue = playerBackgroundColors,
-                onValueSelected = {
-                    playerBackgroundColors = it
-                },
-                valueText = { it.text }
+            SettingComponents.EnumEntry(
+                Settings.PLAYER_BACKGROUND,
+                R.string.background_colors
             )
 
         AnimatedVisibility(visible = playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) {
@@ -1135,14 +1088,15 @@ fun AppearanceSettings(
                     true
                 )
             )
-                EnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.gradienttype),
-                    selectedValue = animatedGradient,
-                    onValueSelected = {
-                        animatedGradient = it
-                    },
-                    valueText = { it.text },
-                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) 25.dp else 0.dp)
+                SettingComponents.EnumEntry(
+                    Settings.ANIMATED_GRADIENT,
+                    R.string.gradienttype,
+                    Modifier.padding(
+                        start = if ( playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient)
+                            25.dp
+                        else
+                            0.dp
+                    )
                 )
         }
         var isRotatingCoverEnabled by Settings.PLAYER_ROTATING_ALBUM_COVER
@@ -1248,15 +1202,10 @@ fun AppearanceSettings(
         AnimatedVisibility( visible = showNextSongsInPlayer) {
           Column {
               if (search.inputValue.isBlank() || stringResource(R.string.showtwosongs).contains(search.inputValue,true))
-                  EnumValueSelectorSettingsEntry(
-                      title = stringResource(R.string.songs_number_to_show),
-                      selectedValue = showsongs,
-                      onValueSelected = {
-                          showsongs = it
-                      },
-                      valueText = { it.name },
-                      modifier = Modifier
-                          .padding(start = 25.dp)
+                  SettingComponents.EnumEntry(
+                      Settings.MAX_NUMBER_OF_NEXT_IN_QUEUE,
+                      R.string.songs_number_to_show,
+                      Modifier.padding( start = 25.dp )
                   )
 
 
@@ -1364,13 +1313,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.background_progress_bar),
-                selectedValue = backgroundProgress,
-                onValueSelected = {
-                    backgroundProgress = it
-                },
-                valueText = { it.text },
+            SettingComponents.EnumEntry(
+                Settings.MINI_PLAYER_PROGRESS_BAR,
+                R.string.background_progress_bar
             )
 
 
@@ -1385,25 +1330,7 @@ fun AppearanceSettings(
                 isChecked = visualizerEnabled,
                 onCheckedChange = { visualizerEnabled = it }
             )
-            /*
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.visualizer),
-                selectedValue = playerVisualizerType,
-                onValueSelected = { playerVisualizerType = it },
-                valueText = {
-                    when (it) {
-                        PlayerVisualizerType.Fancy -> stringResource(R.string.vt_fancy)
-                        PlayerVisualizerType.Circular -> stringResource(R.string.vt_circular)
-                        PlayerVisualizerType.Disabled -> stringResource(R.string.vt_disabled)
-                        PlayerVisualizerType.Stacked -> stringResource(R.string.vt_stacked)
-                        PlayerVisualizerType.Oneside -> stringResource(R.string.vt_one_side)
-                        PlayerVisualizerType.Doubleside -> stringResource(R.string.vt_double_side)
-                        PlayerVisualizerType.DoublesideCircular -> stringResource(R.string.vt_double_side_circular)
-                        PlayerVisualizerType.Full -> stringResource(R.string.vt_full)
-                    }
-                }
-            )
-            */
+
             ImportantSettingsDescription(text = stringResource(R.string.visualizer_require_mic_permission))
         }
 
@@ -1748,45 +1675,19 @@ fun AppearanceSettings(
                 true
             )
         ) {
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.notificationPlayerFirstIcon),
-                selectedValue = notificationPlayerFirstIcon,
-                onValueSelected = {
-                    notificationPlayerFirstIcon = it
-                    restartService = true
-                },
-                valueText = { it.text },
-            )
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.notificationPlayerSecondIcon),
-                selectedValue = notificationPlayerSecondIcon,
-                onValueSelected = {
-                    notificationPlayerSecondIcon = it
-                    restartService = true
-                },
-                valueText = { it.text },
-            )
+            SettingComponents.EnumEntry(
+                Settings.MEDIA_NOTIFICATION_FIRST_ICON,
+                R.string.notificationPlayerFirstIcon,
+                action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+            ) { restartService = true }
+            SettingComponents.EnumEntry(
+                Settings.MEDIA_NOTIFICATION_SECOND_ICON,
+                R.string.notificationPlayerSecondIcon,
+                action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+            ) { restartService = true }
+
             RestartPlayerService(restartService, onRestart = { restartService = false })
         }
-
-
-//        if (search.inputValue.isBlank() || stringResource(R.string.show_song_cover).contains(
-//                search.inputValue,
-//                true
-//            )
-//        )
-//            if (!isAtLeastAndroid13) {
-//                SettingsGroupSpacer()
-//
-//                SettingsEntryGroupText(title = stringResource(R.string.lockscreen))
-//
-//                SwitchSettingEntry(
-//                    title = stringResource(R.string.show_song_cover),
-//                    text = stringResource(R.string.use_song_cover_on_lockscreen),
-//                    isChecked = isShowingThumbnailInLockscreen,
-//                    onCheckedChange = { isShowingThumbnailInLockscreen = it }
-//                )
-//            }
 
         if (isAtLeastAndroid7) {
             SettingsGroupSpacer()
@@ -1799,16 +1700,12 @@ fun AppearanceSettings(
             )
             AnimatedVisibility(visible = enableWallpaper) {
                 Column {
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.set_cover_thumbnail_as_wallpaper),
-                        selectedValue = wallpaperType,
-                        onValueSelected = {
-                            wallpaperType = it
-                            restartService = true
-                        },
-                        valueText = { it.text },
-                        modifier = Modifier.padding(start = 25.dp)
-                    )
+                    SettingComponents.EnumEntry(
+                        Settings.WALLPAPER_TYPE,
+                        R.string.set_cover_thumbnail_as_wallpaper,
+                        Modifier.padding( start = 25.dp ),
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                    ) { restartService = true }
                     RestartPlayerService(restartService, onRestart = { restartService = false })
                 }
             }

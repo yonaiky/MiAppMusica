@@ -151,34 +151,6 @@ inline fun StringListValueSelectorSettingsEntry(
     )
 }
 
-
-
-@Composable
-inline fun <reified T : Enum<T>> EnumValueSelectorSettingsEntry(
-    title: String,
-    titleSecondary: String? = null,
-    text: String? = null,
-    selectedValue: T,
-    noinline onValueSelected: (T) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
-    noinline valueText: @Composable (T) -> String  = { it.name },
-    noinline trailingContent: (@Composable () -> Unit) = {}
-) {
-    ValueSelectorSettingsEntry(
-        title = title,
-        titleSecondary = titleSecondary,
-        text = text,
-        selectedValue = selectedValue,
-        values = enumValues<T>().toList(),
-        onValueSelected = onValueSelected,
-        modifier = modifier,
-        isEnabled = isEnabled,
-        valueText = valueText,
-        trailingContent = trailingContent,
-    )
-}
-
 @Composable
 fun <T> ValueSelectorSettingsEntry(
     title: String,

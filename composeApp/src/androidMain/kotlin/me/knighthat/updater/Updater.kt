@@ -19,11 +19,10 @@ import androidx.compose.ui.util.fastFirstOrNull
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.screens.settings.EnumValueSelectorSettingsEntry
-import it.fast4x.rimusic.ui.screens.settings.SettingsDescription
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -135,13 +134,11 @@ object Updater {
             checkUpdateState = CheckUpdateState.Disabled
 
         Row( Modifier.fillMaxWidth() ) {
-            EnumValueSelectorSettingsEntry(
-                title = stringResource( R.string.enable_check_for_update ),
-                selectedValue = checkUpdateState,
-                onValueSelected = { checkUpdateState = it },
-                valueText = { it.text },
-                isEnabled = BuildConfig.IS_AUTOUPDATE,
-                modifier = Modifier.weight( 1f )
+            SettingComponents.EnumEntry(
+                Settings.CHECK_UPDATE,
+                R.string.enable_check_for_update,
+                Modifier.weight( 1f ),
+                isEnabled = BuildConfig.IS_AUTOUPDATE
             )
 
             AnimatedVisibility(
