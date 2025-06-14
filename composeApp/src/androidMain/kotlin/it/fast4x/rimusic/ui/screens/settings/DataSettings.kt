@@ -27,6 +27,7 @@ import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.SettingHeader
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -165,9 +166,7 @@ fun DataSettings() {
 
         SettingComponents.Description( R.string.cache_cleared )
 
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.cache))
-
+        SettingHeader( R.string.cache )
 
         ImageCacheFactory.DISK_CACHE.size.let { diskCacheSize ->
             val coilDiskCacheMaxSize by Settings.THUMBNAIL_CACHE_SIZE
@@ -359,42 +358,8 @@ fun DataSettings() {
 
         SettingComponents.Description( R.string.info_private_cache_location_can_t_cleaned )
         RestartPlayerService(restartService, onRestart = { restartService = false } )
-        //ImportantSettingsDescription(stringResource(R.string.restarting_rimusic_is_required))
 
-        SettingsGroupSpacer()
-
-        //SettingsEntryGroupText(title = stringResource(R.string.folder_cache))
-
-        /*
-         *        SettingsDescription(
-         *            text = stringResource(R.string.custom_cache_from_android_10_may_not_be_available)
-         *        )
-         *
-         *
-         *        SettingsEntry(
-         *            title = stringResource(R.string.cache_location_folder),
-         *            text = if (exoPlayerAlternateCacheLocation == "") stringResource(R.string._default) else exoPlayerAlternateCacheLocation,
-         *            //isEnabled = if (sdkVersion.toShort() < 29) true else false,
-         *            onClick = {
-         *                dirRequest.launch(null)
-    }
-    )
-
-
-    ImportantSettingsDescription(text = stringResource(R.string.cache_reset_by_clicking_button))
-
-    SettingsEntry(
-        title = stringResource(R.string.reset_cache_location_folder),
-        text = "",
-        //isEnabled = if (sdkVersion.toShort() < 29) true else false,
-        onClick = {
-        exoPlayerAlternateCacheLocation = ""
-    }
-    )
-    */
-
-
-        SettingsEntryGroupText(title = stringResource(R.string.title_backup_and_restore))
+        SettingHeader( R.string.title_backup_and_restore )
 
         val exportDbDialog = ExportDatabaseDialog( context )
         exportDbDialog.Render()
@@ -451,8 +416,7 @@ fun DataSettings() {
             onClick = importMigration::onShortClick
         )
 
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.search_history))
+        SettingHeader( R.string.search_history )
 
         SettingComponents.BooleanEntry(
             Settings.PAUSE_SEARCH_HISTORY,

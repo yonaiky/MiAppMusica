@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.SettingHeader
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import it.fast4x.rimusic.ui.screens.settings.ColorSettingEntry
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntryGroupText
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 
@@ -122,7 +122,8 @@ fun ThemeSettings(modifier: Modifier = Modifier) {
     }
     AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.Customized) {
         Column {
-            SettingsEntryGroupText(stringResource(R.string.title_customized_light_theme_colors))
+            SettingHeader( R.string.title_customized_light_theme_colors )
+
             ButtonBarSettingEntry(
                 title = stringResource(R.string.title_reset_customized_light_colors),
                 text = stringResource(R.string.info_click_to_reset_default_light_colors),
@@ -210,7 +211,8 @@ fun ThemeSettings(modifier: Modifier = Modifier) {
                 }
             )
 
-            SettingsEntryGroupText(stringResource(R.string.title_customized_dark_theme_colors))
+            SettingHeader( R.string.title_customized_dark_theme_colors )
+
             ButtonBarSettingEntry(
                 title = stringResource(R.string.title_reset_customized_dark_colors),
                 text = stringResource(R.string.click_to_reset_default_dark_colors),

@@ -11,9 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -44,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
-import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.typography
@@ -54,7 +51,6 @@ import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
-import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.RestartAppDialog
@@ -151,54 +147,6 @@ inline fun StringListValueSelectorSettingsEntry(
 }
 
 @Composable
-fun <T> ValueSelectorSettingsEntry(
-    title: String,
-    titleSecondary: String? = null,
-    text: String? = null,
-    selectedValue: T,
-    values: List<T>,
-    onValueSelected: (T) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
-    valueText: @Composable (T) -> String = { it.toString() },
-    trailingContent: (@Composable () -> Unit) = {}
-) {
-    var isShowingDialog by remember {
-        mutableStateOf(false)
-    }
-
-    if (isShowingDialog) {
-        ValueSelectorDialog(
-            onDismiss = { isShowingDialog = false },
-            title = title,
-            selectedValue = selectedValue,
-            values = values,
-            onValueSelected = onValueSelected,
-            valueText = valueText
-        )
-    }
-
-    SettingsEntry(
-        title = title,
-        titleSecondary = titleSecondary,
-        text = valueText(selectedValue),
-        modifier = modifier,
-        isEnabled = isEnabled,
-        onClick = { isShowingDialog = true },
-        trailingContent = trailingContent
-    )
-
-    text?.let {
-        BasicText(
-            text = it,
-            style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
-            modifier = Modifier
-                .padding(start = 12.dp)
-        )
-    }
-}
-
-@Composable
 fun SettingsEntry(
     title: String,
     titleSecondary: String? = null,
@@ -249,30 +197,6 @@ fun SettingsEntry(
             )
         }
     }
-}
-
-@Composable
-fun SettingsEntryGroupText(
-    title: String,
-    modifier: Modifier = Modifier,
-) {
-    BasicText(
-        text = title.uppercase(),
-        style = typography().xs.semiBold.copy(colorPalette().accent),
-        modifier = modifier
-            .padding(start = 12.dp)
-            //.padding(horizontal = 12.dp)
-    )
-}
-
-@Composable
-fun SettingsGroupSpacer(
-    modifier: Modifier = Modifier,
-) {
-    Spacer(
-        modifier = modifier
-            .height(24.dp)
-    )
 }
 
 @Composable
@@ -451,25 +375,4 @@ fun SliderSettingsEntry(
             .padding(vertical = 16.dp)
             .fillMaxWidth()
     )
-}
-
-@Composable
-fun SettingsGroup(
-    title: String? = null,
-    modifier: Modifier = Modifier,
-    description: String? = null,
-    important: Boolean = false,
-    content: @Composable ColumnScope.() -> Unit
-) = Column(modifier = modifier) {
-    if (title != null) {
-        SettingsEntryGroupText(title = title)
-    }
-
-    description?.let { description ->
-        SettingComponents.Description( description, modifier, important )
-    }
-
-    content()
-
-    SettingsGroupSpacer()
 }

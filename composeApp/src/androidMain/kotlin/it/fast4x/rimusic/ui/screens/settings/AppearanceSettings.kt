@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.SettingHeader
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AnimatedGradient
 import it.fast4x.rimusic.enums.BackgroundProgress
@@ -299,10 +300,7 @@ fun AppearanceSettings(
         search.ToolBarButton()
         search.SearchBar( this )
 
-        //SettingsEntryGroupText(stringResource(R.string.user_interface))
-
-        //SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.player))
+        SettingHeader( R.string.player )
 
         if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
             showthumbnail = true
@@ -1283,8 +1281,7 @@ fun AppearanceSettings(
             SettingComponents.Description( R.string.visualizer_require_mic_permission, isImportant = true )
         }
 
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.player_action_bar))
+        SettingHeader( R.string.player_action_bar )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_transparent_background).contains(
                 search.inputValue,
@@ -1460,8 +1457,7 @@ fun AppearanceSettings(
             )
 
         if (!showlyricsthumbnail) {
-            SettingsGroupSpacer()
-            SettingsEntryGroupText(title = stringResource(R.string.full_screen_lyrics_components))
+            SettingHeader( R.string.full_screen_lyrics_components )
 
             if (showTotalTimeQueue) {
                 if (search.inputValue.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(
@@ -1564,8 +1560,7 @@ fun AppearanceSettings(
                 R.string.description_playback_speed
             )
 
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.notification_player))
+        SettingHeader( R.string.notification_player )
 
         if (search.inputValue.isBlank() || stringResource(R.string.notification_player).contains(
                 search.inputValue,
@@ -1587,8 +1582,8 @@ fun AppearanceSettings(
         }
 
         if (isAtLeastAndroid7) {
-            SettingsGroupSpacer()
-            SettingsEntryGroupText(title = stringResource(R.string.wallpaper))
+            SettingHeader( R.string.wallpaper )
+
             SettingComponents.BooleanEntry(
                 Settings.ENABLE_WALLPAPER,
                 R.string.enable_wallpaper

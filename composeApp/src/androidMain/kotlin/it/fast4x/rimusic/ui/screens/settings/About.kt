@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.SettingHeader
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -172,9 +173,7 @@ fun About() {
             )
         }
 
-        SettingsGroupSpacer()
-
-        SettingsEntryGroupText(title = stringResource(R.string.troubleshooting))
+        SettingHeader( R.string.troubleshooting )
 
         SettingsEntry(
             title = stringResource( R.string.view_the_source_code ),
@@ -210,19 +209,15 @@ fun About() {
             }
         )
 
-        SettingsGroupSpacer()
-
         Title(
             title = stringResource(R.string.contributors)
         )
 
-        SettingsEntryGroupText(title = "${ countTranslators() } " + stringResource(R.string.translators))
+        SettingHeader( "${countTranslators()} " + stringResource( R.string.translators ) )
         SettingComponents.Description( R.string.in_alphabetical_order )
         ShowTranslators()
 
-        SettingsGroupSpacer()
-
-        SettingsEntryGroupText(title = "${ countDevelopers() } ${stringResource( R.string.about_developers_designers )}")
+        SettingHeader( "${countDevelopers()} ${stringResource( R.string.about_developers_designers )}" )
         SettingComponents.Description( R.string.in_alphabetical_order )
         ShowDevelopers()
 

@@ -42,6 +42,7 @@ import app.kreate.android.Settings.PROXY_HOST
 import app.kreate.android.Settings.PROXY_PORT
 import app.kreate.android.Settings.PROXY_SCHEME
 import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.SettingHeader
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -138,8 +139,8 @@ fun OtherSettings() {
             onClick = {}
         )
 
-    SettingsGroupSpacer()
-    SettingsEntryGroupText(stringResource(R.string.on_device))
+    SettingHeader( R.string.on_device )
+
     StringListValueSelectorSettingsEntry(
         title = stringResource(R.string.blacklisted_folders),
         text = stringResource(R.string.edit_blacklist_for_on_device_songs),
@@ -178,17 +179,14 @@ fun OtherSettings() {
         )
     }
 
-    SettingsGroupSpacer()
+    SettingHeader( R.string.androidheadunit )
 
-    SettingsEntryGroupText(title = stringResource(R.string.androidheadunit))
     SettingComponents.BooleanEntry(
         PLAYER_EXTRA_SPACE,
         R.string.extra_space
     )
 
-    SettingsGroupSpacer()
-
-    SettingsEntryGroupText(title = stringResource(R.string.service_lifetime))
+    SettingHeader( R.string.service_lifetime )
 
     SettingComponents.BooleanEntry(
         KEEP_SCREEN_ON,
@@ -232,11 +230,11 @@ fun OtherSettings() {
         }
     )
 
-    SettingsGroupSpacer()
+    SettingHeader(
+        R.string.proxy,
+        R.string.restarting_rimusic_is_required
+    )
 
-    SettingsGroupSpacer()
-    SettingsEntryGroupText(title = stringResource(R.string.proxy))
-    SettingComponents.Description( R.string.restarting_rimusic_is_required )
     SettingComponents.BooleanEntry(
         IS_PROXY_ENABLED,
         R.string.enable_proxy
@@ -265,9 +263,7 @@ fun OtherSettings() {
         }
     }
 
-    SettingsGroupSpacer()
-
-    SettingsEntryGroupText(title = stringResource(R.string.parental_control))
+    SettingHeader( R.string.parental_control )
 
     SettingComponents.BooleanEntry(
         PARENTAL_CONTROL,
@@ -275,12 +271,10 @@ fun OtherSettings() {
         R.string.info_prevent_play_songs_with_age_limitation
     )
 
-    SettingsGroupSpacer()
-
     var text by remember { mutableStateOf(null as String?) }
     val noLogAvailable = stringResource(R.string.no_log_available)
 
-    SettingsEntryGroupText(title = stringResource(R.string.debug))
+    SettingHeader( R.string.debug )
     SettingComponents.BooleanEntry(
         DEBUG_LOG,
         R.string.enable_log_debug,

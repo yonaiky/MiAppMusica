@@ -40,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 import app.kreate.android.R
 import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.SettingHeader
 import coil.compose.AsyncImage
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
@@ -134,11 +135,7 @@ fun AccountsSettings() {
             "SAPISID" in parseCookieString(cookie)
         }
 
-
-
-
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = "YOUTUBE MUSIC")
+        SettingHeader( "YOUTUBE MUSIC" )
 
         SettingComponents.BooleanEntry(
             Settings.YOUTUBE_LOGIN,
@@ -397,8 +394,8 @@ fun AccountsSettings() {
         }
 
 
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.piped_account))
+        SettingHeader( R.string.piped_account )
+
         SettingComponents.BooleanEntry(
             Settings.ENABLE_PIPED,
             R.string.enable_piped_syncronization
@@ -491,8 +488,7 @@ fun AccountsSettings() {
             key = discordPersonalAccessTokenKey,
             defaultValue = ""
         )
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.social_discord))
+        SettingHeader( R.string.social_discord )
 
         SettingComponents.BooleanEntry(
             Settings.DISCORD_LOGIN,
