@@ -87,7 +87,10 @@ fun OtherSettings() {
     ) {
         search.ToolBarButton()
 
-        LazyColumn( state = scrollState ) {
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
             section( R.string.on_device ) {
                 var blackListedPaths by remember {
                     val file = File(context.filesDir, "Blacklisted_paths.txt")

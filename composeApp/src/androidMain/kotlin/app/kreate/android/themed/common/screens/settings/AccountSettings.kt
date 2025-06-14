@@ -107,7 +107,10 @@ fun AccountSettings() {
     ) {
         search.ToolBarButton()
 
-        LazyColumn( state = scrollState ) {
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
             section( "YOUTUBE MUSIC" ) {
                 var visitorData by Settings.YOUTUBE_VISITOR_DATA
                 var dataSyncId by Settings.YOUTUBE_SYNC_ID

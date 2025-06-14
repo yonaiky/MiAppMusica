@@ -66,8 +66,10 @@ fun GeneralSettings() {
         val sysLocale = LocaleListCompat.getDefault()[0].toString()
         val sysLocaleText = "${stringResource( R.string.system_language )}: $sysLocale"
 
-        LazyColumn( state = scrollState ) {
-
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
             if( BuildConfig.IS_AUTOUPDATE )
                 section( R.string.update ) {
                     if( search.contains( R.string.update ) )

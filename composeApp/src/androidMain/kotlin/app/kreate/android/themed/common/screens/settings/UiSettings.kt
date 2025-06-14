@@ -72,7 +72,10 @@ fun UiSettings() {
     ) {
         search.ToolBarButton()
 
-        LazyColumn( state = scrollState ) {
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
 
             section( R.string.user_interface ) {
                 var disablePlayerHorizontalSwipe by Settings.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED

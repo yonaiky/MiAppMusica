@@ -113,7 +113,10 @@ fun About() {
         val numTranslators = countTranslators()
         val numCoders = countDevelopers()
 
-        LazyColumn( state = scrollState ) {
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
             // Social platforms
             item {
                 Row(

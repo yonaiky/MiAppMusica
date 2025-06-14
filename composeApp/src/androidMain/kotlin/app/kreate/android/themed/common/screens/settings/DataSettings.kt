@@ -146,7 +146,10 @@ fun DataSettings() {
     ) {
         search.ToolBarButton()
 
-        LazyColumn( state = scrollState ) {
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
             section( R.string.cache, R.string.cache_cleared ) {
                 if( search.contains( R.string.image_cache_max_size ) )
                     ImageCacheFactory.DISK_CACHE.size.let { diskCacheSize ->

@@ -61,7 +61,10 @@ fun AppearanceSettings() {
     ) {
         search.ToolBarButton()
 
-        LazyColumn( state = scrollState ) {
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
             section( R.string.player ) {
                 PlayerAppearance( search )
             }

@@ -71,7 +71,10 @@ fun QuickPicksSettings() {
     ) {
         search.ToolBarButton()
 
-        LazyColumn( state = scrollState ) {
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
             item {
                 SettingComponents.BooleanEntry(
                     Settings.QUICK_PICKS_PAGE,
