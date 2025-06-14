@@ -101,7 +101,8 @@ object SettingComponents {
         Row(
             horizontalArrangement = Arrangement.spacedBy( 16.dp ),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier.padding( all = DEFAULT_HORIZONTAL_PADDING.dp )
+                               .fillMaxWidth()
                                .clickable(
                                    enabled = isEnabled,
                                    onClick = onClick
@@ -116,11 +117,16 @@ object SettingComponents {
                                         .semiBold
                                         .copy( colorPalette().text ),
                     modifier = Modifier.padding( bottom = 4.dp )
-                                       .padding( horizontal = DEFAULT_HORIZONTAL_PADDING.dp )
                 )
 
                 if( subtitle.isNotBlank() )
-                    Description( subtitle )
+                    BasicText(
+                        text = subtitle,
+                        maxLines = 2,
+                        style = typography().xs
+                                            .semiBold
+                                            .copy( colorPalette().textSecondary )
+                    )
             }
 
             trailingContent()
@@ -220,7 +226,7 @@ object SettingComponents {
         Text(
             title = title,
             onClick = dialog::showDialog,
-            modifier = modifier.padding( vertical = HORIZONTAL_PADDING.dp ),
+            modifier = modifier,
             // Default to show current value's name if no subtitle is provided
             subtitle = subtitle.ifBlank { getName( preference.value ) },
             isEnabled = isEnabled,
