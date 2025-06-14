@@ -4,30 +4,21 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
-import it.fast4x.rimusic.enums.AlbumSwipeAction
-import it.fast4x.rimusic.enums.PlaylistSwipeAction
-import it.fast4x.rimusic.enums.QueueSwipeAction
-import it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry
 
 @Composable
 fun SwipeActionSettings() {
-    var isSwipeToActionEnabled by Settings.ENABLE_SWIPE_ACTION
-    SwitchSettingEntry(
-        title = stringResource(R.string.swipe_to_action),
-        text = stringResource(R.string.activate_the_action_menu_by_swiping_the_song_left_or_right),
-        isChecked = isSwipeToActionEnabled,
-        onCheckedChange = { isSwipeToActionEnabled = it }
+    SettingComponents.BooleanEntry(
+        Settings.ENABLE_SWIPE_ACTION,
+        R.string.swipe_to_action,
+        R.string.activate_the_action_menu_by_swiping_the_song_left_or_right
     )
 
-    AnimatedVisibility(visible = isSwipeToActionEnabled) {
+    AnimatedVisibility( Settings.ENABLE_SWIPE_ACTION.value ) {
         Column(
             modifier = Modifier.padding(start = 25.dp)
         ) {

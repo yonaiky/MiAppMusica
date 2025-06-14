@@ -33,6 +33,7 @@ import app.kreate.android.R
 import app.kreate.android.Settings
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.Dialog
 import me.knighthat.component.dialog.RestartAppDialog
@@ -273,6 +274,56 @@ object SettingComponents {
         crossinline onValueChanged: (T) -> Unit = {}
     ) where T: Enum<T>, T: TextView =
         EnumEntry( preference, stringResource( titleId ), modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
+
+    @Composable
+    fun BooleanEntry(
+        preference: Settings.Preference.BooleanPreference,
+        title: String,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+        onValueChanged: (Boolean) -> Unit = {}
+    ) =
+        Text(
+            title = title,
+            onClick = {
+                onValueChanged( preference.flip() )
+
+                if ( action == Action.RESTART_APP )
+                    RestartAppDialog.showDialog()
+            },
+            modifier = modifier,
+            subtitle = subtitle,
+            isEnabled = isEnabled,
+            trailingContent = { Switch( preference.value ) }
+        )
+
+    @Composable
+    fun BooleanEntry(
+        preference: Settings.Preference.BooleanPreference,
+        @StringRes titleId: Int,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+        onValueChanged: (Boolean) -> Unit = {}
+    ) = BooleanEntry(
+        preference, stringResource( titleId ), modifier, subtitle, isEnabled, action, onValueChanged
+    )
+
+    @Composable
+    fun BooleanEntry(
+        preference: Settings.Preference.BooleanPreference,
+        @StringRes titleId: Int,
+        @StringRes subtitleId: Int,
+        modifier: Modifier = Modifier,
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+        onValueChanged: (Boolean) -> Unit = {}
+    ) = BooleanEntry(
+        preference, stringResource( titleId ), modifier, stringResource( subtitleId ), isEnabled, action, onValueChanged
+    )
 
     /**
      * A set of actions to enact once the setting is set.

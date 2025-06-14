@@ -41,9 +41,7 @@ import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
-import me.knighthat.component.dialog.RestartAppDialog
 
 @Composable
 fun UiSettings() {
@@ -236,56 +234,38 @@ fun UiSettings() {
                         Settings.TRANSITION_EFFECT,
                         R.string.transition_effect
                     )
-                if( UiType.ViMusic.isCurrent() && search.contains( R.string.vimusic_show_search_button_in_navigation_bar ) ) {
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.vimusic_show_search_button_in_navigation_bar),
-                        text = stringResource(R.string.vismusic_only_in_left_right_navigation_bar),
-                        isChecked = showSearchTab,
-                        onCheckedChange = { showSearchTab = it }
+                if( UiType.ViMusic.isCurrent() && search.contains( R.string.vimusic_show_search_button_in_navigation_bar ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.SHOW_SEARCH_IN_NAVIGATION_BAR,
+                        R.string.vimusic_show_search_button_in_navigation_bar,
+                        R.string.vismusic_only_in_left_right_navigation_bar
                     )
-                }
-                if( UiType.ViMusic.isCurrent() && search.contains( R.string.show_statistics_in_navigation_bar ) ) {
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.show_statistics_in_navigation_bar),
-                        text = "",
-                        isChecked = showStatsInNavbar,
-                        onCheckedChange = { showStatsInNavbar = it }
+                if( UiType.ViMusic.isCurrent() && search.contains( R.string.show_statistics_in_navigation_bar ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.SHOW_STATS_IN_NAVIGATION_BAR,
+                        R.string.show_statistics_in_navigation_bar
                     )
-                }
-                if( search.contains( R.string.show_floating_icon ) ) {
-                    var showFloatingIcon by Settings.SHOW_FLOATING_ICON
-
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.show_floating_icon),
-                        text = "",
-                        isChecked = showFloatingIcon,
-                        onCheckedChange = { showFloatingIcon = it }
+                if( search.contains( R.string.show_floating_icon ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.SHOW_FLOATING_ICON,
+                        R.string.show_floating_icon
                     )
-
-                }
                 if( search.contains( R.string.settings_use_font_type ) )
                     SettingComponents.EnumEntry(
                         Settings.FONT,
                         R.string.settings_use_font_type
                     )
-                if( search.contains( R.string.use_system_font ) ) {
-                    var useSystemFont by Settings.USE_SYSTEM_FONT
-
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.use_system_font),
-                        text = stringResource(R.string.use_font_by_the_system),
-                        isChecked = useSystemFont,
-                        onCheckedChange = { useSystemFont = it }
+                if( search.contains( R.string.use_system_font ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.USE_SYSTEM_FONT,
+                        R.string.use_system_font,
+                        R.string.use_font_by_the_system
                     )
-                }
                 if( search.contains( R.string.apply_font_padding ) ) {
-                    var applyFontPadding by Settings.APPLY_FONT_PADDING
-
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.apply_font_padding),
-                        text = stringResource(R.string.add_spacing_around_texts),
-                        isChecked = applyFontPadding,
-                        onCheckedChange = { applyFontPadding = it }
+                    SettingComponents.BooleanEntry(
+                        Settings.APPLY_FONT_PADDING,
+                        R.string.apply_font_padding,
+                        R.string.add_spacing_around_texts
                     )
                 }
                 if( search.contains( R.string.swipe_to_action ) ) {
@@ -294,102 +274,62 @@ fun UiSettings() {
             }
             section( R.string.songs ) {
                 val showFavorites = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.favorites ) )
-                if( search.contains( showFavorites ) ) {
-                    var showFavoritesPlaylist by Settings.HOME_SONGS_SHOW_FAVORITES_CHIP
-
-                    SwitchSettingEntry(
-                        title = showFavorites,
-                        text = "",
-                        isChecked = showFavoritesPlaylist,
-                        onCheckedChange = { showFavoritesPlaylist = it }
+                if( search.contains( showFavorites ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.HOME_SONGS_SHOW_FAVORITES_CHIP,
+                        showFavorites
                     )
-                }
 
                 val showCached = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.cached ) )
-                if( search.contains( showCached ) ) {
-                    var showCachedPlaylist by Settings.HOME_SONGS_SHOW_CACHED_CHIP
-
-                    SwitchSettingEntry(
-                        title = showCached,
-                        text = "",
-                        isChecked = showCachedPlaylist,
-                        onCheckedChange = { showCachedPlaylist = it }
+                if( search.contains( showCached ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.HOME_SONGS_SHOW_CACHED_CHIP,
+                        showCached
                     )
-                }
 
                 val showDownloaded = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.downloaded ) )
-                if ( search.contains( showDownloaded ) ) {
-                    var showDownloadedPlaylist by Settings.HOME_SONGS_SHOW_DOWNLOADED_CHIP
-
-                    SwitchSettingEntry(
-                        title = showDownloaded,
-                        text = "",
-                        isChecked = showDownloadedPlaylist,
-                        onCheckedChange = { showDownloadedPlaylist = it }
+                if ( search.contains( showDownloaded ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.HOME_SONGS_SHOW_DOWNLOADED_CHIP,
+                        showDownloaded
                     )
-                }
 
                 val topNumber = stringResource( R.string.my_playlist_top, Settings.MAX_NUMBER_OF_TOP_PLAYED.value )
                 val showMostPlayed = stringResource( R.string.setting_entry_show_chip, topNumber )
-                if ( search.contains( showMostPlayed ) ) {
-                    var showMyTopPlaylist by Settings.HOME_SONGS_SHOW_MOST_PLAYED_CHIP
-
-                    SwitchSettingEntry(
-                        title = showMostPlayed,
-                        text = "",
-                        isChecked = showMyTopPlaylist,
-                        onCheckedChange = { showMyTopPlaylist = it }
+                if ( search.contains( showMostPlayed ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.HOME_SONGS_SHOW_MOST_PLAYED_CHIP,
+                        showMostPlayed
                     )
-                }
 
                 val showOnDevice = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.on_device ) )
-                if ( search.contains( showOnDevice ) ) {
-                    var showOnDevicePlaylist by Settings.HOME_SONGS_SHOW_ON_DEVICE_CHIP
-
-                    SwitchSettingEntry(
-                        title = showOnDevice,
-                        text = "",
-                        isChecked = showOnDevicePlaylist,
-                        onCheckedChange = { showOnDevicePlaylist = it }
+                if ( search.contains( showOnDevice ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.HOME_SONGS_SHOW_ON_DEVICE_CHIP,
+                        showOnDevice
                     )
-                }
             }
             section( R.string.playlists ) {
                 val showPiped = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.piped_playlists ) )
-                if ( search.contains( showPiped ) ) {
-                    var showPipedPlaylists by Settings.SHOW_PIPED_PLAYLISTS
-
-                    SwitchSettingEntry(
-                        title = showPiped,
-                        text = "",
-                        isChecked = showPipedPlaylists,
-                        onCheckedChange = { showPipedPlaylists = it }
+                if ( search.contains( showPiped ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.SHOW_PIPED_PLAYLISTS,
+                        showPiped
                     )
-                }
 
                 val showPinned = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.pinned_playlists ) )
-                if ( search.contains( showPinned ) ) {
-                    var showPinnedPlaylists by Settings.SHOW_PINNED_PLAYLISTS
-
-                    SwitchSettingEntry(
-                        title = showPinned,
-                        text = "",
-                        isChecked = showPinnedPlaylists,
-                        onCheckedChange = { showPinnedPlaylists = it }
+                if ( search.contains( showPinned ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.SHOW_PINNED_PLAYLISTS,
+                        showPinned
                     )
-                }
 
                 val showMonthly = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.monthly_playlists ) )
-                if ( search.contains( showMonthly ) ) {
-                    var showMonthlyPlaylists by Settings.SHOW_MONTHLY_PLAYLISTS
-
-                    SwitchSettingEntry(
-                        title = showMonthly,
-                        text = "",
-                        isChecked = showMonthlyPlaylists,
-                        onCheckedChange = { showMonthlyPlaylists = it }
+                if ( search.contains( showMonthly ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.SHOW_MONTHLY_PLAYLISTS,
+                        showMonthly
                     )
-                }
             }
             section( R.string.smart_recommendations ) {
                 if( search.contains( R.string.statistics_max_number_of_items ) )
@@ -404,18 +344,12 @@ fun UiSettings() {
                         Settings.MAX_NUMBER_OF_STATISTIC_ITEMS,
                         R.string.statistics_max_number_of_items
                     )
-                if( search.contains( R.string.listening_time ) ) {
-                    var showStatsListeningTime by Settings.SHOW_LISTENING_STATS
-
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.listening_time),
-                        text = stringResource(R.string.shows_the_number_of_songs_heard_and_their_listening_time),
-                        isChecked = showStatsListeningTime,
-                        onCheckedChange = {
-                            showStatsListeningTime = it
-                        }
+                if( search.contains( R.string.listening_time ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.SHOW_LISTENING_STATS,
+                        R.string.listening_time,
+                        R.string.shows_the_number_of_songs_heard_and_their_listening_time
                     )
-                }
             }
             section( R.string.playlist_top ) {
                 if( search.contains( R.string.statistics_max_number_of_items ) )

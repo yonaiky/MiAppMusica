@@ -27,13 +27,10 @@ import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AudioQualityFormat
-import it.fast4x.rimusic.enums.PipModule
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.SliderSettingsEntry
-import it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry
 import it.fast4x.rimusic.utils.RestartPlayerService
-import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.semiBold
@@ -53,20 +50,15 @@ fun PlayerSettings(
 
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.enable_connection_metered ) ) {
-        var isConnectionMeteredEnabled by Settings.IS_CONNECTION_METERED
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.enable_connection_metered),
-            text = stringResource(R.string.info_enable_connection_metered),
-            isChecked = isConnectionMeteredEnabled,
-            onCheckedChange = {
-                isConnectionMeteredEnabled = it
-                if (it)
-                    Settings.AUDIO_QUALITY.value = AudioQualityFormat.Auto
-            }
-        )
-    }
+    if( search.contains( R.string.enable_connection_metered ) )
+        SettingComponents.BooleanEntry(
+            Settings.IS_CONNECTION_METERED,
+            R.string.enable_connection_metered,
+            R.string.info_enable_connection_metered
+        ) {
+            if ( it )
+                Settings.AUDIO_QUALITY.value = AudioQualityFormat.Auto
+        }
     if( search.contains( R.string.setting_entry_smart_rewind ) ) {
 
         BasicText(
@@ -123,30 +115,23 @@ fun PlayerSettings(
         )
 
     if( search.contains( R.string.player_pause_listen_history ) ) {
-        var pauseListenHistory by Settings.PAUSE_HISTORY
-        SwitchSettingEntry(
-            title = stringResource( R.string.player_pause_listen_history ),
-            text = stringResource( R.string.player_pause_listen_history_info ),
-            isChecked = pauseListenHistory,
-            onCheckedChange = {
-                pauseListenHistory = it
-                onRestartServiceChange( true )
-            }
-        )
+
+        SettingComponents.BooleanEntry(
+            Settings.PAUSE_HISTORY,
+            R.string.player_pause_listen_history,
+            R.string.player_pause_listen_history_info,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.player_pause_on_volume_zero ) ) {
-        var isPauseOnVolumeZeroEnabled by Settings.PAUSE_WHEN_VOLUME_SET_TO_ZERO
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.player_pause_on_volume_zero),
-            text = stringResource(R.string.info_pauses_player_when_volume_zero),
-            isChecked = isPauseOnVolumeZeroEnabled,
-            onCheckedChange = {
-                isPauseOnVolumeZeroEnabled = it
-            }
+    if( search.contains( R.string.player_pause_on_volume_zero ) )
+        SettingComponents.BooleanEntry(
+            Settings.PAUSE_WHEN_VOLUME_SET_TO_ZERO,
+            R.string.player_pause_on_volume_zero,
+            R.string.info_pauses_player_when_volume_zero
         )
-    }
     if( search.contains( R.string.effect_fade_audio ) ) {
         SettingComponents.EnumEntry(
             Settings.AUDIO_FADE_DURATION,
@@ -154,42 +139,26 @@ fun PlayerSettings(
         )
         SettingComponents.Description( R.string.effect_fade_audio_description )
     }
-    if( search.contains( R.string.player_keep_minimized ) ) {
-        var keepPlayerMinimized by Settings.PLAYER_KEEP_MINIMIZED
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.player_keep_minimized),
-            text = stringResource(R.string.when_click_on_a_song_player_start_minimized),
-            isChecked = keepPlayerMinimized,
-            onCheckedChange = {
-                keepPlayerMinimized = it
-            }
+    if( search.contains( R.string.player_keep_minimized ) )
+        SettingComponents.BooleanEntry(
+            Settings.PLAYER_KEEP_MINIMIZED,
+            R.string.player_keep_minimized,
+            R.string.when_click_on_a_song_player_start_minimized
         )
-    }
-    if( search.contains( R.string.player_collapsed_disable_swiping_down ) ) {
-        var disableClosingPlayerSwipingDown by Settings.MINI_DISABLE_SWIPE_DOWN_TO_DISMISS
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.player_collapsed_disable_swiping_down),
-            text = stringResource(R.string.avoid_closing_the_player_cleaning_queue_by_swiping_down),
-            isChecked = disableClosingPlayerSwipingDown,
-            onCheckedChange = {
-                disableClosingPlayerSwipingDown = it
-            }
+    if( search.contains( R.string.player_collapsed_disable_swiping_down ) )
+        SettingComponents.BooleanEntry(
+            Settings.MINI_DISABLE_SWIPE_DOWN_TO_DISMISS,
+            R.string.player_collapsed_disable_swiping_down,
+            R.string.avoid_closing_the_player_cleaning_queue_by_swiping_down
         )
-    }
     if( search.contains( R.string.player_auto_load_songs_in_queue ) ) {
-        var autoLoadSongsInQueue by Settings.QUEUE_AUTO_APPEND
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.player_auto_load_songs_in_queue),
-            text = stringResource(R.string.player_auto_load_songs_in_queue_description),
-            isChecked = autoLoadSongsInQueue,
-            onCheckedChange = {
-                autoLoadSongsInQueue = it
-                onRestartServiceChange( true )
-            }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.QUEUE_AUTO_APPEND,
+            R.string.player_auto_load_songs_in_queue,
+            R.string.player_auto_load_songs_in_queue_description
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
     }
     if( search.contains( R.string.max_songs_in_queue ) )
@@ -197,136 +166,103 @@ fun PlayerSettings(
             Settings.MAX_NUMBER_OF_SONG_IN_QUEUE,
             R.string.max_songs_in_queue
         )
-    if( search.contains( R.string.discover ) ) {
-        var discoverIsEnabled by Settings.ENABLE_DISCOVER
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.discover),
-            text = stringResource(R.string.discoverinfo),
-            isChecked = discoverIsEnabled,
-            onCheckedChange = { discoverIsEnabled = it }
+    if( search.contains( R.string.discover ) )
+        SettingComponents.BooleanEntry(
+            Settings.ENABLE_DISCOVER,
+            R.string.discover,
+            R.string.discoverinfo
         )
-    }
-    if( search.contains( R.string.playlistindicator ) ) {
-        var playlistIndicator by Settings.SHOW_PLAYLIST_INDICATOR
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.playlistindicator),
-            text = stringResource(R.string.playlistindicatorinfo),
-            isChecked = playlistIndicator,
-            onCheckedChange = {
-                playlistIndicator = it
-            }
+    if( search.contains( R.string.playlistindicator ) )
+        SettingComponents.BooleanEntry(
+            Settings.SHOW_PLAYLIST_INDICATOR,
+            R.string.playlistindicator,
+            R.string.playlistindicatorinfo
         )
-    }
     if( search.contains( R.string.now_playing_indicator ) )
         SettingComponents.EnumEntry(
             Settings.NOW_PLAYING_INDICATOR,
             R.string.now_playing_indicator
         )
     if( isAtLeastAndroid6 && search.contains( R.string.resume_playback ) ) {
-        var resumePlaybackWhenDeviceConnected by Settings.RESUME_PLAYBACK_WHEN_CONNECT_TO_AUDIO_DEVICE
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.resume_playback),
-            text = stringResource(R.string.when_device_is_connected),
-            isChecked = resumePlaybackWhenDeviceConnected,
-            onCheckedChange = {
-                resumePlaybackWhenDeviceConnected = it
-                onRestartServiceChange( true )
-            }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.RESUME_PLAYBACK_WHEN_CONNECT_TO_AUDIO_DEVICE,
+            R.string.resume_playback,
+            R.string.when_device_is_connected,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
     }
     if( search.contains( R.string.persistent_queue ) ) {
-        var persistentQueue by Settings.ENABLE_PERSISTENT_QUEUE
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.persistent_queue),
-            text = stringResource(R.string.save_and_restore_playing_songs),
-            isChecked = persistentQueue,
-            onCheckedChange = {
-                persistentQueue = it
-                onRestartServiceChange( true )
-            }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.ENABLE_PERSISTENT_QUEUE,
+            R.string.persistent_queue,
+            R.string.save_and_restore_playing_songs,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
 
-        AnimatedVisibility(visible = persistentQueue) {
+        AnimatedVisibility( Settings.ENABLE_PERSISTENT_QUEUE.value ) {
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                var resumePlaybackOnStart by Settings.RESUME_PLAYBACK_ON_STARTUP
-
-                SwitchSettingEntry(
-                    title =  stringResource(R.string.resume_playback_on_start),
-                    text = stringResource(R.string.resume_automatically_when_app_opens),
-                    isChecked = resumePlaybackOnStart,
-                    onCheckedChange = {
-                        resumePlaybackOnStart = it
-                        onRestartServiceChange( true )
-                    }
-                )
+                SettingComponents.BooleanEntry(
+                    Settings.RESUME_PLAYBACK_ON_STARTUP,
+                    R.string.resume_playback_on_start,
+                    R.string.resume_automatically_when_app_opens,
+                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                ) {
+                    onRestartServiceChange( true )
+                }
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
             }
         }
     }
     if( search.contains( R.string.close_app_with_back_button ) ) {
-        var closeWithBackButton by Settings.CLOSE_APP_ON_BACK
-
-        SwitchSettingEntry(
+        SettingComponents.BooleanEntry(
+            Settings.CLOSE_APP_ON_BACK,
+            R.string.close_app_with_back_button,
+            R.string.when_you_use_the_back_button_from_the_home_page,
             isEnabled = Build.VERSION.SDK_INT >= 33,
-            title = stringResource(R.string.close_app_with_back_button),
-            text = stringResource(R.string.when_you_use_the_back_button_from_the_home_page),
-            isChecked = closeWithBackButton,
-            onCheckedChange = {
-                closeWithBackButton = it
-                onRestartServiceChange( true )
-            }
-        )
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
     if( search.contains( R.string.close_background_player ) ) {
-        var closeBackgroundPlayer by Settings.CLOSE_BACKGROUND_JOB_IN_TASK_MANAGER
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.close_background_player),
-            text = stringResource(R.string.when_app_swipe_out_from_task_manager),
-            isChecked = closeBackgroundPlayer,
-            onCheckedChange = {
-                closeBackgroundPlayer = it
-                onRestartServiceChange( true )
-            }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.CLOSE_BACKGROUND_JOB_IN_TASK_MANAGER,
+            R.string.close_background_player,
+            R.string.when_app_swipe_out_from_task_manager,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
     if( search.contains( R.string.skip_media_on_error ) ) {
-        var skipMediaOnError by Settings.PLAYBACK_SKIP_ON_ERROR
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.skip_media_on_error),
-            text = stringResource(R.string.skip_media_on_error_description),
-            isChecked = skipMediaOnError,
-            onCheckedChange = {
-                skipMediaOnError = it
-                onRestartServiceChange( true )
-            }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.PLAYBACK_SKIP_ON_ERROR,
+            R.string.skip_media_on_error,
+            R.string.skip_media_on_error_description,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
     if( search.contains( R.string.skip_silence ) ) {
-        var skipSilence by Settings.AUDIO_SKIP_SILENCE
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.skip_silence),
-            text = stringResource(R.string.skip_silent_parts_during_playback),
-            isChecked = skipSilence,
-            onCheckedChange = {
-                skipSilence = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.AUDIO_SKIP_SILENCE,
+            R.string.skip_silence,
+            R.string.skip_silent_parts_during_playback
         )
 
-        AnimatedVisibility(visible = skipSilence) {
+        AnimatedVisibility( Settings.AUDIO_SKIP_SILENCE.value ) {
             var minimumSilenceDuration by Settings.AUDIO_SKIP_SILENCE_LENGTH
             val initialValue by remember { derivedStateOf { minimumSilenceDuration.toFloat() / 1000L } }
             var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
@@ -352,17 +288,12 @@ fun PlayerSettings(
         }
     }
     if( search.contains( R.string.loudness_normalization ) ) {
-        var volumeNormalization by Settings.AUDIO_VOLUME_NORMALIZATION
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.loudness_normalization),
-            text = stringResource(R.string.autoadjust_the_volume),
-            isChecked = volumeNormalization,
-            onCheckedChange = {
-                volumeNormalization = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.AUDIO_VOLUME_NORMALIZATION,
+            R.string.loudness_normalization,
+            R.string.autoadjust_the_volume
         )
-        AnimatedVisibility(visible = volumeNormalization) {
+        AnimatedVisibility( Settings.AUDIO_VOLUME_NORMALIZATION.value ) {
             var loudnessBaseGain by Settings.AUDIO_VOLUME_NORMALIZATION_TARGET
             val initialValue by remember { derivedStateOf { loudnessBaseGain } }
             var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
@@ -386,17 +317,11 @@ fun PlayerSettings(
         }
     }
     if( search.contains( R.string.settings_audio_bass_boost ) ) {
-        var bassboostEnabled by Settings.AUDIO_BASS_BOOSTED
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.settings_audio_bass_boost),
-            text = "",
-            isChecked = bassboostEnabled,
-            onCheckedChange = {
-                bassboostEnabled = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.AUDIO_BASS_BOOSTED,
+            R.string.settings_audio_bass_boost
         )
-        AnimatedVisibility(visible = bassboostEnabled) {
+        AnimatedVisibility( Settings.AUDIO_BASS_BOOSTED.value ) {
             var bassboostLevel by Settings.AUDIO_BASS_BOOST_LEVEL
             val initialValue by remember { derivedStateOf { bassboostLevel } }
             var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
@@ -429,59 +354,43 @@ fun PlayerSettings(
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
     if( search.contains( R.string.settings_audio_focus ) ) {
-        var audioFocusEnabled by Settings.AUDIO_SMART_PAUSE_DURING_CALLS
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.settings_audio_focus),
-            text = stringResource(R.string.settings_audio_focus_info),
-            isChecked = audioFocusEnabled,
-            onCheckedChange = {
-                audioFocusEnabled = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.AUDIO_SMART_PAUSE_DURING_CALLS,
+            R.string.settings_audio_focus,
+            R.string.settings_audio_focus_info
         )
     }
     if( search.contains( R.string.event_volumekeys ) ) {
-        var useVolumeKeysToChangeSong by Settings.AUDIO_VOLUME_BUTTONS_CHANGE_SONG
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.event_volumekeys),
-            text = stringResource(R.string.event_volumekeysinfo),
-            isChecked = useVolumeKeysToChangeSong,
-            onCheckedChange = {
-                useVolumeKeysToChangeSong = it
-                onRestartServiceChange( true )
-            }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.AUDIO_VOLUME_BUTTONS_CHANGE_SONG,
+            R.string.event_volumekeys,
+            R.string.event_volumekeysinfo
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
     if( search.contains( R.string.event_shake ) ) {
-        var shakeEventEnabled by Settings.AUDIO_SHAKE_TO_SKIP
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.event_shake),
-            text = stringResource(R.string.shake_to_change_song),
-            isChecked = shakeEventEnabled,
-            onCheckedChange = {
-                shakeEventEnabled = it
-                onRestartServiceChange( true )
-            }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.AUDIO_SHAKE_TO_SKIP,
+            R.string.event_shake,
+            R.string.shake_to_change_song,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
     if( search.contains( R.string.settings_enable_pip ) ) {
-        var enablePictureInPicture by Settings.IS_PIP_ENABLED
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.settings_enable_pip),
-            text = "",
-            isChecked = enablePictureInPicture,
-            onCheckedChange = {
-                enablePictureInPicture = it
-                onRestartServiceChange( true )
-            }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.IS_PIP_ENABLED,
+            R.string.settings_enable_pip,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) {
+            onRestartServiceChange( true )
+        }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
-        AnimatedVisibility(visible = enablePictureInPicture) {
+        AnimatedVisibility( Settings.IS_PIP_ENABLED.value ) {
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
@@ -490,57 +399,36 @@ fun PlayerSettings(
                     R.string.settings_pip_module
                 ) { onRestartServiceChange( true ) }
 
-                var enablePictureInPictureAuto by Settings.IS_AUTO_PIP_ENABLED
-                SwitchSettingEntry(
-                    isEnabled = isAtLeastAndroid12,
-                    title = stringResource(R.string.settings_enable_pip_auto),
-                    text = stringResource(R.string.pip_info_from_android_12_pip_can_be_automatically_enabled),
-                    isChecked = enablePictureInPictureAuto,
-                    onCheckedChange = {
-                        enablePictureInPictureAuto = it
-                        onRestartServiceChange( true )
-                    }
-                )
+                SettingComponents.BooleanEntry(
+                    Settings.IS_AUTO_PIP_ENABLED,
+                    R.string.settings_enable_pip_auto,
+                    R.string.pip_info_from_android_12_pip_can_be_automatically_enabled,
+                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                ) {
+                    onRestartServiceChange( true )
+                }
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
             }
 
         }
     }
     if( search.contains( R.string.settings_enable_autodownload_song ) ) {
-        var autoDownloadSong by Settings.AUTO_DOWNLOAD
-
-        SwitchSettingEntry(
-            title = stringResource(R.string.settings_enable_autodownload_song),
-            text = "",
-            isChecked = autoDownloadSong,
-            onCheckedChange = {
-                autoDownloadSong = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.AUTO_DOWNLOAD,
+            R.string.settings_enable_autodownload_song
         )
-        AnimatedVisibility(visible = autoDownloadSong) {
+        AnimatedVisibility( Settings.AUTO_DOWNLOAD.value ) {
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                var autoDownloadSongWhenLiked by Settings.AUTO_DOWNLOAD_ON_LIKE
-
-                SwitchSettingEntry(
-                    title = stringResource(R.string.settings_enable_autodownload_song_when_liked),
-                    text = "",
-                    isChecked = autoDownloadSongWhenLiked,
-                    onCheckedChange = {
-                        autoDownloadSongWhenLiked = it
-                    }
+                SettingComponents.BooleanEntry(
+                    Settings.AUTO_DOWNLOAD_ON_LIKE,
+                    R.string.settings_enable_autodownload_song_when_liked
                 )
 
-                var autoDownloadSongWhenAlbumBookmarked by Settings.AUTO_DOWNLOAD_ON_ALBUM_BOOKMARKED
-
-                SwitchSettingEntry(
-                    title = stringResource(R.string.settings_enable_autodownload_song_when_album_bookmarked),
-                    text = "",
-                    isChecked = autoDownloadSongWhenAlbumBookmarked,
-                    onCheckedChange = {
-                        autoDownloadSongWhenAlbumBookmarked = it
-                    }
+                SettingComponents.BooleanEntry(
+                    Settings.AUTO_DOWNLOAD_ON_ALBUM_BOOKMARKED,
+                    R.string.settings_enable_autodownload_song_when_album_bookmarked
                 )
             }
         }

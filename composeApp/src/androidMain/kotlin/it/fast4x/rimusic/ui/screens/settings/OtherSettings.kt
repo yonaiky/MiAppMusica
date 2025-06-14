@@ -98,7 +98,6 @@ fun OtherSettings() {
 
     var defaultFolder by LOCAL_SONGS_FOLDER
 
-    var isKeepScreenOnEnabled by KEEP_SCREEN_ON
 
     //var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Disabled)
 
@@ -113,10 +112,8 @@ fun OtherSettings() {
         }
     }
 
-    var parentalControlEnabled by PARENTAL_CONTROL
     var logDebugEnabled by DEBUG_LOG
 
-    var extraspace by PLAYER_EXTRA_SPACE
 
     Column(
         modifier = Modifier
@@ -175,11 +172,10 @@ fun OtherSettings() {
         }
     )
 
-    SwitchSettingEntry(
-        title = stringResource(R.string.folders),
-        text = stringResource(R.string.show_folders_in_on_device_page),
-        isChecked = showFolders,
-        onCheckedChange = { showFolders = it }
+    SettingComponents.BooleanEntry(
+        HOME_SONGS_ON_DEVICE_SHOW_FOLDERS,
+        R.string.folders,
+        R.string.show_folders_in_on_device_page
     )
     AnimatedVisibility(visible = showFolders) {
         TextDialogSettingEntry(
@@ -192,36 +188,20 @@ fun OtherSettings() {
 
     SettingsGroupSpacer()
 
-//    SettingsEntryGroupText(title = stringResource(R.string.android_auto))
-//
-//    SettingsDescription(text = stringResource(R.string.enable_unknown_sources))
-//
-//    SwitchSettingEntry(
-//        title = stringResource(R.string.android_auto_1),
-//        text = stringResource(R.string.enable_android_auto_support),
-//        isChecked = isAndroidAutoEnabled,
-//        onCheckedChange = { isAndroidAutoEnabled = it }
-//    )
-//
-//    SettingsGroupSpacer()
-
     SettingsEntryGroupText(title = stringResource(R.string.androidheadunit))
-    SwitchSettingEntry(
-        title = stringResource(R.string.extra_space),
-        text = "",
-        isChecked = extraspace,
-        onCheckedChange = { extraspace = it }
+    SettingComponents.BooleanEntry(
+        PLAYER_EXTRA_SPACE,
+        R.string.extra_space
     )
 
     SettingsGroupSpacer()
 
     SettingsEntryGroupText(title = stringResource(R.string.service_lifetime))
 
-    SwitchSettingEntry(
-        title = stringResource(R.string.keep_screen_on),
-        text = stringResource(R.string.prevents_screen_timeout),
-        isChecked = isKeepScreenOnEnabled,
-        onCheckedChange = { isKeepScreenOnEnabled = it }
+    SettingComponents.BooleanEntry(
+        KEEP_SCREEN_ON,
+        R.string.keep_screen_on,
+        R.string.prevents_screen_timeout
     )
 
     SettingComponents.Description( R.string.battery_optimizations_applied, isImportant = true )
@@ -260,26 +240,14 @@ fun OtherSettings() {
         }
     )
 
-        /*
-    SwitchSettingEntry(
-        title = stringResource(R.string.invincible_service),
-        text = stringResource(R.string.turning_off_battery_optimizations_is_not_enough),
-        isChecked = isInvincibilityEnabled,
-        onCheckedChange = { isInvincibilityEnabled = it }
-    )
-
-         */
-
     SettingsGroupSpacer()
 
     SettingsGroupSpacer()
     SettingsEntryGroupText(title = stringResource(R.string.proxy))
     SettingComponents.Description( R.string.restarting_rimusic_is_required )
-    SwitchSettingEntry(
-        title = stringResource(R.string.enable_proxy),
-        text = "",
-        isChecked = isProxyEnabled,
-        onCheckedChange = { isProxyEnabled = it }
+    SettingComponents.BooleanEntry(
+        IS_PROXY_ENABLED,
+        R.string.enable_proxy
     )
 
     AnimatedVisibility(visible = isProxyEnabled) {
@@ -308,13 +276,11 @@ fun OtherSettings() {
 
     SettingsEntryGroupText(title = stringResource(R.string.parental_control))
 
-    SwitchSettingEntry(
-        title = stringResource(R.string.parental_control),
-        text = stringResource(R.string.info_prevent_play_songs_with_age_limitation),
-        isChecked = parentalControlEnabled,
-        onCheckedChange = { parentalControlEnabled = it }
+    SettingComponents.BooleanEntry(
+        PARENTAL_CONTROL,
+        R.string.parental_control,
+        R.string.info_prevent_play_songs_with_age_limitation
     )
-
 
     SettingsGroupSpacer()
 
@@ -322,26 +288,23 @@ fun OtherSettings() {
     val noLogAvailable = stringResource(R.string.no_log_available)
 
     SettingsEntryGroupText(title = stringResource(R.string.debug))
-    SwitchSettingEntry(
-        title = stringResource(R.string.enable_log_debug),
-        text = stringResource(R.string.if_enabled_create_a_log_file_to_highlight_errors),
-        isChecked = logDebugEnabled,
-        onCheckedChange = {
-            logDebugEnabled = it
-            if (!it) {
-                val file = File(context.filesDir.resolve("logs"), "RiMusic_log.txt")
-                if (file.exists())
-                    file.delete()
+    SettingComponents.BooleanEntry(
+        DEBUG_LOG,
+        R.string.enable_log_debug,
+        R.string.if_enabled_create_a_log_file_to_highlight_errors
+    ) {
+        if ( !it ) {
+            val file = File(context.filesDir.resolve("logs"), "RiMusic_log.txt")
+            if (file.exists())
+                file.delete()
 
-                val filec = File(context.filesDir.resolve("logs"), "RiMusic_crash_log.txt")
-                if (filec.exists())
-                    filec.delete()
+            val filec = File(context.filesDir.resolve("logs"), "RiMusic_crash_log.txt")
+            if (filec.exists())
+                filec.delete()
+        } else
+            Toaster.i( R.string.restarting_rimusic_is_required )
+    }
 
-
-            } else
-                Toaster.i( R.string.restarting_rimusic_is_required )
-        }
-    )
     SettingComponents.Description( R.string.restarting_rimusic_is_required, isImportant = true )
     ButtonBarSettingEntry(
         isEnabled = logDebugEnabled,

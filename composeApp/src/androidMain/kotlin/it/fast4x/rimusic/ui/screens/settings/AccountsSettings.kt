@@ -39,6 +39,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import coil.compose.AsyncImage
 import io.ktor.http.Url
 import it.fast4x.compose.persist.persistList
@@ -121,7 +122,6 @@ fun AccountsSettings() {
 
         //var useYtLoginOnlyForBrowse by rememberPreference(useYtLoginOnlyForBrowseKey, false)
         var isYouTubeLoginEnabled by Settings.YOUTUBE_LOGIN
-        var isYouTubeSyncEnabled by Settings.YOUTUBE_PLAYLISTS_SYNC
         var loginYouTube by remember { mutableStateOf(false) }
         var visitorData by Settings.YOUTUBE_VISITOR_DATA
         var dataSyncId by Settings.YOUTUBE_SYNC_ID
@@ -140,22 +140,19 @@ fun AccountsSettings() {
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = "YOUTUBE MUSIC")
 
-        SwitchSettingEntry(
-            title = "Enable YouTube Music Login",
-            text = "",
-            isChecked = isYouTubeLoginEnabled,
-            onCheckedChange = {
-                isYouTubeLoginEnabled = it
-                if (!it) {
-                    visitorData = ""
-                    dataSyncId = ""
-                    cookie = ""
-                    accountName = ""
-                    accountChannelHandle = ""
-                    accountEmail = ""
-                }
+        SettingComponents.BooleanEntry(
+            Settings.YOUTUBE_LOGIN,
+            "Enable YouTube Music Login"
+        ) {
+            if ( !it ) {
+                visitorData = ""
+                dataSyncId = ""
+                cookie = ""
+                accountName = ""
+                accountChannelHandle = ""
+                accountEmail = ""
             }
-        )
+        }
 
         AnimatedVisibility(visible = isYouTubeLoginEnabled) {
             Column(
@@ -256,27 +253,11 @@ fun AccountsSettings() {
 
                     }
 
-                //}
-
-//                SwitchSettingEntry(
-//                    title = stringResource(R.string.use_ytm_login_only_for_browse),
-//                    text = stringResource(R.string.info_use_ytm_login_only_for_browse),
-//                    isChecked = useYtLoginOnlyForBrowse,
-//                    onCheckedChange = {
-//                        useYtLoginOnlyForBrowse = it
-//                    }
-//                )
-
-                SwitchSettingEntry(
-                    //isEnabled = false,
-                    title = "Sync data with YTM account",
-                    text = "Playlists, albums, artists, history, like, etc.",
-                    isChecked = isYouTubeSyncEnabled,
-                    onCheckedChange = {
-                        isYouTubeSyncEnabled = it
-                    }
+                SettingComponents.BooleanEntry(
+                    Settings.YOUTUBE_PLAYLISTS_SYNC,
+                    "Sync data with YTM account",
+                    subtitle = "Playlists, albums, artists, history, like, etc."
                 )
-
             }
         }
 
@@ -418,22 +399,18 @@ fun AccountsSettings() {
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.piped_account))
-        SwitchSettingEntry(
-            title = stringResource(R.string.enable_piped_syncronization),
-            text = "",
-            isChecked = isPipedEnabled,
-            onCheckedChange = { isPipedEnabled = it }
+        SettingComponents.BooleanEntry(
+            Settings.ENABLE_PIPED,
+            R.string.enable_piped_syncronization
         )
 
         AnimatedVisibility(visible = isPipedEnabled) {
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                SwitchSettingEntry(
-                    title = stringResource(R.string.piped_custom_instance),
-                    text = "",
-                    isChecked = isPipedCustomEnabled,
-                    onCheckedChange = { isPipedCustomEnabled = it }
+                SettingComponents.BooleanEntry(
+                    Settings.IS_CUSTOM_PIPED,
+                    R.string.piped_custom_instance
                 )
                 AnimatedVisibility(visible = isPipedCustomEnabled) {
                     Column {
@@ -516,13 +493,13 @@ fun AccountsSettings() {
         )
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.social_discord))
-        SwitchSettingEntry(
-            isEnabled = isAtLeastAndroid81,
-            title = stringResource(R.string.discord_enable_rich_presence),
-            text = "",
-            isChecked = isDiscordPresenceEnabled,
-            onCheckedChange = { isDiscordPresenceEnabled = it }
+
+        SettingComponents.BooleanEntry(
+            Settings.DISCORD_LOGIN,
+            R.string.discord_enable_rich_presence,
+            isEnabled = isAtLeastAndroid81
         )
+
 
         AnimatedVisibility(visible = isDiscordPresenceEnabled) {
             Column {

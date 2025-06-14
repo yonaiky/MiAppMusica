@@ -199,14 +199,10 @@ fun AppearanceSettings(
 
     var showthumbnail by Settings.PLAYER_SHOW_THUMBNAIL
     var transparentbar by Settings.TRANSPARENT_TIMELINE
-    var blackgradient by Settings.BLACK_GRADIENT
     var showlyricsthumbnail by Settings.LYRICS_SHOW_THUMBNAIL
     var expandedplayer by Settings.PLAYER_EXPANDED
     var playerPlayButtonType by Settings.PLAYER_PLAY_BUTTON_TYPE
     var bottomgradient by Settings.PLAYER_BOTTOM_GRADIENT
-    var textoutline by Settings.TEXT_OUTLINE
-    var disablePlayerHorizontalSwipe by Settings.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED
-    var disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
     var visualizerEnabled by Settings.PLAYER_VISUALIZER
     /*
     var playerVisualizerType by rememberPreference(
@@ -219,8 +215,6 @@ fun AppearanceSettings(
     var playerTimelineSize by Settings.PLAYER_TIMELINE_SIZE
     //
 
-    var effectRotationEnabled by Settings.ROTATION_EFFECT
-    var thumbnailTapEnabled by Settings.PLAYER_TAP_THUMBNAIL_FOR_LYRICS
     var showButtonPlayerAddToPlaylist by Settings.PLAYER_ACTION_ADD_TO_PLAYLIST
     var showButtonPlayerArrow by Settings.PLAYER_ACTION_OPEN_QUEUE_ARROW
     var showButtonPlayerDownload by Settings.PLAYER_ACTION_DOWNLOAD
@@ -239,8 +233,6 @@ fun AppearanceSettings(
     var showTotalTimeQueue by Settings.PLAYER_SHOW_TOTAL_QUEUE_TIME
     var showNextSongsInPlayer by Settings.PLAYER_SHOW_NEXT_IN_QUEUE
     var showRemainingSongTime by Settings.PLAYER_SHOW_SONGS_REMAINING_TIME
-    var clickLyricsText by Settings.LYRICS_JUMP_ON_TAP
-    var showBackgroundLyrics by Settings.LYRICS_SHOW_ACCENT_BACKGROUND
 
     val search = Search()
 
@@ -252,38 +244,26 @@ fun AppearanceSettings(
     var playerControlsType by Settings.PLAYER_CONTROLS_TYPE
     var playerInfoType by Settings.PLAYER_INFO_TYPE
     var transparentBackgroundActionBarPlayer by Settings.PLAYER_TRANSPARENT_ACTIONS_BAR
-    var playerSwapControlsWithTimeline by Settings.PLAYER_IS_CONTROL_AND_TIMELINE_SWAPPED
-    var playerEnableLyricsPopupMessage by Settings.PLAYER_ACTION_LYRICS_POPUP_MESSAGE
     var actionspacedevenly by Settings.PLAYER_ACTION_BUTTONS_SPACED_EVENLY
     var thumbnailType by Settings.THUMBNAIL_TYPE
     var showvisthumbnail by Settings.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER
-    var buttonzoomout by Settings.ZOOM_OUT_ANIMATION
     var thumbnailpause by Settings.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE
-    var showalbumcover by Settings.PLAYER_SHOW_NEXT_IN_QUEUE_THUMBNAIL
-    var tapqueue by Settings.PLAYER_ACTIONS_BAR_TAP_TO_OPEN_QUEUE
-    var swipeUpQueue by Settings.PLAYER_ACTIONS_BAR_SWIPE_UP_TO_OPEN_QUEUE
     var statsfornerds by Settings.PLAYER_STATS_FOR_NERDS
 
     var playerType by Settings.PLAYER_TYPE
     var noblur by Settings.PLAYER_BACKGROUND_BLUR
     var fadingedge by Settings.PLAYER_BACKGROUND_FADING_EDGE
-    var carousel by Settings.PLAYER_THUMBNAILS_CAROUSEL
     var carouselSize by Settings.CAROUSEL_SIZE
     var playerInfoShowIcons by Settings.PLAYER_SONG_INFO_ICON
-    var queueDurationExpanded by Settings.PLAYER_IS_QUEUE_DURATION_EXPANDED
-    var titleExpanded by Settings.PLAYER_IS_TITLE_EXPANDED
-    var timelineExpanded by Settings.PLAYER_IS_TIMELINE_EXPANDED
-    var controlsExpanded by Settings.PLAYER_IS_CONTROLS_EXPANDED
-    var miniQueueExpanded by Settings.PLAYER_IS_NEXT_IN_QUEUE_EXPANDED
-    var statsExpanded by Settings.PLAYER_IS_STATS_FOR_NERDS_EXPANDED
-    var restartService by rememberSaveable { mutableStateOf(false) }
     var showCoverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_ANIMATION
 
     var enableWallpaper by Settings.ENABLE_WALLPAPER
     var topPadding by Settings.PLAYER_TOP_PADDING
     var animatedGradient by Settings.ANIMATED_GRADIENT
+
     var appearanceChooser by remember{ mutableStateOf(false)}
-    var albumCoverRotation by Settings.PLAYER_THUMBNAIL_ROTATION
+    var restartService by rememberSaveable { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
@@ -640,11 +620,9 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.show_player_top_actions_bar),
-                    text = "",
-                    isChecked = showTopActionsBar,
-                    onCheckedChange = { showTopActionsBar = it }
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_SHOW_TOP_ACTIONS_BAR,
+                    titleId = R.string.show_player_top_actions_bar
                 )
 
             if (!showTopActionsBar) {
@@ -653,11 +631,9 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.blankspace),
-                        text = "",
-                        isChecked = topPadding,
-                        onCheckedChange = { topPadding = it }
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_TOP_PADDING,
+                        R.string.blankspace
                     )
             }
         }
@@ -687,11 +663,9 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.show_thumbnail),
-                    text = "",
-                    isChecked = showthumbnail,
-                    onCheckedChange = {showthumbnail = it},
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_SHOW_THUMBNAIL,
+                    R.string.show_thumbnail
                 )
         }
         AnimatedVisibility(visible = !showthumbnail && playerType == PlayerType.Modern && !isLandscape) {
@@ -719,12 +693,15 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
-                            title = stringResource(R.string.fadingedge),
-                            text = "",
-                            isChecked = fadingedge,
-                            onCheckedChange = { fadingedge = it },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        SettingComponents.BooleanEntry(
+                            Settings.PLAYER_BACKGROUND_FADING_EDGE,
+                            R.string.fadingedge,
+                            Modifier.padding(
+                                start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+                                    25.dp
+                                else
+                                    0.dp
+                            )
                         )
                 }
 
@@ -734,12 +711,15 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
-                            title = stringResource(R.string.carousel),
-                            text = "",
-                            isChecked = carousel,
-                            onCheckedChange = { carousel = it },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        SettingComponents.BooleanEntry(
+                            Settings.PLAYER_THUMBNAILS_CAROUSEL,
+                            R.string.carousel,
+                            Modifier.padding(
+                                start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+                                    25.dp
+                                else
+                                    0.dp
+                            )
                         )
 
                     if (search.inputValue.isBlank() || stringResource(R.string.carouselsize).contains(
@@ -755,7 +735,7 @@ fun AppearanceSettings(
                                     25.dp
                                 else
                                     0.dp
-                            ),
+                            )
                         )
                 }
                 if (playerType == PlayerType.Essential) {
@@ -765,12 +745,15 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
-                            title = stringResource(R.string.thumbnailpause),
-                            text = "",
-                            isChecked = thumbnailpause,
-                            onCheckedChange = { thumbnailpause = it },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        SettingComponents.BooleanEntry(
+                            Settings.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE,
+                            R.string.thumbnailpause,
+                            Modifier.padding(
+                                start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+                                    25.dp
+                                else
+                                    0.dp
+                            )
                         )
 
                     if (search.inputValue.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
@@ -778,12 +761,15 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
-                            title = stringResource(R.string.show_lyrics_thumbnail),
-                            text = "",
-                            isChecked = showlyricsthumbnail,
-                            onCheckedChange = { showlyricsthumbnail = it },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        SettingComponents.BooleanEntry(
+                            Settings.LYRICS_SHOW_THUMBNAIL,
+                            R.string.show_lyrics_thumbnail,
+                            Modifier.padding(
+                                start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+                                    25.dp
+                                else
+                                    0.dp
+                            )
                         )
                     if (visualizerEnabled) {
                         if (search.inputValue.isBlank() || stringResource(R.string.showvisthumbnail).contains(
@@ -791,12 +777,15 @@ fun AppearanceSettings(
                                 true
                             )
                         )
-                            SwitchSettingEntry(
-                                title = stringResource(R.string.showvisthumbnail),
-                                text = "",
-                                isChecked = showvisthumbnail,
-                                onCheckedChange = { showvisthumbnail = it },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            SettingComponents.BooleanEntry(
+                                Settings.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER,
+                                R.string.showvisthumbnail,
+                                Modifier.padding(
+                                    start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+                                        25.dp
+                                    else
+                                        0.dp
+                                )
                             )
                     }
                 }
@@ -806,12 +795,15 @@ fun AppearanceSettings(
                         true
                     )
                 ) {
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.show_cover_thumbnail_animation),
-                        text = "",
-                        isChecked = showCoverThumbnailAnimation,
-                        onCheckedChange = { showCoverThumbnailAnimation = it },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_THUMBNAIL_ANIMATION,
+                        R.string.show_cover_thumbnail_animation,
+                        Modifier.padding(
+                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
+                                25.dp
+                            else
+                                0.dp
+                        )
                     )
                     AnimatedVisibility(visible = showCoverThumbnailAnimation) {
                         Column {
@@ -917,14 +909,10 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.noblur),
-                    text = "",
-                    isChecked = noblur,
-                    onCheckedChange = { noblur = it }
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_BACKGROUND_BLUR,
+                    R.string.noblur
                 )
-
-
         }
 
         if (!(showthumbnail && playerType == PlayerType.Essential)){
@@ -933,11 +921,9 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.statsfornerdsplayer),
-                    text = "",
-                    isChecked = statsfornerds,
-                    onCheckedChange = { statsfornerds = it }
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_STATS_FOR_NERDS,
+                    R.string.statsfornerdsplayer
                 )
         }
 
@@ -969,13 +955,10 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
-                            title = stringResource(R.string.pinfo_show_icons),
-                            text = "",
-                            isChecked = playerInfoShowIcons,
-                            onCheckedChange = { playerInfoShowIcons = it },
-                            modifier = Modifier
-                                .padding(start = 25.dp)
+                        SettingComponents.BooleanEntry(
+                            Settings.PLAYER_SONG_INFO_ICON,
+                            R.string.pinfo_show_icons,
+                            Modifier.padding( start = 25.dp )
                         )
                 }
             }
@@ -999,11 +982,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.player_swap_controls_with_timeline),
-                text = "",
-                isChecked = playerSwapControlsWithTimeline,
-                onCheckedChange = { playerSwapControlsWithTimeline = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_IS_CONTROL_AND_TIMELINE_SWAPPED,
+                R.string.player_swap_controls_with_timeline
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.timeline).contains(
@@ -1021,11 +1002,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.transparentbar),
-                text = "",
-                isChecked = transparentbar,
-                onCheckedChange = { transparentbar = it }
+            SettingComponents.BooleanEntry(
+                Settings.TRANSPARENT_TIMELINE,
+                R.string.transparentbar
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.pcontrols_type).contains(
@@ -1054,11 +1033,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.buttonzoomout),
-                text = "",
-                isChecked = buttonzoomout,
-                onCheckedChange = { buttonzoomout = it }
+            SettingComponents.BooleanEntry(
+                Settings.ZOOM_OUT_ANIMATION,
+                R.string.buttonzoomout
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.play_button).contains(
@@ -1098,15 +1075,12 @@ fun AppearanceSettings(
                     )
                 )
         }
-        var isRotatingCoverEnabled by Settings.PLAYER_ROTATING_ALBUM_COVER
         AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor ) {
             if ( search.inputValue.isBlank() || stringResource( R.string.rotating_cover_title ).contains(search.inputValue, true) )
-                SwitchSettingEntry(
-                    title = stringResource( R.string.rotating_cover_title ),
-                    text = "",
-                    isChecked = isRotatingCoverEnabled,
-                    onCheckedChange = { isRotatingCoverEnabled = it },
-                    modifier = Modifier.padding( start = 25.dp )
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_ROTATING_ALBUM_COVER,
+                    R.string.rotating_cover_title,
+                    Modifier.padding( start = 25.dp )
                 )
         }
 
@@ -1117,11 +1091,9 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.blackgradient),
-                    text = "",
-                    isChecked = blackgradient,
-                    onCheckedChange = { blackgradient = it }
+                SettingComponents.BooleanEntry(
+                    Settings.BLACK_GRADIENT,
+                    R.string.blackgradient
                 )
 
         if ((playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) && (playerType == PlayerType.Modern))
@@ -1130,13 +1102,10 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.albumCoverRotation),
-                    text = "",
-                    isChecked = albumCoverRotation,
-                    onCheckedChange = { albumCoverRotation = it },
-                    modifier = Modifier
-                        .padding(start = 25.dp)
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_THUMBNAIL_ROTATION,
+                    R.string.albumCoverRotation,
+                    Modifier.padding( start = 25.dp )
                 )
 
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
@@ -1145,46 +1114,38 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.bottomgradient),
-                    text = "",
-                    isChecked = bottomgradient,
-                    onCheckedChange = { bottomgradient = it }
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_BOTTOM_GRADIENT,
+                    R.string.bottomgradient
                 )
         if (search.inputValue.isBlank() || stringResource(R.string.textoutline).contains(
               search.inputValue,
               true
               )
          )
-             SwitchSettingEntry(
-                 title = stringResource(R.string.textoutline),
-                 text = "",
-                 isChecked = textoutline,
-                 onCheckedChange = { textoutline = it }
-             )
+            SettingComponents.BooleanEntry(
+                Settings.TEXT_OUTLINE,
+                R.string.textoutline
+            )
 
        if (search.inputValue.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(
                 search.inputValue,
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_total_time_of_queue),
-                text = "",
-                isChecked = showTotalTimeQueue,
-                onCheckedChange = { showTotalTimeQueue = it }
-            )
+           SettingComponents.BooleanEntry(
+               Settings.PLAYER_SHOW_TOTAL_QUEUE_TIME,
+               R.string.show_total_time_of_queue
+           )
 
         if (search.inputValue.isBlank() || stringResource(R.string.show_remaining_song_time).contains(
                 search.inputValue,
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_remaining_song_time),
-                text = "",
-                isChecked = showRemainingSongTime,
-                onCheckedChange = { showRemainingSongTime = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_SHOW_SONGS_REMAINING_TIME,
+                R.string.show_remaining_song_time
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.show_next_songs_in_player).contains(
@@ -1192,11 +1153,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_next_songs_in_player),
-                text = "",
-                isChecked = showNextSongsInPlayer,
-                onCheckedChange = { showNextSongsInPlayer = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_SHOW_NEXT_IN_QUEUE,
+                R.string.show_next_songs_in_player
             )
         AnimatedVisibility( visible = showNextSongsInPlayer) {
           Column {
@@ -1213,13 +1172,10 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.showalbumcover),
-                    text = "",
-                    isChecked = showalbumcover,
-                    onCheckedChange = { showalbumcover = it },
-                      modifier = Modifier.padding(start = 25.dp)
-                  )
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_SHOW_NEXT_IN_QUEUE_THUMBNAIL,
+                    R.string.showalbumcover
+                )
           }
         }
 
@@ -1228,35 +1184,38 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.disable_scrolling_text),
-                text = stringResource(R.string.scrolling_text_is_used_for_long_texts),
-                isChecked = disableScrollingText,
-                onCheckedChange = { disableScrollingText = it }
+            SettingComponents.BooleanEntry(
+                Settings.SCROLLING_TEXT_DISABLED,
+                R.string.disable_scrolling_text,
+                R.string.scrolling_text_is_used_for_long_texts
             )
 
         if (search.inputValue.isBlank() || stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_horizontal_swipe else R.string.disable_vertical_swipe).contains(
                 search.inputValue,
                 true
             )
-        )
-            SwitchSettingEntry(
-                title = stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe else R.string.disable_horizontal_swipe),
-                text = stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe_secondary else R.string.disable_song_switching_via_swipe),
-                isChecked = disablePlayerHorizontalSwipe,
-                onCheckedChange = { disablePlayerHorizontalSwipe = it }
+        ) {
+            val (titleId, subtitleId) = if( playerType == PlayerType.Modern && !isLandscape )
+                R.string.disable_vertical_swipe to R.string.disable_vertical_swipe_secondary
+            else
+                R.string.disable_horizontal_swipe to R.string.disable_song_switching_via_swipe
+
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED,
+                titleId,
+                subtitleId
             )
+        }
 
         if (search.inputValue.isBlank() || stringResource(R.string.player_rotating_buttons).contains(
                 search.inputValue,
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.player_rotating_buttons),
-                text = stringResource(R.string.player_enable_rotation_buttons),
-                isChecked = effectRotationEnabled,
-                onCheckedChange = { effectRotationEnabled = it }
+            SettingComponents.BooleanEntry(
+                Settings.ROTATION_EFFECT,
+                R.string.player_rotating_buttons,
+                R.string.player_enable_rotation_buttons
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(
@@ -1264,11 +1223,10 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.toggle_lyrics),
-                text = stringResource(R.string.by_tapping_on_the_thumbnail),
-                isChecked = thumbnailTapEnabled,
-                onCheckedChange = { thumbnailTapEnabled = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_TAP_THUMBNAIL_FOR_LYRICS,
+                R.string.toggle_lyrics,
+                R.string.by_tapping_on_the_thumbnail
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.click_lyrics_text).contains(
@@ -1276,11 +1234,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.click_lyrics_text),
-                text = "",
-                isChecked = clickLyricsText,
-                onCheckedChange = { clickLyricsText = it }
+            SettingComponents.BooleanEntry(
+                Settings.LYRICS_JUMP_ON_TAP,
+                R.string.click_lyrics_text
             )
         if (showlyricsthumbnail)
             if (search.inputValue.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(
@@ -1288,11 +1244,9 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.show_background_in_lyrics),
-                    text = "",
-                    isChecked = showBackgroundLyrics,
-                    onCheckedChange = { showBackgroundLyrics = it }
+                SettingComponents.BooleanEntry(
+                    Settings.LYRICS_SHOW_ACCENT_BACKGROUND,
+                    R.string.show_background_in_lyrics
                 )
 
         if (search.inputValue.isBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
@@ -1300,11 +1254,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.player_enable_lyrics_popup_message),
-                text = "",
-                isChecked = playerEnableLyricsPopupMessage,
-                onCheckedChange = { playerEnableLyricsPopupMessage = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_LYRICS_POPUP_MESSAGE,
+                R.string.player_enable_lyrics_popup_message
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.background_progress_bar).contains(
@@ -1323,11 +1275,9 @@ fun AppearanceSettings(
                 true
             )
         ) {
-            SwitchSettingEntry(
-                title = stringResource(R.string.visualizer),
-                text = "",
-                isChecked = visualizerEnabled,
-                onCheckedChange = { visualizerEnabled = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_VISUALIZER,
+                R.string.visualizer
             )
 
             SettingComponents.Description( R.string.visualizer_require_mic_permission, isImportant = true )
@@ -1341,11 +1291,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_transparent_background),
-                text = "",
-                isChecked = transparentBackgroundActionBarPlayer,
-                onCheckedChange = { transparentBackgroundActionBarPlayer = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_TRANSPARENT_ACTIONS_BAR,
+                R.string.action_bar_transparent_background
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.actionspacedevenly).contains(
@@ -1353,11 +1301,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.actionspacedevenly),
-                text = "",
-                isChecked = actionspacedevenly,
-                onCheckedChange = { actionspacedevenly = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_BUTTONS_SPACED_EVENLY,
+                R.string.actionspacedevenly
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.tapqueue).contains(
@@ -1365,11 +1311,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.tapqueue),
-                text = "",
-                isChecked = tapqueue,
-                onCheckedChange = { tapqueue = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTIONS_BAR_TAP_TO_OPEN_QUEUE,
+                R.string.tapqueue
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.swipe_up_to_open_the_queue).contains(
@@ -1377,11 +1321,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.swipe_up_to_open_the_queue),
-                text = "",
-                isChecked = swipeUpQueue,
-                onCheckedChange = { swipeUpQueue = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTIONS_BAR_SWIPE_UP_TO_OPEN_QUEUE,
+                R.string.swipe_up_to_open_the_queue
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_video_button).contains(
@@ -1389,11 +1331,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_video_button),
-                text = "",
-                isChecked = showButtonPlayerVideo,
-                onCheckedChange = { showButtonPlayerVideo = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_TOGGLE_VIDEO,
+                R.string.action_bar_show_video_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_discover_button).contains(
@@ -1401,11 +1341,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_discover_button),
-                text = "",
-                isChecked = showButtonPlayerDiscover,
-                onCheckedChange = { showButtonPlayerDiscover = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_DISCOVER,
+                R.string.action_bar_show_discover_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_download_button).contains(
@@ -1413,11 +1351,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_download_button),
-                text = "",
-                isChecked = showButtonPlayerDownload,
-                onCheckedChange = { showButtonPlayerDownload = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_DOWNLOAD,
+                R.string.action_bar_show_download_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_add_to_playlist_button).contains(
@@ -1425,11 +1361,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_add_to_playlist_button),
-                text = "",
-                isChecked = showButtonPlayerAddToPlaylist,
-                onCheckedChange = { showButtonPlayerAddToPlaylist = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_ADD_TO_PLAYLIST,
+                R.string.action_bar_show_add_to_playlist_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_loop_button).contains(
@@ -1437,11 +1371,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_loop_button),
-                text = "",
-                isChecked = showButtonPlayerLoop,
-                onCheckedChange = { showButtonPlayerLoop = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_LOOP,
+                R.string.action_bar_show_loop_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_shuffle_button).contains(
@@ -1449,11 +1381,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_shuffle_button),
-                text = "",
-                isChecked = showButtonPlayerShuffle,
-                onCheckedChange = { showButtonPlayerShuffle = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_SHUFFLE,
+                R.string.action_bar_show_shuffle_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_lyrics_button).contains(
@@ -1461,11 +1391,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_lyrics_button),
-                text = "",
-                isChecked = showButtonPlayerLyrics,
-                onCheckedChange = { showButtonPlayerLyrics = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_SHOW_LYRICS,
+                R.string.action_bar_show_lyrics_button
             )
         if (!isLandscape || !showthumbnail) {
             if (!showlyricsthumbnail) {
@@ -1474,11 +1402,9 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.expandedplayer),
-                        text = "",
-                        isChecked = expandedplayertoggle,
-                        onCheckedChange = { expandedplayertoggle = it }
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_ACTION_TOGGLE_EXPAND,
+                        R.string.expandedplayer
                     )
             }
         }
@@ -1488,11 +1414,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_sleep_timer_button),
-                text = "",
-                isChecked = showButtonPlayerSleepTimer,
-                onCheckedChange = { showButtonPlayerSleepTimer = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_SLEEP_TIMER,
+                R.string.action_bar_show_sleep_timer_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.show_equalizer).contains(
@@ -1500,11 +1424,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.show_equalizer),
-                text = "",
-                isChecked = showButtonPlayerSystemEqualizer,
-                onCheckedChange = { showButtonPlayerSystemEqualizer = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_OPEN_EQUALIZER,
+                R.string.show_equalizer
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(
@@ -1512,11 +1434,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_arrow_button_to_open_queue),
-                text = "",
-                isChecked = showButtonPlayerArrow,
-                onCheckedChange = { showButtonPlayerArrow = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_OPEN_QUEUE_ARROW,
+                R.string.action_bar_show_arrow_button_to_open_queue
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_start_radio_button).contains(
@@ -1524,11 +1444,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_start_radio_button),
-                text = "",
-                isChecked = showButtonPlayerStartradio,
-                onCheckedChange = { showButtonPlayerStartradio = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_START_RADIO,
+                R.string.action_bar_show_start_radio_button
             )
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_menu_button).contains(
@@ -1536,11 +1454,9 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
-                title = stringResource(R.string.action_bar_show_menu_button),
-                text = "",
-                isChecked = showButtonPlayerMenu,
-                onCheckedChange = { showButtonPlayerMenu = it }
+            SettingComponents.BooleanEntry(
+                Settings.PLAYER_ACTION_SHOW_MENU,
+                R.string.action_bar_show_menu_button
             )
 
         if (!showlyricsthumbnail) {
@@ -1553,11 +1469,9 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.show_total_time_of_queue),
-                        text = "",
-                        isChecked = queueDurationExpanded,
-                        onCheckedChange = { queueDurationExpanded = it }
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_IS_QUEUE_DURATION_EXPANDED,
+                        R.string.show_total_time_of_queue
                     )
             }
 
@@ -1566,11 +1480,9 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.titleartist),
-                    text = "",
-                    isChecked = titleExpanded,
-                    onCheckedChange = { titleExpanded = it }
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_IS_TITLE_EXPANDED,
+                    R.string.titleartist
                 )
 
             if (search.inputValue.isBlank() || stringResource(R.string.timeline).contains(
@@ -1578,11 +1490,9 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.timeline),
-                    text = "",
-                    isChecked = timelineExpanded,
-                    onCheckedChange = { timelineExpanded = it }
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_IS_TIMELINE_EXPANDED,
+                    R.string.timeline
                 )
 
             if (search.inputValue.isBlank() || stringResource(R.string.controls).contains(
@@ -1590,11 +1500,9 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
-                    title = stringResource(R.string.controls),
-                    text = "",
-                    isChecked = controlsExpanded,
-                    onCheckedChange = { controlsExpanded = it }
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_IS_CONTROLS_EXPANDED,
+                    R.string.controls
                 )
 
             if (statsfornerds && (!(showthumbnail && playerType == PlayerType.Essential))){
@@ -1603,11 +1511,9 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.statsfornerds),
-                        text = "",
-                        isChecked = statsExpanded,
-                        onCheckedChange = { statsExpanded = it }
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_IS_STATS_FOR_NERDS_EXPANDED,
+                        R.string.statsfornerds
                     )
             }
 
@@ -1632,13 +1538,9 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.actionbar),
-                        text = "",
-                        isChecked = isActionsBarExpanded,
-                        onCheckedChange = {
-                            isActionsBarExpanded = it
-                        }
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_IS_ACTIONS_BAR_EXPANDED,
+                        R.string.actionbar
                     )
             }
             if (showNextSongsInPlayer && isActionsBarExpanded) {
@@ -1647,23 +1549,19 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
-                        title = stringResource(R.string.miniqueue),
-                        text = "",
-                        isChecked = miniQueueExpanded,
-                        onCheckedChange = { miniQueueExpanded = it }
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_IS_NEXT_IN_QUEUE_EXPANDED,
+                        R.string.miniqueue
                     )
             }
 
         }
 
-        var showPlaybackSpeedButton by Settings.AUDIO_SPEED
         if( search.inputValue.isBlank() || stringResource( R.string.title_playback_speed ).contains( search.inputValue, true ) )
-            SwitchSettingEntry(
-                title = stringResource( R.string.title_playback_speed ),
-                text = stringResource( R.string.description_playback_speed ),
-                isChecked = showPlaybackSpeedButton,
-                onCheckedChange = { showPlaybackSpeedButton = it }
+            SettingComponents.BooleanEntry(
+                Settings.AUDIO_SPEED,
+                R.string.title_playback_speed,
+                R.string.description_playback_speed
             )
 
         SettingsGroupSpacer()
@@ -1691,11 +1589,9 @@ fun AppearanceSettings(
         if (isAtLeastAndroid7) {
             SettingsGroupSpacer()
             SettingsEntryGroupText(title = stringResource(R.string.wallpaper))
-            SwitchSettingEntry(
-                title = stringResource(R.string.enable_wallpaper),
-                text = "",
-                isChecked = enableWallpaper,
-                onCheckedChange = { enableWallpaper = it }
+            SettingComponents.BooleanEntry(
+                Settings.ENABLE_WALLPAPER,
+                R.string.enable_wallpaper
             )
             AnimatedVisibility(visible = enableWallpaper) {
                 Column {

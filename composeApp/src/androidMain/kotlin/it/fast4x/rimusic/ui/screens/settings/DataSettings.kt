@@ -73,7 +73,6 @@ fun DataSettings() {
     var showCoilCustomDiskCacheDialog by remember { mutableStateOf(false) }
     var coilCustomDiskCache by Settings.THUMBNAIL_CACHE_CUSTOM_SIZE
 
-    var pauseSearchHistory by Settings.PAUSE_SEARCH_HISTORY
 
     var cleanCacheOfflineSongs by remember {
         mutableStateOf(false)
@@ -455,15 +454,12 @@ fun DataSettings() {
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.search_history))
 
-        SwitchSettingEntry(
-            title = stringResource(R.string.pause_search_history),
-                           text = stringResource(R.string.neither_save_new_searched_query),
-                           isChecked = pauseSearchHistory,
-                           onCheckedChange = {
-                               pauseSearchHistory = it
-                               restartService = true
-                           }
-        )
+        SettingComponents.BooleanEntry(
+            Settings.PAUSE_SEARCH_HISTORY,
+            R.string.pause_search_history,
+            R.string.neither_save_new_searched_query,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+        ) { restartService = true }
         RestartPlayerService(restartService, onRestart = { restartService = false } )
 
         val queriesCount by remember {

@@ -37,16 +37,6 @@ import me.knighthat.utils.Toaster
 @UnstableApi
 @Composable
 fun  QuickPicsSettings() {
-    var showTips by Settings.QUICK_PICKS_SHOW_TIPS
-    var showRelatedAlbums by Settings.QUICK_PICKS_SHOW_RELATED_ALBUMS
-    var showSimilarArtists by Settings.QUICK_PICKS_SHOW_RELATED_ARTISTS
-    var showNewAlbumsArtists by Settings.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS
-    var showNewAlbums by Settings.QUICK_PICKS_SHOW_NEW_ALBUMS
-    var showPlaylistMightLike by Settings.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS
-    var showMoodsAndGenres by Settings.QUICK_PICKS_SHOW_MOODS_AND_GENRES
-    var showMonthlyPlaylistInQuickPicks by Settings.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS
-    var showCharts by Settings.QUICK_PICKS_SHOW_CHARTS
-    var enableQuickPicksPage by Settings.QUICK_PICKS_PAGE
     var clearEvents by remember { mutableStateOf(false) }
     if (clearEvents) {
         ConfirmationDialog(
@@ -94,136 +84,63 @@ fun  QuickPicsSettings() {
             onClick = {}
         )
 
-        SwitchSettingEntry(
-            title = stringResource(R.string.enable_quick_picks_page),
-            text = "",
-            isChecked = enableQuickPicksPage,
-            onCheckedChange = {
-                enableQuickPicksPage = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_PAGE,
+            R.string.enable_quick_picks_page
         )
 
-        //SettingsGroupSpacer()
-        /*
-        SwitchSettingEntry(
-            title = stringResource(R.string.show_actions_bar),
-            text = "",
-            isChecked = showActionsBar,
-            onCheckedChange = {
-                showActionsBar = it
-            }
-        )
-         */
-
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.tips)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.tips),
-            isChecked = showTips,
-            onCheckedChange = {
-                showTips = it
-            }
-        )
-
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.charts)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.charts),
-            isChecked = showCharts,
-            onCheckedChange = {
-                showCharts = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_TIPS,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.tips ) )
         )
 
         AnimatedVisibility(
-            visible = showTips,
+            visible = Settings.QUICK_PICKS_SHOW_TIPS.value,
             enter = fadeIn(tween(100)),
             exit = fadeOut(tween(100)),
         ) {
             SettingComponents.EnumEntry( Settings.QUICK_PICKS_TYPE, R.string.tips )
         }
 
-        //SettingsGroupSpacer()
-
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.related_albums)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.related_albums),
-            isChecked = showRelatedAlbums,
-            onCheckedChange = {
-                showRelatedAlbums = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_CHARTS,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.charts ) )
         )
 
-        //SettingsGroupSpacer()
-
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.similar_artists)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.similar_artists),
-            isChecked = showSimilarArtists,
-            onCheckedChange = {
-                showSimilarArtists = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_RELATED_ALBUMS,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.related_albums ) )
         )
 
-
-        //SettingsGroupSpacer()
-
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums_of_your_artists)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.new_albums_of_your_artists),
-            isChecked = showNewAlbumsArtists,
-            onCheckedChange = {
-                showNewAlbumsArtists = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_RELATED_ARTISTS,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.similar_artists ) )
         )
 
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.new_albums),
-            isChecked = showNewAlbums,
-            onCheckedChange = {
-                showNewAlbums = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums_of_your_artists ) )
         )
 
-        //SettingsGroupSpacer()
-
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.playlists_you_might_like)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.playlists_you_might_like),
-            isChecked = showPlaylistMightLike,
-            onCheckedChange = {
-                showPlaylistMightLike = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_NEW_ALBUMS,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums ) )
         )
 
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.moods_and_genres)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.moods_and_genres),
-            isChecked = showMoodsAndGenres,
-            onCheckedChange = {
-                showMoodsAndGenres = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.playlists_you_might_like ) )
         )
 
-        SwitchSettingEntry(
-            title = "${stringResource(R.string.show)} ${stringResource(R.string.monthly_playlists)}",
-            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " +stringResource(R.string.monthly_playlists),
-            isChecked = showMonthlyPlaylistInQuickPicks,
-            onCheckedChange = {
-                showMonthlyPlaylistInQuickPicks = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_MOODS_AND_GENRES,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.moods_and_genres ) )
         )
 
-        /*
-        SwitchSettingEntry(
-            title = stringResource(R.string.enable_language_in_discovery),
-            text = stringResource(R.string.if_possible_allows_discovery_content_language),
-            isChecked = isEnabledDiscoveryLangCode,
-            onCheckedChange = {
-                isEnabledDiscoveryLangCode = it
-            }
+        SettingComponents.BooleanEntry(
+            Settings.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS,
+            stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.monthly_playlists ) )
         )
-        ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
-         */
 
         val eventsCount by remember {
             Database.eventTable

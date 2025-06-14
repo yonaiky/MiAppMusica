@@ -54,7 +54,6 @@ import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
-import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -197,25 +196,6 @@ fun <T> ValueSelectorSettingsEntry(
                 .padding(start = 12.dp)
         )
     }
-}
-
-@Composable
-fun SwitchSettingEntry(
-    title: String,
-    text: String,
-    isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true
-) {
-    SettingsEntry(
-        title = title,
-        text = text,
-        isEnabled = isEnabled,
-        onClick = { onCheckedChange(!isChecked) },
-        trailingContent = { Switch(isChecked = isChecked) },
-        modifier = modifier
-    )
 }
 
 @Composable
