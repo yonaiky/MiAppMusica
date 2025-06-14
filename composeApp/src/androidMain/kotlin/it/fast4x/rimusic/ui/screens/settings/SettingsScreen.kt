@@ -43,6 +43,7 @@ import app.kreate.android.themed.common.screens.settings.about.About
 import app.kreate.android.themed.common.screens.settings.account.AccountSettings
 import app.kreate.android.themed.common.screens.settings.data.DataSettings
 import app.kreate.android.themed.common.screens.settings.player.AppearanceSettings
+import app.kreate.android.themed.common.screens.settings.quickpicks.QuickPicksSettings
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ValidationType
@@ -92,9 +93,9 @@ fun SettingsScreen(
             when (currentTabIndex) {
                 1 -> app.kreate.android.themed.common.screens.settings.ui.UiSettings()
                 2 -> AppearanceSettings(navController = navController)
-                3 -> QuickPicsSettings()
                 4 -> app.kreate.android.themed.common.screens.settings.data.DataSettings()
                 0 -> GeneralSettings()
+                3 -> QuickPicksSettings()
                 5 -> AccountSettings()
                 6 -> OtherSettings()
                 7 -> About()
