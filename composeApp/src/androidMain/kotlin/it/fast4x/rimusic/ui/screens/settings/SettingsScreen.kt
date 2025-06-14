@@ -3,7 +3,6 @@ package it.fast4x.rimusic.ui.screens.settings
 import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,7 +26,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -36,12 +34,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.themed.common.screens.settings.about.About
+import app.kreate.android.themed.common.screens.settings.account.AccountSettings
+import app.kreate.android.themed.common.screens.settings.data.DataSettings
+import app.kreate.android.themed.common.screens.settings.player.AppearanceSettings
+import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.typography
@@ -56,11 +58,8 @@ import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.utils.Toaster
 
-@ExperimentalTextApi
-@ExperimentalFoundationApi
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
 @UnstableApi
+@OptIn(ExperimentalAnimationApi::class,ExperimentalCoilApi::class)
 @Composable
 fun SettingsScreen(
     navController: NavController,
@@ -95,7 +94,7 @@ fun SettingsScreen(
                 1 -> app.kreate.android.themed.common.screens.settings.ui.UiSettings()
                 2 -> AppearanceSettings(navController = navController)
                 3 -> QuickPicsSettings()
-                4 -> DataSettings()
+                4 -> app.kreate.android.themed.common.screens.settings.data.DataSettings()
                 5 -> AccountsSettings()
                 6 -> OtherSettings()
                 7 -> About()
