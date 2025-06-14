@@ -463,11 +463,11 @@
     <string name="info_pin_unpin_playlist">Прикріпити/Відкріпити плейліст</string>
     <string name="info_lock_unlock_reorder_songs">Заблокувати/розблокувати Зміну порядку пісень</string>
     <string name="info_add_in_playlist">Додати до добірки</string>
-    <string name="info_not_find_application_audio">Не вдається знайти програму аби коректувати тембр аудіо (еквалайзер)</string>
+    <string name="info_not_find_application_audio">Не вдається знайти застосунок аби коректувати тембр аудіо (еквалайзер)</string>
     <string name="info_error">Помилка</string>
-    <string name="info_not_find_app_open_doc">Не вдалося знайти програму для відкриття документів</string>
-    <string name="info_not_find_app_create_doc">Не вдалося знайти програму для створення документів</string>
-    <string name="info_not_find_app_browse_internet">Не вдалося знайти додаток для перегляду в Інтернеті</string>
+    <string name="info_not_find_app_open_doc">Не вдалося знайти застосунок для відкриття документів</string>
+    <string name="info_not_find_app_create_doc">Не вдалося знайти застосунок для створення документів</string>
+    <string name="info_not_find_app_browse_internet">Не вдалося знайти застосунок для перегляду в Інтернеті</string>
     <string name="show_floating_icon">Показувати плаваючі іконки</string>
     <string name="show_equalizer">Показати еквалайзер</string>
     <string name="theme_pure_black">Чистий чорний</string>

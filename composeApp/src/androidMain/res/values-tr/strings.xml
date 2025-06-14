@@ -917,7 +917,7 @@
     <string name="please_wait">Lütfen bekleyin</string>
     <string name="songs_liked_yt">Şarkı(lar) YouTube\'da Beğenildi</string>
     <string name="song_unliked_yt">Şarkı YouTube\'da Beğenilmedi</string>
-    <string name="add_rimusic_to_ytm_favorites">RiMusic Beğenilen Şarkıları YouTube\'da Beğen</string>
+    <string name="add_rimusic_to_ytm_favorites">Kreate Beğenilen Şarkıları YouTube\'da Beğen</string>
     <string name="do_you_really_want_to_like_all_rimusictoytmusic">Tüm şarkıları beğenmek için (tahmini süre) gereklidir. Bu işlem yarıda kesilirse devam edilemez. Bu işlemi iptal etmek için uygulamayı kapatmanız gerekir. Devam etmek istiyor musunuz?</string>
     <string name="do_you_really_want_to_like_all">Tüm şarkıları beğenmek için (tahmini süre) gereklidir. Bu işlemi iptal etmek için uygulamayı kapatmanız gerekir. Devam etmek istiyor musunuz?</string>
     <string name="songs_liked_yt_failed">Şarkı YouTube\'da beğenilemedi</string>
@@ -965,8 +965,8 @@
     <string name="title_playback_speed">Çalma hızı</string>
     <string name="description_playback_speed">Şarkının ne kadar yavaş/hızlı gittiğini ayarla</string>
     <string name="log_in_to_ytm">Daha fazla içerik için YTM hesabınıza giriş yapın</string>
-    <string name="word_documentation">Documentation</string>
-    <string name="opens_link_in_web_browser">Opens link in web browser</string>
+    <string name="word_documentation">Dökümantasyon</string>
+    <string name="opens_link_in_web_browser">Bağlantıyı web tarayıcısında açar</string>
     <string name="setting_entry_smart_rewind">Smart rewind</string>
     <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s secd seconds</string>
     <string name="setting_entry_show_chip">Show \"%s\" chip</string>
