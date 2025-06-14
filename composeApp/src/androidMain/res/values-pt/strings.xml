@@ -967,4 +967,8 @@
     <string name="log_in_to_ytm">Faça o login na sua conta YTM para mais conteúdo</string>
     <string name="word_documentation">Documentação</string>
     <string name="opens_link_in_web_browser">Abrir link no navegador da web</string>
+    <string name="setting_entry_smart_rewind">Smart rewind</string>
+    <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s secd seconds</string>
+    <string name="setting_entry_show_chip">Show \"%s\" chip</string>
+    <string name="entry_setting_quick_picks_show_section">Show \"%s\"</string>
 </resources>
