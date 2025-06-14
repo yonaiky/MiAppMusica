@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
-import androidx.navigation.NavController
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import app.kreate.android.Settings
@@ -36,7 +35,7 @@ import me.knighthat.updater.Updater
 
 @UnstableApi
 @Composable
-fun GeneralSettings( navController: NavController ) {
+fun GeneralSettings() {
     val scrollState = rememberLazyListState()
 
     val search = remember {
