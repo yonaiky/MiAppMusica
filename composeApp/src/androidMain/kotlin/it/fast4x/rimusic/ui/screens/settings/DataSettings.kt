@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
@@ -163,7 +164,7 @@ fun DataSettings() {
                        onClick = {}
         )
 
-        SettingsDescription(text = stringResource(R.string.cache_cleared))
+        SettingComponents.Description( R.string.cache_cleared )
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.cache))
@@ -357,7 +358,7 @@ fun DataSettings() {
             action = SettingComponents.Action.RESTART_PLAYER_SERVICE
         ){ restartService = true }
 
-        SettingsDescription(stringResource(R.string.info_private_cache_location_can_t_cleaned))
+        SettingComponents.Description( R.string.info_private_cache_location_can_t_cleaned )
         RestartPlayerService(restartService, onRestart = { restartService = false } )
         //ImportantSettingsDescription(stringResource(R.string.restarting_rimusic_is_required))
 
@@ -404,7 +405,7 @@ fun DataSettings() {
             text = stringResource( R.string.export_the_database ),
             onClick = exportDbDialog::showDialog
         )
-        SettingsDescription(text = stringResource(R.string.personal_preference))
+        SettingComponents.Description( R.string.personal_preference )
 
         val importDatabase = ImportDatabase( context )
 
@@ -413,10 +414,10 @@ fun DataSettings() {
             text = stringResource(R.string.import_the_database),
             onClick = importDatabase::onShortClick
         )
-        ImportantSettingsDescription(text = stringResource(
-            R.string.existing_data_will_be_overwritten,
-            context.applicationInfo.nonLocalizedLabel
-        ))
+        SettingComponents.Description(
+            stringResource( R.string.existing_data_will_be_overwritten, BuildConfig.APP_NAME ),
+            isImportant = true
+        )
 
         val exportSettingsDialog = ExportSettingsDialog( context )
         exportSettingsDialog.Render()
@@ -426,8 +427,9 @@ fun DataSettings() {
             text = stringResource( R.string.store_settings_in_a_file ),
             onClick = exportSettingsDialog::showDialog
         )
-        ImportantSettingsDescription(
-            stringResource( R.string.description_exclude_credentials )
+        SettingComponents.Description(
+            R.string.description_exclude_credentials,
+            isImportant = true
         )
 
         val importSettings = ImportSettings( context )
@@ -437,10 +439,10 @@ fun DataSettings() {
             text = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
             onClick = importSettings::onShortClick
         )
-        ImportantSettingsDescription(text = stringResource(
-            R.string.existing_data_will_be_overwritten,
-            context.applicationInfo.nonLocalizedLabel
-        ))
+        SettingComponents.Description(
+            stringResource( R.string.existing_data_will_be_overwritten, BuildConfig.APP_NAME ),
+            isImportant = true
+        )
 
         val importMigration = ImportMigration( context, binder )
 

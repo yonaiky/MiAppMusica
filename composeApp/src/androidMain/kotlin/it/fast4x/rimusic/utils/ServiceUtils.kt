@@ -15,9 +15,9 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
-import it.fast4x.rimusic.ui.screens.settings.SettingsDescription
 import me.knighthat.utils.Toaster
 
 @OptIn(UnstableApi::class)
@@ -30,9 +30,9 @@ fun RestartPlayerService(
     val binder = LocalPlayerServiceBinder.current
     AnimatedVisibility(visible = restartService) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            SettingsDescription(
-                text = stringResource(R.string.minimum_silence_length_warning),
-                important = true,
+            SettingComponents.Description(
+                textId = R.string.minimum_silence_length_warning,
+                isImportant = true,
                 modifier = Modifier.weight(2f)
             )
             SecondaryTextButton(
@@ -59,9 +59,9 @@ fun RestartActivity(
     val context = LocalContext.current
     AnimatedVisibility(visible = restart) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            SettingsDescription(
-                text = stringResource(R.string.minimum_silence_length_warning),
-                important = true,
+            SettingComponents.Description(
+                textId = R.string.minimum_silence_length_warning,
+                isImportant = true,
                 modifier = Modifier.weight(2f)
             )
             SecondaryTextButton(

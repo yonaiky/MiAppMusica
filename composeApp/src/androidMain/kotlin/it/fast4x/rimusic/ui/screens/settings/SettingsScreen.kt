@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.typography
@@ -55,7 +56,6 @@ import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
-import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.RestartAppDialog
@@ -269,51 +269,6 @@ fun SettingsEntry(
             )
         }
     }
-}
-
-@Composable
-fun SettingsTopDescription(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    BasicText(
-        text = text,
-        style = typography().xs.secondary,
-        modifier = modifier
-            .padding(start = 12.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    )
-}
-
-@Composable
-fun SettingsDescription(
-    text: String,
-    modifier: Modifier = Modifier,
-    important: Boolean = false,
-) {
-    BasicText(
-        text = text,
-        style = if (important) typography().xxs.semiBold.color(colorPalette().red)
-        else typography().xxs.secondary,
-        modifier = modifier
-            .padding(start = 12.dp)
-            //.padding(horizontal = 12.dp)
-            .padding(bottom = 8.dp)
-    )
-}
-
-@Composable
-fun ImportantSettingsDescription(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    BasicText(
-        text = text,
-        style = typography().xxs.semiBold.color(colorPalette().red),
-        modifier = modifier
-            .padding(start = 12.dp)
-            .padding(vertical = 8.dp)
-    )
 }
 
 @Composable
@@ -531,10 +486,7 @@ fun SettingsGroup(
     }
 
     description?.let { description ->
-        SettingsDescription(
-            text = description,
-            important = important
-        )
+        SettingComponents.Description( description, modifier, important )
     }
 
     content()

@@ -76,7 +76,7 @@ object SettingComponents {
                                     else
                                         colorPalette().textSecondary
                                 ),
-            modifier = modifier
+            modifier = modifier.padding( horizontal = DEFAULT_HORIZONTAL_PADDING.dp )
         )
 
     @Composable
@@ -98,8 +98,7 @@ object SettingComponents {
         Row(
             horizontalArrangement = Arrangement.spacedBy( 16.dp ),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier.padding( horizontal = DEFAULT_HORIZONTAL_PADDING.dp )
-                               .fillMaxWidth()
+            modifier = modifier.fillMaxWidth()
                                .clickable(
                                    enabled = isEnabled,
                                    onClick = onClick
@@ -114,6 +113,7 @@ object SettingComponents {
                                         .semiBold
                                         .copy( colorPalette().text ),
                     modifier = Modifier.padding( bottom = 4.dp )
+                                       .padding( horizontal = DEFAULT_HORIZONTAL_PADDING.dp )
                 )
 
                 if( subtitle.isNotBlank() )

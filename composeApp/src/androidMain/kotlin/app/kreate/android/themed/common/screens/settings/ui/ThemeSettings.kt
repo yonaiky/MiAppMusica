@@ -20,7 +20,6 @@ import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import it.fast4x.rimusic.ui.screens.settings.ColorSettingEntry
-import it.fast4x.rimusic.ui.screens.settings.ImportantSettingsDescription
 import it.fast4x.rimusic.ui.screens.settings.SettingsEntryGroupText
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
@@ -115,10 +114,9 @@ fun ThemeSettings(modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .padding(start = 25.dp)
             )
-            ImportantSettingsDescription(
-                text = stringResource(R.string.restarting_rimusic_is_required),
-                modifier = Modifier
-                    .padding(start = 25.dp)
+            SettingComponents.Description(
+                R.string.restarting_rimusic_is_required,
+                Modifier.padding( start = 25.dp )
             )
         }
     }

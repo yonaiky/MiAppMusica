@@ -40,7 +40,6 @@ import app.kreate.android.Settings.PROXY_HOST
 import app.kreate.android.Settings.PROXY_PORT
 import app.kreate.android.Settings.PROXY_SCHEME
 import app.kreate.android.themed.common.component.settings.SettingComponents
-import io.ktor.client.engine.ProxyType
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ValidationType
@@ -53,7 +52,6 @@ import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import me.knighthat.utils.Toaster
 import java.io.File
-import java.net.Proxy
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -226,11 +224,10 @@ fun OtherSettings() {
         onCheckedChange = { isKeepScreenOnEnabled = it }
     )
 
-    ImportantSettingsDescription(text = stringResource(R.string.battery_optimizations_applied))
+    SettingComponents.Description( R.string.battery_optimizations_applied, isImportant = true )
 
-    if (isAtLeastAndroid12) {
-        SettingsDescription(text = stringResource(R.string.is_android12))
-    }
+    if (isAtLeastAndroid12)
+        SettingComponents.Description( R.string.is_android12 )
 
     val msgNoBatteryOptim = stringResource(R.string.not_find_battery_optimization_settings)
 
@@ -277,7 +274,7 @@ fun OtherSettings() {
 
     SettingsGroupSpacer()
     SettingsEntryGroupText(title = stringResource(R.string.proxy))
-    SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+    SettingComponents.Description( R.string.restarting_rimusic_is_required )
     SwitchSettingEntry(
         title = stringResource(R.string.enable_proxy),
         text = "",
@@ -345,7 +342,7 @@ fun OtherSettings() {
                 Toaster.i( R.string.restarting_rimusic_is_required )
         }
     )
-    ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
+    SettingComponents.Description( R.string.restarting_rimusic_is_required, isImportant = true )
     ButtonBarSettingEntry(
         isEnabled = logDebugEnabled,
         title = stringResource(R.string.copy_log_to_clipboard),

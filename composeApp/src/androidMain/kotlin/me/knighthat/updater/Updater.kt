@@ -156,13 +156,6 @@ object Updater {
             }
         }
 
-        SettingsDescription(
-            stringResource(
-                if( BuildConfig.IS_AUTOUPDATE )
-                    R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup
-                else
-                    R.string.description_app_not_installed_by_apk
-            )
-        )
+        SettingComponents.Description( R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup )
     }
 }

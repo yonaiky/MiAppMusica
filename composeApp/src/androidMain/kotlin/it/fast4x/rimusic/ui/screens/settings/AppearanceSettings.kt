@@ -49,7 +49,6 @@ import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.SongsNumber
-import it.fast4x.rimusic.enums.SwipeAnimationNoThumbnail
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
 import it.fast4x.rimusic.typography
@@ -961,7 +960,7 @@ fun AppearanceSettings(
                 Settings.PLAYER_INFO_TYPE,
                 R.string.pinfo_type
             )
-            SettingsDescription(text = stringResource(R.string.pinfo_album_and_artist_name))
+            SettingComponents.Description( R.string.pinfo_album_and_artist_name )
 
             AnimatedVisibility( visible = playerInfoType == PlayerInfoType.Modern) {
                 Column {
@@ -1331,7 +1330,7 @@ fun AppearanceSettings(
                 onCheckedChange = { visualizerEnabled = it }
             )
 
-            ImportantSettingsDescription(text = stringResource(R.string.visualizer_require_mic_permission))
+            SettingComponents.Description( R.string.visualizer_require_mic_permission, isImportant = true )
         }
 
         SettingsGroupSpacer()
