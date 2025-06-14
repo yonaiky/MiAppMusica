@@ -95,7 +95,7 @@ fun SettingsScreen(
                 2 -> AppearanceSettings(navController = navController)
                 3 -> QuickPicsSettings()
                 4 -> app.kreate.android.themed.common.screens.settings.data.DataSettings()
-                5 -> AccountsSettings()
+                5 -> AccountSettings()
                 6 -> OtherSettings()
                 7 -> About()
             }
