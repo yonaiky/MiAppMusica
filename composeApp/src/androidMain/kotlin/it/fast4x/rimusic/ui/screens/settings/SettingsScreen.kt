@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.screens.settings
 
 import android.content.Context
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -42,9 +42,11 @@ import app.kreate.android.R
 import app.kreate.android.themed.common.screens.settings.about.About
 import app.kreate.android.themed.common.screens.settings.account.AccountSettings
 import app.kreate.android.themed.common.screens.settings.data.DataSettings
+import app.kreate.android.themed.common.screens.settings.general.GeneralSettings
 import app.kreate.android.themed.common.screens.settings.other.OtherSettings
 import app.kreate.android.themed.common.screens.settings.player.AppearanceSettings
 import app.kreate.android.themed.common.screens.settings.quickpicks.QuickPicksSettings
+import app.kreate.android.themed.common.screens.settings.ui.UiSettings
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ValidationType
@@ -61,7 +63,10 @@ import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.utils.Toaster
 
 @UnstableApi
-@OptIn(ExperimentalAnimationApi::class,ExperimentalCoilApi::class)
+@OptIn(
+    ExperimentalCoilApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun SettingsScreen(
     navController: NavController,
@@ -92,11 +97,11 @@ fun SettingsScreen(
     ) { currentTabIndex ->
         saveableStateHolder.SaveableStateProvider(currentTabIndex) {
             when (currentTabIndex) {
-                1 -> app.kreate.android.themed.common.screens.settings.ui.UiSettings()
-                2 -> AppearanceSettings(navController = navController)
-                4 -> app.kreate.android.themed.common.screens.settings.data.DataSettings()
                 0 -> GeneralSettings()
+                1 -> UiSettings()
+                2 -> AppearanceSettings()
                 3 -> QuickPicksSettings()
+                4 -> DataSettings()
                 5 -> AccountSettings()
                 6 -> OtherSettings()
                 7 -> About()
