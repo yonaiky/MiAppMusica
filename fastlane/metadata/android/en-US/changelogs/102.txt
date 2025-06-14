@@ -1,0 +1,13 @@
+New:
+- Settings UI (animated tab title, sticky header, etc.)
+- Select all when tap & hold enable check box
+- Long tap is now supported in menus
+
+Fixed:
+- Local songs failed to play in Android Auto
+- (Swipe to) play next in queue resulted in crash
+
+Changed:
+- Disable checkboxes when category is changed
+- Update section is now hidden on non-updatable builds
+
