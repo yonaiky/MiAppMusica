@@ -10,7 +10,7 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 
 fun LazyListScope.section(
-    @StringRes headerTitleId: Int,
+    headerTitle: String,
     subtitle: String = "",
     key: Any? = null,
     contentType: Any? = null,
@@ -18,7 +18,7 @@ fun LazyListScope.section(
 ) {
     stickyHeader {
         SettingHeader(
-            headerTitleId,
+            headerTitle,
             Modifier.background( colorPalette().background0 ),
             subtitle
         )
@@ -27,6 +27,14 @@ fun LazyListScope.section(
         content.invoke( this )
     }
 }
+
+fun LazyListScope.section(
+    headerTitle: String,
+    @StringRes subtitleId: Int,
+    key: Any? = null,
+    contentType: Any? = null,
+    content: @Composable LazyItemScope.() -> Unit
+) = section ( headerTitle, appContext().getString( subtitleId ), key, contentType, content )
 
 fun LazyListScope.section(
     @StringRes headerTitleId: Int,
@@ -38,7 +46,8 @@ fun LazyListScope.section(
 
 fun LazyListScope.section(
     @StringRes headerTitleId: Int,
+    subtitle: String = "",
     key: Any? = null,
     contentType: Any? = null,
     content: @Composable LazyItemScope.() -> Unit
-) = section( headerTitleId, "", key, contentType, content )
+) = section( appContext().getString( headerTitleId ), subtitle, key, contentType, content )
