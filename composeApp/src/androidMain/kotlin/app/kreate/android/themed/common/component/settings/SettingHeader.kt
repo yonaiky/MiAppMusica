@@ -2,6 +2,7 @@ package app.kreate.android.themed.common.component.settings
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -17,13 +18,14 @@ import it.fast4x.rimusic.utils.semiBold
 
 @Composable
 fun SettingHeader(
-    @StringRes titleId: Int,
+    title: String,
     modifier: Modifier = Modifier,
-    subtitle: String
+    subtitle: String = ""
 ) {
     val underlineColor = colorPalette().textDisabled.copy( .6f )
     Column(
-        modifier.drawBehind {
+        modifier.fillMaxWidth()
+                .drawBehind {
                     drawLine(
                         color = underlineColor,
                         start = Offset(0f, size.height),
@@ -34,7 +36,7 @@ fun SettingHeader(
                 .padding( bottom = 10.dp )
     ) {
         BasicText(
-            text = stringResource( titleId ).uppercase(),
+            text = title.uppercase(),
             style = typography().m
                                 .semiBold
                                 .copy( colorPalette().accent ),
@@ -48,3 +50,17 @@ fun SettingHeader(
             )
     }
 }
+
+@Composable
+fun SettingHeader(
+    @StringRes titleId: Int,
+    modifier: Modifier = Modifier,
+    subtitle: String = ""
+) = SettingHeader( stringResource( titleId ), modifier, subtitle )
+
+@Composable
+fun SettingHeader(
+    @StringRes titleId: Int,
+    @StringRes subtitleId: Int,
+    modifier: Modifier = Modifier
+) = SettingHeader( titleId, modifier, stringResource( subtitleId ) )

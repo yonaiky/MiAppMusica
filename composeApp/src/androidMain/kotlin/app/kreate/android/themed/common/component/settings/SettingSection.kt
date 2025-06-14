@@ -2,7 +2,6 @@ package app.kreate.android.themed.common.component.settings
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
@@ -20,8 +19,7 @@ fun LazyListScope.section(
     stickyHeader {
         SettingHeader(
             headerTitleId,
-            Modifier.background( colorPalette().background0 )
-                .fillMaxWidth(),
+            Modifier.background( colorPalette().background0 ),
             subtitle
         )
     }
