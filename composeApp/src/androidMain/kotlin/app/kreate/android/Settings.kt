@@ -1461,6 +1461,14 @@ object Settings {
                 policy = this.policy
             )
 
+            /**
+             * Set current value to opposite value and return new value.
+             */
+            fun flip(): Boolean {
+                value = !value
+                return value
+            }
+
             override fun getFromSharedPreferences(): Boolean? {
                 var fromFile: Boolean? = null
 
