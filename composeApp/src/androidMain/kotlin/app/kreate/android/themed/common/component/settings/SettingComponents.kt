@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -143,44 +146,49 @@ object SettingComponents {
          * used inside an object without `reified T`.
          */
         val enumValues: @Composable Dialog.() -> Unit = {
-            enumValues<T>().forEach {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.padding( vertical = 12.dp, horizontal = 24.dp )
-                                       .fillMaxWidth()
-                                       .clickable {
-                                           selected = it
-                                           onValueChanged( it )
+            Column(
+                Modifier.wrapContentHeight()
+                        .verticalScroll( rememberScrollState() )
+            ) {
+                 enumValues<T>().forEach {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.padding( vertical = 12.dp, horizontal = 24.dp )
+                                           .fillMaxWidth()
+                                           .clickable {
+                                               selected = it
+                                               onValueChanged( it )
 
-                                           if( action == Action.RESTART_APP ) {
-                                               hideDialog()
-                                               RestartAppDialog.showDialog()
+                                               if( action == Action.RESTART_APP ) {
+                                                   hideDialog()
+                                                   RestartAppDialog.showDialog()
+                                               }
                                            }
-                                       }
-                ) {
-                    val colorPalette = colorPalette()
-                    val (inner, outer, width) = remember( selected ) {
-                        if( selected == it )
-                            Triple(colorPalette.accent, colorPalette.onAccent, 4.dp)
-                        else
-                            Triple(colorPalette.textDisabled, Color.Transparent, 1.dp)
-                    }
-                    Canvas(
-                        modifier = Modifier.size( 18.dp )
-                                           .background( inner, CircleShape )
                     ) {
-                        drawCircle(
-                            color = outer,
-                            radius = width.toPx(),
-                            center = size.center
+                        val colorPalette = colorPalette()
+                        val (inner, outer, width) = remember( selected ) {
+                            if( selected == it )
+                                Triple(colorPalette.accent, colorPalette.onAccent, 4.dp)
+                            else
+                                Triple(colorPalette.textDisabled, Color.Transparent, 1.dp)
+                        }
+                        Canvas(
+                            modifier = Modifier.size( 18.dp )
+                                               .background( inner, CircleShape )
+                        ) {
+                            drawCircle(
+                                color = outer,
+                                radius = width.toPx(),
+                                center = size.center
+                            )
+                        }
+
+                        BasicText(
+                            text = getName( it ),
+                            style = if( selected == it ) typography().xs.semiBold else typography().xs
                         )
                     }
-
-                    BasicText(
-                        text = getName( it ),
-                        style = if( selected == it ) typography().xs.semiBold else typography().xs
-                    )
                 }
             }
 
