@@ -1,4 +1,4 @@
-package app.kreate.android.themed.common.screens.settings.quickpicks
+package app.kreate.android.themed.common.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

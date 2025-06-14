@@ -1,4 +1,4 @@
-package app.kreate.android.themed.common.screens.settings.player
+package app.kreate.android.themed.common.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -24,6 +24,8 @@ import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
+import app.kreate.android.themed.common.screens.settings.player.PlayerActionBar
+import app.kreate.android.themed.common.screens.settings.player.PlayerAppearance
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType

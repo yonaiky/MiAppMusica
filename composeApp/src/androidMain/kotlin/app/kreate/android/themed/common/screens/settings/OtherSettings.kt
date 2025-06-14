@@ -1,4 +1,4 @@
-package app.kreate.android.themed.common.screens.settings.other
+package app.kreate.android.themed.common.screens.settings
 
 import android.content.ActivityNotFoundException
 import android.content.Intent

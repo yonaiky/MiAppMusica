@@ -1,4 +1,4 @@
-package app.kreate.android.themed.common.screens.settings.data
+package app.kreate.android.themed.common.screens.settings
 
 import android.text.format.Formatter
 import androidx.compose.foundation.background

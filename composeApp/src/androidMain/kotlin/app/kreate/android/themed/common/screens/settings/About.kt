@@ -1,4 +1,4 @@
-package app.kreate.android.themed.common.screens.settings.about
+package app.kreate.android.themed.common.screens.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

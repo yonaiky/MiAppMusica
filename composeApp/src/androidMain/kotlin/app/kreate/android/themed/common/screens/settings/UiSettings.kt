@@ -1,4 +1,4 @@
-package app.kreate.android.themed.common.screens.settings.ui
+package app.kreate.android.themed.common.screens.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,8 @@ import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
+import app.kreate.android.themed.common.screens.settings.ui.SwipeActionSettings
+import app.kreate.android.themed.common.screens.settings.ui.ThemeSettings
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize

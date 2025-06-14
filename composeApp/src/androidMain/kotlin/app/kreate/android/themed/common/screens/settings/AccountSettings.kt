@@ -1,4 +1,4 @@
-package app.kreate.android.themed.common.screens.settings.account
+package app.kreate.android.themed.common.screens.settings
 
 import android.webkit.CookieManager
 import android.webkit.WebStorage
