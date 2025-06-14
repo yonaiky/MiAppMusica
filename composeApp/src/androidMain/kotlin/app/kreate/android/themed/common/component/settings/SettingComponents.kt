@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import app.kreate.android.Settings
@@ -37,6 +39,7 @@ import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.Dialog
 import me.knighthat.component.dialog.RestartAppDialog
+import me.knighthat.component.dialog.TextInputDialog
 import me.knighthat.enums.TextView
 
 object SettingComponents {
@@ -324,6 +327,127 @@ object SettingComponents {
     ) = BooleanEntry(
         preference, stringResource( titleId ), modifier, stringResource( subtitleId ), isEnabled, action, onValueChanged
     )
+
+    @Composable
+    private fun <T> InputDialogEntry(
+        preference: Settings.Preference<T>,
+        title: String,
+        constraint: String,
+        onValueChanged: (String) -> Unit,
+        modifier: Modifier = Modifier,
+        keyboardOption: KeyboardOptions = KeyboardOptions.Default,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+    ) {
+        val dialog = remember {
+            object : TextInputDialog(constraint) {
+                override val keyboardOption: KeyboardOptions = keyboardOption
+                override val dialogTitle: String
+                    @Composable
+                    get() = title
+
+                override var value: TextFieldValue by mutableStateOf( TextFieldValue(preference.value.toString()) )
+                override var isActive: Boolean by mutableStateOf( false )
+
+                override fun onSet( newValue: String ) {
+                    super.onSet(newValue)
+
+                    onValueChanged( newValue )
+
+                    hideDialog()
+                }
+
+                override fun hideDialog() {
+                    super.hideDialog()
+                    // Some processing might have happened after the value is set,
+                    // setting this back to match preference's value is best idea
+                    value = TextFieldValue(preference.value.toString())
+                }
+            }
+        }
+        dialog.Render()
+
+        Text(
+            title = title,
+            onClick = dialog::showDialog,
+            modifier = modifier,
+            subtitle = subtitle.ifBlank { preference.value.toString() },
+            isEnabled = isEnabled
+        )
+    }
+
+    @Composable
+    fun InputDialogEntry(
+        preference: Settings.Preference.StringPreference,
+        title: String,
+        constraint: String,
+        modifier: Modifier = Modifier,
+        keyboardOption: KeyboardOptions = KeyboardOptions.Default,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+    ) =
+        InputDialogEntry(
+            preference, title, constraint, { preference.value = it }, modifier, keyboardOption, subtitle, isEnabled, action
+        )
+
+    @Composable
+    fun InputDialogEntry(
+        preference: Settings.Preference.StringPreference,
+        @StringRes titleId: Int,
+        constraint: String,
+        modifier: Modifier = Modifier,
+        keyboardOption: KeyboardOptions = KeyboardOptions.Default,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+    ) =
+        InputDialogEntry(
+            preference, stringResource( titleId ), constraint, { preference.value = it }, modifier, keyboardOption, subtitle, isEnabled, action
+        )
+
+    @Composable
+    fun <T: Number> InputDialogEntry(
+        preference: Settings.Preference<T>,
+        title: String,
+        constraint: String,
+        modifier: Modifier = Modifier,
+        keyboardOption: KeyboardOptions = KeyboardOptions.Default,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+    ) {
+        fun valueProcessor( newValue: String ) {
+            when( preference ) {
+                is Settings.Preference.IntPreference -> preference.value = newValue.toInt()
+                is Settings.Preference.LongPreference -> preference.value = newValue.toLong()
+                is Settings.Preference.FloatPreference -> preference.value = newValue.toFloat()
+                else -> throw UnsupportedOperationException(
+                    "${preference::class} is not supported in <T: Number> InputDialogEntry"
+                )
+            }
+        }
+
+        InputDialogEntry(
+            preference, title, constraint, ::valueProcessor, modifier, keyboardOption, subtitle, isEnabled, action
+        )
+    }
+
+    @Composable
+    fun <T: Number> InputDialogEntry(
+        preference: Settings.Preference<T>,
+        @StringRes titleId: Int,
+        constraint: String,
+        modifier: Modifier = Modifier,
+        keyboardOption: KeyboardOptions = KeyboardOptions.Default,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+    ) =
+        InputDialogEntry(
+            preference, stringResource( titleId ), constraint, modifier, keyboardOption, subtitle, isEnabled, action
+        )
 
     /**
      * A set of actions to enact once the setting is set.

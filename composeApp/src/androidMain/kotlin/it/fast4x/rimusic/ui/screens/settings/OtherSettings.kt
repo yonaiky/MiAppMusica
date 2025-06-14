@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
@@ -42,7 +44,6 @@ import app.kreate.android.Settings.PROXY_SCHEME
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
@@ -50,6 +51,7 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
 import it.fast4x.rimusic.utils.textCopyToClipboard
+import me.knighthat.component.dialog.InputDialogConstraints
 import me.knighthat.utils.Toaster
 import java.io.File
 
@@ -92,16 +94,7 @@ fun OtherSettings() {
             isIgnoringBatteryOptimizations = context.isIgnoringBatteryOptimizations
         }
 
-    var isProxyEnabled by IS_PROXY_ENABLED
-    var proxyHost by PROXY_HOST
     var proxyPort by PROXY_PORT
-
-    var defaultFolder by LOCAL_SONGS_FOLDER
-
-
-    //var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Disabled)
-
-    var showFolders by HOME_SONGS_ON_DEVICE_SHOW_FOLDERS
 
     var blackListedPaths by remember {
         val file = File(context.filesDir, "Blacklisted_paths.txt")
@@ -177,12 +170,11 @@ fun OtherSettings() {
         R.string.folders,
         R.string.show_folders_in_on_device_page
     )
-    AnimatedVisibility(visible = showFolders) {
-        TextDialogSettingEntry(
-            title = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
-            text = defaultFolder,
-            currentText = defaultFolder,
-            onTextSave = { defaultFolder = it }
+    AnimatedVisibility( HOME_SONGS_ON_DEVICE_SHOW_FOLDERS.value ) {
+        SettingComponents.InputDialogEntry(
+            LOCAL_SONGS_FOLDER,
+            R.string.folder_that_will_show_when_you_open_on_device_page,
+            InputDialogConstraints.ANDROID_FILE_PATH
         )
     }
 
@@ -250,25 +242,26 @@ fun OtherSettings() {
         R.string.enable_proxy
     )
 
-    AnimatedVisibility(visible = isProxyEnabled) {
+    AnimatedVisibility( IS_PROXY_ENABLED.value ) {
         Column {
             SettingComponents.EnumEntry(
                 PROXY_SCHEME,
                 R.string.proxy_mode,
                 { it.name }
             )
-            TextDialogSettingEntry(
-                title = stringResource(R.string.proxy_host),
-                text = proxyHost, //stringResource(R.string.set_proxy_hostname),
-                currentText = proxyHost,
-                onTextSave = { proxyHost = it },
-                validationType = ValidationType.Ip
+
+            SettingComponents.InputDialogEntry(
+                PROXY_HOST,
+                R.string.proxy_host,
+                InputDialogConstraints.URL,
+                keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Uri)
             )
-            TextDialogSettingEntry(
-                title = stringResource(R.string.proxy_port),
-                text = proxyPort.toString(), //stringResource(R.string.set_proxy_port),
-                currentText = proxyPort.toString(),
-                onTextSave = { proxyPort = it.toIntOrNull() ?: 1080 })
+            SettingComponents.InputDialogEntry(
+                PROXY_PORT,
+                R.string.proxy_port,
+                constraint = InputDialogConstraints.ONLY_INTEGERS,
+                keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
         }
     }
 
