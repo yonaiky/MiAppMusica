@@ -24,7 +24,8 @@ fun SettingHeader(
 ) {
     val underlineColor = colorPalette().textDisabled.copy( .6f )
     Column(
-        modifier.fillMaxWidth()
+        modifier.padding( top = SettingComponents.HEADER_SPACING.dp )
+                .fillMaxWidth()
                 .drawBehind {
                     drawLine(
                         color = underlineColor,

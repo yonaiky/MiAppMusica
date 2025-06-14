@@ -52,8 +52,7 @@ fun SettingEntrySearch.RiMusicAnimatedHeader() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.padding( bottom = 25.dp )
-                           .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
                            .height( 40.dp )
                            .padding( horizontal = 10.dp )
     ) {

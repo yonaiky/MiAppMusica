@@ -66,6 +66,11 @@ object SettingComponents {
      */
     const val VERTICAL_SPACING = 12
 
+    /**
+     * Space between header and above component
+     */
+    const val HEADER_SPACING = 24
+
     @Composable
     fun Description(
         text: String,

@@ -25,8 +25,6 @@ fun LazyListScope.section(
     }
     item( key, contentType ) {
         content.invoke( this )
-
-        SettingSectionSpacer()
     }
 }
 

@@ -51,8 +51,7 @@ fun SettingEntrySearch.ViMusicAnimatedHeader() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
-        modifier = Modifier.padding( bottom = 25.dp )
-                           .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
                            .height( 40.dp )
                            .padding( horizontal = 10.dp )
 
