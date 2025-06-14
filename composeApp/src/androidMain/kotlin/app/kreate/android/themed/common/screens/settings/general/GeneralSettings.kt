@@ -68,10 +68,11 @@ fun GeneralSettings( navController: NavController ) {
 
         LazyColumn( state = scrollState ) {
 
-            section( R.string.update ) {
-                if( search.contains( R.string.update ) )
-                    Updater.SettingEntry()
-            }
+            if( BuildConfig.IS_AUTOUPDATE )
+                section( R.string.update ) {
+                    if( search.contains( R.string.update ) )
+                        Updater.SettingEntry()
+                }
 
             section( R.string.languages, sysLocaleText ) {
                 if( search.contains( R.string.app_language ) )
