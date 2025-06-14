@@ -30,14 +30,11 @@ fun LazyListScope.section(
 
 fun LazyListScope.section(
     @StringRes headerTitleId: Int,
-    @StringRes subtitleId: Int = -1,
+    @StringRes subtitleId: Int,
     key: Any? = null,
     contentType: Any? = null,
     content: @Composable LazyItemScope.() -> Unit
-) {
-    val subtitle = if( subtitleId != -1 ) appContext().getString( subtitleId ) else ""
-    section( headerTitleId, subtitle, key, contentType, content )
-}
+) = section (headerTitleId, appContext().getString( subtitleId ), key, contentType, content )
 
 fun LazyListScope.section(
     @StringRes headerTitleId: Int,
