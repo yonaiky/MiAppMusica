@@ -42,6 +42,7 @@ import app.kreate.android.R
 import app.kreate.android.themed.common.screens.settings.about.About
 import app.kreate.android.themed.common.screens.settings.account.AccountSettings
 import app.kreate.android.themed.common.screens.settings.data.DataSettings
+import app.kreate.android.themed.common.screens.settings.other.OtherSettings
 import app.kreate.android.themed.common.screens.settings.player.AppearanceSettings
 import app.kreate.android.themed.common.screens.settings.quickpicks.QuickPicksSettings
 import coil.annotation.ExperimentalCoilApi
