@@ -1,5 +1,6 @@
 package me.knighthat.component.dialog
 
+import androidx.annotation.CallSuper
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.fadeIn
@@ -46,6 +47,7 @@ abstract class TextInputDialog(
         return result
     }
 
+    @CallSuper
     override fun onSet( newValue: String ) {
         if( !allowEmpty && newValue.isEmpty() )
             errorMessage = appContext().resources.getString( R.string.value_cannot_be_empty )
