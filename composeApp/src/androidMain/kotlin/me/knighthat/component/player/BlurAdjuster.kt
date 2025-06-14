@@ -19,10 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SliderControl
-import it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import me.knighthat.component.dialog.Dialog
 
@@ -118,11 +118,9 @@ class BlurAdjuster private constructor(
                     modifier = Modifier.size( 24.dp )
                 )
 
-                SwitchSettingEntry(
-                    title = stringResource( R.string.rotating_cover_title ),
-                    text = "",
-                    isChecked = isCoverRotating,
-                    onCheckedChange = { isCoverRotating = it }
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_ROTATING_ALBUM_COVER,
+                    R.string.rotating_cover_title
                 )
             }
         }

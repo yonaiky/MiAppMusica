@@ -62,7 +62,7 @@ object GridMenu {
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
         onClick: () -> Unit = {},
-        onLongClick: (() -> Unit)? = null
+        onLongClick: () -> Unit = {}
     ) = Column(
         modifier = modifier
             .clip(ShapeDefaults.Large)

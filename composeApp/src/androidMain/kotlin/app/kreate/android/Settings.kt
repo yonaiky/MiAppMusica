@@ -1067,6 +1067,11 @@ object Settings {
         @NonBlocking
         protected abstract fun write( value: T )
 
+        /**
+         * Write [defaultValue] to this setting
+         */
+        fun reset() { value = defaultValue }
+
         override fun component1(): T = value
 
         override fun component2(): (T) -> Unit = { value = it }
@@ -1455,6 +1460,14 @@ object Settings {
                 value = getFromSharedPreferences() ?: defaultValue.also( ::write ),
                 policy = this.policy
             )
+
+            /**
+             * Set current value to opposite value and return new value.
+             */
+            fun flip(): Boolean {
+                value = !value
+                return value
+            }
 
             override fun getFromSharedPreferences(): Boolean? {
                 var fromFile: Boolean? = null

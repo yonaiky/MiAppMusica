@@ -1,0 +1,509 @@
+package app.kreate.android.themed.common.screens.settings
+
+import android.webkit.CookieManager
+import android.webkit.WebStorage
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.password
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import app.kreate.android.R
+import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.SettingEntrySearch
+import app.kreate.android.themed.common.component.settings.section
+import coil.compose.AsyncImage
+import io.ktor.http.Url
+import it.fast4x.compose.persist.persistList
+import it.fast4x.innertube.utils.parseCookieString
+import it.fast4x.piped.Piped
+import it.fast4x.piped.models.Instance
+import it.fast4x.piped.models.Session
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
+import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
+import it.fast4x.rimusic.ui.components.LocalMenuState
+import it.fast4x.rimusic.ui.components.themed.DefaultDialog
+import it.fast4x.rimusic.ui.components.themed.Menu
+import it.fast4x.rimusic.ui.components.themed.MenuEntry
+import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
+import it.fast4x.rimusic.ui.screens.settings.TextDialogSettingEntry
+import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.utils.RestartPlayerService
+import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
+import it.fast4x.rimusic.utils.isAtLeastAndroid7
+import it.fast4x.rimusic.utils.isAtLeastAndroid81
+import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
+import it.fast4x.rimusic.utils.pipedApiTokenKey
+import it.fast4x.rimusic.utils.pipedInstanceNameKey
+import it.fast4x.rimusic.utils.pipedPasswordKey
+import it.fast4x.rimusic.utils.pipedUsernameKey
+import it.fast4x.rimusic.utils.rememberEncryptedPreference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
+import timber.log.Timber
+
+@ExperimentalMaterial3Api
+@Composable
+fun AccountSettings() {
+    val scrollState = rememberLazyListState()
+
+    val search = remember {
+        SettingEntrySearch( scrollState, R.string.tab_accounts, R.drawable.person )
+    }
+    val paddingValues =
+        if( UiType.ViMusic.isCurrent() )
+            WindowInsets.statusBars.asPaddingValues()
+        else
+            PaddingValues()
+    val (restartService, onRestartServiceChange) = rememberSaveable { mutableStateOf( false ) }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.background( colorPalette().background0 )
+                           .padding( paddingValues )
+                           .fillMaxHeight()
+                           .fillMaxWidth(
+                               if ( NavigationBarPosition.Right.isCurrent() )
+                                   Dimensions.contentWidthRightBar
+                               else
+                                   1f
+                           )
+    ) {
+        search.ToolBarButton()
+
+        LazyColumn(
+            state = scrollState,
+            contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
+        ) {
+            section( "YOUTUBE MUSIC" ) {
+                var visitorData by Settings.YOUTUBE_VISITOR_DATA
+                var dataSyncId by Settings.YOUTUBE_SYNC_ID
+                var cookie by Settings.YOUTUBE_COOKIES
+                var accountName by Settings.YOUTUBE_ACCOUNT_NAME
+                var accountEmail by Settings.YOUTUBE_ACCOUNT_EMAIL
+                var accountChannelHandle by Settings.YOUTUBE_SELF_CHANNEL_HANDLE
+
+                if( search.inputValue.isBlank() || "YOUTUBE MUSIC".contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.YOUTUBE_LOGIN,
+                        "Enable YouTube Music Login"
+                    ) {
+                        if( it ) return@BooleanEntry
+
+                        visitorData = ""
+                        dataSyncId = ""
+                        cookie = ""
+                        accountName = ""
+                        accountChannelHandle = ""
+                        accountEmail = ""
+                    }
+
+                AnimatedVisibility( Settings.YOUTUBE_LOGIN.value ) {
+                    var accountThumbnail by Settings.YOUTUBE_ACCOUNT_AVATAR
+                    var loginYouTube by remember { mutableStateOf(false) }
+                    var isLoggedIn = remember(cookie) {
+                        "SAPISID" in parseCookieString(cookie)
+                    }
+
+                    Column(
+                        Modifier.padding( start = 25.dp )
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+
+                            if (isLoggedIn && accountThumbnail != "")
+                                AsyncImage(
+                                    model = accountThumbnail,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .height(50.dp)
+                                        .clip(thumbnailShape())
+                                )
+
+                            Column {
+                                ButtonBarSettingEntry(
+                                    isEnabled = true,
+                                    title = if (isLoggedIn) "Disconnect" else "Connect",
+                                    text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
+                                    icon = R.drawable.ytmusic,
+                                    iconColor = colorPalette().text,
+                                    onClick = {
+                                        if (isLoggedIn) {
+                                            cookie = ""
+                                            accountName = ""
+                                            accountChannelHandle = ""
+                                            accountEmail = ""
+                                            accountThumbnail = ""
+                                            visitorData = ""
+                                            dataSyncId = ""
+                                            loginYouTube = false
+                                            //Delete cookies after logout
+                                            val cookieManager = CookieManager.getInstance()
+                                            cookieManager.removeAllCookies(null)
+                                            cookieManager.flush()
+                                            WebStorage.getInstance().deleteAllData()
+                                            onRestartServiceChange( true )
+                                        } else
+                                            loginYouTube = true
+                                    }
+                                )
+
+                                CustomModalBottomSheet(
+                                    showSheet = loginYouTube,
+                                    onDismissRequest = {
+                                        loginYouTube = false
+                                    },
+                                    containerColor = colorPalette().background0,
+                                    contentColor = colorPalette().background0,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                                    dragHandle = {
+                                        Surface(
+                                            modifier = Modifier.padding(vertical = 0.dp),
+                                            color = colorPalette().background0,
+                                            shape = thumbnailShape()
+                                        ) {}
+                                    },
+                                    shape = Settings.THUMBNAIL_BORDER_RADIUS.value.shape
+                                ) {
+                                    YouTubeLogin(
+                                        onLogin = { cookieRetrieved ->
+                                            if (cookieRetrieved.contains("SAPISID")) {
+                                                isLoggedIn = true
+                                                loginYouTube = false
+                                                Toaster.i( "Login successful" )
+                                                onRestartServiceChange( true )
+                                            }
+
+                                        }
+                                    )
+                                }
+
+                                var restartActivity by Settings.RESTART_ACTIVITY
+                                RestartPlayerService(restartService, onRestart = {
+                                    onRestartServiceChange( false )
+                                    restartActivity = !restartActivity
+                                })
+                            }
+
+                        }
+
+                        SettingComponents.BooleanEntry(
+                            Settings.YOUTUBE_PLAYLISTS_SYNC,
+                            "Sync data with YTM account",
+                            subtitle = "Playlists, albums, artists, history, like, etc."
+                        )
+                    }
+                }
+            }
+
+            if( isAtLeastAndroid7 )
+                section( R.string.piped_account ) {
+                    val menuState = LocalMenuState.current
+
+                    var pipedUsername by rememberEncryptedPreference(pipedUsernameKey, "")
+                    var pipedPassword by rememberEncryptedPreference(pipedPasswordKey, "")
+                    var pipedInstanceName by rememberEncryptedPreference(pipedInstanceNameKey, "")
+                    var pipedApiBaseUrl by rememberEncryptedPreference(pipedApiBaseUrlKey, "")
+                    var pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+
+                    var isLoading by remember { mutableStateOf(false) }
+                    if (isLoading)
+                        DefaultDialog(
+                            onDismiss = {
+                                isLoading = false
+                            }
+                        ) {
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                        }
+
+                    var instances by persistList<Instance>(tag = "otherSettings/pipedInstances")
+                    var noInstances by remember { mutableStateOf(false) }
+                    var loadInstances by remember { mutableStateOf(false) }
+                    var showInstances by remember { mutableStateOf(false) }
+                    if (loadInstances) {
+                        LaunchedEffect(Unit) {
+                            isLoading = true
+                            Piped.getInstances()?.getOrNull()?.let {
+                                instances = it
+                                //println("mediaItem Instances $it")
+                            } ?: run { noInstances = true }
+                            isLoading = false
+                            showInstances = true
+                        }
+                    }
+
+                    if (noInstances)
+                        Toaster.i( "No instances found" )
+
+                    var executeLogin by remember { mutableStateOf(false) }
+                    var session by remember {
+                        mutableStateOf<Result<Session>?>( null )
+                    }
+                    if (executeLogin) {
+                        LaunchedEffect(Unit) {
+                            CoroutineScope( Dispatchers.IO ).launch {
+                                isLoading = true
+                                session = Piped.login(
+                                    apiBaseUrl = Url(pipedApiBaseUrl), //instances[instanceSelected!!].apiBaseUrl,
+                                    username = pipedUsername,
+                                    password = pipedPassword
+                                )?.onFailure {
+                                    Timber.e("Failed piped login ${it.stackTraceToString()}")
+                                    isLoading = false
+                                    Toaster.e( "Piped login failed" )
+                                    loadInstances = false
+                                    session = null
+                                    executeLogin = false
+                                }
+                                if (session?.isSuccess == false)
+                                    return@launch
+
+                                Toaster.s( "Piped login successful" )
+                                Timber.i("Piped login successful")
+
+                                session.let {
+                                    it?.getOrNull()?.token?.let { it1 ->
+                                        pipedApiToken = it1
+                                        pipedApiBaseUrl = it.getOrNull()!!.apiBaseUrl.toString()
+                                    }
+                                }
+
+                                isLoading = false
+                                loadInstances = false
+                                executeLogin = false
+                            }
+                        }
+                    }
+
+                    if (showInstances && instances.isNotEmpty()) {
+                        menuState.display {
+                            Menu {
+                                MenuEntry(
+                                    icon = R.drawable.chevron_back,
+                                    text = stringResource(R.string.cancel),
+                                    onClick = {
+                                        loadInstances = false
+                                        showInstances = false
+                                        menuState.hide()
+                                    }
+                                )
+                                instances.forEach {
+                                    MenuEntry(
+                                        icon = R.drawable.server,
+                                        text = it.name,
+                                        secondaryText = "${it.locationsFormatted} Users: ${it.userCount}",
+                                        onClick = {
+                                            menuState.hide()
+                                            pipedApiBaseUrl = it.apiBaseUrl.toString()
+                                            pipedInstanceName = it.name
+                                            /*
+                                            instances.indexOf(it).let { index ->
+                                                //instances[index].apiBaseUrl
+                                                instanceSelected = index
+                                                //println("mediaItem Instance ${instances[index].apiBaseUrl}")
+                                            }
+                                             */
+                                            loadInstances = false
+                                            showInstances = false
+                                        }
+                                    )
+                                }
+                                MenuEntry(
+                                    icon = R.drawable.chevron_back,
+                                    text = stringResource(R.string.cancel),
+                                    onClick = {
+                                        loadInstances = false
+                                        showInstances = false
+                                        menuState.hide()
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    if( search.contains( R.string.enable_piped_syncronization ) )
+                        SettingComponents.BooleanEntry(
+                            Settings.ENABLE_PIPED,
+                            R.string.enable_piped_syncronization
+                        )
+
+                    AnimatedVisibility( Settings.ENABLE_PIPED.value ) {
+                        Column(
+                            modifier = Modifier.padding(start = 25.dp)
+                        ) {
+                            SettingComponents.BooleanEntry(
+                                Settings.IS_CUSTOM_PIPED,
+                                R.string.piped_custom_instance
+                            )
+
+                            var isPipedCustomEnabled by Settings.IS_CUSTOM_PIPED
+                            AnimatedVisibility(visible = isPipedCustomEnabled) {
+                                Column {
+                                    TextDialogSettingEntry(
+                                        title = stringResource(R.string.piped_custom_instance),
+                                        text = pipedApiBaseUrl,
+                                        currentText = pipedApiBaseUrl,
+                                        onTextSave = {
+                                            pipedApiBaseUrl = it
+                                        }
+                                    )
+                                }
+                            }
+                            AnimatedVisibility(visible = !isPipedCustomEnabled) {
+                                Column {
+                                    ButtonBarSettingEntry(
+                                        title = stringResource(R.string.piped_change_instance),
+                                        text = pipedInstanceName,
+                                        icon = R.drawable.open,
+                                        onClick = {
+                                            loadInstances = true
+                                        }
+                                    )
+                                }
+                            }
+
+                            TextDialogSettingEntry(
+                                title = stringResource(R.string.piped_username),
+                                text = pipedUsername,
+                                currentText = pipedUsername,
+                                onTextSave = { pipedUsername = it }
+                            )
+                            TextDialogSettingEntry(
+                                title = stringResource(R.string.piped_password),
+                                text = if (pipedPassword.isNotEmpty()) "********" else "",
+                                currentText = pipedPassword,
+                                onTextSave = { pipedPassword = it },
+                                modifier = Modifier
+                                    .semantics {
+                                        password()
+                                    }
+                            )
+
+                            ButtonBarSettingEntry(
+                                isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
+                                title = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_disconnect) else stringResource(
+                                    R.string.piped_connect
+                                ),
+                                text = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_connected_to_s).format(
+                                    pipedInstanceName
+                                ) else "",
+                                icon = R.drawable.piped_logo,
+                                iconColor = colorPalette().red,
+                                onClick = {
+                                    if (pipedApiToken.isNotEmpty()) {
+                                        pipedApiToken = ""
+                                        executeLogin = false
+                                    } else executeLogin = true
+                                }
+                            )
+
+                        }
+                    }
+            }
+
+            if( isAtLeastAndroid81 )
+                section( R.string.social_discord ) {
+
+                    if( search.contains( R.string.discord_enable_rich_presence ) )
+                        SettingComponents.BooleanEntry(
+                            Settings.DISCORD_LOGIN,
+                            R.string.discord_enable_rich_presence
+                        )
+
+                    AnimatedVisibility( Settings.DISCORD_LOGIN.value ) {
+                        var loginDiscord by remember { mutableStateOf(false) }
+                        var discordPersonalAccessToken by rememberEncryptedPreference(
+                            key = discordPersonalAccessTokenKey,
+                            defaultValue = ""
+                        )
+
+                        Column {
+                            ButtonBarSettingEntry(
+                                isEnabled = true,
+                                title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
+                                    R.string.discord_connect
+                                ),
+                                text = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_connected_to_discord_account) else "",
+                                icon = R.drawable.logo_discord,
+                                iconColor = colorPalette().text,
+                                onClick = {
+                                    if (discordPersonalAccessToken.isNotEmpty())
+                                        discordPersonalAccessToken = ""
+                                    else
+                                        loginDiscord = true
+                                }
+                            )
+
+                            CustomModalBottomSheet(
+                                showSheet = loginDiscord,
+                                onDismissRequest = {
+                                    loginDiscord = false
+                                },
+                                containerColor = colorPalette().background0,
+                                contentColor = colorPalette().background0,
+                                modifier = Modifier.fillMaxWidth(),
+                                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                                dragHandle = {
+                                    Surface(
+                                        modifier = Modifier.padding(vertical = 0.dp),
+                                        color = colorPalette().background0,
+                                        shape = thumbnailShape()
+                                    ) {}
+                                },
+                                shape = Settings.THUMBNAIL_BORDER_RADIUS.value.shape
+                            ) {
+                                DiscordLoginAndGetToken(
+                                    rememberNavController(),
+                                    onGetToken = { token ->
+                                        loginDiscord = false
+                                        discordPersonalAccessToken = token
+                                        Toaster.i( token )
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+        }
+    }
+}

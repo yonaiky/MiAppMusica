@@ -18,17 +18,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
@@ -43,6 +39,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.Settings
+import app.kreate.android.themed.rimusic.component.ItemSelector
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -74,7 +71,6 @@ import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.menu.song.SongItemMenu
-import me.knighthat.component.tab.ItemSelector
 
 private interface SongIndicator: Icon {
     override val sizeDp: Dp
@@ -332,30 +328,7 @@ fun SongItem(
             }
         }
 
-        if( itemSelector != null ) {
-            // It must watch for [selectedItems.size] for changes
-            // Otherwise, state will stay the same
-            val checkedState = remember( itemSelector.size ) {
-                mutableStateOf( song in itemSelector )
-            }
-
-            if( itemSelector.isActive )
-                Checkbox(
-                    checked = checkedState.value,
-                    onCheckedChange = {
-                        checkedState.value = it
-                        if ( it )
-                            itemSelector.add( song )
-                        else
-                            itemSelector.remove( song )
-                    },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = colorPalette().accent,
-                        uncheckedColor = colorPalette().text
-                    ),
-                    modifier = Modifier.scale( 0.7f )
-                )
-        }
+        itemSelector?.CheckBox( song )
 
         trailingContent?.invoke( this )
     }

@@ -1,9 +1,7 @@
 package it.fast4x.rimusic.ui.screens.settings
 
 import android.content.Context
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,24 +9,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -37,12 +34,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.themed.common.screens.settings.About
+import app.kreate.android.themed.common.screens.settings.AccountSettings
+import app.kreate.android.themed.common.screens.settings.AppearanceSettings
+import app.kreate.android.themed.common.screens.settings.DataSettings
+import app.kreate.android.themed.common.screens.settings.GeneralSettings
+import app.kreate.android.themed.common.screens.settings.OtherSettings
+import app.kreate.android.themed.common.screens.settings.QuickPicksSettings
+import app.kreate.android.themed.common.screens.settings.UiSettings
+import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.typography
@@ -52,30 +57,23 @@ import it.fast4x.rimusic.ui.components.themed.IDialog
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
-import it.fast4x.rimusic.ui.components.themed.Switch
-import it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
-import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.utils.Toaster
 
-@ExperimentalTextApi
-@ExperimentalFoundationApi
-@ExperimentalAnimationApi
-@ExperimentalComposeUiApi
 @UnstableApi
+@OptIn(
+    ExperimentalCoilApi::class,
+    ExperimentalMaterial3Api::class
+)
 @Composable
 fun SettingsScreen(
     navController: NavController,
     miniPlayer: @Composable () -> Unit = {},
 ) {
-    //val context = LocalContext.current
     val saveableStateHolder = rememberSaveableStateHolder()
-
-    val (tabIndex, onTabChanged) = rememberSaveable {
-        mutableStateOf(0)
-    }
+    val (tabIndex, onTabChanged) = rememberSaveable { mutableIntStateOf(0) }
 
     Skeleton(
         navController,
@@ -83,12 +81,13 @@ fun SettingsScreen(
         onTabChanged,
         miniPlayer,
         navBarContent = { item ->
-            item(0, stringResource(R.string.tab_general), R.drawable.ic_launcher_monochrome)
+            item(0, stringResource(R.string.tab_general), R.drawable.app_icon_monochrome)
             item(1, stringResource(R.string.ui_tab), R.drawable.ui)
             item(2, stringResource(R.string.player_appearance), R.drawable.color_palette)
-            item(3, if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
-            else stringResource(R.string.home), if (!isYouTubeLoggedIn()) R.drawable.sparkles
-            else R.drawable.ytmusic)
+            if( isYouTubeLoggedIn() )
+                item(3, stringResource(R.string.home), R.drawable.ytmusic)
+            else
+                item(3, stringResource(R.string.quick_picks), R.drawable.sparkles)
             item(4, stringResource(R.string.tab_data), R.drawable.server)
             item(5, stringResource(R.string.tab_accounts), R.drawable.person)
             item(6, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
@@ -98,15 +97,14 @@ fun SettingsScreen(
     ) { currentTabIndex ->
         saveableStateHolder.SaveableStateProvider(currentTabIndex) {
             when (currentTabIndex) {
-                0 -> GeneralSettings(navController = navController)
-                1 -> UiSettings(navController = navController)
-                2 -> AppearanceSettings(navController = navController)
-                3 -> QuickPicsSettings()
+                0 -> GeneralSettings()
+                1 -> UiSettings()
+                2 -> AppearanceSettings()
+                3 -> QuickPicksSettings()
                 4 -> DataSettings()
-                5 -> AccountsSettings()
+                5 -> AccountSettings()
                 6 -> OtherSettings()
                 7 -> About()
-
             }
         }
     }
@@ -151,101 +149,6 @@ inline fun StringListValueSelectorSettingsEntry(
         onClick = {
             showStringListDialog = true
         }
-    )
-}
-
-
-
-@Composable
-inline fun <reified T : Enum<T>> EnumValueSelectorSettingsEntry(
-    title: String,
-    titleSecondary: String? = null,
-    text: String? = null,
-    selectedValue: T,
-    noinline onValueSelected: (T) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
-    noinline valueText: @Composable (T) -> String  = { it.name },
-    noinline trailingContent: (@Composable () -> Unit) = {}
-) {
-    ValueSelectorSettingsEntry(
-        title = title,
-        titleSecondary = titleSecondary,
-        text = text,
-        selectedValue = selectedValue,
-        values = enumValues<T>().toList(),
-        onValueSelected = onValueSelected,
-        modifier = modifier,
-        isEnabled = isEnabled,
-        valueText = valueText,
-        trailingContent = trailingContent,
-    )
-}
-
-@Composable
-fun <T> ValueSelectorSettingsEntry(
-    title: String,
-    titleSecondary: String? = null,
-    text: String? = null,
-    selectedValue: T,
-    values: List<T>,
-    onValueSelected: (T) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
-    valueText: @Composable (T) -> String = { it.toString() },
-    trailingContent: (@Composable () -> Unit) = {}
-) {
-    var isShowingDialog by remember {
-        mutableStateOf(false)
-    }
-
-    if (isShowingDialog) {
-        ValueSelectorDialog(
-            onDismiss = { isShowingDialog = false },
-            title = title,
-            selectedValue = selectedValue,
-            values = values,
-            onValueSelected = onValueSelected,
-            valueText = valueText
-        )
-    }
-
-    SettingsEntry(
-        title = title,
-        titleSecondary = titleSecondary,
-        text = valueText(selectedValue),
-        modifier = modifier,
-        isEnabled = isEnabled,
-        onClick = { isShowingDialog = true },
-        trailingContent = trailingContent
-    )
-
-    text?.let {
-        BasicText(
-            text = it,
-            style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
-            modifier = Modifier
-                .padding(start = 12.dp)
-        )
-    }
-}
-
-@Composable
-fun SwitchSettingEntry(
-    title: String,
-    text: String,
-    isChecked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true
-) {
-    SettingsEntry(
-        title = title,
-        text = text,
-        isEnabled = isEnabled,
-        onClick = { onCheckedChange(!isChecked) },
-        trailingContent = { Switch(isChecked = isChecked) },
-        modifier = modifier
     )
 }
 
@@ -300,75 +203,6 @@ fun SettingsEntry(
             )
         }
     }
-}
-
-@Composable
-fun SettingsTopDescription(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    BasicText(
-        text = text,
-        style = typography().xs.secondary,
-        modifier = modifier
-            .padding(start = 12.dp)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    )
-}
-
-@Composable
-fun SettingsDescription(
-    text: String,
-    modifier: Modifier = Modifier,
-    important: Boolean = false,
-) {
-    BasicText(
-        text = text,
-        style = if (important) typography().xxs.semiBold.color(colorPalette().red)
-        else typography().xxs.secondary,
-        modifier = modifier
-            .padding(start = 12.dp)
-            //.padding(horizontal = 12.dp)
-            .padding(bottom = 8.dp)
-    )
-}
-
-@Composable
-fun ImportantSettingsDescription(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    BasicText(
-        text = text,
-        style = typography().xxs.semiBold.color(colorPalette().red),
-        modifier = modifier
-            .padding(start = 12.dp)
-            .padding(vertical = 8.dp)
-    )
-}
-
-@Composable
-fun SettingsEntryGroupText(
-    title: String,
-    modifier: Modifier = Modifier,
-) {
-    BasicText(
-        text = title.uppercase(),
-        style = typography().xs.semiBold.copy(colorPalette().accent),
-        modifier = modifier
-            .padding(start = 12.dp)
-            //.padding(horizontal = 12.dp)
-    )
-}
-
-@Composable
-fun SettingsGroupSpacer(
-    modifier: Modifier = Modifier,
-) {
-    Spacer(
-        modifier = modifier
-            .height(24.dp)
-    )
 }
 
 @Composable
@@ -547,28 +381,4 @@ fun SliderSettingsEntry(
             .padding(vertical = 16.dp)
             .fillMaxWidth()
     )
-}
-
-@Composable
-fun SettingsGroup(
-    title: String? = null,
-    modifier: Modifier = Modifier,
-    description: String? = null,
-    important: Boolean = false,
-    content: @Composable ColumnScope.() -> Unit
-) = Column(modifier = modifier) {
-    if (title != null) {
-        SettingsEntryGroupText(title = title)
-    }
-
-    description?.let { description ->
-        SettingsDescription(
-            text = description,
-            important = important
-        )
-    }
-
-    content()
-
-    SettingsGroupSpacer()
 }
