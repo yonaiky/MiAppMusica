@@ -103,21 +103,18 @@ fun ThemeSettings(modifier: Modifier = Modifier) {
     }
 
     AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.CustomColor) {
-        Column{
+        Column(
+            Modifier.padding( start = 25.dp )
+        ) {
             ColorSettingEntry(
                 title = stringResource(R.string.customcolor),
                 text = "",
                 color = Color(customColor),
                 onColorSelected = {
                     customColor = it.hashCode()
-                },
-                modifier = Modifier
-                    .padding(start = 25.dp)
+                }
             )
-            SettingComponents.Description(
-                R.string.restarting_rimusic_is_required,
-                Modifier.padding( start = 25.dp )
-            )
+            SettingComponents.Description( R.string.restarting_rimusic_is_required )
         }
     }
     AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.Customized) {

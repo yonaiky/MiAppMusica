@@ -3,12 +3,10 @@ package app.kreate.android.themed.common.screens.settings.player
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,10 +34,8 @@ import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
-import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.AppearancePresetDialog
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.semiBold
 
 @Composable
 fun PlayerAppearance( search: SettingEntrySearch ) {
@@ -369,22 +365,12 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
     }
 
     if (!isLandscape) {
-        Column {
-            BasicText(
-                text = stringResource(R.string.appearancepresets),
-                style = typography().m.semiBold.copy(color = colorPalette().text),
-                modifier = Modifier
-                    .padding(all = 12.dp)
-                    .clickable(onClick = { appearanceChooser = true })
+        if( search.contains( R.string.appearancepresets ) )
+            SettingComponents.Text(
+                stringResource( R.string.appearancepresets ),
+                { appearanceChooser = true },
+                subtitle = stringResource( R.string.appearancepresetssecondary )
             )
-            BasicText(
-                text = stringResource(R.string.appearancepresetssecondary),
-                style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .padding(bottom = 10.dp)
-            )
-        }
 
         if ( search.contains( R.string.show_player_top_actions_bar ) )
             SettingComponents.BooleanEntry(
@@ -431,36 +417,60 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
             )
     }
     AnimatedVisibility(visible = showthumbnail) {
-        Column {
+        Column(
+            Modifier.padding(
+                start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                    25.dp
+                else
+                    0.dp
+            )
+        ) {
             if ( playerType == PlayerType.Modern && search.contains( R.string.fadingedge ) )
                 SettingComponents.BooleanEntry(
                     Settings.PLAYER_BACKGROUND_FADING_EDGE,
-                    R.string.fadingedge,
-                    Modifier.padding(
-                        start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                            25.dp
-                        else
-                            0.dp
-                    )
+                    R.string.fadingedge
                 )
 
             if (playerType == PlayerType.Modern && !isLandscape && (expandedplayertoggle || expandedplayer)) {
                 if ( search.contains( R.string.carousel ) )
                     SettingComponents.BooleanEntry(
                         Settings.PLAYER_THUMBNAILS_CAROUSEL,
-                        R.string.carousel,
-                        Modifier.padding(
-                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        R.string.carousel
                     )
 
                 if ( search.contains( R.string.carouselsize ) )
                     SettingComponents.EnumEntry(
                         Settings.CAROUSEL_SIZE,
-                        R.string.carouselsize,
+                        R.string.carouselsize
+                    )
+            }
+            if (playerType == PlayerType.Essential) {
+                if ( search.contains( R.string.thumbnailpause ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE,
+                        R.string.thumbnailpause
+                    )
+                if ( search.contains( R.string.show_lyrics_thumbnail ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.LYRICS_SHOW_THUMBNAIL,
+                        R.string.show_lyrics_thumbnail
+                    )
+                if ( visualizerEnabled && search.contains( R.string.showvisthumbnail ) )
+                    SettingComponents.BooleanEntry(
+                        Settings.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER,
+                        R.string.showvisthumbnail
+                    )
+            }
+
+            if ( search.contains( R.string.show_cover_thumbnail_animation ) ) {
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_THUMBNAIL_ANIMATION,
+                    R.string.show_cover_thumbnail_animation
+                )
+                AnimatedVisibility(visible = showCoverThumbnailAnimation) {
+                    SettingComponents.EnumEntry(
+                        Settings.PLAYER_THUMBNAIL_TYPE,
+                        R.string.cover_thumbnail_animation_type,
                         Modifier.padding(
                             start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
                                 25.dp
@@ -468,67 +478,6 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
                                 0.dp
                         )
                     )
-            }
-            if (playerType == PlayerType.Essential) {
-                if ( search.contains( R.string.thumbnailpause ) )
-                    SettingComponents.BooleanEntry(
-                        Settings.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE,
-                        R.string.thumbnailpause,
-                        Modifier.padding(
-                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                                25.dp
-                            else
-                                0.dp
-                        )
-                    )
-                if ( search.contains( R.string.show_lyrics_thumbnail ) )
-                    SettingComponents.BooleanEntry(
-                        Settings.LYRICS_SHOW_THUMBNAIL,
-                        R.string.show_lyrics_thumbnail,
-                        Modifier.padding(
-                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                                25.dp
-                            else
-                                0.dp
-                        )
-                    )
-                if ( visualizerEnabled && search.contains( R.string.showvisthumbnail ) )
-                    SettingComponents.BooleanEntry(
-                        Settings.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER,
-                        R.string.showvisthumbnail,
-                        Modifier.padding(
-                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                                25.dp
-                            else
-                                0.dp
-                        )
-                    )
-            }
-
-            if ( search.contains( R.string.show_cover_thumbnail_animation ) ) {
-                SettingComponents.BooleanEntry(
-                    Settings.PLAYER_THUMBNAIL_ANIMATION,
-                    R.string.show_cover_thumbnail_animation,
-                    Modifier.padding(
-                        start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                            25.dp
-                        else
-                            0.dp
-                    )
-                )
-                AnimatedVisibility(visible = showCoverThumbnailAnimation) {
-                    Column {
-                        SettingComponents.EnumEntry(
-                            Settings.PLAYER_THUMBNAIL_TYPE,
-                            R.string.cover_thumbnail_animation_type,
-                            Modifier.padding(
-                                start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                                    50.dp
-                                else
-                                    25.dp
-                            )
-                        )
-                    }
                 }
             }
 
@@ -536,49 +485,25 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
                 if ( search.contains( R.string.player_thumbnail_size ) )
                     SettingComponents.EnumEntry(
                         Settings.PLAYER_LANDSCAPE_THUMBNAIL_SIZE,
-                        R.string.player_thumbnail_size,
-                        Modifier.padding(
-                            start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        R.string.player_thumbnail_size
                     )
             } else {
                 if ( search.contains( R.string.player_thumbnail_size ) )
                     SettingComponents.EnumEntry(
                         Settings.PLAYER_PORTRAIT_THUMBNAIL_SIZE,
-                        R.string.player_thumbnail_size,
-                        Modifier.padding(
-                            start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        R.string.player_thumbnail_size
                     )
             }
             if ( search.contains( R.string.thumbnailtype ) )
                 SettingComponents.EnumEntry(
                     Settings.THUMBNAIL_TYPE,
-                    R.string.thumbnailtype,
-                    Modifier.padding(
-                        start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                            25.dp
-                        else
-                            0.dp
-                    )
+                    R.string.thumbnailtype
                 )
 
             if ( search.contains( R.string.thumbnail_roundness ) )
                 SettingComponents.EnumEntry(
                     Settings.THUMBNAIL_BORDER_RADIUS,
                     R.string.thumbnail_roundness,
-                    Modifier.padding(
-                        start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                            25.dp
-                        else
-                            0.dp
-                    ),
                     trailingContent = {
                         Spacer(
                             modifier = Modifier
@@ -625,19 +550,13 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
         )
         SettingComponents.Description( R.string.pinfo_album_and_artist_name )
 
-        AnimatedVisibility( visible = playerInfoType == PlayerInfoType.Modern) {
-            Column {
-                if (search.inputValue.isBlank() || stringResource(R.string.pinfo_show_icons).contains(
-                        search.inputValue,
-                        true
-                    )
+        AnimatedVisibility( playerInfoType == PlayerInfoType.Modern ) {
+            if ( search.contains( R.string.pinfo_show_icons ) )
+                SettingComponents.BooleanEntry(
+                    Settings.PLAYER_SONG_INFO_ICON,
+                    R.string.pinfo_show_icons,
+                    Modifier.padding( start = 25.dp )
                 )
-                    SettingComponents.BooleanEntry(
-                        Settings.PLAYER_SONG_INFO_ICON,
-                        R.string.pinfo_show_icons,
-                        Modifier.padding( start = 25.dp )
-                    )
-            }
         }
 
     }
@@ -693,7 +612,7 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
                 Settings.ANIMATED_GRADIENT,
                 R.string.gradienttype,
                 Modifier.padding(
-                    start = if ( playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient)
+                    start = if ( playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient )
                         25.dp
                     else
                         0.dp
@@ -701,26 +620,25 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
             )
     }
     AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor ) {
-       Column {
+       Column(
+           Modifier.padding( start = 25.dp )
+       ) {
            if( search.contains( R.string.rotating_cover_title ) )
                SettingComponents.BooleanEntry(
                    Settings.PLAYER_ROTATING_ALBUM_COVER,
-                   R.string.rotating_cover_title,
-                   Modifier.padding( start = 25.dp )
+                   R.string.rotating_cover_title
                )
 
            if ( search.contains( R.string.bottomgradient ) )
                SettingComponents.BooleanEntry(
                    Settings.PLAYER_BOTTOM_GRADIENT,
-                   R.string.bottomgradient,
-                   Modifier.padding( start = 25.dp )
+                   R.string.bottomgradient
                )
 
            if ( playerType == PlayerType.Modern && search.contains( R.string.albumCoverRotation ) )
                SettingComponents.BooleanEntry(
                    Settings.PLAYER_THUMBNAIL_ROTATION,
-                   R.string.albumCoverRotation,
-                   Modifier.padding( start = 25.dp )
+                   R.string.albumCoverRotation
                )
        }
     }
@@ -755,13 +673,14 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
             Settings.PLAYER_SHOW_NEXT_IN_QUEUE,
             R.string.show_next_songs_in_player
         )
-    AnimatedVisibility( visible = showNextSongsInPlayer) {
-        Column {
+    AnimatedVisibility( visible = showNextSongsInPlayer ) {
+        Column(
+            Modifier.padding( start = 25.dp )
+        ) {
             if( search.contains( R.string.showtwosongs ) )
                 SettingComponents.EnumEntry(
                     Settings.MAX_NUMBER_OF_NEXT_IN_QUEUE,
-                    R.string.songs_number_to_show,
-                    Modifier.padding( start = 25.dp )
+                    R.string.songs_number_to_show
                 )
 
             if ( search.contains( R.string.showalbumcover ) )

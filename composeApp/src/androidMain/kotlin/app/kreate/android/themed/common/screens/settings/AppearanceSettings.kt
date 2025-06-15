@@ -94,11 +94,12 @@ fun AppearanceSettings() {
                         R.string.enable_wallpaper
                     )
                     AnimatedVisibility( Settings.ENABLE_WALLPAPER.value ) {
-                        Column {
+                        Column(
+                            Modifier.padding( start = 25.dp )
+                        ) {
                             SettingComponents.EnumEntry(
                                 Settings.WALLPAPER_TYPE,
                                 R.string.set_cover_thumbnail_as_wallpaper,
-                                Modifier.padding( start = 25.dp ),
                                 action = SettingComponents.Action.RESTART_PLAYER_SERVICE
                             ) { onRestartServiceChange( true ) }
                             RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
