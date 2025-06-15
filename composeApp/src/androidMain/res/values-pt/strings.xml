@@ -44,8 +44,8 @@
     <string name="edit_lyrics">Editar letra</string>
     <string name="search_lyrics_online">Pesquisar letras de músicas online</string>
     <string name="fetch_lyrics_again">Procurar letras novamente</string>
-    <string name="id">Id</string>
-    <string name="itag">Itag</string>
+    <string name="id">ID</string>
+    <string name="itag">Etiqueta</string>
     <string name="bitrate">Taxa de bits</string>
     <string name="size">Tamanho</string>
     <string name="cached">Em cache</string>
@@ -70,7 +70,7 @@
     <string name="lockscreen">ECRÃ DE BLOQUEIO</string>
     <string name="show_song_cover">Mostrar capa da música</string>
     <string name="use_song_cover_on_lockscreen">Use a capa da música de reprodução como fundo do ecrã de bloqueio</string>
-    <string name="cache">Cache</string>
+    <string name="cache">Em cache</string>
     <string name="cache_cleared">Quando a cache ficar sem espaço, os recursos que não foram acessados por muito tempo são limpos</string>
     <string name="image_cache">CACHE DE IMAGEM</string>
     <string name="max_size">Tamanho máximo</string>
@@ -79,7 +79,7 @@
     <string name="quick_picks_are_cleared">Escolhas rápidas foram limpas</string>
     <string name="backup">BACKUP</string>
     <string name="personal_preference">Preferências pessoais (isto é, o modo de tema) e a cache são excluídos.</string>
-    <string name="backup_1">Backup</string>
+    <string name="backup_1">Cópia de segurança</string>
     <string name="export_the_database">Exportar a base de dados para o armazenamento externo</string>
     <string name="restore">RESTAURAR</string>
     <string name="restore_1">Restaurar</string>
@@ -128,7 +128,7 @@
     <string name="custom_cache_from_android_10_may_not_be_available">A partir do Android 10, esse recurso pode não estar disponível</string>
     <string name="reset_cache_location_folder">REDEFINIR LOCALIZAÇÃO DA PASTA CACHE</string>
     <string name="used">" utilizado"</string>
-    <string name="close_background_player">Fechar leitor de fundo</string>
+    <string name="close_background_player">Fechar player de fundo</string>
     <string name="when_app_swipe_out_from_task_manager">Quando a aplicação é removida do gestor de tarefas</string>
     <string name="opening_url">está a carregar...</string>
     <string name="an_error_has_occurred_while_fetching_the_lyrics">Ocorreu um erro ao obter a letra da música</string>
@@ -247,11 +247,11 @@
     <string name="circular_ribbed">Circular ondulado</string>
     <string name="play_button">Botão reproduzir</string>
     <string name="portuguese_brazilian">Português, Brasileiro</string>
-    <string name="portuguese">Português, Portugal</string>
+    <string name="portuguese">Português</string>
     <string name="indonesian">Indonésia</string>
-    <string name="odia">Odia</string>
+    <string name="odia">Odia (ଓଡିଆ)</string>
     <string name="bashkir">Basquir</string>
-    <string name="esperanto">Esperanto</string>
+    <string name="esperanto">Esperanto (Esperanto)</string>
     <string name="close_app_with_back_button">Fechar aplicativo com o Botão Voltar</string>
     <string name="when_you_use_the_back_button_from_the_home_page">Quando utilizar o botão voltar da página inicial</string>
     <string name="audio_quality_format_high">Alto</string>
@@ -338,7 +338,7 @@
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Pode ligar, ou desligar, nas configurações.</string>
     <string name="enable">Ativar</string>
     <string name="don_t_enable">Não ativar</string>
-    <string name="lang_hindi">Hindi</string>
+    <string name="lang_hindi">Hindi (हिन्दी)</string>
     <string name="default_page">Página padrão</string>
     <string name="keep_screen_on">Manter o ecrã ligado</string>
     <string name="prevents_screen_timeout">Impede o tempo limite de ecrã</string>
@@ -556,7 +556,7 @@
     <string name="position_bottom">Fundo</string>
     <string name="added_to_favorites">Adicionado aos favoritos</string>
     <string name="removed_from_favorites">Removido dos favoritos</string>
-    <string name="lang_filipino">Filipino</string>
+    <string name="lang_filipino">Filipino (Pilipino)</string>
     <string name="action_bar_transparent_background">Fundo transparente</string>
     <string name="pinfo_type">Tipo de informação</string>
     <string name="pinfo_album_and_artist_name">Nome do álbum e do artista</string>
@@ -580,12 +580,12 @@
     <string name="cache_location_private">Privado</string>
     <string name="cache_location_system">Sistema</string>
     <string name="info_cannot_rename_a_monthly_or_piped_playlist">Não é possível renomear uma playlist mensal ou piped</string>
-    <string name="debug">DEBUG</string>
+    <string name="debug">DEPURAÇÃO</string>
     <string name="enable_log_debug">Ativar log de depuração</string>
     <string name="if_enabled_create_a_log_file_to_highlight_errors">Se ativado, crie um arquivo de log para destacar erros</string>
     <string name="copy_log_to_clipboard">Copiar registro para área de transferência</string>
     <string name="piped_account">PIPED</string>
-    <string name="enable_piped_syncronization">Ativar sincronização de piped</string>
+    <string name="enable_piped_syncronization">Ativar sincronização com piped</string>
     <string name="piped_change_instance">Alterar instância</string>
     <string name="piped_username">Nome de utilizador</string>
     <string name="piped_password">Palavra-passe</string>
@@ -599,7 +599,7 @@
     <string name="show_thumbnail">Mostrar miniaturas</string>
     <string name="show_lyrics_thumbnail">Mostrar miniatura para letras</string>
     <string name="large">Grande</string>
-    <string name="miniplayertype">Tipo de Mini Leitor</string>
+    <string name="miniplayertype">Tipo de Mini Player</string>
     <string name="expanded">Expandido</string>
     <string name="lyricscolor">Cor das letras</string>
     <string name="accent">Realçar</string>
@@ -608,12 +608,12 @@
     <string name="transparentbar">Barra da Timeline Transparente</string>
     <string name="timelinesize">Tamanho da linha do tempo do leitor</string>
     <string name="actionspacedevenly">Espaçado uniformemente</string>
-    <string name="expandedplayer">Leitor Expandido</string>
+    <string name="expandedplayer">Player expandido</string>
     <string name="expandedlyrics">Letra expandida</string>
     <string name="expandedlyricsinfo">O leitor expandido só funciona quando a letra de música estiver ativada</string>
     <string name="info_connect_your_piped_account_first">Conecte a sua conta piped primeiro ou desative a sincronização piped</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali</string>
+    <string name="lang_bengali">Bengalês (বাংলা)</string>
     <string name="lang_irish">Irlandês</string>
     <string name="lyricsoutline">Esboço da letra de música</string>
     <string name="fluidrainbow">Arco-íris Fluido</string>
@@ -645,7 +645,7 @@
     <string name="info_sleep_timer_delayed_at_end_of_song">O temporizador de sono adiado no final da música</string>
     <string name="lyricsbackground">Fundo das letras de música</string>
     <string name="landscapelayout">Disposição horizontal</string>
-    <string name="layout">Layout</string>
+    <string name="layout">Disposição</string>
     <string name="layoutinfo">Disposição 2 é só recomendado para ecrãs maiores</string>
     <string name="hideprevnext">Músicas na Fila do Leitor</string>
     <string name="onesong">Uma música</string>
@@ -745,7 +745,7 @@
     <string name="discord_disconnect">Desconectar</string>
     <string name="discord_connect">Conectar</string>
     <string name="discord_connected_to_discord_account">Conectado à Conta Discord</string>
-    <string name="settings_reset">Reset</string>
+    <string name="settings_reset">Reiniciar</string>
     <string name="settings_restore_default_settings">Restaurar configurações padrão</string>
     <string name="piped_custom_instance">Instância personalizada de Piped</string>
     <string name="create_new_playlist">Criar uma nova playlist</string>
@@ -845,14 +845,14 @@
     <string name="bookmark">Marcador</string>
     <string name="downloading_videos_not_supported">Download de vídeos não suportado</string>
     <string name="animatedgradient">Gradiente Animado</string>
-    <string name="linear">Gradiente linear</string>
+    <string name="linear">Gradiente Linear</string>
     <string name="mesh">Gradiente de malha</string>
     <string name="mesmerizinglens">Lente Hipnotizante</string>
     <string name="glossygradient">Gradiente Brilhante</string>
     <string name="gradientflow">Fluxo Gradiente</string>
     <string name="purpleliquid">Líquido Roxo</string>
     <string name="stage">Etapa</string>
-    <string name="inkflow">Fluxo de Tinta</string>
+    <string name="inkflow">Fluxo de tinta</string>
     <string name="goldenmagma">Magma Dourado</string>
     <string name="oilflow">Fluxo de Óleo</string>
     <string name="icereflection">Reflexão do Gelo</string>
@@ -870,7 +870,7 @@
     <string name="yt_history">YTM Histórico</string>
     <string name="albumCoverRotation">Animação de Rotação de Fundo</string>
     <string name="enable_connection_metered">Use a conexão limitada para guardar dados</string>
-    <string name="info_enable_connection_metered">Economia de dados diminui a qualidade, use somente se tiver uma conexão com dados limitados</string>
+    <string name="info_enable_connection_metered">Economia de dados diminui a qualidade, use somente se você tiver uma conexão com dados limitados</string>
     <string name="use_ytm_login_only_for_browse">Use o login YTM só no browser</string>
     <string name="info_use_ytm_login_only_for_browse">Para ser utilizado se as canções não forem reproduzidas quando se tem sessão iniciada</string>
     <string name="disliked_this_song">Não é Possível Realizar esta Ação com as Músicas de que não se Gosta</string>
@@ -926,7 +926,7 @@
     <string name="songs_add_yt_success">Adicionou a música na Playlist do YouTube</string>
     <string name="songs_add_yt_failed">Falha ao adicionar a música na Playlist do YouTube</string>
     <string name="are_you_sure">Tem a certeza?</string>
-    <string name="title_reset_cache">Reset cache</string>
+    <string name="title_reset_cache">Limpar cache</string>
     <string name="playing_song_not_found_on_current_list">Não foi possível encontrar a reprodução na lista atual</string>
     <string name="no_songs_playing">Nenhuma música está a reproduzir neste momento</string>
     <string name="invalid_input">Entrada inválida!</string>
@@ -967,8 +967,8 @@
     <string name="log_in_to_ytm">Faça o login na sua conta YTM para mais conteúdo</string>
     <string name="word_documentation">Documentação</string>
     <string name="opens_link_in_web_browser">Abrir link no navegador da web</string>
-    <string name="setting_entry_smart_rewind">Retroceder inteligente</string>
-    <string name="setting_description_smart_rewind">O botão anterior agirá como um botão de retroceder após %s segundos</string>
-    <string name="setting_entry_show_chip">Mostrar \"%s\" chip</string>
-    <string name="entry_setting_quick_picks_show_section">Mostrar \"%s\"</string>
+    <string name="setting_entry_smart_rewind">Smart rewind</string>
+    <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s secd seconds</string>
+    <string name="setting_entry_show_chip">Show \"%s\" chip</string>
+    <string name="entry_setting_quick_picks_show_section">Show \"%s\"</string>
 </resources>
