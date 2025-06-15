@@ -43,10 +43,10 @@ import app.kreate.android.Settings.PROXY_SCHEME
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
+import app.kreate.android.themed.common.screens.settings.other.DebugLogs
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.StringListValueSelectorSettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -54,7 +54,6 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isIgnoringBatteryOptimizations
-import it.fast4x.rimusic.utils.textCopyToClipboard
 import me.knighthat.component.dialog.InputDialogConstraints
 import me.knighthat.utils.Toaster
 import java.io.File
@@ -250,39 +249,7 @@ fun OtherSettings() {
                         Toaster.i( R.string.restarting_rimusic_is_required )
                 }
 
-                var text by remember { mutableStateOf(null as String?) }
-                ButtonBarSettingEntry(
-                    isEnabled = DEBUG_LOG.value,
-                    title = stringResource(R.string.copy_log_to_clipboard),
-                    text = "",
-                    icon = R.drawable.copy,
-                    onClick = {
-                        val file = File(context.filesDir.resolve("logs"), "RiMusic_log.txt")
-                        if (file.exists()) {
-                            text = file.readText()
-                            text?.let {
-                                textCopyToClipboard(it, context)
-                            }
-                        } else
-                            Toaster.w( R.string.no_log_available )
-                    }
-                )
-                ButtonBarSettingEntry(
-                    isEnabled = DEBUG_LOG.value,
-                    title = stringResource(R.string.copy_crash_log_to_clipboard),
-                    text = "",
-                    icon = R.drawable.copy,
-                    onClick = {
-                        val file = File(context.filesDir.resolve("logs"), "RiMusic_crash_log.txt")
-                        if (file.exists()) {
-                            text = file.readText()
-                            text?.let {
-                                textCopyToClipboard(it, context)
-                            }
-                        } else
-                            Toaster.w( R.string.no_log_available )
-                    }
-                )
+                DebugLogs( context, search )
             }
         }
     }
