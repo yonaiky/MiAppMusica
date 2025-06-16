@@ -3,6 +3,8 @@ package app.kreate.android
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.getValue
@@ -10,6 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.edit
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.AlbumSwipeAction
@@ -92,9 +96,11 @@ import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.utils.getDeviceVolume
+import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import me.knighthat.innertube.Constants
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.NonBlocking
+import timber.log.Timber
 import java.net.Proxy
 
 /**
@@ -131,9 +137,11 @@ sealed class Preferences<T>(
     companion object {
 
         private const val PREFERENCES_FILENAME = "preferences"
+        private const val ENCRYPTED_PREFERENCES_FILENAME = "secure_preferences"
 
         private lateinit var preferences: SharedPreferences
-
+        @RequiresApi(Build.VERSION_CODES.N)
+        private lateinit var encryptedPreferences: SharedPreferences
 
         //<editor-fold defaultstate="collapsed" desc="Item size">
         val HOME_ARTIST_ITEM_SIZE by lazy {
@@ -1035,6 +1043,33 @@ sealed class Preferences<T>(
         fun load( context: Context) {
             if( !::preferences.isInitialized )
                 preferences = context.getSharedPreferences( PREFERENCES_FILENAME, Context.MODE_PRIVATE )
+
+            if( !isAtLeastAndroid7 || ::encryptedPreferences.isInitialized ) return
+
+            try {
+                // TODO: Implement custom encryption method
+                // TODO: maybe compatible with biometric authentication
+                @Suppress("DEPRECATION")
+                val masterKey: MasterKey = MasterKey.Builder( context, MasterKey.DEFAULT_MASTER_KEY_ALIAS )
+                                                    .setKeyScheme( MasterKey.KeyScheme.AES256_GCM )
+                                                    .build()
+                @Suppress("DEPRECATION")
+                encryptedPreferences = EncryptedSharedPreferences.create(
+                    context,
+                    ENCRYPTED_PREFERENCES_FILENAME,
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                )
+            } catch ( e: Exception ) {
+                runCatching {
+                    context.deleteSharedPreferences( ENCRYPTED_PREFERENCES_FILENAME )
+                }.onFailure {
+                    Timber.tag( "Preferences" ).e( it, "Error while deleting encrypted preferences" )
+                }
+
+                load( context )
+            }
         }
 
         /**
