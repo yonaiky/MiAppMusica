@@ -49,12 +49,10 @@ import app.kreate.android.themed.common.screens.settings.QuickPicksSettings
 import app.kreate.android.themed.common.screens.settings.UiSettings
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.ValidationType
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
 import it.fast4x.rimusic.ui.components.themed.IDialog
-import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.utils.secondary
@@ -203,53 +201,6 @@ fun SettingsEntry(
             )
         }
     }
-}
-
-@Composable
-fun TextDialogSettingEntry(
-    title: String,
-    text: String,
-    currentText: String,
-    onTextSave: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
-    validationType: ValidationType = ValidationType.None
-) {
-    var showDialog by remember { mutableStateOf(false) }
-    //val context = LocalContext.current
-
-    if (showDialog) {
-        InputTextDialog(
-            onDismiss = { showDialog = false },
-            title = title,
-            value = currentText,
-            placeholder = title,
-            setValue = {
-                onTextSave(it)
-                //context.toast("Preference Saved")
-            },
-            validationType = validationType
-        )
-        /*
-        TextFieldDialog(hintText = title ,
-            onDismiss = { showDialog = false },
-            onDone ={ value ->
-                onTextSave(value)
-                //context.toast("Preference Saved")
-            },
-            //doneText = "Save",
-            initialTextInput = currentText
-        )
-         */
-    }
-    SettingsEntry(
-        title = title,
-        text = text,
-        isEnabled = isEnabled,
-        onClick = { showDialog = true },
-        trailingContent = { },
-        modifier = modifier
-    )
 }
 
 @Composable

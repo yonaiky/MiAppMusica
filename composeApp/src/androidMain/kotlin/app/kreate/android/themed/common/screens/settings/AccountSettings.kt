@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
@@ -32,8 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.password
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import app.kreate.android.Preferences
@@ -60,21 +60,16 @@ import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
-import it.fast4x.rimusic.ui.screens.settings.TextDialogSettingEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid81
-import it.fast4x.rimusic.utils.pipedApiBaseUrlKey
-import it.fast4x.rimusic.utils.pipedApiTokenKey
-import it.fast4x.rimusic.utils.pipedInstanceNameKey
-import it.fast4x.rimusic.utils.pipedPasswordKey
-import it.fast4x.rimusic.utils.pipedUsernameKey
 import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.component.dialog.InputDialogConstraints
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 
@@ -240,11 +235,11 @@ fun AccountSettings() {
                 section( R.string.piped_account ) {
                     val menuState = LocalMenuState.current
 
-                    var pipedUsername by rememberEncryptedPreference(pipedUsernameKey, "")
-                    var pipedPassword by rememberEncryptedPreference(pipedPasswordKey, "")
-                    var pipedInstanceName by rememberEncryptedPreference(pipedInstanceNameKey, "")
-                    var pipedApiBaseUrl by rememberEncryptedPreference(pipedApiBaseUrlKey, "")
-                    var pipedApiToken by rememberEncryptedPreference(pipedApiTokenKey, "")
+                    var pipedUsername by Preferences.PIPED_USERNAME
+                    var pipedPassword by Preferences.PIPED_PASSWORD
+                    var pipedInstanceName by Preferences.PIPED_INSTANCE_NAME
+                    var pipedApiBaseUrl by Preferences.PIPED_API_BASE_URL
+                    var pipedApiToken by Preferences.PIPED_API_TOKEN
 
                     var isLoading by remember { mutableStateOf(false) }
                     if (isLoading)
@@ -379,13 +374,10 @@ fun AccountSettings() {
                             var isPipedCustomEnabled by Preferences.IS_CUSTOM_PIPED
                             AnimatedVisibility(visible = isPipedCustomEnabled) {
                                 Column {
-                                    TextDialogSettingEntry(
-                                        title = stringResource(R.string.piped_custom_instance),
-                                        text = pipedApiBaseUrl,
-                                        currentText = pipedApiBaseUrl,
-                                        onTextSave = {
-                                            pipedApiBaseUrl = it
-                                        }
+                                    SettingComponents.InputDialogEntry(
+                                        Preferences.PIPED_API_BASE_URL,
+                                        R.string.piped_custom_instance,
+                                        InputDialogConstraints.URL
                                     )
                                 }
                             }
@@ -402,21 +394,16 @@ fun AccountSettings() {
                                 }
                             }
 
-                            TextDialogSettingEntry(
-                                title = stringResource(R.string.piped_username),
-                                text = pipedUsername,
-                                currentText = pipedUsername,
-                                onTextSave = { pipedUsername = it }
+                            SettingComponents.InputDialogEntry(
+                                Preferences.PIPED_USERNAME,
+                                R.string.piped_username,
+                                InputDialogConstraints.ALL
                             )
-                            TextDialogSettingEntry(
-                                title = stringResource(R.string.piped_password),
-                                text = if (pipedPassword.isNotEmpty()) "********" else "",
-                                currentText = pipedPassword,
-                                onTextSave = { pipedPassword = it },
-                                modifier = Modifier
-                                    .semantics {
-                                        password()
-                                    }
+                            SettingComponents.InputDialogEntry(
+                                Preferences.PIPED_PASSWORD,
+                                R.string.piped_password,
+                                InputDialogConstraints.ALL,
+                                keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Password)
                             )
 
                             ButtonBarSettingEntry(
