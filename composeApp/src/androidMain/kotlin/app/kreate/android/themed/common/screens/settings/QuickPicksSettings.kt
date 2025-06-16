@@ -24,8 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import it.fast4x.rimusic.Database
@@ -76,17 +76,20 @@ fun QuickPicksSettings() {
             contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
         ) {
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_PAGE,
-                    R.string.enable_quick_picks_page
-                )
+                if( search.contains( R.string.enable_quick_picks_page ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_PAGE,
+                        R.string.enable_quick_picks_page
+                    )
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_TIPS,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.tips ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.tips ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_TIPS,
+                        title
+                    )
             }
 
             item {
@@ -95,64 +98,81 @@ fun QuickPicksSettings() {
                     enter = fadeIn(tween(100)),
                     exit = fadeOut(tween(100)),
                 ) {
-                    SettingComponents.EnumEntry( Preferences.QUICK_PICKS_TYPE, R.string.tips )
+                    if( search.contains( R.string.tips ) )
+                        SettingComponents.EnumEntry( Preferences.QUICK_PICKS_TYPE, R.string.tips )
                 }
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_CHARTS,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.charts ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.charts ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_CHARTS,
+                        title
+                    )
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_RELATED_ALBUMS,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.related_albums ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.related_albums ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_RELATED_ALBUMS,
+                        title
+                    )
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_RELATED_ARTISTS,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.similar_artists ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.similar_artists ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_RELATED_ARTISTS,
+                        title
+                    )
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums_of_your_artists ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums_of_your_artists ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS,
+                        title
+                    )
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS,
+                        title
+                    )
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.playlists_you_might_like ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.playlists_you_might_like ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS,
+                        title
+                    )
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_MOODS_AND_GENRES,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.moods_and_genres ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.moods_and_genres ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_MOODS_AND_GENRES,
+                        title
+                    )
             }
 
             item {
-                SettingComponents.BooleanEntry(
-                    Preferences.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS,
-                    stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.monthly_playlists ) )
-                )
+                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.monthly_playlists ) )
+                if( search.inputValue.isBlank() || title.contains( search.inputValue, true ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS,
+                        title
+                    )
             }
 
             item {

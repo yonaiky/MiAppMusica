@@ -101,7 +101,8 @@ fun PlayerSettings(
             R.string.min_listening_time
         )
         SettingComponents.Description( R.string.is_min_list_time_for_tips_or_quick_pics )
-
+    }
+    if( search.contains( R.string.exclude_songs_with_duration_limit ) ) {
         SettingComponents.EnumEntry(
             Preferences.LIMIT_SONGS_WITH_DURATION,
             R.string.exclude_songs_with_duration_limit
@@ -209,14 +210,15 @@ fun PlayerSettings(
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.RESUME_PLAYBACK_ON_STARTUP,
-                    R.string.resume_playback_on_start,
-                    R.string.resume_automatically_when_app_opens,
-                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                ) {
-                    onRestartServiceChange( true )
-                }
+                if( search.contains( R.string.resume_playback_on_start ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.RESUME_PLAYBACK_ON_STARTUP,
+                        R.string.resume_playback_on_start,
+                        R.string.resume_automatically_when_app_opens,
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                    ) {
+                        onRestartServiceChange( true )
+                    }
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
             }
         }
@@ -394,19 +396,21 @@ fun PlayerSettings(
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                SettingComponents.EnumEntry(
-                    Preferences.PIP_MODULE,
-                    R.string.settings_pip_module
-                ) { onRestartServiceChange( true ) }
+                if( search.contains( R.string.settings_pip_module ) )
+                    SettingComponents.EnumEntry(
+                        Preferences.PIP_MODULE,
+                        R.string.settings_pip_module
+                    ) { onRestartServiceChange( true ) }
 
-                SettingComponents.BooleanEntry(
-                    Preferences.IS_AUTO_PIP_ENABLED,
-                    R.string.settings_enable_pip_auto,
-                    R.string.pip_info_from_android_12_pip_can_be_automatically_enabled,
-                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                ) {
-                    onRestartServiceChange( true )
-                }
+                if( search.contains( R.string.settings_enable_pip_auto ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.IS_AUTO_PIP_ENABLED,
+                        R.string.settings_enable_pip_auto,
+                        R.string.pip_info_from_android_12_pip_can_be_automatically_enabled,
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                    ) {
+                        onRestartServiceChange( true )
+                    }
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
             }
 

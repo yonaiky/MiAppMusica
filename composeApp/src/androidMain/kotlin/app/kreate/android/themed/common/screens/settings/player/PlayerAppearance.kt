@@ -468,16 +468,17 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
                     R.string.show_cover_thumbnail_animation
                 )
                 AnimatedVisibility(visible = showCoverThumbnailAnimation) {
-                    SettingComponents.EnumEntry(
-                        Preferences.PLAYER_THUMBNAIL_TYPE,
-                        R.string.cover_thumbnail_animation_type,
-                        Modifier.padding(
-                            start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                                25.dp
-                            else
-                                0.dp
+                    if( search.contains( R.string.cover_thumbnail_animation_type ) )
+                        SettingComponents.EnumEntry(
+                            Preferences.PLAYER_THUMBNAIL_TYPE,
+                            R.string.cover_thumbnail_animation_type,
+                            Modifier.padding(
+                                start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                                    25.dp
+                                else
+                                    0.dp
+                            )
                         )
-                    )
                 }
             }
 
@@ -702,22 +703,16 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
             R.string.scrolling_text_is_used_for_long_texts
         )
 
-    val swipeDirection = if (playerType == PlayerType.Modern && !isLandscape)
-        R.string.disable_horizontal_swipe
+    val (titleId, subtitleId) = if( playerType == PlayerType.Modern && !isLandscape )
+        R.string.disable_vertical_swipe to R.string.disable_vertical_swipe_secondary
     else
-        R.string.disable_vertical_swipe
-    if ( search.contains( swipeDirection ) ) {
-        val (titleId, subtitleId) = if( playerType == PlayerType.Modern && !isLandscape )
-            R.string.disable_vertical_swipe to R.string.disable_vertical_swipe_secondary
-        else
-            R.string.disable_horizontal_swipe to R.string.disable_song_switching_via_swipe
-
+        R.string.disable_horizontal_swipe to R.string.disable_song_switching_via_swipe
+    if ( search.contains( titleId ) )
         SettingComponents.BooleanEntry(
             Preferences.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED,
             titleId,
             subtitleId
         )
-    }
 
     if ( search.contains( R.string.player_rotating_buttons ) )
         SettingComponents.BooleanEntry(

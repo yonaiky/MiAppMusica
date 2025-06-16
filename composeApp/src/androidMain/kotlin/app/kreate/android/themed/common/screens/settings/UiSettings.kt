@@ -18,8 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
@@ -195,7 +195,7 @@ fun UiSettings() {
                     }
 
                 if( search.contains( R.string.theme ) ) {
-                    ThemeSettings()
+                    ThemeSettings( search )
                 }
                 if( search.contains( R.string.theme_mode ) )
                     SettingComponents.EnumEntry(
@@ -274,7 +274,7 @@ fun UiSettings() {
                     )
                 }
                 if( search.contains( R.string.swipe_to_action ) ) {
-                    SwipeActionSettings()
+                    SwipeActionSettings( search )
                 }
             }
             section( R.string.songs ) {

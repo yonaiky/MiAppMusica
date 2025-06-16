@@ -148,48 +148,58 @@ fun About() {
                 }
             }
             section( R.string.troubleshooting ) {
-                SettingsEntry(
-                    title = stringResource( R.string.view_the_source_code ),
-                    text = stringResource( R.string.you_will_be_redirected_to_github ),
-                    onClick = {
-                        uriHandler.openUri( Repository.REPO_URL )
-                    }
+                if( search.contains( R.string.view_the_source_code ) )
+                    SettingsEntry(
+                        title = stringResource( R.string.view_the_source_code ),
+                        text = stringResource( R.string.you_will_be_redirected_to_github ),
+                        onClick = {
+                            uriHandler.openUri( Repository.REPO_URL )
+                        }
+                    )
+
+                if( search.contains( R.string.word_documentation ) )
+                    SettingsEntry(
+                        title = stringResource( R.string.word_documentation ),
+                        text = stringResource( R.string.opens_link_in_web_browser ),
+                        onClick = {
+                            uriHandler.openUri( "https://kreate.knighthat.me" )
+                        }
+                    )
+
+                if( search.contains( R.string.report_an_issue ) )
+                    SettingsEntry(
+                        title = stringResource(R.string.report_an_issue),
+                        text = stringResource(R.string.you_will_be_redirected_to_github),
+                        onClick = {
+                            val issuePath = "/issues/new?assignees=&labels=bug&template=bug_report.yaml"
+                            uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
+                        }
                 )
 
-                SettingsEntry(
-                    title = stringResource( R.string.word_documentation ),
-                    text = stringResource( R.string.opens_link_in_web_browser ),
-                    onClick = {
-                        uriHandler.openUri( "https://kreate.knighthat.me" )
-                    }
-                )
-
-                SettingsEntry(
-                    title = stringResource(R.string.report_an_issue),
-                    text = stringResource(R.string.you_will_be_redirected_to_github),
-                    onClick = {
-                        val issuePath = "/issues/new?assignees=&labels=bug&template=bug_report.yaml"
-                        uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
-                    }
-                )
-
-                SettingsEntry(
-                    title = stringResource(R.string.request_a_feature_or_suggest_an_idea),
-                    text = stringResource(R.string.you_will_be_redirected_to_github),
-                    onClick = {
-                        val issuePath = "/issues/new?assignees=&labels=feature_request&template=feature_request.yaml"
-                        uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
-                    }
-                )
+                if( search.contains( R.string.request_a_feature_or_suggest_an_idea ) )
+                    SettingsEntry(
+                        title = stringResource(R.string.request_a_feature_or_suggest_an_idea),
+                        text = stringResource(R.string.you_will_be_redirected_to_github),
+                        onClick = {
+                            val issuePath = "/issues/new?assignees=&labels=feature_request&template=feature_request.yaml"
+                            uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
+                        }
+                    )
             }
             section(
                 "$numTranslators ${context.getString( R.string.translators )}",
                 R.string.in_alphabetical_order
-            ) { ShowTranslators() }
+            ) {
+                if( search.contains( R.string.translators ) )
+                    ShowTranslators()
+            }
             section(
                 "$numCoders ${context.getString( R.string.about_developers_designers )}",
                 R.string.in_alphabetical_order
-            ) { ShowDevelopers()  }
+            ) {
+                if( search.contains( R.string.contributors ) )
+                    ShowDevelopers()
+            }
         }
     }
 }

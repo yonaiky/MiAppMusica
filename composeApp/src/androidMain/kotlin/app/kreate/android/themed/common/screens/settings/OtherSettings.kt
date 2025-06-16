@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import app.kreate.android.Preferences
 import app.kreate.android.R
@@ -91,56 +92,61 @@ fun OtherSettings() {
                     }
                 }
 
-                StringListValueSelectorSettingsEntry(
-                    title = stringResource(R.string.blacklisted_folders),
-                    text = stringResource(R.string.edit_blacklist_for_on_device_songs),
-                    addTitle = stringResource(R.string.add_folder),
-                    addPlaceholder = if (isAtLeastAndroid10) {
-                        "Android/media/com.whatsapp/WhatsApp/Media"
-                    } else {
-                        "/storage/emulated/0/Android/media/com.whatsapp/"
-                    },
-                    conflictTitle = stringResource(R.string.this_folder_already_exists),
-                    removeTitle = stringResource(R.string.are_you_sure_you_want_to_remove_this_folder_from_the_blacklist),
-                    context = LocalContext.current,
-                    list = blackListedPaths,
-                    add = { newPath ->
-                        blackListedPaths = blackListedPaths + newPath
-                        val file = File(context.filesDir, "Blacklisted_paths.txt")
-                        file.writeText(blackListedPaths.joinToString("\n"))
-                    },
-                    remove = { path ->
-                        blackListedPaths = blackListedPaths.filter { it != path }
-                        val file = File(context.filesDir, "Blacklisted_paths.txt")
-                        file.writeText(blackListedPaths.joinToString("\n"))
-                    }
-                )
-
-                SettingComponents.BooleanEntry(
-                    Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS,
-                    R.string.folders,
-                    R.string.show_folders_in_on_device_page
-                )
-                AnimatedVisibility( Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS.value ) {
-                    SettingComponents.InputDialogEntry(
-                        Preferences.LOCAL_SONGS_FOLDER,
-                        R.string.folder_that_will_show_when_you_open_on_device_page,
-                        InputDialogConstraints.ANDROID_FILE_PATH
+                if( search.contains( R.string.blacklisted_folders ) )
+                    StringListValueSelectorSettingsEntry(
+                        title = stringResource(R.string.blacklisted_folders),
+                        text = stringResource(R.string.edit_blacklist_for_on_device_songs),
+                        addTitle = stringResource(R.string.add_folder),
+                        addPlaceholder = if (isAtLeastAndroid10) {
+                            "Android/media/com.whatsapp/WhatsApp/Media"
+                        } else {
+                            "/storage/emulated/0/Android/media/com.whatsapp/"
+                        },
+                        conflictTitle = stringResource(R.string.this_folder_already_exists),
+                        removeTitle = stringResource(R.string.are_you_sure_you_want_to_remove_this_folder_from_the_blacklist),
+                        context = LocalContext.current,
+                        list = blackListedPaths,
+                        add = { newPath ->
+                            blackListedPaths = blackListedPaths + newPath
+                            val file = File(context.filesDir, "Blacklisted_paths.txt")
+                            file.writeText(blackListedPaths.joinToString("\n"))
+                        },
+                        remove = { path ->
+                            blackListedPaths = blackListedPaths.filter { it != path }
+                            val file = File(context.filesDir, "Blacklisted_paths.txt")
+                            file.writeText(blackListedPaths.joinToString("\n"))
+                        }
                     )
+
+                if( search.contains( R.string.folders ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS,
+                        R.string.folders,
+                        R.string.show_folders_in_on_device_page
+                    )
+                AnimatedVisibility( Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS.value ) {
+                    if( search.contains( R.string.folder_that_will_show_when_you_open_on_device_page ) )
+                        SettingComponents.InputDialogEntry(
+                            Preferences.LOCAL_SONGS_FOLDER,
+                            R.string.folder_that_will_show_when_you_open_on_device_page,
+                            InputDialogConstraints.ANDROID_FILE_PATH
+                        )
                 }
             }
             section( R.string.androidheadunit ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.PLAYER_EXTRA_SPACE,
-                    R.string.extra_space
-                )
-            }
+                if( search.contains( R.string.extra_space ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PLAYER_EXTRA_SPACE,
+                        R.string.extra_space
+                    )
+                }
             section( R.string.service_lifetime ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.KEEP_SCREEN_ON,
-                    R.string.keep_screen_on,
-                    R.string.prevents_screen_timeout
-                )
+                if( search.contains( R.string.keep_screen_on ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.KEEP_SCREEN_ON,
+                        R.string.keep_screen_on,
+                        R.string.prevents_screen_timeout
+                    )
 
                 SettingComponents.Description( R.string.battery_optimizations_applied, isImportant = true )
 
@@ -157,88 +163,98 @@ fun OtherSettings() {
                         isIgnoringBatteryOptimizations = context.isIgnoringBatteryOptimizations
                     }
 
-                SettingsEntry(
-                    title = stringResource(R.string.ignore_battery_optimizations),
-                    isEnabled = !isIgnoringBatteryOptimizations,
-                    text = if (isIgnoringBatteryOptimizations) {
-                        stringResource(R.string.already_unrestricted)
-                    } else {
-                        stringResource(R.string.disable_background_restrictions)
-                    },
-                    onClick = {
-                        if (!isAtLeastAndroid6) return@SettingsEntry
+                if( search.contains( R.string.ignore_battery_optimizations ) )
+                    SettingsEntry(
+                        title = stringResource(R.string.ignore_battery_optimizations),
+                        isEnabled = !isIgnoringBatteryOptimizations,
+                        text = if (isIgnoringBatteryOptimizations) {
+                            stringResource(R.string.already_unrestricted)
+                        } else {
+                            stringResource(R.string.disable_background_restrictions)
+                        },
+                        onClick = {
+                            if (!isAtLeastAndroid6) return@SettingsEntry
 
-                        try {
-                            activityResultLauncher.launch(
-                                Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                                    data = "package:${context.packageName}".toUri()
-                                }
-                            )
-                        } catch (e: ActivityNotFoundException) {
                             try {
                                 activityResultLauncher.launch(
-                                    Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                        data = "package:${context.packageName}".toUri()
+                                    }
                                 )
                             } catch (e: ActivityNotFoundException) {
-                                Toaster.i( R.string.not_find_battery_optimization_settings )
+                                try {
+                                    activityResultLauncher.launch(
+                                        Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                                    )
+                                } catch (e: ActivityNotFoundException) {
+                                    Toaster.i( R.string.not_find_battery_optimization_settings )
+                                }
                             }
                         }
-                    }
-                )
+                    )
             }
             section( R.string.proxy, R.string.restarting_rimusic_is_required ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.IS_PROXY_ENABLED,
-                    R.string.enable_proxy
-                )
+                if( search.contains( R.string.enable_proxy ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.IS_PROXY_ENABLED,
+                        R.string.enable_proxy
+                    )
 
                 AnimatedVisibility( Preferences.IS_PROXY_ENABLED.value ) {
-                    Column {
-                        SettingComponents.EnumEntry(
-                            Preferences.PROXY_SCHEME,
-                            R.string.proxy_mode,
-                            { it.name }
-                        )
+                    Column(
+                        Modifier.padding( start = 25.dp )
+                    ) {
+                        if( search.contains( R.string.proxy_mode ) )
+                            SettingComponents.EnumEntry(
+                                Preferences.PROXY_SCHEME,
+                                R.string.proxy_mode,
+                                { it.name }
+                            )
 
-                        SettingComponents.InputDialogEntry(
-                            Preferences.PROXY_HOST,
-                            R.string.proxy_host,
-                            InputDialogConstraints.URL,
-                            keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Uri)
-                        )
-                        SettingComponents.InputDialogEntry(
-                            Preferences.PROXY_PORT,
-                            R.string.proxy_port,
-                            constraint = InputDialogConstraints.ONLY_INTEGERS,
-                            keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        )
+                        if( search.contains( R.string.proxy_host ) )
+                            SettingComponents.InputDialogEntry(
+                                Preferences.PROXY_HOST,
+                                R.string.proxy_host,
+                                InputDialogConstraints.URL,
+                                keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Uri)
+                            )
+
+                        if( search.contains( R.string.proxy_port ) )
+                            SettingComponents.InputDialogEntry(
+                                Preferences.PROXY_PORT,
+                                R.string.proxy_port,
+                                constraint = InputDialogConstraints.ONLY_INTEGERS,
+                                keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
                     }
                 }
             }
             section( R.string.parental_control ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.PARENTAL_CONTROL,
-                    R.string.parental_control,
-                    R.string.info_prevent_play_songs_with_age_limitation
-                )
+                if( search.contains( R.string.parental_control ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PARENTAL_CONTROL,
+                        R.string.parental_control,
+                        R.string.info_prevent_play_songs_with_age_limitation
+                    )
             }
             section( R.string.debug, R.string.restarting_rimusic_is_required ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.DEBUG_LOG,
-                    R.string.enable_log_debug,
-                    R.string.if_enabled_create_a_log_file_to_highlight_errors
-                ) {
-                    if ( !it ) {
-                        val file = File(context.filesDir.resolve("logs"), "RiMusic_log.txt")
-                        if (file.exists())
-                            file.delete()
+                if( search.contains( R.string.enable_log_debug ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.DEBUG_LOG,
+                        R.string.enable_log_debug,
+                        R.string.if_enabled_create_a_log_file_to_highlight_errors
+                    ) {
+                        if ( !it ) {
+                            val file = File(context.filesDir.resolve("logs"), "RiMusic_log.txt")
+                            if (file.exists())
+                                file.delete()
 
-                        val filec = File(context.filesDir.resolve("logs"), "RiMusic_crash_log.txt")
-                        if (filec.exists())
-                            filec.delete()
-                    } else
-                        Toaster.i( R.string.restarting_rimusic_is_required )
-                }
+                            val filec = File(context.filesDir.resolve("logs"), "RiMusic_crash_log.txt")
+                            if (filec.exists())
+                                filec.delete()
+                        } else
+                            Toaster.i( R.string.restarting_rimusic_is_required )
+                    }
 
                 DebugLogs( context, search )
             }

@@ -338,11 +338,12 @@ fun DataSettings() {
                     CacheSpaceIndicator(cacheType = CacheType.DownloadedSongs, horizontalPadding = 20.dp)
                 }
 
-                SettingComponents.EnumEntry(
-                    Preferences.EXO_CACHE_LOCATION,
-                    R.string.set_cache_location,
-                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                ){ onRestartServiceChange( true ) }
+                if( search.contains( R.string.set_cache_location ) )
+                    SettingComponents.EnumEntry(
+                        Preferences.EXO_CACHE_LOCATION,
+                        R.string.set_cache_location,
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                    ){ onRestartServiceChange( true ) }
 
                 SettingComponents.Description( R.string.info_private_cache_location_can_t_cleaned )
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
@@ -407,12 +408,13 @@ fun DataSettings() {
             }
 
             section( R.string.search_history ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.PAUSE_SEARCH_HISTORY,
-                    R.string.pause_search_history,
-                    R.string.neither_save_new_searched_query,
-                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                ) { onRestartServiceChange( true ) }
+                if( search.contains( R.string.pause_search_history ) )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PAUSE_SEARCH_HISTORY,
+                        R.string.pause_search_history,
+                        R.string.neither_save_new_searched_query,
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                    ) { onRestartServiceChange( true ) }
 
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
 
@@ -422,22 +424,23 @@ fun DataSettings() {
                             .map { it.size }
                 }.collectAsState( 0, Dispatchers.IO )
 
-                SettingsEntry(
-                    title = stringResource(R.string.clear_search_history),
-                    text = if (queriesCount > 0) {
-                        "${stringResource(R.string.delete)} " + queriesCount + stringResource(R.string.search_queries)
-                    } else {
-                        stringResource(R.string.history_is_empty)
-                    },
-                    isEnabled = queriesCount > 0,
-                    onClick = {
-                        Database.asyncTransaction {
-                            searchTable.deleteAll()
-                        }
+                if( search.contains( R.string.clear_search_history ) )
+                    SettingsEntry(
+                        title = stringResource(R.string.clear_search_history),
+                        text = if (queriesCount > 0) {
+                            "${stringResource(R.string.delete)} " + queriesCount + stringResource(R.string.search_queries)
+                        } else {
+                            stringResource(R.string.history_is_empty)
+                        },
+                        isEnabled = queriesCount > 0,
+                        onClick = {
+                            Database.asyncTransaction {
+                                searchTable.deleteAll()
+                            }
 
-                        Toaster.done()
-                    }
-                )
+                            Toaster.done()
+                        }
+                    )
             }
         }
     }

@@ -89,21 +89,23 @@ fun AppearanceSettings() {
             }
             if( isAtLeastAndroid7 )
                 section( R.string.wallpaper ) {
-                    SettingComponents.BooleanEntry(
-                        Preferences.ENABLE_WALLPAPER,
-                        R.string.enable_wallpaper
-                    )
+                    if( search.contains( R.string.enable_wallpaper ) )
+                        SettingComponents.BooleanEntry(
+                            Preferences.ENABLE_WALLPAPER,
+                            R.string.enable_wallpaper
+                        )
                     AnimatedVisibility( Preferences.ENABLE_WALLPAPER.value ) {
                         Column(
                             Modifier.padding( start = 25.dp )
                         ) {
-                            SettingComponents.EnumEntry(
-                                Preferences.WALLPAPER_TYPE,
-                                R.string.set_cover_thumbnail_as_wallpaper,
-                                action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                            ) { onRestartServiceChange( true ) }
-                            RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
-                        }
+                            if( search.contains( R.string.set_cover_thumbnail_as_wallpaper ) )
+                                SettingComponents.EnumEntry(
+                                    Preferences.WALLPAPER_TYPE,
+                                    R.string.set_cover_thumbnail_as_wallpaper,
+                                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                                ) { onRestartServiceChange( true ) }
+                                RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
+                            }
                     }
                 }
         }

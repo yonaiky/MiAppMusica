@@ -48,6 +48,7 @@ import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Instance
 import it.fast4x.piped.models.Session
+import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
@@ -153,32 +154,39 @@ fun AccountSettings() {
                                 )
 
                             Column {
-                                ButtonBarSettingEntry(
-                                    isEnabled = true,
-                                    title = if (isLoggedIn) "Disconnect" else "Connect",
-                                    text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
-                                    icon = R.drawable.ytmusic,
-                                    iconColor = colorPalette().text,
-                                    onClick = {
-                                        if (isLoggedIn) {
-                                            cookie = ""
-                                            accountName = ""
-                                            accountChannelHandle = ""
-                                            accountEmail = ""
-                                            accountThumbnail = ""
-                                            visitorData = ""
-                                            dataSyncId = ""
-                                            loginYouTube = false
-                                            //Delete cookies after logout
-                                            val cookieManager = CookieManager.getInstance()
-                                            cookieManager.removeAllCookies(null)
-                                            cookieManager.flush()
-                                            WebStorage.getInstance().deleteAllData()
-                                            onRestartServiceChange( true )
-                                        } else
-                                            loginYouTube = true
-                                    }
-                                )
+                                val (title, subtitle) = remember( isLoggedIn, accountName, accountChannelHandle ) {
+                                    if (isLoggedIn)
+                                        "Disconnect" to "$accountName $accountChannelHandle"
+                                    else
+                                        "Connect" to ""
+                                }
+                                if( search.inputValue.isBlank() || title.contains( search.inputValue ) )
+                                    ButtonBarSettingEntry(
+                                        isEnabled = true,
+                                        title = title,
+                                        text = subtitle,
+                                        icon = R.drawable.ytmusic,
+                                        iconColor = colorPalette().text,
+                                        onClick = {
+                                            if (isLoggedIn) {
+                                                cookie = ""
+                                                accountName = ""
+                                                accountChannelHandle = ""
+                                                accountEmail = ""
+                                                accountThumbnail = ""
+                                                visitorData = ""
+                                                dataSyncId = ""
+                                                loginYouTube = false
+                                                //Delete cookies after logout
+                                                val cookieManager = CookieManager.getInstance()
+                                                cookieManager.removeAllCookies(null)
+                                                cookieManager.flush()
+                                                WebStorage.getInstance().deleteAllData()
+                                                onRestartServiceChange( true )
+                                            } else
+                                                loginYouTube = true
+                                        }
+                                    )
 
                                 CustomModalBottomSheet(
                                     showSheet = loginYouTube,
@@ -217,14 +225,14 @@ fun AccountSettings() {
                                     restartActivity = !restartActivity
                                 })
                             }
-
                         }
 
-                        SettingComponents.BooleanEntry(
-                            Preferences.YOUTUBE_PLAYLISTS_SYNC,
-                            "Sync data with YTM account",
-                            subtitle = "Playlists, albums, artists, history, like, etc."
-                        )
+                        if( search.inputValue.isBlank() || "Sync data with YTM account".contains( search.inputValue ) )
+                            SettingComponents.BooleanEntry(
+                                Preferences.YOUTUBE_PLAYLISTS_SYNC,
+                                "Sync data with YTM account",
+                                subtitle = "Playlists, albums, artists, history, like, etc."
+                            )
                     }
                 }
             }
@@ -364,64 +372,71 @@ fun AccountSettings() {
                         Column(
                             modifier = Modifier.padding(start = 25.dp)
                         ) {
-                            SettingComponents.BooleanEntry(
-                                Preferences.IS_CUSTOM_PIPED,
-                                R.string.piped_custom_instance
-                            )
+                            if( search.contains( R.string.piped_custom_instance ) )
+                                SettingComponents.BooleanEntry(
+                                    Preferences.IS_CUSTOM_PIPED,
+                                    R.string.piped_custom_instance
+                                )
 
                             var isPipedCustomEnabled by Preferences.IS_CUSTOM_PIPED
                             AnimatedVisibility(visible = isPipedCustomEnabled) {
                                 Column {
-                                    SettingComponents.InputDialogEntry(
-                                        Preferences.PIPED_API_BASE_URL,
-                                        R.string.piped_custom_instance,
-                                        InputDialogConstraints.URL
-                                    )
+                                    if( search.contains( R.string.piped_custom_instance) )
+                                        SettingComponents.InputDialogEntry(
+                                            Preferences.PIPED_API_BASE_URL,
+                                            R.string.piped_custom_instance,
+                                            InputDialogConstraints.URL
+                                        )
+                                    }
                                 }
-                            }
-                            AnimatedVisibility(visible = !isPipedCustomEnabled) {
+                                AnimatedVisibility(visible = !isPipedCustomEnabled) {
                                 Column {
-                                    ButtonBarSettingEntry(
-                                        title = stringResource(R.string.piped_change_instance),
-                                        text = pipedInstanceName,
-                                        icon = R.drawable.open,
-                                        onClick = {
-                                            loadInstances = true
-                                        }
-                                    )
+                                    if( search.contains( R.string.piped_change_instance) )
+                                        ButtonBarSettingEntry(
+                                            title = stringResource(R.string.piped_change_instance),
+                                            text = pipedInstanceName,
+                                            icon = R.drawable.open,
+                                            onClick = {
+                                                loadInstances = true
+                                            }
+                                        )
                                 }
                             }
 
-                            SettingComponents.InputDialogEntry(
-                                Preferences.PIPED_USERNAME,
-                                R.string.piped_username,
-                                InputDialogConstraints.ALL
-                            )
-                            SettingComponents.InputDialogEntry(
-                                Preferences.PIPED_PASSWORD,
-                                R.string.piped_password,
-                                InputDialogConstraints.ALL,
-                                keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Password)
-                            )
+                            if( search.contains( R.string.piped_username ) )
+                                SettingComponents.InputDialogEntry(
+                                    Preferences.PIPED_USERNAME,
+                                    R.string.piped_username,
+                                    InputDialogConstraints.ALL
+                                )
+                            if( search.contains( R.string.piped_password ) )
+                                SettingComponents.InputDialogEntry(
+                                    Preferences.PIPED_PASSWORD,
+                                    R.string.piped_password,
+                                    InputDialogConstraints.ALL,
+                                    keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Password)
+                                )
 
-                            ButtonBarSettingEntry(
-                                isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
-                                title = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_disconnect) else stringResource(
-                                    R.string.piped_connect
-                                ),
-                                text = if (pipedApiToken.isNotEmpty()) stringResource(R.string.piped_connected_to_s).format(
-                                    pipedInstanceName
-                                ) else "",
-                                icon = R.drawable.piped_logo,
-                                iconColor = colorPalette().red,
-                                onClick = {
-                                    if (pipedApiToken.isNotEmpty()) {
-                                        pipedApiToken = ""
-                                        executeLogin = false
-                                    } else executeLogin = true
-                                }
-                            )
-
+                            val (titleId, subtitle) = remember {
+                                if( Preferences.PIPED_API_TOKEN.value.isBlank() )
+                                    R.string.piped_connect to ""
+                                else
+                                    R.string.piped_disconnect to appContext().getString( R.string.piped_connected_to_s, Preferences.PIPED_INSTANCE_NAME.value )
+                            }
+                            if( search.contains( titleId ) )
+                                ButtonBarSettingEntry(
+                                    isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
+                                    title = stringResource( titleId ),
+                                    text = subtitle.format( pipedInstanceName ),
+                                    icon = R.drawable.piped_logo,
+                                    iconColor = colorPalette().red,
+                                    onClick = {
+                                        if (pipedApiToken.isNotEmpty()) {
+                                            pipedApiToken = ""
+                                            executeLogin = false
+                                        } else executeLogin = true
+                                    }
+                                )
                         }
                     }
             }

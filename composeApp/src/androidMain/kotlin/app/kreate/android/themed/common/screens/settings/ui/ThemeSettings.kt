@@ -12,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.SettingHeader
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
@@ -25,7 +26,7 @@ import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 
 @Composable
-fun ThemeSettings(modifier: Modifier = Modifier) {
+fun ThemeSettings( search: SettingEntrySearch ) {
     var colorPaletteName by Preferences.COLOR_PALETTE
     var colorPaletteMode by Preferences.THEME_MODE
     var customColor by Preferences.CUSTOM_COLOR_HASH_CODE
@@ -94,13 +95,14 @@ fun ThemeSettings(modifier: Modifier = Modifier) {
         )
     }
 
-    SettingComponents.EnumEntry(
-        Preferences.COLOR_PALETTE,
-        R.string.theme
-    ) {
-        if( colorPaletteName == ColorPaletteName.ModernBlack )
-            colorPaletteMode = ColorPaletteMode.System
-    }
+    if( search.contains( R.string.theme ) )
+        SettingComponents.EnumEntry(
+            Preferences.COLOR_PALETTE,
+            R.string.theme
+        ) {
+            if( colorPaletteName == ColorPaletteName.ModernBlack )
+                colorPaletteMode = ColorPaletteMode.System
+        }
 
     AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.CustomColor) {
         Column(
@@ -121,181 +123,203 @@ fun ThemeSettings(modifier: Modifier = Modifier) {
         Column {
             SettingHeader( R.string.title_customized_light_theme_colors )
 
-            ButtonBarSettingEntry(
-                title = stringResource(R.string.title_reset_customized_light_colors),
-                text = stringResource(R.string.info_click_to_reset_default_light_colors),
-                icon = R.drawable.trash,
-                onClick = { resetCustomLightThemeDialog = true }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_1),
-                text = "",
-                color = Color(customThemeLight_Background0),
-                onColorSelected = {
-                    customThemeLight_Background0 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_2),
-                text = "",
-                color = Color(customThemeLight_Background1),
-                onColorSelected = {
-                    customThemeLight_Background1 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_3),
-                text = "",
-                color = Color(customThemeLight_Background2),
-                onColorSelected = {
-                    customThemeLight_Background2 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_4),
-                text = "",
-                color = Color(customThemeLight_Background3),
-                onColorSelected = {
-                    customThemeLight_Background3 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_5),
-                text = "",
-                color = Color(customThemeLight_Background4),
-                onColorSelected = {
-                    customThemeLight_Background4 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_text),
-                text = "",
-                color = Color(customThemeLight_Text),
-                onColorSelected = {
-                    customThemeLight_Text= it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_text_secondary),
-                text = "",
-                color = Color(customThemeLight_TextSecondary),
-                onColorSelected = {
-                    customThemeLight_TextSecondary = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_text_disabled),
-                text = "",
-                color = Color(customThemeLight_TextDisabled),
-                onColorSelected = {
-                    customThemeLight_TextDisabled = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_icon_button_player),
-                text = "",
-                color = Color(customThemeLight_IconButtonPlayer),
-                onColorSelected = {
-                    customThemeLight_IconButtonPlayer = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_accent),
-                text = "",
-                color = Color(customThemeLight_Accent),
-                onColorSelected = {
-                    customThemeLight_Accent = it.hashCode()
-                }
-            )
+            if( search.contains( R.string.title_reset_customized_light_colors ) )
+                ButtonBarSettingEntry(
+                    title = stringResource(R.string.title_reset_customized_light_colors),
+                    text = stringResource(R.string.info_click_to_reset_default_light_colors),
+                    icon = R.drawable.trash,
+                    onClick = { resetCustomLightThemeDialog = true }
+                )
+            if( search.contains( R.string.color_background_1 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_1),
+                    text = "",
+                    color = Color(customThemeLight_Background0),
+                    onColorSelected = {
+                        customThemeLight_Background0 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_background_2 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_2),
+                    text = "",
+                    color = Color(customThemeLight_Background1),
+                    onColorSelected = {
+                        customThemeLight_Background1 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_background_3 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_3),
+                    text = "",
+                    color = Color(customThemeLight_Background2),
+                    onColorSelected = {
+                        customThemeLight_Background2 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_background_4 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_4),
+                    text = "",
+                    color = Color(customThemeLight_Background3),
+                    onColorSelected = {
+                        customThemeLight_Background3 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_background_5 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_5),
+                    text = "",
+                    color = Color(customThemeLight_Background4),
+                    onColorSelected = {
+                        customThemeLight_Background4 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_text ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text),
+                    text = "",
+                    color = Color(customThemeLight_Text),
+                    onColorSelected = {
+                        customThemeLight_Text= it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_text_secondary ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text_secondary),
+                    text = "",
+                    color = Color(customThemeLight_TextSecondary),
+                    onColorSelected = {
+                        customThemeLight_TextSecondary = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_text_disabled ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text_disabled),
+                    text = "",
+                    color = Color(customThemeLight_TextDisabled),
+                    onColorSelected = {
+                        customThemeLight_TextDisabled = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_icon_button_player ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_icon_button_player),
+                    text = "",
+                    color = Color(customThemeLight_IconButtonPlayer),
+                    onColorSelected = {
+                        customThemeLight_IconButtonPlayer = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_accent ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_accent),
+                    text = "",
+                    color = Color(customThemeLight_Accent),
+                    onColorSelected = {
+                        customThemeLight_Accent = it.hashCode()
+                    }
+                )
 
             SettingHeader( R.string.title_customized_dark_theme_colors )
 
-            ButtonBarSettingEntry(
-                title = stringResource(R.string.title_reset_customized_dark_colors),
-                text = stringResource(R.string.click_to_reset_default_dark_colors),
-                icon = R.drawable.trash,
-                onClick = { resetCustomDarkThemeDialog = true }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_1),
-                text = "",
-                color = Color(customThemeDark_Background0),
-                onColorSelected = {
-                    customThemeDark_Background0 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_2),
-                text = "",
-                color = Color(customThemeDark_Background1),
-                onColorSelected = {
-                    customThemeDark_Background1 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_3),
-                text = "",
-                color = Color(customThemeDark_Background2),
-                onColorSelected = {
-                    customThemeDark_Background2 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_4),
-                text = "",
-                color = Color(customThemeDark_Background3),
-                onColorSelected = {
-                    customThemeDark_Background3 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_background_5),
-                text = "",
-                color = Color(customThemeDark_Background4),
-                onColorSelected = {
-                    customThemeDark_Background4 = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_text),
-                text = "",
-                color = Color(customThemeDark_Text),
-                onColorSelected = {
-                    customThemeDark_Text= it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_text_secondary),
-                text = "",
-                color = Color(customThemeDark_TextSecondary),
-                onColorSelected = {
-                    customThemeDark_TextSecondary = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_text_disabled),
-                text = "",
-                color = Color(customThemeDark_TextDisabled),
-                onColorSelected = {
-                    customThemeDark_TextDisabled = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_icon_button_player),
-                text = "",
-                color = Color(customThemeDark_IconButtonPlayer),
-                onColorSelected = {
-                    customThemeDark_IconButtonPlayer = it.hashCode()
-                }
-            )
-            ColorSettingEntry(
-                title = stringResource(R.string.color_accent),
-                text = "",
-                color = Color(customThemeDark_Accent),
-                onColorSelected = {
-                    customThemeDark_Accent = it.hashCode()
-                }
-            )
+            if( search.contains( R.string.title_reset_customized_dark_colors ) )
+                ButtonBarSettingEntry(
+                    title = stringResource(R.string.title_reset_customized_dark_colors),
+                    text = stringResource(R.string.click_to_reset_default_dark_colors),
+                    icon = R.drawable.trash,
+                    onClick = { resetCustomDarkThemeDialog = true }
+                )
+                if( search.contains( R.string.color_background_1 ) )
+                    ColorSettingEntry(
+                    title = stringResource(R.string.color_background_1),
+                    text = "",
+                    color = Color(customThemeDark_Background0),
+                    onColorSelected = {
+                        customThemeDark_Background0 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_background_2 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_2),
+                    text = "",
+                    color = Color(customThemeDark_Background1),
+                    onColorSelected = {
+                        customThemeDark_Background1 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_background_3 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_3),
+                    text = "",
+                    color = Color(customThemeDark_Background2),
+                    onColorSelected = {
+                        customThemeDark_Background2 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_background_4 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_4),
+                    text = "",
+                    color = Color(customThemeDark_Background3),
+                    onColorSelected = {
+                        customThemeDark_Background3 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_background_5 ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_background_5),
+                    text = "",
+                    color = Color(customThemeDark_Background4),
+                    onColorSelected = {
+                        customThemeDark_Background4 = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_text ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text),
+                    text = "",
+                    color = Color(customThemeDark_Text),
+                    onColorSelected = {
+                        customThemeDark_Text= it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_text_secondary ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text_secondary),
+                    text = "",
+                    color = Color(customThemeDark_TextSecondary),
+                    onColorSelected = {
+                        customThemeDark_TextSecondary = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_text_disabled ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_text_disabled),
+                    text = "",
+                    color = Color(customThemeDark_TextDisabled),
+                    onColorSelected = {
+                        customThemeDark_TextDisabled = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_icon_button_player ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_icon_button_player),
+                    text = "",
+                    color = Color(customThemeDark_IconButtonPlayer),
+                    onColorSelected = {
+                        customThemeDark_IconButtonPlayer = it.hashCode()
+                    }
+                )
+            if( search.contains( R.string.color_accent ) )
+                ColorSettingEntry(
+                    title = stringResource(R.string.color_accent),
+                    text = "",
+                    color = Color(customThemeDark_Accent),
+                    onColorSelected = {
+                        customThemeDark_Accent = it.hashCode()
+                    }
+                )
         }
     }
 }

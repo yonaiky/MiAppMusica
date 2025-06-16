@@ -70,7 +70,7 @@ fun PlayerActionBar(search: SettingEntrySearch ) {
             Preferences.PLAYER_ACTION_SHOW_LYRICS,
             R.string.action_bar_show_lyrics_button
         )
-    if (!isLandscape || !showThumbnail
+    if ((!isLandscape || !showThumbnail)
         && !showLyricsThumbnail
         && search.contains( R.string.expandedplayer )
     )
@@ -140,7 +140,7 @@ fun PlayerActionBar(search: SettingEntrySearch ) {
             )
 
         if (
-            Preferences.PLAYER_ACTION_ADD_TO_PLAYLIST.value
+            (Preferences.PLAYER_ACTION_ADD_TO_PLAYLIST.value
             || Preferences.PLAYER_ACTION_OPEN_QUEUE_ARROW.value
             || Preferences.PLAYER_ACTION_DOWNLOAD.value
             || Preferences.PLAYER_ACTION_LOOP.value
@@ -151,7 +151,7 @@ fun PlayerActionBar(search: SettingEntrySearch ) {
             || Preferences.PLAYER_ACTION_SHOW_MENU.value
             || Preferences.PLAYER_ACTION_OPEN_EQUALIZER.value
             || Preferences.PLAYER_ACTION_DISCOVER.value
-            || Preferences.PLAYER_ACTION_TOGGLE_VIDEO.value
+            || Preferences.PLAYER_ACTION_TOGGLE_VIDEO.value)
             && search.contains( R.string.actionbar )
         )
             SettingComponents.BooleanEntry(
