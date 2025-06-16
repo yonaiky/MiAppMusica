@@ -63,7 +63,9 @@ class ImportSongsFromCSV(
                           // in seconds.
                           val rawDuration = row["Duration"].orEmpty()
                           val convertedDuration =
-                              if( !DurationUtils.isHumanReadable( rawDuration ) )
+                              if( rawDuration.isBlank() )
+                                  "0"
+                              else if( !DurationUtils.isHumanReadable( rawDuration ) )
                                   formatAsDuration( rawDuration.toLong().times( 1000 ) )
                               else
                                   rawDuration
