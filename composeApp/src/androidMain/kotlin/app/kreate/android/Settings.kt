@@ -1116,6 +1116,11 @@ object Settings {
                 policy = this.policy
             )
 
+            /**
+             * Whether one of the provided [E] matches current value
+             */
+            fun either( vararg others: E ): Boolean = value in others
+
             override fun getFromSharedPreferences(): E? {
                 var fromFile: String? = null
 

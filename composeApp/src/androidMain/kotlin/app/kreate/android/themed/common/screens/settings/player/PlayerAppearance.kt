@@ -642,11 +642,15 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
                )
        }
     }
-    AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ) {
-        if( playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient && search.contains( R.string.blackgradient ) )
+
+    AnimatedVisibility(
+        Settings.PLAYER_BACKGROUND.either( PlayerBackgroundColors.CoverColorGradient, PlayerBackgroundColors.ThemeColorGradient )
+    ) {
+        if( search.contains( R.string.blackgradient ) )
             SettingComponents.BooleanEntry(
                 Settings.BLACK_GRADIENT,
-                R.string.blackgradient
+                R.string.blackgradient,
+                Modifier.padding( start = 25.dp )
             )
     }
 
