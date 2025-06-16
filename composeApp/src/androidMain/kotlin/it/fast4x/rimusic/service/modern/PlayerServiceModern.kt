@@ -118,8 +118,6 @@ import it.fast4x.rimusic.utils.activityPendingIntent
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.collect
-import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
-import it.fast4x.rimusic.utils.encryptedPreferences
 import it.fast4x.rimusic.utils.fadeInEffect
 import it.fast4x.rimusic.utils.fadeOutEffect
 import it.fast4x.rimusic.utils.forcePlay
@@ -1218,9 +1216,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val isDiscordPresenceEnabled by Preferences.DISCORD_LOGIN
         if (!isDiscordPresenceEnabled || !isAtLeastAndroid81) return
 
-        val discordPersonalAccessToken = encryptedPreferences.getString(
-            discordPersonalAccessTokenKey, ""
-        )
+        val discordPersonalAccessToken by Preferences.DISCORD_ACCESS_TOKEN
 
         runCatching {
             if (!discordPersonalAccessToken.isNullOrEmpty()) {

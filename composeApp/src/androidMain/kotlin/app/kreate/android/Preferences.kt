@@ -682,6 +682,10 @@ sealed class Preferences<T>(
         val DISCORD_LOGIN by lazy {
             Boolean( preferences, "DiscordLogin", "isDiscordPresenceEnabled", false )
         }
+        @delegate:RequiresApi(Build.VERSION_CODES.N)
+        val DISCORD_ACCESS_TOKEN by lazy {
+            String( encryptedPreferences, "DiscordPersonalAccessToken", "", "" )
+        }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Proxy">
         val IS_PROXY_ENABLED by lazy {

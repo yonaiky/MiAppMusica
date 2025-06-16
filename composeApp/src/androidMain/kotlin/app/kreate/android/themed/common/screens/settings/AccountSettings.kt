@@ -62,10 +62,8 @@ import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartPlayerService
-import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid81
-import it.fast4x.rimusic.utils.rememberEncryptedPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -439,10 +437,7 @@ fun AccountSettings() {
 
                     AnimatedVisibility( Preferences.DISCORD_LOGIN.value ) {
                         var loginDiscord by remember { mutableStateOf(false) }
-                        var discordPersonalAccessToken by rememberEncryptedPreference(
-                            key = discordPersonalAccessTokenKey,
-                            defaultValue = ""
-                        )
+                        var discordPersonalAccessToken by Preferences.DISCORD_ACCESS_TOKEN
 
                         Column {
                             ButtonBarSettingEntry(
