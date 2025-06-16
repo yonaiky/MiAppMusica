@@ -29,7 +29,7 @@ import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.song.PeriodSelector
 import app.kreate.android.themed.rimusic.component.tab.Sort
@@ -97,16 +97,16 @@ fun HomeSongs(
     val menuState = LocalMenuState.current
 
     //<editor-fold defaultstate="collapsed" desc="Settings">
-    val parentalControlEnabled by Settings.PARENTAL_CONTROL
-    val maxTopPlaylistItems by Settings.MAX_NUMBER_OF_TOP_PLAYED
-    val includeLocalSongs by Settings.HOME_SONGS_INCLUDE_ON_DEVICE_IN_ALL
-    val excludeSongWithDurationLimit by Settings.LIMIT_SONGS_WITH_DURATION
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
+    val maxTopPlaylistItems by Preferences.MAX_NUMBER_OF_TOP_PLAYED
+    val includeLocalSongs by Preferences.HOME_SONGS_INCLUDE_ON_DEVICE_IN_ALL
+    val excludeSongWithDurationLimit by Preferences.LIMIT_SONGS_WITH_DURATION
     //</editor-fold>
 
     var items by persistList<Song>( "home/songs" )
 
     val songSort = remember {
-        Sort(menuState, Settings.HOME_SONGS_SORT_BY, Settings.HOME_SONGS_SORT_ORDER)
+        Sort(menuState, Preferences.HOME_SONGS_SORT_BY, Preferences.HOME_SONGS_SORT_ORDER)
     }
     val topPlaylists = remember { PeriodSelector(menuState) }
     val hiddenSongs = HiddenSongs()

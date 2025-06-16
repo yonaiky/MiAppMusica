@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.requests.HistoryPage
@@ -72,8 +72,8 @@ fun HistoryList(
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
 
-    val parentalControlEnabled by Settings.PARENTAL_CONTROL
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     /**
      * Topology:
@@ -118,7 +118,7 @@ fun HistoryList(
     val buttonsList = mutableListOf(HistoryType.History to stringResource(R.string.history))
     buttonsList += HistoryType.YTMHistory to stringResource(R.string.yt_history)
 
-    var historyType by Settings.HISTORY_PAGE_TYPE
+    var historyType by Preferences.HISTORY_PAGE_TYPE
 
     var historyPage by persist<Result<HistoryPage>>("home/historyPage")
     LaunchedEffect(Unit, historyType) {

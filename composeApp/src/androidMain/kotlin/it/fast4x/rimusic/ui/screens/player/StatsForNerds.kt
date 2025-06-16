@@ -37,7 +37,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheSpan
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
@@ -87,12 +87,12 @@ fun StatsForNerds(
         val format by remember {
             Database.formatTable.findBySongId( mediaId )
         }.collectAsState( null, Dispatchers.IO )
-        val showThumbnail by Settings.PLAYER_SHOW_THUMBNAIL
-        val statsForNerds by Settings.PLAYER_STATS_FOR_NERDS
-        val playerType by Settings.PLAYER_TYPE
-        val transparentBackgroundActionBarPlayer by Settings.PLAYER_TRANSPARENT_ACTIONS_BAR
-        var blackgradient by Settings.BLACK_GRADIENT
-        val playerBackgroundColors by Settings.PLAYER_BACKGROUND
+        val showThumbnail by Preferences.PLAYER_SHOW_THUMBNAIL
+        val statsForNerds by Preferences.PLAYER_STATS_FOR_NERDS
+        val playerType by Preferences.PLAYER_TYPE
+        val transparentBackgroundActionBarPlayer by Preferences.PLAYER_TRANSPARENT_ACTIONS_BAR
+        var blackgradient by Preferences.BLACK_GRADIENT
+        val playerBackgroundColors by Preferences.PLAYER_BACKGROUND
         var statsfornerdsfull by remember {mutableStateOf(false)}
         val rotationAngle by animateFloatAsState(
             targetValue = if (statsfornerdsfull) 180f else 0f,

@@ -18,8 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
@@ -61,7 +61,7 @@ class PlaylistsMenu private constructor(
             onFailure,
             finalAction,
             LocalMenuState.current,
-            Settings.MENU_STYLE
+            Preferences.MENU_STYLE
         )
     }
 

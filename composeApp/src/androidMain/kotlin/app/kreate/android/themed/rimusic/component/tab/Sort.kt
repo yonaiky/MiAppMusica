@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.Drawable
 import it.fast4x.rimusic.enums.MenuStyle
@@ -36,8 +36,8 @@ import me.knighthat.enums.TextView
 
 open class Sort<T: Enum<T>>(
     override val menuState: MenuState,
-    sortByState: Settings.Preference<T>,
-    sortOrderState: Settings.Preference<SortOrder>,
+    sortByState: Preferences<T>,
+    sortOrderState: Preferences<SortOrder>,
 ): MenuIcon, Clickable, Menu {
 
     open var sortBy: T by sortByState
@@ -55,7 +55,7 @@ open class Sort<T: Enum<T>>(
         @Composable
         get() = stringResource( R.string.sorting_order )
 
-    override var menuStyle: MenuStyle by Settings.MENU_STYLE
+    override var menuStyle: MenuStyle by Preferences.MENU_STYLE
 
     /** Flip oder. */
     override fun onShortClick() { sortOrder = !sortOrder }

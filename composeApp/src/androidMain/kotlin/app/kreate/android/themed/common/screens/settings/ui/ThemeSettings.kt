@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingHeader
 import it.fast4x.rimusic.enums.ColorPaletteMode
@@ -26,30 +26,30 @@ import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 
 @Composable
 fun ThemeSettings(modifier: Modifier = Modifier) {
-    var colorPaletteName by Settings.COLOR_PALETTE
-    var colorPaletteMode by Settings.THEME_MODE
-    var customColor by Settings.CUSTOM_COLOR_HASH_CODE
-    var customThemeLight_Background0 by Settings.CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE
-    var customThemeLight_Background1 by Settings.CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE
-    var customThemeLight_Background2 by Settings.CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE
-    var customThemeLight_Background3 by Settings.CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE
-    var customThemeLight_Background4 by Settings.CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE
-    var customThemeLight_Text by Settings.CUSTOM_LIGHT_TEXT_HASH_CODE
-    var customThemeLight_TextSecondary by Settings.CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE
-    var customThemeLight_TextDisabled by Settings.CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE
-    var customThemeLight_IconButtonPlayer by Settings.CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE
-    var customThemeLight_Accent by Settings.CUSTOM_LIGHT_ACCENT_HASH_CODE
+    var colorPaletteName by Preferences.COLOR_PALETTE
+    var colorPaletteMode by Preferences.THEME_MODE
+    var customColor by Preferences.CUSTOM_COLOR_HASH_CODE
+    var customThemeLight_Background0 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE
+    var customThemeLight_Background1 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE
+    var customThemeLight_Background2 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE
+    var customThemeLight_Background3 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE
+    var customThemeLight_Background4 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE
+    var customThemeLight_Text by Preferences.CUSTOM_LIGHT_TEXT_HASH_CODE
+    var customThemeLight_TextSecondary by Preferences.CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE
+    var customThemeLight_TextDisabled by Preferences.CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE
+    var customThemeLight_IconButtonPlayer by Preferences.CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE
+    var customThemeLight_Accent by Preferences.CUSTOM_LIGHT_ACCENT_HASH_CODE
 
-    var customThemeDark_Background0 by Settings.CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE
-    var customThemeDark_Background1 by Settings.CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE
-    var customThemeDark_Background2 by Settings.CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE
-    var customThemeDark_Background3 by Settings.CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE
-    var customThemeDark_Background4 by Settings.CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE
-    var customThemeDark_Text by Settings.CUSTOM_DARK_TEXT_HASH_CODE
-    var customThemeDark_TextSecondary by Settings.CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE
-    var customThemeDark_TextDisabled by Settings.CUSTOM_DARK_TEXT_DISABLED_HASH_CODE
-    var customThemeDark_IconButtonPlayer by Settings.CUSTOM_DARK_PLAY_BUTTON_HASH_CODE
-    var customThemeDark_Accent by Settings.CUSTOM_DARK_ACCENT_HASH_CODE
+    var customThemeDark_Background0 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE
+    var customThemeDark_Background1 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE
+    var customThemeDark_Background2 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE
+    var customThemeDark_Background3 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE
+    var customThemeDark_Background4 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE
+    var customThemeDark_Text by Preferences.CUSTOM_DARK_TEXT_HASH_CODE
+    var customThemeDark_TextSecondary by Preferences.CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE
+    var customThemeDark_TextDisabled by Preferences.CUSTOM_DARK_TEXT_DISABLED_HASH_CODE
+    var customThemeDark_IconButtonPlayer by Preferences.CUSTOM_DARK_PLAY_BUTTON_HASH_CODE
+    var customThemeDark_Accent by Preferences.CUSTOM_DARK_ACCENT_HASH_CODE
 
     var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
@@ -95,7 +95,7 @@ fun ThemeSettings(modifier: Modifier = Modifier) {
     }
 
     SettingComponents.EnumEntry(
-        Settings.COLOR_PALETTE,
+        Preferences.COLOR_PALETTE,
         R.string.theme
     ) {
         if( colorPaletteName == ColorPaletteName.ModernBlack )

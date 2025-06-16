@@ -74,8 +74,8 @@ import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastFirst
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
@@ -168,8 +168,8 @@ fun PlaylistSongList(
     val lazyListState = rememberLazyListState()
 
     // Settings
-    val parentalControlEnabled by Settings.PARENTAL_CONTROL
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     var playlistPage by persist<PlaylistPage?>("playlist/$browseId/playlistPage")
     var continuation: String? by remember { mutableStateOf( null ) }
@@ -255,7 +255,7 @@ fun PlaylistSongList(
         mutableStateOf(false)
     }
 
-    var thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+    var thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
     var showYoutubeLikeConfirmDialog by remember {
         mutableStateOf(false)
@@ -1052,7 +1052,7 @@ fun PlaylistSongList(
                     item( "loading" ) { SongItemPlaceholder() }
             }
 
-            val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+            val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
             if( UiType.ViMusic.isCurrent() && showFloatingIcon )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,

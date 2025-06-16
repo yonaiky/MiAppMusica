@@ -19,8 +19,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
@@ -74,12 +74,12 @@ fun AppearanceSettings() {
             section( R.string.notification_player ) {
                 if ( search.contains( R.string.notification_player ) ) {
                     SettingComponents.EnumEntry(
-                        Settings.MEDIA_NOTIFICATION_FIRST_ICON,
+                        Preferences.MEDIA_NOTIFICATION_FIRST_ICON,
                         R.string.notificationPlayerFirstIcon,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE
                     ) { onRestartServiceChange( true ) }
                     SettingComponents.EnumEntry(
-                        Settings.MEDIA_NOTIFICATION_SECOND_ICON,
+                        Preferences.MEDIA_NOTIFICATION_SECOND_ICON,
                         R.string.notificationPlayerSecondIcon,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE
                     ) { onRestartServiceChange( true ) }
@@ -90,15 +90,15 @@ fun AppearanceSettings() {
             if( isAtLeastAndroid7 )
                 section( R.string.wallpaper ) {
                     SettingComponents.BooleanEntry(
-                        Settings.ENABLE_WALLPAPER,
+                        Preferences.ENABLE_WALLPAPER,
                         R.string.enable_wallpaper
                     )
-                    AnimatedVisibility( Settings.ENABLE_WALLPAPER.value ) {
+                    AnimatedVisibility( Preferences.ENABLE_WALLPAPER.value ) {
                         Column(
                             Modifier.padding( start = 25.dp )
                         ) {
                             SettingComponents.EnumEntry(
-                                Settings.WALLPAPER_TYPE,
+                                Preferences.WALLPAPER_TYPE,
                                 R.string.set_cover_thumbnail_as_wallpaper,
                                 action = SettingComponents.Action.RESTART_PLAYER_SERVICE
                             ) { onRestartServiceChange( true ) }

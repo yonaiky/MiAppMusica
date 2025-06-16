@@ -36,8 +36,8 @@ import androidx.compose.ui.semantics.password
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
@@ -112,16 +112,16 @@ fun AccountSettings() {
             contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
         ) {
             section( "YOUTUBE MUSIC" ) {
-                var visitorData by Settings.YOUTUBE_VISITOR_DATA
-                var dataSyncId by Settings.YOUTUBE_SYNC_ID
-                var cookie by Settings.YOUTUBE_COOKIES
-                var accountName by Settings.YOUTUBE_ACCOUNT_NAME
-                var accountEmail by Settings.YOUTUBE_ACCOUNT_EMAIL
-                var accountChannelHandle by Settings.YOUTUBE_SELF_CHANNEL_HANDLE
+                var visitorData by Preferences.YOUTUBE_VISITOR_DATA
+                var dataSyncId by Preferences.YOUTUBE_SYNC_ID
+                var cookie by Preferences.YOUTUBE_COOKIES
+                var accountName by Preferences.YOUTUBE_ACCOUNT_NAME
+                var accountEmail by Preferences.YOUTUBE_ACCOUNT_EMAIL
+                var accountChannelHandle by Preferences.YOUTUBE_SELF_CHANNEL_HANDLE
 
                 if( search.inputValue.isBlank() || "YOUTUBE MUSIC".contains( search.inputValue, true ) )
                     SettingComponents.BooleanEntry(
-                        Settings.YOUTUBE_LOGIN,
+                        Preferences.YOUTUBE_LOGIN,
                         "Enable YouTube Music Login"
                     ) {
                         if( it ) return@BooleanEntry
@@ -134,8 +134,8 @@ fun AccountSettings() {
                         accountEmail = ""
                     }
 
-                AnimatedVisibility( Settings.YOUTUBE_LOGIN.value ) {
-                    var accountThumbnail by Settings.YOUTUBE_ACCOUNT_AVATAR
+                AnimatedVisibility( Preferences.YOUTUBE_LOGIN.value ) {
+                    var accountThumbnail by Preferences.YOUTUBE_ACCOUNT_AVATAR
                     var loginYouTube by remember { mutableStateOf(false) }
                     var isLoggedIn = remember(cookie) {
                         "SAPISID" in parseCookieString(cookie)
@@ -203,7 +203,7 @@ fun AccountSettings() {
                                             shape = thumbnailShape()
                                         ) {}
                                     },
-                                    shape = Settings.THUMBNAIL_BORDER_RADIUS.value.shape
+                                    shape = Preferences.THUMBNAIL_BORDER_RADIUS.value.shape
                                 ) {
                                     YouTubeLogin(
                                         onLogin = { cookieRetrieved ->
@@ -218,7 +218,7 @@ fun AccountSettings() {
                                     )
                                 }
 
-                                var restartActivity by Settings.RESTART_ACTIVITY
+                                var restartActivity by Preferences.RESTART_ACTIVITY
                                 RestartPlayerService(restartService, onRestart = {
                                     onRestartServiceChange( false )
                                     restartActivity = !restartActivity
@@ -228,7 +228,7 @@ fun AccountSettings() {
                         }
 
                         SettingComponents.BooleanEntry(
-                            Settings.YOUTUBE_PLAYLISTS_SYNC,
+                            Preferences.YOUTUBE_PLAYLISTS_SYNC,
                             "Sync data with YTM account",
                             subtitle = "Playlists, albums, artists, history, like, etc."
                         )
@@ -363,20 +363,20 @@ fun AccountSettings() {
 
                     if( search.contains( R.string.enable_piped_syncronization ) )
                         SettingComponents.BooleanEntry(
-                            Settings.ENABLE_PIPED,
+                            Preferences.ENABLE_PIPED,
                             R.string.enable_piped_syncronization
                         )
 
-                    AnimatedVisibility( Settings.ENABLE_PIPED.value ) {
+                    AnimatedVisibility( Preferences.ENABLE_PIPED.value ) {
                         Column(
                             modifier = Modifier.padding(start = 25.dp)
                         ) {
                             SettingComponents.BooleanEntry(
-                                Settings.IS_CUSTOM_PIPED,
+                                Preferences.IS_CUSTOM_PIPED,
                                 R.string.piped_custom_instance
                             )
 
-                            var isPipedCustomEnabled by Settings.IS_CUSTOM_PIPED
+                            var isPipedCustomEnabled by Preferences.IS_CUSTOM_PIPED
                             AnimatedVisibility(visible = isPipedCustomEnabled) {
                                 Column {
                                     TextDialogSettingEntry(
@@ -446,11 +446,11 @@ fun AccountSettings() {
 
                     if( search.contains( R.string.discord_enable_rich_presence ) )
                         SettingComponents.BooleanEntry(
-                            Settings.DISCORD_LOGIN,
+                            Preferences.DISCORD_LOGIN,
                             R.string.discord_enable_rich_presence
                         )
 
-                    AnimatedVisibility( Settings.DISCORD_LOGIN.value ) {
+                    AnimatedVisibility( Preferences.DISCORD_LOGIN.value ) {
                         var loginDiscord by remember { mutableStateOf(false) }
                         var discordPersonalAccessToken by rememberEncryptedPreference(
                             key = discordPersonalAccessTokenKey,
@@ -490,7 +490,7 @@ fun AccountSettings() {
                                         shape = thumbnailShape()
                                     ) {}
                                 },
-                                shape = Settings.THUMBNAIL_BORDER_RADIUS.value.shape
+                                shape = Preferences.THUMBNAIL_BORDER_RADIUS.value.shape
                             ) {
                                 DiscordLoginAndGetToken(
                                     rememberNavController(),

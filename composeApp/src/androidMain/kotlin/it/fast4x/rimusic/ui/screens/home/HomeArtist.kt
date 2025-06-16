@@ -39,11 +39,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
-import app.kreate.android.Settings.HOME_ARTISTS_SORT_BY
-import app.kreate.android.Settings.HOME_ARTISTS_SORT_ORDER
-import app.kreate.android.Settings.HOME_ARTIST_ITEM_SIZE
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -98,8 +95,8 @@ fun HomeArtists(
     val coroutineScope = rememberCoroutineScope()
 
     // Settings
-    var artistType by Settings.HOME_ARTIST_TYPE
-    var filterBy by Settings.HOME_ARTIST_AND_ALBUM_FILTER
+    var artistType by Preferences.HOME_ARTIST_TYPE
+    var filterBy by Preferences.HOME_ARTIST_AND_ALBUM_FILTER
 
 
     var items by persistList<Artist>( "")
@@ -107,14 +104,14 @@ fun HomeArtists(
 
     var itemsOnDisplay by persistList<Artist>( "home/artists/on_display" )
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     val search = Search(lazyGridState)
 
     val sort = remember {
-        Sort(menuState, HOME_ARTISTS_SORT_BY, HOME_ARTISTS_SORT_ORDER)
+        Sort(menuState, Preferences.HOME_ARTISTS_SORT_BY, Preferences.HOME_ARTISTS_SORT_ORDER)
     }
-    val itemSize = remember { ItemSize(HOME_ARTIST_ITEM_SIZE, menuState) }
+    val itemSize = remember { ItemSize(Preferences.HOME_ARTIST_ITEM_SIZE, menuState) }
 
     val randomizer = object: Randomizer<Artist> {
         override fun getItems(): List<Artist> = itemsOnDisplay
@@ -168,7 +165,7 @@ fun HomeArtists(
 
     val sync = autoSyncToolbutton(R.string.autosync_channels)
 
-    val doAutoSync by Settings.AUTO_SYNC
+    val doAutoSync by Preferences.AUTO_SYNC
     var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
 
     var refreshing by remember { mutableStateOf(false) }
@@ -309,7 +306,7 @@ fun HomeArtists(
 
             FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
-            val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+            val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
             if( UiType.ViMusic.isCurrent() && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,

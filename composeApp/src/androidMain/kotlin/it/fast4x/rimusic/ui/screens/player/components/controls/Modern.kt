@@ -47,8 +47,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
@@ -98,13 +98,13 @@ fun InfoAlbumAndArtistModern(
     onCollapse: () -> Unit,
     disableScrollingText: Boolean = false
 ) {
-    val colorPaletteMode by Settings.THEME_MODE
-    val playerControlsType by Settings.PLAYER_CONTROLS_TYPE
-    var effectRotationEnabled by Settings.ROTATION_EFFECT
+    val colorPaletteMode by Preferences.THEME_MODE
+    val playerControlsType by Preferences.PLAYER_CONTROLS_TYPE
+    var effectRotationEnabled by Preferences.ROTATION_EFFECT
     var isRotated by rememberSaveable { mutableStateOf(false) }
     var showSelectDialog by remember { mutableStateOf(false) }
-    val playerBackgroundColors by Settings.PLAYER_BACKGROUND
-    val playerInfoShowIcon by Settings.PLAYER_SONG_INFO_ICON
+    val playerBackgroundColors by Preferences.PLAYER_BACKGROUND
+    val playerInfoShowIcon by Preferences.PLAYER_SONG_INFO_ICON
     val currentMediaItem = binder.player.currentMediaItem
 
     Row(
@@ -160,7 +160,7 @@ fun InfoAlbumAndArtistModern(
                 )
 
 
-            val textoutline by Settings.TEXT_OUTLINE
+            val textoutline by Preferences.TEXT_OUTLINE
 
             if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
             Row(
@@ -320,7 +320,7 @@ fun InfoAlbumAndArtistModern(
                 }
             )
 
-        var textoutline by Settings.TEXT_OUTLINE
+        var textoutline by Preferences.TEXT_OUTLINE
         if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
         Box(
 
@@ -376,13 +376,13 @@ fun ControlsModern(
     isGradientBackgroundEnabled: Boolean,
     onShowSpeedPlayerDialog: () -> Unit,
 ) {
-    var effectRotationEnabled by Settings.ROTATION_EFFECT
+    var effectRotationEnabled by Preferences.ROTATION_EFFECT
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (isRotated) 360F else 0f,
         animationSpec = tween(durationMillis = 200), label = ""
     )
-    var jumpPrevious by Settings.JUMP_PREVIOUS
+    var jumpPrevious by Preferences.JUMP_PREVIOUS
 
   if (playerPlayButtonType != PlayerPlayButtonType.Disabled) {
       CustomElevatedButton(

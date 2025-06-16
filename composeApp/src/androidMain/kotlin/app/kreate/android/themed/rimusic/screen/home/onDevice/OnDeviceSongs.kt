@@ -43,11 +43,8 @@ import androidx.compose.ui.util.fastMap
 import androidx.core.content.ContextCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings.HOME_ON_DEVICE_SONGS_SORT_BY
-import app.kreate.android.Settings.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS
-import app.kreate.android.Settings.HOME_SONGS_SORT_ORDER
-import app.kreate.android.Settings.PARENTAL_CONTROL
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.rimusic.EXPLICIT_PREFIX
@@ -92,8 +89,8 @@ fun OnDeviceSong(
     val menuState = LocalMenuState.current
 
     //<editor-fold defaultstate="collapsed" desc="Settings">
-    val parentalControlEnabled by PARENTAL_CONTROL
-    val showFolder4LocalSongs by HOME_SONGS_ON_DEVICE_SHOW_FOLDERS
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
+    val showFolder4LocalSongs by Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS
     //</editor-fold>
 
     var songsOnDevice by remember {
@@ -131,7 +128,7 @@ fun OnDeviceSong(
     //</editor-fold>
 
     val odSort = remember {
-        Sort(menuState, HOME_ON_DEVICE_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER)
+        Sort(menuState, Preferences.HOME_ON_DEVICE_SONGS_SORT_BY, Preferences.HOME_SONGS_SORT_ORDER)
     }
 
     LaunchedEffect( isPermissionGranted, odSort.sortBy, odSort.sortOrder ) {

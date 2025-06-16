@@ -46,8 +46,8 @@ import androidx.compose.ui.unit.sp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import coil.compose.AsyncImagePainter
 import it.fast4x.compose.persist.PersistMapCleanup
@@ -139,7 +139,7 @@ fun AlbumDetails(
     val menuState = LocalMenuState.current
 
     // Settings
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     val items by remember {
         Database.songAlbumMapTable
@@ -543,7 +543,7 @@ fun AlbumDetails(
                     }
             }
 
-            val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+            val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
             if ( UiType.ViMusic.isCurrent() && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.shuffle,

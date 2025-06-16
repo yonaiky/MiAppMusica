@@ -54,7 +54,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.navigation.NavController
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import com.valentinilk.shimmer.shimmer
@@ -217,7 +217,7 @@ fun Queue(
         (deleteDialog as Dialog).Render()
 
         Column {
-            val queueType by Settings.QUEUE_TYPE
+            val queueType by Preferences.QUEUE_TYPE
             val backgroundAlpha = if( queueType == QueueType.Modern ) .5f else 1f
 
             LazyColumn(
@@ -425,7 +425,7 @@ fun Queue(
                         buttons = mutableListOf<Button>().apply {
                             add( locator )
                             add( search )
-                            if( Settings.PLAYER_ACTION_DISCOVER.value )
+                            if( Preferences.PLAYER_ACTION_DISCOVER.value )
                                 add( discover )
                             add( positionLock )
                             add( repeat )

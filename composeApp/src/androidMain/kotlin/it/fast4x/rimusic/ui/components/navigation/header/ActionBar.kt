@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import coil.compose.AsyncImage
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
@@ -32,7 +32,7 @@ private fun HamburgerMenu(
     onItemClick: (NavRoutes) -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    val enablePictureInPicture by Settings.IS_PIP_ENABLED
+    val enablePictureInPicture by Preferences.IS_PIP_ENABLED
     val pipHandler = rememberPipHandler()
 
     val menu = DropdownMenu(

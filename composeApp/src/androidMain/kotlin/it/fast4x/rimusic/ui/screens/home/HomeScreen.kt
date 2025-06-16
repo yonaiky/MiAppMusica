@@ -18,8 +18,8 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.rimusic.screen.home.HomeSongsScreen
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.rimusic.enums.NavRoutes
@@ -49,7 +49,7 @@ fun HomeScreen(
 
     PersistMapCleanup("home/")
 
-    val (tabIndex, onTabChanged) = Settings.HOME_TAB_INDEX
+    val (tabIndex, onTabChanged) = Preferences.HOME_TAB_INDEX
 
     Skeleton(
         navController,
@@ -57,7 +57,7 @@ fun HomeScreen(
         onTabChanged,
         miniPlayer,
         navBarContent = { Item ->
-            if ( Settings.QUICK_PICKS_PAGE.value )
+            if ( Preferences.QUICK_PICKS_PAGE.value )
                 Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
             Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
             Item(2, stringResource(R.string.artists), R.drawable.people)

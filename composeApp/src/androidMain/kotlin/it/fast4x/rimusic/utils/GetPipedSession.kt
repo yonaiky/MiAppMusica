@@ -1,6 +1,6 @@
 package it.fast4x.rimusic.utils
 
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import io.ktor.http.Url
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.models.PipedSession
@@ -32,7 +32,7 @@ fun getPipedSession(): PipedSession {
         token = "",
         username = ""
     )
-    if ( Settings.ENABLE_PIPED.value && isAtLeastAndroid7 ) {
+    if ( Preferences.ENABLE_PIPED.value && isAtLeastAndroid7 ) {
         runCatching {
             with(context.encryptedPreferences) {
                 pipedSession.username = getString(pipedUsernameKey, "").toString()

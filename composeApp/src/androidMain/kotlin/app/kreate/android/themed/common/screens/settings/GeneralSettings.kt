@@ -21,8 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.BuildConfig
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
@@ -79,7 +79,7 @@ fun GeneralSettings() {
             section( R.string.languages, sysLocaleText ) {
                 if( search.contains( R.string.app_language ) )
                     SettingComponents.EnumEntry(
-                        Settings.APP_LANGUAGE,
+                        Preferences.APP_LANGUAGE,
                         R.string.app_language,
                         getName = { languageDestinationName(it) },
                         action = SettingComponents.Action.RESTART_APP
@@ -89,7 +89,7 @@ fun GeneralSettings() {
             section( R.string.notification_type, R.string.notification_type_info ) {
                 if( search.contains( R.string.notification_type ) )
                     SettingComponents.EnumEntry(
-                        Settings.NOTIFICATION_TYPE,
+                        Preferences.NOTIFICATION_TYPE,
                         R.string.notification_type,
                         action = SettingComponents.Action.RESTART_APP
                     )

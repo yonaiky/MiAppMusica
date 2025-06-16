@@ -27,8 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.colorPalette
@@ -86,7 +86,7 @@ fun HomeStatistics(
          */
     }
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
 /*
     val sortOrderIconRotation by animateFloatAsState(
@@ -96,7 +96,7 @@ fun HomeStatistics(
 */
     val thumbnailSizeDp = 108.dp
     val lazyGridState = rememberLazyGridState()
-    val showSearchTab by Settings.SHOW_SEARCH_IN_NAVIGATION_BAR
+    val showSearchTab by Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR
 
     Box(
         modifier = Modifier

@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import it.fast4x.rimusic.Database
@@ -77,80 +77,80 @@ fun QuickPicksSettings() {
         ) {
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_PAGE,
+                    Preferences.QUICK_PICKS_PAGE,
                     R.string.enable_quick_picks_page
                 )
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_TIPS,
+                    Preferences.QUICK_PICKS_SHOW_TIPS,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.tips ) )
                 )
             }
 
             item {
                 AnimatedVisibility(
-                    visible = Settings.QUICK_PICKS_SHOW_TIPS.value,
+                    visible = Preferences.QUICK_PICKS_SHOW_TIPS.value,
                     enter = fadeIn(tween(100)),
                     exit = fadeOut(tween(100)),
                 ) {
-                    SettingComponents.EnumEntry( Settings.QUICK_PICKS_TYPE, R.string.tips )
+                    SettingComponents.EnumEntry( Preferences.QUICK_PICKS_TYPE, R.string.tips )
                 }
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_CHARTS,
+                    Preferences.QUICK_PICKS_SHOW_CHARTS,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.charts ) )
                 )
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_RELATED_ALBUMS,
+                    Preferences.QUICK_PICKS_SHOW_RELATED_ALBUMS,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.related_albums ) )
                 )
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_RELATED_ARTISTS,
+                    Preferences.QUICK_PICKS_SHOW_RELATED_ARTISTS,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.similar_artists ) )
                 )
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS,
+                    Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums_of_your_artists ) )
                 )
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_NEW_ALBUMS,
+                    Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums ) )
                 )
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS,
+                    Preferences.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.playlists_you_might_like ) )
                 )
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_MOODS_AND_GENRES,
+                    Preferences.QUICK_PICKS_SHOW_MOODS_AND_GENRES,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.moods_and_genres ) )
                 )
             }
 
             item {
                 SettingComponents.BooleanEntry(
-                    Settings.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS,
+                    Preferences.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS,
                     stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.monthly_playlists ) )
                 )
             }

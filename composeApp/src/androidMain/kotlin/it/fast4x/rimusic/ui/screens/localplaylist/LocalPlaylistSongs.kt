@@ -49,8 +49,8 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistSongsSort
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
@@ -170,10 +170,10 @@ fun LocalPlaylistSongs(
     val menuState = LocalMenuState.current
 
     // Settings
-    val parentalControlEnabled by Settings.PARENTAL_CONTROL
-    val isPipedEnabled by Settings.ENABLE_PIPED
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
-    var isRecommendationEnabled by Settings.LOCAL_PLAYLIST_SMART_RECOMMENDATION
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
+    val isPipedEnabled by Preferences.ENABLE_PIPED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
+    var isRecommendationEnabled by Preferences.LOCAL_PLAYLIST_SMART_RECOMMENDATION
 
     // Non-vital
     val pipedSession = getPipedSession()
@@ -375,7 +375,7 @@ fun LocalPlaylistSongs(
     val locator = Locator( lazyListState, ::getSongs )
 
     //<editor-fold defaultstate="collapsed" desc="Smart recommendation">
-    val recommendationsNumber by Settings.MAX_NUMBER_OF_SMART_RECOMMENDATIONS
+    val recommendationsNumber by Preferences.MAX_NUMBER_OF_SMART_RECOMMENDATIONS
     var relatedSongs by rememberSaveable {
         // SongEntity before Int in case random position is equal
         mutableStateOf( emptyMap<Song, Int>() )
@@ -473,9 +473,9 @@ fun LocalPlaylistSongs(
         }
     }
 
-    var autosync by Settings.AUTO_SYNC
+    var autosync by Preferences.AUTO_SYNC
 
-    val thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+    val thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
     val reorderingState = rememberReorderingState(
         lazyListState = lazyListState,
@@ -858,7 +858,7 @@ fun LocalPlaylistSongs(
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+        val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
         if ( UiType.ViMusic.isCurrent() && showFloatingIcon )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,

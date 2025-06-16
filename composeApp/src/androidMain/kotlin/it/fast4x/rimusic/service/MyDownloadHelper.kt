@@ -19,7 +19,7 @@ import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.Requirements
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.service.createDataSourceFactory
 import coil.imageLoader
 import coil.request.CachePolicy
@@ -126,7 +126,7 @@ object MyDownloadHelper {
 
     @Synchronized
     private fun initDownloadCache( context: Context ): SimpleCache {
-        val cacheSize by Settings.SONG_DOWNLOAD_SIZE
+        val cacheSize by Preferences.SONG_DOWNLOAD_SIZE
 
         val cacheEvictor = when( cacheSize ) {
             ExoPlayerDiskDownloadCacheMaxSize.Unlimited -> NoOpCacheEvictor()
@@ -142,7 +142,7 @@ object MyDownloadHelper {
                 // Looks a bit ugly but what it does is
                 // check location set by user and return
                 // appropriate path with [CACHE_DIRNAME] appended.
-                when( Settings.EXO_CACHE_LOCATION.value ) {
+                when( Preferences.EXO_CACHE_LOCATION.value ) {
                     ExoPlayerCacheLocation.System  -> context.cacheDir
                     ExoPlayerCacheLocation.Private -> context.filesDir
                 }.resolve( CACHE_DIRNAME )
@@ -164,7 +164,7 @@ object MyDownloadHelper {
 
     @Synchronized
     private fun ensureDownloadManagerInitialized(context: Context) {
-        audioQualityFormat = Settings.AUDIO_QUALITY.value
+        audioQualityFormat = Preferences.AUDIO_QUALITY.value
 
         if (!MyDownloadHelper::downloadManager.isInitialized) {
             downloadManager = DownloadManager(
@@ -293,14 +293,14 @@ object MyDownloadHelper {
     }
 
     fun autoDownload(context: Context, mediaItem: MediaItem) {
-        if ( Settings.AUTO_DOWNLOAD.value ) {
+        if ( Preferences.AUTO_DOWNLOAD.value ) {
             if (downloads.value[mediaItem.mediaId]?.state != Download.STATE_COMPLETED)
                 addDownload(context, mediaItem)
         }
     }
 
     fun autoDownloadWhenLiked(context: Context, mediaItem: MediaItem) {
-        if ( Settings.AUTO_DOWNLOAD_ON_LIKE.value ) {
+        if ( Preferences.AUTO_DOWNLOAD_ON_LIKE.value ) {
             Database.asyncQuery {
                 runBlocking {
                     if( songTable.isLiked( mediaItem.mediaId ).first() )
@@ -314,7 +314,7 @@ object MyDownloadHelper {
 
     fun downloadOnLike( mediaItem: MediaItem, likeState: Boolean?, context: Context ) {
         // Only continues when this setting is enabled
-        val isSettingEnabled by Settings.AUTO_DOWNLOAD_ON_LIKE
+        val isSettingEnabled by Preferences.AUTO_DOWNLOAD_ON_LIKE
         if( !isSettingEnabled || !isNetworkConnected( context ) )
             return
 
@@ -328,7 +328,7 @@ object MyDownloadHelper {
     }
 
     fun autoDownloadWhenAlbumBookmarked(context: Context, mediaItems: List<MediaItem>) {
-        if ( Settings.AUTO_DOWNLOAD_ON_LIKE.value ) {
+        if ( Preferences.AUTO_DOWNLOAD_ON_LIKE.value ) {
             mediaItems.forEach { mediaItem ->
                 autoDownload(context, mediaItem)
             }

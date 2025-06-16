@@ -39,7 +39,7 @@ import androidx.compose.ui.util.fastAll
 import androidx.compose.ui.util.fastFirstOrNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.screens.artist.ArtistDetails
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
@@ -69,8 +69,8 @@ fun ArtistScreenModern(
     val saveableStateHolder = rememberSaveableStateHolder()
 
     // Settings
-    val transitionEffect by Settings.TRANSITION_EFFECT
-    val playerPosition by Settings.MINI_PLAYER_POSITION
+    val transitionEffect by Preferences.TRANSITION_EFFECT
+    val playerPosition by Preferences.MINI_PLAYER_POSITION
 
     var localArtist: Artist? by remember { mutableStateOf( null ) }
     LaunchedEffect( Unit ) {

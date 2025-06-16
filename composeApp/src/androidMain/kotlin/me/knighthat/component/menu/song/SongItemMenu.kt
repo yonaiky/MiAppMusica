@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -85,7 +85,7 @@ class SongItemMenu private constructor(
                 navController = navController,
                 song = song,
                 menuState = LocalMenuState.current,
-                styleState = Settings.MENU_STYLE
+                styleState = Preferences.MENU_STYLE
             )
     }
 

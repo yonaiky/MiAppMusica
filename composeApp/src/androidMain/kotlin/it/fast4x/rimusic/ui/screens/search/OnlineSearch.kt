@@ -54,8 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchSuggestionsBody
 import it.fast4x.innertube.requests.searchSuggestionsWithItems
@@ -104,7 +104,7 @@ fun OnlineSearch(
     decorationBox: @Composable (@Composable () -> Unit) -> Unit,
 ) {
     // Settings
-    val isHistoryPaused by Settings.PAUSE_SEARCH_HISTORY
+    val isHistoryPaused by Preferences.PAUSE_SEARCH_HISTORY
 
     var reloadHistory by remember {
         mutableStateOf(false)
@@ -157,7 +157,7 @@ fun OnlineSearch(
         FocusRequester()
     }
 
-    var thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+    var thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
     val lazyListState = rememberLazyListState()
 
@@ -172,7 +172,7 @@ fun OnlineSearch(
     val hapticFeedback = LocalHapticFeedback.current
     val binder = LocalPlayerServiceBinder.current
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     Box(
         modifier = Modifier

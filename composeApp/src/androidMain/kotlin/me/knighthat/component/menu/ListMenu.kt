@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.utils.conditional
 import me.knighthat.component.menu.MenuConstants.CONTENT_HEIGHT_FRACTION
@@ -75,7 +75,7 @@ object ListMenu {
             modifier = Modifier.padding( vertical = 16.dp )
                                .weight( 1f )
         ) {
-            val isScrollingTextDisabled by Settings.SCROLLING_TEXT_DISABLED
+            val isScrollingTextDisabled by Preferences.SCROLLING_TEXT_DISABLED
 
             Text(
                 text = text,

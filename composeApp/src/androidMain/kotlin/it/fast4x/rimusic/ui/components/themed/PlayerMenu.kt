@@ -16,8 +16,8 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.cleanPrefix
@@ -58,7 +58,7 @@ fun PlayerMenu(
     disableScrollingText: Boolean
     ) {
     val menuState = LocalMenuState.current
-    val menuStyle by Settings.MENU_STYLE
+    val menuStyle by Preferences.MENU_STYLE
 
     //val context = LocalContext.current
 
@@ -167,7 +167,7 @@ fun MiniPlayerMenu(
     disableScrollingText: Boolean
 ) {
 
-    val menuStyle by Settings.MENU_STYLE
+    val menuStyle by Preferences.MENU_STYLE
 
     if (menuStyle == MenuStyle.Grid) {
         MiniMediaItemGridMenu(
@@ -234,7 +234,7 @@ fun AddToPlaylistPlayerMenu(
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
 ) {
-    val isPipedEnabled by Settings.ENABLE_PIPED
+    val isPipedEnabled by Preferences.ENABLE_PIPED
     val pipedSession = getPipedSession()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -314,7 +314,7 @@ fun AddToPlaylistArtistSongs(
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
 ) {
-    val isPipedEnabled by Settings.ENABLE_PIPED
+    val isPipedEnabled by Preferences.ENABLE_PIPED
     val pipedSession = getPipedSession()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

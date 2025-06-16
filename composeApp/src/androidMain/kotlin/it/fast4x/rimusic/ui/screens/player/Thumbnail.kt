@@ -42,7 +42,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
@@ -97,7 +97,7 @@ fun Thumbnail(
         it to (it - 64.dp).px
     }
 
-    var showlyricsthumbnail by Settings.LYRICS_SHOW_THUMBNAIL
+    var showlyricsthumbnail by Preferences.LYRICS_SHOW_THUMBNAIL
     var nullableWindow by remember {
         mutableStateOf(player.currentWindow)
     }
@@ -129,8 +129,8 @@ fun Thumbnail(
         mutableStateOf(true)
     }
 
-    val clickLyricsText by Settings.LYRICS_JUMP_ON_TAP
-    var showvisthumbnail by Settings.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER
+    val clickLyricsText by Preferences.LYRICS_JUMP_ON_TAP
+    var showvisthumbnail by Preferences.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER
     //var expandedlyrics by rememberPreference(expandedlyricsKey,false)
 
     player.DisposableListener {
@@ -160,8 +160,8 @@ fun Thumbnail(
         onSuccess = { artImageAvailable = true }
     )
 
-    val showCoverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_ANIMATION
-    var coverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_TYPE
+    val showCoverThumbnailAnimation by Preferences.PLAYER_THUMBNAIL_ANIMATION
+    var coverThumbnailAnimation by Preferences.PLAYER_THUMBNAIL_TYPE
 
 
     AnimatedContent(
@@ -197,7 +197,7 @@ fun Thumbnail(
         contentAlignment = Alignment.Center, label = ""
     ) { currentWindow ->
 
-        val thumbnailType by Settings.THUMBNAIL_TYPE
+        val thumbnailType by Preferences.THUMBNAIL_TYPE
 
         var modifierUiType by remember { mutableStateOf(modifier) }
 
@@ -427,7 +427,7 @@ fun Thumbnail(
 fun Modifier.thumbnailpause(
     shouldBePlaying: Boolean
 ) = composed {
-    var thumbnailpause by Settings.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE
+    var thumbnailpause by Preferences.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE
     val scale by animateFloatAsState(if ((thumbnailpause) && (!shouldBePlaying)) 0.9f else 1f)
 
     this

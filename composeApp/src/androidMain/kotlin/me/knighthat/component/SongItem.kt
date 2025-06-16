@@ -38,7 +38,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
@@ -155,7 +155,7 @@ fun SongItem(
     // Essentials
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
     val hapticFeedback = LocalHapticFeedback.current
 
     val colorPalette = colorPalette()
@@ -229,7 +229,7 @@ fun SongItem(
                         override val iconId: Int = R.drawable.smart_shuffle
                     }.ToolBarButton()
 
-                val showInPlaylistIndicator by Settings.SHOW_PLAYLIST_INDICATOR
+                val showInPlaylistIndicator by Preferences.SHOW_PLAYLIST_INDICATOR
                 val isInPlaylistScreen = navController != null && NavRoutes.localPlaylist.isHere( navController )
                 // Show icon if song belongs to a playlist,
                 // except when in playlist.

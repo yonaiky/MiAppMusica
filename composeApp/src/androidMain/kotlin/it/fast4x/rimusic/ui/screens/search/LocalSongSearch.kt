@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -101,9 +101,9 @@ fun LocalSongSearch(
     }
     val context = LocalContext.current
 
-    var thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+    var thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     val focusRequester = remember {
         FocusRequester()

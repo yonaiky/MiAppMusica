@@ -29,17 +29,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.net.toUri
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings.DEBUG_LOG
-import app.kreate.android.Settings.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS
-import app.kreate.android.Settings.IS_PROXY_ENABLED
-import app.kreate.android.Settings.KEEP_SCREEN_ON
-import app.kreate.android.Settings.LOCAL_SONGS_FOLDER
-import app.kreate.android.Settings.PARENTAL_CONTROL
-import app.kreate.android.Settings.PLAYER_EXTRA_SPACE
-import app.kreate.android.Settings.PROXY_HOST
-import app.kreate.android.Settings.PROXY_PORT
-import app.kreate.android.Settings.PROXY_SCHEME
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
@@ -126,13 +117,13 @@ fun OtherSettings() {
                 )
 
                 SettingComponents.BooleanEntry(
-                    HOME_SONGS_ON_DEVICE_SHOW_FOLDERS,
+                    Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS,
                     R.string.folders,
                     R.string.show_folders_in_on_device_page
                 )
-                AnimatedVisibility( HOME_SONGS_ON_DEVICE_SHOW_FOLDERS.value ) {
+                AnimatedVisibility( Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS.value ) {
                     SettingComponents.InputDialogEntry(
-                        LOCAL_SONGS_FOLDER,
+                        Preferences.LOCAL_SONGS_FOLDER,
                         R.string.folder_that_will_show_when_you_open_on_device_page,
                         InputDialogConstraints.ANDROID_FILE_PATH
                     )
@@ -140,13 +131,13 @@ fun OtherSettings() {
             }
             section( R.string.androidheadunit ) {
                 SettingComponents.BooleanEntry(
-                    PLAYER_EXTRA_SPACE,
+                    Preferences.PLAYER_EXTRA_SPACE,
                     R.string.extra_space
                 )
             }
             section( R.string.service_lifetime ) {
                 SettingComponents.BooleanEntry(
-                    KEEP_SCREEN_ON,
+                    Preferences.KEEP_SCREEN_ON,
                     R.string.keep_screen_on,
                     R.string.prevents_screen_timeout
                 )
@@ -197,26 +188,26 @@ fun OtherSettings() {
             }
             section( R.string.proxy, R.string.restarting_rimusic_is_required ) {
                 SettingComponents.BooleanEntry(
-                    IS_PROXY_ENABLED,
+                    Preferences.IS_PROXY_ENABLED,
                     R.string.enable_proxy
                 )
 
-                AnimatedVisibility( IS_PROXY_ENABLED.value ) {
+                AnimatedVisibility( Preferences.IS_PROXY_ENABLED.value ) {
                     Column {
                         SettingComponents.EnumEntry(
-                            PROXY_SCHEME,
+                            Preferences.PROXY_SCHEME,
                             R.string.proxy_mode,
                             { it.name }
                         )
 
                         SettingComponents.InputDialogEntry(
-                            PROXY_HOST,
+                            Preferences.PROXY_HOST,
                             R.string.proxy_host,
                             InputDialogConstraints.URL,
                             keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Uri)
                         )
                         SettingComponents.InputDialogEntry(
-                            PROXY_PORT,
+                            Preferences.PROXY_PORT,
                             R.string.proxy_port,
                             constraint = InputDialogConstraints.ONLY_INTEGERS,
                             keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -226,14 +217,14 @@ fun OtherSettings() {
             }
             section( R.string.parental_control ) {
                 SettingComponents.BooleanEntry(
-                    PARENTAL_CONTROL,
+                    Preferences.PARENTAL_CONTROL,
                     R.string.parental_control,
                     R.string.info_prevent_play_songs_with_age_limitation
                 )
             }
             section( R.string.debug, R.string.restarting_rimusic_is_required ) {
                 SettingComponents.BooleanEntry(
-                    DEBUG_LOG,
+                    Preferences.DEBUG_LOG,
                     R.string.enable_log_debug,
                     R.string.if_enabled_create_a_log_file_to_highlight_errors
                 ) {

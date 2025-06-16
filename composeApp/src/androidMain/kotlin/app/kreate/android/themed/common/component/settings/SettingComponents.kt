@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.Switch
@@ -143,7 +143,7 @@ object SettingComponents {
 
     @Composable
     inline fun <reified T: Enum<T>> EnumEntry(
-        preference: Settings.Preference.EnumPreference<T>,
+        preference: Preferences.Enum<T>,
         title: String,
         crossinline getName: @Composable (T) -> String,
         modifier: Modifier = Modifier,
@@ -245,7 +245,7 @@ object SettingComponents {
 
     @Composable
     inline fun <reified T> EnumEntry(
-        preference: Settings.Preference.EnumPreference<T>,
+        preference: Preferences.Enum<T>,
         title: String,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -258,7 +258,7 @@ object SettingComponents {
 
     @Composable
     inline fun <reified T: Enum<T>> EnumEntry(
-        preference: Settings.Preference.EnumPreference<T>,
+        preference: Preferences.Enum<T>,
         @StringRes titleId: Int,
         crossinline getName: @Composable (T) -> String,
         modifier: Modifier = Modifier,
@@ -272,7 +272,7 @@ object SettingComponents {
 
     @Composable
     inline fun <reified T> EnumEntry(
-        preference: Settings.Preference.EnumPreference<T>,
+        preference: Preferences.Enum<T>,
         @StringRes titleId: Int,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -285,7 +285,7 @@ object SettingComponents {
 
     @Composable
     fun BooleanEntry(
-        preference: Settings.Preference.BooleanPreference,
+        preference: Preferences.Boolean,
         title: String,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -309,7 +309,7 @@ object SettingComponents {
 
     @Composable
     fun BooleanEntry(
-        preference: Settings.Preference.BooleanPreference,
+        preference: Preferences.Boolean,
         @StringRes titleId: Int,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -322,7 +322,7 @@ object SettingComponents {
 
     @Composable
     fun BooleanEntry(
-        preference: Settings.Preference.BooleanPreference,
+        preference: Preferences.Boolean,
         @StringRes titleId: Int,
         @StringRes subtitleId: Int,
         modifier: Modifier = Modifier,
@@ -335,7 +335,7 @@ object SettingComponents {
 
     @Composable
     private fun <T> InputDialogEntry(
-        preference: Settings.Preference<T>,
+        preference: Preferences<T>,
         title: String,
         constraint: String,
         onValueChanged: (String) -> Unit,
@@ -384,7 +384,7 @@ object SettingComponents {
 
     @Composable
     fun InputDialogEntry(
-        preference: Settings.Preference.StringPreference,
+        preference: Preferences.String,
         title: String,
         constraint: String,
         modifier: Modifier = Modifier,
@@ -399,7 +399,7 @@ object SettingComponents {
 
     @Composable
     fun InputDialogEntry(
-        preference: Settings.Preference.StringPreference,
+        preference: Preferences.String,
         @StringRes titleId: Int,
         constraint: String,
         modifier: Modifier = Modifier,
@@ -414,7 +414,7 @@ object SettingComponents {
 
     @Composable
     fun <T: Number> InputDialogEntry(
-        preference: Settings.Preference<T>,
+        preference: Preferences<T>,
         title: String,
         constraint: String,
         modifier: Modifier = Modifier,
@@ -425,9 +425,9 @@ object SettingComponents {
     ) {
         fun valueProcessor( newValue: String ) {
             when( preference ) {
-                is Settings.Preference.IntPreference -> preference.value = newValue.toInt()
-                is Settings.Preference.LongPreference -> preference.value = newValue.toLong()
-                is Settings.Preference.FloatPreference -> preference.value = newValue.toFloat()
+                is Preferences.Int -> preference.value = newValue.toInt()
+                is Preferences.Long -> preference.value = newValue.toLong()
+                is Preferences.Float -> preference.value = newValue.toFloat()
                 else -> throw UnsupportedOperationException(
                     "${preference::class} is not supported in <T: Number> InputDialogEntry"
                 )
@@ -441,7 +441,7 @@ object SettingComponents {
 
     @Composable
     fun <T: Number> InputDialogEntry(
-        preference: Settings.Preference<T>,
+        preference: Preferences<T>,
         @StringRes titleId: Int,
         constraint: String,
         modifier: Modifier = Modifier,

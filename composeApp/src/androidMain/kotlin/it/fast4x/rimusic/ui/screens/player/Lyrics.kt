@@ -90,8 +90,8 @@ import androidx.compose.ui.unit.sp
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
@@ -190,16 +190,16 @@ fun Lyrics(
         val currentView = LocalView.current
         val binder = LocalPlayerServiceBinder.current
 
-        var showlyricsthumbnail by Settings.LYRICS_SHOW_THUMBNAIL
-        var isShowingSynchronizedLyrics by Settings.LYRICS_SYNCHRONIZED
+        var showlyricsthumbnail by Preferences.LYRICS_SHOW_THUMBNAIL
+        var isShowingSynchronizedLyrics by Preferences.LYRICS_SYNCHRONIZED
         var invalidLrc by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
         var isPicking by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
-        var lyricsColor by Settings.LYRICS_COLOR
-        var lyricsOutline by Settings.LYRICS_OUTLINE
-        var lyricsFontSize by Settings.LYRICS_FONT_SIZE
+        var lyricsColor by Preferences.LYRICS_COLOR
+        var lyricsOutline by Preferences.LYRICS_OUTLINE
+        var lyricsFontSize by Preferences.LYRICS_FONT_SIZE
 
         val thumbnailSize = Dimensions.thumbnails.player.song
-        val colorPaletteMode by Settings.THEME_MODE
+        val colorPaletteMode by Preferences.THEME_MODE
 
         var isEditing by remember(mediaId, isShowingSynchronizedLyrics) {
             mutableStateOf(false)
@@ -230,11 +230,11 @@ fun Lyrics(
             mutableStateOf(false)
         }
 
-        var romanization by Settings.LYRICS_ROMANIZATION_TYPE
-        var showSecondLine by Settings.LYRICS_SHOW_SECOND_LINE
+        var romanization by Preferences.LYRICS_ROMANIZATION_TYPE
+        var showSecondLine by Preferences.LYRICS_SHOW_SECOND_LINE
 
-        var otherLanguageApp by Settings.OTHER_APP_LANGUAGE
-        var lyricsBackground by Settings.LYRICS_BACKGROUND
+        var otherLanguageApp by Preferences.OTHER_APP_LANGUAGE
+        var lyricsBackground by Preferences.LYRICS_BACKGROUND
 
         if (showLanguagesList) {
             translateEnabled = false
@@ -303,9 +303,9 @@ fun Lyrics(
             textCopyToClipboard(it, context)
         }
 
-        var fontSize by Settings.LYRICS_FONT_SIZE
-        val showBackgroundLyrics by Settings.LYRICS_SHOW_ACCENT_BACKGROUND
-        val playerEnableLyricsPopupMessage by Settings.PLAYER_ACTION_LYRICS_POPUP_MESSAGE
+        var fontSize by Preferences.LYRICS_FONT_SIZE
+        val showBackgroundLyrics by Preferences.LYRICS_SHOW_ACCENT_BACKGROUND
+        val playerEnableLyricsPopupMessage by Preferences.PLAYER_ACTION_LYRICS_POPUP_MESSAGE
 
         var checkedLyricsLrc by remember {
             mutableStateOf(false)
@@ -319,28 +319,28 @@ fun Lyrics(
         var checkLyrics by remember {
             mutableStateOf(false)
         }
-        var lyricsHighlight by Settings.LYRICS_HIGHLIGHT
-        var lyricsAlignment by Settings.LYRICS_ALIGNMENT
-        var lyricsSizeAnimate by Settings.LYRICS_ANIMATE_SIZE
+        var lyricsHighlight by Preferences.LYRICS_HIGHLIGHT
+        var lyricsAlignment by Preferences.LYRICS_ALIGNMENT
+        var lyricsSizeAnimate by Preferences.LYRICS_ANIMATE_SIZE
         val mediaMetadata = mediaMetadataProvider()
         var artistName by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.artist?.toString().orEmpty()))}
         var title by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.title?.toString().orEmpty()))}
-        var lyricsSize by Settings.LYRICS_SIZE
-        var lyricsSizeL by Settings.LYRICS_SIZE_LANDSCAPE
+        var lyricsSize by Preferences.LYRICS_SIZE
+        var lyricsSizeL by Preferences.LYRICS_SIZE_LANDSCAPE
         var customSize = if (isLandscape) lyricsSizeL else lyricsSize
         var showLyricsSizeDialog by rememberSaveable {
             mutableStateOf(false)
         }
         val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
-        val effectRotationEnabled by Settings.ROTATION_EFFECT
-        var landscapeControls by Settings.LYRICS_LANDSCAPE_CONTROLS
-        var jumpPrevious by Settings.JUMP_PREVIOUS
+        val effectRotationEnabled by Preferences.ROTATION_EFFECT
+        var landscapeControls by Preferences.LYRICS_LANDSCAPE_CONTROLS
+        var jumpPrevious by Preferences.JUMP_PREVIOUS
         var isRotated by rememberSaveable { mutableStateOf(false) }
         val rotationAngle by animateFloatAsState(
             targetValue = if (isRotated) 360F else 0f,
             animationSpec = tween(durationMillis = 200), label = ""
         )
-        val colorPaletteName by Settings.COLOR_PALETTE
+        val colorPaletteName by Preferences.COLOR_PALETTE
 
         if (showLyricsSizeDialog) {
             LyricsSizeDialog(

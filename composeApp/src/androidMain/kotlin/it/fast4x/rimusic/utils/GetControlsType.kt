@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerControlsType
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
@@ -34,20 +34,20 @@ fun GetControls(
     mediaId: String,
     onBlurScaleChange: (Float) -> Unit
 ) {
-    val playerControlsType by Settings.PLAYER_CONTROLS_TYPE
-    val playerPlayButtonType by Settings.PLAYER_PLAY_BUTTON_TYPE
+    val playerControlsType by Preferences.PLAYER_CONTROLS_TYPE
+    val playerPlayButtonType by Preferences.PLAYER_PLAY_BUTTON_TYPE
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
         targetValue = if (isRotated) 360F else 0f,
         animationSpec = tween(durationMillis = 200), label = ""
     )
-    val playerBackgroundColors by Settings.PLAYER_BACKGROUND
+    val playerBackgroundColors by Preferences.PLAYER_BACKGROUND
 
     val isGradientBackgroundEnabled = playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
             playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
 
-    var playbackSpeed by Settings.AUDIO_SPEED_VALUE
-    var playbackDuration by Settings.PLAYBACK_DURATION
+    var playbackSpeed by Preferences.AUDIO_SPEED_VALUE
+    var playbackDuration by Preferences.PLAYBACK_DURATION
     var setPlaybackDuration by remember { mutableStateOf(false) }
 
     var showSpeedPlayerDialog by rememberSaveable {

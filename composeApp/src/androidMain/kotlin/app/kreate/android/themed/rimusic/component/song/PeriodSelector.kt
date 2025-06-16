@@ -12,8 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.enums.MenuStyle
 import it.fast4x.rimusic.enums.StatisticsType
 import it.fast4x.rimusic.typography
@@ -27,7 +27,7 @@ import it.fast4x.rimusic.utils.semiBold
 
 class PeriodSelector(override val menuState: MenuState): MenuIcon, Descriptive, Menu {
 
-    var period: StatisticsType by Settings.HOME_SONGS_TOP_PLAYLIST_PERIOD
+    var period: StatisticsType by Preferences.HOME_SONGS_TOP_PLAYLIST_PERIOD
 
     override val iconId: Int
         get() = period.iconId
@@ -36,7 +36,7 @@ class PeriodSelector(override val menuState: MenuState): MenuIcon, Descriptive, 
         @Composable
         get() = stringResource( messageId )
 
-    override var menuStyle: MenuStyle = Settings.MENU_STYLE.value
+    override var menuStyle: MenuStyle = Preferences.MENU_STYLE.value
 
     fun onDismiss( period: StatisticsType ) {
         this.period = period
@@ -53,7 +53,7 @@ class PeriodSelector(override val menuState: MenuState): MenuIcon, Descriptive, 
 
     @Composable
     override fun MenuComponent() {
-        val size by Settings.MAX_NUMBER_OF_TOP_PLAYED
+        val size by Preferences.MAX_NUMBER_OF_TOP_PLAYED
 
         Menu {
             Row(

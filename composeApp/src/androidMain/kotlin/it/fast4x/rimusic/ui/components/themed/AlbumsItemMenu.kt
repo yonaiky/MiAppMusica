@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
@@ -94,7 +94,7 @@ fun AlbumsItemMenu(
         mutableStateOf(0.dp)
     }
 
-    val menuStyle by Settings.MENU_STYLE
+    val menuStyle by Preferences.MENU_STYLE
 
     if (menuStyle == MenuStyle.Grid) {
         AlbumsItemGridMenu(

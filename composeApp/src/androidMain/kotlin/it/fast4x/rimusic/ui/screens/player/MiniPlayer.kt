@@ -60,8 +60,8 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.cleanPrefix
@@ -155,7 +155,7 @@ fun MiniPlayer(
                 .distinctUntilChanged()
     }.collectAsState( false, Dispatchers.IO )
 
-    var miniPlayerType by Settings.MINI_PLAYER_TYPE
+    var miniPlayerType by Preferences.MINI_PLAYER_TYPE
 
     fun toggleLike() {
         CoroutineScope( Dispatchers.IO ).launch {
@@ -181,8 +181,8 @@ fun MiniPlayer(
             return@rememberSwipeToDismissBoxState false
         }
     )
-    val backgroundProgress by Settings.MINI_PLAYER_PROGRESS_BAR
-    val effectRotationEnabled by Settings.ROTATION_EFFECT
+    val backgroundProgress by Preferences.MINI_PLAYER_PROGRESS_BAR
+    val effectRotationEnabled by Preferences.ROTATION_EFFECT
     val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
     val playPauseRoundness by shouldBePlayingTransition.animateDp(
         transitionSpec = { tween(durationMillis = 100, easing = LinearEasing) },
@@ -195,9 +195,9 @@ fun MiniPlayer(
         targetValue = if (isRotated) 360F else 0f,
         animationSpec = tween(durationMillis = 200), label = ""
     )
-    val disableClosingPlayerSwipingDown by Settings.MINI_DISABLE_SWIPE_DOWN_TO_DISMISS
+    val disableClosingPlayerSwipingDown by Preferences.MINI_DISABLE_SWIPE_DOWN_TO_DISMISS
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     SwipeToDismissBox(
         modifier = Modifier

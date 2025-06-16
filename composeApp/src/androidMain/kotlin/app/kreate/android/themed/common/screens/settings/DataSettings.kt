@@ -27,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.BuildConfig
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
@@ -153,8 +153,8 @@ fun DataSettings() {
             section( R.string.cache, R.string.cache_cleared ) {
                 if( search.contains( R.string.image_cache_max_size ) )
                     ImageCacheFactory.DISK_CACHE.size.let { diskCacheSize ->
-                    var coilCustomDiskCache by Settings.THUMBNAIL_CACHE_CUSTOM_SIZE
-                    val coilDiskCacheMaxSize by Settings.THUMBNAIL_CACHE_SIZE
+                    var coilCustomDiskCache by Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
+                    val coilDiskCacheMaxSize by Preferences.THUMBNAIL_CACHE_SIZE
 
                     val subtitle by remember { derivedStateOf {
                         // How much space taken by this cache
@@ -178,9 +178,9 @@ fun DataSettings() {
                         " - $diskUsage$maxSize$used $percentage"
                     }}
                     SettingComponents.EnumEntry(
-                        Settings.THUMBNAIL_CACHE_SIZE,
+                        Preferences.THUMBNAIL_CACHE_SIZE,
                         R.string.image_cache_max_size,
-                        subtitle = Settings.THUMBNAIL_CACHE_SIZE.value.text + subtitle,
+                        subtitle = Preferences.THUMBNAIL_CACHE_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
                             HeaderIconButton(
@@ -221,8 +221,8 @@ fun DataSettings() {
 
                 if( search.contains( R.string.song_cache_max_size ) )
                     binder?.cache?.cacheSpace?.let { diskCacheSize ->
-                    var exoPlayerCustomCache by Settings.SONG_CACHE_CUSTOM_SIZE
-                    val exoPlayerDiskCacheMaxSize by Settings.SONG_CACHE_SIZE
+                    var exoPlayerCustomCache by Preferences.SONG_CACHE_CUSTOM_SIZE
+                    val exoPlayerDiskCacheMaxSize by Preferences.SONG_CACHE_SIZE
 
                     val subtitle by remember( diskCacheSize ) { derivedStateOf {
                         // How much space taken by this cache
@@ -254,9 +254,9 @@ fun DataSettings() {
                             ""
                     }}
                     SettingComponents.EnumEntry(
-                        Settings.SONG_CACHE_SIZE,
+                        Preferences.SONG_CACHE_SIZE,
                         R.string.song_cache_max_size,
-                        subtitle = Settings.SONG_CACHE_SIZE.value.text + subtitle,
+                        subtitle = Preferences.SONG_CACHE_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
                             HeaderIconButton(
@@ -298,7 +298,7 @@ fun DataSettings() {
 
                 if( search.contains( R.string.song_download_max_size ) )
                     binder?.downloadCache?.cacheSpace?.let { diskCacheSize ->
-                    val exoPlayerDiskDownloadCacheMaxSize by Settings.SONG_DOWNLOAD_SIZE
+                    val exoPlayerDiskDownloadCacheMaxSize by Preferences.SONG_DOWNLOAD_SIZE
 
                     val subtitle by remember( diskCacheSize ) { derivedStateOf {
                         // How much space taken by this cache
@@ -319,9 +319,9 @@ fun DataSettings() {
                             ""
                     }}
                     SettingComponents.EnumEntry(
-                        Settings.SONG_DOWNLOAD_SIZE,
+                        Preferences.SONG_DOWNLOAD_SIZE,
                         R.string.song_download_max_size,
-                        subtitle = Settings.SONG_DOWNLOAD_SIZE.value.text + subtitle,
+                        subtitle = Preferences.SONG_DOWNLOAD_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
                             HeaderIconButton(
@@ -339,7 +339,7 @@ fun DataSettings() {
                 }
 
                 SettingComponents.EnumEntry(
-                    Settings.EXO_CACHE_LOCATION,
+                    Preferences.EXO_CACHE_LOCATION,
                     R.string.set_cache_location,
                     action = SettingComponents.Action.RESTART_PLAYER_SERVICE
                 ){ onRestartServiceChange( true ) }
@@ -408,7 +408,7 @@ fun DataSettings() {
 
             section( R.string.search_history ) {
                 SettingComponents.BooleanEntry(
-                    Settings.PAUSE_SEARCH_HISTORY,
+                    Preferences.PAUSE_SEARCH_HISTORY,
                     R.string.pause_search_history,
                     R.string.neither_save_new_searched_query,
                     action = SettingComponents.Action.RESTART_PLAYER_SERVICE

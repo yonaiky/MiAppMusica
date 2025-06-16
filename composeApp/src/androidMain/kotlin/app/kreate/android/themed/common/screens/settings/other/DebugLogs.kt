@@ -17,8 +17,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings.DEBUG_LOG
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import it.fast4x.rimusic.colorPalette
@@ -54,14 +54,14 @@ private fun Entry(
         stringResource( titleId ),
         onExport,
         subtitle = stringResource( subtitleId ),
-        isEnabled = DEBUG_LOG.value
+        isEnabled = Preferences.DEBUG_LOG.value
     ) {
         Icon(
             painter = painterResource( R.drawable.copy ),
             contentDescription = stringResource( R.string.copy_log_to_clipboard ),
             tint = colorPalette().background4,
             modifier = Modifier.size( 24.dp )
-                               .clickable( enabled = DEBUG_LOG.value ) {
+                               .clickable( enabled = Preferences.DEBUG_LOG.value ) {
                                    val logs = onReadLogs()
                                    if ( logs.isEmpty() )
                                        Toaster.w( R.string.no_log_available )

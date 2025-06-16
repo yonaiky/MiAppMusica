@@ -3,7 +3,7 @@ package it.fast4x.rimusic
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 
 @Composable
@@ -17,10 +17,10 @@ fun colorPalette() = LocalAppearance.current.colorPalette
 fun thumbnailShape() = LocalAppearance.current.thumbnailShape
 
 @Composable
-fun showSearchIconInNav() = Settings.SHOW_SEARCH_IN_NAVIGATION_BAR.value
+fun showSearchIconInNav() = Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR.value
 
 @Composable
-fun showStatsIconInNav() = Settings.SHOW_STATS_IN_NAVIGATION_BAR.value
+fun showStatsIconInNav() = Preferences.SHOW_STATS_IN_NAVIGATION_BAR.value
 
 @Composable
 fun binder() = LocalPlayerServiceBinder.current?.service
@@ -28,12 +28,12 @@ fun binder() = LocalPlayerServiceBinder.current?.service
 fun appContext(): Context = Dependencies.application.applicationContext
 fun context(): Context = Dependencies.application
 
-fun ytAccountName() = Settings.YOUTUBE_ACCOUNT_NAME.value
-fun ytAccountThumbnail() = Settings.YOUTUBE_ACCOUNT_AVATAR.value
-fun isVideoEnabled() = Settings.PLAYER_ACTION_TOGGLE_VIDEO.value
+fun ytAccountName() = Preferences.YOUTUBE_ACCOUNT_NAME.value
+fun ytAccountThumbnail() = Preferences.YOUTUBE_ACCOUNT_AVATAR.value
+fun isVideoEnabled() = Preferences.PLAYER_ACTION_TOGGLE_VIDEO.value
 
-fun isConnectionMeteredEnabled() = Settings.IS_CONNECTION_METERED.value
-fun isAutoSyncEnabled() = Settings.AUTO_SYNC.value
-fun isHandleAudioFocusEnabled() = Settings.AUDIO_SMART_PAUSE_DURING_CALLS.value
-fun isBassBoostEnabled() = Settings.AUDIO_BASS_BOOSTED.value
-fun isDebugModeEnabled() = Settings.DEBUG_LOG.value
+fun isConnectionMeteredEnabled() = Preferences.IS_CONNECTION_METERED.value
+fun isAutoSyncEnabled() = Preferences.AUTO_SYNC.value
+fun isHandleAudioFocusEnabled() = Preferences.AUDIO_SMART_PAUSE_DURING_CALLS.value
+fun isBassBoostEnabled() = Preferences.AUDIO_BASS_BOOSTED.value
+fun isDebugModeEnabled() = Preferences.DEBUG_LOG.value

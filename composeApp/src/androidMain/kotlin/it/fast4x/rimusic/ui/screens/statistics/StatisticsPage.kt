@@ -47,7 +47,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
@@ -116,17 +116,17 @@ fun StatisticsPage(
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
-    val thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+    val thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
-    val showStatsListeningTime by Settings.SHOW_LISTENING_STATS
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val showStatsListeningTime by Preferences.SHOW_LISTENING_STATS
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     val context = LocalContext.current
 
     val thumbnailSizeDp = Dimensions.thumbnails.song
     val thumbnailSize = thumbnailSizeDp.px
 
-    val maxStatisticsItems by Settings.MAX_NUMBER_OF_STATISTIC_ITEMS
+    val maxStatisticsItems by Preferences.MAX_NUMBER_OF_STATISTIC_ITEMS
     val from = remember( statisticsType ) { statisticsType.timeStampInMillis() }
 
     val artists by remember {
@@ -171,9 +171,9 @@ fun StatisticsPage(
         mutableStateOf(Download.STATE_STOPPED)
     }
 
-    val navigationBarPosition by Settings.NAVIGATION_BAR_POSITION
+    val navigationBarPosition by Preferences.NAVIGATION_BAR_POSITION
 
-    var statisticsCategory by Settings.STATISTIC_PAGE_CATEGORY
+    var statisticsCategory by Preferences.STATISTIC_PAGE_CATEGORY
     val buttonsList = listOf(
         StatisticsCategory.Songs to StatisticsCategory.Songs.text,
         StatisticsCategory.Artists to StatisticsCategory.Artists.text,

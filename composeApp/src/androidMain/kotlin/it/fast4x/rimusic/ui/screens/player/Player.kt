@@ -116,8 +116,8 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.kreate.android.screens.player.background.BlurredCover
 import app.kreate.android.themed.rimusic.screen.player.ActionBar
@@ -218,54 +218,54 @@ fun Player(
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current ?: return
     // Settings
-    val disablePlayerHorizontalSwipe by Settings.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED
-    val showlyricsthumbnail by Settings.LYRICS_SHOW_THUMBNAIL
-    val effectRotationEnabled by Settings.ROTATION_EFFECT
-    val playerThumbnailSize by Settings.PLAYER_PORTRAIT_THUMBNAIL_SIZE
-    var playerThumbnailSizeL by Settings.PLAYER_LANDSCAPE_THUMBNAIL_SIZE
-    val showvisthumbnail by Settings.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER
-    var thumbnailSpacing  by Settings.PLAYER_THUMBNAIL_SPACING
-    var thumbnailSpacingL  by Settings.PLAYER_THUMBNAIL_SPACING_LANDSCAPE
-    var thumbnailFade  by Settings.PLAYER_THUMBNAIL_FADE
-    var thumbnailFadeEx  by Settings.PLAYER_THUMBNAIL_FADE_EX
-    var imageCoverSize by Settings.PLAYER_THUMBNAIL_VINYL_SIZE
-    val queueDurationExpanded by Settings.PLAYER_IS_QUEUE_DURATION_EXPANDED
-    val statsExpanded by Settings.PLAYER_IS_STATS_FOR_NERDS_EXPANDED
-    var showthumbnail by Settings.PLAYER_SHOW_THUMBNAIL
-    val showButtonPlayerMenu by Settings.PLAYER_ACTION_SHOW_MENU
-    val showTotalTimeQueue by Settings.PLAYER_SHOW_TOTAL_QUEUE_TIME
-    val backgroundProgress by Settings.MINI_PLAYER_PROGRESS_BAR
-    var queueLoopState = Settings.QUEUE_LOOP_TYPE
-    val playerType by Settings.PLAYER_TYPE
-    val queueType by Settings.QUEUE_TYPE
-    val noblur by Settings.PLAYER_BACKGROUND_BLUR
-    val fadingedge by Settings.PLAYER_BACKGROUND_FADING_EDGE
-    val colorPaletteMode by Settings.THEME_MODE
-    val playerBackgroundColors by Settings.PLAYER_BACKGROUND
-    val animatedGradient by Settings.ANIMATED_GRADIENT
-    val thumbnailTapEnabled by Settings.PLAYER_TAP_THUMBNAIL_FOR_LYRICS
-    val showTopActionsBar by Settings.PLAYER_SHOW_TOP_ACTIONS_BAR
-    val blackgradient by Settings.BLACK_GRADIENT
-    val bottomgradient by Settings.PLAYER_BOTTOM_GRADIENT
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
-    var discoverState = Settings.ENABLE_DISCOVER
-    val titleExpanded by Settings.PLAYER_IS_TITLE_EXPANDED
-    val timelineExpanded by Settings.PLAYER_IS_TIMELINE_EXPANDED
-    val controlsExpanded by Settings.PLAYER_IS_CONTROLS_EXPANDED
-    val showCoverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_ANIMATION
-    var coverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_TYPE
-    var albumCoverRotation by Settings.PLAYER_THUMBNAIL_ROTATION
-    val textoutline by Settings.TEXT_OUTLINE
-    val carousel by Settings.PLAYER_THUMBNAILS_CAROUSEL
-    val carouselSize by Settings.CAROUSEL_SIZE
-    val clickLyricsText by Settings.LYRICS_JUMP_ON_TAP
-    var extraspace by Settings.PLAYER_EXTRA_SPACE
-    val thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
-    val thumbnailType by Settings.THUMBNAIL_TYPE
-    val statsfornerds by Settings.PLAYER_STATS_FOR_NERDS
-    val topPadding by Settings.PLAYER_TOP_PADDING
-    var swipeAnimationNoThumbnail by Settings.PLAYER_NO_THUMBNAIL_SWIPE_ANIMATION
-    val expandPlayerState = Settings.PLAYER_EXPANDED
+    val disablePlayerHorizontalSwipe by Preferences.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED
+    val showlyricsthumbnail by Preferences.LYRICS_SHOW_THUMBNAIL
+    val effectRotationEnabled by Preferences.ROTATION_EFFECT
+    val playerThumbnailSize by Preferences.PLAYER_PORTRAIT_THUMBNAIL_SIZE
+    var playerThumbnailSizeL by Preferences.PLAYER_LANDSCAPE_THUMBNAIL_SIZE
+    val showvisthumbnail by Preferences.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER
+    var thumbnailSpacing  by Preferences.PLAYER_THUMBNAIL_SPACING
+    var thumbnailSpacingL  by Preferences.PLAYER_THUMBNAIL_SPACING_LANDSCAPE
+    var thumbnailFade  by Preferences.PLAYER_THUMBNAIL_FADE
+    var thumbnailFadeEx  by Preferences.PLAYER_THUMBNAIL_FADE_EX
+    var imageCoverSize by Preferences.PLAYER_THUMBNAIL_VINYL_SIZE
+    val queueDurationExpanded by Preferences.PLAYER_IS_QUEUE_DURATION_EXPANDED
+    val statsExpanded by Preferences.PLAYER_IS_STATS_FOR_NERDS_EXPANDED
+    var showthumbnail by Preferences.PLAYER_SHOW_THUMBNAIL
+    val showButtonPlayerMenu by Preferences.PLAYER_ACTION_SHOW_MENU
+    val showTotalTimeQueue by Preferences.PLAYER_SHOW_TOTAL_QUEUE_TIME
+    val backgroundProgress by Preferences.MINI_PLAYER_PROGRESS_BAR
+    var queueLoopState = Preferences.QUEUE_LOOP_TYPE
+    val playerType by Preferences.PLAYER_TYPE
+    val queueType by Preferences.QUEUE_TYPE
+    val noblur by Preferences.PLAYER_BACKGROUND_BLUR
+    val fadingedge by Preferences.PLAYER_BACKGROUND_FADING_EDGE
+    val colorPaletteMode by Preferences.THEME_MODE
+    val playerBackgroundColors by Preferences.PLAYER_BACKGROUND
+    val animatedGradient by Preferences.ANIMATED_GRADIENT
+    val thumbnailTapEnabled by Preferences.PLAYER_TAP_THUMBNAIL_FOR_LYRICS
+    val showTopActionsBar by Preferences.PLAYER_SHOW_TOP_ACTIONS_BAR
+    val blackgradient by Preferences.BLACK_GRADIENT
+    val bottomgradient by Preferences.PLAYER_BOTTOM_GRADIENT
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
+    var discoverState = Preferences.ENABLE_DISCOVER
+    val titleExpanded by Preferences.PLAYER_IS_TITLE_EXPANDED
+    val timelineExpanded by Preferences.PLAYER_IS_TIMELINE_EXPANDED
+    val controlsExpanded by Preferences.PLAYER_IS_CONTROLS_EXPANDED
+    val showCoverThumbnailAnimation by Preferences.PLAYER_THUMBNAIL_ANIMATION
+    var coverThumbnailAnimation by Preferences.PLAYER_THUMBNAIL_TYPE
+    var albumCoverRotation by Preferences.PLAYER_THUMBNAIL_ROTATION
+    val textoutline by Preferences.TEXT_OUTLINE
+    val carousel by Preferences.PLAYER_THUMBNAILS_CAROUSEL
+    val carouselSize by Preferences.CAROUSEL_SIZE
+    val clickLyricsText by Preferences.LYRICS_JUMP_ON_TAP
+    var extraspace by Preferences.PLAYER_EXTRA_SPACE
+    val thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
+    val thumbnailType by Preferences.THUMBNAIL_TYPE
+    val statsfornerds by Preferences.PLAYER_STATS_FOR_NERDS
+    val topPadding by Preferences.PLAYER_TOP_PADDING
+    var swipeAnimationNoThumbnail by Preferences.PLAYER_NO_THUMBNAIL_SWIPE_ANIMATION
+    val expandPlayerState = Preferences.PLAYER_EXPANDED
     var expandedplayer by expandPlayerState
 
 

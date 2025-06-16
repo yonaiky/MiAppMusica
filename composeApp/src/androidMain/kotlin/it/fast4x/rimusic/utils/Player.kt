@@ -15,8 +15,8 @@ import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.enums.DurationInMinutes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -266,7 +266,7 @@ fun Player.findMediaItemIndexById(mediaId: String): Int {
 fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): List<MediaItem> {
     var filteredMediaItems = mediaItems
     runCatching {
-        val excludeSongWithDurationLimit by Settings.LIMIT_SONGS_WITH_DURATION
+        val excludeSongWithDurationLimit by Preferences.LIMIT_SONGS_WITH_DURATION
 
         if (excludeSongWithDurationLimit != DurationInMinutes.Disabled) {
             filteredMediaItems = mediaItems.filter {
@@ -287,7 +287,7 @@ fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): Lis
 }
 fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
     runCatching {
-        val excludeSongWithDurationLimit by Settings.LIMIT_SONGS_WITH_DURATION
+        val excludeSongWithDurationLimit by Preferences.LIMIT_SONGS_WITH_DURATION
         if (excludeSongWithDurationLimit != DurationInMinutes.Disabled) {
             val excludedSong = mediaItem.mediaMetadata.extras?.getString("durationText")?.let { it1 ->
                     durationTextToMillis(it1)

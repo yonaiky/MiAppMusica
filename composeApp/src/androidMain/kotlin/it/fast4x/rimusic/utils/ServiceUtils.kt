@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
@@ -55,7 +55,7 @@ fun RestartActivity(
     restart: Boolean = false,
     onRestart: () -> Unit
 ) {
-    var restartActivity by Settings.RESTART_ACTIVITY
+    var restartActivity by Preferences.RESTART_ACTIVITY
     val context = LocalContext.current
     AnimatedVisibility(visible = restart) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {

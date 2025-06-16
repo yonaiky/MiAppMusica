@@ -17,7 +17,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.LifecycleOwner
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
@@ -37,8 +37,8 @@ fun YoutubePlayer(
 
     if (!showPlayer) return
 
-    var lastYTVideoId by Settings.YOUTUBE_LAST_VIDEO_ID
-    var lastYTVideoSeconds by Settings.YOUTUBE_LAST_VIDEO_SECONDS
+    var lastYTVideoId by Preferences.YOUTUBE_LAST_VIDEO_ID
+    var lastYTVideoSeconds by Preferences.YOUTUBE_LAST_VIDEO_SECONDS
 
 //    val currentYTVideoId by remember { mutableStateOf(ytVideoId) }
 //    println("mediaItem youtubePlayer called currentYTVideoId $currentYTVideoId ytVideoId $ytVideoId lastYTVideoId $lastYTVideoId")
