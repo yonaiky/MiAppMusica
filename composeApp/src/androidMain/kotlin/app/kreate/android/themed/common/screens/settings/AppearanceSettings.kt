@@ -72,7 +72,7 @@ fun AppearanceSettings() {
                 PlayerActionBar( search )
             }
             section( R.string.notification_player ) {
-                if ( search.contains( R.string.notification_player ) ) {
+                if ( search appearsIn R.string.notification_player ) {
                     SettingComponents.EnumEntry(
                         Preferences.MEDIA_NOTIFICATION_FIRST_ICON,
                         R.string.notificationPlayerFirstIcon,
@@ -89,7 +89,7 @@ fun AppearanceSettings() {
             }
             if( isAtLeastAndroid7 )
                 section( R.string.wallpaper ) {
-                    if( search.contains( R.string.enable_wallpaper ) )
+                    if( search appearsIn R.string.enable_wallpaper )
                         SettingComponents.BooleanEntry(
                             Preferences.ENABLE_WALLPAPER,
                             R.string.enable_wallpaper
@@ -98,7 +98,7 @@ fun AppearanceSettings() {
                         Column(
                             Modifier.padding( start = 25.dp )
                         ) {
-                            if( search.contains( R.string.set_cover_thumbnail_as_wallpaper ) )
+                            if( search appearsIn R.string.set_cover_thumbnail_as_wallpaper )
                                 SettingComponents.EnumEntry(
                                     Preferences.WALLPAPER_TYPE,
                                     R.string.set_cover_thumbnail_as_wallpaper,

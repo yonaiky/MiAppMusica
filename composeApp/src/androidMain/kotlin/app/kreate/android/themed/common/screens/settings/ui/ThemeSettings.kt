@@ -95,7 +95,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
         )
     }
 
-    if( search.contains( R.string.theme ) )
+    if( search appearsIn R.string.theme  )
         SettingComponents.EnumEntry(
             Preferences.COLOR_PALETTE,
             R.string.theme
@@ -123,14 +123,14 @@ fun ThemeSettings( search: SettingEntrySearch ) {
         Column {
             SettingHeader( R.string.title_customized_light_theme_colors )
 
-            if( search.contains( R.string.title_reset_customized_light_colors ) )
+            if( search appearsIn R.string.title_reset_customized_light_colors  )
                 ButtonBarSettingEntry(
                     title = stringResource(R.string.title_reset_customized_light_colors),
                     text = stringResource(R.string.info_click_to_reset_default_light_colors),
                     icon = R.drawable.trash,
                     onClick = { resetCustomLightThemeDialog = true }
                 )
-            if( search.contains( R.string.color_background_1 ) )
+            if( search appearsIn R.string.color_background_1  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_1),
                     text = "",
@@ -139,7 +139,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_Background0 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_background_2 ) )
+            if( search appearsIn R.string.color_background_2  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_2),
                     text = "",
@@ -148,7 +148,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_Background1 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_background_3 ) )
+            if( search appearsIn R.string.color_background_3  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_3),
                     text = "",
@@ -157,7 +157,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_Background2 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_background_4 ) )
+            if( search appearsIn R.string.color_background_4  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_4),
                     text = "",
@@ -166,7 +166,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_Background3 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_background_5 ) )
+            if( search appearsIn R.string.color_background_5  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_5),
                     text = "",
@@ -175,7 +175,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_Background4 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_text ) )
+            if( search appearsIn R.string.color_text  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_text),
                     text = "",
@@ -184,7 +184,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_Text= it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_text_secondary ) )
+            if( search appearsIn R.string.color_text_secondary  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_text_secondary),
                     text = "",
@@ -193,7 +193,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_TextSecondary = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_text_disabled ) )
+            if( search appearsIn R.string.color_text_disabled  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_text_disabled),
                     text = "",
@@ -202,7 +202,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_TextDisabled = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_icon_button_player ) )
+            if( search appearsIn R.string.color_icon_button_player  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_icon_button_player),
                     text = "",
@@ -211,7 +211,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeLight_IconButtonPlayer = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_accent ) )
+            if( search appearsIn R.string.color_accent  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_accent),
                     text = "",
@@ -223,14 +223,14 @@ fun ThemeSettings( search: SettingEntrySearch ) {
 
             SettingHeader( R.string.title_customized_dark_theme_colors )
 
-            if( search.contains( R.string.title_reset_customized_dark_colors ) )
+            if( search appearsIn R.string.title_reset_customized_dark_colors  )
                 ButtonBarSettingEntry(
                     title = stringResource(R.string.title_reset_customized_dark_colors),
                     text = stringResource(R.string.click_to_reset_default_dark_colors),
                     icon = R.drawable.trash,
                     onClick = { resetCustomDarkThemeDialog = true }
                 )
-                if( search.contains( R.string.color_background_1 ) )
+                if( search appearsIn R.string.color_background_1  )
                     ColorSettingEntry(
                     title = stringResource(R.string.color_background_1),
                     text = "",
@@ -239,7 +239,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_Background0 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_background_2 ) )
+            if( search appearsIn R.string.color_background_2  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_2),
                     text = "",
@@ -248,7 +248,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_Background1 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_background_3 ) )
+            if( search appearsIn R.string.color_background_3  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_3),
                     text = "",
@@ -257,7 +257,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_Background2 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_background_4 ) )
+            if( search appearsIn R.string.color_background_4  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_4),
                     text = "",
@@ -266,7 +266,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_Background3 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_background_5 ) )
+            if( search appearsIn R.string.color_background_5  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_5),
                     text = "",
@@ -275,7 +275,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_Background4 = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_text ) )
+            if( search appearsIn R.string.color_text  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_text),
                     text = "",
@@ -284,7 +284,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_Text= it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_text_secondary ) )
+            if( search appearsIn R.string.color_text_secondary  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_text_secondary),
                     text = "",
@@ -293,7 +293,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_TextSecondary = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_text_disabled ) )
+            if( search appearsIn R.string.color_text_disabled  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_text_disabled),
                     text = "",
@@ -302,7 +302,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_TextDisabled = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_icon_button_player ) )
+            if( search appearsIn R.string.color_icon_button_player  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_icon_button_player),
                     text = "",
@@ -311,7 +311,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                         customThemeDark_IconButtonPlayer = it.hashCode()
                     }
                 )
-            if( search.contains( R.string.color_accent ) )
+            if( search appearsIn R.string.color_accent  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_accent),
                     text = "",

@@ -113,7 +113,7 @@ fun AccountSettings() {
                 var accountEmail by Preferences.YOUTUBE_ACCOUNT_EMAIL
                 var accountChannelHandle by Preferences.YOUTUBE_SELF_CHANNEL_HANDLE
 
-                if( search.inputValue.isBlank() || "YOUTUBE MUSIC".contains( search.inputValue, true ) )
+                if( search appearsIn "YOUTUBE MUSIC" )
                     SettingComponents.BooleanEntry(
                         Preferences.YOUTUBE_LOGIN,
                         "Enable YouTube Music Login"
@@ -160,7 +160,7 @@ fun AccountSettings() {
                                     else
                                         "Connect" to ""
                                 }
-                                if( search.inputValue.isBlank() || title.contains( search.inputValue ) )
+                                if( search appearsIn title )
                                     ButtonBarSettingEntry(
                                         isEnabled = true,
                                         title = title,
@@ -227,7 +227,7 @@ fun AccountSettings() {
                             }
                         }
 
-                        if( search.inputValue.isBlank() || "Sync data with YTM account".contains( search.inputValue ) )
+                        if( search appearsIn "Sync data with YTM account" )
                             SettingComponents.BooleanEntry(
                                 Preferences.YOUTUBE_PLAYLISTS_SYNC,
                                 "Sync data with YTM account",
@@ -362,7 +362,7 @@ fun AccountSettings() {
                         }
                     }
 
-                    if( search.contains( R.string.enable_piped_syncronization ) )
+                    if( search appearsIn R.string.enable_piped_syncronization )
                         SettingComponents.BooleanEntry(
                             Preferences.ENABLE_PIPED,
                             R.string.enable_piped_syncronization
@@ -372,7 +372,7 @@ fun AccountSettings() {
                         Column(
                             modifier = Modifier.padding(start = 25.dp)
                         ) {
-                            if( search.contains( R.string.piped_custom_instance ) )
+                            if( search appearsIn R.string.piped_custom_instance )
                                 SettingComponents.BooleanEntry(
                                     Preferences.IS_CUSTOM_PIPED,
                                     R.string.piped_custom_instance
@@ -381,7 +381,7 @@ fun AccountSettings() {
                             var isPipedCustomEnabled by Preferences.IS_CUSTOM_PIPED
                             AnimatedVisibility(visible = isPipedCustomEnabled) {
                                 Column {
-                                    if( search.contains( R.string.piped_custom_instance) )
+                                    if( search appearsIn R.string.piped_custom_instance )
                                         SettingComponents.InputDialogEntry(
                                             Preferences.PIPED_API_BASE_URL,
                                             R.string.piped_custom_instance,
@@ -391,7 +391,7 @@ fun AccountSettings() {
                                 }
                                 AnimatedVisibility(visible = !isPipedCustomEnabled) {
                                 Column {
-                                    if( search.contains( R.string.piped_change_instance) )
+                                    if( search appearsIn R.string.piped_change_instance )
                                         ButtonBarSettingEntry(
                                             title = stringResource(R.string.piped_change_instance),
                                             text = pipedInstanceName,
@@ -403,13 +403,13 @@ fun AccountSettings() {
                                 }
                             }
 
-                            if( search.contains( R.string.piped_username ) )
+                            if( search appearsIn R.string.piped_username )
                                 SettingComponents.InputDialogEntry(
                                     Preferences.PIPED_USERNAME,
                                     R.string.piped_username,
                                     InputDialogConstraints.ALL
                                 )
-                            if( search.contains( R.string.piped_password ) )
+                            if( search appearsIn R.string.piped_password )
                                 SettingComponents.InputDialogEntry(
                                     Preferences.PIPED_PASSWORD,
                                     R.string.piped_password,
@@ -423,7 +423,7 @@ fun AccountSettings() {
                                 else
                                     R.string.piped_disconnect to appContext().getString( R.string.piped_connected_to_s, Preferences.PIPED_INSTANCE_NAME.value )
                             }
-                            if( search.contains( titleId ) )
+                            if( search appearsIn titleId )
                                 ButtonBarSettingEntry(
                                     isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
                                     title = stringResource( titleId ),
@@ -444,7 +444,7 @@ fun AccountSettings() {
             if( isAtLeastAndroid81 )
                 section( R.string.social_discord ) {
 
-                    if( search.contains( R.string.discord_enable_rich_presence ) )
+                    if( search appearsIn R.string.discord_enable_rich_presence )
                         SettingComponents.BooleanEntry(
                             Preferences.DISCORD_LOGIN,
                             R.string.discord_enable_rich_presence

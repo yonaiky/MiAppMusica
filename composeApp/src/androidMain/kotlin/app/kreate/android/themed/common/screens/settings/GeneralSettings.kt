@@ -72,12 +72,12 @@ fun GeneralSettings() {
         ) {
             if( BuildConfig.IS_AUTOUPDATE )
                 section( R.string.update ) {
-                    if( search.contains( R.string.update ) )
+                    if( search appearsIn R.string.update )
                         Updater.SettingEntry()
                 }
 
             section( R.string.languages, sysLocaleText ) {
-                if( search.contains( R.string.app_language ) )
+                if( search appearsIn R.string.app_language )
                     SettingComponents.EnumEntry(
                         Preferences.APP_LANGUAGE,
                         R.string.app_language,
@@ -87,7 +87,7 @@ fun GeneralSettings() {
             }
 
             section( R.string.notification_type, R.string.notification_type_info ) {
-                if( search.contains( R.string.notification_type ) )
+                if( search appearsIn R.string.notification_type )
                     SettingComponents.EnumEntry(
                         Preferences.NOTIFICATION_TYPE,
                         R.string.notification_type,

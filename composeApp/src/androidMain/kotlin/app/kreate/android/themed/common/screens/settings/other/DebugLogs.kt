@@ -98,7 +98,7 @@ fun DebugLogs( context: Context, search: SettingEntrySearch ) {
         }
     }
 
-    if( search.contains( R.string.setting_entry_logs ) )
+    if( search appearsIn R.string.setting_entry_logs )
         Entry(
             context,
             R.string.setting_entry_logs,
@@ -110,7 +110,7 @@ fun DebugLogs( context: Context, search: SettingEntrySearch ) {
             { readLogs( context, false ) }
         )
 
-    if( search.contains( R.string.setting_entry_crash_log ) )
+    if( search appearsIn R.string.setting_entry_crash_log )
         Entry(
             context,
             R.string.setting_entry_crash_log,

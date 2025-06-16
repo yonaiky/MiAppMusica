@@ -148,7 +148,7 @@ fun About() {
                 }
             }
             section( R.string.troubleshooting ) {
-                if( search.contains( R.string.view_the_source_code ) )
+                if( search appearsIn R.string.view_the_source_code )
                     SettingsEntry(
                         title = stringResource( R.string.view_the_source_code ),
                         text = stringResource( R.string.you_will_be_redirected_to_github ),
@@ -157,7 +157,7 @@ fun About() {
                         }
                     )
 
-                if( search.contains( R.string.word_documentation ) )
+                if( search appearsIn R.string.word_documentation )
                     SettingsEntry(
                         title = stringResource( R.string.word_documentation ),
                         text = stringResource( R.string.opens_link_in_web_browser ),
@@ -166,7 +166,7 @@ fun About() {
                         }
                     )
 
-                if( search.contains( R.string.report_an_issue ) )
+                if( search appearsIn R.string.report_an_issue )
                     SettingsEntry(
                         title = stringResource(R.string.report_an_issue),
                         text = stringResource(R.string.you_will_be_redirected_to_github),
@@ -176,7 +176,7 @@ fun About() {
                         }
                 )
 
-                if( search.contains( R.string.request_a_feature_or_suggest_an_idea ) )
+                if( search appearsIn R.string.request_a_feature_or_suggest_an_idea )
                     SettingsEntry(
                         title = stringResource(R.string.request_a_feature_or_suggest_an_idea),
                         text = stringResource(R.string.you_will_be_redirected_to_github),
@@ -190,14 +190,14 @@ fun About() {
                 "$numTranslators ${context.getString( R.string.translators )}",
                 R.string.in_alphabetical_order
             ) {
-                if( search.contains( R.string.translators ) )
+                if( search appearsIn R.string.translators )
                     ShowTranslators()
             }
             section(
                 "$numCoders ${context.getString( R.string.about_developers_designers )}",
                 R.string.in_alphabetical_order
             ) {
-                if( search.contains( R.string.contributors ) )
+                if( search appearsIn R.string.contributors )
                     ShowDevelopers()
             }
         }

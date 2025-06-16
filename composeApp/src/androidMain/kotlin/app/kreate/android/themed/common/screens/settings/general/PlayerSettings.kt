@@ -42,7 +42,7 @@ fun PlayerSettings(
     restartService: Boolean,
     onRestartServiceChange: (Boolean) -> Unit
 ) {
-    if( search.contains( R.string.audio_quality_format ) ) {
+    if( search appearsIn R.string.audio_quality_format ) {
         SettingComponents.EnumEntry(
             Preferences.AUDIO_QUALITY,
             R.string.audio_quality_format
@@ -50,7 +50,7 @@ fun PlayerSettings(
 
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.enable_connection_metered ) )
+    if( search appearsIn R.string.enable_connection_metered )
         SettingComponents.BooleanEntry(
             Preferences.IS_CONNECTION_METERED,
             R.string.enable_connection_metered,
@@ -59,7 +59,7 @@ fun PlayerSettings(
             if ( it )
                 Preferences.AUDIO_QUALITY.value = AudioQualityFormat.Auto
         }
-    if( search.contains( R.string.setting_entry_smart_rewind ) ) {
+    if( search appearsIn R.string.setting_entry_smart_rewind ) {
 
         BasicText(
             text = stringResource(R.string.setting_entry_smart_rewind),
@@ -95,27 +95,27 @@ fun PlayerSettings(
             modifier = Modifier.padding(start = 12.dp)
         )
     }
-    if( search.contains( R.string.min_listening_time ) ) {
+    if( search appearsIn R.string.min_listening_time ) {
         SettingComponents.EnumEntry(
             Preferences.QUICK_PICKS_MIN_DURATION,
             R.string.min_listening_time
         )
         SettingComponents.Description( R.string.is_min_list_time_for_tips_or_quick_pics )
     }
-    if( search.contains( R.string.exclude_songs_with_duration_limit ) ) {
+    if( search appearsIn R.string.exclude_songs_with_duration_limit ) {
         SettingComponents.EnumEntry(
             Preferences.LIMIT_SONGS_WITH_DURATION,
             R.string.exclude_songs_with_duration_limit
         )
         SettingComponents.Description( R.string.exclude_songs_with_duration_limit_description )
     }
-    if( search.contains( R.string.pause_between_songs ) )
+    if( search appearsIn R.string.pause_between_songs )
         SettingComponents.EnumEntry(
             Preferences.PAUSE_BETWEEN_SONGS,
             R.string.pause_between_songs
         )
 
-    if( search.contains( R.string.player_pause_listen_history ) ) {
+    if( search appearsIn R.string.player_pause_listen_history ) {
 
         SettingComponents.BooleanEntry(
             Preferences.PAUSE_HISTORY,
@@ -127,32 +127,32 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.player_pause_on_volume_zero ) )
+    if( search appearsIn R.string.player_pause_on_volume_zero )
         SettingComponents.BooleanEntry(
             Preferences.PAUSE_WHEN_VOLUME_SET_TO_ZERO,
             R.string.player_pause_on_volume_zero,
             R.string.info_pauses_player_when_volume_zero
         )
-    if( search.contains( R.string.effect_fade_audio ) ) {
+    if( search appearsIn R.string.effect_fade_audio ) {
         SettingComponents.EnumEntry(
             Preferences.AUDIO_FADE_DURATION,
             R.string.effect_fade_audio
         )
         SettingComponents.Description( R.string.effect_fade_audio_description )
     }
-    if( search.contains( R.string.player_keep_minimized ) )
+    if( search appearsIn R.string.player_keep_minimized )
         SettingComponents.BooleanEntry(
             Preferences.PLAYER_KEEP_MINIMIZED,
             R.string.player_keep_minimized,
             R.string.when_click_on_a_song_player_start_minimized
         )
-    if( search.contains( R.string.player_collapsed_disable_swiping_down ) )
+    if( search appearsIn R.string.player_collapsed_disable_swiping_down )
         SettingComponents.BooleanEntry(
             Preferences.MINI_DISABLE_SWIPE_DOWN_TO_DISMISS,
             R.string.player_collapsed_disable_swiping_down,
             R.string.avoid_closing_the_player_cleaning_queue_by_swiping_down
         )
-    if( search.contains( R.string.player_auto_load_songs_in_queue ) ) {
+    if( search appearsIn R.string.player_auto_load_songs_in_queue ) {
         SettingComponents.BooleanEntry(
             Preferences.QUEUE_AUTO_APPEND,
             R.string.player_auto_load_songs_in_queue,
@@ -162,29 +162,29 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
     }
-    if( search.contains( R.string.max_songs_in_queue ) )
+    if( search appearsIn R.string.max_songs_in_queue )
         SettingComponents.EnumEntry(
             Preferences.MAX_NUMBER_OF_SONG_IN_QUEUE,
             R.string.max_songs_in_queue
         )
-    if( search.contains( R.string.discover ) )
+    if( search appearsIn R.string.discover )
         SettingComponents.BooleanEntry(
             Preferences.ENABLE_DISCOVER,
             R.string.discover,
             R.string.discoverinfo
         )
-    if( search.contains( R.string.playlistindicator ) )
+    if( search appearsIn R.string.playlistindicator )
         SettingComponents.BooleanEntry(
             Preferences.SHOW_PLAYLIST_INDICATOR,
             R.string.playlistindicator,
             R.string.playlistindicatorinfo
         )
-    if( search.contains( R.string.now_playing_indicator ) )
+    if( search appearsIn R.string.now_playing_indicator )
         SettingComponents.EnumEntry(
             Preferences.NOW_PLAYING_INDICATOR,
             R.string.now_playing_indicator
         )
-    if( isAtLeastAndroid6 && search.contains( R.string.resume_playback ) ) {
+    if( isAtLeastAndroid6 && search appearsIn R.string.resume_playback ) {
         SettingComponents.BooleanEntry(
             Preferences.RESUME_PLAYBACK_WHEN_CONNECT_TO_AUDIO_DEVICE,
             R.string.resume_playback,
@@ -195,7 +195,7 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) })
     }
-    if( search.contains( R.string.persistent_queue ) ) {
+    if( search appearsIn R.string.persistent_queue ) {
         SettingComponents.BooleanEntry(
             Preferences.ENABLE_PERSISTENT_QUEUE,
             R.string.persistent_queue,
@@ -210,7 +210,7 @@ fun PlayerSettings(
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                if( search.contains( R.string.resume_playback_on_start ) )
+                if( search appearsIn R.string.resume_playback_on_start )
                     SettingComponents.BooleanEntry(
                         Preferences.RESUME_PLAYBACK_ON_STARTUP,
                         R.string.resume_playback_on_start,
@@ -223,7 +223,7 @@ fun PlayerSettings(
             }
         }
     }
-    if( search.contains( R.string.close_app_with_back_button ) ) {
+    if( search appearsIn R.string.close_app_with_back_button ) {
         SettingComponents.BooleanEntry(
             Preferences.CLOSE_APP_ON_BACK,
             R.string.close_app_with_back_button,
@@ -235,7 +235,7 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.close_background_player ) ) {
+    if( search appearsIn R.string.close_background_player ) {
         SettingComponents.BooleanEntry(
             Preferences.CLOSE_BACKGROUND_JOB_IN_TASK_MANAGER,
             R.string.close_background_player,
@@ -246,7 +246,7 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.skip_media_on_error ) ) {
+    if( search appearsIn R.string.skip_media_on_error ) {
         SettingComponents.BooleanEntry(
             Preferences.PLAYBACK_SKIP_ON_ERROR,
             R.string.skip_media_on_error,
@@ -257,7 +257,7 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.skip_silence ) ) {
+    if( search appearsIn R.string.skip_silence ) {
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_SKIP_SILENCE,
             R.string.skip_silence,
@@ -289,7 +289,7 @@ fun PlayerSettings(
             }
         }
     }
-    if( search.contains( R.string.loudness_normalization ) ) {
+    if( search appearsIn R.string.loudness_normalization ) {
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_VOLUME_NORMALIZATION,
             R.string.loudness_normalization,
@@ -318,7 +318,7 @@ fun PlayerSettings(
             }
         }
     }
-    if( search.contains( R.string.settings_audio_bass_boost ) ) {
+    if( search appearsIn R.string.settings_audio_bass_boost ) {
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_BASS_BOOSTED,
             R.string.settings_audio_bass_boost
@@ -346,7 +346,7 @@ fun PlayerSettings(
             }
         }
     }
-    if( search.contains( R.string.settings_audio_reverb ) ) {
+    if( search appearsIn R.string.settings_audio_reverb ) {
         SettingComponents.EnumEntry(
             Preferences.AUDIO_REVERB_PRESET,
             R.string.settings_audio_reverb
@@ -355,14 +355,14 @@ fun PlayerSettings(
 
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.settings_audio_focus ) ) {
+    if( search appearsIn R.string.settings_audio_focus ) {
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_SMART_PAUSE_DURING_CALLS,
             R.string.settings_audio_focus,
             R.string.settings_audio_focus_info
         )
     }
-    if( search.contains( R.string.event_volumekeys ) ) {
+    if( search appearsIn R.string.event_volumekeys ) {
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_VOLUME_BUTTONS_CHANGE_SONG,
             R.string.event_volumekeys,
@@ -372,7 +372,7 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.event_shake ) ) {
+    if( search appearsIn R.string.event_shake ) {
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_SHAKE_TO_SKIP,
             R.string.event_shake,
@@ -383,7 +383,7 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search.contains( R.string.settings_enable_pip ) ) {
+    if( search appearsIn R.string.settings_enable_pip ) {
         SettingComponents.BooleanEntry(
             Preferences.IS_PIP_ENABLED,
             R.string.settings_enable_pip,
@@ -396,13 +396,13 @@ fun PlayerSettings(
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                if( search.contains( R.string.settings_pip_module ) )
+                if( search appearsIn R.string.settings_pip_module )
                     SettingComponents.EnumEntry(
                         Preferences.PIP_MODULE,
                         R.string.settings_pip_module
                     ) { onRestartServiceChange( true ) }
 
-                if( search.contains( R.string.settings_enable_pip_auto ) )
+                if( search appearsIn R.string.settings_enable_pip_auto )
                     SettingComponents.BooleanEntry(
                         Preferences.IS_AUTO_PIP_ENABLED,
                         R.string.settings_enable_pip_auto,
@@ -416,7 +416,7 @@ fun PlayerSettings(
 
         }
     }
-    if( search.contains( R.string.settings_enable_autodownload_song ) ) {
+    if( search appearsIn R.string.settings_enable_autodownload_song ) {
         SettingComponents.BooleanEntry(
             Preferences.AUTO_DOWNLOAD,
             R.string.settings_enable_autodownload_song
@@ -425,19 +425,21 @@ fun PlayerSettings(
             Column(
                 modifier = Modifier.padding(start = 25.dp)
             ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.AUTO_DOWNLOAD_ON_LIKE,
-                    R.string.settings_enable_autodownload_song_when_liked
-                )
+                if( search appearsIn R.string.settings_enable_autodownload_song_when_liked )
+                    SettingComponents.BooleanEntry(
+                        Preferences.AUTO_DOWNLOAD_ON_LIKE,
+                        R.string.settings_enable_autodownload_song_when_liked
+                    )
 
-                SettingComponents.BooleanEntry(
-                    Preferences.AUTO_DOWNLOAD_ON_ALBUM_BOOKMARKED,
-                    R.string.settings_enable_autodownload_song_when_album_bookmarked
-                )
+                if( search appearsIn R.string.settings_enable_autodownload_song_when_album_bookmarked )
+                    SettingComponents.BooleanEntry(
+                        Preferences.AUTO_DOWNLOAD_ON_ALBUM_BOOKMARKED,
+                        R.string.settings_enable_autodownload_song_when_album_bookmarked
+                    )
             }
         }
     }
-    if( search.contains( R.string.equalizer ) ) {
+    if( search appearsIn R.string.equalizer ) {
         val binder = LocalPlayerServiceBinder.current
         val launchEqualizer by rememberEqualizerLauncher( { binder?.player?.audioSessionId } )
 

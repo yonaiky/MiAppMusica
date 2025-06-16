@@ -151,7 +151,7 @@ fun DataSettings() {
             contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
         ) {
             section( R.string.cache, R.string.cache_cleared ) {
-                if( search.contains( R.string.image_cache_max_size ) )
+                if( search appearsIn R.string.image_cache_max_size )
                     ImageCacheFactory.DISK_CACHE.size.let { diskCacheSize ->
                     var coilCustomDiskCache by Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
                     val coilDiskCacheMaxSize by Preferences.THUMBNAIL_CACHE_SIZE
@@ -219,7 +219,7 @@ fun DataSettings() {
                     CacheSpaceIndicator(cacheType = CacheType.Images, horizontalPadding = 20.dp)
                 }
 
-                if( search.contains( R.string.song_cache_max_size ) )
+                if( search appearsIn R.string.song_cache_max_size )
                     binder?.cache?.cacheSpace?.let { diskCacheSize ->
                     var exoPlayerCustomCache by Preferences.SONG_CACHE_CUSTOM_SIZE
                     val exoPlayerDiskCacheMaxSize by Preferences.SONG_CACHE_SIZE
@@ -296,7 +296,7 @@ fun DataSettings() {
                     CacheSpaceIndicator(cacheType = CacheType.CachedSongs, horizontalPadding = 20.dp)
                 }
 
-                if( search.contains( R.string.song_download_max_size ) )
+                if( search appearsIn R.string.song_download_max_size )
                     binder?.downloadCache?.cacheSpace?.let { diskCacheSize ->
                     val exoPlayerDiskDownloadCacheMaxSize by Preferences.SONG_DOWNLOAD_SIZE
 
@@ -338,7 +338,7 @@ fun DataSettings() {
                     CacheSpaceIndicator(cacheType = CacheType.DownloadedSongs, horizontalPadding = 20.dp)
                 }
 
-                if( search.contains( R.string.set_cache_location ) )
+                if( search appearsIn R.string.set_cache_location )
                     SettingComponents.EnumEntry(
                         Preferences.EXO_CACHE_LOCATION,
                         R.string.set_cache_location,
@@ -353,7 +353,7 @@ fun DataSettings() {
                 R.string.title_backup_and_restore,
                 context.getString( R.string.existing_data_will_be_overwritten, BuildConfig.APP_NAME )
             ) {
-                if( search.contains( R.string.save_to_backup ) ) {
+                if( search appearsIn R.string.save_to_backup ) {
                     val exportDbDialog = ExportDatabaseDialog( context )
                     exportDbDialog.Render()
 
@@ -364,7 +364,7 @@ fun DataSettings() {
                     )
                     SettingComponents.Description( R.string.personal_preference )
                 }
-                if( search.contains( R.string.restore_from_backup ) ) {
+                if( search appearsIn R.string.restore_from_backup ) {
                     val importDatabase = ImportDatabase( context )
 
                     SettingsEntry(
@@ -373,7 +373,7 @@ fun DataSettings() {
                         onClick = importDatabase::onShortClick
                     )
                 }
-                if( search.contains( R.string.store_settings_in_a_file ) ) {
+                if( search appearsIn R.string.store_settings_in_a_file ) {
                     val exportSettingsDialog = ExportSettingsDialog( context )
                     exportSettingsDialog.Render()
 
@@ -387,7 +387,7 @@ fun DataSettings() {
                         isImportant = true
                     )
                 }
-                if( search.contains( R.string.title_import_settings ) ) {
+                if( search appearsIn R.string.title_import_settings ) {
                     val importSettings = ImportSettings( context )
 
                     SettingsEntry(
@@ -396,7 +396,7 @@ fun DataSettings() {
                         onClick = importSettings::onShortClick
                     )
                 }
-                if( search.contains( "Import migration file" ) ) {
+                if( search appearsIn "Import migration file" ) {
                     val importMigration = ImportMigration( context, binder )
 
                     SettingsEntry(
@@ -408,7 +408,7 @@ fun DataSettings() {
             }
 
             section( R.string.search_history ) {
-                if( search.contains( R.string.pause_search_history ) )
+                if( search appearsIn R.string.pause_search_history )
                     SettingComponents.BooleanEntry(
                         Preferences.PAUSE_SEARCH_HISTORY,
                         R.string.pause_search_history,
@@ -424,7 +424,7 @@ fun DataSettings() {
                             .map { it.size }
                 }.collectAsState( 0, Dispatchers.IO )
 
-                if( search.contains( R.string.clear_search_history ) )
+                if( search appearsIn R.string.clear_search_history )
                     SettingsEntry(
                         title = stringResource(R.string.clear_search_history),
                         text = if (queriesCount > 0) {

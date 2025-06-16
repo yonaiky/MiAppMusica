@@ -61,9 +61,6 @@ class SettingEntrySearch(
         const val ICON_PADDING = 7
     }
 
-    val inputValue: String
-        get() = input.text
-
     var input: TextFieldValue by mutableStateOf( TextFieldValue() )
     var isVisible: Boolean by mutableStateOf( false )
     var isFocused: Boolean by mutableStateOf( false )
@@ -87,7 +84,7 @@ class SettingEntrySearch(
                                     .copy(
                                         color = colorPalette().textDisabled
                                     ),
-                modifier = Modifier.conditional( inputValue.isNotBlank() ) { alpha( 0f ) }
+                modifier = Modifier.conditional( isNotBlank() ) { alpha( 0f ) }
             )
 
             // Actual text from user
@@ -107,10 +104,22 @@ class SettingEntrySearch(
         }
     }
 
-    fun contains( text: String ) = inputValue.isBlank() || text.contains( inputValue, true )
+    /**
+     * @return whether current searching value appears in provided [text].
+     */
+    infix fun appearsIn( text: String ) = isBlank() || text.contains( input.text, true )
 
+    /**
+     * Support for localization
+     *
+     * @return whether current searching value appears in provided localized text with [textId].
+     */
     @Composable
-    fun contains( @StringRes textId: Int ) = contains( stringResource( textId ) )
+    infix fun appearsIn( @StringRes textId: Int ) = this appearsIn stringResource( textId )
+
+    fun isBlank() = input.text.isBlank()
+
+    fun isNotBlank() = input.text.isNotBlank()
 
     @Composable
     fun HeaderIcon( modifier: Modifier ) =
@@ -176,7 +185,7 @@ class SettingEntrySearch(
             maxLines = 1,
             keyboardOptions = KeyboardOptions( imeAction = ImeAction.Search ),
             keyboardActions = KeyboardActions(onSearch = {
-                isVisible = inputValue.isNotBlank()
+                isVisible = isNotBlank()
                 isFocused = false
                 keyboardController?.hide()
             }),

@@ -92,7 +92,7 @@ fun OtherSettings() {
                     }
                 }
 
-                if( search.contains( R.string.blacklisted_folders ) )
+                if( search appearsIn R.string.blacklisted_folders )
                     StringListValueSelectorSettingsEntry(
                         title = stringResource(R.string.blacklisted_folders),
                         text = stringResource(R.string.edit_blacklist_for_on_device_songs),
@@ -118,14 +118,14 @@ fun OtherSettings() {
                         }
                     )
 
-                if( search.contains( R.string.folders ) )
+                if( search appearsIn R.string.folders )
                     SettingComponents.BooleanEntry(
                         Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS,
                         R.string.folders,
                         R.string.show_folders_in_on_device_page
                     )
                 AnimatedVisibility( Preferences.HOME_SONGS_ON_DEVICE_SHOW_FOLDERS.value ) {
-                    if( search.contains( R.string.folder_that_will_show_when_you_open_on_device_page ) )
+                    if( search appearsIn R.string.folder_that_will_show_when_you_open_on_device_page )
                         SettingComponents.InputDialogEntry(
                             Preferences.LOCAL_SONGS_FOLDER,
                             R.string.folder_that_will_show_when_you_open_on_device_page,
@@ -134,14 +134,14 @@ fun OtherSettings() {
                 }
             }
             section( R.string.androidheadunit ) {
-                if( search.contains( R.string.extra_space ) )
+                if( search appearsIn R.string.extra_space )
                     SettingComponents.BooleanEntry(
                         Preferences.PLAYER_EXTRA_SPACE,
                         R.string.extra_space
                     )
                 }
             section( R.string.service_lifetime ) {
-                if( search.contains( R.string.keep_screen_on ) )
+                if( search appearsIn R.string.keep_screen_on )
                     SettingComponents.BooleanEntry(
                         Preferences.KEEP_SCREEN_ON,
                         R.string.keep_screen_on,
@@ -163,7 +163,7 @@ fun OtherSettings() {
                         isIgnoringBatteryOptimizations = context.isIgnoringBatteryOptimizations
                     }
 
-                if( search.contains( R.string.ignore_battery_optimizations ) )
+                if( search appearsIn R.string.ignore_battery_optimizations )
                     SettingsEntry(
                         title = stringResource(R.string.ignore_battery_optimizations),
                         isEnabled = !isIgnoringBatteryOptimizations,
@@ -194,7 +194,7 @@ fun OtherSettings() {
                     )
             }
             section( R.string.proxy, R.string.restarting_rimusic_is_required ) {
-                if( search.contains( R.string.enable_proxy ) )
+                if( search appearsIn R.string.enable_proxy )
                     SettingComponents.BooleanEntry(
                         Preferences.IS_PROXY_ENABLED,
                         R.string.enable_proxy
@@ -204,14 +204,14 @@ fun OtherSettings() {
                     Column(
                         Modifier.padding( start = 25.dp )
                     ) {
-                        if( search.contains( R.string.proxy_mode ) )
+                        if( search appearsIn R.string.proxy_mode )
                             SettingComponents.EnumEntry(
                                 Preferences.PROXY_SCHEME,
                                 R.string.proxy_mode,
                                 { it.name }
                             )
 
-                        if( search.contains( R.string.proxy_host ) )
+                        if( search appearsIn R.string.proxy_host )
                             SettingComponents.InputDialogEntry(
                                 Preferences.PROXY_HOST,
                                 R.string.proxy_host,
@@ -219,7 +219,7 @@ fun OtherSettings() {
                                 keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Uri)
                             )
 
-                        if( search.contains( R.string.proxy_port ) )
+                        if( search appearsIn R.string.proxy_port )
                             SettingComponents.InputDialogEntry(
                                 Preferences.PROXY_PORT,
                                 R.string.proxy_port,
@@ -230,7 +230,7 @@ fun OtherSettings() {
                 }
             }
             section( R.string.parental_control ) {
-                if( search.contains( R.string.parental_control ) )
+                if( search appearsIn R.string.parental_control )
                     SettingComponents.BooleanEntry(
                         Preferences.PARENTAL_CONTROL,
                         R.string.parental_control,
@@ -238,7 +238,7 @@ fun OtherSettings() {
                     )
             }
             section( R.string.debug, R.string.restarting_rimusic_is_required ) {
-                if( search.contains( R.string.enable_log_debug ) )
+                if( search appearsIn R.string.enable_log_debug )
                     SettingComponents.BooleanEntry(
                         Preferences.DEBUG_LOG,
                         R.string.enable_log_debug,

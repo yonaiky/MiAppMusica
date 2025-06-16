@@ -129,7 +129,7 @@ fun UiSettings() {
                 var showthumbnail by Preferences.PLAYER_SHOW_THUMBNAIL
                 var keepPlayerMinimized by Preferences.PLAYER_KEEP_MINIMIZED
 
-                if( search.contains( R.string.interface_in_use ) )
+                if( search appearsIn R.string.interface_in_use )
                     SettingComponents.EnumEntry(
                         Preferences.MAIN_THEME,
                         R.string.interface_in_use,
@@ -194,10 +194,10 @@ fun UiSettings() {
                         }
                     }
 
-                if( search.contains( R.string.theme ) ) {
+                if( search appearsIn R.string.theme ) {
                     ThemeSettings( search )
                 }
-                if( search.contains( R.string.theme_mode ) )
+                if( search appearsIn R.string.theme_mode )
                     SettingComponents.EnumEntry(
                         preference = Preferences.COLOR_PALETTE,
                         titleId = R.string.theme,
@@ -209,91 +209,91 @@ fun UiSettings() {
                             }
                         }
                     )
-                if( search.contains( R.string.navigation_bar_position ) )
+                if( search appearsIn R.string.navigation_bar_position )
                     SettingComponents.EnumEntry(
                         Preferences.NAVIGATION_BAR_POSITION,
                         R.string.navigation_bar_position
                     )
-                if( search.contains( R.string.navigation_bar_type ) )
+                if( search appearsIn R.string.navigation_bar_type )
                     SettingComponents.EnumEntry(
                         Preferences.NAVIGATION_BAR_TYPE,
                         R.string.navigation_bar_type
                     )
-                if( search.contains( R.string.player_position ) )
+                if( search appearsIn R.string.player_position )
                     SettingComponents.EnumEntry(
                         Preferences.MINI_PLAYER_POSITION,
                         R.string.player_position
                     )
-                if( search.contains( R.string.menu_style ) )
+                if( search appearsIn R.string.menu_style )
                     SettingComponents.EnumEntry(
                         Preferences.MENU_STYLE,
                         R.string.menu_style
                     )
-                if( search.contains( R.string.default_page ) )
+                if( search appearsIn R.string.default_page )
                     SettingComponents.EnumEntry(
                         Preferences.STARTUP_SCREEN,
                         R.string.default_page
                     )
-                if( search.contains( R.string.transition_effect ) )
+                if( search appearsIn R.string.transition_effect )
                     SettingComponents.EnumEntry(
                         Preferences.TRANSITION_EFFECT,
                         R.string.transition_effect
                     )
-                if( UiType.ViMusic.isCurrent() && search.contains( R.string.vimusic_show_search_button_in_navigation_bar ) )
+                if( UiType.ViMusic.isCurrent() && search appearsIn R.string.vimusic_show_search_button_in_navigation_bar )
                     SettingComponents.BooleanEntry(
                         Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR,
                         R.string.vimusic_show_search_button_in_navigation_bar,
                         R.string.vismusic_only_in_left_right_navigation_bar
                     )
-                if( UiType.ViMusic.isCurrent() && search.contains( R.string.show_statistics_in_navigation_bar ) )
+                if( UiType.ViMusic.isCurrent() && search appearsIn R.string.show_statistics_in_navigation_bar )
                     SettingComponents.BooleanEntry(
                         Preferences.SHOW_STATS_IN_NAVIGATION_BAR,
                         R.string.show_statistics_in_navigation_bar
                     )
-                if( search.contains( R.string.show_floating_icon ) )
+                if( search appearsIn R.string.show_floating_icon )
                     SettingComponents.BooleanEntry(
                         Preferences.SHOW_FLOATING_ICON,
                         R.string.show_floating_icon
                     )
-                if( search.contains( R.string.settings_use_font_type ) )
+                if( search appearsIn R.string.settings_use_font_type )
                     SettingComponents.EnumEntry(
                         Preferences.FONT,
                         R.string.settings_use_font_type
                     )
-                if( search.contains( R.string.use_system_font ) )
+                if( search appearsIn R.string.use_system_font )
                     SettingComponents.BooleanEntry(
                         Preferences.USE_SYSTEM_FONT,
                         R.string.use_system_font,
                         R.string.use_font_by_the_system
                     )
-                if( search.contains( R.string.apply_font_padding ) ) {
+                if( search appearsIn R.string.apply_font_padding ) {
                     SettingComponents.BooleanEntry(
                         Preferences.APPLY_FONT_PADDING,
                         R.string.apply_font_padding,
                         R.string.add_spacing_around_texts
                     )
                 }
-                if( search.contains( R.string.swipe_to_action ) ) {
+                if( search appearsIn R.string.swipe_to_action ) {
                     SwipeActionSettings( search )
                 }
             }
             section( R.string.songs ) {
                 val showFavorites = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.favorites ) )
-                if( search.contains( showFavorites ) )
+                if( search appearsIn showFavorites )
                     SettingComponents.BooleanEntry(
                         Preferences.HOME_SONGS_SHOW_FAVORITES_CHIP,
                         showFavorites
                     )
 
                 val showCached = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.cached ) )
-                if( search.contains( showCached ) )
+                if( search appearsIn showCached )
                     SettingComponents.BooleanEntry(
                         Preferences.HOME_SONGS_SHOW_CACHED_CHIP,
                         showCached
                     )
 
                 val showDownloaded = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.downloaded ) )
-                if ( search.contains( showDownloaded ) )
+                if ( search appearsIn showDownloaded )
                     SettingComponents.BooleanEntry(
                         Preferences.HOME_SONGS_SHOW_DOWNLOADED_CHIP,
                         showDownloaded
@@ -301,14 +301,14 @@ fun UiSettings() {
 
                 val topNumber = stringResource( R.string.my_playlist_top, Preferences.MAX_NUMBER_OF_TOP_PLAYED.value )
                 val showMostPlayed = stringResource( R.string.setting_entry_show_chip, topNumber )
-                if ( search.contains( showMostPlayed ) )
+                if ( search appearsIn showMostPlayed )
                     SettingComponents.BooleanEntry(
                         Preferences.HOME_SONGS_SHOW_MOST_PLAYED_CHIP,
                         showMostPlayed
                     )
 
                 val showOnDevice = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.on_device ) )
-                if ( search.contains( showOnDevice ) )
+                if ( search appearsIn showOnDevice )
                     SettingComponents.BooleanEntry(
                         Preferences.HOME_SONGS_SHOW_ON_DEVICE_CHIP,
                         showOnDevice
@@ -316,40 +316,40 @@ fun UiSettings() {
             }
             section( R.string.playlists ) {
                 val showPiped = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.piped_playlists ) )
-                if ( search.contains( showPiped ) )
+                if ( search appearsIn showPiped )
                     SettingComponents.BooleanEntry(
                         Preferences.SHOW_PIPED_PLAYLISTS,
                         showPiped
                     )
 
                 val showPinned = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.pinned_playlists ) )
-                if ( search.contains( showPinned ) )
+                if ( search appearsIn showPinned )
                     SettingComponents.BooleanEntry(
                         Preferences.SHOW_PINNED_PLAYLISTS,
                         showPinned
                     )
 
                 val showMonthly = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.monthly_playlists ) )
-                if ( search.contains( showMonthly ) )
+                if ( search appearsIn showMonthly )
                     SettingComponents.BooleanEntry(
                         Preferences.SHOW_MONTHLY_PLAYLISTS,
                         showMonthly
                     )
             }
             section( R.string.smart_recommendations ) {
-                if( search.contains( R.string.statistics_max_number_of_items ) )
+                if( search appearsIn R.string.statistics_max_number_of_items )
                     SettingComponents.EnumEntry(
                         Preferences.MAX_NUMBER_OF_SMART_RECOMMENDATIONS,
                         R.string.statistics_max_number_of_items
                     )
             }
             section( R.string.statistics ) {
-                if( search.contains( R.string.statistics_max_number_of_items ) )
+                if( search appearsIn R.string.statistics_max_number_of_items )
                     SettingComponents.EnumEntry(
                         Preferences.MAX_NUMBER_OF_STATISTIC_ITEMS,
                         R.string.statistics_max_number_of_items
                     )
-                if( search.contains( R.string.listening_time ) )
+                if( search appearsIn R.string.listening_time )
                     SettingComponents.BooleanEntry(
                         Preferences.SHOW_LISTENING_STATS,
                         R.string.listening_time,
@@ -357,7 +357,7 @@ fun UiSettings() {
                     )
             }
             section( R.string.playlist_top ) {
-                if( search.contains( R.string.statistics_max_number_of_items ) )
+                if( search appearsIn R.string.statistics_max_number_of_items )
                     SettingComponents.EnumEntry(
                         Preferences.MAX_NUMBER_OF_TOP_PLAYED,
                         R.string.statistics_max_number_of_items

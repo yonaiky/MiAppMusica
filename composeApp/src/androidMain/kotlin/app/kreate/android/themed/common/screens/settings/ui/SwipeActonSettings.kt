@@ -13,7 +13,7 @@ import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 
 @Composable
 fun SwipeActionSettings( search: SettingEntrySearch ) {
-    if( search.contains( R.string.swipe_to_action ) )
+    if( search appearsIn R.string.swipe_to_action )
         SettingComponents.BooleanEntry(
             Preferences.ENABLE_SWIPE_ACTION,
             R.string.swipe_to_action,
@@ -24,32 +24,32 @@ fun SwipeActionSettings( search: SettingEntrySearch ) {
         Column(
             modifier = Modifier.padding(start = 25.dp)
         ) {
-            if( search.contains( R.string.queue_and_local_playlists_left_swipe ) )
+            if( search appearsIn R.string.queue_and_local_playlists_left_swipe )
                 SettingComponents.EnumEntry(
                     Preferences.QUEUE_SWIPE_LEFT_ACTION,
                     R.string.queue_and_local_playlists_left_swipe
                 )
-            if( search.contains( R.string.queue_and_local_playlists_right_swipe ) )
+            if( search appearsIn R.string.queue_and_local_playlists_right_swipe )
                 SettingComponents.EnumEntry(
                     Preferences.QUEUE_SWIPE_RIGHT_ACTION,
                     R.string.queue_and_local_playlists_right_swipe
                 )
-            if( search.contains( R.string.playlist_left_swipe ) )
+            if( search appearsIn R.string.playlist_left_swipe )
                 SettingComponents.EnumEntry(
                     Preferences.PLAYLIST_SWIPE_LEFT_ACTION,
                     R.string.playlist_left_swipe
                 )
-            if( search.contains( R.string.playlist_right_swipe ) )
+            if( search appearsIn R.string.playlist_right_swipe )
                 SettingComponents.EnumEntry(
                     Preferences.PLAYLIST_SWIPE_RIGHT_ACTION,
                     R.string.playlist_right_swipe
                 )
-            if( search.contains( R.string.album_left_swipe ) )
+            if( search appearsIn R.string.album_left_swipe )
                 SettingComponents.EnumEntry(
                     Preferences.ALBUM_SWIPE_LEFT_ACTION,
                     R.string.album_left_swipe
                 )
-            if( search.contains( R.string.album_right_swipe ) )
+            if( search appearsIn R.string.album_right_swipe )
                 SettingComponents.EnumEntry(
                     Preferences.ALBUM_SWIPE_RIGHT_ACTION,
                     R.string.album_right_swipe
