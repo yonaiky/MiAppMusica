@@ -3,6 +3,7 @@ package app.kreate.android.themed.common.screens.settings.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
@@ -17,10 +19,10 @@ import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.SettingHeader
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import it.fast4x.rimusic.ui.screens.settings.ColorSettingEntry
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
@@ -124,12 +126,17 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             SettingHeader( R.string.title_customized_light_theme_colors )
 
             if( search appearsIn R.string.title_reset_customized_light_colors  )
-                ButtonBarSettingEntry(
-                    title = stringResource(R.string.title_reset_customized_light_colors),
-                    text = stringResource(R.string.info_click_to_reset_default_light_colors),
-                    icon = R.drawable.trash,
-                    onClick = { resetCustomLightThemeDialog = true }
-                )
+                SettingComponents.Text(
+                    title = stringResource( R.string.title_reset_customized_light_colors ),
+                    subtitle = stringResource( R.string.info_click_to_reset_default_light_colors ),
+                    onClick = { resetCustomLightThemeDialog = true },
+                ) {
+                    Icon(
+                        painter = painterResource( R.drawable.trash ),
+                        contentDescription = stringResource( R.string.settings_reset ),
+                        tint = colorPalette().text,
+                    )
+                }
             if( search appearsIn R.string.color_background_1  )
                 ColorSettingEntry(
                     title = stringResource(R.string.color_background_1),
@@ -224,14 +231,19 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             SettingHeader( R.string.title_customized_dark_theme_colors )
 
             if( search appearsIn R.string.title_reset_customized_dark_colors  )
-                ButtonBarSettingEntry(
-                    title = stringResource(R.string.title_reset_customized_dark_colors),
-                    text = stringResource(R.string.click_to_reset_default_dark_colors),
-                    icon = R.drawable.trash,
-                    onClick = { resetCustomDarkThemeDialog = true }
-                )
-                if( search appearsIn R.string.color_background_1  )
-                    ColorSettingEntry(
+                SettingComponents.Text(
+                    title = stringResource( R.string.title_reset_customized_dark_colors ),
+                    subtitle = stringResource( R.string.click_to_reset_default_dark_colors ),
+                    onClick = { resetCustomDarkThemeDialog = true },
+                ) {
+                    Icon(
+                        painter = painterResource( R.drawable.trash ),
+                        contentDescription = stringResource( R.string.settings_reset ),
+                        tint = colorPalette().text,
+                    )
+                }
+            if( search appearsIn R.string.color_background_1  )
+                ColorSettingEntry(
                     title = stringResource(R.string.color_background_1),
                     text = "",
                     color = Color(customThemeDark_Background0),

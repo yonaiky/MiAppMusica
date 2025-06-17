@@ -3,6 +3,7 @@ package app.kreate.android.themed.common.screens.settings
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,12 +15,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -32,9 +35,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.glance.LocalContext
 import androidx.navigation.compose.rememberNavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
@@ -48,7 +53,6 @@ import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Instance
 import it.fast4x.piped.models.Session
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
@@ -60,7 +64,6 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
-import it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
@@ -75,6 +78,7 @@ import timber.log.Timber
 @ExperimentalMaterial3Api
 @Composable
 fun AccountSettings() {
+    val context = LocalContext.current
     val scrollState = rememberLazyListState()
 
     val search = remember {
@@ -120,12 +124,12 @@ fun AccountSettings() {
                     ) {
                         if( it ) return@BooleanEntry
 
-                        visitorData = ""
-                        dataSyncId = ""
-                        cookie = ""
-                        accountName = ""
-                        accountChannelHandle = ""
-                        accountEmail = ""
+                        Preferences.YOUTUBE_VISITOR_DATA.reset()
+                        Preferences.YOUTUBE_SYNC_ID.reset()
+                        Preferences.YOUTUBE_COOKIES.reset()
+                        Preferences.YOUTUBE_ACCOUNT_NAME.reset()
+                        Preferences.YOUTUBE_ACCOUNT_EMAIL.reset()
+                        Preferences.YOUTUBE_SELF_CHANNEL_HANDLE.reset()
                     }
 
                 AnimatedVisibility( Preferences.YOUTUBE_LOGIN.value ) {
@@ -160,22 +164,21 @@ fun AccountSettings() {
                                     else
                                         "Connect" to ""
                                 }
+
                                 if( search appearsIn title )
-                                    ButtonBarSettingEntry(
-                                        isEnabled = true,
+                                    SettingComponents.Text(
                                         title = title,
-                                        text = subtitle,
-                                        icon = R.drawable.ytmusic,
-                                        iconColor = colorPalette().text,
+                                        subtitle = subtitle,
                                         onClick = {
                                             if (isLoggedIn) {
-                                                cookie = ""
-                                                accountName = ""
-                                                accountChannelHandle = ""
-                                                accountEmail = ""
-                                                accountThumbnail = ""
-                                                visitorData = ""
-                                                dataSyncId = ""
+
+                                                Preferences.YOUTUBE_VISITOR_DATA.reset()
+                                                Preferences.YOUTUBE_SYNC_ID.reset()
+                                                Preferences.YOUTUBE_COOKIES.reset()
+                                                Preferences.YOUTUBE_ACCOUNT_NAME.reset()
+                                                Preferences.YOUTUBE_ACCOUNT_EMAIL.reset()
+                                                Preferences.YOUTUBE_SELF_CHANNEL_HANDLE.reset()
+                                                Preferences.YOUTUBE_ACCOUNT_AVATAR.reset()
                                                 loginYouTube = false
                                                 //Delete cookies after logout
                                                 val cookieManager = CookieManager.getInstance()
@@ -186,7 +189,13 @@ fun AccountSettings() {
                                             } else
                                                 loginYouTube = true
                                         }
-                                    )
+                                    ) {
+                                        Icon(
+                                            painter = painterResource( R.drawable.ytmusic ),
+                                            contentDescription = title,
+                                            tint = colorPalette().text,
+                                        )
+                                    }
 
                                 CustomModalBottomSheet(
                                     showSheet = loginYouTube,
@@ -389,17 +398,20 @@ fun AccountSettings() {
                                         )
                                     }
                                 }
-                                AnimatedVisibility(visible = !isPipedCustomEnabled) {
+                            AnimatedVisibility(visible = !isPipedCustomEnabled) {
                                 Column {
                                     if( search appearsIn R.string.piped_change_instance )
-                                        ButtonBarSettingEntry(
-                                            title = stringResource(R.string.piped_change_instance),
-                                            text = pipedInstanceName,
-                                            icon = R.drawable.open,
-                                            onClick = {
-                                                loadInstances = true
-                                            }
-                                        )
+                                        SettingComponents.Text(
+                                            title = stringResource( R.string.piped_change_instance ),
+                                            subtitle = pipedInstanceName,
+                                            onClick = { loadInstances = true }
+                                        ) {
+                                            Icon(
+                                                painter = painterResource( R.drawable.open ),
+                                                contentDescription = null,
+                                                tint = colorPalette().text
+                                            )
+                                        }
                                 }
                             }
 
@@ -421,22 +433,27 @@ fun AccountSettings() {
                                 if( Preferences.PIPED_API_TOKEN.value.isBlank() )
                                     R.string.piped_connect to ""
                                 else
-                                    R.string.piped_disconnect to appContext().getString( R.string.piped_connected_to_s, Preferences.PIPED_INSTANCE_NAME.value )
+                                    R.string.piped_disconnect to context.getString( R.string.piped_connected_to_s, Preferences.PIPED_INSTANCE_NAME.value )
                             }
                             if( search appearsIn titleId )
-                                ButtonBarSettingEntry(
-                                    isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
+                                SettingComponents.Text(
                                     title = stringResource( titleId ),
-                                    text = subtitle.format( pipedInstanceName ),
-                                    icon = R.drawable.piped_logo,
-                                    iconColor = colorPalette().red,
+                                    subtitle = subtitle.format( pipedInstanceName ),
+                                    isEnabled = pipedPassword.isNotEmpty() && pipedUsername.isNotEmpty() && pipedApiBaseUrl.isNotEmpty(),
                                     onClick = {
                                         if (pipedApiToken.isNotEmpty()) {
                                             pipedApiToken = ""
                                             executeLogin = false
-                                        } else executeLogin = true
+                                        } else
+                                            executeLogin = true
                                     }
-                                )
+                                ) {
+                                    Image(
+                                        painter = painterResource( R.drawable.piped_logo ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size( 24.dp )
+                                    )
+                                }
                         }
                     }
             }
@@ -454,22 +471,31 @@ fun AccountSettings() {
                         var loginDiscord by remember { mutableStateOf(false) }
                         var discordPersonalAccessToken by Preferences.DISCORD_ACCESS_TOKEN
 
+                        val (titleId, subtitle) = remember {
+                            if( Preferences.DISCORD_ACCESS_TOKEN.value.isBlank() )
+                                R.string.discord_connect to ""
+                            else
+                                R.string.discord_disconnect to context .getString( R.string.discord_connected_to_discord_account )
+                        }
+
                         Column {
-                            ButtonBarSettingEntry(
-                                isEnabled = true,
-                                title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
-                                    R.string.discord_connect
-                                ),
-                                text = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_connected_to_discord_account) else "",
-                                icon = R.drawable.logo_discord,
-                                iconColor = colorPalette().text,
-                                onClick = {
-                                    if (discordPersonalAccessToken.isNotEmpty())
-                                        discordPersonalAccessToken = ""
-                                    else
-                                        loginDiscord = true
+                            if( search appearsIn titleId )
+                                SettingComponents.Text(
+                                    title = stringResource( titleId ),
+                                    subtitle = subtitle,
+                                    onClick = {
+                                        if ( discordPersonalAccessToken.isNotEmpty() )
+                                            discordPersonalAccessToken = ""
+                                        else
+                                            loginDiscord = true
+                                    }
+                                ) {
+                                    Image(
+                                        painter = painterResource( R.drawable.piped_logo ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size( 24.dp )
+                                    )
                                 }
-                            )
 
                             CustomModalBottomSheet(
                                 showSheet = loginDiscord,

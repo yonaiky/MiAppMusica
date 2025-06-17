@@ -28,7 +28,6 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.SliderSettingsEntry
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
@@ -443,9 +442,9 @@ fun PlayerSettings(
         val binder = LocalPlayerServiceBinder.current
         val launchEqualizer by rememberEqualizerLauncher( { binder?.player?.audioSessionId } )
 
-        SettingsEntry(
-            title = stringResource(R.string.equalizer),
-            text = stringResource(R.string.interact_with_the_system_equalizer),
+        SettingComponents.Text(
+            title = stringResource( R.string.equalizer ),
+            subtitle = stringResource( R.string.interact_with_the_system_equalizer ),
             onClick = launchEqualizer
         )
     }

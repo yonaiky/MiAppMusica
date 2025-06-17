@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.glance.LocalContext
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
@@ -33,7 +35,6 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.styling.Dimensions
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,7 @@ import me.knighthat.utils.Toaster
 
 @Composable
 fun QuickPicksSettings() {
+    val context = LocalContext.current
     val scrollState = rememberLazyListState()
 
     val search = remember( isYouTubeLoggedIn() ) {
@@ -195,15 +197,18 @@ fun QuickPicksSettings() {
                     )
                 }
 
-                SettingsEntry(
-                    title = stringResource(R.string.reset_quick_picks),
-                    text = if (eventsCount > 0) {
-                        stringResource(R.string.delete_playback_events, eventsCount)
-                    } else {
-                        stringResource(R.string.quick_picks_are_cleared)
-                    },
-                    isEnabled = eventsCount > 0,
-                    onClick = { clearEvents = true }
+                val subtitle by remember { derivedStateOf {
+                    if( eventsCount > 0 )
+                        context.getString( R.string.delete_playback_events, eventsCount.toString() )
+                    else
+                        context.getString( R.string.quick_picks_are_cleared )
+                }}
+
+                SettingComponents.Text(
+                    title = stringResource( R.string.reset_quick_picks ),
+                    subtitle = subtitle,
+                    onClick = { clearEvents = true },
+                    isEnabled = eventsCount > 0
                 )
             }
         }

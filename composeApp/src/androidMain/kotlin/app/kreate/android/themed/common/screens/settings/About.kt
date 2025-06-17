@@ -44,7 +44,6 @@ import it.fast4x.rimusic.extensions.contributors.countDevelopers
 import it.fast4x.rimusic.extensions.contributors.countTranslators
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.getVersionName
 import it.fast4x.rimusic.utils.secondary
@@ -149,37 +148,37 @@ fun About() {
             }
             section( R.string.troubleshooting ) {
                 if( search appearsIn R.string.view_the_source_code )
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = stringResource( R.string.view_the_source_code ),
-                        text = stringResource( R.string.you_will_be_redirected_to_github ),
+                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
                         onClick = {
                             uriHandler.openUri( Repository.REPO_URL )
                         }
                     )
 
                 if( search appearsIn R.string.word_documentation )
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = stringResource( R.string.word_documentation ),
-                        text = stringResource( R.string.opens_link_in_web_browser ),
+                        subtitle = stringResource( R.string.opens_link_in_web_browser ),
                         onClick = {
                             uriHandler.openUri( "https://kreate.knighthat.me" )
                         }
                     )
 
                 if( search appearsIn R.string.report_an_issue )
-                    SettingsEntry(
-                        title = stringResource(R.string.report_an_issue),
-                        text = stringResource(R.string.you_will_be_redirected_to_github),
+                    SettingComponents.Text(
+                        title = stringResource( R.string.report_an_issue ),
+                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
                         onClick = {
                             val issuePath = "/issues/new?assignees=&labels=bug&template=bug_report.yaml"
                             uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
                         }
-                )
+                    )
 
                 if( search appearsIn R.string.request_a_feature_or_suggest_an_idea )
-                    SettingsEntry(
-                        title = stringResource(R.string.request_a_feature_or_suggest_an_idea),
-                        text = stringResource(R.string.you_will_be_redirected_to_github),
+                    SettingComponents.Text(
+                        title = stringResource( R.string.request_a_feature_or_suggest_an_idea ),
+                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
                         onClick = {
                             val issuePath = "/issues/new?assignees=&labels=feature_request&template=feature_request.yaml"
                             uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )

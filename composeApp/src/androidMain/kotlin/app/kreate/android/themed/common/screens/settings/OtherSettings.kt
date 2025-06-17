@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +40,6 @@ import app.kreate.android.themed.common.screens.settings.other.DebugLogs
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.screens.settings.StringListValueSelectorSettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
@@ -153,28 +153,27 @@ fun OtherSettings() {
                 if (isAtLeastAndroid12)
                     SettingComponents.Description( R.string.is_android12 )
 
-                var isIgnoringBatteryOptimizations by remember {
-                    mutableStateOf(context.isIgnoringBatteryOptimizations)
-                }
-                val activityResultLauncher =
-                    rememberLauncherForActivityResult(
-                        ActivityResultContracts.StartActivityForResult()
-                    ) {
-                        isIgnoringBatteryOptimizations = context.isIgnoringBatteryOptimizations
+                if( isAtLeastAndroid6 && search appearsIn R.string.ignore_battery_optimizations ) {
+                    var isIgnoringBatteryOptimizations by remember {
+                        mutableStateOf( context.isIgnoringBatteryOptimizations )
                     }
+                    val activityResultLauncher =
+                        rememberLauncherForActivityResult(
+                            ActivityResultContracts.StartActivityForResult()
+                        ) {
+                            isIgnoringBatteryOptimizations = context.isIgnoringBatteryOptimizations
+                        }
+                    val subtitle by remember { derivedStateOf {
+                        if (isIgnoringBatteryOptimizations)
+                            context.getString( R.string.already_unrestricted )
+                        else
+                            context.getString( R.string.disable_background_restrictions )
+                    }}
 
-                if( search appearsIn R.string.ignore_battery_optimizations )
-                    SettingsEntry(
-                        title = stringResource(R.string.ignore_battery_optimizations),
-                        isEnabled = !isIgnoringBatteryOptimizations,
-                        text = if (isIgnoringBatteryOptimizations) {
-                            stringResource(R.string.already_unrestricted)
-                        } else {
-                            stringResource(R.string.disable_background_restrictions)
-                        },
+                    SettingComponents.Text(
+                        title = stringResource( R.string.ignore_battery_optimizations ),
+                        subtitle = subtitle,
                         onClick = {
-                            if (!isAtLeastAndroid6) return@SettingsEntry
-
                             try {
                                 activityResultLauncher.launch(
                                     Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
@@ -192,6 +191,7 @@ fun OtherSettings() {
                             }
                         }
                     )
+                }
             }
             section( R.string.proxy, R.string.restarting_rimusic_is_required ) {
                 if( search appearsIn R.string.enable_proxy )

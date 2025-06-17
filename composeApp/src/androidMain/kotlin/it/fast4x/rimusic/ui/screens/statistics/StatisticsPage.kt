@@ -3,11 +3,11 @@ package it.fast4x.rimusic.ui.screens.statistics
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -25,8 +25,10 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -35,19 +37,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
@@ -69,7 +69,6 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.SongItem
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
@@ -235,34 +234,59 @@ fun StatisticsPage(
 
                 if (statisticsCategory == StatisticsCategory.Songs) {
 
-                        if (showStatsListeningTime)
-                            item(
-                                key = "headerListeningTime",
-                                span = { GridItemSpan(maxLineSpan) }
-                            ) {
-                                Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 8.dp)) {
-                                    SettingsEntry(
-                                        title = "${songs.size} ${stringResource(R.string.statistics_songs_heard)}",
-                                        text = "${formatAsTime(totalPlayTimes)} ${stringResource(R.string.statistics_of_time_taken)}",
-                                        onClick = {},
-                                        trailingContent = {
-                                            Image(
-                                                painter = painterResource(R.drawable.musical_notes),
-                                                contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette().shimmer),
-                                                modifier = Modifier
-                                                    .size(34.dp)
-                                            )
-                                        },
-                                        modifier = Modifier
-                                            .background(
-                                                color = colorPalette().background4,
-                                                shape = thumbnailRoundness.shape
-                                            )
+                    if (showStatsListeningTime)
+                        item(
+                            key = "headerListeningTime",
+                            span = { GridItemSpan(maxLineSpan) }
+                        ) {
+                            val title by remember { derivedStateOf {
+                                "${songs.size} ${context.getString( R.string.statistics_songs_heard )}"
+                            }}
+                            val subtitle by remember { derivedStateOf {
+                                "${formatAsTime(totalPlayTimes)} ${context.getString( R.string.statistics_of_time_taken )}"
+                            }}
 
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(
+                                                       start = 16.dp,
+                                                       end = 16.dp,
+                                                       bottom = 8.dp
+                                                   )
+                                                   .fillMaxWidth()
+                                                   .background(
+                                                       color = colorPalette().background4,
+                                                       shape = thumbnailRoundness.shape
+                                                   )
+                                                   .padding( all =  12.dp )
+                            ) {
+                                Column( Modifier.weight( 1f ) ) {
+                                    BasicText(
+                                        text = title,
+                                        maxLines = 1,
+                                        style = typography().xs
+                                                            .semiBold
+                                                            .copy( colorPalette().text ),
+                                        modifier = Modifier.padding( bottom = 4.dp )
+                                    )
+
+                                    BasicText(
+                                        text = subtitle,
+                                        maxLines = 2,
+                                        style = typography().xs
+                                                            .semiBold
+                                                            .copy( colorPalette().textSecondary )
                                     )
                                 }
+
+                                Icon(
+                                    painter = painterResource( R.drawable.musical_notes ),
+                                    contentDescription = null,
+                                    tint = colorPalette().shimmer,
+                                    modifier = Modifier.size( 34.dp )
+                                )
                             }
+                        }
 
 
                     items(

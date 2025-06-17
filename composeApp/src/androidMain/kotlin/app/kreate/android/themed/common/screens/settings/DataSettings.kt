@@ -47,7 +47,6 @@ import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.InputNumericDialog
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.asMediaItem
@@ -357,9 +356,9 @@ fun DataSettings() {
                     val exportDbDialog = ExportDatabaseDialog( context )
                     exportDbDialog.Render()
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = stringResource( R.string.save_to_backup ),
-                        text = stringResource( R.string.export_the_database ),
+                        subtitle = stringResource( R.string.export_the_database ),
                         onClick = exportDbDialog::showDialog
                     )
                     SettingComponents.Description( R.string.personal_preference )
@@ -367,9 +366,9 @@ fun DataSettings() {
                 if( search appearsIn R.string.restore_from_backup ) {
                     val importDatabase = ImportDatabase( context )
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = stringResource(R.string.restore_from_backup),
-                        text = stringResource(R.string.import_the_database),
+                        subtitle = stringResource(R.string.import_the_database),
                         onClick = importDatabase::onShortClick
                     )
                 }
@@ -377,9 +376,9 @@ fun DataSettings() {
                     val exportSettingsDialog = ExportSettingsDialog( context )
                     exportSettingsDialog.Render()
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = exportSettingsDialog.dialogTitle,
-                        text = stringResource( R.string.store_settings_in_a_file ),
+                        subtitle = stringResource( R.string.store_settings_in_a_file ),
                         onClick = exportSettingsDialog::showDialog
                     )
                     SettingComponents.Description(
@@ -390,18 +389,18 @@ fun DataSettings() {
                 if( search appearsIn R.string.title_import_settings ) {
                     val importSettings = ImportSettings( context )
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = stringResource( R.string.title_import_settings ),
-                        text = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
+                        subtitle = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
                         onClick = importSettings::onShortClick
                     )
                 }
                 if( search appearsIn "Import migration file" ) {
                     val importMigration = ImportMigration( context, binder )
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = "Import migration file",
-                        text = "For old users before conversion. \nUse old app to make a backup for migration",
+                        subtitle = "For old users before conversion. \nUse old app to make a backup for migration",
                         onClick = importMigration::onShortClick
                     )
                 }
@@ -424,21 +423,24 @@ fun DataSettings() {
                             .map { it.size }
                 }.collectAsState( 0, Dispatchers.IO )
 
+                val subtitle by remember { derivedStateOf {
+                    if (queriesCount > 0) {
+                        "${context.getString( R.string.delete )} $queriesCount${context.getString( R.string.search_queries )}"
+                    } else {
+                        context.getString( R.string.history_is_empty )
+                    }
+                }}
+
                 if( search appearsIn R.string.clear_search_history )
-                    SettingsEntry(
-                        title = stringResource(R.string.clear_search_history),
-                        text = if (queriesCount > 0) {
-                            "${stringResource(R.string.delete)} " + queriesCount + stringResource(R.string.search_queries)
-                        } else {
-                            stringResource(R.string.history_is_empty)
-                        },
-                        isEnabled = queriesCount > 0,
+                    SettingComponents.Text(
+                        title = stringResource( R.string.clear_search_history ),
+                        subtitle = subtitle,
                         onClick = {
                             Database.asyncTransaction {
                                 searchTable.deleteAll()
-                            }
 
-                            Toaster.done()
+                                Toaster.done()
+                            }
                         }
                     )
             }
