@@ -17,6 +17,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -33,6 +34,7 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.tab.toolbar.Icon
 import it.fast4x.rimusic.utils.bold
+import kotlinx.coroutines.launch
 
 class SettingEntrySearch(
     private val scrollableState: ScrollableState,
@@ -73,6 +75,8 @@ class SettingEntrySearch(
 
     @Composable
     fun HeaderText( textAlign: TextAlign, modifier: Modifier = Modifier ) {
+        val coroutineScope = rememberCoroutineScope()
+
         BasicText(
             text = stringResource( titleId ),
             style = TextStyle(
@@ -84,11 +88,11 @@ class SettingEntrySearch(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = modifier.clickable {
-                scrollableState.let {
-                    if( it is LazyGridState )
-                        it.requestScrollToItem( 0, 0 )
-                    else if( it is LazyListState )
-                        it.requestScrollToItem( 0, 0 )
+                coroutineScope.launch {
+                    if( scrollableState is LazyListState )
+                        scrollableState.animateScrollToItem( 0, 0 )
+                    else if( scrollableState is LazyGridState )
+                        scrollableState.animateScrollToItem( 0, 0 )
                 }
             }
         )
