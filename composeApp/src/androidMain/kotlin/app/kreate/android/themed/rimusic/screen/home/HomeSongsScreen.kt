@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.screen.home.onDevice.OnDeviceSong
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -56,7 +57,6 @@ import me.knighthat.component.ResetCache
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
-import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
 
@@ -81,7 +81,7 @@ fun HomeSongsScreen(navController: NavController ) {
     fun getSongs() = itemSelector.ifEmpty { itemsOnDisplayState }.toList()
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
-    val search = Search(lazyListState)
+    val search = remember { Search(lazyListState) }
     val locator = Locator( lazyListState, ::getSongs )
     val import = ImportSongsFromCSV()
     val shuffle = SongShuffler(::getSongs)
@@ -204,7 +204,7 @@ fun HomeSongsScreen(navController: NavController ) {
             }
 
             // Sticky search bar
-            search.SearchBar( this )
+            search.SearchBar()
 
             when( builtInPlaylist ) {
                 BuiltInPlaylist.OnDevice -> OnDeviceSong( navController, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs )

@@ -31,6 +31,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.song.PeriodSelector
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -75,7 +76,6 @@ import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HiddenSongs
-import me.knighthat.component.tab.Search
 import me.knighthat.database.ext.FormatWithSong
 
 @UnstableApi
@@ -194,13 +194,13 @@ fun HomeSongs(
                       .collect { items = it }
     }
 
-    LaunchedEffect( items, search.inputValue ) {
+    LaunchedEffect( items, search.input ) {
     items.filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
          .filter {
              // Without cleaning, user can search explicit songs with "e:"
              // I kinda want this to be a feature, but it seems unnecessary
-             val containsTitle = it.cleanTitle().contains( search.inputValue, true )
-             val containsArtist = it.cleanArtistsText().contains( search.inputValue, true )
+             val containsTitle = search appearsIn it.cleanTitle()
+             val containsArtist = search appearsIn it.cleanArtistsText()
 
              containsTitle || containsArtist
          }

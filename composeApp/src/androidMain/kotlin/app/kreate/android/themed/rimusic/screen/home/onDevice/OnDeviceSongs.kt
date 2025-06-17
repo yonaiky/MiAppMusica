@@ -46,6 +46,7 @@ import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -66,7 +67,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
 import me.knighthat.component.FolderItem
 import me.knighthat.component.SongItem
-import me.knighthat.component.tab.Search
 import me.knighthat.utils.PathUtils
 import me.knighthat.utils.Toaster
 import me.knighthat.utils.getLocalSongs
@@ -141,7 +141,7 @@ fun OnDeviceSong(
                    songsOnDevice = it
                }
     }
-    LaunchedEffect( songsOnDevice, search.inputValue, currentPath ) {
+    LaunchedEffect( songsOnDevice, search.input, currentPath ) {
         songsOnDevice.keys.filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
                           .filter {
                               // [showFolder4LocalSongs] must be false and
@@ -153,8 +153,8 @@ fun OnDeviceSong(
                           .filter {
                               // Without cleaning, user can search explicit songs with "e:"
                               // I kinda want this to be a feature, but it seems unnecessary
-                              val containsTitle = it.cleanTitle().contains( search.inputValue, true )
-                              val containsArtist = it.cleanArtistsText().contains( search.inputValue, true )
+                              val containsTitle = search appearsIn it.cleanTitle()
+                              val containsArtist = search appearsIn it.cleanArtistsText()
 
                               containsTitle || containsArtist
                           }

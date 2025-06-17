@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -65,7 +66,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
-import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 
 
@@ -92,7 +92,7 @@ fun HomeLibrary(
 
     var itemsOnDisplay by persistList<PlaylistPreview>("home/playlists/on_display")
 
-    val search = Search(lazyGridState)
+    val search = remember { Search(lazyGridState) }
 
     val sort = remember {
         Sort(menuState, Preferences.HOME_LIBRARY_SORT_BY, Preferences.HOME_LIBRARY_SORT_ORDER)
@@ -132,9 +132,9 @@ fun HomeLibrary(
                 .distinctUntilChanged()
                 .collect { items = it }
     }
-    LaunchedEffect( items, search.inputValue ) {
+    LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {
-            it.playlist.name.contains( search.inputValue, true )
+            search appearsIn it.playlist.name
         }
     }
 
@@ -205,7 +205,7 @@ fun HomeLibrary(
                 TabToolBar.Buttons( sort, sync, search, shuffle, newPlaylistDialog, importPlaylistDialog, itemSize )
 
                 // Sticky search bar
-                search.SearchBar( this )
+                search.SearchBar()
 
                 LazyVerticalGrid(
                     state = lazyGridState,

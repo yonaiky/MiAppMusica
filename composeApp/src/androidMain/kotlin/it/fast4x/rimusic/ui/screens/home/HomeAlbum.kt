@@ -46,6 +46,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -91,7 +92,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.database.AlbumTable
 
@@ -124,7 +124,7 @@ fun HomeAlbums(
 
     var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
 
-    val search = Search(lazyGridState)
+    val search = remember { Search(lazyGridState) }
 
     val sort = remember {
         Sort(menuState, Preferences.HOME_ALBUMS_SORT_BY, Preferences.HOME_ALBUM_SORT_ORDER)
@@ -160,11 +160,11 @@ fun HomeAlbums(
         }
 
     }
-    LaunchedEffect( items, search.inputValue ) {
+    LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {
-            it.title?.contains( search.inputValue, true) ?: false
-                    || it.year?.contains( search.inputValue, true) ?: false
-                    || it.authorsText?.contains( search.inputValue, true) ?: false
+            it.title?.let( search::appearsIn ) ?: false
+                    || it.year?.let( search::appearsIn ) ?: false
+                    || it.authorsText?.let( search::appearsIn ) ?: false
         }
     }
 
@@ -316,7 +316,7 @@ fun HomeAlbums(
                 }
 
                 // Sticky search bar
-                search.SearchBar( this )
+                search.SearchBar()
 
                 LazyVerticalGrid(
                     state = lazyGridState,

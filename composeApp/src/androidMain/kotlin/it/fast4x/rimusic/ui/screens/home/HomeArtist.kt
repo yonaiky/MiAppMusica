@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -73,7 +74,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 
 @ExperimentalMaterial3Api
@@ -106,7 +106,7 @@ fun HomeArtists(
 
     val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
-    val search = Search(lazyGridState)
+    val search = remember { Search(lazyGridState) }
 
     val sort = remember {
         Sort(menuState, Preferences.HOME_ARTISTS_SORT_BY, Preferences.HOME_ARTISTS_SORT_ORDER)
@@ -143,9 +143,9 @@ fun HomeArtists(
         }
 
     }
-    LaunchedEffect( items, search.inputValue ) {
+    LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {
-            it.name?.contains( search.inputValue, true ) ?: false
+            it.name?.let( search::appearsIn ) ?: false
         }
     }
     if (items.any{it.thumbnailUrl == null}) {
@@ -277,7 +277,7 @@ fun HomeArtists(
                 }
 
                 // Sticky search bar
-                search.SearchBar( this )
+                search.SearchBar()
 
                 LazyVerticalGrid(
                     state = lazyGridState,

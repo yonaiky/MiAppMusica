@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import app.kreate.android.themed.common.component.AbstractSearch
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 
 @Composable
@@ -57,7 +58,7 @@ fun SettingEntrySearch.RiMusicAnimatedHeader() {
                            .padding( horizontal = 10.dp )
     ) {
         HeaderIcon(
-            Modifier.padding( end = SettingEntrySearch.ICON_PADDING.dp )
+            Modifier.padding( end = AbstractSearch.DECO_BOX_ITEM_SPACING.dp )
                     .align( Alignment.CenterVertically )
         )
         AnimatedHeader()
