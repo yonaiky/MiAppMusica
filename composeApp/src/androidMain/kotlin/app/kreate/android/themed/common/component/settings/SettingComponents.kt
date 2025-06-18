@@ -345,31 +345,8 @@ object SettingComponents {
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
     ) {
-        val dialog = remember {
-            object : TextInputDialog(constraint) {
-                override val keyboardOption: KeyboardOptions = keyboardOption
-                override val dialogTitle: String
-                    @Composable
-                    get() = title
-
-                override var value: TextFieldValue by mutableStateOf( TextFieldValue(preference.value.toString()) )
-                override var isActive: Boolean by mutableStateOf( false )
-
-                override fun onSet( newValue: String ) {
-                    super.onSet(newValue)
-
-                    onValueChanged( newValue )
-
-                    hideDialog()
-                }
-
-                override fun hideDialog() {
-                    super.hideDialog()
-                    // Some processing might have happened after the value is set,
-                    // setting this back to match preference's value is best idea
-                    value = TextFieldValue(preference.value.toString())
-                }
-            }
+        val dialog = remember( preference.value ) {
+            SettingInputDialog(constraint, preference, title, onValueChanged, keyboardOption)
         }
         dialog.Render()
 
