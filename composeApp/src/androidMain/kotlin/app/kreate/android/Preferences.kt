@@ -566,7 +566,7 @@ sealed class Preferences<T>(
             Boolean( preferences, "AudioSkipSilence", "skipSilence", false )
         }
         val AUDIO_SKIP_SILENCE_LENGTH by lazy {
-            Long( preferences, "AudioSkipSilenceLength", "minimumSilenceDuration", 2_000_000L )
+            Long( preferences, "AudioSkipSilenceLength", "minimumSilenceDuration", 0L )
         }
         val AUDIO_VOLUME_NORMALIZATION by lazy {
             Boolean( preferences, "AudioVolumeNormalization", "volumeNormalization", false )
