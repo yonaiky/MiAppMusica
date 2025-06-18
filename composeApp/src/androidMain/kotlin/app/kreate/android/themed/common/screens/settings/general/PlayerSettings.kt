@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,12 +26,12 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.screens.settings.SliderSettingsEntry
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import it.fast4x.rimusic.utils.semiBold
 
+@OptIn(ExperimentalMaterial3Api::class)
 @UnstableApi
 @Composable
 fun PlayerSettings(
@@ -256,94 +254,73 @@ fun PlayerSettings(
         }
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }
-    if( search appearsIn R.string.skip_silence ) {
+    if( search appearsIn R.string.skip_silence )
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_SKIP_SILENCE,
             R.string.skip_silence,
             R.string.skip_silent_parts_during_playback
         )
-
-        AnimatedVisibility( Preferences.AUDIO_SKIP_SILENCE.value ) {
-            var minimumSilenceDuration by Preferences.AUDIO_SKIP_SILENCE_LENGTH
-            val initialValue by remember { derivedStateOf { minimumSilenceDuration.toFloat() / 1000L } }
-            var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
-
-            Column(
-                modifier = Modifier.padding(start = 25.dp)
-            ) {
-                SliderSettingsEntry(
-                    title = stringResource(R.string.minimum_silence_length),
-                    text = stringResource(R.string.minimum_silence_length_description),
-                    state = newValue,
-                    onSlide = { newValue = it },
-                    onSlideComplete = {
-                        minimumSilenceDuration = newValue.toLong() * 1000L
-                        onRestartServiceChange( true )
-                    },
-                    toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
-                    range = 1.00f..2000.000f
-                )
-
-                RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
-            }
-        }
+    AnimatedVisibility( Preferences.AUDIO_SKIP_SILENCE.value ) {
+        if( search appearsIn R.string.minimum_silence_length )
+            SettingComponents.SliderEntry(
+                preference = Preferences.AUDIO_SKIP_SILENCE_LENGTH,
+                titleId = R.string.minimum_silence_length,
+                subtitleId = R.string.minimum_silence_length_description,
+                // Allow positive numbers from 0 to 20_000 and empty string
+                constraints = "^(20000|1?\\d{1,4}|[1-9]?\\d{0,3}|0)?\$",
+                valueRange = 0f..20_000f,
+                steps = 199,     // 100ms per step
+                onTextDisplay = {
+                    // Float calculation is inaccurate, therefore, when
+                    // converted to Long, some value is imperfect (i.e. 9999)
+                    // This will ceil the value to make it truly 100ms per step
+                    val longValue = (it.toLong() + 99) / 100 * 100
+                    stringResource( R.string.format_ms, longValue )
+                },
+                onValueChangeFinished = { p, v -> p.value = v.toLong() },
+                modifier = Modifier.padding( start = 25.dp ),
+                action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+            )
     }
-    if( search appearsIn R.string.loudness_normalization ) {
+    if( search appearsIn R.string.loudness_normalization )
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_VOLUME_NORMALIZATION,
             R.string.loudness_normalization,
             R.string.autoadjust_the_volume
         )
-        AnimatedVisibility( Preferences.AUDIO_VOLUME_NORMALIZATION.value ) {
-            var loudnessBaseGain by Preferences.AUDIO_VOLUME_NORMALIZATION_TARGET
-            val initialValue by remember { derivedStateOf { loudnessBaseGain } }
-            var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
-
-
-            Column(
-                modifier = Modifier.padding(start = 25.dp)
-            ) {
-                SliderSettingsEntry(
-                    title = stringResource(R.string.settings_loudness_base_gain),
-                    text = stringResource(R.string.settings_target_gain_loudness_info),
-                    state = newValue,
-                    onSlide = { newValue = it },
-                    onSlideComplete = {
-                        loudnessBaseGain = newValue
-                    },
-                    toDisplay = { "%.1f dB".format(loudnessBaseGain).replace(",", ".") },
-                    range = -20f..20f
-                )
-            }
-        }
+    AnimatedVisibility( Preferences.AUDIO_VOLUME_NORMALIZATION.value ) {
+        if( search appearsIn R.string.settings_loudness_base_gain )
+            SettingComponents.SliderEntry(
+                preference = Preferences.AUDIO_VOLUME_NORMALIZATION_TARGET,
+                titleId = R.string.settings_loudness_base_gain,
+                subtitleId = R.string.settings_target_gain_loudness_info,
+                // Matches -20.0 to 20.0, allows empty string and incomplete decimal (i.e. 11.)
+                constraints = "^\$|^-?(20(\\.[0]?)?|1\\d(\\.\\d?)?|[1-9](\\.\\d?)?|0(\\.\\d?)?)\$",
+                valueRange = -20f..20f,
+                steps = 79,
+                onTextDisplay = { "%.1f dB".format( it ) },
+                onValueChangeFinished = { p, v -> p.value = v },
+                modifier = Modifier.padding( start = 25.dp )
+            )
     }
-    if( search appearsIn R.string.settings_audio_bass_boost ) {
+    if( search appearsIn R.string.settings_audio_bass_boost )
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_BASS_BOOSTED,
             R.string.settings_audio_bass_boost
         )
-        AnimatedVisibility( Preferences.AUDIO_BASS_BOOSTED.value ) {
-            var bassboostLevel by Preferences.AUDIO_BASS_BOOST_LEVEL
-            val initialValue by remember { derivedStateOf { bassboostLevel } }
-            var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
-
-
-            Column(
-                modifier = Modifier.padding(start = 25.dp)
-            ) {
-                SliderSettingsEntry(
-                    title = stringResource(R.string.settings_bass_boost_level),
-                    text = "",
-                    state = newValue,
-                    onSlide = { newValue = it },
-                    onSlideComplete = {
-                        bassboostLevel = newValue
-                    },
-                    toDisplay = { "%.1f".format(bassboostLevel).replace(",", ".") },
-                    range = 0f..1f
-                )
-            }
-        }
+    AnimatedVisibility( Preferences.AUDIO_BASS_BOOSTED.value ) {
+        if( search appearsIn R.string.settings_bass_boost_level )
+            SettingComponents.SliderEntry(
+                preference = Preferences.AUDIO_BASS_BOOST_LEVEL,
+                title = stringResource( R.string.settings_bass_boost_level ),
+                // Accepts 0.0 to 1.0, including empty string and incomplete decimal (i.e. 0.)
+                constraints = "^\$|^\\.\$|^(0?(\\.\\d)?|1(\\.0)?)\$",
+                valueRange = 0f..1f,
+                steps = 9,
+                onTextDisplay = { "%.1f".format( it ) },
+                onValueChangeFinished = { p, v -> p.value = v },
+                modifier = Modifier.padding( start = 25.dp )
+            )
     }
     if( search appearsIn R.string.settings_audio_reverb ) {
         SettingComponents.EnumEntry(

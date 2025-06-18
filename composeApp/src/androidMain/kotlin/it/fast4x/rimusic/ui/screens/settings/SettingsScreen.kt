@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,8 +45,6 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
-import it.fast4x.rimusic.ui.components.themed.IDialog
-import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
@@ -233,68 +229,4 @@ fun ColorSettingEntry(
             Toaster.n( R.string.info_color_s_applied, title )
         }
 
-}
-
-@Composable
-fun SliderSettingsEntry(
-    title: String,
-    text: String,
-    state: Float,
-    range: ClosedFloatingPointRange<Float>,
-    modifier: Modifier = Modifier,
-    onSlide: (Float) -> Unit = { },
-    onSlideComplete: () -> Unit = { },
-    toDisplay: @Composable (Float) -> String = { it.toString() },
-    steps: Int = 0,
-    isEnabled: Boolean = true,
-    usePadding: Boolean = true
-) = Column(modifier = modifier) {
-
-    val manualEnterDialog = object: IDialog {
-
-        var valueFloat: Float by remember( state ) { mutableFloatStateOf( state ) }
-
-        override val dialogTitle: String
-            @Composable
-            get() = stringResource( R.string.enter_the_value )
-
-        override var isActive: Boolean by rememberSaveable { mutableStateOf(false) }
-        override var value: String by remember( valueFloat ) {
-            mutableStateOf( "%.1f".format( valueFloat ).replace(",", ".") )
-        }
-
-        override fun onSet( newValue: String ) {
-            this.valueFloat = newValue.toFloatOrNull() ?: return
-            onSlide( this.valueFloat )
-            onSlideComplete()
-
-            onDismiss()
-        }
-    }
-    manualEnterDialog.Render()
-
-    SettingsEntry(
-        title = title,
-        text = "$text (${toDisplay(state)})",
-        onClick = manualEnterDialog::onShortClick,
-        isEnabled = isEnabled,
-        //usePadding = usePadding
-    )
-
-    Slider(
-        state = state,
-        setState = { value: Float ->
-            manualEnterDialog.valueFloat = value
-            onSlide(value)
-        },
-        onSlideComplete = onSlideComplete,
-        range = range,
-        steps = steps,
-        modifier = Modifier
-            .height(36.dp)
-            .alpha(if (isEnabled) 1f else 0.5f)
-            .let { if (usePadding) it.padding(start = 32.dp, end = 16.dp) else it }
-            .padding(vertical = 16.dp)
-            .fillMaxWidth()
-    )
 }
