@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -39,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.ColorPickerDialog
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.Switch
@@ -552,6 +555,41 @@ object SettingComponents {
         isEnabled = isEnabled,
         action = action
     )
+
+    @Composable
+    fun ColorPicker(
+        preference: Preferences.Int,
+        title: String,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE
+    ) {
+        val dialog = remember( preference.value ) {
+            val initialColor = Color(preference.value)
+            ColorPickerDialog(initialColor) {
+                preference.value = it.hashCode()
+            }
+        }
+        dialog.Render()
+
+        Text( title, dialog::showDialog, modifier, subtitle, isEnabled ) {
+            Box(
+                Modifier.size( 24.dp )
+                        .background( dialog.color, RoundedCornerShape( 3.dp ) )
+            )
+        }
+    }
+
+    @Composable
+    fun ColorPicker(
+        preference: Preferences.Int,
+        @StringRes titleId: Int,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE
+    ) = ColorPicker( preference, stringResource( titleId ), modifier, subtitle, isEnabled, action )
 
     /**
      * A set of actions to enact once the setting is set.
