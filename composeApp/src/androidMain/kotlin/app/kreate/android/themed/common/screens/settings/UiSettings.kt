@@ -200,7 +200,7 @@ fun UiSettings() {
                 if( search appearsIn R.string.theme_mode )
                     SettingComponents.EnumEntry(
                         preference = Preferences.COLOR_PALETTE,
-                        titleId = R.string.theme,
+                        titleId = R.string.theme_mode,
                         onValueChanged = {
                             when (it) {
                                 ColorPaletteName.PureBlack,
