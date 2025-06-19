@@ -28,7 +28,6 @@ import app.kreate.android.themed.common.screens.settings.ui.ThemeSettings
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
-import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.IconLikeType
 import it.fast4x.rimusic.enums.MiniPlayerType
@@ -197,18 +196,15 @@ fun UiSettings() {
                 if( search appearsIn R.string.theme ) {
                     ThemeSettings( search )
                 }
-                if( search appearsIn R.string.theme_mode )
-                    SettingComponents.EnumEntry(
-                        preference = Preferences.COLOR_PALETTE,
-                        titleId = R.string.theme_mode,
-                        onValueChanged = {
-                            when (it) {
-                                ColorPaletteName.PureBlack,
-                                ColorPaletteName.ModernBlack -> Preferences.THEME_MODE.value = ColorPaletteMode.System
-                                else -> { /* Does nothing */ }
-                            }
-                        }
-                    )
+                androidx.compose.animation.AnimatedVisibility(
+                    Preferences.COLOR_PALETTE.neither( ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack )
+                ) {
+                    if( search appearsIn R.string.theme_mode )
+                        SettingComponents.EnumEntry(
+                            titleId = R.string.theme_mode,
+                            preference = Preferences.COLOR_PALETTE
+                        )
+                }
                 if( search appearsIn R.string.navigation_bar_position )
                     SettingComponents.EnumEntry(
                         Preferences.NAVIGATION_BAR_POSITION,

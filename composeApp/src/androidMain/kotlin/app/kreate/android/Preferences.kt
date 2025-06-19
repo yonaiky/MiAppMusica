@@ -1206,6 +1206,11 @@ sealed class Preferences<T>(
          */
         fun either( vararg others: E ): kotlin.Boolean = value in others
 
+        /**
+         * @return `true` if none of the provided values is the current value
+         */
+        fun neither( vararg others: E ): kotlin.Boolean = value !in others
+
         override fun getFromSharedPreferences(): E? {
             var fromFile: kotlin.String? = null
 
