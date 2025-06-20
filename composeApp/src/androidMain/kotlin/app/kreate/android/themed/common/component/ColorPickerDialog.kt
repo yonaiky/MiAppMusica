@@ -89,16 +89,7 @@ class ColorPickerDialog(
     override var isActive: Boolean by mutableStateOf( false )
 
     @Composable
-    private fun HueSlider() {
-        // Gradient with full hue spectrum
-        val hueColors = remember {
-            listOf(
-                0f, 60f, 120f, 180f, 240f, 300f, 360f
-            ).map { h ->
-                Color(android.graphics.Color.HSVToColor( floatArrayOf(h, 1f, 1f) ))
-            }
-        }
-
+    private fun HueSlider() =
         Slider(
             value = hue,
             onValueChange = { hue = it.coerceIn( 0f, 360f ) },
@@ -107,6 +98,15 @@ class ColorPickerDialog(
             modifier = Modifier.fillMaxWidth()
                                .height( 30.dp ),
             track = {
+                // Gradient with full hue spectrum
+                val hueColors = remember {
+                    listOf(
+                        0f, 60f, 120f, 180f, 240f, 300f, 360f
+                    ).map { h ->
+                        Color(android.graphics.Color.HSVToColor( floatArrayOf(h, 1f, 1f) ))
+                    }
+                }
+
                 // Custom tracker with brush (gradient) color
                 Box(
                     Modifier.fillMaxWidth()
@@ -124,7 +124,6 @@ class ColorPickerDialog(
                 )
             }
         )
-    }
 
     @Composable
     private fun SaturationPicker() =
