@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
@@ -196,8 +196,8 @@
     <string name="search_queries">" search queries"</string>
     <string name="not_find_battery_optimization_settings">Couldn\'t find battery optimization settings, please whitelist manually</string>
     <string name="search">Search</string>
-    <string name="no" >No</string>
-    <string name="stop" >Stop</string>
+    <string name="no">No</string>
+    <string name="stop">Stop</string>
     <string name="listen_on_youtube">Listen on YouTube</string>
     <string name="listen_on_youtube_music">Listen on YouTube Music</string>
     <string name="on_device">On device</string>
