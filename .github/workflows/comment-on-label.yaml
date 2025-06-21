@@ -11,11 +11,18 @@ env:
   NUMBER: ${{ github.event.issue.number }}
 
 jobs:
+  # Explicitly for issue either opened after the commits were made
+  # but before the realease. Or when it's not closed by mention in
+  # commit message.
   patched:
     if: github.event.label.name == 'patched'
+    
     runs-on: ubuntu-latest
+    
     permissions:
+      # Allows GITHUB_TOKEN to modify issue tickets
       issues: write
+      
     steps:
       - name: Add comment
         run: gh issue comment "$NUMBER" --body "$BODY"
@@ -29,11 +36,16 @@ jobs:
 
             Kreate's Discord is now available to the public. Join here: https://discord.gg/WYr9ZgJzpx
 
+  # Handle PR that contains implemented code
   implemented:
     if: github.event.label.name == 'implemented'
+    
     runs-on: ubuntu-latest
+    
     permissions:
-      pull-requests: write      
+      # Allows GITHUB_TOKEN to modify pull requests
+      pull-requests: write  
+      
     steps:
       - name: Add comment
         run: gh pr comment "$NUMBER" --body "$BODY"
@@ -50,11 +62,17 @@ jobs:
       - name: Close pull request
         run: gh pr close "$NUMBER"
 
+  # Borked PR is when if implemented, the app will fail to compile
+  # or will have some feature run in unexpected behavior
   borked:
     if: github.event.label.name == 'borked'
+    
     runs-on: ubuntu-latest
+    
     permissions:
+      # Allows GITHUB_TOKEN to modify pull requests
       pull-requests: write      
+      
     steps:
       - name: Close pull request
         run: gh pr close "$NUMBER"
