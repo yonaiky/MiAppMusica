@@ -1,8 +1,15 @@
-name: Comment on label
+name: Comment or close on label
+
 on:
   issues:
     types:
       - labeled
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_REPO: ${{ github.repository }}
+  NUMBER: ${{ github.event.issue.number }}
+
 jobs:
   patched:
     if: github.event.label.name == 'patched'
@@ -13,9 +20,6 @@ jobs:
       - name: Add comment
         run: gh issue comment "$NUMBER" --body "$BODY"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-          NUMBER: ${{ github.event.issue.number }}
           BODY: >
             This issue is patched in recent commits, please wait for next release.
 
@@ -24,3 +28,33 @@ jobs:
             ---
 
             Kreate's Discord is now available to the public. Join here: https://discord.gg/WYr9ZgJzpx
+
+  implemented:
+    if: github.event.label.name == 'implemented'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write      
+    steps:
+      - name: Add comment
+        run: gh pr comment "$NUMBER" --body "$BODY"
+        env:
+          BODY: >
+            This feature is already existed in codebase.
+
+            > Ticket will be closed. If you have any further question, feel free to comment below
+            
+            ---
+
+            Kreate's Discord is now available to the public. Join here: https://discord.gg/WYr9ZgJzpx
+
+      - name: Close pull request
+        run: gh pr close "$NUMBER"
+
+  borked:
+    if: github.event.label.name == 'borked'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write      
+    steps:
+      - name: Close pull request
+        run: gh pr close "$NUMBER"
