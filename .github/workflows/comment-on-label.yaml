@@ -11,7 +11,7 @@ on:
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   GH_REPO: ${{ github.repository }}
-  NUMBER: ${{ github.event.issue.number }}
+  NUMBER: "${{ github.event.pull_request.number || github.event.issue.number }}"
 
 jobs:
   # Explicitly for issue either opened after the commits were made
