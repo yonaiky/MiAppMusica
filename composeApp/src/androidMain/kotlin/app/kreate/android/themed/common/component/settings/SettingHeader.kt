@@ -1,6 +1,7 @@
 package app.kreate.android.themed.common.component.settings
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,9 +25,12 @@ fun SettingHeader(
 ) {
     val underlineColor = colorPalette().textDisabled.copy( .6f )
     Column(
-        modifier.padding( top = SettingComponents.HEADER_SPACING.dp )
-                .fillMaxWidth()
+        // Set background to make all other elements hidden
+        // when scroll pass header
+        modifier.background( colorPalette().background0 )
                 .drawBehind {
+                    // Simple dimmed line to make distinction
+                    // between header and other elements.
                     drawLine(
                         color = underlineColor,
                         start = Offset(0f, size.height),
@@ -34,7 +38,11 @@ fun SettingHeader(
                         strokeWidth = 2f
                     )
                 }
-                .padding( bottom = 10.dp )
+                .padding(
+                    top = 24.dp,
+                    bottom = 10.dp
+                )
+                .fillMaxWidth()
     ) {
         BasicText(
             text = title.uppercase(),
