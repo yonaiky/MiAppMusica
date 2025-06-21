@@ -40,7 +40,6 @@ vlcj = "4.11.0"
 kotlinxCoroutines = "1.10.2"
 hypnoticcanvas = "0.4.1"
 ksoup = "0.6.0"
-uiToolingPreviewAndroid = "1.8.2"
 jetbrains-annotations = "26.0.2"
 lombok = "1.18.38"
 junit5 = "5.13.1"
@@ -127,7 +126,7 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 
 # Testing
-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
+ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "compose" }
 junit5-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit5" }
 junit5-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit5" }
 
