@@ -9,14 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -55,7 +52,6 @@ import it.fast4x.piped.models.Instance
 import it.fast4x.piped.models.Session
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
 import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
 import it.fast4x.rimusic.thumbnailShape
@@ -77,18 +73,13 @@ import timber.log.Timber
 
 @ExperimentalMaterial3Api
 @Composable
-fun AccountSettings() {
+fun AccountSettings( paddingValues: PaddingValues ) {
     val context = LocalContext.current
     val scrollState = rememberLazyListState()
 
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_accounts, R.drawable.person )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
     val (restartService, onRestartServiceChange) = rememberSaveable { mutableStateOf( false ) }
 
     Column(

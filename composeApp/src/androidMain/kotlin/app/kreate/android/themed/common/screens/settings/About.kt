@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,7 +47,7 @@ import it.fast4x.rimusic.utils.secondary
 import me.knighthat.utils.Repository
 
 @Composable
-fun About() {
+fun About( paddingValues: PaddingValues ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val scrollState = rememberLazyListState()
@@ -58,11 +55,6 @@ fun About() {
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_accounts, R.drawable.person )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -4,12 +4,9 @@ import android.text.format.Formatter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -41,7 +38,6 @@ import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
@@ -66,7 +62,7 @@ import me.knighthat.utils.Toaster
 @ExperimentalCoilApi
 @UnstableApi
 @Composable
-fun DataSettings() {
+fun DataSettings( paddingValues: PaddingValues ) {
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val scrollState = rememberLazyListState()
@@ -74,11 +70,6 @@ fun DataSettings() {
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_data, R.drawable.server )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
     val (restartService, onRestartServiceChange) = rememberSaveable { mutableStateOf( false ) }
     var showExoPlayerCustomCacheDialog by remember { mutableStateOf(false) }
     var showCoilCustomDiskCacheDialog by remember { mutableStateOf(false) }

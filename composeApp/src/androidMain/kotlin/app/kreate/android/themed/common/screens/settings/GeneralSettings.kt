@@ -3,12 +3,9 @@ package app.kreate.android.themed.common.screens.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -29,24 +26,18 @@ import app.kreate.android.themed.common.component.settings.section
 import app.kreate.android.themed.common.screens.settings.general.PlayerSettings
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.languageDestinationName
 import me.knighthat.updater.Updater
 
 @UnstableApi
 @Composable
-fun GeneralSettings() {
+fun GeneralSettings( paddingValues: PaddingValues ) {
     val scrollState = rememberLazyListState()
 
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_general, R.drawable.app_icon_monochrome )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
     val (restartService, onRestartServiceChange) = rememberSaveable { mutableStateOf( false ) }
 
     Column(

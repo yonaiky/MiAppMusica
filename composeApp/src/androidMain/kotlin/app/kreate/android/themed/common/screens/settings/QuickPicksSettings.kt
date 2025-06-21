@@ -7,12 +7,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -33,7 +30,6 @@ import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -41,7 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import me.knighthat.utils.Toaster
 
 @Composable
-fun QuickPicksSettings() {
+fun QuickPicksSettings( paddingValues: PaddingValues ) {
     val context = LocalContext.current
     val scrollState = rememberLazyListState()
 
@@ -53,11 +49,6 @@ fun QuickPicksSettings() {
 
         SettingEntrySearch( scrollState, titleId, iconId )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

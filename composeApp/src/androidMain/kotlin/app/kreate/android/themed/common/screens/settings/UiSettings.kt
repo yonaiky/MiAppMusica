@@ -3,12 +3,9 @@ package app.kreate.android.themed.common.screens.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -45,17 +42,12 @@ import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
 
 @Composable
-fun UiSettings() {
+fun UiSettings( paddingValues: PaddingValues ) {
     val scrollState = rememberLazyListState()
 
     val search = remember {
         SettingEntrySearch( scrollState, R.string.user_interface, R.drawable.ui )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

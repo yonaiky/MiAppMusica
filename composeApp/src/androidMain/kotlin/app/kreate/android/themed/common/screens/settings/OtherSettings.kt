@@ -9,12 +9,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -39,7 +36,6 @@ import app.kreate.android.themed.common.component.settings.section
 import app.kreate.android.themed.common.screens.settings.other.DebugLogs
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.screens.settings.StringListValueSelectorSettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
@@ -51,18 +47,13 @@ import me.knighthat.utils.Toaster
 import java.io.File
 
 @Composable
-fun OtherSettings() {
+fun OtherSettings( paddingValues: PaddingValues ) {
     val context = LocalContext.current
     val scrollState = rememberLazyListState()
 
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_miscellaneous, R.drawable.equalizer )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

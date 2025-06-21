@@ -4,9 +4,13 @@ import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -35,6 +39,7 @@ import app.kreate.android.themed.common.screens.settings.QuickPicksSettings
 import app.kreate.android.themed.common.screens.settings.UiSettings
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
@@ -54,6 +59,15 @@ fun SettingsScreen(
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
     val (tabIndex, onTabChanged) = rememberSaveable { mutableIntStateOf(0) }
+
+    val topPadding =
+        if( UiType.ViMusic.isCurrent() )
+            WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+        else
+            0.dp
+    val paddingValues = remember( topPadding ) {
+        PaddingValues( 6.dp, topPadding, 6.dp )
+    }
 
     Skeleton(
         navController,
@@ -77,14 +91,14 @@ fun SettingsScreen(
     ) { currentTabIndex ->
         saveableStateHolder.SaveableStateProvider(currentTabIndex) {
             when (currentTabIndex) {
-                0 -> GeneralSettings()
-                1 -> UiSettings()
-                2 -> AppearanceSettings()
-                3 -> QuickPicksSettings()
-                4 -> DataSettings()
-                5 -> AccountSettings()
-                6 -> OtherSettings()
-                7 -> About()
+                0 -> GeneralSettings( paddingValues )
+                1 -> UiSettings( paddingValues )
+                2 -> AppearanceSettings( paddingValues )
+                3 -> QuickPicksSettings( paddingValues )
+                4 -> DataSettings( paddingValues )
+                5 -> AccountSettings( paddingValues )
+                6 -> OtherSettings( paddingValues )
+                7 -> About( paddingValues )
             }
         }
     }
