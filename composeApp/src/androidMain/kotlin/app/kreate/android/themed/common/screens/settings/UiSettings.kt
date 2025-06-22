@@ -200,7 +200,8 @@ fun UiSettings( paddingValues: PaddingValues ) {
                 if( search appearsIn R.string.navigation_bar_position )
                     SettingComponents.EnumEntry(
                         Preferences.NAVIGATION_BAR_POSITION,
-                        R.string.navigation_bar_position
+                        R.string.navigation_bar_position,
+                        isEnabled = UiType.ViMusic.isNotCurrent(),
                     )
                 if( search appearsIn R.string.navigation_bar_type )
                     SettingComponents.EnumEntry(
