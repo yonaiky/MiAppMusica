@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -197,12 +198,22 @@ fun UiSettings( paddingValues: PaddingValues ) {
                             preference = Preferences.COLOR_PALETTE
                         )
                 }
-                if( search appearsIn R.string.navigation_bar_position )
+                if( search appearsIn R.string.navigation_bar_position ) {
+                    val subtitleId by remember { derivedStateOf {
+                        // Use [Preferences] for observable state (because of [derivedStateOf])
+                        if( Preferences.MAIN_THEME.value == UiType.ViMusic )
+                            R.string.setting_description_only_available_in_theme
+                        else
+                            Preferences.NAVIGATION_BAR_POSITION.value.textId
+                    }}
+
                     SettingComponents.EnumEntry(
                         Preferences.NAVIGATION_BAR_POSITION,
                         R.string.navigation_bar_position,
                         isEnabled = UiType.ViMusic.isNotCurrent(),
+                        subtitle = stringResource( subtitleId, UiType.RiMusic.text )
                     )
+                }
                 if( search appearsIn R.string.navigation_bar_type )
                     SettingComponents.EnumEntry(
                         Preferences.NAVIGATION_BAR_TYPE,
