@@ -1,0 +1,12 @@
+Fixed:
+- App crashed when during RiMusic local playlist import
+- "Black gradient at bottom" hidden from Settings
+- Setting search didn't work in some tabs
+- Typo (duplicate) "Theme" in Appearance Settings
+- "Pin bar" & "Fat bar" timeline swapped 
+
+Changed:
+- Message to inform when Invalid local playlist is selected
+- Smooth scroll to top in Settings
+- New color picker UI
+- Setting headers are now padded
