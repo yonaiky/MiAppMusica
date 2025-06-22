@@ -12,7 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.media3.exoplayer.ExoPlayer
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.compose.reordering.ReorderingState
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
@@ -36,7 +36,7 @@ fun Discover(
     override val messageId: Int = R.string.discoverinfo
 
     // Active state of this button
-    override var isFirstColor: Boolean by Settings.ENABLE_DISCOVER
+    override var isFirstColor: Boolean by Preferences.ENABLE_DISCOVER
 
     override fun onShortClick() {
         isFirstColor = !isFirstColor
@@ -51,7 +51,7 @@ class Repeat private constructor(
     companion object {
         @JvmStatic
         @Composable
-        fun init(): Repeat = Repeat(Settings.QUEUE_LOOP_TYPE)
+        fun init(): Repeat = Repeat(Preferences.QUEUE_LOOP_TYPE)
     }
 
     var type: QueueLoopType = typeState.value
@@ -119,7 +119,7 @@ fun DeleteFromQueue(
 fun QueueArrow(
     onShortClick: () -> Unit
 ): Icon = object: Icon {
-    override val isEnabled: Boolean by Settings.PLAYER_ACTION_OPEN_QUEUE_ARROW
+    override val isEnabled: Boolean by Preferences.PLAYER_ACTION_OPEN_QUEUE_ARROW
     override val iconId: Int = R.drawable.chevron_down
 
     override fun onShortClick() = onShortClick()

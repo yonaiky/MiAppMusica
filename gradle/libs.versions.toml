@@ -1,17 +1,17 @@
 
 [versions]
-compose-plugin = "1.8.1"
+compose-plugin = "1.8.2"
 agp = "8.10.1"
 kotlin = "2.1.0"
 kotlin-ksp = "2.1.0-1.0.29"
 kotlin-datetime = "0.6.2"
-compose = "1.8.2"
+compose = "1.8.3"
 compose-activity = "1.10.1"
 shimmer = "1.3.3"
 coil = "2.7.0"
 coil3 = "3.2.0"
-room = "2.7.1"
-sqlite = "2.5.1"
+room = "2.7.2"
+sqlite = "2.5.2"
 media3 = "1.7.1"
 ktor = "3.1.3"
 brotli = "0.1.2"
@@ -35,12 +35,11 @@ glance = "1.1.1"
 kizzyrpc = "1.0.71"
 gson = "2.13.1"
 mediaPlayerKMP = "2.0.9"
-navigationKMP = "2.9.0-beta02"
+navigationKMP = "2.9.0-beta03"
 vlcj = "4.11.0"
 kotlinxCoroutines = "1.10.2"
 hypnoticcanvas = "0.4.1"
 ksoup = "0.6.0"
-uiToolingPreviewAndroid = "1.8.2"
 jetbrains-annotations = "26.0.2"
 lombok = "1.18.38"
 junit5 = "5.13.1"
@@ -127,7 +126,7 @@ lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" 
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 
 # Testing
-ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "uiToolingPreviewAndroid" }
+ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android", version.ref = "compose" }
 junit5-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit5" }
 junit5-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit5" }
 

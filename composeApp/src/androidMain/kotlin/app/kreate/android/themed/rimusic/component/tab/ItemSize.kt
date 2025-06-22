@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.enums.HomeItemSize
 import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
@@ -14,7 +14,7 @@ import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 
 class ItemSize(
-    preference: Settings.Preference<HomeItemSize>,
+    preference: Preferences<HomeItemSize>,
     private val menuState: MenuState
 ): MenuIcon, Descriptive {
 

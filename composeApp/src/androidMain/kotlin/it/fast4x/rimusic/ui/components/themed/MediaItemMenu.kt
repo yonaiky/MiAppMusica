@@ -60,8 +60,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
@@ -172,7 +172,7 @@ fun InPlaylistMediaItemMenu(
     modifier: Modifier = Modifier,
     disableScrollingText: Boolean
 ) {
-    val isPipedEnabled by Settings.ENABLE_PIPED
+    val isPipedEnabled by Preferences.ENABLE_PIPED
     val coroutineScope = rememberCoroutineScope()
     val pipedSession = getPipedSession()
     val context = LocalContext.current
@@ -277,7 +277,7 @@ fun NonQueuedMediaItemMenuLibrary(
         )
     }
 
-    val menuStyle by Settings.MENU_STYLE
+    val menuStyle by Preferences.MENU_STYLE
 
     if (menuStyle == MenuStyle.Grid) {
 
@@ -370,7 +370,7 @@ fun NonQueuedMediaItemMenu(
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
 
-    val menuStyle by Settings.MENU_STYLE
+    val menuStyle by Preferences.MENU_STYLE
 
     //println("mediaItem in NonQueuedMediaItemMenu albumId ${mediaItem.mediaMetadata.extras?.getString("albumId")}")
 
@@ -435,7 +435,7 @@ fun QueuedMediaItemMenu(
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
 
-    val menuStyle by Settings.MENU_STYLE
+    val menuStyle by Preferences.MENU_STYLE
 
     if (menuStyle == MenuStyle.Grid) {
         BaseMediaItemGridMenu(
@@ -538,7 +538,7 @@ fun BaseMediaItemMenu(
     val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
-    val isPipedEnabled by Settings.ENABLE_PIPED
+    val isPipedEnabled by Preferences.ENABLE_PIPED
     val pipedSession = getPipedSession()
 
     //println("mediaItem in BaseMediaItemMenu albumId ${mediaItem.mediaMetadata.extras?.getString("albumId")}")

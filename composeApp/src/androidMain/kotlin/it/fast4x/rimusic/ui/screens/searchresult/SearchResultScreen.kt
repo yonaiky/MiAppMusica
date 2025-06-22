@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -87,14 +87,14 @@ fun SearchResultScreen(
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val saveableStateHolder = rememberSaveableStateHolder()
-    val (tabIndex, onTabIndexChanges) = Settings.SEARCH_RESULTS_TAB_INDEX
+    val (tabIndex, onTabIndexChanges) = Preferences.SEARCH_RESULTS_TAB_INDEX
 
     val hapticFeedback = LocalHapticFeedback.current
 
-    val isVideoEnabled by Settings.PLAYER_ACTION_TOGGLE_VIDEO
-    val parentalControlEnabled by Settings.PARENTAL_CONTROL
+    val isVideoEnabled by Preferences.PLAYER_ACTION_TOGGLE_VIDEO
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit = {
         Title(

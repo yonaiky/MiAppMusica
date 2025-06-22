@@ -1,13 +1,10 @@
 package app.kreate.android.themed.common.component.settings
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.colorPalette
 
 fun LazyListScope.section(
     headerTitle: String,
@@ -19,8 +16,7 @@ fun LazyListScope.section(
     stickyHeader {
         SettingHeader(
             headerTitle,
-            Modifier.background( colorPalette().background0 ),
-            subtitle
+            subtitle = subtitle
         )
     }
     item( key, contentType ) {

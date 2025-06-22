@@ -20,8 +20,8 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionError
 import androidx.media3.session.SessionResult
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -275,7 +275,7 @@ class MediaLibrarySessionCallback(
                         browsableMediaItem(
                             "${PlayerServiceModern.PLAYLIST}/$ID_TOP",
                             context.getString(R.string.playlist_top),
-                            Settings.MAX_NUMBER_OF_TOP_PLAYED.value.name,
+                            Preferences.MAX_NUMBER_OF_TOP_PLAYED.value.name,
                             drawableUri(R.drawable.trending),
                             MediaMetadata.MEDIA_TYPE_PLAYLIST
                         ),
@@ -336,7 +336,7 @@ class MediaLibrarySessionCallback(
                                 database.eventTable
                                         .findSongsMostPlayedBetween(
                                             from = 0,
-                                            limit = Settings.MAX_NUMBER_OF_TOP_PLAYED
+                                            limit = Preferences.MAX_NUMBER_OF_TOP_PLAYED
                                                             .value
                                                             .toInt()
                                         )
@@ -438,7 +438,7 @@ class MediaLibrarySessionCallback(
                                            // Already in DESC order
                                            .findSongsMostPlayedBetween(
                                                from = 0,
-                                               limit = Settings.MAX_NUMBER_OF_TOP_PLAYED
+                                               limit = Preferences.MAX_NUMBER_OF_TOP_PLAYED
                                                                .value
                                                                .toInt()
                                            )
@@ -477,7 +477,7 @@ class MediaLibrarySessionCallback(
                 0,
                 0
             )
-        if( !Settings.ENABLE_PERSISTENT_QUEUE.value )
+        if( !Preferences.ENABLE_PERSISTENT_QUEUE.value )
             return Futures.immediateFuture(defaultResult)
 
         scope.future {
@@ -551,7 +551,7 @@ class MediaLibrarySessionCallback(
 
     private fun Song.toMediaItem( isFromPersistentQueue: Boolean = false ): MediaItem {
         val bundle = Bundle().apply {
-            putBoolean( Settings.ENABLE_PERSISTENT_QUEUE.key, isFromPersistentQueue )
+            putBoolean( Preferences.ENABLE_PERSISTENT_QUEUE.key, isFromPersistentQueue )
         }
 
         val mediaItem = asMediaItem

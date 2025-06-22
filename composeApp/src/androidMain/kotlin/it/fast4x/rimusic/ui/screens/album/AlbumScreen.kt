@@ -42,7 +42,7 @@ import androidx.compose.ui.util.fastJoinToString
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
@@ -84,8 +84,8 @@ fun AlbumScreen(
     val saveableStateHolder = rememberSaveableStateHolder()
 
     // Settings
-    val transitionEffect by Settings.TRANSITION_EFFECT
-    val playerPosition by Settings.MINI_PLAYER_POSITION
+    val transitionEffect by Preferences.TRANSITION_EFFECT
+    val playerPosition by Preferences.MINI_PLAYER_POSITION
 
     var album by persist<Album?>("album/$browseId")
     LaunchedEffect(Unit) {

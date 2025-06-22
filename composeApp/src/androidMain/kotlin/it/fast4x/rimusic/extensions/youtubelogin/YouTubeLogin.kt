@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.ui.components.themed.Title
@@ -36,13 +36,13 @@ fun YouTubeLogin(
 
     val scope = rememberCoroutineScope()
 
-    var visitorData by Settings.YOUTUBE_VISITOR_DATA
-    var dataSyncId by Settings.YOUTUBE_SYNC_ID
-    var cookie by Settings.YOUTUBE_COOKIES
-    var accountName by Settings.YOUTUBE_ACCOUNT_NAME
-    var accountEmail by Settings.YOUTUBE_ACCOUNT_EMAIL
-    var accountChannelHandle by Settings.YOUTUBE_SELF_CHANNEL_HANDLE
-    var accountThumbnail by Settings.YOUTUBE_ACCOUNT_AVATAR
+    var visitorData by Preferences.YOUTUBE_VISITOR_DATA
+    var dataSyncId by Preferences.YOUTUBE_SYNC_ID
+    var cookie by Preferences.YOUTUBE_COOKIES
+    var accountName by Preferences.YOUTUBE_ACCOUNT_NAME
+    var accountEmail by Preferences.YOUTUBE_ACCOUNT_EMAIL
+    var accountChannelHandle by Preferences.YOUTUBE_SELF_CHANNEL_HANDLE
+    var accountThumbnail by Preferences.YOUTUBE_ACCOUNT_AVATAR
 
     var webView: WebView? = null
 

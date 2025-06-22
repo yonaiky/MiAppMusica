@@ -23,9 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.screen.home.onDevice.OnDeviceSong
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -56,7 +57,6 @@ import me.knighthat.component.ResetCache
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
-import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
 
@@ -71,7 +71,7 @@ fun HomeSongsScreen(navController: NavController ) {
     val lazyListState = rememberLazyListState()
     val menuState = LocalMenuState.current
 
-    var builtInPlaylist by Settings.HOME_SONGS_TYPE
+    var builtInPlaylist by Preferences.HOME_SONGS_TYPE
 
     val itemsOnDisplayState = remember { mutableStateListOf<Song>() }
 
@@ -81,7 +81,7 @@ fun HomeSongsScreen(navController: NavController ) {
     fun getSongs() = itemSelector.ifEmpty { itemsOnDisplayState }.toList()
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
-    val search = Search(lazyListState)
+    val search = remember { Search(lazyListState) }
     val locator = Locator( lazyListState, ::getSongs )
     val import = ImportSongsFromCSV()
     val shuffle = SongShuffler(::getSongs)
@@ -159,11 +159,11 @@ fun HomeSongsScreen(navController: NavController ) {
             ) {
                 Column {
                     //<editor-fold defaultstate="collapsed" desc="Chips">
-                    val showFavoritesPlaylist by Settings.HOME_SONGS_SHOW_FAVORITES_CHIP
-                    val showCachedPlaylist by Settings.HOME_SONGS_SHOW_CACHED_CHIP
-                    val showDownloadedPlaylist by Settings.HOME_SONGS_SHOW_DOWNLOADED_CHIP
-                    val showMyTopPlaylist by Settings.HOME_SONGS_SHOW_MOST_PLAYED_CHIP
-                    val showOnDevice by Settings.HOME_SONGS_SHOW_ON_DEVICE_CHIP
+                    val showFavoritesPlaylist by Preferences.HOME_SONGS_SHOW_FAVORITES_CHIP
+                    val showCachedPlaylist by Preferences.HOME_SONGS_SHOW_CACHED_CHIP
+                    val showDownloadedPlaylist by Preferences.HOME_SONGS_SHOW_DOWNLOADED_CHIP
+                    val showMyTopPlaylist by Preferences.HOME_SONGS_SHOW_MOST_PLAYED_CHIP
+                    val showOnDevice by Preferences.HOME_SONGS_SHOW_ON_DEVICE_CHIP
                     val chips = remember( showFavoritesPlaylist, showCachedPlaylist, showMyTopPlaylist, showDownloadedPlaylist) {
                         buildList {
                             add( BuiltInPlaylist.All )
@@ -204,7 +204,7 @@ fun HomeSongsScreen(navController: NavController ) {
             }
 
             // Sticky search bar
-            search.SearchBar( this )
+            search.SearchBar()
 
             when( builtInPlaylist ) {
                 BuiltInPlaylist.OnDevice -> OnDeviceSong( navController, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs )
@@ -214,7 +214,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+        val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
         if( UiType.ViMusic.isCurrent() && showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,

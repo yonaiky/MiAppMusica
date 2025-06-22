@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.BuildConfig
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -129,7 +129,7 @@ fun Skeleton(
                     navigationBar.Draw()
             }
 
-            val playerPosition by Settings.MINI_PLAYER_POSITION
+            val playerPosition by Preferences.MINI_PLAYER_POSITION
             val playerAlignment =
                 if (playerPosition == PlayerPosition.Top)
                     Alignment.TopCenter
@@ -148,7 +148,7 @@ fun Skeleton(
     NewUpdateAvailableDialog.Render()
     CheckForUpdateDialog.Render()
 
-    val check4UpdateState by Settings.CHECK_UPDATE
+    val check4UpdateState by Preferences.CHECK_UPDATE
     LaunchedEffect( check4UpdateState ) {
         when( check4UpdateState ) {
             CheckUpdateState.Enabled  -> if( !NewUpdateAvailableDialog.isCancelled ) Updater.checkForUpdate()
@@ -157,7 +157,7 @@ fun Skeleton(
         }
     }
 
-    val seenChangelogs = Settings.SEEN_CHANGELOGS_VERSION
+    val seenChangelogs = Preferences.SEEN_CHANGELOGS_VERSION
     if( seenChangelogs.value != BuildConfig.VERSION_NAME ) {
         val changelogs = remember {
             ChangelogsDialog( seenChangelogs )

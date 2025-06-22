@@ -3,12 +3,10 @@ package app.kreate.android.themed.common.screens.settings.player
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,8 +15,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import it.fast4x.rimusic.colorPalette
@@ -36,60 +34,58 @@ import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.enums.ThumbnailType
-import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.AppearancePresetDialog
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.semiBold
 
 @Composable
 fun PlayerAppearance( search: SettingEntrySearch ) {
-    var showthumbnail by Settings.PLAYER_SHOW_THUMBNAIL
-    var transparentbar by Settings.TRANSPARENT_TIMELINE
-    var showlyricsthumbnail by Settings.LYRICS_SHOW_THUMBNAIL
-    var expandedplayer by Settings.PLAYER_EXPANDED
-    var playerPlayButtonType by Settings.PLAYER_PLAY_BUTTON_TYPE
-    var bottomgradient by Settings.PLAYER_BOTTOM_GRADIENT
-    var visualizerEnabled by Settings.PLAYER_VISUALIZER
-    var playerTimelineType by Settings.PLAYER_TIMELINE_TYPE
-    var playerThumbnailSize by Settings.PLAYER_PORTRAIT_THUMBNAIL_SIZE
-    var playerTimelineSize by Settings.PLAYER_TIMELINE_SIZE
-    var showButtonPlayerAddToPlaylist by Settings.PLAYER_ACTION_ADD_TO_PLAYLIST
-    var showButtonPlayerArrow by Settings.PLAYER_ACTION_OPEN_QUEUE_ARROW
-    var showButtonPlayerDownload by Settings.PLAYER_ACTION_DOWNLOAD
-    var showButtonPlayerLoop by Settings.PLAYER_ACTION_LOOP
-    var showButtonPlayerLyrics by Settings.PLAYER_ACTION_SHOW_LYRICS
-    var expandedplayertoggle by Settings.PLAYER_ACTION_TOGGLE_EXPAND
-    var showButtonPlayerShuffle by Settings.PLAYER_ACTION_SHUFFLE
-    var showButtonPlayerSleepTimer by Settings.PLAYER_ACTION_SLEEP_TIMER
-    var showButtonPlayerMenu by Settings.PLAYER_ACTION_SHOW_MENU
-    var showButtonPlayerStartradio by Settings.PLAYER_ACTION_START_RADIO
-    var showButtonPlayerDiscover by Settings.PLAYER_ACTION_DISCOVER
-    var showButtonPlayerVideo by Settings.PLAYER_ACTION_TOGGLE_VIDEO
-    var showTotalTimeQueue by Settings.PLAYER_SHOW_TOTAL_QUEUE_TIME
-    var showNextSongsInPlayer by Settings.PLAYER_SHOW_NEXT_IN_QUEUE
-    var showRemainingSongTime by Settings.PLAYER_SHOW_SONGS_REMAINING_TIME
-    var thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
-    var playerBackgroundColors by Settings.PLAYER_BACKGROUND
-    var showTopActionsBar by Settings.PLAYER_SHOW_TOP_ACTIONS_BAR
-    var playerControlsType by Settings.PLAYER_CONTROLS_TYPE
-    var playerInfoType by Settings.PLAYER_INFO_TYPE
-    var transparentBackgroundActionBarPlayer by Settings.PLAYER_TRANSPARENT_ACTIONS_BAR
-    var actionspacedevenly by Settings.PLAYER_ACTION_BUTTONS_SPACED_EVENLY
-    var thumbnailType by Settings.THUMBNAIL_TYPE
-    var playerType by Settings.PLAYER_TYPE
-    var noblur by Settings.PLAYER_BACKGROUND_BLUR
-    var fadingedge by Settings.PLAYER_BACKGROUND_FADING_EDGE
-    var carouselSize by Settings.CAROUSEL_SIZE
-    var playerInfoShowIcons by Settings.PLAYER_SONG_INFO_ICON
-    var showCoverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_ANIMATION
-    var topPadding by Settings.PLAYER_TOP_PADDING
-    var animatedGradient by Settings.ANIMATED_GRADIENT
-    var blurStrength by Settings.PLAYER_BACKGROUND_BLUR_STRENGTH
-    var thumbnailFadeEx  by Settings.PLAYER_THUMBNAIL_FADE_EX
-    var thumbnailFade  by Settings.PLAYER_THUMBNAIL_FADE
-    var thumbnailSpacing  by Settings.PLAYER_THUMBNAIL_SPACING
-    var colorPaletteName by Settings.COLOR_PALETTE
-    var colorPaletteMode by Settings.THEME_MODE
+    var showthumbnail by Preferences.PLAYER_SHOW_THUMBNAIL
+    var transparentbar by Preferences.TRANSPARENT_TIMELINE
+    var showlyricsthumbnail by Preferences.LYRICS_SHOW_THUMBNAIL
+    var expandedplayer by Preferences.PLAYER_EXPANDED
+    var playerPlayButtonType by Preferences.PLAYER_PLAY_BUTTON_TYPE
+    var bottomgradient by Preferences.PLAYER_BOTTOM_GRADIENT
+    var visualizerEnabled by Preferences.PLAYER_VISUALIZER
+    var playerTimelineType by Preferences.PLAYER_TIMELINE_TYPE
+    var playerThumbnailSize by Preferences.PLAYER_PORTRAIT_THUMBNAIL_SIZE
+    var playerTimelineSize by Preferences.PLAYER_TIMELINE_SIZE
+    var showButtonPlayerAddToPlaylist by Preferences.PLAYER_ACTION_ADD_TO_PLAYLIST
+    var showButtonPlayerArrow by Preferences.PLAYER_ACTION_OPEN_QUEUE_ARROW
+    var showButtonPlayerDownload by Preferences.PLAYER_ACTION_DOWNLOAD
+    var showButtonPlayerLoop by Preferences.PLAYER_ACTION_LOOP
+    var showButtonPlayerLyrics by Preferences.PLAYER_ACTION_SHOW_LYRICS
+    var expandedplayertoggle by Preferences.PLAYER_ACTION_TOGGLE_EXPAND
+    var showButtonPlayerShuffle by Preferences.PLAYER_ACTION_SHUFFLE
+    var showButtonPlayerSleepTimer by Preferences.PLAYER_ACTION_SLEEP_TIMER
+    var showButtonPlayerMenu by Preferences.PLAYER_ACTION_SHOW_MENU
+    var showButtonPlayerStartradio by Preferences.PLAYER_ACTION_START_RADIO
+    var showButtonPlayerDiscover by Preferences.PLAYER_ACTION_DISCOVER
+    var showButtonPlayerVideo by Preferences.PLAYER_ACTION_TOGGLE_VIDEO
+    var showTotalTimeQueue by Preferences.PLAYER_SHOW_TOTAL_QUEUE_TIME
+    var showNextSongsInPlayer by Preferences.PLAYER_SHOW_NEXT_IN_QUEUE
+    var showRemainingSongTime by Preferences.PLAYER_SHOW_SONGS_REMAINING_TIME
+    var thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
+    var playerBackgroundColors by Preferences.PLAYER_BACKGROUND
+    var showTopActionsBar by Preferences.PLAYER_SHOW_TOP_ACTIONS_BAR
+    var playerControlsType by Preferences.PLAYER_CONTROLS_TYPE
+    var playerInfoType by Preferences.PLAYER_INFO_TYPE
+    var transparentBackgroundActionBarPlayer by Preferences.PLAYER_TRANSPARENT_ACTIONS_BAR
+    var actionspacedevenly by Preferences.PLAYER_ACTION_BUTTONS_SPACED_EVENLY
+    var thumbnailType by Preferences.THUMBNAIL_TYPE
+    var playerType by Preferences.PLAYER_TYPE
+    var noblur by Preferences.PLAYER_BACKGROUND_BLUR
+    var fadingedge by Preferences.PLAYER_BACKGROUND_FADING_EDGE
+    var carouselSize by Preferences.CAROUSEL_SIZE
+    var playerInfoShowIcons by Preferences.PLAYER_SONG_INFO_ICON
+    var showCoverThumbnailAnimation by Preferences.PLAYER_THUMBNAIL_ANIMATION
+    var topPadding by Preferences.PLAYER_TOP_PADDING
+    var animatedGradient by Preferences.ANIMATED_GRADIENT
+    var blurStrength by Preferences.PLAYER_BACKGROUND_BLUR_STRENGTH
+    var thumbnailFadeEx  by Preferences.PLAYER_THUMBNAIL_FADE_EX
+    var thumbnailFade  by Preferences.PLAYER_THUMBNAIL_FADE
+    var thumbnailSpacing  by Preferences.PLAYER_THUMBNAIL_SPACING
+    var colorPaletteName by Preferences.COLOR_PALETTE
+    var colorPaletteMode by Preferences.THEME_MODE
 
     var appearanceChooser by remember{ mutableStateOf(false)}
     if (appearanceChooser) {
@@ -369,58 +365,48 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
     }
 
     if (!isLandscape) {
-        Column {
-            BasicText(
-                text = stringResource(R.string.appearancepresets),
-                style = typography().m.semiBold.copy(color = colorPalette().text),
-                modifier = Modifier
-                    .padding(all = 12.dp)
-                    .clickable(onClick = { appearanceChooser = true })
+        if( search appearsIn R.string.appearancepresets )
+            SettingComponents.Text(
+                stringResource( R.string.appearancepresets ),
+                { appearanceChooser = true },
+                subtitle = stringResource( R.string.appearancepresetssecondary )
             )
-            BasicText(
-                text = stringResource(R.string.appearancepresetssecondary),
-                style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .padding(bottom = 10.dp)
-            )
-        }
 
-        if ( search.contains( R.string.show_player_top_actions_bar ) )
+        if ( search appearsIn R.string.show_player_top_actions_bar )
             SettingComponents.BooleanEntry(
-                Settings.PLAYER_SHOW_TOP_ACTIONS_BAR,
+                Preferences.PLAYER_SHOW_TOP_ACTIONS_BAR,
                 titleId = R.string.show_player_top_actions_bar
             )
 
-        if( !showTopActionsBar && search.contains( R.string.blankspace ) )
+        if( !showTopActionsBar && search appearsIn R.string.blankspace )
             SettingComponents.BooleanEntry(
-                Settings.PLAYER_TOP_PADDING,
+                Preferences.PLAYER_TOP_PADDING,
                 R.string.blankspace
             )
     }
-    if ( search.contains( R.string.playertype ) )
+    if ( search appearsIn R.string.playertype )
         SettingComponents.EnumEntry(
-            Settings.PLAYER_TYPE,
+            Preferences.PLAYER_TYPE,
             R.string.playertype
         )
 
-    if ( search.contains( R.string.queuetype ) )
+    if ( search appearsIn R.string.queuetype )
         SettingComponents.EnumEntry(
-            Settings.QUEUE_TYPE,
+            Preferences.QUEUE_TYPE,
             R.string.queuetype
         )
 
     if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor
-        && search.contains( R.string.show_thumbnail )
+        && search appearsIn R.string.show_thumbnail
     )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_SHOW_THUMBNAIL,
+            Preferences.PLAYER_SHOW_THUMBNAIL,
             R.string.show_thumbnail
         )
     AnimatedVisibility(visible = !showthumbnail && playerType == PlayerType.Modern && !isLandscape) {
-        if ( search.contains( R.string.swipe_Animation_No_Thumbnail ) )
+        if ( search appearsIn R.string.swipe_Animation_No_Thumbnail )
             SettingComponents.EnumEntry(
-                Settings.PLAYER_NO_THUMBNAIL_SWIPE_ANIMATION,
+                Preferences.PLAYER_NO_THUMBNAIL_SWIPE_ANIMATION,
                 R.string.swipe_Animation_No_Thumbnail,
                 Modifier.padding(
                     start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
@@ -431,154 +417,94 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
             )
     }
     AnimatedVisibility(visible = showthumbnail) {
-        Column {
-            if ( playerType == PlayerType.Modern && search.contains( R.string.fadingedge ) )
+        Column(
+            Modifier.padding(
+                start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
+                    25.dp
+                else
+                    0.dp
+            )
+        ) {
+            if ( playerType == PlayerType.Modern && search appearsIn R.string.fadingedge )
                 SettingComponents.BooleanEntry(
-                    Settings.PLAYER_BACKGROUND_FADING_EDGE,
-                    R.string.fadingedge,
-                    Modifier.padding(
-                        start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                            25.dp
-                        else
-                            0.dp
-                    )
+                    Preferences.PLAYER_BACKGROUND_FADING_EDGE,
+                    R.string.fadingedge
                 )
 
             if (playerType == PlayerType.Modern && !isLandscape && (expandedplayertoggle || expandedplayer)) {
-                if ( search.contains( R.string.carousel ) )
+                if ( search appearsIn R.string.carousel )
                     SettingComponents.BooleanEntry(
-                        Settings.PLAYER_THUMBNAILS_CAROUSEL,
-                        R.string.carousel,
-                        Modifier.padding(
-                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        Preferences.PLAYER_THUMBNAILS_CAROUSEL,
+                        R.string.carousel
                     )
 
-                if ( search.contains( R.string.carouselsize ) )
+                if ( search appearsIn R.string.carouselsize )
                     SettingComponents.EnumEntry(
-                        Settings.CAROUSEL_SIZE,
-                        R.string.carouselsize,
-                        Modifier.padding(
-                            start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        Preferences.CAROUSEL_SIZE,
+                        R.string.carouselsize
                     )
             }
             if (playerType == PlayerType.Essential) {
-                if ( search.contains( R.string.thumbnailpause ) )
+                if ( search appearsIn R.string.thumbnailpause )
                     SettingComponents.BooleanEntry(
-                        Settings.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE,
-                        R.string.thumbnailpause,
-                        Modifier.padding(
-                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        Preferences.PLAYER_SHRINK_THUMBNAIL_ON_PAUSE,
+                        R.string.thumbnailpause
                     )
-                if ( search.contains( R.string.show_lyrics_thumbnail ) )
+                if ( search appearsIn R.string.show_lyrics_thumbnail )
                     SettingComponents.BooleanEntry(
-                        Settings.LYRICS_SHOW_THUMBNAIL,
-                        R.string.show_lyrics_thumbnail,
-                        Modifier.padding(
-                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        Preferences.LYRICS_SHOW_THUMBNAIL,
+                        R.string.show_lyrics_thumbnail
                     )
-                if ( visualizerEnabled && search.contains( R.string.showvisthumbnail ) )
+                if ( visualizerEnabled && search appearsIn R.string.showvisthumbnail )
                     SettingComponents.BooleanEntry(
-                        Settings.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER,
-                        R.string.showvisthumbnail,
-                        Modifier.padding(
-                            start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        Preferences.PLAYER_SHOW_THUMBNAIL_ON_VISUALIZER,
+                        R.string.showvisthumbnail
                     )
             }
 
-            if ( search.contains( R.string.show_cover_thumbnail_animation ) ) {
+            if ( search appearsIn R.string.show_cover_thumbnail_animation ) {
                 SettingComponents.BooleanEntry(
-                    Settings.PLAYER_THUMBNAIL_ANIMATION,
-                    R.string.show_cover_thumbnail_animation,
-                    Modifier.padding(
-                        start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
-                            25.dp
-                        else
-                            0.dp
-                    )
+                    Preferences.PLAYER_THUMBNAIL_ANIMATION,
+                    R.string.show_cover_thumbnail_animation
                 )
                 AnimatedVisibility(visible = showCoverThumbnailAnimation) {
-                    Column {
+                    if( search appearsIn R.string.cover_thumbnail_animation_type )
                         SettingComponents.EnumEntry(
-                            Settings.PLAYER_THUMBNAIL_TYPE,
+                            Preferences.PLAYER_THUMBNAIL_TYPE,
                             R.string.cover_thumbnail_animation_type,
                             Modifier.padding(
                                 start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                                    50.dp
-                                else
                                     25.dp
+                                else
+                                    0.dp
                             )
                         )
-                    }
                 }
             }
 
             if (isLandscape) {
-                if ( search.contains( R.string.player_thumbnail_size ) )
+                if ( search appearsIn R.string.player_thumbnail_size )
                     SettingComponents.EnumEntry(
-                        Settings.PLAYER_LANDSCAPE_THUMBNAIL_SIZE,
-                        R.string.player_thumbnail_size,
-                        Modifier.padding(
-                            start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        Preferences.PLAYER_LANDSCAPE_THUMBNAIL_SIZE,
+                        R.string.player_thumbnail_size
                     )
             } else {
-                if ( search.contains( R.string.player_thumbnail_size ) )
+                if ( search appearsIn R.string.player_thumbnail_size )
                     SettingComponents.EnumEntry(
-                        Settings.PLAYER_PORTRAIT_THUMBNAIL_SIZE,
-                        R.string.player_thumbnail_size,
-                        Modifier.padding(
-                            start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                                25.dp
-                            else
-                                0.dp
-                        )
+                        Preferences.PLAYER_PORTRAIT_THUMBNAIL_SIZE,
+                        R.string.player_thumbnail_size
                     )
             }
-            if ( search.contains( R.string.thumbnailtype ) )
+            if ( search appearsIn R.string.thumbnailtype )
                 SettingComponents.EnumEntry(
-                    Settings.THUMBNAIL_TYPE,
-                    R.string.thumbnailtype,
-                    Modifier.padding(
-                        start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                            25.dp
-                        else
-                            0.dp
-                    )
+                    Preferences.THUMBNAIL_TYPE,
+                    R.string.thumbnailtype
                 )
 
-            if ( search.contains( R.string.thumbnail_roundness ) )
+            if ( search appearsIn R.string.thumbnail_roundness )
                 SettingComponents.EnumEntry(
-                    Settings.THUMBNAIL_BORDER_RADIUS,
+                    Preferences.THUMBNAIL_BORDER_RADIUS,
                     R.string.thumbnail_roundness,
-                    Modifier.padding(
-                        start = if ( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor )
-                            25.dp
-                        else
-                            0.dp
-                    ),
                     trailingContent = {
                         Spacer(
                             modifier = Modifier
@@ -598,102 +524,96 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
         }
     }
 
-    if ( !showthumbnail && search.contains( R.string.noblur ) )
+    if ( !showthumbnail && search appearsIn R.string.noblur )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_BACKGROUND_BLUR,
+            Preferences.PLAYER_BACKGROUND_BLUR,
             R.string.noblur
         )
 
     if (!(showthumbnail && playerType == PlayerType.Essential)
-        && search.contains( R.string.statsfornerdsplayer )
+        && search appearsIn R.string.statsfornerdsplayer
     )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_STATS_FOR_NERDS,
+            Preferences.PLAYER_STATS_FOR_NERDS,
             R.string.statsfornerdsplayer
         )
 
-    if ( search.contains( R.string.timelinesize ) )
+    if ( search appearsIn R.string.timelinesize )
         SettingComponents.EnumEntry(
-            Settings.PLAYER_TIMELINE_SIZE,
+            Preferences.PLAYER_TIMELINE_SIZE,
             R.string.timelinesize
         )
 
-    if ( search.contains( R.string.pinfo_type ) ) {
+    if ( search appearsIn R.string.pinfo_type ) {
         SettingComponents.EnumEntry(
-            Settings.PLAYER_INFO_TYPE,
+            Preferences.PLAYER_INFO_TYPE,
             R.string.pinfo_type
         )
         SettingComponents.Description( R.string.pinfo_album_and_artist_name )
 
-        AnimatedVisibility( visible = playerInfoType == PlayerInfoType.Modern) {
-            Column {
-                if (search.inputValue.isBlank() || stringResource(R.string.pinfo_show_icons).contains(
-                        search.inputValue,
-                        true
-                    )
+        AnimatedVisibility( playerInfoType == PlayerInfoType.Modern ) {
+            if ( search appearsIn R.string.pinfo_show_icons )
+                SettingComponents.BooleanEntry(
+                    Preferences.PLAYER_SONG_INFO_ICON,
+                    R.string.pinfo_show_icons,
+                    Modifier.padding( start = 25.dp )
                 )
-                    SettingComponents.BooleanEntry(
-                        Settings.PLAYER_SONG_INFO_ICON,
-                        R.string.pinfo_show_icons,
-                        Modifier.padding( start = 25.dp )
-                    )
-            }
         }
 
     }
-    if ( search.contains( R.string.miniplayertype ) )
+    if ( search appearsIn R.string.miniplayertype )
         SettingComponents.EnumEntry(
-            Settings.MINI_PLAYER_TYPE,
+            Preferences.MINI_PLAYER_TYPE,
             R.string.miniplayertype
         )
-    if ( search.contains( R.string.player_swap_controls_with_timeline ) )
+    if ( search appearsIn R.string.player_swap_controls_with_timeline )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_IS_CONTROL_AND_TIMELINE_SWAPPED,
+            Preferences.PLAYER_IS_CONTROL_AND_TIMELINE_SWAPPED,
             R.string.player_swap_controls_with_timeline
         )
-    if ( search.contains( R.string.timeline ) )
+    if ( search appearsIn R.string.timeline )
         SettingComponents.EnumEntry(
-            Settings.PLAYER_TIMELINE_TYPE,
+            Preferences.PLAYER_TIMELINE_TYPE,
             R.string.timeline
         )
-    if ( search.contains( R.string.transparentbar ) )
+    if ( search appearsIn R.string.transparentbar )
         SettingComponents.BooleanEntry(
-            Settings.TRANSPARENT_TIMELINE,
+            Preferences.TRANSPARENT_TIMELINE,
             R.string.transparentbar
         )
-    if ( search.contains( R.string.pcontrols_type ) )
+    if ( search appearsIn R.string.pcontrols_type )
         SettingComponents.EnumEntry(
-            Settings.PLAYER_CONTROLS_TYPE,
+            Preferences.PLAYER_CONTROLS_TYPE,
             R.string.pcontrols_type
         )
-    if ( search.contains( R.string.play_button ) )
+    if ( search appearsIn R.string.play_button )
         SettingComponents.EnumEntry(
-            Settings.PLAYER_PLAY_BUTTON_TYPE,
+            Preferences.PLAYER_PLAY_BUTTON_TYPE,
             R.string.play_button
         )
-    if ( search.contains( R.string.buttonzoomout ) )
+    if ( search appearsIn R.string.buttonzoomout )
         SettingComponents.BooleanEntry(
-            Settings.ZOOM_OUT_ANIMATION,
+            Preferences.ZOOM_OUT_ANIMATION,
             R.string.buttonzoomout
         )
-    if ( search.contains( R.string.play_button ) )
+    if ( search appearsIn R.string.play_button )
         SettingComponents.EnumEntry(
-            Settings.LIKE_ICON,
+            Preferences.LIKE_ICON,
             R.string.play_button
         )
-    if ( search.contains( R.string.background_colors ) )
+    if ( search appearsIn R.string.background_colors )
         SettingComponents.EnumEntry(
-            Settings.PLAYER_BACKGROUND,
+            Preferences.PLAYER_BACKGROUND,
             R.string.background_colors
         )
 
     AnimatedVisibility(visible = playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) {
-        if ( search.contains( R.string.gradienttype ) )
+        if ( search appearsIn R.string.gradienttype )
             SettingComponents.EnumEntry(
-                Settings.ANIMATED_GRADIENT,
+                Preferences.ANIMATED_GRADIENT,
                 R.string.gradienttype,
                 Modifier.padding(
-                    start = if ( playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient)
+                    start = if ( playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient )
                         25.dp
                     else
                         0.dp
@@ -701,141 +621,139 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
             )
     }
     AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor ) {
-       Column {
-           if( search.contains( R.string.rotating_cover_title ) )
+       Column(
+           Modifier.padding( start = 25.dp )
+       ) {
+           if( search appearsIn R.string.rotating_cover_title )
                SettingComponents.BooleanEntry(
-                   Settings.PLAYER_ROTATING_ALBUM_COVER,
-                   R.string.rotating_cover_title,
-                   Modifier.padding( start = 25.dp )
+                   Preferences.PLAYER_ROTATING_ALBUM_COVER,
+                   R.string.rotating_cover_title
                )
 
-           if ( search.contains( R.string.bottomgradient ) )
+           if ( search appearsIn R.string.bottomgradient )
                SettingComponents.BooleanEntry(
-                   Settings.PLAYER_BOTTOM_GRADIENT,
-                   R.string.bottomgradient,
-                   Modifier.padding( start = 25.dp )
+                   Preferences.PLAYER_BOTTOM_GRADIENT,
+                   R.string.bottomgradient
                )
 
-           if ( playerType == PlayerType.Modern && search.contains( R.string.albumCoverRotation ) )
+           if ( playerType == PlayerType.Modern && search appearsIn R.string.albumCoverRotation )
                SettingComponents.BooleanEntry(
-                   Settings.PLAYER_THUMBNAIL_ROTATION,
-                   R.string.albumCoverRotation,
-                   Modifier.padding( start = 25.dp )
+                   Preferences.PLAYER_THUMBNAIL_ROTATION,
+                   R.string.albumCoverRotation
                )
        }
     }
-    AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ) {
-        if( playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient && search.contains( R.string.blackgradient ) )
+
+    AnimatedVisibility(
+        Preferences.PLAYER_BACKGROUND.either( PlayerBackgroundColors.CoverColorGradient, PlayerBackgroundColors.ThemeColorGradient )
+    ) {
+        if( search appearsIn R.string.blackgradient )
             SettingComponents.BooleanEntry(
-                Settings.BLACK_GRADIENT,
-                R.string.blackgradient
+                Preferences.BLACK_GRADIENT,
+                R.string.blackgradient,
+                Modifier.padding( start = 25.dp )
             )
     }
 
-    if ( search.contains( R.string.textoutline ) )
+    if ( search appearsIn R.string.textoutline )
         SettingComponents.BooleanEntry(
-            Settings.TEXT_OUTLINE,
+            Preferences.TEXT_OUTLINE,
             R.string.textoutline
         )
 
-    if ( search.contains( R.string.show_total_time_of_queue ) )
+    if ( search appearsIn R.string.show_total_time_of_queue )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_SHOW_TOTAL_QUEUE_TIME,
+            Preferences.PLAYER_SHOW_TOTAL_QUEUE_TIME,
             R.string.show_total_time_of_queue
         )
 
-    if ( search.contains( R.string.show_remaining_song_time ) )
+    if ( search appearsIn R.string.show_remaining_song_time )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_SHOW_SONGS_REMAINING_TIME,
+            Preferences.PLAYER_SHOW_SONGS_REMAINING_TIME,
             R.string.show_remaining_song_time
         )
 
-    if ( search.contains( R.string.show_next_songs_in_player ) )
+    if ( search appearsIn R.string.show_next_songs_in_player )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_SHOW_NEXT_IN_QUEUE,
+            Preferences.PLAYER_SHOW_NEXT_IN_QUEUE,
             R.string.show_next_songs_in_player
         )
-    AnimatedVisibility( visible = showNextSongsInPlayer) {
-        Column {
-            if( search.contains( R.string.showtwosongs ) )
+    AnimatedVisibility( visible = showNextSongsInPlayer ) {
+        Column(
+            Modifier.padding( start = 25.dp )
+        ) {
+            if( search appearsIn R.string.showtwosongs )
                 SettingComponents.EnumEntry(
-                    Settings.MAX_NUMBER_OF_NEXT_IN_QUEUE,
-                    R.string.songs_number_to_show,
-                    Modifier.padding( start = 25.dp )
+                    Preferences.MAX_NUMBER_OF_NEXT_IN_QUEUE,
+                    R.string.songs_number_to_show
                 )
 
-            if ( search.contains( R.string.showalbumcover ) )
+            if ( search appearsIn R.string.showalbumcover )
                 SettingComponents.BooleanEntry(
-                    Settings.PLAYER_SHOW_NEXT_IN_QUEUE_THUMBNAIL,
+                    Preferences.PLAYER_SHOW_NEXT_IN_QUEUE_THUMBNAIL,
                     R.string.showalbumcover
                 )
         }
     }
 
-    if ( search.contains( R.string.disable_scrolling_text ) )
+    if ( search appearsIn R.string.disable_scrolling_text )
         SettingComponents.BooleanEntry(
-            Settings.SCROLLING_TEXT_DISABLED,
+            Preferences.SCROLLING_TEXT_DISABLED,
             R.string.disable_scrolling_text,
             R.string.scrolling_text_is_used_for_long_texts
         )
 
-    val swipeDirection = if (playerType == PlayerType.Modern && !isLandscape)
-        R.string.disable_horizontal_swipe
+    val (titleId, subtitleId) = if( playerType == PlayerType.Modern && !isLandscape )
+        R.string.disable_vertical_swipe to R.string.disable_vertical_swipe_secondary
     else
-        R.string.disable_vertical_swipe
-    if ( search.contains( swipeDirection ) ) {
-        val (titleId, subtitleId) = if( playerType == PlayerType.Modern && !isLandscape )
-            R.string.disable_vertical_swipe to R.string.disable_vertical_swipe_secondary
-        else
-            R.string.disable_horizontal_swipe to R.string.disable_song_switching_via_swipe
-
+        R.string.disable_horizontal_swipe to R.string.disable_song_switching_via_swipe
+    if ( search appearsIn titleId )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED,
+            Preferences.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED,
             titleId,
             subtitleId
         )
-    }
 
-    if ( search.contains( R.string.player_rotating_buttons ) )
+    if ( search appearsIn R.string.player_rotating_buttons )
         SettingComponents.BooleanEntry(
-            Settings.ROTATION_EFFECT,
+            Preferences.ROTATION_EFFECT,
             R.string.player_rotating_buttons,
             R.string.player_enable_rotation_buttons
         )
 
-    if ( search.contains( R.string.toggle_lyrics ) )
+    if ( search appearsIn R.string.toggle_lyrics )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_TAP_THUMBNAIL_FOR_LYRICS,
+            Preferences.PLAYER_TAP_THUMBNAIL_FOR_LYRICS,
             R.string.toggle_lyrics,
             R.string.by_tapping_on_the_thumbnail
         )
 
-    if ( search.contains( R.string.click_lyrics_text ) )
+    if ( search appearsIn R.string.click_lyrics_text )
         SettingComponents.BooleanEntry(
-            Settings.LYRICS_JUMP_ON_TAP,
+            Preferences.LYRICS_JUMP_ON_TAP,
             R.string.click_lyrics_text
         )
-    if ( showlyricsthumbnail && search.contains( R.string.show_background_in_lyrics ) )
+    if ( showlyricsthumbnail && search appearsIn R.string.show_background_in_lyrics )
         SettingComponents.BooleanEntry(
-            Settings.LYRICS_SHOW_ACCENT_BACKGROUND,
+            Preferences.LYRICS_SHOW_ACCENT_BACKGROUND,
             R.string.show_background_in_lyrics
         )
 
-    if ( search.contains( R.string.player_enable_lyrics_popup_message ) )
+    if ( search appearsIn R.string.player_enable_lyrics_popup_message )
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_ACTION_LYRICS_POPUP_MESSAGE,
+            Preferences.PLAYER_ACTION_LYRICS_POPUP_MESSAGE,
             R.string.player_enable_lyrics_popup_message
         )
 
-    if ( search.contains( R.string.background_progress_bar ) )
+    if ( search appearsIn R.string.background_progress_bar )
         SettingComponents.EnumEntry(
-            Settings.MINI_PLAYER_PROGRESS_BAR,
+            Preferences.MINI_PLAYER_PROGRESS_BAR,
             R.string.background_progress_bar
         )
 
-    if ( search.contains( R.string.visualizer ) ) {
+    if ( search appearsIn R.string.visualizer ) {
         SettingComponents.BooleanEntry(
-            Settings.PLAYER_VISUALIZER,
+            Preferences.PLAYER_VISUALIZER,
             R.string.visualizer
         )
 

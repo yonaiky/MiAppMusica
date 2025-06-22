@@ -3,12 +3,9 @@ package app.kreate.android.themed.common.screens.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -21,32 +18,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.BuildConfig
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
 import app.kreate.android.themed.common.screens.settings.general.PlayerSettings
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.languageDestinationName
 import me.knighthat.updater.Updater
 
 @UnstableApi
 @Composable
-fun GeneralSettings() {
+fun GeneralSettings( paddingValues: PaddingValues ) {
     val scrollState = rememberLazyListState()
 
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_general, R.drawable.app_icon_monochrome )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
     val (restartService, onRestartServiceChange) = rememberSaveable { mutableStateOf( false ) }
 
     Column(
@@ -72,14 +63,14 @@ fun GeneralSettings() {
         ) {
             if( BuildConfig.IS_AUTOUPDATE )
                 section( R.string.update ) {
-                    if( search.contains( R.string.update ) )
+                    if( search appearsIn R.string.update )
                         Updater.SettingEntry()
                 }
 
             section( R.string.languages, sysLocaleText ) {
-                if( search.contains( R.string.app_language ) )
+                if( search appearsIn R.string.app_language )
                     SettingComponents.EnumEntry(
-                        Settings.APP_LANGUAGE,
+                        Preferences.APP_LANGUAGE,
                         R.string.app_language,
                         getName = { languageDestinationName(it) },
                         action = SettingComponents.Action.RESTART_APP
@@ -87,9 +78,9 @@ fun GeneralSettings() {
             }
 
             section( R.string.notification_type, R.string.notification_type_info ) {
-                if( search.contains( R.string.notification_type ) )
+                if( search appearsIn R.string.notification_type )
                     SettingComponents.EnumEntry(
-                        Settings.NOTIFICATION_TYPE,
+                        Preferences.NOTIFICATION_TYPE,
                         R.string.notification_type,
                         action = SettingComponents.Action.RESTART_APP
                     )

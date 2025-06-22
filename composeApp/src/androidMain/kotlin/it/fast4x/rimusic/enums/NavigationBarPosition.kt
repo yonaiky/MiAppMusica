@@ -1,8 +1,8 @@
 package it.fast4x.rimusic.enums
 
 import androidx.annotation.StringRes
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import me.knighthat.enums.TextView
 
 enum class NavigationBarPosition(
@@ -16,7 +16,7 @@ enum class NavigationBarPosition(
 
     companion object {
 
-        fun current() = Settings.NAVIGATION_BAR_POSITION.value
+        fun current() = Preferences.NAVIGATION_BAR_POSITION.value
     }
 
     fun isCurrent(): Boolean = current() == this

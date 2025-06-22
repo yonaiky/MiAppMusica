@@ -39,7 +39,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.compose.rememberNavController
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -340,11 +340,11 @@ fun SongItem(
     val authors = mediaItem.mediaMetadata.artist.toString()
     val duration = mediaItem.mediaMetadata.extras?.getString("durationText")
 
-    val playlistindicator by Settings.SHOW_PLAYLIST_INDICATOR
+    val playlistindicator by Preferences.SHOW_PLAYLIST_INDICATOR
     val isSongMappedToPlaylist by remember {
         Database.songPlaylistMapTable.isMapped( mediaItem.mediaId )
     }.collectAsState( false, Dispatchers.IO )
-    val colorPaletteName by Settings.COLOR_PALETTE
+    val colorPaletteName by Preferences.COLOR_PALETTE
 
     val context = LocalContext.current
     val colorPalette = LocalAppearance.current.colorPalette

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirstOrNull
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.CheckUpdateState
@@ -129,13 +129,13 @@ object Updater {
 
     @Composable
     fun SettingEntry() {
-        var checkUpdateState by Settings.CHECK_UPDATE
+        var checkUpdateState by Preferences.CHECK_UPDATE
         if( !BuildConfig.IS_AUTOUPDATE )
             checkUpdateState = CheckUpdateState.Disabled
 
         Row( Modifier.fillMaxWidth() ) {
             SettingComponents.EnumEntry(
-                Settings.CHECK_UPDATE,
+                Preferences.CHECK_UPDATE,
                 R.string.enable_check_for_update,
                 Modifier.weight( 1f ),
                 isEnabled = BuildConfig.IS_AUTOUPDATE

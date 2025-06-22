@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="cancel">Cancel·lar</string>
     <string name="done">Fet</string>
@@ -971,4 +971,10 @@
     <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s secd seconds</string>
     <string name="setting_entry_show_chip">Show \"%s\" chip</string>
     <string name="entry_setting_quick_picks_show_section">Show \"%s\"</string>
+    <string name="setting_entry_crash_log">Crash log</string>
+    <string name="setting_entry_logs">Logs</string>
+    <string name="setting_description_copy_or_export_logs">Tap here to export, tap icon to copy</string>
+    <string name="error_message_unsupported_local_playlist">Unsupported format</string>
+    <string name="error_message_import_local_playlist_failed">Error occurs while importing local playlist</string>
+    <string name="dialog_title_color_picker">Color picker</string>
 </resources>

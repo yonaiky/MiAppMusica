@@ -52,8 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -147,7 +147,7 @@ fun HomeQuickPicks(
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
-    var playEventType by Settings.QUICK_PICKS_TYPE
+    var playEventType by Preferences.QUICK_PICKS_TYPE
 
     var trending by persist<Song?>("home/trending")
     val trendingInit by persist<Song?>(tag = "home/trending")
@@ -176,15 +176,15 @@ fun HomeQuickPicks(
     val context = LocalContext.current
 
 
-    val showRelatedAlbums by Settings.QUICK_PICKS_SHOW_RELATED_ALBUMS
-    val showSimilarArtists by Settings.QUICK_PICKS_SHOW_RELATED_ARTISTS
-    val showNewAlbumsArtists by Settings.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS
-    val showPlaylistMightLike by Settings.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS
-    val showMoodsAndGenres by Settings.QUICK_PICKS_SHOW_MOODS_AND_GENRES
-    val showNewAlbums by Settings.QUICK_PICKS_SHOW_NEW_ALBUMS
-    val showMonthlyPlaylistInQuickPicks by Settings.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS
-    val showTips by Settings.QUICK_PICKS_SHOW_TIPS
-    val showCharts by Settings.QUICK_PICKS_SHOW_CHARTS
+    val showRelatedAlbums by Preferences.QUICK_PICKS_SHOW_RELATED_ALBUMS
+    val showSimilarArtists by Preferences.QUICK_PICKS_SHOW_RELATED_ARTISTS
+    val showNewAlbumsArtists by Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS
+    val showPlaylistMightLike by Preferences.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS
+    val showMoodsAndGenres by Preferences.QUICK_PICKS_SHOW_MOODS_AND_GENRES
+    val showNewAlbums by Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS
+    val showMonthlyPlaylistInQuickPicks by Preferences.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS
+    val showTips by Preferences.QUICK_PICKS_SHOW_TIPS
+    val showCharts by Preferences.QUICK_PICKS_SHOW_CHARTS
 
     val refreshScope = rememberCoroutineScope()
     val last50Year: Duration = 18250.days
@@ -192,10 +192,10 @@ fun HomeQuickPicks(
 
     var selectedCountryCode = Countries.US
 
-    val parentalControlEnabled by Settings.PARENTAL_CONTROL
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
 
     //var loadedData by rememberSaveable { mutableStateOf(false) }
-    var loadedData by Settings.IS_DATA_KEY_LOADED
+    var loadedData by Preferences.IS_DATA_KEY_LOADED
 
     suspend fun loadData() {
 
@@ -317,7 +317,7 @@ fun HomeQuickPicks(
         .padding(top = 24.dp, bottom = 8.dp)
         .padding(endPaddingValues)
 
-    val showSearchTab by Settings.SHOW_SEARCH_IN_NAVIGATION_BAR
+    val showSearchTab by Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR
 
     val downloadedSongs = remember {
         MyDownloadHelper.downloads.value.filter {
@@ -331,7 +331,7 @@ fun HomeQuickPicks(
 
     val hapticFeedback = LocalHapticFeedback.current
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     PullToRefreshBox(
         isRefreshing = refreshing,
@@ -1172,7 +1172,7 @@ fun HomeQuickPicks(
             }
 
 
-            val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+            val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
             if (UiType.ViMusic.isCurrent() && showFloatingIcon)
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,

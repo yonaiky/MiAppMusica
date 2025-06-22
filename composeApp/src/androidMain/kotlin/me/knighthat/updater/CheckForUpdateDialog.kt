@@ -23,8 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.typography
@@ -53,7 +53,7 @@ object CheckForUpdateDialog: Dialog {
     override fun Render() {
         if( isCanceled || !isActive ) return
 
-        var checkUpdateState by Settings.CHECK_UPDATE
+        var checkUpdateState by Preferences.CHECK_UPDATE
 
         @Composable
         fun DescriptionText( @StringRes textId: Int ) =

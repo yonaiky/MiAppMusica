@@ -48,8 +48,8 @@ import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import coil.compose.AsyncImagePainter
 import it.fast4x.innertube.Innertube
@@ -124,7 +124,7 @@ fun ArtistDetails(
     val menuState = LocalMenuState.current
 
     // Settings
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     val sectionTextModifier = Modifier
         .padding( horizontal = 16.dp )

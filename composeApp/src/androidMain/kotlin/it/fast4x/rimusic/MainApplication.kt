@@ -2,7 +2,7 @@ package it.fast4x.rimusic
 
 import android.app.Application
 import androidx.compose.runtime.getValue
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import it.fast4x.rimusic.utils.CaptureCrash
@@ -14,14 +14,14 @@ import java.io.File
 class MainApplication : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
-        Settings.load( this )
+        Preferences.load( this )
 
         super.onCreate()
         //DatabaseInitializer()
         Dependencies.init(this)
 
         /**** LOG *********/
-        val logEnabled by Settings.DEBUG_LOG
+        val logEnabled by Preferences.DEBUG_LOG
         if (logEnabled) {
             val dir = filesDir.resolve("logs").also {
                 if (it.exists()) return@also
@@ -40,7 +40,7 @@ class MainApplication : Application(), ImageLoaderFactory {
     }
 
     override fun onTerminate() {
-        Settings.unload()
+        Preferences.unload()
 
         super.onTerminate()
     }

@@ -27,8 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
@@ -222,7 +222,7 @@ fun AlbumPlaceholder(
 ) {
     val thumbnailSizeDp = Dimensions.thumbnails.album
 
-    val thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+    val thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

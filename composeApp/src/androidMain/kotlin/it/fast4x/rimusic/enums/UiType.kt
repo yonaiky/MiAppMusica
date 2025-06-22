@@ -1,7 +1,7 @@
 package it.fast4x.rimusic.enums
 
 import androidx.compose.runtime.Composable
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import me.knighthat.enums.TextView
 
 enum class UiType: TextView {
@@ -10,7 +10,7 @@ enum class UiType: TextView {
 
     companion object {
 
-        fun current(): UiType = Settings.MAIN_THEME.value
+        fun current(): UiType = Preferences.MAIN_THEME.value
     }
 
     override val text: String

@@ -17,8 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.ui.components.themed.IconButton
@@ -37,9 +37,9 @@ class BlurAdjuster private constructor(
         @Composable
         operator fun invoke() = BlurAdjuster(
             remember { mutableStateOf( false ) },
-            Settings.PLAYER_BACKGROUND_BLUR_STRENGTH,
-            Settings.PLAYER_BACKGROUND_BACK_DROP,
-            Settings.PLAYER_ROTATING_ALBUM_COVER
+            Preferences.PLAYER_BACKGROUND_BLUR_STRENGTH,
+            Preferences.PLAYER_BACKGROUND_BACK_DROP,
+            Preferences.PLAYER_ROTATING_ALBUM_COVER
         )
     }
 
@@ -119,7 +119,7 @@ class BlurAdjuster private constructor(
                 )
 
                 SettingComponents.BooleanEntry(
-                    Settings.PLAYER_ROTATING_ALBUM_COVER,
+                    Preferences.PLAYER_ROTATING_ALBUM_COVER,
                     R.string.rotating_cover_title
                 )
             }

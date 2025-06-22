@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import coil.compose.AsyncImagePainter
 import it.fast4x.rimusic.utils.isLandscape
 
@@ -40,7 +40,7 @@ fun DynamicOrientationLayout(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxWidth( .5f )
             ) {
-                val roundness by Settings.THUMBNAIL_BORDER_RADIUS
+                val roundness by Preferences.THUMBNAIL_BORDER_RADIUS
                 Image(
                     painter = thumbnail,
                     contentDescription = null,

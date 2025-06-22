@@ -5,7 +5,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.rimusic.enums.PlaylistSongSortBy
 import it.fast4x.rimusic.typography
@@ -14,7 +14,7 @@ import it.fast4x.rimusic.utils.semiBold
 
 class PlaylistSongsSort(
     override val menuState: MenuState,
-): Sort<PlaylistSongSortBy>(menuState, Settings.PLAYLIST_SONGS_SORT_BY, Settings.PLAYLIST_SONGS_SORT_ORDER) {
+): Sort<PlaylistSongSortBy>(menuState, Preferences.PLAYLIST_SONGS_SORT_BY, Preferences.PLAYLIST_SONGS_SORT_ORDER) {
 
     override fun onLongClick() { /* Does nothing */ }
 

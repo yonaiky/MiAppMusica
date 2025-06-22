@@ -32,11 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
-import app.kreate.android.Settings.HOME_LIBRARY_ITEM_SIZE
-import app.kreate.android.Settings.HOME_LIBRARY_SORT_BY
-import app.kreate.android.Settings.HOME_LIBRARY_SORT_ORDER
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -68,7 +66,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
-import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 
 
@@ -88,19 +85,19 @@ fun HomeLibrary(
     val menuState = LocalMenuState.current
 
     // Non-vital
-    var playlistType by Settings.HOME_LIBRARY_TYPE
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    var playlistType by Preferences.HOME_LIBRARY_TYPE
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     var items by persistList<PlaylistPreview>("home/playlists")
 
     var itemsOnDisplay by persistList<PlaylistPreview>("home/playlists/on_display")
 
-    val search = Search(lazyGridState)
+    val search = remember { Search(lazyGridState) }
 
     val sort = remember {
-        Sort(menuState, HOME_LIBRARY_SORT_BY, HOME_LIBRARY_SORT_ORDER)
+        Sort(menuState, Preferences.HOME_LIBRARY_SORT_BY, Preferences.HOME_LIBRARY_SORT_ORDER)
     }
-    val itemSize = remember { ItemSize(HOME_LIBRARY_ITEM_SIZE, menuState) }
+    val itemSize = remember { ItemSize(Preferences.HOME_LIBRARY_ITEM_SIZE, menuState) }
 
     //<editor-fold desc="Songs shuffler">
     /**
@@ -135,16 +132,16 @@ fun HomeLibrary(
                 .distinctUntilChanged()
                 .collect { items = it }
     }
-    LaunchedEffect( items, search.inputValue ) {
+    LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {
-            it.playlist.name.contains( search.inputValue, true )
+            search appearsIn it.playlist.name
         }
     }
 
     // START: Additional playlists
-    val showPinnedPlaylists by Settings.SHOW_PINNED_PLAYLISTS
-    val showMonthlyPlaylists by Settings.SHOW_MONTHLY_PLAYLISTS
-    val showPipedPlaylists by Settings.SHOW_PIPED_PLAYLISTS
+    val showPinnedPlaylists by Preferences.SHOW_PINNED_PLAYLISTS
+    val showMonthlyPlaylists by Preferences.SHOW_MONTHLY_PLAYLISTS
+    val showPipedPlaylists by Preferences.SHOW_PIPED_PLAYLISTS
 
     val buttonsList = mutableListOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
     buttonsList += PlaylistsType.YTPlaylist to stringResource(R.string.yt_playlists)
@@ -162,11 +159,11 @@ fun HomeLibrary(
     // END - New playlist
 
     // START - Monthly playlist
-    if ( Settings.MONTHLY_PLAYLIST_COMPILATION.value )
+    if ( Preferences.MONTHLY_PLAYLIST_COMPILATION.value )
         CheckMonthlyPlaylist()
     // END - Monthly playlist
 
-    val doAutoSync by Settings.AUTO_SYNC
+    val doAutoSync by Preferences.AUTO_SYNC
     var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
 
     var refreshing by remember { mutableStateOf(false) }
@@ -208,7 +205,7 @@ fun HomeLibrary(
                 TabToolBar.Buttons( sort, sync, search, shuffle, newPlaylistDialog, importPlaylistDialog, itemSize )
 
                 // Sticky search bar
-                search.SearchBar( this )
+                search.SearchBar()
 
                 LazyVerticalGrid(
                     state = lazyGridState,
@@ -276,7 +273,7 @@ fun HomeLibrary(
 
             FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
-            val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+            val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
             if (UiType.ViMusic.isCurrent() && showFloatingIcon)
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,

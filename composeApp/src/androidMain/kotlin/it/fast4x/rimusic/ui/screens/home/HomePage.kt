@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
@@ -103,7 +103,7 @@ fun HomePage(
     val refreshScope = rememberCoroutineScope()
 
     //var loadedData by rememberSaveable { mutableStateOf(false) }
-    var loadedData by Settings.IS_DATA_KEY_LOADED
+    var loadedData by Preferences.IS_DATA_KEY_LOADED
 
     suspend fun loadData() {
 
@@ -168,8 +168,8 @@ fun HomePage(
 
     val hapticFeedback = LocalHapticFeedback.current
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
-    val showSearchTab by Settings.SHOW_SEARCH_IN_NAVIGATION_BAR
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
+    val showSearchTab by Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR
 
     PullToRefreshBox(
         isRefreshing = refreshing,
@@ -309,7 +309,7 @@ fun HomePage(
             }
 
 
-            val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+            val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
             if (UiType.ViMusic.isCurrent() && showFloatingIcon)
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,

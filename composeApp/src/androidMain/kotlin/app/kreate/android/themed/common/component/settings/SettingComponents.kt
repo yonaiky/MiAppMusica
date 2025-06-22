@@ -1,10 +1,12 @@
 package app.kreate.android.themed.common.component.settings
 
+import androidx.annotation.IntRange
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,11 +17,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,17 +36,18 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.themed.common.component.ColorPickerDialog
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.Switch
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.Dialog
 import me.knighthat.component.dialog.RestartAppDialog
-import me.knighthat.component.dialog.TextInputDialog
 import me.knighthat.enums.TextView
 
 object SettingComponents {
@@ -65,11 +73,6 @@ object SettingComponents {
      * Space between entries in vertical layout
      */
     const val VERTICAL_SPACING = 12
-
-    /**
-     * Space between header and above component
-     */
-    const val HEADER_SPACING = 24
 
     @Composable
     fun Description(
@@ -143,7 +146,7 @@ object SettingComponents {
 
     @Composable
     inline fun <reified T: Enum<T>> EnumEntry(
-        preference: Settings.Preference.EnumPreference<T>,
+        preference: Preferences.Enum<T>,
         title: String,
         crossinline getName: @Composable (T) -> String,
         modifier: Modifier = Modifier,
@@ -245,7 +248,7 @@ object SettingComponents {
 
     @Composable
     inline fun <reified T> EnumEntry(
-        preference: Settings.Preference.EnumPreference<T>,
+        preference: Preferences.Enum<T>,
         title: String,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -258,7 +261,7 @@ object SettingComponents {
 
     @Composable
     inline fun <reified T: Enum<T>> EnumEntry(
-        preference: Settings.Preference.EnumPreference<T>,
+        preference: Preferences.Enum<T>,
         @StringRes titleId: Int,
         crossinline getName: @Composable (T) -> String,
         modifier: Modifier = Modifier,
@@ -272,7 +275,7 @@ object SettingComponents {
 
     @Composable
     inline fun <reified T> EnumEntry(
-        preference: Settings.Preference.EnumPreference<T>,
+        preference: Preferences.Enum<T>,
         @StringRes titleId: Int,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -285,7 +288,7 @@ object SettingComponents {
 
     @Composable
     fun BooleanEntry(
-        preference: Settings.Preference.BooleanPreference,
+        preference: Preferences.Boolean,
         title: String,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -309,7 +312,7 @@ object SettingComponents {
 
     @Composable
     fun BooleanEntry(
-        preference: Settings.Preference.BooleanPreference,
+        preference: Preferences.Boolean,
         @StringRes titleId: Int,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -322,7 +325,7 @@ object SettingComponents {
 
     @Composable
     fun BooleanEntry(
-        preference: Settings.Preference.BooleanPreference,
+        preference: Preferences.Boolean,
         @StringRes titleId: Int,
         @StringRes subtitleId: Int,
         modifier: Modifier = Modifier,
@@ -335,7 +338,7 @@ object SettingComponents {
 
     @Composable
     private fun <T> InputDialogEntry(
-        preference: Settings.Preference<T>,
+        preference: Preferences<T>,
         title: String,
         constraint: String,
         onValueChanged: (String) -> Unit,
@@ -345,31 +348,8 @@ object SettingComponents {
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
     ) {
-        val dialog = remember {
-            object : TextInputDialog(constraint) {
-                override val keyboardOption: KeyboardOptions = keyboardOption
-                override val dialogTitle: String
-                    @Composable
-                    get() = title
-
-                override var value: TextFieldValue by mutableStateOf( TextFieldValue(preference.value.toString()) )
-                override var isActive: Boolean by mutableStateOf( false )
-
-                override fun onSet( newValue: String ) {
-                    super.onSet(newValue)
-
-                    onValueChanged( newValue )
-
-                    hideDialog()
-                }
-
-                override fun hideDialog() {
-                    super.hideDialog()
-                    // Some processing might have happened after the value is set,
-                    // setting this back to match preference's value is best idea
-                    value = TextFieldValue(preference.value.toString())
-                }
-            }
+        val dialog = remember( preference.value ) {
+            SettingInputDialog(constraint, preference, title, onValueChanged, keyboardOption)
         }
         dialog.Render()
 
@@ -384,7 +364,7 @@ object SettingComponents {
 
     @Composable
     fun InputDialogEntry(
-        preference: Settings.Preference.StringPreference,
+        preference: Preferences.String,
         title: String,
         constraint: String,
         modifier: Modifier = Modifier,
@@ -399,7 +379,7 @@ object SettingComponents {
 
     @Composable
     fun InputDialogEntry(
-        preference: Settings.Preference.StringPreference,
+        preference: Preferences.String,
         @StringRes titleId: Int,
         constraint: String,
         modifier: Modifier = Modifier,
@@ -414,7 +394,7 @@ object SettingComponents {
 
     @Composable
     fun <T: Number> InputDialogEntry(
-        preference: Settings.Preference<T>,
+        preference: Preferences<T>,
         title: String,
         constraint: String,
         modifier: Modifier = Modifier,
@@ -424,10 +404,11 @@ object SettingComponents {
         action: Action = Action.NONE,
     ) {
         fun valueProcessor( newValue: String ) {
+            val toSet = newValue.ifBlank( preference.defaultValue::toString )
             when( preference ) {
-                is Settings.Preference.IntPreference -> preference.value = newValue.toInt()
-                is Settings.Preference.LongPreference -> preference.value = newValue.toLong()
-                is Settings.Preference.FloatPreference -> preference.value = newValue.toFloat()
+                is Preferences.Int -> preference.value = toSet.toInt()
+                is Preferences.Long -> preference.value = toSet.toLong()
+                is Preferences.Float -> preference.value = toSet.toFloat()
                 else -> throw UnsupportedOperationException(
                     "${preference::class} is not supported in <T: Number> InputDialogEntry"
                 )
@@ -441,7 +422,7 @@ object SettingComponents {
 
     @Composable
     fun <T: Number> InputDialogEntry(
-        preference: Settings.Preference<T>,
+        preference: Preferences<T>,
         @StringRes titleId: Int,
         constraint: String,
         modifier: Modifier = Modifier,
@@ -453,6 +434,157 @@ object SettingComponents {
         InputDialogEntry(
             preference, stringResource( titleId ), constraint, modifier, keyboardOption, subtitle, isEnabled, action
         )
+
+    @ExperimentalMaterial3Api
+    @Composable
+    fun <T> SliderEntry(
+        preference: Preferences<T>,
+        title: String,
+        constraints: String,
+        valueRange: ClosedFloatingPointRange<Float>,
+        @IntRange(from = 0) steps: Int,
+        onTextDisplay: @Composable (Float) -> String,
+        onValueChangeFinished: (Preferences<T>, Float) -> Unit,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE
+    ) where T: Number, T: Comparable<T> =
+        Column (
+            verticalArrangement = Arrangement.spacedBy( 5.dp ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.padding( HORIZONTAL_PADDING.dp )
+        ) {
+            InputDialogEntry(
+                preference = preference,
+                title = title,
+                subtitle = subtitle,
+                constraint = constraints,
+                keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isEnabled = isEnabled,
+                action = action,
+            )
+
+            /**
+             * To display real-time value without updating the setting constantly,
+             * this mutable state is introduced as a temporal value holder.
+             *
+             * Until the value is finalized, then it's written into setting
+             */
+            var realtimeValue by remember( preference.value ) {
+                mutableFloatStateOf( preference.value.toFloat() )
+            }
+            Slider(
+                value = realtimeValue,
+                onValueChange = { realtimeValue = it },
+                modifier = Modifier.fillMaxWidth()
+                                   .height( 15.dp ),
+                enabled = isEnabled,
+                valueRange = valueRange,
+                steps = steps,
+                onValueChangeFinished = { onValueChangeFinished( preference, realtimeValue ) },
+                colors = SliderColors(
+                    thumbColor = colorPalette().onAccent,
+                    activeTrackColor = colorPalette().accent,
+                    activeTickColor = Color.Transparent,
+                    inactiveTrackColor = colorPalette().text.copy( 0.75f ),
+                    inactiveTickColor = Color.Transparent,
+                    disabledThumbColor = Color.Unspecified,
+                    disabledActiveTrackColor = Color.Unspecified,
+                    disabledActiveTickColor = Color.Transparent,
+                    disabledInactiveTrackColor = Color.Transparent,
+                    disabledInactiveTickColor = Color.Unspecified
+                )
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding( horizontal = 5.dp )
+            ) {
+               BasicText(
+                   text = onTextDisplay( valueRange.start ),
+                   style = typography().xxs.copy( colorPalette().textSecondary )
+               )
+
+                BasicText(
+                    text = onTextDisplay( realtimeValue ),
+                    style = typography().xxs
+                                        .copy(
+                                            color = colorPalette().text,
+                                            textAlign = TextAlign.Center
+                                        ),
+                    modifier = Modifier.weight( 1f )
+                )
+
+                BasicText(
+                    text = onTextDisplay( valueRange.endInclusive ),
+                    style = typography().xxs.copy( colorPalette().textSecondary )
+                )
+            }
+        }
+
+    @ExperimentalMaterial3Api
+    @Composable
+    fun <T> SliderEntry(
+        preference: Preferences<T>,
+        @StringRes titleId: Int,
+        @StringRes subtitleId: Int,
+        constraints: String,
+        valueRange: ClosedFloatingPointRange<Float>,
+        @IntRange(from = 0) steps: Int,
+        onTextDisplay: @Composable (Float) -> String,
+        onValueChangeFinished: (Preferences<T>, Float) -> Unit,
+        modifier: Modifier = Modifier,
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE
+    ) where T: Number, T: Comparable<T> = SliderEntry(
+        preference = preference,
+        title = stringResource( titleId ),
+        constraints = constraints,
+        valueRange = valueRange,
+        steps = steps,
+        onTextDisplay = onTextDisplay,
+        onValueChangeFinished = onValueChangeFinished,
+        modifier = modifier,
+        subtitle = stringResource( subtitleId ),
+        isEnabled = isEnabled,
+        action = action
+    )
+
+    @Composable
+    fun ColorPicker(
+        preference: Preferences.Int,
+        title: String,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE
+    ) {
+        val dialog = remember( preference.value ) {
+            val initialColor = Color(preference.value)
+            ColorPickerDialog(initialColor) {
+                preference.value = it.hashCode()
+            }
+        }
+        dialog.Render()
+
+        Text( title, dialog::showDialog, modifier, subtitle, isEnabled ) {
+            Box(
+                Modifier.size( 24.dp )
+                        .background( dialog.color, RoundedCornerShape( 3.dp ) )
+            )
+        }
+    }
+
+    @Composable
+    fun ColorPicker(
+        preference: Preferences.Int,
+        @StringRes titleId: Int,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE
+    ) = ColorPicker( preference, stringResource( titleId ), modifier, subtitle, isEnabled, action )
 
     /**
      * A set of actions to enact once the setting is set.

@@ -1,24 +1,20 @@
 package it.fast4x.rimusic.ui.screens.settings
 
 import android.content.Context
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,13 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
@@ -49,18 +39,13 @@ import app.kreate.android.themed.common.screens.settings.QuickPicksSettings
 import app.kreate.android.themed.common.screens.settings.UiSettings
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.ValidationType
+import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.Skeleton
-import it.fast4x.rimusic.ui.components.themed.DialogColorPicker
-import it.fast4x.rimusic.ui.components.themed.IDialog
-import it.fast4x.rimusic.ui.components.themed.InputTextDialog
-import it.fast4x.rimusic.ui.components.themed.Slider
 import it.fast4x.rimusic.ui.components.themed.StringListDialog
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.RestartAppDialog
-import me.knighthat.utils.Toaster
 
 @UnstableApi
 @OptIn(
@@ -74,6 +59,15 @@ fun SettingsScreen(
 ) {
     val saveableStateHolder = rememberSaveableStateHolder()
     val (tabIndex, onTabChanged) = rememberSaveable { mutableIntStateOf(0) }
+
+    val topPadding =
+        if( UiType.ViMusic.isCurrent() )
+            WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+        else
+            0.dp
+    val paddingValues = remember( topPadding ) {
+        PaddingValues( 6.dp, topPadding, 6.dp )
+    }
 
     Skeleton(
         navController,
@@ -97,14 +91,14 @@ fun SettingsScreen(
     ) { currentTabIndex ->
         saveableStateHolder.SaveableStateProvider(currentTabIndex) {
             when (currentTabIndex) {
-                0 -> GeneralSettings()
-                1 -> UiSettings()
-                2 -> AppearanceSettings()
-                3 -> QuickPicksSettings()
-                4 -> DataSettings()
-                5 -> AccountSettings()
-                6 -> OtherSettings()
-                7 -> About()
+                0 -> GeneralSettings( paddingValues )
+                1 -> UiSettings( paddingValues )
+                2 -> AppearanceSettings( paddingValues )
+                3 -> QuickPicksSettings( paddingValues )
+                4 -> DataSettings( paddingValues )
+                5 -> AccountSettings( paddingValues )
+                6 -> OtherSettings( paddingValues )
+                7 -> About( paddingValues )
             }
         }
     }
@@ -203,182 +197,4 @@ fun SettingsEntry(
             )
         }
     }
-}
-
-@Composable
-fun TextDialogSettingEntry(
-    title: String,
-    text: String,
-    currentText: String,
-    onTextSave: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
-    validationType: ValidationType = ValidationType.None
-) {
-    var showDialog by remember { mutableStateOf(false) }
-    //val context = LocalContext.current
-
-    if (showDialog) {
-        InputTextDialog(
-            onDismiss = { showDialog = false },
-            title = title,
-            value = currentText,
-            placeholder = title,
-            setValue = {
-                onTextSave(it)
-                //context.toast("Preference Saved")
-            },
-            validationType = validationType
-        )
-        /*
-        TextFieldDialog(hintText = title ,
-            onDismiss = { showDialog = false },
-            onDone ={ value ->
-                onTextSave(value)
-                //context.toast("Preference Saved")
-            },
-            //doneText = "Save",
-            initialTextInput = currentText
-        )
-         */
-    }
-    SettingsEntry(
-        title = title,
-        text = text,
-        isEnabled = isEnabled,
-        onClick = { showDialog = true },
-        trailingContent = { },
-        modifier = modifier
-    )
-}
-
-@Composable
-fun ColorSettingEntry(
-    title: String,
-    text: String,
-    color: Color,
-    onColorSelected: (Color) -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true
-) {
-    var showColorPicker by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-
-    SettingsEntry(
-        title = title,
-        text = text,
-        isEnabled = isEnabled,
-        onClick = { showColorPicker = true },
-        trailingContent = {
-            Box(
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(color)
-                    .border(BorderStroke(1.dp, Color.LightGray))
-            )
-        },
-        modifier = modifier
-    )
-
-    if (showColorPicker)
-        DialogColorPicker(onDismiss = { showColorPicker = false }) {
-            onColorSelected(it)
-            showColorPicker = false
-            Toaster.n( R.string.info_color_s_applied, title )
-        }
-
-}
-
-@Composable
-fun ButtonBarSettingEntry(
-    title: String,
-    text: String,
-    icon: Int,
-    iconSize: Dp = 24.dp,
-    iconColor: Color? = null,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true
-) {
-    SettingsEntry(
-        title = title,
-        text = text,
-        isEnabled = isEnabled,
-        onClick = onClick,
-        trailingContent = {
-            Image(
-                painter = painterResource(icon),
-                colorFilter = ColorFilter.tint(iconColor ?: colorPalette().text),
-                modifier = Modifier.size(iconSize),
-                contentDescription = null,
-                contentScale = ContentScale.Fit
-            )
-        },
-        modifier = modifier
-    )
-
-}
-
-@Composable
-fun SliderSettingsEntry(
-    title: String,
-    text: String,
-    state: Float,
-    range: ClosedFloatingPointRange<Float>,
-    modifier: Modifier = Modifier,
-    onSlide: (Float) -> Unit = { },
-    onSlideComplete: () -> Unit = { },
-    toDisplay: @Composable (Float) -> String = { it.toString() },
-    steps: Int = 0,
-    isEnabled: Boolean = true,
-    usePadding: Boolean = true
-) = Column(modifier = modifier) {
-
-    val manualEnterDialog = object: IDialog {
-
-        var valueFloat: Float by remember( state ) { mutableFloatStateOf( state ) }
-
-        override val dialogTitle: String
-            @Composable
-            get() = stringResource( R.string.enter_the_value )
-
-        override var isActive: Boolean by rememberSaveable { mutableStateOf(false) }
-        override var value: String by remember( valueFloat ) {
-            mutableStateOf( "%.1f".format( valueFloat ).replace(",", ".") )
-        }
-
-        override fun onSet( newValue: String ) {
-            this.valueFloat = newValue.toFloatOrNull() ?: return
-            onSlide( this.valueFloat )
-            onSlideComplete()
-
-            onDismiss()
-        }
-    }
-    manualEnterDialog.Render()
-
-    SettingsEntry(
-        title = title,
-        text = "$text (${toDisplay(state)})",
-        onClick = manualEnterDialog::onShortClick,
-        isEnabled = isEnabled,
-        //usePadding = usePadding
-    )
-
-    Slider(
-        state = state,
-        setState = { value: Float ->
-            manualEnterDialog.valueFloat = value
-            onSlide(value)
-        },
-        onSlideComplete = onSlideComplete,
-        range = range,
-        steps = steps,
-        modifier = Modifier
-            .height(36.dp)
-            .alpha(if (isEnabled) 1f else 0.5f)
-            .let { if (usePadding) it.padding(start = 32.dp, end = 16.dp) else it }
-            .padding(vertical = 16.dp)
-            .fillMaxWidth()
-    )
 }

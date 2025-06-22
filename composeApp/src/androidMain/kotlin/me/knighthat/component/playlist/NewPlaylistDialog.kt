@@ -12,8 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.appContext
@@ -44,7 +44,7 @@ class NewPlaylistDialog private constructor(
                 remember {
                     mutableStateOf( TextFieldValue() )
                 },
-                Settings.ENABLE_PIPED
+                Preferences.ENABLE_PIPED
             )
     }
 

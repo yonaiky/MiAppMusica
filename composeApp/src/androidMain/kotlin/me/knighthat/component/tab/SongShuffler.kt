@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
@@ -58,7 +58,7 @@ class SongShuffler private constructor(
                 return
             }
 
-            val maxSongsInQueue: Int = Settings.MAX_NUMBER_OF_SONG_IN_QUEUE
+            val maxSongsInQueue: Int = Preferences.MAX_NUMBER_OF_SONG_IN_QUEUE
                                                .value
                                                .toInt()
 

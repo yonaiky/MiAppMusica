@@ -96,8 +96,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.innertube.Innertube
@@ -535,7 +535,7 @@ inline fun SelectorArtistsDialog(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
-    val thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+    val thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
     Dialog(onDismissRequest = onDismiss) {
         Box(
@@ -546,7 +546,7 @@ inline fun SelectorArtistsDialog(
         ) {
             if (values != null) {
                 val pagerState = rememberPagerState(pageCount = { values.size })
-                val colorPaletteMode by Settings.THEME_MODE
+                val colorPaletteMode by Preferences.THEME_MODE
 
                 Box {
                     HorizontalPager(state = pagerState) { idArtist ->
@@ -1221,9 +1221,9 @@ fun BlurParamsDialog(
     val defaultStrength = 25f
     //val defaultStrength2 = 30f
     val defaultDarkenFactor = 0.2f
-    var blurStrength  by Settings.PLAYER_BACKGROUND_BLUR_STRENGTH
+    var blurStrength  by Preferences.PLAYER_BACKGROUND_BLUR_STRENGTH
     //var blurStrength2  by rememberPreference(blurStrength2Key, defaultStrength2)
-    var blurDarkenFactor  by Settings.PLAYER_BACKGROUND_BACK_DROP
+    var blurDarkenFactor  by Preferences.PLAYER_BACKGROUND_BACK_DROP
 
     /*
     var isShowingLyrics by rememberSaveable {
@@ -1335,14 +1335,14 @@ fun BlurParamsDialog(
         val defaultFade = 5f
         val defaultSpacing = 0f
         val defaultImageCoverSize = 50f
-        var thumbnailSpacing by Settings.PLAYER_THUMBNAIL_SPACING
-        var thumbnailSpacingL by Settings.PLAYER_THUMBNAIL_SPACING_LANDSCAPE
-        var thumbnailFade by Settings.PLAYER_THUMBNAIL_FADE
-        var thumbnailFadeEx by Settings.PLAYER_THUMBNAIL_FADE_EX
-        var fadingedge by Settings.PLAYER_BACKGROUND_FADING_EDGE
-        var imageCoverSize by Settings.PLAYER_THUMBNAIL_VINYL_SIZE
-        val showCoverThumbnailAnimation by Settings.PLAYER_THUMBNAIL_ANIMATION
-        val expandedplayer by Settings.PLAYER_EXPANDED
+        var thumbnailSpacing by Preferences.PLAYER_THUMBNAIL_SPACING
+        var thumbnailSpacingL by Preferences.PLAYER_THUMBNAIL_SPACING_LANDSCAPE
+        var thumbnailFade by Preferences.PLAYER_THUMBNAIL_FADE
+        var thumbnailFadeEx by Preferences.PLAYER_THUMBNAIL_FADE_EX
+        var fadingedge by Preferences.PLAYER_BACKGROUND_FADING_EDGE
+        var imageCoverSize by Preferences.PLAYER_THUMBNAIL_VINYL_SIZE
+        val showCoverThumbnailAnimation by Preferences.PLAYER_THUMBNAIL_ANIMATION
+        val expandedplayer by Preferences.PLAYER_EXPANDED
         DefaultDialog(
             onDismiss = {
                 spacingValue(thumbnailSpacing)
@@ -1712,8 +1712,8 @@ fun LyricsSizeDialog(
     sizeValue: (Float) -> Unit,
     sizeValueL: (Float) -> Unit,
 ) {
-    var lyricsSize by Settings.LYRICS_SIZE
-    var lyricsSizeL by Settings.LYRICS_SIZE_LANDSCAPE
+    var lyricsSize by Preferences.LYRICS_SIZE
+    var lyricsSizeL by Preferences.LYRICS_SIZE_LANDSCAPE
     DefaultDialog(
         onDismiss = {
             sizeValue(lyricsSize)
@@ -2294,13 +2294,13 @@ fun PlaybackParamsDialog(
     val defaultDuration = 0f
     val defaultStrength = 25f
     val defaultBassboost = 0.5f
-    var playbackSpeed  by Settings.AUDIO_SPEED_VALUE
-    var playbackPitch  by Settings.AUDIO_PITCH
-    var playbackVolume  by Settings.AUDIO_VOLUME
-    var playbackDeviceVolume  by Settings.AUDIO_DEVICE_VOLUME
-    var playbackDuration by Settings.PLAYBACK_DURATION
-    var blurStrength  by Settings.PLAYER_BACKGROUND_BLUR_STRENGTH
-    var bassBoost  by Settings.AUDIO_BASS_BOOST_LEVEL
+    var playbackSpeed  by Preferences.AUDIO_SPEED_VALUE
+    var playbackPitch  by Preferences.AUDIO_PITCH
+    var playbackVolume  by Preferences.AUDIO_VOLUME
+    var playbackDeviceVolume  by Preferences.AUDIO_DEVICE_VOLUME
+    var playbackDuration by Preferences.PLAYBACK_DURATION
+    var blurStrength  by Preferences.PLAYER_BACKGROUND_BLUR_STRENGTH
+    var bassBoost  by Preferences.AUDIO_BASS_BOOST_LEVEL
 
     DefaultDialog(
         onDismiss = {

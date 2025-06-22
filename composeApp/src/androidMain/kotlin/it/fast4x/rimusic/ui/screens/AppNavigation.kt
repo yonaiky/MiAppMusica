@@ -39,7 +39,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.HomeScreenTabs
@@ -83,8 +83,8 @@ fun AppNavigation(
     miniPlayer: @Composable () -> Unit = {}
 ) {
     val startDestination = remember( startPage ) {
-        Settings.HOME_TAB_INDEX.value =
-            if( startPage == HomeScreenTabs.Search ) Settings.STARTUP_SCREEN.value.index else startPage.index
+        Preferences.HOME_TAB_INDEX.value =
+            if( startPage == HomeScreenTabs.Search ) Preferences.STARTUP_SCREEN.value.index else startPage.index
 
         return@remember if( startPage == HomeScreenTabs.Search )
             NavRoutes.search
@@ -92,12 +92,12 @@ fun AppNavigation(
             NavRoutes.home
     }
 
-    val transitionEffect by Settings.TRANSITION_EFFECT
+    val transitionEffect by Preferences.TRANSITION_EFFECT
 
     @Composable
     fun modalBottomSheetPage(content: @Composable () -> Unit) {
         var showSheet by rememberSaveable { mutableStateOf(true) }
-        val thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+        val thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
         CustomModalBottomSheet(
             showSheet = showSheet,
@@ -315,7 +315,7 @@ fun AppNavigation(
                         route = "${NavRoutes.searchResults.name}/${Uri.encode( query )}",
                     )
 
-                    if ( !Settings.PAUSE_SEARCH_HISTORY.value )
+                    if ( !Preferences.PAUSE_SEARCH_HISTORY.value )
                         Database.asyncTransaction {
                             // Must ignore to prevent "UNIQUE constraint" exception
                             searchTable.insertIgnore( SearchQuery(query = query) )

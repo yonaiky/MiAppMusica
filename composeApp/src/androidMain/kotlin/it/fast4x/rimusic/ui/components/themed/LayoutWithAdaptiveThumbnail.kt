@@ -17,8 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
@@ -55,7 +55,7 @@ fun adaptiveThumbnailContent(
 ): @Composable () -> Unit = {
     BoxWithConstraints(contentAlignment = Alignment.Center) {
         val thumbnailSizeDp = if (isLandscape) (maxHeight - 128.dp) else (maxWidth - 64.dp)
-        val playerThumbnailSize by Settings.PLAYER_PORTRAIT_THUMBNAIL_SIZE
+        val playerThumbnailSize by Preferences.PLAYER_PORTRAIT_THUMBNAIL_SIZE
 
         val modifier = Modifier
             //.padding(all = 16.dp)

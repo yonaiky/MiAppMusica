@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
 
@@ -37,13 +37,13 @@ internal class Preference {
     internal companion object {
 
         @Composable
-        fun parentalControl(): Boolean = Settings.PARENTAL_CONTROL.value
+        fun parentalControl(): Boolean = Preferences.PARENTAL_CONTROL.value
 
         @Composable
-        fun debugLog(): Boolean = Settings.DEBUG_LOG.value
+        fun debugLog(): Boolean = Preferences.DEBUG_LOG.value
 
         @Composable
-        fun colorTheme(): ColorPaletteMode = Settings.THEME_MODE.value
+        fun colorTheme(): ColorPaletteMode = Preferences.THEME_MODE.value
     }
 }
 
@@ -53,7 +53,7 @@ internal class AppBar {
 
         @Composable
         fun contentColor(): Color =
-             when(Preference.colorTheme()) {
+             when(it.fast4x.rimusic.ui.components.navigation.header.Preference.colorTheme()) {
                 ColorPaletteMode.Light, ColorPaletteMode.System -> colorPalette().text
                 else -> Color.White
             }

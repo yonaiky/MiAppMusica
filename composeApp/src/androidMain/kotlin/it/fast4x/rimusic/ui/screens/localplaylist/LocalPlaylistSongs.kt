@@ -49,9 +49,10 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistSongsSort
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
@@ -141,7 +142,6 @@ import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
-import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.utils.Toaster
 import timber.log.Timber
@@ -170,10 +170,10 @@ fun LocalPlaylistSongs(
     val menuState = LocalMenuState.current
 
     // Settings
-    val parentalControlEnabled by Settings.PARENTAL_CONTROL
-    val isPipedEnabled by Settings.ENABLE_PIPED
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
-    var isRecommendationEnabled by Settings.LOCAL_PLAYLIST_SMART_RECOMMENDATION
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
+    val isPipedEnabled by Preferences.ENABLE_PIPED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
+    var isRecommendationEnabled by Preferences.LOCAL_PLAYLIST_SMART_RECOMMENDATION
 
     // Non-vital
     val pipedSession = getPipedSession()
@@ -200,7 +200,7 @@ fun LocalPlaylistSongs(
     fun getSongs() = itemSelector.ifEmpty { itemsOnDisplay }
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
-    val search = Search(lazyListState)
+    val search = remember { Search(lazyListState) }
     val shuffle = SongShuffler ( ::getSongs )
     val renameDialog = RenamePlaylistDialog { playlist }
     val exportDialog = ExportSongsToCSVDialog(
@@ -375,7 +375,7 @@ fun LocalPlaylistSongs(
     val locator = Locator( lazyListState, ::getSongs )
 
     //<editor-fold defaultstate="collapsed" desc="Smart recommendation">
-    val recommendationsNumber by Settings.MAX_NUMBER_OF_SMART_RECOMMENDATIONS
+    val recommendationsNumber by Preferences.MAX_NUMBER_OF_SMART_RECOMMENDATIONS
     var relatedSongs by rememberSaveable {
         // SongEntity before Int in case random position is equal
         mutableStateOf( emptyMap<Song, Int>() )
@@ -435,7 +435,7 @@ fun LocalPlaylistSongs(
                  }
     }
     //</editor-fold>
-    LaunchedEffect( items, relatedSongs, search.inputValue, parentalControlEnabled ) {
+    LaunchedEffect( items, relatedSongs, search.input, parentalControlEnabled ) {
         items.toMutableList()
              .apply {
                  relatedSongs.forEach { (song, index) ->
@@ -450,8 +450,8 @@ fun LocalPlaylistSongs(
              .filter { song ->
                  // Without cleaning, user can search explicit songs with "e:"
                  // I kinda want this to be a feature, but it seems unnecessary
-                 val containsName = song.cleanTitle().contains(search.inputValue, true)
-                 val containsArtist = song.cleanArtistsText().contains(search.inputValue, true)
+                 val containsName = search appearsIn song.cleanTitle()
+                 val containsArtist = search appearsIn song.cleanArtistsText()
 
                  containsName || containsArtist
              }
@@ -473,9 +473,9 @@ fun LocalPlaylistSongs(
         }
     }
 
-    var autosync by Settings.AUTO_SYNC
+    var autosync by Preferences.AUTO_SYNC
 
-    val thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
+    val thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
     val reorderingState = rememberReorderingState(
         lazyListState = lazyListState,
@@ -702,7 +702,7 @@ fun LocalPlaylistSongs(
 
                 }
 
-                Column { search.SearchBar( this ) }
+                search.SearchBar()
             }
 
             itemsIndexed(
@@ -858,7 +858,7 @@ fun LocalPlaylistSongs(
 
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
-        val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+        val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
         if ( UiType.ViMusic.isCurrent() && showFloatingIcon )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,

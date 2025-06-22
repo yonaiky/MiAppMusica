@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import coil.Coil
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -31,9 +31,9 @@ fun CacheSpaceIndicator(
     horizontalPadding: Dp = 12.dp,
 ) {
 
-    val coilDiskCacheMaxSize by Settings.THUMBNAIL_CACHE_SIZE
-    val exoPlayerDiskCacheMaxSize by Settings.SONG_CACHE_SIZE
-    val exoPlayerDiskDownloadCacheMaxSize by Settings.SONG_DOWNLOAD_SIZE
+    val coilDiskCacheMaxSize by Preferences.THUMBNAIL_CACHE_SIZE
+    val exoPlayerDiskCacheMaxSize by Preferences.SONG_CACHE_SIZE
+    val exoPlayerDiskDownloadCacheMaxSize by Preferences.SONG_DOWNLOAD_SIZE
 
     when (cacheType) {
         CacheType.Images -> {}

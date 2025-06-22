@@ -36,9 +36,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings.PLAYER_CURRENT_VISUALIZER
-import app.kreate.android.Settings.PLAYER_VISUALIZER
 import app.kreate.android.drawable.APP_ICON_BITMAP
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
@@ -81,7 +80,7 @@ import timber.log.Timber
 fun NextVisualizer() {
 
     val context = LocalContext.current
-    val visualizerEnabled by PLAYER_VISUALIZER
+    val visualizerEnabled by Preferences.PLAYER_VISUALIZER
 
     if (visualizerEnabled) {
 
@@ -147,7 +146,7 @@ fun NextVisualizer() {
             val helper = VisualizerHelper(binder?.player?.audioSessionId ?: 0)
 
             val visualizersList = getVisualizers()
-            var currentVisualizer by PLAYER_CURRENT_VISUALIZER
+            var currentVisualizer by Preferences.PLAYER_CURRENT_VISUALIZER
             if (currentVisualizer < 0) currentVisualizer = 0
 
             Box(

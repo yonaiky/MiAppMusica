@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,14 +41,13 @@ import it.fast4x.rimusic.extensions.contributors.countDevelopers
 import it.fast4x.rimusic.extensions.contributors.countTranslators
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.getVersionName
 import it.fast4x.rimusic.utils.secondary
 import me.knighthat.utils.Repository
 
 @Composable
-fun About() {
+fun About( paddingValues: PaddingValues ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val scrollState = rememberLazyListState()
@@ -59,11 +55,6 @@ fun About() {
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_accounts, R.drawable.person )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -148,48 +139,58 @@ fun About() {
                 }
             }
             section( R.string.troubleshooting ) {
-                SettingsEntry(
-                    title = stringResource( R.string.view_the_source_code ),
-                    text = stringResource( R.string.you_will_be_redirected_to_github ),
-                    onClick = {
-                        uriHandler.openUri( Repository.REPO_URL )
-                    }
-                )
+                if( search appearsIn R.string.view_the_source_code )
+                    SettingComponents.Text(
+                        title = stringResource( R.string.view_the_source_code ),
+                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
+                        onClick = {
+                            uriHandler.openUri( Repository.REPO_URL )
+                        }
+                    )
 
-                SettingsEntry(
-                    title = stringResource( R.string.word_documentation ),
-                    text = stringResource( R.string.opens_link_in_web_browser ),
-                    onClick = {
-                        uriHandler.openUri( "https://kreate.knighthat.me" )
-                    }
-                )
+                if( search appearsIn R.string.word_documentation )
+                    SettingComponents.Text(
+                        title = stringResource( R.string.word_documentation ),
+                        subtitle = stringResource( R.string.opens_link_in_web_browser ),
+                        onClick = {
+                            uriHandler.openUri( "https://kreate.knighthat.me" )
+                        }
+                    )
 
-                SettingsEntry(
-                    title = stringResource(R.string.report_an_issue),
-                    text = stringResource(R.string.you_will_be_redirected_to_github),
-                    onClick = {
-                        val issuePath = "/issues/new?assignees=&labels=bug&template=bug_report.yaml"
-                        uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
-                    }
-                )
+                if( search appearsIn R.string.report_an_issue )
+                    SettingComponents.Text(
+                        title = stringResource( R.string.report_an_issue ),
+                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
+                        onClick = {
+                            val issuePath = "/issues/new?assignees=&labels=bug&template=bug_report.yaml"
+                            uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
+                        }
+                    )
 
-                SettingsEntry(
-                    title = stringResource(R.string.request_a_feature_or_suggest_an_idea),
-                    text = stringResource(R.string.you_will_be_redirected_to_github),
-                    onClick = {
-                        val issuePath = "/issues/new?assignees=&labels=feature_request&template=feature_request.yaml"
-                        uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
-                    }
-                )
+                if( search appearsIn R.string.request_a_feature_or_suggest_an_idea )
+                    SettingComponents.Text(
+                        title = stringResource( R.string.request_a_feature_or_suggest_an_idea ),
+                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
+                        onClick = {
+                            val issuePath = "/issues/new?assignees=&labels=feature_request&template=feature_request.yaml"
+                            uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
+                        }
+                    )
             }
             section(
                 "$numTranslators ${context.getString( R.string.translators )}",
                 R.string.in_alphabetical_order
-            ) { ShowTranslators() }
+            ) {
+                if( search appearsIn R.string.translators )
+                    ShowTranslators()
+            }
             section(
                 "$numCoders ${context.getString( R.string.about_developers_designers )}",
                 R.string.in_alphabetical_order
-            ) { ShowDevelopers()  }
+            ) {
+                if( search appearsIn R.string.contributors )
+                    ShowDevelopers()
+            }
         }
     }
 }

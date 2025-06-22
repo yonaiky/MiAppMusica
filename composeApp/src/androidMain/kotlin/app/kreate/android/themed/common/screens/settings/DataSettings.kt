@@ -4,12 +4,9 @@ import android.text.format.Formatter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -27,8 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.BuildConfig
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
@@ -41,13 +38,11 @@ import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.InputNumericDialog
-import it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.asMediaItem
@@ -67,7 +62,7 @@ import me.knighthat.utils.Toaster
 @ExperimentalCoilApi
 @UnstableApi
 @Composable
-fun DataSettings() {
+fun DataSettings( paddingValues: PaddingValues ) {
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
     val scrollState = rememberLazyListState()
@@ -75,11 +70,6 @@ fun DataSettings() {
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_data, R.drawable.server )
     }
-    val paddingValues =
-        if( UiType.ViMusic.isCurrent() )
-            WindowInsets.statusBars.asPaddingValues()
-        else
-            PaddingValues()
     val (restartService, onRestartServiceChange) = rememberSaveable { mutableStateOf( false ) }
     var showExoPlayerCustomCacheDialog by remember { mutableStateOf(false) }
     var showCoilCustomDiskCacheDialog by remember { mutableStateOf(false) }
@@ -151,10 +141,10 @@ fun DataSettings() {
             contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
         ) {
             section( R.string.cache, R.string.cache_cleared ) {
-                if( search.contains( R.string.image_cache_max_size ) )
+                if( search appearsIn R.string.image_cache_max_size )
                     ImageCacheFactory.DISK_CACHE.size.let { diskCacheSize ->
-                    var coilCustomDiskCache by Settings.THUMBNAIL_CACHE_CUSTOM_SIZE
-                    val coilDiskCacheMaxSize by Settings.THUMBNAIL_CACHE_SIZE
+                    var coilCustomDiskCache by Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
+                    val coilDiskCacheMaxSize by Preferences.THUMBNAIL_CACHE_SIZE
 
                     val subtitle by remember { derivedStateOf {
                         // How much space taken by this cache
@@ -178,9 +168,9 @@ fun DataSettings() {
                         " - $diskUsage$maxSize$used $percentage"
                     }}
                     SettingComponents.EnumEntry(
-                        Settings.THUMBNAIL_CACHE_SIZE,
+                        Preferences.THUMBNAIL_CACHE_SIZE,
                         R.string.image_cache_max_size,
-                        subtitle = Settings.THUMBNAIL_CACHE_SIZE.value.text + subtitle,
+                        subtitle = Preferences.THUMBNAIL_CACHE_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
                             HeaderIconButton(
@@ -219,10 +209,10 @@ fun DataSettings() {
                     CacheSpaceIndicator(cacheType = CacheType.Images, horizontalPadding = 20.dp)
                 }
 
-                if( search.contains( R.string.song_cache_max_size ) )
+                if( search appearsIn R.string.song_cache_max_size )
                     binder?.cache?.cacheSpace?.let { diskCacheSize ->
-                    var exoPlayerCustomCache by Settings.SONG_CACHE_CUSTOM_SIZE
-                    val exoPlayerDiskCacheMaxSize by Settings.SONG_CACHE_SIZE
+                    var exoPlayerCustomCache by Preferences.SONG_CACHE_CUSTOM_SIZE
+                    val exoPlayerDiskCacheMaxSize by Preferences.SONG_CACHE_SIZE
 
                     val subtitle by remember( diskCacheSize ) { derivedStateOf {
                         // How much space taken by this cache
@@ -254,9 +244,9 @@ fun DataSettings() {
                             ""
                     }}
                     SettingComponents.EnumEntry(
-                        Settings.SONG_CACHE_SIZE,
+                        Preferences.SONG_CACHE_SIZE,
                         R.string.song_cache_max_size,
-                        subtitle = Settings.SONG_CACHE_SIZE.value.text + subtitle,
+                        subtitle = Preferences.SONG_CACHE_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
                             HeaderIconButton(
@@ -296,9 +286,9 @@ fun DataSettings() {
                     CacheSpaceIndicator(cacheType = CacheType.CachedSongs, horizontalPadding = 20.dp)
                 }
 
-                if( search.contains( R.string.song_download_max_size ) )
+                if( search appearsIn R.string.song_download_max_size )
                     binder?.downloadCache?.cacheSpace?.let { diskCacheSize ->
-                    val exoPlayerDiskDownloadCacheMaxSize by Settings.SONG_DOWNLOAD_SIZE
+                    val exoPlayerDiskDownloadCacheMaxSize by Preferences.SONG_DOWNLOAD_SIZE
 
                     val subtitle by remember( diskCacheSize ) { derivedStateOf {
                         // How much space taken by this cache
@@ -319,9 +309,9 @@ fun DataSettings() {
                             ""
                     }}
                     SettingComponents.EnumEntry(
-                        Settings.SONG_DOWNLOAD_SIZE,
+                        Preferences.SONG_DOWNLOAD_SIZE,
                         R.string.song_download_max_size,
-                        subtitle = Settings.SONG_DOWNLOAD_SIZE.value.text + subtitle,
+                        subtitle = Preferences.SONG_DOWNLOAD_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
                             HeaderIconButton(
@@ -338,11 +328,12 @@ fun DataSettings() {
                     CacheSpaceIndicator(cacheType = CacheType.DownloadedSongs, horizontalPadding = 20.dp)
                 }
 
-                SettingComponents.EnumEntry(
-                    Settings.EXO_CACHE_LOCATION,
-                    R.string.set_cache_location,
-                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                ){ onRestartServiceChange( true ) }
+                if( search appearsIn R.string.set_cache_location )
+                    SettingComponents.EnumEntry(
+                        Preferences.EXO_CACHE_LOCATION,
+                        R.string.set_cache_location,
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                    ){ onRestartServiceChange( true ) }
 
                 SettingComponents.Description( R.string.info_private_cache_location_can_t_cleaned )
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
@@ -352,33 +343,33 @@ fun DataSettings() {
                 R.string.title_backup_and_restore,
                 context.getString( R.string.existing_data_will_be_overwritten, BuildConfig.APP_NAME )
             ) {
-                if( search.contains( R.string.save_to_backup ) ) {
+                if( search appearsIn R.string.save_to_backup ) {
                     val exportDbDialog = ExportDatabaseDialog( context )
                     exportDbDialog.Render()
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = stringResource( R.string.save_to_backup ),
-                        text = stringResource( R.string.export_the_database ),
+                        subtitle = stringResource( R.string.export_the_database ),
                         onClick = exportDbDialog::showDialog
                     )
                     SettingComponents.Description( R.string.personal_preference )
                 }
-                if( search.contains( R.string.restore_from_backup ) ) {
+                if( search appearsIn R.string.restore_from_backup ) {
                     val importDatabase = ImportDatabase( context )
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = stringResource(R.string.restore_from_backup),
-                        text = stringResource(R.string.import_the_database),
+                        subtitle = stringResource(R.string.import_the_database),
                         onClick = importDatabase::onShortClick
                     )
                 }
-                if( search.contains( R.string.store_settings_in_a_file ) ) {
+                if( search appearsIn R.string.store_settings_in_a_file ) {
                     val exportSettingsDialog = ExportSettingsDialog( context )
                     exportSettingsDialog.Render()
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = exportSettingsDialog.dialogTitle,
-                        text = stringResource( R.string.store_settings_in_a_file ),
+                        subtitle = stringResource( R.string.store_settings_in_a_file ),
                         onClick = exportSettingsDialog::showDialog
                     )
                     SettingComponents.Description(
@@ -386,33 +377,34 @@ fun DataSettings() {
                         isImportant = true
                     )
                 }
-                if( search.contains( R.string.title_import_settings ) ) {
+                if( search appearsIn R.string.title_import_settings ) {
                     val importSettings = ImportSettings( context )
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = stringResource( R.string.title_import_settings ),
-                        text = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
+                        subtitle = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
                         onClick = importSettings::onShortClick
                     )
                 }
-                if( search.contains( "Import migration file" ) ) {
+                if( search appearsIn "Import migration file" ) {
                     val importMigration = ImportMigration( context, binder )
 
-                    SettingsEntry(
+                    SettingComponents.Text(
                         title = "Import migration file",
-                        text = "For old users before conversion. \nUse old app to make a backup for migration",
+                        subtitle = "For old users before conversion. \nUse old app to make a backup for migration",
                         onClick = importMigration::onShortClick
                     )
                 }
             }
 
             section( R.string.search_history ) {
-                SettingComponents.BooleanEntry(
-                    Settings.PAUSE_SEARCH_HISTORY,
-                    R.string.pause_search_history,
-                    R.string.neither_save_new_searched_query,
-                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                ) { onRestartServiceChange( true ) }
+                if( search appearsIn R.string.pause_search_history )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PAUSE_SEARCH_HISTORY,
+                        R.string.pause_search_history,
+                        R.string.neither_save_new_searched_query,
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                    ) { onRestartServiceChange( true ) }
 
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
 
@@ -422,22 +414,26 @@ fun DataSettings() {
                             .map { it.size }
                 }.collectAsState( 0, Dispatchers.IO )
 
-                SettingsEntry(
-                    title = stringResource(R.string.clear_search_history),
-                    text = if (queriesCount > 0) {
-                        "${stringResource(R.string.delete)} " + queriesCount + stringResource(R.string.search_queries)
+                val subtitle by remember { derivedStateOf {
+                    if (queriesCount > 0) {
+                        "${context.getString( R.string.delete )} $queriesCount${context.getString( R.string.search_queries )}"
                     } else {
-                        stringResource(R.string.history_is_empty)
-                    },
-                    isEnabled = queriesCount > 0,
-                    onClick = {
-                        Database.asyncTransaction {
-                            searchTable.deleteAll()
-                        }
-
-                        Toaster.done()
+                        context.getString( R.string.history_is_empty )
                     }
-                )
+                }}
+
+                if( search appearsIn R.string.clear_search_history )
+                    SettingComponents.Text(
+                        title = stringResource( R.string.clear_search_history ),
+                        subtitle = subtitle,
+                        onClick = {
+                            Database.asyncTransaction {
+                                searchTable.deleteAll()
+
+                                Toaster.done()
+                            }
+                        }
+                    )
             }
         }
     }

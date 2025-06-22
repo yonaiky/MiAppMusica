@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -27,13 +27,13 @@ import it.fast4x.rimusic.thumbnailShape
 object ImageCacheFactory {
 
     val DISK_CACHE: DiskCache by lazy {
-        val diskSize by Settings.THUMBNAIL_CACHE_SIZE
+        val diskSize by Preferences.THUMBNAIL_CACHE_SIZE
 
         DiskCache.Builder()
                  .directory( appContext().filesDir.resolve( "coil" ) )
                  .maxSizeBytes(
                      when( diskSize ) {
-                         CoilDiskCacheMaxSize.Custom -> Settings.THUMBNAIL_CACHE_CUSTOM_SIZE
+                         CoilDiskCacheMaxSize.Custom -> Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
                                                                 .value
                                                                 .times( 1000L )
                                                                 .times( 1000 )

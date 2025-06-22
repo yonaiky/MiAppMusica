@@ -21,7 +21,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.SearchBody
@@ -64,7 +64,7 @@ fun SearchYoutubeEntity (
             modifier = Modifier.padding(bottom = 12.dp)
         )
     }
-    val isVideoEnabled by Settings.PLAYER_ACTION_TOGGLE_VIDEO
+    val isVideoEnabled by Preferences.PLAYER_ACTION_TOGGLE_VIDEO
 
     Box(
         modifier = Modifier

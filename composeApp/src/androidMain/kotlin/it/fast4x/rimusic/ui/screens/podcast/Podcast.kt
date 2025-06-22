@@ -64,7 +64,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -187,8 +187,8 @@ fun Podcast(
         mutableStateOf(Download.STATE_STOPPED)
     }
 
-    var thumbnailRoundness by Settings.THUMBNAIL_BORDER_RADIUS
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    var thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     var totalPlayTimes = 0L
     podcastPage?.listEpisode?.forEach {
@@ -782,7 +782,7 @@ fun Podcast(
                 }
             }
 
-            val showFloatingIcon by Settings.SHOW_FLOATING_ICON
+            val showFloatingIcon by Preferences.SHOW_FLOATING_ICON
             if( UiType.ViMusic.isCurrent() && showFloatingIcon )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,

@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.IntOffset
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.enums.TransitionEffect
 
 private val tween350 = tween<Float>( 350 )
@@ -67,7 +67,7 @@ private fun none(): ContentTransform = EnterTransition.None togetherWith ExitTra
 @Composable
 fun transition(): AnimatedContentTransitionScope<Int>.() -> ContentTransform {
 
-    val transitionEffect by Settings.TRANSITION_EFFECT
+    val transitionEffect by Preferences.TRANSITION_EFFECT
 
     return {
         when( transitionEffect ) {

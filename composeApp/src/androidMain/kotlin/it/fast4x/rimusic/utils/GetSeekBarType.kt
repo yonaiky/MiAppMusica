@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.screen.player.timeline.DurationIndicator
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
@@ -53,11 +53,11 @@ fun GetSeekBar(
     ) {
     val binder = LocalPlayerServiceBinder.current
     binder?.player ?: return
-    val playerTimelineType by Settings.PLAYER_TIMELINE_TYPE
+    val playerTimelineType by Preferences.PLAYER_TIMELINE_TYPE
     var scrubbingPosition by remember(mediaId) {
         mutableStateOf<Long?>(null)
     }
-    var transparentbar by Settings.TRANSPARENT_TIMELINE
+    var transparentbar by Preferences.TRANSPARENT_TIMELINE
     val scope = rememberCoroutineScope()
     val animatedPosition = remember { Animatable(position.toFloat()) }
     var isSeeking by remember { mutableStateOf(false) }

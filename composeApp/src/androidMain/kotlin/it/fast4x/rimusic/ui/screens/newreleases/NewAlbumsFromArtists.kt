@@ -30,8 +30,8 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -67,12 +67,12 @@ fun NewAlbumsFromArtists(
     val thumbnailSizeDp = Dimensions.thumbnails.album + 24.dp
     val thumbnailSizePx = thumbnailSizeDp.px
 
-    val navigationBarPosition by Settings.NAVIGATION_BAR_POSITION
-    val showSearchTab by Settings.SHOW_SEARCH_IN_NAVIGATION_BAR
+    val navigationBarPosition by Preferences.NAVIGATION_BAR_POSITION
+    val showSearchTab by Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR
 
     val lazyGridState = rememberLazyGridState()
 
-    val disableScrollingText by Settings.SCROLLING_TEXT_DISABLED
+    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
 
     Column(

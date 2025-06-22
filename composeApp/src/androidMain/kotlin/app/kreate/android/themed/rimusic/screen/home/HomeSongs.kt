@@ -29,8 +29,9 @@ import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import app.kreate.android.Settings
+import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.song.PeriodSelector
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -75,7 +76,6 @@ import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
 import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HiddenSongs
-import me.knighthat.component.tab.Search
 import me.knighthat.database.ext.FormatWithSong
 
 @UnstableApi
@@ -97,16 +97,16 @@ fun HomeSongs(
     val menuState = LocalMenuState.current
 
     //<editor-fold defaultstate="collapsed" desc="Settings">
-    val parentalControlEnabled by Settings.PARENTAL_CONTROL
-    val maxTopPlaylistItems by Settings.MAX_NUMBER_OF_TOP_PLAYED
-    val includeLocalSongs by Settings.HOME_SONGS_INCLUDE_ON_DEVICE_IN_ALL
-    val excludeSongWithDurationLimit by Settings.LIMIT_SONGS_WITH_DURATION
+    val parentalControlEnabled by Preferences.PARENTAL_CONTROL
+    val maxTopPlaylistItems by Preferences.MAX_NUMBER_OF_TOP_PLAYED
+    val includeLocalSongs by Preferences.HOME_SONGS_INCLUDE_ON_DEVICE_IN_ALL
+    val excludeSongWithDurationLimit by Preferences.LIMIT_SONGS_WITH_DURATION
     //</editor-fold>
 
     var items by persistList<Song>( "home/songs" )
 
     val songSort = remember {
-        Sort(menuState, Settings.HOME_SONGS_SORT_BY, Settings.HOME_SONGS_SORT_ORDER)
+        Sort(menuState, Preferences.HOME_SONGS_SORT_BY, Preferences.HOME_SONGS_SORT_ORDER)
     }
     val topPlaylists = remember { PeriodSelector(menuState) }
     val hiddenSongs = HiddenSongs()
@@ -194,13 +194,13 @@ fun HomeSongs(
                       .collect { items = it }
     }
 
-    LaunchedEffect( items, search.inputValue ) {
+    LaunchedEffect( items, search.input ) {
     items.filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
          .filter {
              // Without cleaning, user can search explicit songs with "e:"
              // I kinda want this to be a feature, but it seems unnecessary
-             val containsTitle = it.cleanTitle().contains( search.inputValue, true )
-             val containsArtist = it.cleanArtistsText().contains( search.inputValue, true )
+             val containsTitle = search appearsIn it.cleanTitle()
+             val containsArtist = search appearsIn it.cleanArtistsText()
 
              containsTitle || containsArtist
          }

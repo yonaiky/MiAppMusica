@@ -53,9 +53,10 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.navigation.NavController
+import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Settings
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
@@ -94,7 +95,6 @@ import it.fast4x.rimusic.utils.shouldBePlaying
 import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.Locator
-import me.knighthat.component.tab.Search
 import me.knighthat.component.ui.screens.player.DeleteFromQueue
 import me.knighthat.component.ui.screens.player.Discover
 import me.knighthat.component.ui.screens.player.QueueArrow
@@ -159,13 +159,13 @@ fun Queue(
 
         fun getSongs() = itemSelector.ifEmpty { items }
 
-        val search = Search(lazyListState)
-        LaunchedEffect( items, search.inputValue ) {
+        val search = remember { Search(lazyListState) }
+        LaunchedEffect( items, search.input ) {
             items.filter {
                     // Without cleaning, user can search explicit songs with "e:"
                     // I kinda want this to be a feature, but it seems unnecessary
-                    val containsTitle = it.cleanTitle().contains( search.inputValue, true )
-                    val containsArtist = it.cleanArtistsText().contains( search.inputValue, true )
+                    val containsTitle = search appearsIn it.cleanTitle()
+                    val containsArtist = search appearsIn it.cleanArtistsText()
 
                     containsTitle || containsArtist
                 }
@@ -217,7 +217,7 @@ fun Queue(
         (deleteDialog as Dialog).Render()
 
         Column {
-            val queueType by Settings.QUEUE_TYPE
+            val queueType by Preferences.QUEUE_TYPE
             val backgroundAlpha = if( queueType == QueueType.Modern ) .5f else 1f
 
             LazyColumn(
@@ -357,7 +357,7 @@ fun Queue(
             Box(
                 modifier = Modifier.fillMaxWidth()
                                    .background( colorPalette().background1 ),
-            ) { search.SearchBar( this@Column ) }
+            ) { search.SearchBar() }
 
             Box(
                 modifier = Modifier.fillMaxWidth()
@@ -425,7 +425,7 @@ fun Queue(
                         buttons = mutableListOf<Button>().apply {
                             add( locator )
                             add( search )
-                            if( Settings.PLAYER_ACTION_DISCOVER.value )
+                            if( Preferences.PLAYER_ACTION_DISCOVER.value )
                                 add( discover )
                             add( positionLock )
                             add( repeat )
