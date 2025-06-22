@@ -40,8 +40,8 @@ jobs:
             Kreate's Discord is now available to the public. Join here: https://discord.gg/WYr9ZgJzpx
 
   # Handle PR that contains implemented code
-  implemented:
-    if: github.event.label.name == 'implemented'
+  pr-implemented:
+    if: github.event.label.name == 'implemented' && github.event_name == 'pull_request'
     
     runs-on: ubuntu-latest
     
@@ -64,6 +64,33 @@ jobs:
 
       - name: Close pull request
         run: gh pr close "$NUMBER"
+
+  # Handle feature quests that are implented
+  issue-implemented:
+    if: github.event.label.name == 'implemented' && github.event_name == 'issues'
+    
+    runs-on: ubuntu-latest
+    
+    permissions:
+      # Allows GITHUB_TOKEN to modify pull requests
+      pull-requests: write  
+      
+    steps:
+      - name: Add comment
+        run: gh issue comment "$NUMBER" --body "$BODY"
+        env:
+          BODY: >
+            This feature is already existed in codebase.
+
+            > Ticket will be closed. If you have any further question, feel free to comment below
+            
+            ---
+
+            Kreate's Discord is now available to the public. Join here: https://discord.gg/WYr9ZgJzpx
+
+      - name: Close request
+        run: gh issue close "$NUMBER"
+  
 
   # Borked PR is when if implemented, the app will fail to compile
   # or will have some feature run in unexpected behavior
