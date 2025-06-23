@@ -596,10 +596,10 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
             Preferences.ZOOM_OUT_ANIMATION,
             R.string.buttonzoomout
         )
-    if ( search appearsIn R.string.play_button )
+    if ( search appearsIn R.string.icon_like_button )
         SettingComponents.EnumEntry(
             Preferences.LIKE_ICON,
-            R.string.play_button
+            R.string.icon_like_button
         )
     if ( search appearsIn R.string.background_colors )
         SettingComponents.EnumEntry(
