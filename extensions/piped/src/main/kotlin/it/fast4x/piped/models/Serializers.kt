@@ -13,6 +13,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.util.UUID
+import kotlin.time.ExperimentalTime
 
 object UrlSerializer : KSerializer<Url> {
     override val descriptor = PrimitiveSerialDescriptor("Url", PrimitiveKind.STRING)
@@ -28,6 +29,7 @@ object SecondLocalDateTimeSerializer : KSerializer<LocalDateTime> {
     override fun deserialize(decoder: Decoder) =
         Instant.fromEpochSeconds(decoder.decodeLong()).toLocalDateTime(TimeZone.UTC)
 
+    @OptIn(ExperimentalTime::class)
     override fun serialize(encoder: Encoder, value: LocalDateTime) =
         encoder.encodeLong(value.toInstant(TimeZone.UTC).epochSeconds)
 }
