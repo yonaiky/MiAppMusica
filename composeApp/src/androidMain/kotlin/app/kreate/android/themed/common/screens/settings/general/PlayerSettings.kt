@@ -42,7 +42,8 @@ fun PlayerSettings(
     if( search appearsIn R.string.audio_quality_format ) {
         SettingComponents.EnumEntry(
             Preferences.AUDIO_QUALITY,
-            R.string.audio_quality_format
+            R.string.audio_quality_format,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
         ) { onRestartServiceChange( true ) }
 
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
@@ -153,7 +154,8 @@ fun PlayerSettings(
         SettingComponents.BooleanEntry(
             Preferences.QUEUE_AUTO_APPEND,
             R.string.player_auto_load_songs_in_queue,
-            R.string.player_auto_load_songs_in_queue_description
+            R.string.player_auto_load_songs_in_queue_description,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
         ) {
             onRestartServiceChange( true )
         }
@@ -325,7 +327,8 @@ fun PlayerSettings(
     if( search appearsIn R.string.settings_audio_reverb ) {
         SettingComponents.EnumEntry(
             Preferences.AUDIO_REVERB_PRESET,
-            R.string.settings_audio_reverb
+            R.string.settings_audio_reverb,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
         ) { onRestartServiceChange( true ) }
         SettingComponents.Description( R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio )
 
@@ -342,7 +345,8 @@ fun PlayerSettings(
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_VOLUME_BUTTONS_CHANGE_SONG,
             R.string.event_volumekeys,
-            R.string.event_volumekeysinfo
+            R.string.event_volumekeysinfo,
+            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
         ) {
             onRestartServiceChange( true )
         }
@@ -375,7 +379,8 @@ fun PlayerSettings(
                 if( search appearsIn R.string.settings_pip_module )
                     SettingComponents.EnumEntry(
                         Preferences.PIP_MODULE,
-                        R.string.settings_pip_module
+                        R.string.settings_pip_module,
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
                     ) { onRestartServiceChange( true ) }
 
                 if( search appearsIn R.string.settings_enable_pip_auto )

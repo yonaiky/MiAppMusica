@@ -2,7 +2,14 @@ package app.kreate.android.themed.common.screens.settings
 
 import android.webkit.CookieManager
 import android.webkit.WebStorage
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -179,7 +186,7 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                                                 onRestartServiceChange( true )
                                             } else
                                                 loginYouTube = true
-                                        }
+                                        },
                                     ) {
                                         Icon(
                                             painter = painterResource( R.drawable.ytmusic ),
@@ -378,32 +385,42 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                                     R.string.piped_custom_instance
                                 )
 
-                            var isPipedCustomEnabled by Preferences.IS_CUSTOM_PIPED
-                            AnimatedVisibility(visible = isPipedCustomEnabled) {
-                                Column {
-                                    if( search appearsIn R.string.piped_custom_instance )
-                                        SettingComponents.InputDialogEntry(
-                                            Preferences.PIPED_API_BASE_URL,
-                                            R.string.piped_custom_instance,
-                                            InputDialogConstraints.URL
+                            AnimatedContent(
+                                targetState = Preferences.IS_CUSTOM_PIPED.value,
+                                transitionSpec = {
+                                    if ( targetState ) {
+                                        slideInVertically { height -> height } + fadeIn() togetherWith
+                                                slideOutVertically { height -> -height } + fadeOut()
+                                    } else {
+                                        slideInVertically { height -> -height } + fadeIn() togetherWith
+                                                slideOutVertically { height -> height } + fadeOut()
+                                    }.using(
+                                        // Disable clipping since the faded slide-in/out should
+                                        // be displayed out of bounds.
+                                        SizeTransform(clip = false)
+                                    )
+                                },
+                                label = "animated header and search bar"
+                            ) { target ->
+                                if( target && search appearsIn R.string.piped_custom_instance )
+                                    SettingComponents.InputDialogEntry(
+                                        Preferences.PIPED_API_BASE_URL,
+                                        R.string.piped_custom_instance,
+                                        InputDialogConstraints.URL
+                                    )
+                                else if( search appearsIn R.string.piped_change_instance )
+                                    SettingComponents.Text(
+                                        title = stringResource( R.string.piped_change_instance ),
+                                        subtitle = pipedInstanceName,
+                                        onClick = { loadInstances = true }
+                                    ) {
+                                        Icon(
+                                            painter = painterResource( R.drawable.open ),
+                                            contentDescription = null,
+                                            tint = colorPalette().text,
+                                            modifier = Modifier.size( 24.dp )
                                         )
                                     }
-                                }
-                            AnimatedVisibility(visible = !isPipedCustomEnabled) {
-                                Column {
-                                    if( search appearsIn R.string.piped_change_instance )
-                                        SettingComponents.Text(
-                                            title = stringResource( R.string.piped_change_instance ),
-                                            subtitle = pipedInstanceName,
-                                            onClick = { loadInstances = true }
-                                        ) {
-                                            Icon(
-                                                painter = painterResource( R.drawable.open ),
-                                                contentDescription = null,
-                                                tint = colorPalette().text
-                                            )
-                                        }
-                                }
                             }
 
                             if( search appearsIn R.string.piped_username )
