@@ -192,6 +192,7 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                                             painter = painterResource( R.drawable.ytmusic ),
                                             contentDescription = title,
                                             tint = colorPalette().text,
+                                            modifier = Modifier.size( 24.dp )
                                         )
                                     }
 
