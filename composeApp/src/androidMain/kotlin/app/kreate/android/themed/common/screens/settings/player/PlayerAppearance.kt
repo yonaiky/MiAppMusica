@@ -547,9 +547,9 @@ fun PlayerAppearance( search: SettingEntrySearch ) {
     if ( search appearsIn R.string.pinfo_type ) {
         SettingComponents.EnumEntry(
             Preferences.PLAYER_INFO_TYPE,
-            R.string.pinfo_type
+            titleId = R.string.pinfo_type,
+            subtitleId = R.string.pinfo_album_and_artist_name
         )
-        SettingComponents.Description( R.string.pinfo_album_and_artist_name )
 
         AnimatedVisibility( playerInfoType == PlayerInfoType.Modern ) {
             if ( search appearsIn R.string.pinfo_show_icons )

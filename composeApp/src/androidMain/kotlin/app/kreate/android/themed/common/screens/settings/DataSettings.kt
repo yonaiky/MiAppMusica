@@ -331,11 +331,11 @@ fun DataSettings( paddingValues: PaddingValues ) {
                 if( search appearsIn R.string.set_cache_location )
                     SettingComponents.EnumEntry(
                         Preferences.EXO_CACHE_LOCATION,
-                        R.string.set_cache_location,
+                        titleId = R.string.set_cache_location,
+                        subtitleId = R.string.info_private_cache_location_can_t_cleaned,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE
                     ){ onRestartServiceChange( true ) }
 
-                SettingComponents.Description( R.string.info_private_cache_location_can_t_cleaned )
                 RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
             }
 
@@ -352,7 +352,6 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         subtitle = stringResource( R.string.export_the_database ),
                         onClick = exportDbDialog::showDialog
                     )
-                    SettingComponents.Description( R.string.personal_preference )
                 }
                 if( search appearsIn R.string.restore_from_backup ) {
                     val importDatabase = ImportDatabase( context )

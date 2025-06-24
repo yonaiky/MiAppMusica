@@ -96,16 +96,16 @@ fun PlayerSettings(
     if( search appearsIn R.string.min_listening_time ) {
         SettingComponents.EnumEntry(
             Preferences.QUICK_PICKS_MIN_DURATION,
-            R.string.min_listening_time
+            titleId = R.string.min_listening_time,
+            subtitleId = R.string.is_min_list_time_for_tips_or_quick_pics
         )
-        SettingComponents.Description( R.string.is_min_list_time_for_tips_or_quick_pics )
     }
     if( search appearsIn R.string.exclude_songs_with_duration_limit ) {
         SettingComponents.EnumEntry(
             Preferences.LIMIT_SONGS_WITH_DURATION,
-            R.string.exclude_songs_with_duration_limit
+            titleId = R.string.exclude_songs_with_duration_limit,
+            subtitleId = R.string.exclude_songs_with_duration_limit_description
         )
-        SettingComponents.Description( R.string.exclude_songs_with_duration_limit_description )
     }
     if( search appearsIn R.string.pause_between_songs )
         SettingComponents.EnumEntry(
@@ -134,9 +134,9 @@ fun PlayerSettings(
     if( search appearsIn R.string.effect_fade_audio ) {
         SettingComponents.EnumEntry(
             Preferences.AUDIO_FADE_DURATION,
-            R.string.effect_fade_audio
+            titleId = R.string.effect_fade_audio,
+            subtitleId = R.string.effect_fade_audio_description
         )
-        SettingComponents.Description( R.string.effect_fade_audio_description )
     }
     if( search appearsIn R.string.player_keep_minimized )
         SettingComponents.BooleanEntry(
@@ -327,10 +327,10 @@ fun PlayerSettings(
     if( search appearsIn R.string.settings_audio_reverb ) {
         SettingComponents.EnumEntry(
             Preferences.AUDIO_REVERB_PRESET,
-            R.string.settings_audio_reverb,
+            titleId = R.string.settings_audio_reverb,
+            subtitleId = R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio,
             action = SettingComponents.Action.RESTART_PLAYER_SERVICE
         ) { onRestartServiceChange( true ) }
-        SettingComponents.Description( R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio )
 
         RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
     }

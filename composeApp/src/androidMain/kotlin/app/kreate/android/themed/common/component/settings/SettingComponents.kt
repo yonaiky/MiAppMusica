@@ -287,6 +287,19 @@ object SettingComponents {
         EnumEntry( preference, stringResource( titleId ), modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
 
     @Composable
+    inline fun <reified T> EnumEntry(
+        preference: Preferences.Enum<T>,
+        @StringRes titleId: Int,
+        @StringRes subtitleId: Int,
+        modifier: Modifier = Modifier,
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+        noinline trailingContent: @Composable () -> Unit = {},
+        crossinline onValueChanged: (T) -> Unit = {}
+    ) where T: Enum<T>, T: TextView =
+        EnumEntry( preference, stringResource( titleId ), modifier, stringResource( subtitleId ), isEnabled, action, trailingContent, onValueChanged )
+
+    @Composable
     fun BooleanEntry(
         preference: Preferences.Boolean,
         title: String,
