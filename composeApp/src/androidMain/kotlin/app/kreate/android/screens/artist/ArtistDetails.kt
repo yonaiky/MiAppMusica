@@ -304,7 +304,7 @@ fun ArtistDetails(
                                 val path = "$browseId?params=${section.moreEndpoint?.params}"
 
                                 val route: NavRoutes = if( section.items.fastAll { it is Innertube.SongItem } )
-                                    NavRoutes.playlist
+                                    NavRoutes.YT_PLAYLIST
                                 else if( section.items.fastAll { it is Innertube.AlbumItem } )
                                     NavRoutes.artistAlbums
                                 else
@@ -379,7 +379,7 @@ fun ArtistDetails(
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
                                 modifier = Modifier.clickable {
-                                    navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
+                                    NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
                                 }
                             )
                         }

@@ -486,7 +486,7 @@ fun QueuedMediaItemMenu(
             },
             modifier = modifier,
             onGoToPlaylist = {
-                navController.navigate(route = "${NavRoutes.playlist.name}/$it")
+                NavRoutes.YT_PLAYLIST.navigateHere( navController, it.toString() )
             },
             onAddToPreferites = {
                 if (!isNetworkConnected(context()) && isYouTubeSyncEnabled()){

@@ -75,7 +75,7 @@ fun HomeScreen(
                         navController.navigate(route = "${NavRoutes.artist.name}/$it")
                     },
                     onPlaylistClick = {
-                        navController.navigate(route = "${NavRoutes.playlist.name}/$it")
+                        NavRoutes.YT_PLAYLIST.navigateHere( navController, it )
                     },
                     onSearchClick = {
                         navController.navigate(NavRoutes.search.name)

@@ -16,7 +16,6 @@ enum class NavRoutes {
     history,
     localPlaylist,
     mood,
-    playlist,
     queue,
     search,
     searchResults,
@@ -25,7 +24,8 @@ enum class NavRoutes {
     newAlbums,
     moodsPage,
     podcast,
-    artistAlbums;
+    artistAlbums,
+    YT_PLAYLIST;
 
     companion object {
 

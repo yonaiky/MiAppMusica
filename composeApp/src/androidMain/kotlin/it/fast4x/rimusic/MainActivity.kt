@@ -1065,7 +1065,7 @@ class MainActivity :
                                         }
                                     }
                             } else {
-                                navController.navigate(route = "${NavRoutes.playlist.name}/$browseId")
+                                NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId )
                             }
                         }
 

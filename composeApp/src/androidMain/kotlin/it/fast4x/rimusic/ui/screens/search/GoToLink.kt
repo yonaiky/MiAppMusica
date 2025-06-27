@@ -206,7 +206,7 @@ fun GoToLink(
                                                 }
                                             }
                                     } else {
-                                        navController.navigate(route = "${NavRoutes.playlist.name}/$browseId")
+                                        navController.navigate( "${NavRoutes.YT_PLAYLIST.name}/$browseId" )
                                     }
                                 }
 

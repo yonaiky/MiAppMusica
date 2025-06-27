@@ -279,7 +279,7 @@ fun HomePage(
                                         thumbnailSizeDp = playlistThumbnailSizeDp,
                                         disableScrollingText = disableScrollingText,
                                         modifier = Modifier.clickable(onClick = {
-                                            navController.navigate("${NavRoutes.playlist.name}/${item.key}")
+                                            NavRoutes.YT_PLAYLIST.navigateHere( navController, item.key )
                                         })
                                     )
                                 }

@@ -478,7 +478,7 @@ fun StatisticsPage(
                                     val pBrowseId: String = cleanPrefix(playlists[it].playlist.browseId ?: "")
                                     val route: String =
                                         if ( pBrowseId.isNotEmpty() )
-                                            "${NavRoutes.playlist.name}/$pBrowseId"
+                                            "${NavRoutes.YT_PLAYLIST.name}/$pBrowseId"
                                         else
                                             "${NavRoutes.localPlaylist.name}/$playlistId"
 

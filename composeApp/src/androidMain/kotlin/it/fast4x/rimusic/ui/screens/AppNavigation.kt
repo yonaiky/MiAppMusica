@@ -60,7 +60,6 @@ import it.fast4x.rimusic.ui.screens.mood.MoodScreen
 import it.fast4x.rimusic.ui.screens.mood.MoodsPageScreen
 import it.fast4x.rimusic.ui.screens.newreleases.NewreleasesScreen
 import it.fast4x.rimusic.ui.screens.player.Queue
-import it.fast4x.rimusic.ui.screens.playlist.PlaylistScreen
 import it.fast4x.rimusic.ui.screens.podcast.PodcastScreen
 import it.fast4x.rimusic.ui.screens.search.SearchScreen
 import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
@@ -152,7 +151,7 @@ fun AppNavigation(
         popExitTransition = exitTransition
     ) {
         val navigateToPlaylist =
-            { browseId: String -> navController.navigate("${NavRoutes.playlist.name}/$browseId") }
+            { browseId: String -> navController.navigate("${NavRoutes.YT_PLAYLIST.name}/$browseId") }
 
         composable(route = NavRoutes.home.name) {
             HomeScreen(
@@ -221,7 +220,7 @@ fun AppNavigation(
         }
 
         composable(
-            route = "${NavRoutes.playlist.name}/{id}?params={params}",
+            route = "${NavRoutes.YT_PLAYLIST.name}/{id}?params={params}",
             arguments = listOf(
                 navArgument(
                     name = "id",

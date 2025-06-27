@@ -23,8 +23,8 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -555,7 +555,7 @@ fun SearchResultScreen(
                                 showSongsCount = false,
                                 modifier = Modifier
                                     .clickable(onClick = {
-                                        navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
+                                        NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
                                     }),
                                 disableScrollingText = disableScrollingText
                             )
