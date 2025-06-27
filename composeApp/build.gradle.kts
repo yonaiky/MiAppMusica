@@ -75,6 +75,12 @@ kotlin {
 
             // Related to built-in game, maybe removed in future?
             implementation(libs.compose.runtime.livedata)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.encoding)
+            implementation(libs.okhttp3.logging.interceptor)
         }
         commonMain.dependencies {
             implementation(compose.runtime)

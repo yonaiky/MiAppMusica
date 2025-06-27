@@ -92,6 +92,7 @@ import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.Threads
+import app.kreate.android.service.innertube.InnertubeProvider
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
@@ -340,6 +341,7 @@ class MainActivity :
         ExperimentalMaterial3Api::class
     )
     fun startApp() {
+        me.knighthat.innertube.Innertube.setClient( InnertubeProvider() )
 
         // Used in QuickPics for load data from remote instead of last saved in SharedPreferences
         Preferences.IS_DATA_KEY_LOADED.value = false
