@@ -41,6 +41,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.kreate.android.Preferences
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
+import app.kreate.android.themed.rimusic.screen.playlist.YouTubePlaylist
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.HomeScreenTabs
 import it.fast4x.rimusic.enums.NavRoutes
@@ -220,31 +221,21 @@ fun AppNavigation(
         }
 
         composable(
-            route = "${NavRoutes.YT_PLAYLIST.name}/{id}?params={params}",
+            route = "${NavRoutes.YT_PLAYLIST}/{browseId}?params={params}",
             arguments = listOf(
-                navArgument(
-                    name = "id",
-                    builder = {
-                        type = NavType.StringType
-                    }
-                ),
-                navArgument(
-                    name = "params",
-                    builder = {
-                        type = NavType.StringType
-                        defaultValue = ""
-                    }
-                )
+                navArgument( "browseId" ) { type = NavType.StringType },
+                navArgument( "params" ) {
+                    type = NavType.StringType
+                    // Use default value to make it optional
+                    defaultValue = ""
+                }
             )
-        ) { navBackStackEntry ->
-            val id = navBackStackEntry.arguments?.getString("id") ?: ""
-            val params = navBackStackEntry.arguments?.getString( "params" )
-            PlaylistScreen(
-                navController = navController,
-                browseId = id,
-                params = params,
-                miniPlayer = miniPlayer,
-            )
+        ) {
+            // browseId must not be empty or null in any case
+            val browseId = it.arguments?.getString( "browseId" )!!
+            val params = it.arguments!!.getString( "params" )
+
+            YouTubePlaylist( navController, browseId, params, miniPlayer )
         }
 
         composable(
