@@ -98,8 +98,6 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.room.sqlite.bundled)
 
-            implementation(libs.mediaplayer.kmp)
-
             implementation(libs.navigation.kmp)
 
             //coil3 mp
