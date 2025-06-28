@@ -439,8 +439,10 @@ fun AppNavigation(
         } else {
             val activity = context as? Activity
             activity?.finishAffinity()
-            // Close app with exit 0 notify that no problem occurred
-            exitProcess( 0 )
+
+            if( Preferences.CLOSE_APP_ON_BACK.value )
+                // Close app with exit 0 notify that no problem occurred
+                exitProcess( 0 )
         }
     }
 }
