@@ -602,7 +602,7 @@ sealed class Preferences<T>(
             Float( preferences, "AudioVolume", "playbackVolume", .5F )
         }
         val AUDIO_DEVICE_VOLUME by lazy {
-            Float( preferences, "AudioVolume", "playbackVolume", getDeviceVolume( appContext() ) )
+            Float( preferences, "AudioDeviceVolume", "playbackDeviceVolume", getDeviceVolume( appContext() ) )
         }
         val AUDIO_MEDLEY_DURATION by lazy {
             Float( preferences, "AudioMedleyDuration", "playbackDuration", 0F )
