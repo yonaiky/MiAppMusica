@@ -2298,7 +2298,7 @@ fun PlaybackParamsDialog(
     var playbackPitch  by Preferences.AUDIO_PITCH
     var playbackVolume  by Preferences.AUDIO_VOLUME
     var playbackDeviceVolume  by Preferences.AUDIO_DEVICE_VOLUME
-    var playbackDuration by Preferences.PLAYBACK_DURATION
+    var playbackDuration by Preferences.AUDIO_MEDLEY_DURATION
     var blurStrength  by Preferences.PLAYER_BACKGROUND_BLUR_STRENGTH
     var bassBoost  by Preferences.AUDIO_BASS_BOOST_LEVEL
 

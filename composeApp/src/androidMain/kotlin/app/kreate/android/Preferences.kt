@@ -604,6 +604,9 @@ sealed class Preferences<T>(
         val AUDIO_DEVICE_VOLUME by lazy {
             Float( preferences, "AudioVolume", "playbackVolume", getDeviceVolume( appContext() ) )
         }
+        val AUDIO_MEDLEY_DURATION by lazy {
+            Float( preferences, "AudioMedleyDuration", "playbackDuration", 0F )
+        }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="YouTube">
         val YOUTUBE_LOGIN by lazy {
@@ -1042,9 +1045,6 @@ sealed class Preferences<T>(
         }
         val SEEN_CHANGELOGS_VERSION by lazy {
             String( preferences, "SeenChangelogsVersion", "seenChangelogsVersionKey", "" )
-        }
-        val PLAYBACK_DURATION by lazy {
-            Float( preferences, "AudioVolume", "playbackVolume", 0F )
         }
         val CUSTOM_COLOR_HASH_CODE by lazy {
             Int( preferences, "CustomColorHashCode", "customColor", Color.Green.hashCode() )

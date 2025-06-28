@@ -47,7 +47,7 @@ fun GetControls(
             playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient
 
     var playbackSpeed by Preferences.AUDIO_SPEED_VALUE
-    var playbackDuration by Preferences.PLAYBACK_DURATION
+    var playbackDuration by Preferences.AUDIO_MEDLEY_DURATION
     var setPlaybackDuration by remember { mutableStateOf(false) }
 
     var showSpeedPlayerDialog by rememberSaveable {
