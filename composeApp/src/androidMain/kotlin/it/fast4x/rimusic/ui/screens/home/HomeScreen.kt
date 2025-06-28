@@ -1,21 +1,13 @@
 package it.fast4x.rimusic.ui.screens.home
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
@@ -25,12 +17,6 @@ import it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.toUiMood
 import it.fast4x.rimusic.ui.components.Skeleton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import me.knighthat.utils.Toaster
-import kotlin.system.exitProcess
 
 
 @ExperimentalMaterial3Api
@@ -139,35 +125,6 @@ fun HomeScreen(
 
                 )
             }
-        }
-    }
-
-    // Exit app when user uses back
-    val context = LocalContext.current
-    var confirmCount by remember { mutableIntStateOf( 0 ) }
-    BackHandler {
-        // Prevent this from being applied when user is not on HomeScreen
-        if( NavRoutes.home.isNotHere( navController ) )  {
-            if ( navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED )
-                navController.popBackStack()
-
-            return@BackHandler
-        }
-
-        if( confirmCount == 0 ) {
-            Toaster.i( R.string.press_once_again_to_exit )
-            confirmCount++
-
-            // Reset confirmCount after 5s
-            CoroutineScope( Dispatchers.Default ).launch {
-                delay( 5000L )
-                confirmCount = 0
-            }
-        } else {
-            val activity = context as? Activity
-            activity?.finishAffinity()
-            // Close app with exit 0 notify that no problem occurred
-            exitProcess( 0 )
         }
     }
 }

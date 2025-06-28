@@ -1,6 +1,8 @@
 package it.fast4x.rimusic.ui.screens
 
+import android.app.Activity
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -21,6 +23,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -40,6 +44,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
 import app.kreate.android.themed.rimusic.screen.playlist.YouTubePlaylist
 import it.fast4x.rimusic.Database
@@ -66,6 +71,12 @@ import it.fast4x.rimusic.ui.screens.search.SearchScreen
 import it.fast4x.rimusic.ui.screens.searchresult.SearchResultScreen
 import it.fast4x.rimusic.ui.screens.settings.SettingsScreen
 import it.fast4x.rimusic.ui.screens.statistics.StatisticsScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import me.knighthat.utils.Toaster
+import kotlin.system.exitProcess
 
 @androidx.annotation.OptIn()
 @OptIn(
@@ -401,6 +412,35 @@ fun AppNavigation(
             val params = navBackStackEntry.arguments?.getString("params").orEmpty()
 
             ArtistAlbums( navController, id, params, miniPlayer )
+        }
+    }
+
+    // Exit app when user uses back
+    val context = LocalContext.current
+    var confirmCount by remember { mutableIntStateOf( 0 ) }
+    BackHandler {
+        // Prevent this from being applied when user is not on HomeScreen
+        if( NavRoutes.home.isNotHere( navController ) )  {
+            if ( navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED )
+                navController.popBackStack()
+
+            return@BackHandler
+        }
+
+        if( confirmCount == 0 ) {
+            Toaster.i( R.string.press_once_again_to_exit )
+            confirmCount++
+
+            // Reset confirmCount after 5s
+            CoroutineScope( Dispatchers.Default ).launch {
+                delay( 5000L )
+                confirmCount = 0
+            }
+        } else {
+            val activity = context as? Activity
+            activity?.finishAffinity()
+            // Close app with exit 0 notify that no problem occurred
+            exitProcess( 0 )
         }
     }
 }
