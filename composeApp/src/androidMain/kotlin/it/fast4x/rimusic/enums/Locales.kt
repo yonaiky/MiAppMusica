@@ -1,117 +1,89 @@
 package it.fast4x.rimusic.enums
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
 import app.kreate.android.R
+import it.fast4x.rimusic.appContext
 import me.knighthat.enums.TextView
+import java.util.Locale
 
+/**
+ * A list of supported languages, each [code]
+ * must correspond to a valid `res/values-*` directory.
+ *
+ * [code] but adhere to [BCP 47](https://tools.ietf.org/html/bcp47) -
+ * IETF standard for language tags. TL;DR `language[-script][-region][-variant]`
+ *
+ *
+ * @param code 2 (or 3) letters language code
+ */
 enum class Languages(
+    val code: String,
     @field:StringRes override val textId: Int
 ): TextView {
 
-    System( R.string.system_language ),
-    Afrikaans( R.string.lang_afrikaans ),
-    Arabic( R.string.arabic ),
-    Azerbaijani( R.string.lang_azerbaijani ),
-    Bashkir( R.string.bashkir ),
-    Bengali( R.string.lang_bengali ),
-    Catalan( R.string.catalan ),
-    Danish( R.string.lang_danish ),
-    English( R.string.english ),
-    Esperanto( R.string.esperanto ),
-    Estonian( R.string.lang_estonian ),
-    ChineseSimplified( R.string.chinese_simplified ),
-    ChineseTraditional( R.string.chinese_traditional ),
-    Czech( R.string.czech ),
-    Dutch( R.string.lang_dutch ),
-    Filipino( R.string.lang_filipino ),
-    Finnish( R.string.lang_finnish ),
-    French( R.string.french ),
-    Galician( R.string.lang_galician ),
-    German( R.string.german ),
-    Greek( R.string.greek ),
-    Hebrew( R.string.lang_hebrew ),
-    Hindi( R.string.lang_hindi ),
-    Hungarian( R.string.hungarian ),
-    Italian( R.string.italian ),
-    Indonesian( R.string.indonesian ),
-    Interlingua( R.string.lang_interlingua ),
-    Irish( R.string.lang_irish ),
-    Japanese( R.string.lang_japanese ),
-    Korean( R.string.korean ),
-    Malayalam( R.string.lang_malayalam ),
-    Norwegian( R.string.lang_norwegian ),
-    Odia( R.string.odia ),
-    //Persian,
-    Polish( R.string.polish ),
-    PortugueseBrazilian( R.string.portuguese_brazilian ),
-    Portuguese( R.string.portuguese ),
-    Romanian( R.string.romanian ),
-    //RomanianEmo,
-    Russian( R.string.russian ),
-    SerbianCyrillic( R.string.lang_serbian_cyrillic ),
-    SerbianLatin( R.string.lang_serbian_latin ),
-    Sinhala( R.string.lang_sinhala ),
-    Spanish( R.string.spanish ),
-    Swedish( R.string.lang_swedish ),
-    Tamil( R.string.lang_tamil ),
-    Telugu( R.string.lang_telugu ),
-    Turkish( R.string.turkish ),
-    Ukrainian( R.string.lang_ukrainian ),
-    Vietnamese( R.string.lang_vietnamese );
+    System( "", R.string.system_language ),
+    Afrikaans( "af", R.string.lang_afrikaans ),
+    Arabic( "az", R.string.arabic ),
+    Azerbaijani( "ar", R.string.lang_azerbaijani ),
+    Bashkir( "ba", R.string.bashkir ),
+    Bengali( "bn", R.string.lang_bengali ),
+    Catalan( "ca", R.string.catalan ),
+    ChineseSimplified( "zh-CN", R.string.chinese_simplified ),
+    ChineseTraditional( "zh-TW", R.string.chinese_traditional ),
+    Czech( "cs", R.string.czech ),
+    Danish( "da", R.string.lang_danish ),
+    Dutch( "nl", R.string.lang_dutch ),
+    English( "en", R.string.english ),
+    Esperanto( "eo", R.string.esperanto ),
+    Estonian( "et", R.string.lang_estonian ),
+    Filipino( "fil", R.string.lang_filipino ),
+    Finnish( "fi", R.string.lang_finnish ),
+    French( "fr", R.string.french ),
+    Galician( "gl", R.string.lang_galician ),
+    German( "de", R.string.german ),
+    Greek( "el", R.string.greek ),
+    Hebrew( "iw", R.string.lang_hebrew ),
+    Hindi( "hi", R.string.lang_hindi ),
+    Hungarian( "hu", R.string.hungarian ),
+    Indonesian( "in", R.string.indonesian ),
+    Interlingua( "ia", R.string.lang_interlingua ),
+    Irish( "ga", R.string.lang_irish ),
+    Italian( "it", R.string.italian ),
+    Japanese( "ja", R.string.lang_japanese ),
+    Korean( "ko", R.string.korean ),
+    Malayalam( "ml", R.string.lang_malayalam ),
+    Norwegian( "no", R.string.lang_norwegian ),
+    Odia( "or", R.string.odia ),
+    Polish( "pl", R.string.polish ),
+    Portuguese( "pt", R.string.portuguese ),
+    PortugueseBrazilian( "pt-BR", R.string.portuguese_brazilian ),
+    Romanian( "ro", R.string.romanian ),
+    Russian( "ru", R.string.russian ),
+    SerbianCyrillic( "sr", R.string.lang_serbian_cyrillic ),
+    SerbianLatin( "sr-CS", R.string.lang_serbian_latin ),
+    Sinhala( "si", R.string.lang_sinhala ),
+    Spanish( "es", R.string.spanish ),
+    Swedish( "sv", R.string.lang_swedish ),
+    Tamil( "ta", R.string.lang_tamil ),
+    Telugu( "te", R.string.lang_telugu ),
+    Turkish( "tr", R.string.turkish ),
+    Ukrainian( "uk", R.string.lang_ukrainian ),
+    Vietnamese( "vi", R.string.lang_vietnamese );
 
-    val code: String
-        get() = when (this) {
-            System -> "system"
-            Afrikaans -> "af"
-            Azerbaijani -> "az"
-            Arabic -> "ar"
-            Bashkir -> "ba"
-            Bengali -> "bn"
-            Catalan -> "ca"
-            ChineseSimplified -> "zh-CN"
-            ChineseTraditional -> "zh-TW"
-            Danish -> "da"
-            Dutch -> "nl"
-            English -> "en"
-            Esperanto -> "eo"
-            Estonian -> "et"
-            Filipino -> "fil"
-            Finnish -> "fi"
-            Galician -> "gl"
-            Italian -> "it"
-            Indonesian -> "in"
-            Irish -> "ga"
-            Japanese -> "ja"
-            Korean -> "ko"
-            Czech -> "cs"
-            German -> "de"
-            Greek -> "el"
-            Hebrew -> "iw" //Hebrew -> "he"
-            Hindi -> "hi"
-            Hungarian -> "hu"
-            Interlingua -> "ia"
-            Spanish -> "es"
-            French -> "fr"
-            Malayalam -> "ml"
-            Norwegian -> "no"
-            Odia -> "or"
-            //Persian -> "fa"
-            Polish -> "pl"
-            Portuguese -> "pt"
-            PortugueseBrazilian -> "pt-BR"
-            Romanian -> "ro"
-            //RomanianEmo -> "ro-RO"
-            Russian -> "ru"
-            SerbianCyrillic -> "sr"
-            SerbianLatin -> "sr-CS"
-            Sinhala -> "si"
-            Swedish -> "sv"
-            Tamil -> "ta"
-            Telugu -> "te"
-            Turkish -> "tr"
-            Ukrainian -> "uk"
-            Vietnamese -> "vi"
+    @get:Composable
+    override val text: String by lazy {
+        if( this == System )
+            return@lazy appContext().getString( R.string.system_language )
+
+        val parts = code.split( "-", "_" )
+        val locale = when( parts.size ) {
+            1 -> Locale(parts[0])
+            2 -> Locale(parts[0], parts[1])
+            else -> throw UnsupportedOperationException("Unsupported locale parts: $parts")
         }
+        locale.getDisplayName( locale )
+    }
 }
 
 enum class Countries {

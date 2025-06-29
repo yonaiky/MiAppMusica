@@ -27,7 +27,6 @@ import app.kreate.android.themed.common.screens.settings.general.PlayerSettings
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.languageDestinationName
 import me.knighthat.updater.Updater
 
 @UnstableApi
@@ -72,7 +71,7 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
                     SettingComponents.EnumEntry(
                         Preferences.APP_LANGUAGE,
                         R.string.app_language,
-                        getName = { languageDestinationName(it) },
+                        getName = { it.text },
                         action = SettingComponents.Action.RESTART_APP
                     )
             }
