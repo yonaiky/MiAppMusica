@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Потражите тест за песму онлајн</string>
     <string name="fetch_lyrics_again">Скините текст за песму поново</string>
     <string name="id">Ид</string>
-    <string name="itag">Итаг</string>
     <string name="bitrate">Проток</string>
     <string name="size">Величина</string>
     <string name="cached">Кеширано</string>

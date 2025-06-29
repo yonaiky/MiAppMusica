@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">חפש מילים באינטרנט</string>
     <string name="fetch_lyrics_again">תביא שוב את המילים</string>
     <string name="id">מזהה</string>
-    <string name="itag">יציב</string>
     <string name="bitrate">קצב סיביות</string>
     <string name="size">גודל</string>
     <string name="cached">שמור במטמון</string>

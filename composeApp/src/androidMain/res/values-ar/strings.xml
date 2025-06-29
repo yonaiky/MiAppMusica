@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">البحث عن كلمات الاغنية عبر الانترنت</string>
     <string name="fetch_lyrics_again">جلب كلمات الأغاني مرة أخرى</string>
     <string name="id">المعرف</string>
-    <string name="itag">العلامة</string>
     <string name="bitrate">كمية نقل البيانات</string>
     <string name="size">الحجم</string>
     <string name="cached">نسخة مخبأة</string>

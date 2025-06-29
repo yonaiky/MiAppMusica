@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Sök låttext online</string>
     <string name="fetch_lyrics_again">Hämta låttext igen</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bitrate</string>
     <string name="size">Storlek</string>
     <string name="cached">Cachad</string>

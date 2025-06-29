@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Buscar letras en liña</string>
     <string name="fetch_lyrics_again">Recuperar a letra de novo</string>
     <string name="id">Id</string>
-    <string name="itag">Ietiqueta</string>
     <string name="bitrate">Taxa de bits</string>
     <string name="size">Tamaño</string>
     <string name="cached">Na caché</string>

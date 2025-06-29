@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Cerca la lletra de la cançó a Internet</string>
     <string name="fetch_lyrics_again">Torna a buscar la lletra de la cançó</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Relació de bits</string>
     <string name="size">Mida</string>
     <string name="cached">A la memòria cau</string>

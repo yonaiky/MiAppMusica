@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Otsi laulusõnu internetist</string>
     <string name="fetch_lyrics_again">Hangi veelkord laulusõnad</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bitikiirus</string>
     <string name="size">Suurus</string>
     <string name="cached">Vahemälus</string>

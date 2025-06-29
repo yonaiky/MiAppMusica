@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Αναζήτηση στίχων στο διαδίκτυο</string>
     <string name="fetch_lyrics_again">Επανάληψη λήψης στίχων</string>
     <string name="id">Αναγνωριστικό</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Ρυθμός μετάδοσης bit</string>
     <string name="size">Μέγεθος</string>
     <string name="cached">Στην προσωρινή μνήμη</string>

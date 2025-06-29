@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Rechercher les paroles en ligne</string>
     <string name="fetch_lyrics_again">Récupérer les paroles</string>
     <string name="id">Identifiant</string>
-    <string name="itag">Tag</string>
     <string name="bitrate">Débit</string>
     <string name="size">Taille</string>
     <string name="cached">En cache</string>

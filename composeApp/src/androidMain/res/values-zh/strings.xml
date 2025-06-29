@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">在线搜索歌词</string>
     <string name="fetch_lyrics_again">重新获取歌词</string>
     <string name="id">ID</string>
-    <string name="itag">iTag</string>
     <string name="bitrate">比特率</string>
     <string name="size">大小</string>
     <string name="cached">缓存</string>

@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">歌詞をネットで検索</string>
     <string name="fetch_lyrics_again">歌詞を再取得</string>
     <string name="id">ID</string>
-    <string name="itag">iタグ</string>
     <string name="bitrate">ビットレート</string>
     <string name="size">サイズ</string>
     <string name="cached">キャッシュ済み</string>

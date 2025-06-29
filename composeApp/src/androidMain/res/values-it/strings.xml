@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Cerca lyrics online</string>
     <string name="fetch_lyrics_again">Recupera nuovamente lyrics</string>
     <string name="id">ID</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Velocità in bit</string>
     <string name="size">Grandezza</string>
     <string name="cached">In cache</string>

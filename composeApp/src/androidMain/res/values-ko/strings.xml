@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">온라인 가사 검색</string>
     <string name="fetch_lyrics_again">가사 다시 불러오기</string>
     <string name="id">ID</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">비트레이트</string>
     <string name="size">크기</string>
     <string name="cached">캐시됨</string>

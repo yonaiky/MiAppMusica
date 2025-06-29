@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Telusuri lirik secara daring</string>
     <string name="fetch_lyrics_again">Ambil liriknya lagi</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bitrate</string>
     <string name="size">Ukuran</string>
     <string name="cached">Disimpan (cache)</string>

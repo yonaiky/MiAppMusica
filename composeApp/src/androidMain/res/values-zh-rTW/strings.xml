@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">線上搜尋歌詞</string>
     <string name="fetch_lyrics_again">重新整理歌詞</string>
     <string name="id">ID</string>
-    <string name="itag">iTag</string>
     <string name="bitrate">位元速率</string>
     <string name="size">大小</string>
     <string name="cached">已暫存</string>

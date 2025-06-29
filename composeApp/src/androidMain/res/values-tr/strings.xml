@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Çevrimiçi şarkı sözü ara</string>
     <string name="fetch_lyrics_again">Şarkı sözlerini tekrar al</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bit oranı</string>
     <string name="size">Boyut</string>
     <string name="cached">Önbellekte</string>

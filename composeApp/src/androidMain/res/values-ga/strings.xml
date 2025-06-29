@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Cuardaigh liricí ar líne</string>
     <string name="fetch_lyrics_again">Faigh liricí arís</string>
     <string name="id">Cáipéis aitheantais</string>
-    <string name="itag">Clib dhigiteach</string>
     <string name="bitrate">Ráta na giotán</string>
     <string name="size">Méid</string>
     <string name="cached">Taiscthe</string>

@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Søk etter sangtekster på nettet</string>
     <string name="fetch_lyrics_again">Hent sangtekster på ny</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bitrate</string>
     <string name="size">Størrelse</string>
     <string name="cached">Bufret</string>

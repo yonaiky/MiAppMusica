@@ -46,7 +46,6 @@ CC-BY-SA 3.0</string>
     <string name="search_lyrics_online">Lyrics අන්තර්ජාලයෙන් හොයන්න</string>
     <string name="fetch_lyrics_again">Lyrics නැවත load කරන්න</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bitrate</string>
     <string name="size">ප්‍රමාණය</string>
     <string name="cached">Cache ගත කරන ලදී</string>

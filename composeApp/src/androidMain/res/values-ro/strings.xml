@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Căută versurile online</string>
     <string name="fetch_lyrics_again">Reîncarcă versurile</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Rată de biți</string>
     <string name="size">Dimensiune</string>
     <string name="cached">În cache</string>

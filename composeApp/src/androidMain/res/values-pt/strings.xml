@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Pesquisar letras de músicas online</string>
     <string name="fetch_lyrics_again">Buscar letras novamente</string>
     <string name="id">ID</string>
-    <string name="itag">Etiqueta</string>
     <string name="bitrate">Taxa de bits</string>
     <string name="size">Tamanho</string>
     <string name="cached">Em cache</string>

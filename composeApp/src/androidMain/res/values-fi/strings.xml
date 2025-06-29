@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Etsi sanoituksia netistä</string>
     <string name="fetch_lyrics_again">Nouda sanoitukset uudelleen</string>
     <string name="id">Tunnus</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bittinopeus</string>
     <string name="size">Koko</string>
     <string name="cached">Välimuistissa</string>

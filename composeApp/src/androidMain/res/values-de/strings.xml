@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Liedtext online suchen</string>
     <string name="fetch_lyrics_again">Liedtext erneut herunterladen</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bitrate</string>
     <string name="size">Größe</string>
     <string name="cached">Zwischengespeichert</string>

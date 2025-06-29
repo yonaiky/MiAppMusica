@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Tìm kiếm lời bài hát trực tuyến</string>
     <string name="fetch_lyrics_again">Tìm nạp lại lời bài hát</string>
     <string name="id">Mã</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Tốc độ bit</string>
     <string name="size">Kích thước</string>
     <string name="cached">Đã lưu vào bộ nhớ đệm</string>

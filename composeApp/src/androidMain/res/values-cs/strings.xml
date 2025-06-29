@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Vyhledat písňový text online</string>
     <string name="fetch_lyrics_again">Znovu načíst písňový text</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Přenosová rychlost</string>
     <string name="size">Velikost</string>
     <string name="cached">Uloženo do mezipaměti</string>

@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Cercar parolas de canto in linea</string>
     <string name="fetch_lyrics_again">Obtener de novo le parolas de canto</string>
     <string name="id">Id</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Taxa de bits</string>
     <string name="size">Dimension</string>
     <string name="cached">In le cache</string>

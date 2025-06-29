@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">பாடல் வரிகளை ஆன்லைனில் தேடு</string>
     <string name="fetch_lyrics_again">பாடல் வரிகளை மீண்டும் பெறு</string>
     <string name="id">ஐடி</string>
-    <string name="itag">ஐ-குறி</string>
     <string name="bitrate">துகள்வீதம்</string>
     <string name="size">அளவு</string>
     <string name="cached">தற்காலிகமாகச் சேமிக்கப்பட்டுள்ளது</string>

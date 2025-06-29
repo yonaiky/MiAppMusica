@@ -45,7 +45,6 @@
     <string name="search_lyrics_online">Dalszövegek keresése online</string>
     <string name="fetch_lyrics_again">Dalszöveg keresése újra</string>
     <string name="id">Azonosító</string>
-    <string name="itag">Itag</string>
     <string name="bitrate">Bitráta</string>
     <string name="size">Méret</string>
     <string name="cached">Gyorsítótárazott</string>

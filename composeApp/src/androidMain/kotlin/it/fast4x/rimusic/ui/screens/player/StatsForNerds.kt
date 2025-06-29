@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheSpan
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
@@ -146,7 +146,7 @@ fun StatsForNerds(
                     )
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                         BasicText(
-                            text = stringResource(R.string.itag),
+                            text = "itag",
                             style = typography().xs.medium.color(colorPalette().onOverlay)
                         )
                         BasicText(
@@ -357,10 +357,7 @@ fun StatsForNerds(
                                   modifier = modifier.weight(1f)
                               ) {
                                   BasicText(
-                                      text = (stringResource(R.string.itag) + " : " + format?.itag?.toString())
-                                          ?: (stringResource(R.string.itag) + " : " + stringResource(
-                                              R.string.audio_quality_format_unknown
-                                          )),
+                                      text = "itag: %d".format( format?.itag ),
                                       maxLines = 1,
                                       style = typography().xs.medium.color(colorPalette().text)
                                   )
