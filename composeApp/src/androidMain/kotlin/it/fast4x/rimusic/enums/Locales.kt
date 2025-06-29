@@ -20,7 +20,7 @@ enum class Languages(
     val code: String
 ): TextView {
 
-    System( "" ),
+    System( "system" ),
     Afrikaans( "af" ),
     Arabic( "az" ),
     Azerbaijani( "ar" ),

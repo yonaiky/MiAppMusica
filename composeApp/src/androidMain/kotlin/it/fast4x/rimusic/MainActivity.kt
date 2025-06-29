@@ -581,9 +581,7 @@ class MainActivity :
 
                             Preferences.APP_LANGUAGE.key -> {
                                 val lang = sharedPreferences.getEnum( key, Preferences.APP_LANGUAGE.defaultValue )
-                                val languageTag: String = lang.code.ifEmpty {
-                                    AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag().orEmpty()
-                                }
+                                val languageTag: String = lang.code.ifEmpty( Preferences.APP_LANGUAGE.defaultValue::code )
                                 AppCompatDelegate.setApplicationLocales(
                                     LocaleListCompat.forLanguageTags( languageTag )
                                 )
