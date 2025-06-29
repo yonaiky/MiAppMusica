@@ -83,6 +83,8 @@
 # Keep classes with @JsonAdapter annotation
 -keep,allowobfuscation,allowoptimization @com.google.gson.annotations.JsonAdapter class *
 
+-dontwarn lombok.Generated
+
 ##---------------End: proguard configuration for Gson  ----------
 
 ## Rules for NewPipeExtractor
