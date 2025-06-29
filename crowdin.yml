@@ -1,11 +1,10 @@
-languages_mapping:
-  android_code:
-    zh-CN: zh-rCN
-    zh-TW: zh-rTW
-    pt-BR: pt-rBR
-    sr-Cyrl: b+sr+Cyrl
-    sr-Latn: b+sr+Latn
-
 files:
   - source: /composeApp/src/androidMain/res/values/strings.xml
     translation: /composeApp/src/androidMain/res/values-%android_code%/strings.xml
+    languages_mapping:
+      android_code:
+        zh-CN: zh-rCN
+        zh-TW: zh-rTW
+        pt-BR: pt-rBR
+        sr-Cyrl: b+sr+Cyrl
+        sr-Latn: b+sr+Latn
