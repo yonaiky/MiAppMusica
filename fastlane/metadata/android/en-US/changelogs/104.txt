@@ -1,0 +1,12 @@
+Fixed:
+- Navigation bar setting enabled when ViMusic theme is selected
+- Typo - duplicated "play button" in settings
+- Setting icons' sizes
+- Turning off "Close app on back" closed background player
+- Fix medley duration reset occasionally
+- Fix song skips in player
+
+Changed:
+- Description of navigation bar when ViMusic theme is selected
+- New online playlist UI
+- Implement new API for online playlist
