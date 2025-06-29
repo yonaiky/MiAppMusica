@@ -169,16 +169,6 @@
     <string name="contributors">САРАДНИЦИ</string>
     <string name="troubleshooting">РЕШАВАЊЕ ПРОБЛЕМА</string>
     <string name="social">ДРУШТВЕНИ</string>
-    <string name="english">Енглески</string>
-    <string name="italian">Италијански</string>
-    <string name="czech">Чешки (Čeština)</string>
-    <string name="german">Немачки (Deutsch)</string>
-    <string name="spanish">Шпански (Español)</string>
-    <string name="french">Француски (Français)</string>
-    <string name="romanian">Румунски (Română)</string>
-    <string name="russian">Руски (Русский)</string>
-    <string name="turkish">Турски (Türkçe)</string>
-    <string name="polish">Пољски (Polski)</string>
     <string name="dark">Тамна</string>
     <string name="system">Систем</string>
     <string name="unlimited">Неограничено</string>
@@ -245,12 +235,6 @@
     <string name="square">Квадрат</string>
     <string name="circular_ribbed">Кружно ребрасто</string>
     <string name="play_button">Плеј дугме</string>
-    <string name="portuguese_brazilian">Португалски, Бразил</string>
-    <string name="portuguese">Португалски</string>
-    <string name="indonesian">Индонежански</string>
-    <string name="odia">Одиа</string>
-    <string name="bashkir">Башкирски</string>
-    <string name="esperanto">Есперанто</string>
     <string name="close_app_with_back_button">Затвори апликацију помоћу дугмета Назад</string>
     <string name="when_you_use_the_back_button_from_the_home_page">Када користите дугме за повратак са почетне странице</string>
     <string name="audio_quality_format_high">Висок</string>
@@ -260,14 +244,10 @@
     <string name="do_you_really_want_to_delete_download">Да ли сте сигурни да желите да обришете преузимање?</string>
     <string name="enqueue_all">Стави све у ред</string>
     <string name="enqueue_selected">Ред изабран</string>
-    <string name="greek">Грчки</string>
-    <string name="catalan">Каталонски</string>
     <string name="disable_scrolling_text">Онемогући померање текста</string>
     <string name="scrolling_text_is_used_for_long_texts">Померајући текст се користи за дугачке текстове</string>
     <string name="audio_quality_format">Формат квалитета Звука</string>
     <string name="persian">Персијски</string>
-    <string name="hungarian">Мађарски</string>
-    <string name="korean">Корејски</string>
     <string name="background_player">"ПЛЕЈЕР У ПОЗАДИНИ "</string>
     <string name="show_favorite_button">Прикажи дугме Омиљено</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Прикажи дугме Омиљено на закључаном екрану и пољу за обавештења</string>
@@ -279,19 +259,14 @@
     <string name="statistics_songs_heard">слушане песме</string>
     <string name="statistics_of_time_taken">утрошеног времена</string>
     <string name="statistics_max_number_of_items">Максимални број ставки</string>
-    <string name="arabic">Арапски</string>
-    <string name="chinese_simplified">Кинески поједностављени</string>
-    <string name="chinese_traditional">Кинески традиционални</string>
     <string name="do_you_really_want_to_download_all">Да ли заиста желите да преузмете све?</string>
     <string name="import_playlist">Увези плејлисту</string>
-    <string name="lang_ukrainian">Украјински</string>
     <string name="proxy">Прокси</string>
     <string name="enable_proxy">Омогући Прокси</string>
     <string name="proxy_mode">Прокси Мод</string>
     <string name="proxy_host">Прокси Хост</string>
     <string name="proxy_port">Прокси Порт</string>
     <string name="disable_if_you_do_not_want_to_see">Онемогућите ако не желите да видите</string>
-    <string name="lang_hebrew">Хебрејски</string>
     <string name="customize_album">Прилагоди албум</string>
     <string name="update_title">Ажурирај Наслов</string>
     <string name="update_authors">Ажурирај Ауторе</string>
@@ -299,7 +274,6 @@
     <string name="title">Наслов</string>
     <string name="authors">Аутори</string>
     <string name="cover">Омот</string>
-    <string name="lang_japanese">Јапански</string>
     <string name="paste_or_type_a_valid_url">Налепите или унесите важећи урл</string>
     <string name="you_can_put_a_complete_link">Можете да поставите комплетну везу плејлисте, албума, канала или једне песме на Јутјуб или Јутјуб Мјузик</string>
     <string name="go_to_link">Idi na link</string>
@@ -309,7 +283,6 @@
     <string name="action_bar_show_shuffle_button">Прикажи дугме за Насумично</string>
     <string name="action_bar_show_lyrics_button">Прикажи дугме за Стихове</string>
     <string name="action_bar_show_arrow_button_to_open_queue">Прикажи дугме за Стрелицу</string>
-    <string name="lang_finnish">Фински</string>
     <string name="listening_time">Време слушања</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Приказује број слушаних песама и време њиховог слушања</string>
     <string name="app_update_dialog_new">Нова верзија %s се може преузети!</string>
@@ -319,11 +292,9 @@
     <string name="end_of_song">крај песме</string>
     <string name="restore_completed">Враћање је завршено!</string>
     <string name="click_to_close">Кликните да затворите</string>
-    <string name="lang_dutch">Холандски</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Да ли заиста желите да промените нумерацију позиција на овој плејлисти?</string>
     <string name="renumber_songs_positions">Промени број позиција</string>
     <string name="do_you_really_want_to_delete_all_playback_events">Да ли заиста желите да избришете све догађаје репродукције?</string>
-    <string name="lang_sinhala">Синхала</string>
     <string name="update_available">Доступно ажурирање</string>
     <string name="actions_you_can_do">Радње које можете да урадите:</string>
     <string name="open_the_github_releases_web_page_and_download_latest_version">Отворите веб страницу Гитхуб издања и преузмите најновију верзију</string>
@@ -337,7 +308,6 @@
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">И даље можете да га укључите, или искључите, из подешавања.</string>
     <string name="enable">Омогући</string>
     <string name="don_t_enable">Не омогућавај</string>
-    <string name="lang_hindi">Хинди</string>
     <string name="default_page">Подразумевана страница</string>
     <string name="keep_screen_on">Држи екран укљученим</string>
     <string name="prevents_screen_timeout">Спречава временско ограничење екрана</string>
@@ -386,7 +356,6 @@
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Избегавајте затварање плејера и чишћење реда превлачењем надоле док је минимизиран</string>
     <string name="sort_date_liked">Датум свиђања</string>
     <string name="export_playlist">Извези плејлисту</string>
-    <string name="lang_afrikaans">Африкански</string>
     <string name="playlist_top">Најбоља Плејлиста</string>
     <string name="my_playlist_top">Моја Најбоља %s</string>
     <string name="navigation_bar_position">Положај траке за навигацију</string>
@@ -395,11 +364,9 @@
     <string name="copy_lyrics">Копирај стихове</string>
     <string name="value_copied">Копирано</string>
     <string name="do_you_really_want_to_delete_cache">Да ли заиста желите да избришете кеш?</string>
-    <string name="lang_swedish">Шведски</string>
     <string name="pinned_playlists">Закачене плејлисте</string>
     <string name="locked">Закључано</string>
     <string name="sort_duration">Трајање</string>
-    <string name="lang_serbian_cyrillic">Српски Ћирилица</string>
     <string name="pause_between_songs">Пауза између песама</string>
     <string name="navigation_bar_type">Тип траке за навигацију</string>
     <string name="icon_and_text">Икона и текст</string>
@@ -408,7 +375,6 @@
     <string name="sort_album">Албум</string>
     <string name="use_gradient_background">Користите прелазну боју позадине</string>
     <string name="show_total_time_of_queue">Прикажи укупно време реда чекања</string>
-    <string name="lang_telugu">Телугу</string>
     <string name="media_permission_required_please_grant">Потребна је медијска дозвола, молим вас дајте.</string>
     <string name="open_permission_settings">Отворите подешавања дозвола</string>
     <string name="background_progress_bar">Позадинска трака напретка</string>
@@ -418,8 +384,6 @@
     <string name="back">Назад</string>
     <string name="folders">Фасцикле</string>
     <string name="show_folders_in_on_device_page">Прикажи фасцикле на страници На уређају</string>
-    <string name="lang_danish">Дански</string>
-    <string name="lang_serbian_latin">Српски Латиница</string>
     <string name="item_deselect">Поништи</string>
     <string name="show_next_songs_in_player">Прикажи следеће песме у плејеру</string>
     <string name="show_remaining_song_time">Прикажи преостало време песме</string>
@@ -545,7 +509,6 @@
     <string name="bg_colors_fluid_gradient_background_from_cover">Флуидна прелазна боја позадине из омота</string>
     <string name="show_background_in_lyrics">Прикажи боју позадине у Стиховима</string>
     <string name="bg_colors_blurred_cover_background">Замућена позадина омота</string>
-    <string name="lang_estonian">Естонски</string>
     <string name="pcontrols_modern">Модерне</string>
     <string name="pcontrols_essential">Есенцијалне</string>
     <string name="pcontrols_type">Контроле типа</string>
@@ -555,7 +518,6 @@
     <string name="position_bottom">Дно</string>
     <string name="added_to_favorites">Додато у омиљене</string>
     <string name="removed_from_favorites">Уклоњено из омиљених</string>
-    <string name="lang_filipino">Филипински</string>
     <string name="action_bar_transparent_background">Прозирна позадина</string>
     <string name="pinfo_type">Врста информације</string>
     <string name="pinfo_album_and_artist_name">Име албума и извођача</string>
@@ -573,7 +535,6 @@
     <string name="exclude_songs_with_duration_limit_description">Ако је омогућено, песме чије трајање прелази ограничење ће бити искључене, примењене на мој врх и ред за репродукцију</string>
     <string name="no_log_available">Није доступан запис</string>
     <string name="enable_quick_picks_page">Омогући страницу Брзи Одабири</string>
-    <string name="lang_vietnamese">Вијетнамски</string>
     <string name="parental_control">Родитељска контрола</string>
     <string name="info_prevent_play_songs_with_age_limitation">Спречите пуштање песама са старосним ограничењем</string>
     <string name="cache_location_private">Приватно</string>
@@ -612,8 +573,6 @@
     <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
     <string name="info_connect_your_piped_account_first">Прво повежите свој пипед налог са каналима или онемогућите пипед синхронизацију</string>
     <string name="piped_playlists">Пипед</string>
-    <string name="lang_bengali">Бенгалски</string>
-    <string name="lang_irish">Ирски</string>
     <string name="lyricsoutline">Спољна Ивица Стихова</string>
     <string name="fluidrainbow">Флуидна Дуга</string>
     <string name="fluidtheme">Флуидна Тема</string>
@@ -674,7 +633,6 @@
     <string name="controls_title_playback_pitch">Висина Тоналитета Репродукције</string>
     <string name="controls_title_playback_volume">Јачина Репродукције</string>
     <string name="controls_title_device_volume">Јачина звука уређаја</string>
-    <string name="lang_malayalam">Малајаламски</string>
     <string name="searches_suggestions">Предлози</string>
     <string name="searches_saved_searches">Сачуване претраге</string>
     <string name="event_volumekeys">Промените песму помоћу тастера за јачину звука</string>
@@ -714,7 +672,6 @@
     <string name="queuetype">Queue Type</string>
     <string name="chart_top_songs">Top songs</string>
     <string name="chart_top_artists">Top artists</string>
-    <string name="lang_interlingua">Interlingua</string>
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
@@ -722,8 +679,6 @@
     <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
-    <string name="lang_galician">Galician</string>
-    <string name="lang_norwegian">Norwegian</string>
     <string name="translate_to">Translate to %s</string>
     <string name="translate_to_other_language">Traslate to other language</string>
     <string name="action_bar_show_video_button">Show video button</string>
@@ -767,9 +722,7 @@
     <string name="actionbar">Action Bar</string>
     <string name="center">Center</string>
     <string name="lyricsalignment">Lyrics Alignment</string>
-    <string name="lang_azerbaijani">Azerbaijani</string>
     <string name="translators">Translators</string>
-    <string name="lang_tamil">Tamil</string>
     <string name="player_auto_load_songs_in_queue">Auto load songs in queue</string>
     <string name="player_auto_load_songs_in_queue_description">Adds songs when the queue is about to end</string>
     <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>

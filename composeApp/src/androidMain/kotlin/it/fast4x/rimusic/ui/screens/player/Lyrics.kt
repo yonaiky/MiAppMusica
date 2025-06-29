@@ -135,7 +135,6 @@ import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.languageDestination
-import it.fast4x.rimusic.utils.languageDestinationName
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
@@ -263,7 +262,7 @@ fun Lyrics(
                     MenuEntry(
                         icon = R.drawable.translate,
                         text = stringResource(R.string._default),
-                        secondaryText = languageDestinationName(otherLanguageApp),
+                        secondaryText = otherLanguageApp.text,
                         onClick = {
                             menuState.hide()
                             showLanguagesList = false
@@ -276,7 +275,7 @@ fun Lyrics(
                         if (it != Languages.System)
                             MenuEntry(
                                 icon = R.drawable.translate,
-                                text = languageDestinationName(it),
+                                text = it.text,
                                 secondaryText = "",
                                 onClick = {
                                     menuState.hide()

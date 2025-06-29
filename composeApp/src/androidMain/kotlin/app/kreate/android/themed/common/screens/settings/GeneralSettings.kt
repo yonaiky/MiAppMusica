@@ -71,7 +71,6 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
                     SettingComponents.EnumEntry(
                         Preferences.APP_LANGUAGE,
                         R.string.app_language,
-                        getName = { it.text },
                         action = SettingComponents.Action.RESTART_APP
                     )
             }

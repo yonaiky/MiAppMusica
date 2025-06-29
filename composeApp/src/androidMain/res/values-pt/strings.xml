@@ -169,16 +169,6 @@
     <string name="contributors">CONTRIBUIDORES</string>
     <string name="troubleshooting">RESOLUÇÃO DE PROBLEMAS</string>
     <string name="social">SOCIAL</string>
-    <string name="english">Inglês (English)</string>
-    <string name="italian">Italiano (Italiano)</string>
-    <string name="czech">Checo (Čeština)</string>
-    <string name="german">Alemão (Deutsch)</string>
-    <string name="spanish">Espanhol (Español)</string>
-    <string name="french">Francês (Français)</string>
-    <string name="romanian">Romeno (Română)</string>
-    <string name="russian">Russo (Русский)</string>
-    <string name="turkish">Turco (Türkçe)</string>
-    <string name="polish">Polaco (Polski)</string>
     <string name="dark">Escuro</string>
     <string name="system">Sistema</string>
     <string name="unlimited">Ilimitado</string>
@@ -245,12 +235,6 @@
     <string name="square">Quadrado</string>
     <string name="circular_ribbed">Circular ondulado</string>
     <string name="play_button">Botão reproduzir</string>
-    <string name="portuguese_brazilian">Português, Brasileiro</string>
-    <string name="portuguese">Português (Portuguese)</string>
-    <string name="indonesian">Indonésio (Indonesian)</string>
-    <string name="odia">Odia (ଓଡିଆ)</string>
-    <string name="bashkir">Basquir</string>
-    <string name="esperanto">Esperanto (Esperanto)</string>
     <string name="close_app_with_back_button">Fechar aplicação com o botão voltar</string>
     <string name="when_you_use_the_back_button_from_the_home_page">Quando utilizar o botão voltar da página inicial</string>
     <string name="audio_quality_format_high">Alta</string>
@@ -260,14 +244,10 @@
     <string name="do_you_really_want_to_delete_download">Tem a certeza que quer apagar estas transferências?</string>
     <string name="enqueue_all">Colocar todos em fila de espera</string>
     <string name="enqueue_selected">Enfileirar selecionados</string>
-    <string name="greek">Grego (Ελληνικά)</string>
-    <string name="catalan">Catalão (Català)</string>
     <string name="disable_scrolling_text">Desativar rolagem de texto</string>
     <string name="scrolling_text_is_used_for_long_texts">O texto de deslocação é utilizado para textos longos</string>
     <string name="audio_quality_format">Formato de qualidade de áudio</string>
     <string name="persian">Persa</string>
-    <string name="hungarian">Húngaro</string>
-    <string name="korean">Coreano</string>
     <string name="background_player">"LEITOR DE FUNDO "</string>
     <string name="show_favorite_button">Mostrar botão dos Favoritos</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Mostrar o botão favorito na tela de bloqueio e na área de notificação</string>
@@ -279,19 +259,14 @@
     <string name="statistics_songs_heard">músicas ouvidas</string>
     <string name="statistics_of_time_taken">do tempo gasto</string>
     <string name="statistics_max_number_of_items">Número máximo de itens</string>
-    <string name="arabic">Árabe</string>
-    <string name="chinese_simplified">Chinês Simplificado</string>
-    <string name="chinese_traditional">Chinês Tradicional</string>
     <string name="do_you_really_want_to_download_all">Tem a certeza que quer transferir tudo?</string>
     <string name="import_playlist">Importar playlist</string>
-    <string name="lang_ukrainian">Ucraniano</string>
     <string name="proxy">PROXY</string>
     <string name="enable_proxy">Ativar Proxy</string>
     <string name="proxy_mode">Modo do Proxy</string>
     <string name="proxy_host">Host do Proxy</string>
     <string name="proxy_port">Porto do Proxy</string>
     <string name="disable_if_you_do_not_want_to_see">Desative se não quiser ver</string>
-    <string name="lang_hebrew">Hebraico</string>
     <string name="customize_album">Personalizar álbum</string>
     <string name="update_title">Atualizar Título</string>
     <string name="update_authors">Atualizar Autores</string>
@@ -299,7 +274,6 @@
     <string name="title">Título</string>
     <string name="authors">Autores</string>
     <string name="cover">Capa</string>
-    <string name="lang_japanese">﻿Japonês</string>
     <string name="paste_or_type_a_valid_url">Cole ou digite uma url válida</string>
     <string name="you_can_put_a_complete_link">Pode colocar um link completo de uma playlist, de um álbum, de um canal, ou de uma música no YouTube ou no YouTube Music</string>
     <string name="go_to_link">Ir para o link</string>
@@ -309,7 +283,6 @@
     <string name="action_bar_show_shuffle_button">Mostrar botão Aleatório</string>
     <string name="action_bar_show_lyrics_button">Mostrar o botão de Letras</string>
     <string name="action_bar_show_arrow_button_to_open_queue">Mostrar botão de seta para abrir a fila</string>
-    <string name="lang_finnish">Finlandês</string>
     <string name="listening_time">Tempo de reprodução</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Mostra o número de músicas ouvidas e o seu tempo de reprodução</string>
     <string name="app_update_dialog_new">A nova versão %s pode ser transferida!</string>
@@ -319,11 +292,9 @@
     <string name="end_of_song">fim da música</string>
     <string name="restore_completed">Restauração concluída!</string>
     <string name="click_to_close">Clique para fechar</string>
-    <string name="lang_dutch">Holandês</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Tem a certeza que quer renumerar posições nesta playlist?</string>
     <string name="renumber_songs_positions">Renumerar posições</string>
     <string name="do_you_really_want_to_delete_all_playback_events">Tem a certeza que quer apagar todos os eventos de reprodução?</string>
-    <string name="lang_sinhala">Cingalês</string>
     <string name="update_available">Atualização disponível</string>
     <string name="actions_you_can_do">Ações que pode fazer:</string>
     <string name="open_the_github_releases_web_page_and_download_latest_version">Abre a página web do Github releases e transfere a última versão</string>
@@ -337,7 +308,6 @@
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Pode ligar, ou desligar, nas configurações.</string>
     <string name="enable">Ativar</string>
     <string name="don_t_enable">Não ativar</string>
-    <string name="lang_hindi">Hindi (हिन्दी)</string>
     <string name="default_page">Página padrão</string>
     <string name="keep_screen_on">Manter o ecrã ligado</string>
     <string name="prevents_screen_timeout">Impede o tempo limite de ecrã</string>
@@ -386,7 +356,6 @@
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Evite fechar o leitor e limpar a fila deslizando para baixo quando estiver minimizado</string>
     <string name="sort_date_liked">Data de Preferência</string>
     <string name="export_playlist">Exportar playlist</string>
-    <string name="lang_afrikaans">Africano</string>
     <string name="playlist_top">Topo da Lista de Reprodução</string>
     <string name="my_playlist_top">Meu Top %s</string>
     <string name="navigation_bar_position">Posição da barra de navegação</string>
@@ -395,11 +364,9 @@
     <string name="copy_lyrics">Copiar letra</string>
     <string name="value_copied">Copiado</string>
     <string name="do_you_really_want_to_delete_cache">Tem a certeza que quer apagar a cache?</string>
-    <string name="lang_swedish">Sueco</string>
     <string name="pinned_playlists">Playlists afixadas</string>
     <string name="locked">Bloqueado</string>
     <string name="sort_duration">Duração</string>
-    <string name="lang_serbian_cyrillic">Cirílico Sérvio</string>
     <string name="pause_between_songs">Pausa entre músicas</string>
     <string name="navigation_bar_type">Tipo de barra de navegação</string>
     <string name="icon_and_text">Ícone e texto</string>
@@ -408,7 +375,6 @@
     <string name="sort_album">Álbum</string>
     <string name="use_gradient_background">Usar fundo em gradiente</string>
     <string name="show_total_time_of_queue">Mostrar tempo total da fila</string>
-    <string name="lang_telugu">Télugo</string>
     <string name="media_permission_required_please_grant">Permissão de mídia requerida, por favor conceda.</string>
     <string name="open_permission_settings">Abrir definições de permissão</string>
     <string name="background_progress_bar">Barra de progresso no plano de fundo</string>
@@ -418,8 +384,6 @@
     <string name="back">Retroceder</string>
     <string name="folders">Pastas</string>
     <string name="show_folders_in_on_device_page">Mostrar pastas no \"No Dispositivo\"</string>
-    <string name="lang_danish">Dinamarquês</string>
-    <string name="lang_serbian_latin">Sérvio Latim</string>
     <string name="item_deselect">Deselecionar</string>
     <string name="show_next_songs_in_player">Mostrar a Mini Fila de Espera no Leitor</string>
     <string name="show_remaining_song_time">Mostrar o tempo restante da música</string>
@@ -545,7 +509,6 @@
     <string name="bg_colors_fluid_gradient_background_from_cover">Fundo gradiente fluido da capa</string>
     <string name="show_background_in_lyrics">Mostrar cor de fundo nas letras</string>
     <string name="bg_colors_blurred_cover_background">Fundo de capa desfocado</string>
-    <string name="lang_estonian">Estoniano</string>
     <string name="pcontrols_modern">Moderno</string>
     <string name="pcontrols_essential">Essencial</string>
     <string name="pcontrols_type">Tipos de controlo</string>
@@ -555,7 +518,6 @@
     <string name="position_bottom">Fundo</string>
     <string name="added_to_favorites">Adicionado aos favoritos</string>
     <string name="removed_from_favorites">Removido dos favoritos</string>
-    <string name="lang_filipino">Filipino (Pilipino)</string>
     <string name="action_bar_transparent_background">Fundo transparente</string>
     <string name="pinfo_type">Tipo de informação</string>
     <string name="pinfo_album_and_artist_name">Nome do álbum e do artista</string>
@@ -573,7 +535,6 @@
     <string name="exclude_songs_with_duration_limit_description">Se ativado, músicas com duração acima do limite serão excluídas, aplicadas a top músicas e fila de reprodução</string>
     <string name="no_log_available">Sem registo disponível</string>
     <string name="enable_quick_picks_page">Ativar a página Escolhas Rápidas</string>
-    <string name="lang_vietnamese">Vietnamita</string>
     <string name="parental_control">Controlo parental</string>
     <string name="info_prevent_play_songs_with_age_limitation">Prevenir reprodução de músicas com restrição de idade</string>
     <string name="cache_location_private">Privado</string>
@@ -612,8 +573,6 @@
     <string name="expandedlyricsinfo">O leitor expandido só funciona quando a letra de música estiver ativada</string>
     <string name="info_connect_your_piped_account_first">Conecte a sua conta piped primeiro ou desative a sincronização piped</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengalês (বাংলা)</string>
-    <string name="lang_irish">Irlandês</string>
     <string name="lyricsoutline">Esboço da letra de música</string>
     <string name="fluidrainbow">Arco-íris Fluido</string>
     <string name="fluidtheme">Tema fluido</string>
@@ -674,7 +633,6 @@
     <string name="controls_title_playback_pitch">Inclinação de reprodução</string>
     <string name="controls_title_playback_volume">Volume de Reprodução</string>
     <string name="controls_title_device_volume">Volume do dispositivo</string>
-    <string name="lang_malayalam">Malaiala</string>
     <string name="searches_suggestions">Sugestões</string>
     <string name="searches_saved_searches">Pesquisas guardadas</string>
     <string name="event_volumekeys">Trocar música com as teclas de volume</string>
@@ -714,7 +672,6 @@
     <string name="queuetype">Tipo de Fila</string>
     <string name="chart_top_songs">Top músicas</string>
     <string name="chart_top_artists">Top artistas</string>
-    <string name="lang_interlingua">Interlíngua</string>
     <string name="error_no_internet">Sem ligação à rede</string>
     <string name="error_timeout">Tempo de ligação excedido</string>
     <string name="error_unknown">Erro desconhecido</string>
@@ -722,8 +679,6 @@
     <string name="update_album">Atualiza o Álbum</string>
     <string name="info_check_update_now">Verificar Agora</string>
     <string name="info_no_update_available">Nenhuma atualização disponível</string>
-    <string name="lang_galician">Galego</string>
-    <string name="lang_norwegian">Norueguês</string>
     <string name="translate_to">Traduzir para %s</string>
     <string name="translate_to_other_language">Traseira para outro idioma</string>
     <string name="action_bar_show_video_button">Mostrar botão de vídeo</string>
@@ -767,9 +722,7 @@
     <string name="actionbar">Barra de ação</string>
     <string name="center">Centro</string>
     <string name="lyricsalignment">Alinhamento das Letras de Música</string>
-    <string name="lang_azerbaijani">Azerbaijano</string>
     <string name="translators">Tradutores</string>
-    <string name="lang_tamil">Tamil</string>
     <string name="player_auto_load_songs_in_queue">Carregar músicas automaticamente na fila</string>
     <string name="player_auto_load_songs_in_queue_description">Adiciona músicas quando a fila está prestes a terminar</string>
     <string name="show_vinyl_thumbnail_animation">Mostrar animação de Vinil como miniatura</string>

@@ -169,16 +169,6 @@
     <string name="contributors">BIDRAGARE</string>
     <string name="troubleshooting">FELSÖKNING</string>
     <string name="social">SOCIALT</string>
-    <string name="english">Engelska</string>
-    <string name="italian">Italienska (Italiano)</string>
-    <string name="czech">Tjeckiska (Čeština)</string>
-    <string name="german">Tyska (Deutsch)</string>
-    <string name="spanish">Spanska (Español)</string>
-    <string name="french">Franska (Français)</string>
-    <string name="romanian">Rumänska (Română)</string>
-    <string name="russian">Ryska (Русский)</string>
-    <string name="turkish">Turkiska (Türkçe)</string>
-    <string name="polish">Polska (Polski)</string>
     <string name="dark">Mörkt</string>
     <string name="system">System</string>
     <string name="unlimited">Obegränsad</string>
@@ -245,12 +235,6 @@
     <string name="square">Kvadrat</string>
     <string name="circular_ribbed">Cirkulär ribbad</string>
     <string name="play_button">Uppspelningsknapp</string>
-    <string name="portuguese_brazilian">Portugisiska, Brasilianska</string>
-    <string name="portuguese">Portugisiska</string>
-    <string name="indonesian">Indonesiska</string>
-    <string name="odia">Odia</string>
-    <string name="bashkir">Basjkiriska</string>
-    <string name="esperanto">Esperanto</string>
     <string name="close_app_with_back_button">Stäng appen med bakåtknappen</string>
     <string name="when_you_use_the_back_button_from_the_home_page">När du använder bakåtknappen från startsidan</string>
     <string name="audio_quality_format_high">Hög</string>
@@ -260,14 +244,10 @@
     <string name="do_you_really_want_to_delete_download">Vill du verkligen ta bort hämtning?</string>
     <string name="enqueue_all">Köa alla</string>
     <string name="enqueue_selected">Köa markerade</string>
-    <string name="greek">Grekiska</string>
-    <string name="catalan">Katalanska</string>
     <string name="disable_scrolling_text">Inaktivera rullande text</string>
     <string name="scrolling_text_is_used_for_long_texts">Rullande text används för långa texter</string>
     <string name="audio_quality_format">Ljudkvalitet</string>
     <string name="persian">Persiska</string>
-    <string name="hungarian">Ungerska</string>
-    <string name="korean">Koreanska</string>
     <string name="background_player">"BAKGRUNDSSPELARE "</string>
     <string name="show_favorite_button">Visa favoritknapp</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Visa favoritknappen på låsskärmen och aviseringsområdet</string>
@@ -279,19 +259,14 @@
     <string name="statistics_songs_heard">songs heard</string>
     <string name="statistics_of_time_taken">lyssnad tid</string>
     <string name="statistics_max_number_of_items">Max antal objekt</string>
-    <string name="arabic">Arabiska</string>
-    <string name="chinese_simplified">Kinesiska (förenklad)</string>
-    <string name="chinese_traditional">Kinesiska (Traditionell)</string>
     <string name="do_you_really_want_to_download_all">Vill du verkligen ladda ner alla?</string>
     <string name="import_playlist">Importera spellista</string>
-    <string name="lang_ukrainian">Ukrainska</string>
     <string name="proxy">PROXY</string>
     <string name="enable_proxy">Aktivera proxy</string>
     <string name="proxy_mode">Proxyläge</string>
     <string name="proxy_host">Värd för proxy</string>
     <string name="proxy_port">Port för proxy</string>
     <string name="disable_if_you_do_not_want_to_see">Inaktivera om du inte vill se</string>
-    <string name="lang_hebrew">Hebreiska</string>
     <string name="customize_album">Anpassa album</string>
     <string name="update_title">Uppdatera titel</string>
     <string name="update_authors">Uppdatera Artist</string>
@@ -299,7 +274,6 @@
     <string name="title">Titel</string>
     <string name="authors">Skapare</string>
     <string name="cover">Omslag</string>
-    <string name="lang_japanese">Japanska</string>
     <string name="paste_or_type_a_valid_url">Klistra in eller skriv in en giltig URL</string>
     <string name="you_can_put_a_complete_link">Du kan lägga till en komplett länk till en spellista, ett album, en kanal eller en låt från YouTube eller YouTube Musik</string>
     <string name="go_to_link">Gå till länk</string>
@@ -309,7 +283,6 @@
     <string name="action_bar_show_shuffle_button">Visa Shuffle knapp</string>
     <string name="action_bar_show_lyrics_button">Visa låttext-knapp</string>
     <string name="action_bar_show_arrow_button_to_open_queue">Visa pil-knapp</string>
-    <string name="lang_finnish">Finska</string>
     <string name="listening_time">Lyssningstid</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Visar antalet lyssnade låtar och dess lyssningstid</string>
     <string name="app_update_dialog_new">Den nya versionen %s kan laddas ner!</string>
@@ -319,11 +292,9 @@
     <string name="end_of_song">end of song</string>
     <string name="restore_completed">Återställning slutförd!</string>
     <string name="click_to_close">Klicka för att stänga</string>
-    <string name="lang_dutch">Nederländska</string>
     <string name="do_you_really_want_to_renumbering_positions_in_this_playlist">Do you really want to renumbering positions in this playlist?</string>
     <string name="renumber_songs_positions">Renumber positions</string>
     <string name="do_you_really_want_to_delete_all_playback_events">Vill du verkligen ta bort alla uppspelningshändelser?</string>
-    <string name="lang_sinhala">Singalesiska</string>
     <string name="update_available">Uppdatering tillgänglig</string>
     <string name="actions_you_can_do">Åtgärder du kan göra:</string>
     <string name="open_the_github_releases_web_page_and_download_latest_version">Öppna webbsidan Github releases och ladda ned den senaste versionen</string>
@@ -337,7 +308,6 @@
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Du kan fortfarande aktivera eller stänga av det från inställningarna.</string>
     <string name="enable">Aktivera</string>
     <string name="don_t_enable">Aktivera inte</string>
-    <string name="lang_hindi">Hindi</string>
     <string name="default_page">Förvald sida</string>
     <string name="keep_screen_on">Behåll skärmen aktiverad</string>
     <string name="prevents_screen_timeout">Förhindrar skärmtimeout</string>
@@ -386,7 +356,6 @@
     <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Undvik att stänga spelaren och rensa kön genom att dra nedåt medan den är minimerad</string>
     <string name="sort_date_liked">Datum Gillat</string>
     <string name="export_playlist">Exportera spellista</string>
-    <string name="lang_afrikaans">Afrikaans</string>
     <string name="playlist_top">Playlist Top</string>
     <string name="my_playlist_top">My Top</string>
     <string name="navigation_bar_position">Navigeringsfältets position</string>
@@ -395,11 +364,9 @@
     <string name="copy_lyrics">Kopiera låttext</string>
     <string name="value_copied">Kopierat</string>
     <string name="do_you_really_want_to_delete_cache">Vill du verkligen ta bort cache?</string>
-    <string name="lang_swedish">Svenska</string>
     <string name="pinned_playlists">Fästa spellistor</string>
     <string name="locked">Låst</string>
     <string name="sort_duration">Längd</string>
-    <string name="lang_serbian_cyrillic">Serbiska (Kyrilliska)</string>
     <string name="pause_between_songs">Pausa mellan låtar</string>
     <string name="navigation_bar_type">Typ av navigeringsfält</string>
     <string name="icon_and_text">Ikoner och text</string>
@@ -408,7 +375,6 @@
     <string name="sort_album">Album</string>
     <string name="use_gradient_background">Använd gradient bakgrund</string>
     <string name="show_total_time_of_queue">Visa total tid för kön</string>
-    <string name="lang_telugu">Telugu</string>
     <string name="media_permission_required_please_grant">Tillstånd till media krävs, vänligen bevilja.</string>
     <string name="open_permission_settings">Öppna behörighetsinställningar</string>
     <string name="background_progress_bar">Förloppsindikator i bakgrunden</string>
@@ -418,8 +384,6 @@
     <string name="back">Tillbaka</string>
     <string name="folders">Mappar</string>
     <string name="show_folders_in_on_device_page">Visa mappar i \"På enhet\"</string>
-    <string name="lang_danish">Danska</string>
-    <string name="lang_serbian_latin">Serbiska (Latin)</string>
     <string name="item_deselect">Avmarkera</string>
     <string name="show_next_songs_in_player">Visa nästa låtar i spelaren</string>
     <string name="show_remaining_song_time">Visa återstående låttid</string>
@@ -545,7 +509,6 @@
     <string name="bg_colors_fluid_gradient_background_from_cover">Rörlig gradient bakgrund från omslaget</string>
     <string name="show_background_in_lyrics">Show background color in Lyrics</string>
     <string name="bg_colors_blurred_cover_background">Suddig bakgrund av omslaget</string>
-    <string name="lang_estonian">Estniska</string>
     <string name="pcontrols_modern">Modern</string>
     <string name="pcontrols_essential">Essential</string>
     <string name="pcontrols_type">Stil på kontrollknappar</string>
@@ -555,7 +518,6 @@
     <string name="position_bottom">Ned</string>
     <string name="added_to_favorites">Tillagd i favoriter</string>
     <string name="removed_from_favorites">Borttagen från favoriter</string>
-    <string name="lang_filipino">Filippinska</string>
     <string name="action_bar_transparent_background">Transparent bakgrund</string>
     <string name="pinfo_type">Infotyp</string>
     <string name="pinfo_album_and_artist_name">Album- och artistnamn</string>
@@ -573,7 +535,6 @@
     <string name="exclude_songs_with_duration_limit_description">If enabled, songs with duration over the limit will be excluded, applied to mytop and playback queue</string>
     <string name="no_log_available">No log available</string>
     <string name="enable_quick_picks_page">Enable Quick Picks page</string>
-    <string name="lang_vietnamese">Vietnamesiska</string>
     <string name="parental_control">Föräldrakontroll</string>
     <string name="info_prevent_play_songs_with_age_limitation">Prevent play songs with age limitation</string>
     <string name="cache_location_private">Private</string>
@@ -612,8 +573,6 @@
     <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
     <string name="info_connect_your_piped_account_first">Anslut ditt piped-konto först eller inaktivera piped synkronisering</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali</string>
-    <string name="lang_irish">Irländska</string>
     <string name="lyricsoutline">Kontur på låttexter</string>
     <string name="fluidrainbow">Fluid Rainbow</string>
     <string name="fluidtheme">Fluid Theme</string>
@@ -674,7 +633,6 @@
     <string name="controls_title_playback_pitch">Playback pitch</string>
     <string name="controls_title_playback_volume">Playback Volume</string>
     <string name="controls_title_device_volume">Device volume</string>
-    <string name="lang_malayalam">Malayalam</string>
     <string name="searches_suggestions">Förslag</string>
     <string name="searches_saved_searches">Sparade sökningar</string>
     <string name="event_volumekeys">Change song with the volume keys</string>
@@ -714,7 +672,6 @@
     <string name="queuetype">Kötyp</string>
     <string name="chart_top_songs">Topplåtar</string>
     <string name="chart_top_artists">Toppartister</string>
-    <string name="lang_interlingua">Interlingua</string>
     <string name="error_no_internet">Ingen nätverksanslutning</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Okänt fel</string>
@@ -722,8 +679,6 @@
     <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">Ingen uppdatering tillgänglig</string>
-    <string name="lang_galician">Galiciska</string>
-    <string name="lang_norwegian">Norska</string>
     <string name="translate_to">Översätt till %s</string>
     <string name="translate_to_other_language">Traslera till annat språk</string>
     <string name="action_bar_show_video_button">Show video button</string>
@@ -767,9 +722,7 @@
     <string name="actionbar">Action Bar</string>
     <string name="center">Center</string>
     <string name="lyricsalignment">Lyrics Alignment</string>
-    <string name="lang_azerbaijani">Azerbaijani</string>
     <string name="translators">Översättare</string>
-    <string name="lang_tamil">Tamil</string>
     <string name="player_auto_load_songs_in_queue">Auto load songs in queue</string>
     <string name="player_auto_load_songs_in_queue_description">Adds songs when the queue is about to end</string>
     <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>
