@@ -3,6 +3,52 @@ files:
     translation: /composeApp/src/androidMain/res/values-%android_code%/strings.xml
     languages_mapping:
       android_code:
+        af: af
+        ar: ar
+        az: az
+        ba: ba
+        bn: bn
+        ca: ca
+        cs: cs
+        da: da
+        de: de
+        el: el
+        en: en
+        eo: eo
+        es: es
+        et: et
+        fa: fa
+        fi: fi
+        fil: fil
+        fr: fr
+        ga: ga
+        gl: gl
+        he: he
+        hi: hi
+        hu: hu
+        ia: ia
+        id: id
+        in: in    # Deprecated Indonesian
+        it: it
+        iw: iw    # Deprecated Hebrew
+        ja: ja
+        ko: ko
+        ml: ml
+        nl: nl
+        no: no
+        or: or
+        pl: pl
+        pt: pt
+        ro: ro
+        ru: ru
+        si: si
+        sv: sv
+        ta: ta
+        te: te
+        tr: tr
+        uk: uk
+        vi: vi
+        zh: zh
         zh-CN: zh-rCN
         zh-TW: zh-rTW
         pt-BR: pt-rBR
