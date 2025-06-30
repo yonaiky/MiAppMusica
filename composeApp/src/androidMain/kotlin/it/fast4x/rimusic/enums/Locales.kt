@@ -53,6 +53,7 @@ enum class Languages(
     Malayalam( "ml" ),
     Norwegian( "no" ),
     Odia( "or" ),
+    Persian( "fa" ),
     Polish( "pl" ),
     Portuguese( "pt" ),
     PortugueseBrazilian( "pt-BR" ),
