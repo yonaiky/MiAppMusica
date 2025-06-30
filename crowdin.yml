@@ -15,13 +15,13 @@ files:
         el: el
         en: en
         eo: eo
-        es: es
+        es-ES: es
         et: et
         fa: fa
         fi: fi
         fil: fil
         fr: fr
-        ga: ga
+        ga-rIE: ga
         gl: gl
         he: he
         hi: hi
@@ -33,7 +33,7 @@ files:
         iw: iw    # Deprecated Hebrew
         ja: ja
         ko: ko
-        ml: ml
+        ml-IN: ml
         nl: nl
         no: no
         or: or
@@ -41,7 +41,7 @@ files:
         pt: pt
         ro: ro
         ru: ru
-        si: si
+        si-LK: si
         sv: sv
         ta: ta
         te: te
@@ -52,5 +52,5 @@ files:
         zh-CN: zh-rCN
         zh-TW: zh-rTW
         pt-BR: pt-rBR
-        sr-Cyrl: b+sr+Cyrl
-        sr-Latn: b+sr+Latn
+        sr: b+sr+Cyrl
+        sr-CS: b+sr+Latn
