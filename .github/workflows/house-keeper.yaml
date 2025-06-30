@@ -27,5 +27,7 @@ jobs:
       - name: Login to Github CLI
         run: echo "${{ secrets.HOUSE_KEEPER_WORKFLOW }}" | gh auth login --with-token
 
+      - uses: actions/checkout@v4.2.2
+
       - name: Run script
-        run: curl -sL "https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$GITHUB_REF/.github/delete_success_workflows.sh" | bash
+        run: bash .github/delete_success_workflows.sh
