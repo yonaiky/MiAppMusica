@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="cancel">Cancelar</string>
     <string name="done">Terminar</string>
     <string name="hidesong">Você realmente quer esconder essa música? O tempo de reprodução e a memória transitória serão apagados. Esta ação é irreversível.</string>
     <string name="new_playlist">Nova lista de reprodução</string>
@@ -184,7 +183,6 @@
     <string name="moods_and_genres">Humor e gêneros</string>
     <string name="search_queries">" consultas de pesquisa"</string>
     <string name="not_find_battery_optimization_settings">Não foi possível encontrar configurações de otimização de bateria, por favor whitelist manualmente</string>
-    <string name="search">Pesquisa</string>
     <string name="no">Não</string>
     <string name="stop">Pausa</string>
     <string name="listen_on_youtube">Escutar no YouTube</string>

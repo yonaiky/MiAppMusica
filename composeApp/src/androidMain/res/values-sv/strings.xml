@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="cancel">Avbryt</string>
     <string name="done">Klar</string>
     <string name="hidesong">Vill du verkligen dölja denna låt? Dess uppspelningstid och cache kommer att raderas. Denna åtgärd går inte att ångra.</string>
     <string name="new_playlist">Ny spellista</string>
@@ -184,7 +183,6 @@
     <string name="moods_and_genres">Humör och genrer</string>
     <string name="search_queries">" search queries"</string>
     <string name="not_find_battery_optimization_settings">Det gick inte att hitta batterioptimeringsinställningar, vänligen vitlista manuellt</string>
-    <string name="search">Sök</string>
     <string name="no">Nej</string>
     <string name="stop">Stoppa</string>
     <string name="listen_on_youtube">Lyssna på YouTube</string>

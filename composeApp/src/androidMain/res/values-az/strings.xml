@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="cancel">Ləğv et</string>
     <string name="done">Bitdi</string>
     <string name="hidesong">Həqiqətən bu mahnını gizlətmək istəyirsiz? Onun dinlənmə vaxtı və qalığı silinəcək. Bu tələb geri dönməzdir.</string>
     <string name="new_playlist">Yeni dinləmə siyahısı</string>
@@ -184,7 +183,6 @@
     <string name="moods_and_genres">Əhvali-ruhiyyə və janrlar</string>
     <string name="search_queries">" axtarış sorğusu"</string>
     <string name="not_find_battery_optimization_settings">Batareya optimallaşması seçimlərini tapmaq olmadı, lütfən, əl ilə ağ siyahıya salın</string>
-    <string name="search">Axtarış</string>
     <string name="no">Xeyr</string>
     <string name="stop">Dayandır</string>
     <string name="listen_on_youtube">YouTube-da Dinlə</string>

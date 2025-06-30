@@ -329,7 +329,7 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                             Menu {
                                 MenuEntry(
                                     icon = R.drawable.chevron_back,
-                                    text = stringResource(R.string.cancel),
+                                    text = stringResource( android.R.string.cancel ),
                                     onClick = {
                                         loadInstances = false
                                         showInstances = false
@@ -359,7 +359,7 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                                 }
                                 MenuEntry(
                                     icon = R.drawable.chevron_back,
-                                    text = stringResource(R.string.cancel),
+                                    text = stringResource( android.R.string.cancel ),
                                     onClick = {
                                         loadInstances = false
                                         showInstances = false

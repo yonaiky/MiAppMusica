@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="cancel">Anulează</string>
     <string name="done">Finalizat</string>
     <string name="hidesong">Chiar vrei să ascunzi această melodie? Timpul de redare și memoria cache vor fi șterse. Această acțiune este ireversibilă.</string>
     <string name="new_playlist">Playlist nou</string>
@@ -184,7 +183,6 @@
     <string name="moods_and_genres">Stări și genuri</string>
     <string name="search_queries">" căutări"</string>
     <string name="not_find_battery_optimization_settings">Nu s-au găsit setările de optimizare a bateriei, te rugăm să le adaugi manual în lista albă</string>
-    <string name="search">Căutare</string>
     <string name="no">Nu</string>
     <string name="stop">Oprește</string>
     <string name="listen_on_youtube">Ascultă pe YouTube</string>

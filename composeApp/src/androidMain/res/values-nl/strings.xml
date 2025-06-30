@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="cancel">Annuleer</string>
     <string name="done">Klaar</string>
     <string name="hidesong">Wil je dit nummer echt verbergen? De afspeeltijd en de cache zullen worden gewist. Deze actie is onomkeerbaar.</string>
     <string name="new_playlist">Nieuwe afspeellijst</string>
@@ -184,7 +183,6 @@
     <string name="moods_and_genres">Stemmingen en genres</string>
     <string name="search_queries">" zoekopdrachten"</string>
     <string name="not_find_battery_optimization_settings">Kon de accuoptimalisatie-instellingen niet vinden, gelieve handmatig whitelisten</string>
-    <string name="search">Zoeken</string>
     <string name="no">Nee</string>
     <string name="stop">Stoppen</string>
     <string name="listen_on_youtube">Luister op YouTube</string>

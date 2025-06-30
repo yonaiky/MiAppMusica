@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="cancel">İptal</string>
     <string name="done">Tamam</string>
     <string name="hidesong">Bu şarkıyı gerçekten gizlemek istiyor musunuz? Çalma süresi ve önbelleği silinecektir. Bu işlem geri alınamaz.</string>
     <string name="new_playlist">Yeni çalma listesi</string>
@@ -184,7 +183,6 @@
     <string name="moods_and_genres">Modlar ve türler</string>
     <string name="search_queries">" arama sorgusu"</string>
     <string name="not_find_battery_optimization_settings">Pil optimizasyon ayarları bulunamadı, lütfen manuel olarak beyaz listeye ekleyin</string>
-    <string name="search">Ara</string>
     <string name="no">Hayır</string>
     <string name="stop">Durdur</string>
     <string name="listen_on_youtube">YouTube\'da dinle</string>

@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="cancel">Отмена</string>
     <string name="done">Готово</string>
     <string name="hidesong">Вы действительно хотите скрыть эту песню? История воспроизведения и кэш будут удалены.
 Это действие необратимо.</string>
@@ -185,7 +184,6 @@
     <string name="moods_and_genres">Настроение и жанры</string>
     <string name="search_queries">" поисковые запросы"</string>
     <string name="not_find_battery_optimization_settings">Не удалось найти настройки оптимизации батареи, добавьте вручную в белый список</string>
-    <string name="search">Поиск</string>
     <string name="no">Нет</string>
     <string name="stop">Стоп</string>
     <string name="listen_on_youtube">Слушать в YouTube</string>
