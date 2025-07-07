@@ -341,7 +341,7 @@ class MainActivity :
         ExperimentalMaterial3Api::class
     )
     fun startApp() {
-        me.knighthat.innertube.Innertube.setClient( InnertubeProvider() )
+        me.knighthat.innertube.Innertube.client = InnertubeProvider()
 
         // Used in QuickPics for load data from remote instead of last saved in SharedPreferences
         Preferences.IS_DATA_KEY_LOADED.value = false

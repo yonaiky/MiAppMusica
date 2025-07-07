@@ -8,7 +8,7 @@ val InnertubeSong.toSong: Song
     get() = Song(
         id = this.id,
         title = if( isExplicit ) EXPLICIT_PREFIX else "" + this.name,
-        artistsText = this.authorsText,
+        artistsText = this.artistsText,
         durationText = this.durationText,
         thumbnailUrl = this.thumbnails.firstOrNull()?.url,
         likedAt = null,
