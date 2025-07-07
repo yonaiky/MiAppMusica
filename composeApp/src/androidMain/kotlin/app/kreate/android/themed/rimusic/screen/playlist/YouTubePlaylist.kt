@@ -223,7 +223,7 @@ fun YouTubePlaylist(
         //</editor-fold>
 
         val pageProvider: suspend (String?) -> Unit by rememberUpdatedState {
-            if (it.isNullOrBlank())
+            if ( it.isNullOrBlank() )
                 Innertube.browsePlaylist( browseId, Localization.EN_US )
                          .onSuccess { page ->
                              playlistPage = page
@@ -231,7 +231,11 @@ fun YouTubePlaylist(
                              items.addAll( playlistPage!!.songs.map( InnertubeSong::toSong ) )
                              continuation = playlistPage!!.songContinuation
                          }
-            else if (playlistPage?.visitorData != null)
+                         .onFailure { err ->
+                             err.printStackTrace()
+                             err.message?.also( Toaster::e )
+                         }
+            else if ( playlistPage?.visitorData != null )
                 Innertube.playlistContinued( playlistPage!!.visitorData!!, it, Localization.EN_US, params )
                          .onSuccess { continued ->
                              items.addAll(
@@ -239,6 +243,10 @@ fun YouTubePlaylist(
                                           .map( InnertubeSong::toSong )
                              )
                              continuation = continued.continuation
+                         }
+                         .onFailure { err ->
+                             err.printStackTrace()
+                             err.message?.also( Toaster::e )
                          }
         }
 
