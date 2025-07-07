@@ -238,12 +238,12 @@ fun AppNavigation(
                 navArgument( "params" ) {
                     type = NavType.StringType
                     // Use default value to make it optional
-                    defaultValue = ""
+                    nullable = true
                 }
             )
         ) {
             // browseId must not be empty or null in any case
-            val browseId = it.arguments?.getString( "browseId" )!!
+            val browseId = it.arguments!!.getString( "browseId" )!!
             val params = it.arguments!!.getString( "params" )
 
             YouTubePlaylist( navController, browseId, params, miniPlayer )
