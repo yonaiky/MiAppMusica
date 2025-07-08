@@ -370,12 +370,10 @@ fun StatisticsPage(
                             thumbnailSizePx = artistThumbnailSizePx,
                             thumbnailSizeDp = artistThumbnailSizeDp,
                             alternative = true,
-                            modifier = Modifier
-                                .clickable(onClick = {
-                                    if (artists[it].id != "") {
-                                        navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
-                                    }
-                                }),
+                            modifier = Modifier.clickable {
+                                if ( artists[it].id.isNotBlank() )
+                                    NavRoutes.YT_ARTIST.navigateHere( navController, artists[it].id )
+                            },
                             disableScrollingText = disableScrollingText
                         )
                     }

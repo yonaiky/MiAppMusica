@@ -1068,11 +1068,7 @@ class MainActivity :
                         }
 
                         "channel", "c" -> uri.lastPathSegment?.let { channelId ->
-                            try {
-                                navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
-                            } catch (e: Exception) {
-                                Timber.e("MainActivity.onCreate intentUriData ${e.stackTraceToString()}")
-                            }
+                            NavRoutes.YT_ARTIST.navigateHere( navController, channelId )
                         }
 
                         "search" -> uri.getQueryParameter("q")?.let { query ->

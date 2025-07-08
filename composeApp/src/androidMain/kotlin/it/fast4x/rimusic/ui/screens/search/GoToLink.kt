@@ -211,7 +211,7 @@ fun GoToLink(
                                 }
 
                                 "channel", "c" -> uri.lastPathSegment?.let { channelId ->
-                                    navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
+                                    NavRoutes.YT_ARTIST.navigateHere( navController, channelId )
                                 }
 
                                 "search" -> uri.getQueryParameter("q")?.let { query ->

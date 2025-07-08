@@ -58,7 +58,7 @@ fun HomeScreen(
                         navController.navigate(route = "${NavRoutes.album.name}/$it")
                     },
                     onArtistClick = {
-                        navController.navigate(route = "${NavRoutes.artist.name}/$it")
+                        NavRoutes.YT_ARTIST.navigateHere( navController, it )
                     },
                     onPlaylistClick = {
                         NavRoutes.YT_PLAYLIST.navigateHere( navController, it )
@@ -81,7 +81,7 @@ fun HomeScreen(
 
                 2 -> HomeArtists(
                     onArtistClick = {
-                        navController.navigate(route = "${NavRoutes.artist.name}/${it.id}")
+                        NavRoutes.YT_ARTIST.navigateHere( navController, it.id )
                     },
                     onSearchClick = {
                         //searchRoute("")

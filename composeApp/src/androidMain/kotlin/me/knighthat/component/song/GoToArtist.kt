@@ -47,7 +47,7 @@ class GoToArtist(
 
     override fun onShortClick() {
         channelId.ifPresentOrElse(
-            { NavRoutes.artist.navigateHere( navController, it ) },
+            { NavRoutes.YT_ARTIST.navigateHere( navController, it ) },
             {
                 Toaster.n( R.string.looking_up_artist_online, song.cleanArtistsText() )
 
@@ -66,8 +66,10 @@ class GoToArtist(
                              ?.endpoint
                              ?.takeIf { !it.browseId.isNullOrBlank() }
                              ?.let {
-                                 val path = "${it.browseId}?params=${it.params.orEmpty()}"
-                                 NavRoutes.artist.navigateHere( navController, path )
+                                 NavRoutes.YT_ARTIST.navigateHere(
+                                     navController,
+                                     "${it.browseId}?params=${it.params.orEmpty()}"
+                                 )
                              }
                 }
             }

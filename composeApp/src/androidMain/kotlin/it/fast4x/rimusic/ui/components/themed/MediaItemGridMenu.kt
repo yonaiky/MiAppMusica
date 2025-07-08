@@ -179,7 +179,8 @@ fun BaseMediaItemGridMenu(
             }
         }, //albumRoute::global,
         onGoToArtist = {
-            navController.navigate(route = "${NavRoutes.artist.name}/${it}")
+            NavRoutes.YT_ARTIST.navigateHere( navController, it )
+
             if (onClosePlayer != null) {
                 onClosePlayer()
             }

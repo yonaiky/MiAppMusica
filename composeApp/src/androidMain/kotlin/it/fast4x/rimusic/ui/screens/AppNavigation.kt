@@ -45,6 +45,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.screens.artist.YouTubeArtist
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
 import app.kreate.android.themed.rimusic.screen.playlist.YouTubePlaylist
 import it.fast4x.rimusic.Database
@@ -58,7 +59,6 @@ import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.screens.album.AlbumScreen
-import it.fast4x.rimusic.ui.screens.artist.ArtistScreenModern
 import it.fast4x.rimusic.ui.screens.history.HistoryScreen
 import it.fast4x.rimusic.ui.screens.home.HomeScreen
 import it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
@@ -207,20 +207,14 @@ fun AppNavigation(
         }
 
         composable(
-            route = "${NavRoutes.artist.name}/{id}",
-            arguments = listOf(
-                navArgument(
-                    name = "id",
-                    builder = { type = NavType.StringType }
-                )
-            )
-        ) { navBackStackEntry ->
-            val id = navBackStackEntry.arguments?.getString("id") ?: ""
-            ArtistScreenModern(
-                navController = navController,
-                browseId = id,
-                miniPlayer = miniPlayer,
-            )
+            route = "${NavRoutes.YT_ARTIST}/{browseId}?params={params}",
+            arguments = listOf( BROWSE_ID_ARG, PARAM_ARG )
+        ) {
+            // browseId must not be empty or null in any case
+            val browseId = it.arguments!!.getString( "browseId" )!!
+            val params = it.arguments!!.getString( "params" )
+
+            YouTubeArtist( navController, browseId, params, miniPlayer )
         }
 
         composable(

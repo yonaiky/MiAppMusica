@@ -424,10 +424,9 @@ fun SearchResultScreen(
                                 artist = artist,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
-                                modifier = Modifier
-                                    .clickable(onClick = {
-                                        navController.navigate("${NavRoutes.artist.name}/${artist.key}")
-                                    }),
+                                modifier = Modifier.clickable {
+                                    NavRoutes.YT_ARTIST.navigateHere( navController, artist.key )
+                                },
                                 disableScrollingText = disableScrollingText
                             )
                         },
