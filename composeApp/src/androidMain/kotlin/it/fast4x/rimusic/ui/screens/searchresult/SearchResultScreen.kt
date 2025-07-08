@@ -380,7 +380,10 @@ fun SearchResultScreen(
                                     modifier = Modifier
                                         .combinedClickable(
                                             onClick = {
-                                                navController.navigate("${NavRoutes.album.name}/${album.key}")
+                                                NavRoutes.YT_ALBUM.navigateHere(
+                                                    navController,
+                                                    album.key
+                                                )
                                             },
                                             onLongClick = {}
 

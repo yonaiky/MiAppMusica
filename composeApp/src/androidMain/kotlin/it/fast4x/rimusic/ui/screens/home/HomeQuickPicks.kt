@@ -1007,7 +1007,7 @@ fun HomeQuickPicks(
                                             thumbnailSizeDp = albumThumbnailSizeDp,
                                             disableScrollingText = disableScrollingText,
                                             modifier = Modifier.clickable(onClick = {
-                                                navController.navigate("${NavRoutes.album.name}/${item.key}")
+                                                NavRoutes.YT_ALBUM.navigateHere( navController, item.key )
                                             })
 
                                         )

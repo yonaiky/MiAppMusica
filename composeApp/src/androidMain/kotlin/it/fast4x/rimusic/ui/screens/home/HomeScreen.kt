@@ -55,7 +55,7 @@ fun HomeScreen(
             when (currentTabIndex) {
                 0 -> HomeQuickPicks(
                     onAlbumClick = {
-                        navController.navigate(route = "${NavRoutes.album.name}/$it")
+                        NavRoutes.YT_ALBUM.navigateHere( navController, it )
                     },
                     onArtistClick = {
                         NavRoutes.YT_ARTIST.navigateHere( navController, it )
@@ -96,8 +96,7 @@ fun HomeScreen(
                 3 -> HomeAlbums(
                     navController = navController,
                     onAlbumClick = {
-                        //albumRoute(it.id)
-                        navController.navigate(route = "${NavRoutes.album.name}/${it.id}")
+                        NavRoutes.YT_ALBUM.navigateHere( navController, it.id )
                     },
                     onSearchClick = {
                         //searchRoute("")

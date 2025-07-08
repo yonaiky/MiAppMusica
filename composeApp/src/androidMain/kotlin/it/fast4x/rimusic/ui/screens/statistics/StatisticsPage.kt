@@ -397,7 +397,7 @@ fun StatisticsPage(
                             modifier = Modifier
                                 .clickable(onClick = {
                                     if (albums[it].id != "")
-                                        navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
+                                        NavRoutes.YT_ALBUM.navigateHere( navController, albums[it].id )
                                 }),
                             disableScrollingText = disableScrollingText
                         )

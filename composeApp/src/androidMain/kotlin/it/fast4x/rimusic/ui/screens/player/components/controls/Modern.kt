@@ -128,9 +128,7 @@ fun InfoAlbumAndArtistModern(
                     enabled = albumId != null,
                     onClick = {
                         if (albumId != null) {
-                            //onGoToAlbum(albumId)
-                            navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
-                            //layoutState.collapseSoft()
+                            NavRoutes.YT_ALBUM.navigateHere( navController, albumId )
                             onCollapse()
                         }
                     },
@@ -150,7 +148,7 @@ fun InfoAlbumAndArtistModern(
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = {
                         if (albumId != null) {
-                            navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                            NavRoutes.YT_ALBUM.navigateHere( navController, albumId )
                             onCollapse()
                         }
                     },

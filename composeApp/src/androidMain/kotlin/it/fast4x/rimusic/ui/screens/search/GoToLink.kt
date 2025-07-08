@@ -201,8 +201,7 @@ fun GoToLink(
                                         Innertube.playlistPage(BrowseBody(browseId = browseId))
                                             ?.getOrNull()?.let {
                                                 it.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId?.let { browseId ->
-                                                    //albumRoute.ensureGlobal(browseId)
-                                                    navController.navigate(route = "${NavRoutes.album.name}/$browseId")
+                                                    NavRoutes.YT_ALBUM.navigateHere( navController, browseId )
                                                 }
                                             }
                                     } else {

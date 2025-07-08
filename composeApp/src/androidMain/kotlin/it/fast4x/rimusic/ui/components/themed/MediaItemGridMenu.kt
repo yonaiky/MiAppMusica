@@ -173,7 +173,7 @@ fun BaseMediaItemGridMenu(
         onRemoveFromPlaylist = onRemoveFromPlaylist,
         onRemoveFromQueue = onRemoveFromQueue,
         onGoToAlbum =   {
-            navController.navigate(route = "${NavRoutes.album.name}/${it}")
+            NavRoutes.YT_ALBUM.navigateHere( navController, it )
             if (onClosePlayer != null) {
                 onClosePlayer()
             }

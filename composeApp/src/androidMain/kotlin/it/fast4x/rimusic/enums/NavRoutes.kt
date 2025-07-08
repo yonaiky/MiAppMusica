@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 
 enum class NavRoutes {
     home,
-    album,
     games,
     gamePacman,
     gameSnake,
@@ -25,7 +24,8 @@ enum class NavRoutes {
     podcast,
     artistAlbums,
     YT_PLAYLIST,
-    YT_ARTIST;
+    YT_ARTIST,
+    YT_ALBUM;
 
     companion object {
 

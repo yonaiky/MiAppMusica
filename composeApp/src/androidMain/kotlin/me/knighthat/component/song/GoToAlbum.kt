@@ -46,7 +46,7 @@ class GoToAlbum(
 
     override fun onShortClick() {
         albumId.ifPresentOrElse(
-            { NavRoutes.album.navigateHere( navController, it ) },
+            { NavRoutes.YT_ALBUM.navigateHere( navController, it ) },
             {
                 Toaster.n( R.string.looking_up_album_from_the_internet )
 
@@ -64,8 +64,10 @@ class GoToAlbum(
                              ?.endpoint
                              ?.takeIf { !it.browseId.isNullOrBlank() }
                              ?.let {
-                                 val path = "${it.browseId}?params=${it.params.orEmpty()}"
-                                 NavRoutes.album.navigateHere( navController, path )
+                                 NavRoutes.YT_ALBUM.navigateHere(
+                                     navController,
+                                     "${it.browseId}?params=${it.params.orEmpty()}"
+                                 )
                              }
                 }
             }

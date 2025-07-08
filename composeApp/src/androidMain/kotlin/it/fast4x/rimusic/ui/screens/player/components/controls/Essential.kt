@@ -132,7 +132,7 @@ fun InfoAlbumAndArtistEssential(
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = {
                         if (albumId != null) {
-                            navController.navigate(route = "${NavRoutes.album.name}/${albumId}")
+                            NavRoutes.YT_ALBUM.navigateHere( navController, albumId )
                             onCollapse()
                         }
                     },

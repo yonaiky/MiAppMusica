@@ -146,8 +146,7 @@ fun MoodList(
                                         alternative = true,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let {
-                                                //albumRoute.global(it)
-                                                navController.navigate(route = "${NavRoutes.album.name}/$it")
+                                                NavRoutes.YT_ALBUM.navigateHere( navController, it )
                                             }
                                         },
                                         disableScrollingText = disableScrollingText

@@ -202,7 +202,7 @@ private fun LazyListScope.renderSection(
                         disableScrollingText = disableScrollingText,
                         isYoutubeAlbum = true,
                         modifier = Modifier.clickable {
-                            NavRoutes.album.navigateHere(
+                            NavRoutes.YT_ALBUM.navigateHere(
                                 navController,
                                 "${item.id}?params=$params"
                             )
