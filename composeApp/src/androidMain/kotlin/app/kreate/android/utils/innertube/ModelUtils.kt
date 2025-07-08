@@ -20,7 +20,7 @@ import me.knighthat.innertube.model.InnertubeSong
 val InnertubeSong.toSong: Song
     get() = Song(
         id = this.id,
-        title = if( isExplicit ) EXPLICIT_PREFIX else "" + this.name,
+        title = "%s$name".format( if( isExplicit ) EXPLICIT_PREFIX else "" ),
         artistsText = this.artistsText,
         durationText = this.durationText,
         thumbnailUrl = this.thumbnails.firstOrNull()?.url,
