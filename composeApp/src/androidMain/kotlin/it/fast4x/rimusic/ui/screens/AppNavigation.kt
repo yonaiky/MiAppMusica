@@ -78,6 +78,15 @@ import kotlinx.coroutines.launch
 import me.knighthat.utils.Toaster
 import kotlin.system.exitProcess
 
+private val BROWSE_ID_ARG = navArgument( "browseId" ) {
+    type = NavType.StringType
+}
+private val PARAM_ARG = navArgument( "params" ) {
+    type = NavType.StringType
+    // Use default value to make it optional
+    nullable = true
+}
+
 @androidx.annotation.OptIn()
 @OptIn(
     ExperimentalFoundationApi::class,
@@ -233,14 +242,7 @@ fun AppNavigation(
 
         composable(
             route = "${NavRoutes.YT_PLAYLIST}/{browseId}?params={params}",
-            arguments = listOf(
-                navArgument( "browseId" ) { type = NavType.StringType },
-                navArgument( "params" ) {
-                    type = NavType.StringType
-                    // Use default value to make it optional
-                    nullable = true
-                }
-            )
+            arguments = listOf( BROWSE_ID_ARG, PARAM_ARG )
         ) {
             // browseId must not be empty or null in any case
             val browseId = it.arguments!!.getString( "browseId" )!!
