@@ -335,7 +335,7 @@ fun YouTubeAlbum(
         }
         LaunchedEffect( Unit ) { onRefresh() }
 
-        val thumbnailPainter = ImageCacheFactory.Painter( albumPage?.thumbnails?.firstOrNull()?.url )
+        val thumbnailPainter = ImageCacheFactory.Painter( dbAlbum?.thumbnailUrl )
         DynamicOrientationLayout( thumbnailPainter ) {
             PullToRefreshBox(
                 isRefreshing = isRefreshing,
