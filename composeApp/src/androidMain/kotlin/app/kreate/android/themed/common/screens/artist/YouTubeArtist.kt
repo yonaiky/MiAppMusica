@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -64,6 +63,7 @@ import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.innertube.toOldInnertubeArtist
 import app.kreate.android.utils.innertube.toOldInnertubePlaylist
 import app.kreate.android.utils.innertube.toSong
+import app.kreate.android.utils.renderDescription
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -87,7 +87,6 @@ import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
-import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.enqueue
@@ -95,7 +94,6 @@ import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -135,38 +133,6 @@ private fun updateArtistInDatabase( innertubeArtist: InnertubeArtist ) {
         Database.asyncTransaction {
             artistTable.upsert( onlineArtist )
         }
-    }
-}
-
-private fun LazyListScope.renderDescription( description: String ) = item("description") {
-    Row(
-        Modifier.padding( vertical = 16.dp, horizontal = 8.dp )
-    ) {
-        BasicText(
-            text = "“",
-            style = typography().xxl.semiBold,
-            modifier = Modifier
-                .offset(y = (-8).dp)
-                .align(Alignment.Top)
-        )
-
-        BasicText(
-            text = description,
-            style = typography().xxs
-                                .secondary
-                                .align( TextAlign.Justify ),
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .weight(1f)
-        )
-
-        BasicText(
-            text = "„",
-            style = typography().xxl.semiBold,
-            modifier = Modifier
-                .offset(y = 4.dp)
-                .align(Alignment.Bottom)
-        )
     }
 }
 
