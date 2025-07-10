@@ -274,7 +274,7 @@ fun Queue(
                         SwipeableQueueItem(
                             mediaItem = mediaItem,
                             onPlayNext = {
-                                binder.player.moveMediaItem( index, binder.player.currentMediaItemIndex )
+                                binder.player.moveMediaItem( index, binder.player.currentMediaItemIndex + 1 )
                             },
                             onDownload = {
                                 binder.cache.removeResource(song.id)
