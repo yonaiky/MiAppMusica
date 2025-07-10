@@ -59,6 +59,7 @@ import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.album.Bookmark
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.renderDescription
@@ -109,7 +110,6 @@ import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.component.ui.screens.DynamicOrientationLayout
-import me.knighthat.component.ui.screens.album.AlbumBookmark
 import me.knighthat.innertube.Constants
 import me.knighthat.innertube.Innertube
 import me.knighthat.innertube.model.InnertubeAlbum
@@ -253,7 +253,7 @@ fun YouTubeAlbum(
         fun getSongs() = itemSelector.ifEmpty { items }
         fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
-        val bookmark = AlbumBookmark( browseId )
+        val bookmark = remember { Bookmark(browseId) }
         val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog( ::getSongs )
         val downloadALlDialog = DownloadAllSongsDialog( ::getSongs )
         val shuffle = SongShuffler {
