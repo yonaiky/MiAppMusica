@@ -64,14 +64,14 @@ fun HomeScreen(
                         NavRoutes.YT_PLAYLIST.navigateHere( navController, it )
                     },
                     onSearchClick = {
-                        navController.navigate(NavRoutes.search.name)
+                        NavRoutes.search.navigateHere( navController )
                     },
                     onMoodClick = { mood ->
                         navController.currentBackStackEntry?.savedStateHandle?.set("mood", mood.toUiMood())
-                        navController.navigate(NavRoutes.mood.name)
+                        NavRoutes.mood.navigateHere( navController )
                     },
                     onSettingsClick = {
-                        navController.navigate(NavRoutes.settings.name)
+                        NavRoutes.settings.navigateHere( navController )
                     },
                     navController = navController
 
@@ -84,12 +84,10 @@ fun HomeScreen(
                         NavRoutes.YT_ARTIST.navigateHere( navController, it.id )
                     },
                     onSearchClick = {
-                        //searchRoute("")
-                        navController.navigate(NavRoutes.search.name)
+                        NavRoutes.search.navigateHere( navController )
                     },
                     onSettingsClick = {
-                        //settingsRoute()
-                        navController.navigate(NavRoutes.settings.name)
+                        NavRoutes.settings.navigateHere( navController )
                     }
                 )
 
@@ -99,27 +97,22 @@ fun HomeScreen(
                         NavRoutes.YT_ALBUM.navigateHere( navController, it.id )
                     },
                     onSearchClick = {
-                        //searchRoute("")
-                        navController.navigate(NavRoutes.search.name)
+                        NavRoutes.search.navigateHere( navController )
                     },
                     onSettingsClick = {
-                        //settingsRoute()
-                        navController.navigate(NavRoutes.settings.name)
+                        NavRoutes.settings.navigateHere( navController )
                     }
                 )
 
                 4 -> HomeLibrary(
                     onPlaylistClick = {
-                        //localPlaylistRoute(it.id)
-                        navController.navigate(route = "${NavRoutes.localPlaylist.name}/${it.id}")
+                        NavRoutes.localPlaylist.navigateHere( navController, it.id )
                     },
                     onSearchClick = {
-                        //searchRoute("")
-                        navController.navigate(NavRoutes.search.name)
+                        NavRoutes.search.navigateHere( navController )
                     },
                     onSettingsClick = {
-                        //settingsRoute()
-                        navController.navigate(NavRoutes.settings.name)
+                        NavRoutes.settings.navigateHere( navController )
                     }
 
                 )

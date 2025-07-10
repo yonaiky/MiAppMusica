@@ -1071,7 +1071,7 @@ class MainActivity :
                         }
 
                         "search" -> uri.getQueryParameter("q")?.let { query ->
-                            navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
+                            NavRoutes.searchResults.navigateHere( navController, query )
                         }
 
                         else -> when {

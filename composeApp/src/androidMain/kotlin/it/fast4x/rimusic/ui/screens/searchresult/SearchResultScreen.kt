@@ -105,7 +105,7 @@ fun SearchResultScreen(
             title = query,
             icon = R.drawable.pencil,
             onClick = {
-                navController.navigate("${NavRoutes.search.name}?text=${Uri.encode( query )}")
+                NavRoutes.search.navigateHere( navController, "?text=${Uri.encode( query )}" )
             },
             verticalPadding = 4.dp
         )
@@ -597,11 +597,10 @@ fun SearchResultScreen(
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 showSongsCount = false,
-                                modifier = Modifier
-                                    .clickable(onClick = {
-                                        println("mediaItem searchResultScreen playlist key ${playlist.key}")
-                                        navController.navigate("${NavRoutes.podcast.name}/${playlist.key}")
-                                    }),
+                                modifier = Modifier.clickable {
+                                    println("mediaItem searchResultScreen playlist key ${playlist.key}")
+                                    NavRoutes.podcast.navigateHere( navController, playlist.key )
+                                },
                                 disableScrollingText = disableScrollingText
                             )
                         },

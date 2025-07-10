@@ -46,9 +46,12 @@ enum class NavRoutes {
      * main thread, so you can safely call it from other threads
      */
     @AnyThread
-    fun navigateHere( navController: NavController, path: String = "" ) {
+    fun navigateHere( navController: NavController, path: Any? = null ) {
         CoroutineScope( Dispatchers.Default ).launch {
-            val cleanPath = path.trim().replace( ESCAPED_SEQUENCES_REGEX, "" )
+            val cleanPath: String = path?.toString()
+                                        .orEmpty()
+                                        .trim()
+                                        .replace( ESCAPED_SEQUENCES_REGEX, "" )
             val fullPath = "$name%s".format( if( cleanPath.isBlank() ) "" else "/$cleanPath" )
 
             withContext( Dispatchers.Main ) {

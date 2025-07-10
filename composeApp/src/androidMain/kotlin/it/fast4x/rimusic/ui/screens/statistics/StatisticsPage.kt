@@ -53,7 +53,6 @@ import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -468,20 +467,21 @@ fun StatisticsPage(
                             channelName = null,
                             thumbnailSizeDp = playlistThumbnailSizeDp,
                             alternative = true,
-                            modifier = Modifier
-                                .clickable(onClick = {
-                                    val playlistId: String = playlists[it].playlist.id.toString()
-                                    if ( playlistId.isEmpty() ) return@clickable    // Fail-safe??
+                            modifier = Modifier.clickable {
+                                val playlist = playlists[it].playlist
+                                val route: NavRoutes
+                                val path: String
 
-                                    val pBrowseId: String = cleanPrefix(playlists[it].playlist.browseId ?: "")
-                                    val route: String =
-                                        if ( pBrowseId.isNotEmpty() )
-                                            "${NavRoutes.YT_PLAYLIST.name}/$pBrowseId"
-                                        else
-                                            "${NavRoutes.localPlaylist.name}/$playlistId"
+                                if( !playlist.browseId.isNullOrBlank() ) {
+                                    route = NavRoutes.YT_PLAYLIST
+                                    path = playlist.browseId
+                                } else {
+                                    route = NavRoutes.localPlaylist
+                                    path = playlist.id.toString()
+                                }
 
-                                    navController.navigate(route = route)
-                                }),
+                                route.navigateHere( navController, path )
+                            },
                             disableScrollingText = disableScrollingText
                         )
                     }

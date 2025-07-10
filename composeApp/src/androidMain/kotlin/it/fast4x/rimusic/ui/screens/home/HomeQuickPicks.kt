@@ -596,7 +596,7 @@ fun HomeQuickPicks(
                     if (showNewAlbums) {
                         Title(
                             title = stringResource(R.string.new_albums),
-                            onClick = { navController.navigate(NavRoutes.newAlbums.name) },
+                            onClick = { NavRoutes.newAlbums.navigateHere( navController ) },
                             //modifier = Modifier.fillMaxWidth(0.7f)
                         )
 
@@ -711,7 +711,7 @@ fun HomeQuickPicks(
 
                             Title(
                                 title = stringResource(R.string.moods_and_genres),
-                                onClick = { navController.navigate(NavRoutes.moodsPage.name) },
+                                onClick = { NavRoutes.moodsPage.navigateHere( navController ) },
                                 //modifier = Modifier.fillMaxWidth(0.7f)
                             )
 
@@ -781,7 +781,9 @@ fun HomeQuickPicks(
                                                 fadeOutSpec = null
                                             )
                                             .fillMaxSize()
-                                            .clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") }),
+                                            .clickable {
+                                                NavRoutes.localPlaylist.navigateHere( navController, playlist.playlist.id )
+                                            },
                                         disableScrollingText = disableScrollingText,
                                         isYoutubePlaylist = playlist.playlist.isYoutubePlaylist,
                                         isEditable = playlist.playlist.isEditable
@@ -1072,7 +1074,7 @@ fun HomeQuickPicks(
                         .padding(vertical = 32.dp)
                         .fillMaxWidth()
                         .clickable {
-                            navController.navigate(NavRoutes.settings.name)
+                            NavRoutes.settings.navigateHere( navController )
                         }
                 ) else {
                     ShimmerHost {

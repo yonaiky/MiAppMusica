@@ -172,7 +172,7 @@ fun AppNavigation(
         popExitTransition = exitTransition
     ) {
         val navigateToPlaylist =
-            { browseId: String -> navController.navigate("${NavRoutes.YT_PLAYLIST.name}/$browseId") }
+            { browseId: String -> NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId ) }
 
         composable(route = NavRoutes.home.name) {
             HomeScreen(
@@ -302,8 +302,9 @@ fun AppNavigation(
                 onSearch = { query ->
                     println("onSearch: $query")
 
-                    navController.navigate(
-                        route = "${NavRoutes.searchResults.name}/${Uri.encode( query )}",
+                    NavRoutes.searchResults.navigateHere(
+                        navController,
+                        Uri.encode( query )
                     )
 
                     if ( !Preferences.PAUSE_SEARCH_HISTORY.value )

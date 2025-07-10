@@ -205,7 +205,7 @@ fun GoToLink(
                                                 }
                                             }
                                     } else {
-                                        navController.navigate( "${NavRoutes.YT_PLAYLIST.name}/$browseId" )
+                                        NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId )
                                     }
                                 }
 
@@ -214,7 +214,7 @@ fun GoToLink(
                                 }
 
                                 "search" -> uri.getQueryParameter("q")?.let { query ->
-                                        navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
+                                    NavRoutes.searchResults.navigateHere( navController, query )
                                 }
 
                                 else -> when {
