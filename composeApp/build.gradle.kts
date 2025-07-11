@@ -91,8 +91,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(projects.innertube)
-            implementation(projects.piped)
             implementation(projects.invidious)
+            implementation(projects.oldtube)
 
             implementation(libs.room)
             implementation(libs.room.runtime)
@@ -303,7 +303,6 @@ dependencies {
     implementation(projects.oldtube)
     implementation(projects.kugou)
     implementation(projects.lrclib)
-    implementation(projects.piped)
 
     coreLibraryDesugaring(libs.desugaring.nio)
 

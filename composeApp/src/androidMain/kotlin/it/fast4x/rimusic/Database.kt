@@ -47,6 +47,7 @@ import me.knighthat.database.migration.From23To24Migration
 import me.knighthat.database.migration.From24To25Migration
 import me.knighthat.database.migration.From25To26Migration
 import me.knighthat.database.migration.From26To27Migration
+import me.knighthat.database.migration.From27To28Migration
 import me.knighthat.database.migration.From3To4Migration
 import me.knighthat.database.migration.From7To8Migration
 import me.knighthat.database.migration.From8To9Migration
@@ -348,7 +349,7 @@ object Database {
     views = [
         SortedSongPlaylistMap::class
     ],
-    version = 27,
+    version = 28,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -401,7 +402,8 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
                     From23To24Migration(),
                     From24To25Migration(),
                     From25To26Migration(),
-                    From26To27Migration()
+                    From26To27Migration(),
+                    From27To28Migration()
                 )
                 .build()
         }

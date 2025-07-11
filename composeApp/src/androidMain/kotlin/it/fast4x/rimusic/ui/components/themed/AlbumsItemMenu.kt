@@ -44,7 +44,6 @@ import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
-import it.fast4x.rimusic.PIPED_PREFIX
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.MenuStyle
@@ -232,14 +231,6 @@ fun AlbumsItemMenu(
                                         )
                                     },
                                     trailingContent = {
-                                        if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                                            Image(
-                                                painter = painterResource(R.drawable.piped_logo),
-                                                contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette().red),
-                                                modifier = Modifier
-                                                    .size(18.dp)
-                                            )
                                         if (playlistPreview.playlist.isYoutubePlaylist) {
                                             Image(
                                                 painter = painterResource(R.drawable.ytmusic),
@@ -337,15 +328,6 @@ fun AlbumsItemMenu(
                                         )
                                     },
                                     trailingContent = {
-                                        if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                                            Image(
-                                                painter = painterResource(R.drawable.piped_logo),
-                                                contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette().red),
-                                                modifier = Modifier
-                                                    .size(18.dp)
-                                            )
-
                                         IconButton(
                                             icon = R.drawable.open,
                                             color = colorPalette().text,
