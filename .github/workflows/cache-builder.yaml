@@ -50,17 +50,11 @@ jobs:
 
       #
       # Explanations:
-      # git log --since="24 hours ago" --name-only --pretty=format:
+      # git log --since="48 hours ago" --name-only --pretty=format:
       # - Show all files that were changed withing 48 hrs.
       # - Show changed file paths in relative (composeApp/androidMain, etc.)
       #
-      # grep -q "^composeApp/androidImprovised/" && echo "true" || echo "false"
-      # - Collect all paths starts with "composeApp/androidImprovised/"
-      # - Returns "true" if any, otherwise, "false"
-      #
-      # This step ensures only flavor with changes made will have its cache rebuild.
-      #
-      # However, rebuild all cache if a file in this group has changed:
+      # Rebuild all cache if a file in this group has changed:
       # - composeApp/androidMain
       # - composeApp/commonMain
       # - .gradle, .gradle.kts, or gradle-wrapper.properties
