@@ -80,11 +80,11 @@ jobs:
           
           echo "changes_made=$CHANGES_MADE" >> $GITHUB_OUTPUT
 
-  build-upstream:
+  build-release:
     needs: check-changes
     if: needs.check-changes.outputs.changes_made == 'true'
 
-    name: Build upstream
+    name: Build release
     runs-on: ubuntu-latest
     timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
 
@@ -120,4 +120,4 @@ jobs:
         # Gradle has built-in flag "-build-cache"
         # That explicitly tell compiler to generate reusable files.
         # Combine with "--exclude-task" to skip unnecessary tasks
-        run: ./gradlew assembleMinified --build-cache --exclude-task packageMinified
+        run: ./gradlew assembleGithubRelease --build-cache --exclude-task packageGithubRelease
