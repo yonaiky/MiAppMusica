@@ -91,7 +91,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
 
             implementation(projects.innertube)
-            implementation(projects.invidious)
             implementation(projects.oldtube)
 
             implementation(libs.room)

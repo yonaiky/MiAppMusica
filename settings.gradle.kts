@@ -28,8 +28,6 @@ include(":kugou")
 project(":kugou").projectDir = file("extensions/kugou")
 include(":lrclib")
 project(":lrclib").projectDir = file("extensions/lrclib")
-include(":invidious")
-project(":invidious").projectDir = file("extensions/invidious")
 // Submodules
 include(":innertube")
 project(":innertube").projectDir = file("modules/innertube")
