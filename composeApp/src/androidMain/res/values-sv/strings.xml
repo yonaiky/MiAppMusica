@@ -245,7 +245,6 @@
     <string name="disable_scrolling_text">Inaktivera rullande text</string>
     <string name="scrolling_text_is_used_for_long_texts">Rullande text används för långa texter</string>
     <string name="audio_quality_format">Ljudkvalitet</string>
-    <string name="persian">Persiska</string>
     <string name="background_player">"BAKGRUNDSSPELARE "</string>
     <string name="show_favorite_button">Visa favoritknapp</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Visa favoritknappen på låsskärmen och aviseringsområdet</string>
