@@ -287,12 +287,12 @@ fun AppNavigation(
                     name = "text",
                     builder = {
                         type = NavType.StringType
-                        defaultValue = ""
+                        nullable = true
                     }
                 )
             )
         ) { navBackStackEntry ->
-            val text = navBackStackEntry.arguments?.getString("text") ?: ""
+            val text = navBackStackEntry.arguments?.getString("text").orEmpty()
 
             SearchScreen(
                 navController = navController,

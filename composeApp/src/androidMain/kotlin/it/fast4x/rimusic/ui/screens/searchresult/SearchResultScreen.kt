@@ -105,7 +105,7 @@ fun SearchResultScreen(
             title = query,
             icon = R.drawable.pencil,
             onClick = {
-                NavRoutes.search.navigateHere( navController, "?text=${Uri.encode( query )}" )
+                navController.navigate( "${NavRoutes.search}?text=${Uri.encode( query )}")
             },
             verticalPadding = 4.dp
         )
