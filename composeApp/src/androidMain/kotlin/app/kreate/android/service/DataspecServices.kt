@@ -13,6 +13,7 @@ import app.kreate.android.R
 import app.kreate.android.Threads
 import app.kreate.android.network.innertube.Store
 import app.kreate.android.utils.CharUtils
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import com.google.gson.Gson
 import com.grack.nanojson.JsonObject
 import io.ktor.client.statement.bodyAsText
@@ -47,7 +48,6 @@ import org.schabi.newpipe.extractor.services.youtube.PoTokenResult
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
 import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 import me.knighthat.innertube.Innertube as NewInnertube
-import me.knighthat.innertube.request.Localization as InnertubeLocalization
 
 private const val CHUNK_LENGTH = 512 * 1024L     // 512Kb
 
@@ -82,7 +82,7 @@ private fun upsertSongInfo( videoId: String ) = runBlocking {       // Use this 
     // Skip adding if it's just added in previous call
     if( videoId == justInserted || !isNetworkAvailable( appContext() ) ) return@runBlocking
 
-    NewInnertube.songBasicInfo( videoId, InnertubeLocalization.EN_US )
+    NewInnertube.songBasicInfo( videoId, CURRENT_LOCALE )
                 .onSuccess( Database::upsert )
                 .onFailure {
                     Toaster.e( R.string.failed_to_fetch_original_property )

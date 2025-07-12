@@ -53,6 +53,7 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toSong
 import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
@@ -119,7 +120,6 @@ import me.knighthat.innertube.Constants
 import me.knighthat.innertube.Innertube
 import me.knighthat.innertube.model.InnertubePlaylist
 import me.knighthat.innertube.model.InnertubeSong
-import me.knighthat.innertube.request.Localization
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 
@@ -224,7 +224,7 @@ fun YouTubePlaylist(
 
         val pageProvider: suspend (String?) -> Unit by rememberUpdatedState {
             if ( it.isNullOrBlank() )
-                Innertube.browsePlaylist( browseId, Localization.EN_US )
+                Innertube.browsePlaylist( browseId, CURRENT_LOCALE )
                          .onSuccess { page ->
                              playlistPage = page
 
@@ -236,7 +236,7 @@ fun YouTubePlaylist(
                              err.message?.also( Toaster::e )
                          }
             else if ( playlistPage?.visitorData != null )
-                Innertube.playlistContinued( playlistPage!!.visitorData!!, it, Localization.EN_US, params )
+                Innertube.playlistContinued( playlistPage!!.visitorData!!, it, CURRENT_LOCALE, params )
                          .onSuccess { continued ->
                              items.addAll(
                                  continued.songs

@@ -60,6 +60,7 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.album.Bookmark
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.renderDescription
@@ -114,7 +115,6 @@ import me.knighthat.innertube.Constants
 import me.knighthat.innertube.Innertube
 import me.knighthat.innertube.model.InnertubeAlbum
 import me.knighthat.innertube.model.InnertubeSong
-import me.knighthat.innertube.request.Localization
 import me.knighthat.utils.PropUtils
 import me.knighthat.utils.Toaster
 import timber.log.Timber
@@ -321,7 +321,7 @@ fun YouTubeAlbum(
         //</editor-fold>
 
         fun onRefresh() = CoroutineScope( Dispatchers.IO ).launch {
-            Innertube.browseAlbum( browseId, Localization.EN_US, params )
+            Innertube.browseAlbum( browseId, CURRENT_LOCALE, params )
                      .onSuccess {
                          albumPage = it
                          updateAlbumInDatabase( dbAlbum, it )

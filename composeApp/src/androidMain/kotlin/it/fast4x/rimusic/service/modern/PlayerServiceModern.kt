@@ -79,6 +79,7 @@ import androidx.media3.session.SessionToken
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.service.createDataSourceFactory
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.widget.Widget
 import com.google.common.collect.ImmutableList
@@ -156,7 +157,6 @@ import kotlinx.coroutines.plus
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.innertube.model.InnertubeSong
-import me.knighthat.innertube.request.Localization
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.io.File
@@ -1653,7 +1653,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
                 NewInnertube.radio(
                     mediaItem.mediaId,
-                    Localization.EN_US,
+                    CURRENT_LOCALE,
                     endpoint?.playlistId ?: "RDAMVM${mediaItem.mediaId}",
                     endpoint?.params
                 ).onSuccess { relatedSongs ->

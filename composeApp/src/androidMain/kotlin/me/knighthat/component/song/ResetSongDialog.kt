@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.util.fastAny
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.R
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.models.Song
@@ -20,7 +21,6 @@ import kotlinx.coroutines.launch
 import me.knighthat.component.dialog.CheckboxDialog
 import me.knighthat.innertube.Innertube
 import me.knighthat.innertube.model.InnertubeSong
-import me.knighthat.innertube.request.Localization
 import me.knighthat.utils.Toaster
 import org.jetbrains.annotations.Contract
 import java.util.Optional
@@ -115,7 +115,7 @@ class ResetSongDialog private constructor(
             val fetchIds = arrayOf(TITLE_CHECKBOX_ID, AUTHORS_CHECKBOX_ID, THUMBNAIL_CHECKBOX_ID)
             if( items.fastAny { it.id in fetchIds && it.selected } ) {
                 var innertubeSong: InnertubeSong? = null
-                Innertube.songBasicInfo( song.id, Localization.EN_US )
+                Innertube.songBasicInfo( song.id, CURRENT_LOCALE )
                          .onSuccess { innertubeSong = it }
                          .onFailure {
                              it.printStackTrace()

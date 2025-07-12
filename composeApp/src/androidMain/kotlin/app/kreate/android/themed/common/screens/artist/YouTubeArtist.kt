@@ -58,6 +58,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.innertube.toOldInnertubeArtist
@@ -114,7 +115,6 @@ import me.knighthat.innertube.model.InnertubeArtist
 import me.knighthat.innertube.model.InnertubeItem
 import me.knighthat.innertube.model.InnertubePlaylist
 import me.knighthat.innertube.model.InnertubeSong
-import me.knighthat.innertube.request.Localization
 import me.knighthat.utils.PropUtils
 import me.knighthat.utils.Toaster
 
@@ -301,7 +301,7 @@ fun YouTubeArtist(
         //</editor-fold>
 
         fun onRefresh() = CoroutineScope( Dispatchers.IO ).launch {
-            Innertube.browseArtist( browseId, Localization.EN_US, params )
+            Innertube.browseArtist( browseId, CURRENT_LOCALE, params )
                      .onSuccess {
                          artistPage = it
                          it.also( ::updateArtistInDatabase )

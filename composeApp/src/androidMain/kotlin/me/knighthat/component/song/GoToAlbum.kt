@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Song
@@ -14,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.knighthat.innertube.Innertube
-import me.knighthat.innertube.request.Localization
 import me.knighthat.utils.Toaster
 import java.util.Optional
 
@@ -49,7 +49,7 @@ class GoToAlbum(
                 Toaster.n( R.string.looking_up_album_from_the_internet )
 
                 CoroutineScope( Dispatchers.IO ).launch {
-                    Innertube.songBasicInfo( song.id, Localization.EN_US )
+                    Innertube.songBasicInfo( song.id, CURRENT_LOCALE )
                              .fold(
                                  onSuccess = { song ->
                                      song.album
