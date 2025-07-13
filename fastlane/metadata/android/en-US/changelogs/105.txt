@@ -1,0 +1,15 @@
+Removed:
+- Language names (use built-in names)
+- Itag in translations
+- Invidious and Piped features
+
+Changed:
+- Language name will be displayed in their native script
+- Online playlists, artist ppage, and album page adopted new API
+- Add more safeguards to prevent crashes in some pages
+
+Fixed:
+- "Download song on album bookmark" didn't work
+- App crashed when song above currently playing got removed
+- "Swipe to play next" in queue didn't being song to next position
+- Defrormed timeline when "Fat bar" is selected
