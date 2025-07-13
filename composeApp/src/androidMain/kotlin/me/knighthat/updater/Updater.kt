@@ -17,8 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirstOrNull
 import app.kreate.android.BuildConfig
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.CheckUpdateState
@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import me.knighthat.updater.Updater.build
 import me.knighthat.utils.Repository
 import me.knighthat.utils.Toaster
 import okhttp3.OkHttpClient
@@ -42,19 +43,18 @@ object Updater {
 
     private fun extractBuild( assets: List<GithubRelease.Build> ): GithubRelease.Build {
         val appName = BuildConfig.APP_NAME
-        val buildType = BuildConfig.BUILD_TYPE
 
         /*
            IDE will complain that is condition is always true
            but because it only sees debug, it assumes the results
            of this evaluation. DO NOT remove this!
          */
-        if( buildType != "full" && buildType != "minified" )
-            throw IllegalStateException( "Unknown build type ${BuildConfig.BUILD_TYPE}" )
+        if( BuildConfig.FLAVOR != "github" )
+            throw IllegalStateException( "Unknown version ${BuildConfig.FLAVOR}" )
 
         // Get the first build that has name matches 'Kreate-<buildType>.apk'
         // e.g. Full version will have name 'Kreate-full.apk'
-        val fileName = "$appName-$buildType.apk"
+        val fileName = "$appName-${BuildConfig.BUILD_TYPE}.apk"
         return assets.fastFirstOrNull {    // Experimental, revert to firstOrNull if needed
             it.name == fileName
         } ?: throw NoSuchFileException("")
