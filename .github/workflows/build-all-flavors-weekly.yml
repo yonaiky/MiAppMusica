@@ -281,13 +281,7 @@ jobs:
           name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | Weekly Build
           tag_name: v${{ needs.versioning.outputs.downstream }}
           make-latest: "true"
-          body: |
-            ## What's the difference between `Kreate-minified.apk` and `Kreate-full.apk`
-
-            TL;DR: **No difference.**
-            
-            > [This article](https://kreate.knighthat.me/usr/faq/minified_and_full) explains this matter in detail.
-            
+          body: |           
             ## What's `Kreate-izzy.apk`
             
             This is APK built specifically for IzzyOnDroid with update checker disabled. You shouldn't
@@ -334,6 +328,17 @@ jobs:
                     <a href="https://developer.android.com/tools/apksigner#options-verify" target="_blank" rel="noopener noreferrer">apksigner</a> from AndroidSDK
                   </li>
                 </ol>
+              </blockquote>
+            </details>
+            <details>
+            <summary>Q3: What's an `uncompressed` build?</summary>
+              <blockquote>
+                Most Android apps go through a process called <b>minification</b>. This step remvoes 
+                unused codes and resources which reduces total file size while keeping all functionalities intact.
+                
+                You should NOT use this build unless there's a bug in release build but unaffected in uncompressed
+
+                Learn more <a href='https://kreate.knighthat.me/usr/faq/minified_and_full' target="_blank">here</a>.
               </blockquote>
             </details>
             
