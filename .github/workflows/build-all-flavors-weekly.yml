@@ -173,7 +173,7 @@ jobs:
         with:
           name: unsigned-release
           path: |
-            composeApp/build/outputs/apk/github.release/*.apk
+            composeApp/build/outputs/apk/github/release/*.apk
 
   build-izzy:
     needs: [versioning, verify-version]
