@@ -222,7 +222,10 @@ android {
 
     applicationVariants.all {
         outputs.map { it as BaseVariantOutputImpl }
-               .forEach { it.outputFileName = "$APP_NAME-${buildType.name}.apk" }
+               .forEach {
+                   val suffix = if( flavorName == "izzy" ) "izzy" else buildType.name
+                   it.outputFileName = "$APP_NAME-${suffix}.apk"
+               }
     }
 
     sourceSets.all {
