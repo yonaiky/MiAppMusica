@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import app.kreate.android.Preferences.Companion.preferences
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.AlbumSwipeAction
@@ -867,7 +868,7 @@ sealed class Preferences<T>(
             Enum( preferences, "PipModule", "pipModule", PipModule.Cover )
         }
         val CHECK_UPDATE by lazy {
-            Enum( preferences, "CheckUpdateState", "checkUpdateState", CheckUpdateState.Disabled )
+            Enum( preferences, "CheckUpdateState", "checkUpdateState", CheckUpdateState.DISABLED )
         }
         val APP_LANGUAGE by lazy {
             Enum( preferences, "AppLanguage", "languageApp", Languages.System )

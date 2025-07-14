@@ -127,14 +127,14 @@ object Updater {
     fun SettingEntry() {
         var checkUpdateState by Preferences.CHECK_UPDATE
         if( !BuildConfig.IS_AUTOUPDATE )
-            checkUpdateState = CheckUpdateState.Disabled
+            Preferences.CHECK_UPDATE.reset()
 
         SettingComponents.EnumEntry(
             preference = Preferences.CHECK_UPDATE,
             titleId = R.string.enable_check_for_update,
             trailingContent = {
                 AnimatedVisibility(
-                    visible = checkUpdateState != CheckUpdateState.Disabled && BuildConfig.IS_AUTOUPDATE,
+                    visible = checkUpdateState != CheckUpdateState.DISABLED && BuildConfig.IS_AUTOUPDATE,
                     // Slide in from right + fade in effect.
                     enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(initialAlpha = 0f),
                     // Slide out from left + fade out effect.

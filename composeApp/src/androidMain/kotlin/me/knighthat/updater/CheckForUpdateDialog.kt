@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.CheckUpdateState
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
 import it.fast4x.rimusic.ui.components.themed.DefaultDialog
@@ -52,8 +51,6 @@ object CheckForUpdateDialog: Dialog {
     @Composable
     override fun Render() {
         if( isCanceled || !isActive ) return
-
-        var checkUpdateState by Preferences.CHECK_UPDATE
 
         @Composable
         fun DescriptionText( @StringRes textId: Int ) =
@@ -130,7 +127,7 @@ object CheckForUpdateDialog: Dialog {
                         textId = R.string.turn_off,
                         modifier = Modifier.weight( 1f ),
                         onClick = {
-                            checkUpdateState = CheckUpdateState.Disabled
+                            Preferences.CHECK_UPDATE.reset()
 
                             onDismiss()
                         }

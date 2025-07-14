@@ -151,9 +151,9 @@ fun Skeleton(
     val check4UpdateState by Preferences.CHECK_UPDATE
     LaunchedEffect( check4UpdateState ) {
         when( check4UpdateState ) {
-            CheckUpdateState.Enabled  -> if( !NewUpdateAvailableDialog.isCancelled ) Updater.checkForUpdate()
-            CheckUpdateState.Ask      -> CheckForUpdateDialog.isActive = true
-            CheckUpdateState.Disabled -> { /* Does nothing */ }
+            CheckUpdateState.DOWNLOAD_INSTALL  -> if( !NewUpdateAvailableDialog.isCancelled ) Updater.checkForUpdate()
+            CheckUpdateState.ASK      -> CheckForUpdateDialog.isActive = true
+            CheckUpdateState.DISABLED -> { /* Does nothing */ }
         }
     }
 
