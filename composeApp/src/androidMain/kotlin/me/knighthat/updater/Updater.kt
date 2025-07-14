@@ -6,15 +6,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirstOrNull
 import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
@@ -104,7 +99,8 @@ object Updater {
     fun checkForUpdate(
         isForced: Boolean = false
     ) = CoroutineScope( Dispatchers.IO ).launch {
-        if( !BuildConfig.IS_AUTOUPDATE || NewUpdateAvailableDialog.isCancelled ) return@launch
+        if( (!BuildConfig.IS_AUTOUPDATE || NewUpdateAvailableDialog.isCancelled) && !isForced )
+            return@launch
 
         try {
             if( !::build.isInitialized || isForced )
@@ -133,28 +129,24 @@ object Updater {
         if( !BuildConfig.IS_AUTOUPDATE )
             checkUpdateState = CheckUpdateState.Disabled
 
-        Row( Modifier.fillMaxWidth() ) {
-            SettingComponents.EnumEntry(
-                Preferences.CHECK_UPDATE,
-                R.string.enable_check_for_update,
-                Modifier.weight( 1f ),
-                isEnabled = BuildConfig.IS_AUTOUPDATE
-            )
-
-            AnimatedVisibility(
-                visible = checkUpdateState != CheckUpdateState.Disabled && BuildConfig.IS_AUTOUPDATE,
-                // Slide in from right + fade in effect.
-                enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(initialAlpha = 0f),
-                // Slide out from left + fade out effect.
-                exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut(targetAlpha = 0f)
-            ) {
-                SecondaryTextButton(
-                    text = stringResource( R.string.info_check_update_now ),
-                    onClick = { checkForUpdate( true ) },
-                    modifier = Modifier.padding( end = 24.dp )
-                )
+        SettingComponents.EnumEntry(
+            preference = Preferences.CHECK_UPDATE,
+            titleId = R.string.enable_check_for_update,
+            trailingContent = {
+                AnimatedVisibility(
+                    visible = checkUpdateState != CheckUpdateState.Disabled && BuildConfig.IS_AUTOUPDATE,
+                    // Slide in from right + fade in effect.
+                    enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(initialAlpha = 0f),
+                    // Slide out from left + fade out effect.
+                    exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut(targetAlpha = 0f)
+                ) {
+                    SecondaryTextButton(
+                        text = stringResource( R.string.info_check_update_now ),
+                        onClick = { checkForUpdate( true ) }
+                    )
+                }
             }
-        }
+        )
 
         SettingComponents.Description( R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup )
     }
