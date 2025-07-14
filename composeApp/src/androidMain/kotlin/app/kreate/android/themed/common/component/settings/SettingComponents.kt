@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -108,7 +109,7 @@ object SettingComponents {
         modifier: Modifier = Modifier,
         subtitle: String = "",
         isEnabled: Boolean = true,
-        trailingContent: @Composable () -> Unit = {}
+        trailingContent: @Composable RowScope.() -> Unit = {}
     ) =
         Row(
             horizontalArrangement = Arrangement.spacedBy( 16.dp ),
@@ -153,7 +154,7 @@ object SettingComponents {
         subtitle: String = "",
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
-        noinline trailingContent: @Composable () -> Unit = {},
+        noinline trailingContent: @Composable RowScope.() -> Unit = {},
         crossinline onValueChanged: (T) -> Unit = {}
     ) {
         var selected by preference
@@ -254,7 +255,7 @@ object SettingComponents {
         subtitle: String = "",
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
-        noinline trailingContent: @Composable () -> Unit = {},
+        noinline trailingContent: @Composable RowScope.() -> Unit = {},
         crossinline onValueChanged: (T) -> Unit = {}
     ) where T: Enum<T>, T: TextView =
         EnumEntry( preference, title, { it.text }, modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
@@ -268,7 +269,7 @@ object SettingComponents {
         subtitle: String = "",
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
-        noinline trailingContent: @Composable () -> Unit = {},
+        noinline trailingContent: @Composable RowScope.() -> Unit = {},
         crossinline onValueChanged: (T) -> Unit = {}
     ) =
         EnumEntry( preference, stringResource( titleId ), getName, modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
@@ -281,7 +282,7 @@ object SettingComponents {
         subtitle: String = "",
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
-        noinline trailingContent: @Composable () -> Unit = {},
+        noinline trailingContent: @Composable RowScope.() -> Unit = {},
         crossinline onValueChanged: (T) -> Unit = {}
     ) where T: Enum<T>, T: TextView =
         EnumEntry( preference, stringResource( titleId ), modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
@@ -294,7 +295,7 @@ object SettingComponents {
         modifier: Modifier = Modifier,
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
-        noinline trailingContent: @Composable () -> Unit = {},
+        noinline trailingContent: @Composable RowScope.() -> Unit = {},
         crossinline onValueChanged: (T) -> Unit = {}
     ) where T: Enum<T>, T: TextView =
         EnumEntry( preference, stringResource( titleId ), modifier, stringResource( subtitleId ), isEnabled, action, trailingContent, onValueChanged )
