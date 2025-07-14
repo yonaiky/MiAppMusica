@@ -357,7 +357,7 @@ fun YouTubeArtist(
             ) {
                 LazyColumn(
                     state = lazyListState,
-                    userScrollEnabled = artistPage != null,
+                    userScrollEnabled = artistPage != null || (dbArtist != null && songs.isNotEmpty()),
                     contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxSize()

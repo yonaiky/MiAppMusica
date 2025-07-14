@@ -347,7 +347,7 @@ fun YouTubeAlbum(
             ) {
                 LazyColumn(
                     state = lazyListState,
-                    userScrollEnabled = albumPage != null,
+                    userScrollEnabled = albumPage != null || dbAlbum != null,
                     contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxSize()
