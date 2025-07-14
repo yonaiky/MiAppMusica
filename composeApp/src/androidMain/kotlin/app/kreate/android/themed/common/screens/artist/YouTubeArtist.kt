@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -72,6 +73,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
+import it.fast4x.rimusic.models.SongArtistMap
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -94,6 +96,7 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.CoroutineScope
@@ -118,22 +121,37 @@ import me.knighthat.innertube.model.InnertubeSong
 import me.knighthat.utils.PropUtils
 import me.knighthat.utils.Toaster
 
-private fun updateArtistInDatabase( innertubeArtist: InnertubeArtist ) {
-    CoroutineScope( Dispatchers.IO ).launch {
-        val dbArtist = Database.artistTable.findById( innertubeArtist.id ).first()
-        val onlineArtist = Artist(
-            id = innertubeArtist.id,
-            name = PropUtils.retainIfModified( dbArtist?.name, innertubeArtist.name ),
-            thumbnailUrl = PropUtils.retainIfModified( dbArtist?.thumbnailUrl, innertubeArtist.thumbnails.firstOrNull()?.url ),
-            timestamp = dbArtist?.timestamp ?: System.currentTimeMillis(),
-            bookmarkedAt = dbArtist?.bookmarkedAt,
-            isYoutubeArtist = true
-        )
+private fun updateArtistInDatabase( dbArtist: Artist?, innertubeArtist: InnertubeArtist ) = Database.asyncTransaction {
+    val onlineArtist = Artist(
+        id = innertubeArtist.id,
+        name = PropUtils.retainIfModified( dbArtist?.name, innertubeArtist.name ),
+        thumbnailUrl = PropUtils.retainIfModified( dbArtist?.thumbnailUrl, innertubeArtist.thumbnails.firstOrNull()?.url ),
+        timestamp = dbArtist?.timestamp ?: System.currentTimeMillis(),
+        bookmarkedAt = dbArtist?.bookmarkedAt,
+        isYoutubeArtist = true
+    )
 
-        Database.asyncTransaction {
-            artistTable.upsert( onlineArtist )
-        }
-    }
+    // Upsert to override/update default values
+    artistTable.upsert( onlineArtist )
+
+    // Map ignore to make sure only positions
+    // are overridden, not the songs themselves
+    innertubeArtist.sections
+                   .fastFlatMap { section ->
+                       section.contents
+                              // Only take InnertubeSongs and turn them into media items
+                              .fastMapNotNull {
+                                  (it as? InnertubeSong)?.toMediaItem
+                              }
+                   }
+                   .onEach( ::insertIgnore )
+                   .fastMap { mediaItem ->
+                       SongArtistMap(
+                           songId = mediaItem.mediaId,
+                           artistId = innertubeArtist.id
+                       )
+                   }
+                   .also( songArtistMapTable::upsert )
 }
 
 private fun LazyListScope.renderSection(
@@ -262,6 +280,11 @@ fun YouTubeArtist(
         val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
         var artistPage: InnertubeArtist? by remember { mutableStateOf( null ) }
+        val dbArtist: Artist? by remember {
+            Database.artistTable
+                    .findById( browseId )
+        }.collectAsState( null, Dispatchers.IO )
+        var songs = remember { mutableStateListOf<Song>() }
         var isRefreshing by remember { mutableStateOf( false ) }
         val sectionTextModifier = remember {
             Modifier.padding( 16.dp, 24.dp, 16.dp, 8.dp )
@@ -277,9 +300,6 @@ fun YouTubeArtist(
                                                .orEmpty()
         fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
-        val dbArtist by remember {
-            Database.artistTable.findById( browseId )
-        }.collectAsState( null, Dispatchers.IO )
         val followButton = FollowButton { dbArtist }
         val shuffler = SongShuffler( ::getSongs )
         val downloadAllDialog = DownloadAllSongsDialog( ::getSongs )
@@ -301,10 +321,20 @@ fun YouTubeArtist(
         //</editor-fold>
 
         fun onRefresh() = CoroutineScope( Dispatchers.IO ).launch {
+            if( !isNetworkConnected( context ) ) {
+                Database.songArtistMapTable
+                        .findArtistMostPlayedSongs( browseId, 5 )
+                        .first()
+                        .also( songs::addAll )
+                return@launch
+            }
+
             Innertube.browseArtist( browseId, CURRENT_LOCALE, params )
                      .onSuccess {
                          artistPage = it
-                         it.also( ::updateArtistInDatabase )
+                         it.also {
+                             updateArtistInDatabase( dbArtist, it )
+                         }
                      }
                      .onFailure {
                          it.printStackTrace()
@@ -315,7 +345,7 @@ fun YouTubeArtist(
         }
         LaunchedEffect( Unit ) { onRefresh() }
 
-        val thumbnailPainter = ImageCacheFactory.Painter( artistPage?.thumbnails?.firstOrNull()?.url )
+        val thumbnailPainter = ImageCacheFactory.Painter( dbArtist?.thumbnailUrl )
         DynamicOrientationLayout( thumbnailPainter ) {
             PullToRefreshBox(
                 isRefreshing = isRefreshing,
@@ -351,31 +381,32 @@ fun YouTubeArtist(
                                         )
                                 )
 
-                            Icon(
-                                painter = painterResource( R.drawable.share_social ),
-                                // TODO: Make a separate string for this (i.e. Share to...)
-                                contentDescription = stringResource( R.string.listen_on_youtube_music ),
-                                tint = colorPalette().text.copy( .5f ),
-                                modifier = Modifier.padding( all = 5.dp )
-                                                   .size( 40.dp )
-                                                   .align( Alignment.TopEnd )
-                                                   .clickable {
-                                                       artistPage?.shareUrl( Constants.YOUTUBE_MUSIC_URL )?.also { url ->
+                            artistPage?.shareUrl( Constants.YOUTUBE_MUSIC_URL )?.also { shareUrl ->
+                                Icon(
+                                    painter = painterResource( R.drawable.share_social ),
+                                    // TODO: Make a separate string for this (i.e. Share to...)
+                                    contentDescription = stringResource( R.string.listen_on_youtube_music ),
+                                    tint = colorPalette().text.copy( .5f ),
+                                    modifier = Modifier.padding( all = 5.dp )
+                                                       .size( 40.dp )
+                                                       .align( Alignment.TopEnd )
+                                                       .clickable {
                                                            val sendIntent = Intent().apply {
                                                                action = Intent.ACTION_SEND
                                                                type = "text/plain"
-                                                               putExtra(Intent.EXTRA_TEXT, url)
+                                                               putExtra( Intent.EXTRA_TEXT, shareUrl )
                                                            }
 
                                                            context.startActivity(
                                                                Intent.createChooser( sendIntent, null )
                                                            )
                                                        }
-                                                   }
-                            )
+                                )
+                            }
+
 
                             AutoResizeText(
-                                text = artistPage?.name.orEmpty(),
+                                text = dbArtist?.name.orEmpty(),
                                 style = typography().l.semiBold,
                                 fontSizeRange = FontSizeRange( 32.sp, 38.sp ),
                                 fontWeight = typography().l.semiBold.fontWeight,
@@ -393,12 +424,14 @@ fun YouTubeArtist(
                         }
                     }
 
-                    item( "monthlyListeners" ) {
-                        BasicText(
-                            text = artistPage?.shortNumMonthlyAudience.orEmpty(),
-                            style = typography().xs.medium,
-                            maxLines = 1
-                        )
+                    artistPage?.shortNumMonthlyAudience?.also { monthlyAudience ->
+                        item( "monthlyListeners" ) {
+                            BasicText(
+                                text = monthlyAudience,
+                                style = typography().xs.medium,
+                                maxLines = 1
+                            )
+                        }
                     }
 
                     item( "action_buttons") {
@@ -423,7 +456,7 @@ fun YouTubeArtist(
                         }
                     }
 
-                    if( artistPage == null ) {
+                    if( artistPage == null && dbArtist == null ) {
                         items( 5 ) { SongItemPlaceholder() }
 
                         items( 2 ) {
@@ -431,7 +464,41 @@ fun YouTubeArtist(
                                 this@LazyRow.items( 10 ) { AlbumPlaceholder() }
                             }
                         }
+                    } else if( artistPage == null && songs.isNotEmpty() ) {
+                        stickyHeader {
+                            Text(
+                                text = stringResource( R.string.songs ),
+                                style = typography().m.semiBold,
+                                modifier = sectionTextModifier.fillMaxWidth()
+                            )
+                        }
+
+                        itemsIndexed(
+                            items = songs,
+                            key = { i, s -> "${System.identityHashCode( s )} - $i" }
+                        ) { index, song ->
+                            SwipeablePlaylistItem(
+                                mediaItem = song.asMediaItem,
+                                onPlayNext = {
+                                    binder.player.addNext( song.asMediaItem )
+                                }
+                            ) {
+                                SongItem(
+                                    song = song,
+                                    navController = navController,
+                                    showThumbnail = true,
+                                    onClick = {
+                                        binder.stopRadio()
+                                        binder.player.forcePlayAtIndex(
+                                            songs.map( Song::asMediaItem ),
+                                            index
+                                        )
+                                    }
+                                )
+                            }
+                        }
                     }
+
 
                     renderSection( navController, artistPage?.sections.orEmpty(), sectionTextModifier ) { title, params, items ->
                          /*
