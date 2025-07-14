@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Github-dan ən son versiyanı yükləyin, faylı bildiriş sahəsində tapacaqsınız və üzərinə klikləməklə quraşdıra bilərsiniz</string>
     <string name="f_droid_users_can_wait_for_the_update_info">F-Droid istifadəçiləri adətən IzzyOnDroid depo ilə bir neçə saat və F-Droid.org depo ilə bir neçə gün olmaqla F-Droid-dən yeniləməni gözləyə bilərlər.</string>
     <string name="check_update">Yeniləməni Yoxla</string>
-    <string name="enable_check_for_update">Yeniləmə yoxlanılmasını aktivləşdir</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">Aktiv olanda, başlanğıcda yeni versiya yoxlanılır və bildirilir.</string>
     <string name="check_at_github_for_updates">Yeniləmələr Github-da yoxlanılsın?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">Yeniləmə mövcud olduqda, onu quraşdırmaq istəyib-istəmədiyiniz soruşulacaq. Arxada avtomatik quraşdırmalar olmayacaq.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Hələ tənzimləmələrdən aça və ya bağlaya bilərsiniz.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">Kiçildilmiş saxla</string>
     <string name="when_click_on_a_song_player_start_minimized">Mahnıya kliklədikdə, oynadıcı kiçildilmiş başlayır</string>
     <string name="settings_use_font_type">İşlədilən Şrift Növü</string>
-    <string name="enabled">Aktiv</string>
     <string name="ask">Soruş</string>
     <string name="item_select">Seçin</string>
     <string name="blacklisted_folders">Qara siyahıdakı qovluqlar</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Yalnız %s mövzusunda əlçatandır</string>
     <string name="setting_description_app_language">Yalnız tətbiq dilinə aiddir; sistem dili təsirlənmir</string>
     <string name="currently_selected">Hazırda seçilib: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download and install new version on startup</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

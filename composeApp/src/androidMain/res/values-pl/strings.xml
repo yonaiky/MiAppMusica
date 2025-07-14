@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Pobierz aktualizację z GitHub i zainstaluj aplikację, wybierając plik w sekcji powiadomień.</string>
     <string name="f_droid_users_can_wait_for_the_update_info">Użytkownicy F-Droid mogą poczekać na aktualizację z oficjalnego repozytorium lub skorzystać z repozytorium IzzyOnDroid, gdzie aktualizacje pojawiają się zazwyczaj w ciągu kilku godzin.</string>
     <string name="check_update">Sprawdź aktualizacje</string>
-    <string name="enable_check_for_update">Włącz sprawdzanie aktualizacji</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">Gdy włączone, będziesz poinformowany o wydaniu nowej wersji przy uruchamianiu aplikacji.</string>
     <string name="check_at_github_for_updates">Sprawdzić aktualizacje na Github?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">Kiedy aktualizacja będzie dostępna, zostaniesz poproszony o jej zainstalowanie. RiMusic nie aktualizuje się samoczynnie, bez twojej wiedzy.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Zawsze możesz włączyć lub wyłączyć tę opcję w ustawieniach.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">Pozostaw zminimalizowany</string>
     <string name="when_click_on_a_song_player_start_minimized">Po wybraniu utworu odtwarzacz będzie zminimalizowany</string>
     <string name="settings_use_font_type">Wybierz czcionkę</string>
-    <string name="enabled">Włączone</string>
     <string name="ask">Zapytaj</string>
     <string name="item_select">Włącz zaznacznie</string>
     <string name="blacklisted_folders">Foldery na czarnej liście</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Only available in %s theme</string>
     <string name="setting_description_app_language">Applies only to the app\'s language; system language is unaffected</string>
     <string name="currently_selected">Currently selected: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download \&amp; install new version when available</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

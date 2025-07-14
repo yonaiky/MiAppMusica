@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Descarcă cea mai recentă versiune de pe Github, vei găsi fișierul în zona de notificări și poți instala făcând click pe el</string>
     <string name="f_droid_users_can_wait_for_the_update_info">Utilizatorii F-Droid pot aștepta actualizarea din F-Droid, care de obicei apare în câteva ore cu depozitul IzzyOnDroid și câteva zile cu depozitul F-Droid.org.</string>
     <string name="check_update">Verifică actualizarea</string>
-    <string name="enable_check_for_update">Activează verificarea automată a actualizărilor</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">Afișează notificare pentru a solicita actualizarea aplicației când o nouă versiune este disponibilă.</string>
     <string name="check_at_github_for_updates">Verifică pe Github pentru actualizări?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">Când o actualizare este disponibilă, vei fi întrebat dacă vrei să o instalezi. Nu vor exista instalări automate, fără știrea ta.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Poți să-l activezi/dezactivezi din setări.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">Păstrează minimizat</string>
     <string name="when_click_on_a_song_player_start_minimized">Când dai click pe o melodie, playerul pornește minimizat</string>
     <string name="settings_use_font_type">Tip font</string>
-    <string name="enabled">Activat</string>
     <string name="ask">Întreabă</string>
     <string name="item_select">Selectează</string>
     <string name="blacklisted_folders">Dosare pe lista neagră</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Only available in %s theme</string>
     <string name="setting_description_app_language">Applies only to the app\'s language; system language is unaffected</string>
     <string name="currently_selected">Currently selected: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download \&amp; install new version when available</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

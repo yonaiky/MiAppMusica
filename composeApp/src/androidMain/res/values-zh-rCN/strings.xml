@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">从Github下载最新版本，你会在通知区域找到文件，你可以通过点击它来安装</string>
     <string name="f_droid_users_can_wait_for_the_update_info">F-Droid用户可以等待F-Droid的更新，IzzyOnDroid的更新通常会在几个小时内到达，而F-Droid.org的更新则会在几天内到达。</string>
     <string name="check_update">检查更新</string>
-    <string name="enable_check_for_update">启用更新检查</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">启用后，将在启动过程中检查并通知新版本。</string>
     <string name="check_at_github_for_updates">在Github查看更新?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">当更新可用时，系统会询问您是否要安装它。不会在不知情的情况下安装。</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">你仍然可以从设置中打开或关闭它。</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">保持最小化</string>
     <string name="when_click_on_a_song_player_start_minimized">当点击歌曲时，播放器开始最小化</string>
     <string name="settings_use_font_type">使用字体类型</string>
-    <string name="enabled">启用</string>
     <string name="ask">询问</string>
     <string name="item_select">选择</string>
     <string name="blacklisted_folders">列入黑名单的文件夹</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Only available in %s theme</string>
     <string name="setting_description_app_language">Applies only to the app\'s language; system language is unaffected</string>
     <string name="currently_selected">Currently selected: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download \&amp; install new version when available</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

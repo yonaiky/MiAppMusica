@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Téléchargez la dernière version de Github, vous trouverez le fichier dans la zone de notification et vous pouvez l\'installer en cliquant dessus</string>
     <string name="f_droid_users_can_wait_for_the_update_info">Les utilisateurs de F-Droid peuvent attendre la mise à jour de F-Droid, qui arrive généralement en quelques heures avec le dépôt IzzyOnDroid, et quelques jours avec F-Droid.org\'s dépôt.</string>
     <string name="check_update">Vérifier les mises à jour</string>
-    <string name="enable_check_for_update">Activer la vérification des mises à jour</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">Lorsqu\'elle est activée, une nouvelle version est vérifiée et notifiée au démarrage.</string>
     <string name="check_at_github_for_updates">Vérifier sur Github les mises à jour ?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">Lorsqu\'une mise à jour est disponible, on vous demandera si vous voulez l\'installer. Il n\'y aura pas d\'installations automatiques, en arrière-plan.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Vous pouvez toujours l\'activer ou le désactiver à partir des paramètres.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">Garder minimisé</string>
     <string name="when_click_on_a_song_player_start_minimized">Lorsque vous cliquez sur un titre, le lecteur démarre minimisé</string>
     <string name="settings_use_font_type">Utiliser la police</string>
-    <string name="enabled">Activé</string>
     <string name="ask">Demander</string>
     <string name="item_select">Sélectionner</string>
     <string name="blacklisted_folders">Dossiers sur la liste noire</string>
@@ -932,4 +929,9 @@ Volume BAS : titre précédent</string>
     <string name="setting_description_only_available_in_theme">Disponible uniquement dans le thème %s</string>
     <string name="setting_description_app_language">S\'applique uniquement à la langue de l\'application ; La langue du système n\'est pas affectée</string>
     <string name="currently_selected">Actuellement sélectionné : %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download \&amp; install new version when available</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

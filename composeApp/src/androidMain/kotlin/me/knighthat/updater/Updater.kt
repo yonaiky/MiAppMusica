@@ -131,10 +131,11 @@ object Updater {
 
         SettingComponents.EnumEntry(
             preference = Preferences.CHECK_UPDATE,
-            titleId = R.string.enable_check_for_update,
+            titleId = R.string.setting_entry_update_checker,
+            subtitle = stringResource( checkUpdateState.subtitleId, BuildConfig.APP_NAME ),
             trailingContent = {
                 AnimatedVisibility(
-                    visible = checkUpdateState != CheckUpdateState.DISABLED && BuildConfig.IS_AUTOUPDATE,
+                    visible = BuildConfig.IS_AUTOUPDATE && checkUpdateState == CheckUpdateState.ASK,
                     // Slide in from right + fade in effect.
                     enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(initialAlpha = 0f),
                     // Slide out from left + fade out effect.
@@ -147,7 +148,5 @@ object Updater {
                 }
             }
         )
-
-        SettingComponents.Description( R.string.when_enabled_a_new_version_is_checked_and_notified_during_startup )
     }
 }

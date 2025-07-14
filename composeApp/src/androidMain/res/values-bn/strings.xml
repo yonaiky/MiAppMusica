@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">গিটহাব থেকে লেটেস্ট ভার্শন ডাওনলোড করুন, নোটিফিকেশন এরিয়াতে ফাইলটা খুঁজে পাবেন আর ক্লিক করে ইন্সটল করা যাবে।</string>
     <string name="f_droid_users_can_wait_for_the_update_info">এফ-ড্রয়েড ইউজার রা কয়েক ঘন্টা অপেক্ষা করলে এফ-ড্রয়েড থেকে ইন্সটল করতে পারবেন ইজিঅনড্রয়েডের সাথে আর এফ-ড্রয়েড.অরগ রেপো থেকে কয়েক দিনের মধ্যে ডাওনলোড করতে পারবেন।</string>
     <string name="check_update">আপডেট চেক করুন</string>
-    <string name="enable_check_for_update">আপডেট চেক চালু করুন</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">এনাবল করলে, নতুন ভার্শন আছে কিনা চেক করে এপ চালুর সময় জানানো হবে।</string>
     <string name="check_at_github_for_updates">গিটহাবে আপডেট আছে কিনা চেক করবেন?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">কোনো আপডেট থাকলে আপনার কাছে ইন্সটল করা হবে কিনা জানতে চাওয়া হবে। আপনার অজান্তে ইন্সটল করা হবে না।</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">সেটিংস থেকে আপনি অন কিংবা অফ করতে পারেন।</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">ছোট করেই রাখুন</string>
     <string name="when_click_on_a_song_player_start_minimized">কোনো গান বাজালে, প্লেয়ার ছোট করেই চালু করুন</string>
     <string name="settings_use_font_type">ফন্ট টাইপ ব্যাবহার করুন</string>
-    <string name="enabled">সক্রিয়</string>
     <string name="ask">জিজ্ঞাসা করুন</string>
     <string name="item_select">নির্বাচন করুন</string>
     <string name="blacklisted_folders">ব্ল্যাকলিস্ট করা ফোল্ডার গুলো</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Only available in %s theme</string>
     <string name="setting_description_app_language">Applies only to the app\'s language; system language is unaffected</string>
     <string name="currently_selected">Currently selected: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download and install new version on startup</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

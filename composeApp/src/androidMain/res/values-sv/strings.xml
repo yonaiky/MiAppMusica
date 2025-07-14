@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Ladda ned den senaste versionen från Github, du hittar filen i meddelandefältet och kan installera genom att klicka på den</string>
     <string name="f_droid_users_can_wait_for_the_update_info">F-Droid användare kan vänta på uppdateringen från F-Droid, som vanligtvis anländer inom några timmar med IzzyOnDroid repo, och några dagar med F-Droid.org\'s repo.</string>
     <string name="check_update">Sök efter uppdateringar</string>
-    <string name="enable_check_for_update">Aktivera för att automatiskt leta efter uppdateringar</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">När detta är aktiverat söker appen efter uppdateringar vid uppstart.</string>
     <string name="check_at_github_for_updates">Kolla på Github efter uppdateringar?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">När en uppdatering finns tillgänglig så får du en fråga om du vill installera den. Inga uppdateringar installeras utan ditt medgivande.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Du kan fortfarande aktivera eller stänga av det från inställningarna.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">Håll minimerad</string>
     <string name="when_click_on_a_song_player_start_minimized">Spelaren börjar minimerad när du klickar på en låt</string>
     <string name="settings_use_font_type">Font</string>
-    <string name="enabled">Aktiverad</string>
     <string name="ask">Fråga</string>
     <string name="item_select">Välj</string>
     <string name="blacklisted_folders">Svartlistade mappar</string>
@@ -928,4 +925,9 @@
     <string name="setting_description_only_available_in_theme">Only available in %s theme</string>
     <string name="setting_description_app_language">Applies only to the app\'s language; system language is unaffected</string>
     <string name="currently_selected">Currently selected: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download \&amp; install new version when available</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

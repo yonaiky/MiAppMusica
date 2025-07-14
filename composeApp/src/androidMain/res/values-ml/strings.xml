@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Github ൽ നിന്നുള്ള പുതിയ പതിപ്പ് ഡൗൺലോഡ് ചെയ്യുക, നോട്ടിഫിക്കേഷൻ മേഖലയിൽ ഫയൽ കണ്ടെത്തും, അതിൽ ക്ലിക്കുചെയ്ത് ഇൻസ്റ്റാൾ ചെയ്യാവുന്നതാണ്</string>
     <string name="f_droid_users_can_wait_for_the_update_info">F-Droid ഉപയോക്താക്കൾ F-Droid ൽ നിന്നുള്ള അപ്ഡേറ്റിന്റെ വിവരങ്ങൾക്കായി കാത്തിരിക്കാൻ കഴിയും, ഇത് സാധാരണയായി കുറച്ച് മണിക്കൂറുകൾക്കുള്ളിൽ IzzyOnDroid റിപ്പോയിലും, കുറച്ച് ദിവസങ്ങളിൽ F-Droid.org - ന്റെ റിപ്പോയിലും എത്തും.</string>
     <string name="check_update">അപ്ഡേറ്റ് പരിശോധിക്കുക</string>
-    <string name="enable_check_for_update">അപ്ഡേറ്റ് പരിശോധിക്കുന്നതിന് സജ്ജമാക്കുക</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">സജ്ജമാക്കിയാൽ, പുതിയ പതിപ്പ് പരിശോധിക്കുകയും സ്റ്റാർട്ടപ്പ് സമയത്ത് അറിയിക്കുകയും ചെയ്യും.</string>
     <string name="check_at_github_for_updates">അപ്ഡേറ്റുകൾക്കായി Github ൽ പരിശോധിക്കാമോ?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">അപ്ഡേറ്റ് ലഭ്യമായപ്പോൾ, ഇൻസ്റ്റാൾ ചെയ്യാൻ നിങ്ങൾക്ക് ആഗ്രഹിക്കുന്നുണ്ടോയെന്ന് നിങ്ങൾക്കു ചോദിക്കും. നിങ്ങൾക്കു അറിയാതെ സ്വയം ഇൻസ്റ്റാൾ ചെയ്യുന്നില്ല.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">നിങ്ങൾ ഇപ്പോഴും അത് സജ്ജമാക്കുകയോ അണയുകയോ ചെയ്യാം.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">Keep minimized</string>
     <string name="when_click_on_a_song_player_start_minimized">When click on a song, player start minimized</string>
     <string name="settings_use_font_type">Use font type</string>
-    <string name="enabled">Enabled</string>
     <string name="ask">Ask</string>
     <string name="item_select">Select</string>
     <string name="blacklisted_folders">Blacklisted folders</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Only available in %s theme</string>
     <string name="setting_description_app_language">Applies only to the app\'s language; system language is unaffected</string>
     <string name="currently_selected">Currently selected: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download \&amp; install new version when available</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

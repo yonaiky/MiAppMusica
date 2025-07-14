@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Github\'dan en son sürümü indirin, dosyayı bildirim alanında bulacak ve üzerine tıklayarak kurabileceksiniz</string>
     <string name="f_droid_users_can_wait_for_the_update_info">F-Droid kullanıcıları güncellemeyi F-Droid\'den bekleyebilirler, bu genellikle IzzyOnDroid deposu ile birkaç saat, F-Droid.org deposu ile birkaç gün içinde gelir.</string>
     <string name="check_update">Güncellemeleri Kontrol Et</string>
-    <string name="enable_check_for_update">Güncelleme kontrolünü etkinleştir</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">Etkinleştirildiğinde, başlangıç sırasında yeni bir sürüm kontrol edilir ve bildirilir.</string>
     <string name="check_at_github_for_updates">Github\'da güncellemeler kontrol edilsin mi?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">Bir güncelleme mevcut olduğunda, kurmak isteyip istemediğiniz sorulacaktır. Arka planda otomatik kurulumlar yapılmayacaktır.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Ayarlardan istediğiniz zaman açıp kapatabilirsiniz.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">Simge durumunda tut</string>
     <string name="when_click_on_a_song_player_start_minimized">Bir şarkıya tıklandığında, oynatıcı simge durumunda başlar</string>
     <string name="settings_use_font_type">Yazı tipi kullan</string>
-    <string name="enabled">Etkin</string>
     <string name="ask">Sor</string>
     <string name="item_select">Seç</string>
     <string name="blacklisted_folders">Kara listedeki klasörler</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Yalnızca %s temasında kullanılabilir</string>
     <string name="setting_description_app_language">Yalnızca uygulamanın dili için geçerlidir; sistem dili etkilenmez</string>
     <string name="currently_selected">Şu anda seçili: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download \&amp; install new version when available</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

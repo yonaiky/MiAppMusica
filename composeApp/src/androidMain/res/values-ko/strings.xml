@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Github에서 최신 버전을 다운로드하면 알림 영역에서 파일을 찾을 수 있으며 클릭하여 설치할 수 있습니다.</string>
     <string name="f_droid_users_can_wait_for_the_update_info">F-Droid 사용자는 F-Droid의 업데이트를 기다릴 수 있으며, 일반적으로 IzzyOnDroid 리포지토리의 경우 몇 시간 내에, F-Droid.org의 리포지토리의 경우 며칠 내에 업데이트가 도착합니다.</string>
     <string name="check_update">업데이트 확인</string>
-    <string name="enable_check_for_update">업데이트 확인 활성화</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">활성화하면 앱 시작 시 최신 버전 알림을 받습니다.</string>
     <string name="check_at_github_for_updates">Github에서 업데이트를 확인하시겠나요?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">업데이트가 기능하면 설치 확인 메시지가 표시됩니다. 사용자 허용없이 자동으로 설치되지 않습니다.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">설정에서 이 기능을 켜거나 끌 수 있습니다.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">최소화 유지</string>
     <string name="when_click_on_a_song_player_start_minimized">노래를 클릭하면 플레이어가 최소화되어 시작됩니다.</string>
     <string name="settings_use_font_type">폰트 유형 사용</string>
-    <string name="enabled">활성화됨</string>
     <string name="ask">물어보기</string>
     <string name="item_select">선택</string>
     <string name="blacklisted_folders">차단된 폴더</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Only available in %s theme</string>
     <string name="setting_description_app_language">Applies only to the app\'s language; system language is unaffected</string>
     <string name="currently_selected">Currently selected: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download \&amp; install new version when available</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>

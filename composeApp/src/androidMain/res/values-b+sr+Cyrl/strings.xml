@@ -298,8 +298,6 @@
     <string name="download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it">Преузмите најновију верзију са Гитхуб-а, пронаћи ћете датотеку у пољу за обавештења и можете је инсталирати кликом на њу</string>
     <string name="f_droid_users_can_wait_for_the_update_info">Корисници Ф-Дроид-а могу да сачекају ажурирање од Ф-Дроид-а, које обично стиже у року од неколико сати са ИззиОнДроид репо, и неколико дана са репо-ом Ф-Дроид.орг.</string>
     <string name="check_update">Провери ажурирање</string>
-    <string name="enable_check_for_update">Омогућите проверу ажурирања</string>
-    <string name="when_enabled_a_new_version_is_checked_and_notified_during_startup">Када је омогућено, нова верзија се проверава и обавештава се током покретања.</string>
     <string name="check_at_github_for_updates">Проверите ажурирања на Гитхуб-у?</string>
     <string name="when_an_update_is_available_you_will_be_asked_if_you_want_to_install_info">Када ажурирање буде доступно, бићете упитани да ли желите да га инсталирате. Неће бити аутоматизованих инсталација, иза ваших леђа.</string>
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">И даље можете да га укључите, или искључите, из подешавања.</string>
@@ -329,7 +327,6 @@
     <string name="player_keep_minimized">Држи минимизираног</string>
     <string name="when_click_on_a_song_player_start_minimized">Када кликнете на песму, почетак плејера је минимизиран</string>
     <string name="settings_use_font_type">Користите тип фонта</string>
-    <string name="enabled">Омогућено</string>
     <string name="ask">Питај</string>
     <string name="item_select">Изабери</string>
     <string name="blacklisted_folders">Фасцикле на Црној листи</string>
@@ -929,4 +926,9 @@
     <string name="setting_description_only_available_in_theme">Only available in %s theme</string>
     <string name="setting_description_app_language">Applies only to the app\'s language; system language is unaffected</string>
     <string name="currently_selected">Currently selected: %s</string>
+    <string name="setting_description_update_checker_ask">Prompt when a new version is available to download</string>
+    <string name="setting_description_update_checker_disabled">%s will not notify you about new updates</string>
+    <string name="setting_description_update_checker_automatic">Automatically download and install new version on startup</string>
+    <string name="setting_title_update_checker_automatic">Download and install automatically</string>
+    <string name="setting_entry_update_checker">App update</string>
 </resources>
