@@ -4,7 +4,6 @@ import android.text.format.Formatter
 import it.fast4x.rimusic.appContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.time.ZonedDateTime
 
 @Serializable
 data class GithubRelease(
@@ -21,11 +20,9 @@ data class GithubRelease(
         val name: String,
         val size: UInt,
         @SerialName("created_at") val createdAt: String,
-        @SerialName("browser_download_url") val downloadUrl: String
+        @SerialName("browser_download_url") val downloadUrl: String,
+        val digest: String
     ) {
-        val buildTime: ZonedDateTime by lazy {
-            ZonedDateTime.parse( createdAt )
-        }
 
         val readableSize: String
             // Don't remember with lazy because format mat be changed
