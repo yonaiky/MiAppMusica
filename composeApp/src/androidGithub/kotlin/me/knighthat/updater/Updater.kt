@@ -37,22 +37,11 @@ object Updater {
     lateinit var build: GithubRelease.Build
 
     private fun extractBuild( assets: List<GithubRelease.Build> ): GithubRelease.Build {
-        val appName = BuildConfig.APP_NAME
-
-        /*
-           IDE will complain that is condition is always true
-           but because it only sees debug, it assumes the results
-           of this evaluation. DO NOT remove this!
-         */
-        if( BuildConfig.FLAVOR != "github" )
-            throw IllegalStateException( "Unknown version ${BuildConfig.FLAVOR}" )
-
-        // Get the first build that has name matches 'Kreate-<buildType>.apk'
-        // e.g. Full version will have name 'Kreate-full.apk'
-        val fileName = "$appName-${BuildConfig.BUILD_TYPE}.apk"
-        return assets.fastFirstOrNull {    // Experimental, revert to firstOrNull if needed
-            it.name == fileName
-        } ?: throw NoSuchFileException("")
+        return assets.fastFirstOrNull {
+            // Get the first build that has name matches 'Kreate-<buildType>.apk'
+            // e.g. Release version will have name 'Kreate-release.apk'
+            it.name == "%s-%s.apk".format( BuildConfig.APP_NAME, BuildConfig.BUILD_TYPE )
+        } ?: throw NoSuchFileException("Couldn't find build matching this build")       // TODO: Add to strings.xml
     }
 
     /**
