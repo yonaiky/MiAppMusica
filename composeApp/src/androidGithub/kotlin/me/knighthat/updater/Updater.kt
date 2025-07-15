@@ -126,8 +126,6 @@ object Updater {
     @Composable
     fun SettingEntry() {
         var checkUpdateState by Preferences.CHECK_UPDATE
-        if( !BuildConfig.IS_AUTOUPDATE )
-            Preferences.CHECK_UPDATE.reset()
 
         SettingComponents.EnumEntry(
             preference = Preferences.CHECK_UPDATE,
@@ -135,7 +133,7 @@ object Updater {
             subtitle = stringResource( checkUpdateState.subtitleId, BuildConfig.APP_NAME ),
             trailingContent = {
                 AnimatedVisibility(
-                    visible = BuildConfig.IS_AUTOUPDATE && checkUpdateState == CheckUpdateState.ASK,
+                    visible = checkUpdateState == CheckUpdateState.ASK,
                     // Slide in from right + fade in effect.
                     enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(initialAlpha = 0f),
                     // Slide out from left + fade out effect.

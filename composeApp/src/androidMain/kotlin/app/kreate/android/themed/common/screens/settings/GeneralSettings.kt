@@ -16,17 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
 import app.kreate.android.themed.common.screens.settings.general.PlayerSettings
+import app.kreate.android.themed.common.screens.settings.general.updateSection
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.styling.Dimensions
-import me.knighthat.updater.Updater
 
 @UnstableApi
 @Composable
@@ -58,11 +57,7 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
             state = scrollState,
             contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
         ) {
-            if( BuildConfig.IS_AUTOUPDATE )
-                section( R.string.update ) {
-                    if( search appearsIn R.string.update )
-                        Updater.SettingEntry()
-                }
+            updateSection( search )
 
             section( R.string.languages, sysLocaleText ) {
                 if( search appearsIn R.string.app_language )

@@ -75,6 +75,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.knighthat.updater.UpdateHandler
 import me.knighthat.utils.Toaster
 import kotlin.system.exitProcess
 
@@ -102,6 +103,9 @@ fun AppNavigation(
     startPage: HomeScreenTabs,
     miniPlayer: @Composable () -> Unit = {}
 ) {
+    // Flavor-specific implementation
+    UpdateHandler()
+
     val startDestination = remember( startPage ) {
         Preferences.HOME_TAB_INDEX.value =
             if( startPage == HomeScreenTabs.Search ) Preferences.STARTUP_SCREEN.value.index else startPage.index
