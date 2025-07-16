@@ -135,7 +135,6 @@ android {
         /*
                 UNIVERSAL VARIABLES
          */
-        buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
         buildConfigField( "String", "APP_NAME", "\"$APP_NAME\"" )
     }
 
@@ -152,8 +151,6 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             manifestPlaceholders["appName"] = "$APP_NAME-debug"
-
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
         }
 
         // To test compatibility after minification process
@@ -206,8 +203,6 @@ android {
 
             // App's properties
             versionNameSuffix = "-fdroid"
-
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
         }
 
         create( "izzy" ) {
@@ -215,8 +210,6 @@ android {
 
             // App's properties
             versionNameSuffix = "-izzy"
-
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
         }
     }
 
