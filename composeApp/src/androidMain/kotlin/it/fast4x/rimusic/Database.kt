@@ -8,6 +8,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SimpleSQLiteQuery
+import it.fast4x.rimusic.Database.asyncQuery
+import it.fast4x.rimusic.Database.asyncTransaction
+import it.fast4x.rimusic.Database.insertIgnore
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Event
@@ -129,7 +132,10 @@ object Database {
         }
         songTable.upsert(Song(
             id = innertubeSong.id,
-            title = PropUtils.retainIfModified( dbSong?.title, innertubeSong.name ).orEmpty(),
+            title = PropUtils.retainIfModified(
+                dbSong?.title,
+                "%s${innertubeSong.name}".format( if( innertubeSong.isExplicit ) EXPLICIT_PREFIX else "" )
+            ).orEmpty(),
             artistsText = PropUtils.retainIfModified( dbSong?.artistsText, innertubeSong.artistsText ),
             durationText = innertubeSong.durationText,       // Force update to new duration text
             thumbnailUrl = PropUtils.retainIfModified( dbSong?.thumbnailUrl, innertubeSong.thumbnails.firstOrNull()?.url ),
