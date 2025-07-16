@@ -1,23 +1,13 @@
 package me.knighthat.updater
 
 import android.os.Looper
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.util.fastFirstOrNull
 import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.themed.common.component.settings.SettingComponents
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.CheckUpdateState
-import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
+import it.fast4x.rimusic.utils.isNetworkAvailable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,7 +18,6 @@ import me.knighthat.utils.Repository
 import me.knighthat.utils.Toaster
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.net.UnknownHostException
 import java.nio.file.NoSuchFileException
 
 object Updater {
@@ -88,52 +77,28 @@ object Updater {
     fun checkForUpdate(
         isForced: Boolean = false
     ) = CoroutineScope( Dispatchers.IO ).launch {
-        if( (!BuildConfig.IS_AUTOUPDATE || NewUpdateAvailableDialog.isCancelled) && !isForced )
+        if( ::build.isInitialized && !isForced )
             return@launch
 
-        try {
-            if( !::build.isInitialized || isForced )
-                fetchUpdate()
+        if( !isNetworkAvailable( appContext() ) ) {
+            Toaster.noInternet()
+            return@launch
+        }
 
-            NewUpdateAvailableDialog.isActive = trimVersion( BuildConfig.VERSION_NAME ) != trimVersion( tagName )
-            if( !NewUpdateAvailableDialog.isActive ) {
+        try {
+            fetchUpdate()
+
+            val isNewUpdateAvailable = trimVersion( BuildConfig.VERSION_NAME ) != trimVersion( tagName )
+            if( !isNewUpdateAvailable )
                 Toaster.i( R.string.info_no_update_available )
-                NewUpdateAvailableDialog.isCancelled = true
+
+            when( Preferences.CHECK_UPDATE.value ) {
+                CheckUpdateState.ASK                -> NewUpdatePrompt.isActive = isNewUpdateAvailable
+                CheckUpdateState.DOWNLOAD_INSTALL   -> DownloadAndInstallDialog.isActive = isNewUpdateAvailable
+                CheckUpdateState.DISABLED           -> NewUpdatePrompt.isActive = isForced && isNewUpdateAvailable
             }
         } catch( e: Exception ) {
-            val message = when( e ) {
-                is UnknownHostException -> appContext().getString( R.string.error_no_internet )
-                is NoSuchFileException -> appContext().getString( R.string.info_no_update_available )
-                else -> e.message ?: appContext().getString( R.string.error_unknown )
-            }
-            Toaster.e( message )
-
-            NewUpdateAvailableDialog.isCancelled = true
+            Toaster.e( e.message ?: appContext().getString( R.string.error_unknown ) )
         }
-    }
-
-    @Composable
-    fun SettingEntry() {
-        var checkUpdateState by Preferences.CHECK_UPDATE
-
-        SettingComponents.EnumEntry(
-            preference = Preferences.CHECK_UPDATE,
-            titleId = R.string.setting_entry_update_checker,
-            subtitle = stringResource( checkUpdateState.subtitleId, BuildConfig.APP_NAME ),
-            trailingContent = {
-                AnimatedVisibility(
-                    visible = checkUpdateState == CheckUpdateState.ASK,
-                    // Slide in from right + fade in effect.
-                    enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(initialAlpha = 0f),
-                    // Slide out from left + fade out effect.
-                    exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut(targetAlpha = 0f)
-                ) {
-                    SecondaryTextButton(
-                        text = stringResource( R.string.info_check_update_now ),
-                        onClick = { checkForUpdate( true ) }
-                    )
-                }
-            }
-        )
     }
 }

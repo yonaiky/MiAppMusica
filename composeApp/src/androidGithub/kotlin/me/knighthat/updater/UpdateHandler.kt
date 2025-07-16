@@ -8,15 +8,12 @@ import it.fast4x.rimusic.enums.CheckUpdateState
 
 @Composable
 fun UpdateHandler() {
-    NewUpdateAvailableDialog.Render()
-    CheckForUpdateDialog.Render()
+    DownloadAndInstallDialog.Render()
+    NewUpdatePrompt.Render()
 
     val check4UpdateState by Preferences.CHECK_UPDATE
     LaunchedEffect( check4UpdateState ) {
-        when( check4UpdateState ) {
-            CheckUpdateState.DOWNLOAD_INSTALL  -> if( !NewUpdateAvailableDialog.isCancelled ) Updater.checkForUpdate()
-            CheckUpdateState.ASK      -> CheckForUpdateDialog.isActive = true
-            CheckUpdateState.DISABLED -> { /* Does nothing */ }
-        }
+        if( check4UpdateState != CheckUpdateState.DISABLED )
+            Updater.checkForUpdate()
     }
 }
