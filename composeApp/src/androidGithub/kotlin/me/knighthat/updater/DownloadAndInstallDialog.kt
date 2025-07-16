@@ -190,8 +190,10 @@ object DownloadAndInstallDialog: Dialog {
     }
 
     override fun hideDialog() {
-        if( stage != INITIALIZING && stage != DOWNLOADING )
-            super.hideDialog()
+        if( stage == INITIALIZING || stage == DOWNLOADING )
+            return
+
+        super.hideDialog()
     }
 
     @Composable
@@ -247,9 +249,14 @@ object DownloadAndInstallDialog: Dialog {
                         INSTALLING -> {
                             delay( 200L )
 
-                            installApk(context, apkFile)
+                            installApk( context, apkFile )
                         }
-                        ERROR -> errorMessage?.also( Toaster::e )
+                        ERROR -> {
+                            errorMessage?.also( Toaster::e )
+
+                            if( apkFile.exists() )
+                                apkFile.deleteOnExit()
+                        }
                     }
                 }
             }
