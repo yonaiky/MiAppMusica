@@ -252,7 +252,7 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                                     }
                                 ) {
                                     Image(
-                                        painter = painterResource( R.drawable.piped_logo ),
+                                        painter = painterResource( R.drawable.discord_logo ),
                                         contentDescription = null,
                                         modifier = Modifier.size( 24.dp )
                                     )
