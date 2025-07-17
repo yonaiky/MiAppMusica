@@ -1641,7 +1641,11 @@ class PlayerServiceModern : MediaLibraryService(),
                     endpoint?.playlistId ?: "RDAMVM${mediaItem.mediaId}",
                     endpoint?.params
                 ).onSuccess { relatedSongs ->
-                    relatedSongs.fastForEach( Database::upsert )
+                    CoroutineScope(Dispatchers.IO ).launch {
+                        relatedSongs.fastForEach {
+                            Database.upsert( it )
+                        }
+                    }
 
                     // Any call to [player] must happen on Main thread
                     val currentQueue = withContext( Dispatchers.Main ) {

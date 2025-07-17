@@ -6,6 +6,7 @@ import androidx.media3.common.MediaItem
 import androidx.room.AutoMigration
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.Transaction
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SimpleSQLiteQuery
 import it.fast4x.rimusic.Database.asyncQuery
@@ -26,7 +27,6 @@ import it.fast4x.rimusic.models.SongPlaylistMap
 import it.fast4x.rimusic.models.SortedSongPlaylistMap
 import it.fast4x.rimusic.utils.asSong
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import me.knighthat.database.AlbumTable
 import me.knighthat.database.ArtistTable
 import me.knighthat.database.Converters
@@ -125,11 +125,10 @@ object Database {
                     .also( songArtistMapTable::insertIgnore )
     }
 
-    fun upsert( innertubeSong: InnertubeSong ) = asyncTransaction {
+    @Transaction
+    suspend fun upsert( innertubeSong: InnertubeSong ) {
         //<editor-fold desc="Insert song">
-        val dbSong = runBlocking {
-            songTable.findById( innertubeSong.id ).first()
-        }
+        val dbSong = songTable.findById( innertubeSong.id ).first()
         songTable.upsert(Song(
             id = innertubeSong.id,
             title = PropUtils.retainIfModified(

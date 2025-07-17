@@ -89,7 +89,6 @@ import androidx.palette.graphics.Palette
 import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.Threads
 import app.kreate.android.service.innertube.InnertubeProvider
 import coil.imageLoader
 import coil.request.ImageRequest
@@ -1168,9 +1167,6 @@ class MainActivity :
         runCatching {
             monet.removeMonetColorsChangedListener(this)
             _monet = null
-
-            // Close threads
-            Threads.DATASPEC_DISPATCHER.close()
         }.onFailure {
             Timber.e("MainActivity.onDestroy removeMonetColorsChangedListener ${it.stackTraceToString()}")
         }

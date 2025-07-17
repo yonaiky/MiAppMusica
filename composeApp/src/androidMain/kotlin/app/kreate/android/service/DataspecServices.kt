@@ -10,7 +10,6 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import app.kreate.android.R
-import app.kreate.android.Threads
 import app.kreate.android.network.innertube.Store
 import app.kreate.android.utils.CharUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
@@ -35,13 +34,12 @@ import it.fast4x.rimusic.utils.isNetworkAvailable
 import it.fast4x.rimusic.utils.okHttpDataSourceFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import me.knighthat.innertube.Endpoints
 import me.knighthat.utils.Toaster
-import org.jetbrains.annotations.Blocking
-import org.jetbrains.annotations.NonBlocking
 import org.schabi.newpipe.extractor.localization.ContentCountry
 import org.schabi.newpipe.extractor.localization.Localization
 import org.schabi.newpipe.extractor.services.youtube.PoTokenResult
@@ -50,6 +48,12 @@ import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 import me.knighthat.innertube.Innertube as NewInnertube
 
 private const val CHUNK_LENGTH = 512 * 1024L     // 512Kb
+
+/**
+ * Acts as a lock to keep [upsertSongFormat] from starting before
+ * [upsertSongInfo] finishes.
+ */
+private var databaseWorker: Job = Job()
 
 /**
  * Store id of song just added to the database.
@@ -77,19 +81,20 @@ private var justInserted: String = ""
  * New record will be created and insert into database
  *
  */
-@Blocking
-private fun upsertSongInfo( videoId: String ) = runBlocking {       // Use this to prevent suspension of thread while waiting for response from YT
+private fun upsertSongInfo( videoId: String ) {       // Use this to prevent suspension of thread while waiting for response from YT
     // Skip adding if it's just added in previous call
-    if( videoId == justInserted || !isNetworkAvailable( appContext() ) ) return@runBlocking
+    if( videoId == justInserted || !isNetworkAvailable( appContext() ) ) return
 
-    NewInnertube.songBasicInfo( videoId, CURRENT_LOCALE )
-                .onSuccess( Database::upsert )
-                .onFailure {
-                    it.printStackTrace()
+    databaseWorker = CoroutineScope(Dispatchers.IO ).launch {
+        NewInnertube.songBasicInfo( videoId, CURRENT_LOCALE )
+                    .onSuccess{ Database.upsert( it ) }
+                    .onFailure {
+                        it.printStackTrace()
 
-                    val message= it.message ?: appContext().getString( R.string.failed_to_fetch_original_property )
-                    Toaster.e( message )
-                }
+                        val message= it.message ?: appContext().getString( R.string.failed_to_fetch_original_property )
+                        Toaster.e( message )
+                    }
+    }
 
     // Must not modify [JustInserted] to [upsertSongFormat] let execute later
 }
@@ -97,12 +102,15 @@ private fun upsertSongInfo( videoId: String ) = runBlocking {       // Use this 
 /**
  * Upsert provided format to the database
  */
-@NonBlocking
 private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingData.Format ) {
     // Skip adding if it's just added in previous call
     if( videoId == justInserted ) return
 
-    runCatching {
+    CoroutineScope(Dispatchers.IO ).launch {
+        // Wait until this job is finish to make sure song's info
+        // is in the database before continuing
+        databaseWorker.join()
+
         Database.asyncTransaction {
             formatTable.insertIgnore(Format(
                 videoId,
@@ -113,10 +121,10 @@ private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingD
                 format.lastModified,
                 format.loudnessDb?.toFloat()
             ))
-        }
 
-        // Format must be added successfully before setting variable
-        justInserted = videoId
+            // Format must be added successfully before setting variable
+            justInserted = videoId
+        }
     }
 }
 
@@ -168,10 +176,11 @@ private fun getFormatUrl(
 
     checkPlayability( playerResponse.playabilityStatus )
 
-    val format = extractFormat( playerResponse.streamingData, audioQualityFormat, connectionMetered )
-    format?.let {
-        CoroutineScope( Threads.DATASPEC_DISPATCHER ).launch { upsertSongFormat( videoId, it ) }
-    }
+    val format = extractFormat(
+        playerResponse.streamingData,
+        audioQualityFormat,
+        connectionMetered
+    )?.also { upsertSongFormat( videoId, it ) }
 
     return YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, format?.url.orEmpty() )
                                          .toUri()
@@ -275,7 +284,7 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory =
         val isDownloaded = downloadCache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
 
         if( !isLocal )
-            CoroutineScope( Threads.DATASPEC_DISPATCHER ).launch { upsertSongInfo( videoId ) }
+            upsertSongInfo( videoId )
 
         return@Factory if( isLocal || isCached || isDownloaded )
             // No need to fetch online for already cached data
@@ -296,8 +305,10 @@ fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory =
                            setCacheWriteDataSinkFactory( null )
                        }
     ) { dataSpec: DataSpec ->
-        val videoId = dataSpec.uri.toString().substringAfter("watch?v=")
-        CoroutineScope( Threads.DATASPEC_DISPATCHER ).launch { upsertSongInfo( videoId ) }
+        val videoId: String = dataSpec.uri
+                                      .toString()
+                                      .substringAfter( "watch?v=" )
+                                      .also( ::upsertSongInfo )
 
         val isDownloaded = downloadCache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
 
