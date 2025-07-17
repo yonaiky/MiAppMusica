@@ -86,8 +86,9 @@ private fun upsertSongInfo( videoId: String ) = runBlocking {       // Use this 
                 .onSuccess( Database::upsert )
                 .onFailure {
                     it.printStackTrace()
-                    Toaster.e( R.string.failed_to_fetch_original_property )
-                    it.message?.also( Toaster::e )
+
+                    val message= it.message ?: appContext().getString( R.string.failed_to_fetch_original_property )
+                    Toaster.e( message )
                 }
 
     // Must not modify [JustInserted] to [upsertSongFormat] let execute later
