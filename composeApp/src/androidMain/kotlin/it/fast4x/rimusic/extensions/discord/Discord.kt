@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.JsResult
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebStorage
 import android.webkit.WebView
@@ -12,41 +14,51 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
-import androidx.navigation.NavController
+import app.kreate.android.BuildConfig
+import app.kreate.android.Preferences
 import app.kreate.android.R
 import com.my.kizzyrpc.KizzyRPC
 import com.my.kizzyrpc.model.Activity
 import com.my.kizzyrpc.model.Assets
 import com.my.kizzyrpc.model.Timestamps
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
-import it.fast4x.rimusic.ui.components.themed.IconButton
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.cleanPrefix
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.innertube.Constants
+import me.knighthat.utils.Repository
+import me.knighthat.utils.Toaster
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DiscordLoginAndGetToken(
-    navController: NavController,
-    onGetToken: (String) -> Unit
-) {
-    val scope = rememberCoroutineScope()
+fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
+    fun setToken( token: String ) {
+        if( token == "null" || token == "error" ) {
+            Toaster.e( R.string.error_failed_to_extract_discord_acess_token )
+            return
+        }
+
+        Preferences.DISCORD_ACCESS_TOKEN.value = token
+        onDone()
+    }
+
 
     var webView: WebView? = null
 
+    // This section is ripped from Metrolist - Full credit to their team
+    // Small changes were made in order to make it work with Kreate
+    // https://github.com/mostafaalagamy/Metrolist/blob/main/app/src/main/kotlin/com/metrolist/music/ui/screens/settings/DiscordLoginScreen.kt
     AndroidView(
-        modifier = Modifier
-            .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-            .fillMaxSize(),
+        modifier = Modifier.windowInsetsPadding( LocalPlayerAwareWindowInsets.current )
+                           .fillMaxSize(),
         factory = { context ->
             WebView(context).apply {
                 layoutParams = ViewGroup.LayoutParams(
@@ -54,52 +66,83 @@ fun DiscordLoginAndGetToken(
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
 
-                webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(
-                        webView: WebView,
-                        request: WebResourceRequest,
-                    ): Boolean {
-                        stopLoading()
-                        if (request.url.toString().endsWith("/app")) {
-                            loadUrl("javascript:Android.onRetrieveToken((webpackChunkdiscord_app.push([[''],{},e=>{m=[];for(let c in e.c)m.push(e.c[c])}]),m).find(m=>m?.exports?.default?.getToken!==void 0).exports.default.getToken());")
-                        }
-                        return false
-                    }
+                WebView.setWebContentsDebuggingEnabled(true)
+
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                settings.setSupportZoom(true)
+                settings.builtInZoomControls = true
+
+                CookieManager.getInstance().apply {
+                    removeAllCookies(null)
+                    flush()
                 }
-                settings.apply {
-                    javaScriptEnabled = true
-                    domStorageEnabled = true
-                    setSupportZoom(true)
-                    builtInZoomControls = true
-                }
-                val cookieManager = CookieManager.getInstance()
-                cookieManager.removeAllCookies(null)
-                cookieManager.flush()
 
                 WebStorage.getInstance().deleteAllData()
+
                 addJavascriptInterface(object {
                     @JavascriptInterface
-                    fun onRetrieveToken(token: String) {
-                        scope.launch(Dispatchers.Main) {
-                            onGetToken(token)
-                        }
-                    }
+                    @Suppress("unused")     // To stop IDE from complaining
+                    fun onRetrieveToken( token: String ) = setToken( token )
                 }, "Android")
 
-                webView = this
-                loadUrl("https://discord.com/login")
-            }
-        }
-    )
+                webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView, url: String) {
+                        if ( url.contains("/channels/@me") || url.contains("/app") ) {
+                            view.evaluateJavascript(
+                                """
+                                (function() {
+                                    try {
+                                        var token = localStorage.getItem("token");
+                                        if (token) {
+                                            Android.onRetrieveToken(token.slice(1, -1));
+                                        } else {
+                                            var i = document.createElement('iframe');
+                                            document.body.appendChild(i);
+                                            setTimeout(function() {
+                                                try {
+                                                    var alt = i.contentWindow.localStorage.token;
+                                                    if (alt) {
+                                                        alert(alt.slice(1, -1));
+                                                    } else {
+                                                        alert("null");
+                                                    }
+                                                } catch (e) {
+                                                    alert("error");
+                                                }
+                                            }, 1000);
+                                        }
+                                    } catch (e) {
+                                        alert("error");
+                                    }
+                                })();
+                                """.trimIndent(), null
+                            )
+                        }
+                    }
 
-    TopAppBar(
-        title = { Text("Login to Discord") },
-        navigationIcon = {
-            IconButton(
-                icon = R.drawable.chevron_back,
-                onClick = navController::navigateUp,
-                color = Color.White
-            )
+                    override fun shouldOverrideUrlLoading(
+                        view: WebView,
+                        request: WebResourceRequest
+                    ): Boolean = false
+                }
+
+                webChromeClient = object : WebChromeClient() {
+                    override fun onJsAlert(
+                        view: WebView,
+                        url: String,
+                        message: String,
+                        result: JsResult
+                    ): Boolean {
+                        setToken( message )
+                        result.confirm()
+                        return true
+                    }
+                }
+
+                webView = this
+                loadUrl( "https://discord.com/login" )
+            }
         }
     )
 
@@ -108,40 +151,47 @@ fun DiscordLoginAndGetToken(
     }
 }
 
-@UnstableApi
-fun sendDiscordPresence(
-    token: String,
+private lateinit var rpc: KizzyRPC
+private lateinit var activity: Activity
+
+fun updateDiscordPresence(
     mediaItem: MediaItem,
     timeStart: Long,
     timeEnd: Long
-) {
-    if (token.isEmpty()) return
+) = CoroutineScope(Dispatchers.IO ).launch {
+    val token by Preferences.DISCORD_ACCESS_TOKEN
+    if( token.isBlank() ) return@launch
 
-    val rpc = KizzyRPC(token)
-    rpc.setActivity(
+    if( !::rpc.isInitialized ) {
+        rpc = KizzyRPC( token )
         activity = Activity(
-            applicationId = "1281989764358082570",
-            name = "RiMusic",
-            details = mediaItem.mediaMetadata.title.toString(),
-            state = mediaItem.mediaMetadata.artist.toString(),
+            applicationId = "1370148610158759966",
+            name = BuildConfig.APP_NAME,
             type = TypeDiscordActivity.LISTENING.value,
-            timestamps = Timestamps(
-                start = timeStart,
-                end = timeEnd
+            buttons = listOf(
+                appContext().getString( R.string.get_app, BuildConfig.APP_NAME ),
+                appContext().getString( R.string.listen_on_youtube )
             ),
+        )
+    }
+
+    rpc.setActivity(
+        activity = activity.copy(
+            details = cleanPrefix( mediaItem.mediaMetadata.title.toString() ),
+            state = cleanPrefix( mediaItem.mediaMetadata.artist.toString() ),
+            timestamps = Timestamps(timeEnd, timeStart),
             assets = Assets(
-                largeImage = "https://i.ytimg.com/vi/${mediaItem.mediaId}/maxresdefault.jpg",
-                smallImage = "mp:{icona_rimusic}",
-                //largeText = mediaItem.mediaMetadata.title.toString(),
-                //smallText = mediaItem.mediaMetadata.artist.toString(),
+                largeImage = mediaItem.mediaMetadata.artworkUri.toString(),
+                smallImage = "https://i.ibb.co/0yd8QzkV/app-logo.png",
             ),
-            buttons = listOf("Get RiMusic", "Listen to YTMusic"),
             metadata = com.my.kizzyrpc.model.Metadata(
                 listOf(
-                    "https://rimusic.xyz/",
-                    "https://music.youtube.com/watch?v=${mediaItem.mediaId}",
+                    // https://github.com/knighthat/Kreate/releases/latest
+                    "%s/%s".format( Repository.GITHUB, Repository.LATEST_TAG_URL ),
+                    // https://music.youtube.com/watch?v={mediaId}
+                    "%s/watch?v=%s".format( Constants.YOUTUBE_MUSIC_URL, mediaItem.mediaId ),
                 )
-            )
+            ),
         ),
         status = "online",
         since = System.currentTimeMillis()

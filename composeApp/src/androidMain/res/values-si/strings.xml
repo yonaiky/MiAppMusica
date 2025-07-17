@@ -941,4 +941,6 @@ CC-BY-SA 3.0</string>
     <string name="error_downloaded_file_not_found">Downloaded file not found</string>
     <string name="error_download_manager_init_failed">Failed to initialize DownloadManager to download update</string>
     <string name="error_failed_to_verify_download_file">Failed to verify downloaded file</string>
+    <string name="get_app">Get %s</string>
+    <string name="error_failed_to_extract_discord_acess_token">Failed to extract Discord access token</string>
 </resources>

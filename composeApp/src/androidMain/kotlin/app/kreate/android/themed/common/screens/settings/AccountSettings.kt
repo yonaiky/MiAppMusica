@@ -33,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
@@ -276,14 +275,7 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                                 },
                                 shape = Preferences.THUMBNAIL_BORDER_RADIUS.value.shape
                             ) {
-                                DiscordLoginAndGetToken(
-                                    rememberNavController(),
-                                    onGetToken = { token ->
-                                        loginDiscord = false
-                                        discordPersonalAccessToken = token
-                                        Toaster.i( token )
-                                    }
-                                )
+                                DiscordLoginAndGetToken { loginDiscord = false }
                             }
                         }
                     }

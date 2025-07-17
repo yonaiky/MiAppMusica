@@ -100,7 +100,7 @@ import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import it.fast4x.rimusic.extensions.connectivity.AndroidConnectivityObserverLegacy
-import it.fast4x.rimusic.extensions.discord.sendDiscordPresence
+import it.fast4x.rimusic.extensions.discord.updateDiscordPresence
 import it.fast4x.rimusic.isHandleAudioFocusEnabled
 import it.fast4x.rimusic.models.Event
 import it.fast4x.rimusic.models.PersistentQueue
@@ -126,7 +126,6 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
-import it.fast4x.rimusic.utils.isAtLeastAndroid81
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.playNext
@@ -485,9 +484,20 @@ class PlayerServiceModern : MediaLibraryService(),
 
             updateDefaultNotification()
             withContext(Dispatchers.Main) {
-                if (song != null) {
-                    updateDiscordPresence()
+                player.currentMediaItem?.also {
+                    updateDiscordPresence(
+                        mediaItem = it,
+                        timeStart = if (player.isPlaying)
+                            System.currentTimeMillis() - player.currentPosition
+                        else
+                            0L,
+                        timeEnd = if (player.isPlaying)
+                            (System.currentTimeMillis() - player.currentPosition) + player.duration
+                        else
+                            0L
+                    )
                 }
+
                 updateWidgets()
             }
         }
@@ -1210,32 +1220,6 @@ class PlayerServiceModern : MediaLibraryService(),
         }
 
     }
-
-
-    private fun updateDiscordPresence() {
-        val isDiscordPresenceEnabled by Preferences.DISCORD_LOGIN
-        if (!isDiscordPresenceEnabled || !isAtLeastAndroid81) return
-
-        val discordPersonalAccessToken by Preferences.DISCORD_ACCESS_TOKEN
-
-        runCatching {
-            if (!discordPersonalAccessToken.isNullOrEmpty()) {
-                player.currentMediaItem?.let {
-                    sendDiscordPresence(
-                        discordPersonalAccessToken,
-                        it,
-                        timeStart = if (player.isPlaying)
-                            System.currentTimeMillis() - player.currentPosition else 0L,
-                        timeEnd = if (player.isPlaying)
-                            (System.currentTimeMillis() - player.currentPosition) + player.duration else 0L
-                    )
-                }
-            }
-        }.onFailure {
-            Timber.e("PlayerService Failed sendDiscordPresence in PlayerService ${it.stackTraceToString()}")
-        }
-    }
-
 
     fun toggleLike() {
         binder.toggleLike()
