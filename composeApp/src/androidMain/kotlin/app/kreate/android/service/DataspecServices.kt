@@ -85,6 +85,7 @@ private fun upsertSongInfo( videoId: String ) = runBlocking {       // Use this 
     NewInnertube.songBasicInfo( videoId, CURRENT_LOCALE )
                 .onSuccess( Database::upsert )
                 .onFailure {
+                    it.printStackTrace()
                     Toaster.e( R.string.failed_to_fetch_original_property )
                     it.message?.also( Toaster::e )
                 }
