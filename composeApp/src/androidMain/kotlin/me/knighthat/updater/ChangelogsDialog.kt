@@ -12,7 +12,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,23 +32,13 @@ import it.fast4x.rimusic.utils.bold
 import me.knighthat.component.dialog.Dialog
 import java.util.stream.Stream
 
-class ChangelogsDialog(
-    seenChangelogVersionState: MutableState<String>,
-): Dialog {
+open class ChangelogsDialog: Dialog {
 
-    var seenChangelogVersion: String by seenChangelogVersionState
     override val dialogTitle: String
         @Composable
         get() = stringResource( R.string.update_changelogs, BuildConfig.VERSION_NAME )
 
-    // Automatically enable dialog when this class is init
-    // This is an assumption, a check is required before creating this object
-    override var isActive: Boolean by mutableStateOf( true )
-
-    override fun hideDialog() {
-        super.hideDialog()
-        seenChangelogVersion = BuildConfig.VERSION_NAME
-    }
+    override var isActive: Boolean by mutableStateOf( false )
 
     private fun parseReleaseNotes( lines: Stream<String>): List<Section> {
         val sections = mutableListOf<Section>()

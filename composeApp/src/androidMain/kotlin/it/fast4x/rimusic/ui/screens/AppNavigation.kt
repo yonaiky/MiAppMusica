@@ -43,6 +43,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.screens.album.YouTubeAlbum
@@ -75,6 +76,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.knighthat.updater.ChangelogsDialog
 import me.knighthat.updater.UpdateHandler
 import me.knighthat.utils.Toaster
 import kotlin.system.exitProcess
@@ -408,6 +410,21 @@ fun AppNavigation(
 
             ArtistAlbums( navController, id, params, miniPlayer )
         }
+    }
+
+    if( Preferences.SEEN_CHANGELOGS_VERSION.value != BuildConfig.VERSION_NAME ) {
+        val changelogs = remember {
+            object: ChangelogsDialog() {
+                // Automatically enable dialog when this class is init
+                override var isActive: Boolean by mutableStateOf( true )
+
+                override fun hideDialog() {
+                    super.hideDialog()
+                    Preferences.SEEN_CHANGELOGS_VERSION.value = BuildConfig.VERSION_NAME
+                }
+            }
+        }
+        changelogs.Render()
     }
 
     // Exit app when user uses back

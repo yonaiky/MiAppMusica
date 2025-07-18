@@ -21,14 +21,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.windowInsets
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
@@ -39,7 +37,6 @@ import it.fast4x.rimusic.ui.components.navigation.nav.AbstractNavigationBar
 import it.fast4x.rimusic.ui.components.navigation.nav.HorizontalNavigationBar
 import it.fast4x.rimusic.ui.components.navigation.nav.VerticalNavigationBar
 import it.fast4x.rimusic.utils.transition
-import me.knighthat.updater.ChangelogsDialog
 
 // THIS IS THE SCAFFOLD
 @OptIn(ExperimentalMaterial3Api::class)
@@ -138,13 +135,5 @@ fun Skeleton(
                 content = { miniPlayer?.invoke() }
             )
         }
-    }
-
-    val seenChangelogs = Preferences.SEEN_CHANGELOGS_VERSION
-    if( seenChangelogs.value != BuildConfig.VERSION_NAME ) {
-        val changelogs = remember {
-            ChangelogsDialog( seenChangelogs )
-        }
-        changelogs.Render()
     }
 }
