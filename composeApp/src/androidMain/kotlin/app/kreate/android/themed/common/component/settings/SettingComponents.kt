@@ -16,12 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
@@ -146,92 +146,88 @@ object SettingComponents {
         }
 
     @Composable
-    inline fun <reified T: Enum<T>> EnumEntry(
-        preference: Preferences.Enum<T>,
+    fun <T> ListEntry(
+        preference: Preferences<T>,
         title: String,
-        crossinline getName: @Composable (T) -> String,
+        getName: @Composable (T) -> String,
+        getList: Preferences<T>.() -> List<T>,
         modifier: Modifier = Modifier,
         subtitle: String = "",
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
-        noinline trailingContent: @Composable RowScope.() -> Unit = {},
-        crossinline onValueChanged: (T) -> Unit = {}
+        trailingContent: @Composable RowScope.() -> Unit = {},
+        onValueChanged: (T) -> Unit = {}
     ) {
         var selected by preference
-
-        /**
-         * Putting this inside [Dialog] instance below causes crash (for some reason)
-         * The error being [ClassCastException], happens because [enumValues] being
-         * used inside an object without `reified T`.
-         */
-        val enumValues: @Composable Dialog.() -> Unit = {
-            Column(
-                Modifier.wrapContentHeight()
-                        .verticalScroll( rememberScrollState() )
-            ) {
-                 enumValues<T>().forEach {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier.padding( vertical = 12.dp, horizontal = 24.dp )
-                                           .fillMaxWidth()
-                                           .clickable {
-                                               selected = it
-                                               onValueChanged( it )
-
-                                               if( action == Action.RESTART_APP ) {
-                                                   hideDialog()
-                                                   RestartAppDialog.showDialog()
-                                               }
-                                           }
-                    ) {
-                        val colorPalette = colorPalette()
-                        val (inner, outer, width) = remember( selected ) {
-                            if( selected == it )
-                                Triple(colorPalette.accent, colorPalette.onAccent, 4.dp)
-                            else
-                                Triple(colorPalette.textDisabled, Color.Transparent, 1.dp)
-                        }
-                        Canvas(
-                            modifier = Modifier.size( 18.dp )
-                                               .background( inner, CircleShape )
-                        ) {
-                            drawCircle(
-                                color = outer,
-                                radius = width.toPx(),
-                                center = size.center
-                            )
-                        }
-
-                        BasicText(
-                            text = getName( it ),
-                            style = if( selected == it ) typography().xs.semiBold else typography().xs
-                        )
-                    }
-                }
-            }
-
-            Spacer( Modifier.height( Dialog.SPACE_BETWEEN_SECTIONS.dp ) )
-
-            if( action == Action.RESTART_APP )
-                BasicText(
-                    text = stringResource( R.string.restarting_rimusic_is_required ),
-                    style = typography().xs.copy(
-                        colorPalette().red.copy( .8f )
-                    ),
-                    modifier = Modifier.fillMaxWidth( .9f )
-                )
-        }
 
         val dialog = remember {
             object : Dialog {
                 override val dialogTitle: String
                     @Composable
                     get() = title
-                override var isActive: Boolean by mutableStateOf(false)
+
+                override var isActive: Boolean by mutableStateOf( false )
 
                 @Composable
-                override fun DialogBody() = enumValues()
+                override fun DialogBody() {
+                    LazyColumn( Modifier.wrapContentHeight() ) {
+                        items(
+                            items = preference.getList(),
+                            key = System::identityHashCode
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                modifier = Modifier.padding( vertical = 12.dp, horizontal = 24.dp )
+                                                   .fillMaxWidth()
+                                                   .clickable {
+                                                       selected = it
+                                                       onValueChanged( it )
+
+                                                       if( action == Action.RESTART_APP ) {
+                                                           hideDialog()
+                                                           RestartAppDialog.showDialog()
+                                                       }
+                                                   }
+                            ) {
+                                val colorPalette = colorPalette()
+                                val (inner, outer, width) = remember( selected ) {
+                                    if( selected == it )
+                                        Triple(colorPalette.accent, colorPalette.onAccent, 4.dp)
+                                    else
+                                        Triple(colorPalette.textDisabled, Color.Transparent, 1.dp)
+                                }
+                                // Draws select indicator before the text
+                                Canvas(
+                                    modifier = Modifier.size( 18.dp )
+                                                       .background( inner, CircleShape )
+                                ) {
+                                    drawCircle(
+                                        color = outer,
+                                        radius = width.toPx(),
+                                        center = size.center
+                                    )
+                                }
+
+                                BasicText(
+                                    text = getName( it ),
+                                    style = if( selected == it ) typography().xs.semiBold else typography().xs
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer( Modifier.height( Dialog.SPACE_BETWEEN_SECTIONS.dp ) )
+
+                    if( action == Action.RESTART_APP )
+                        BasicText(
+                            text = stringResource( R.string.restarting_rimusic_is_required ),
+                            style = typography().xs.copy(
+                                colorPalette().red.copy( .8f )
+                            ),
+                            modifier = Modifier.fillMaxWidth( .9f )
+                        )
+                }
             }
         }
         dialog.Render()
@@ -248,6 +244,31 @@ object SettingComponents {
     }
 
     @Composable
+    inline fun <reified T: Enum<T>> EnumEntry(
+        preference: Preferences.Enum<T>,
+        title: String,
+        noinline getName: @Composable (T) -> String,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+        noinline trailingContent: @Composable RowScope.() -> Unit = {},
+        noinline onValueChanged: (T) -> Unit = {}
+    ) =
+        ListEntry(
+            preference = preference,
+            title = title,
+            getName = getName,
+            getList = { enumValues<T>().toList() },
+            modifier = modifier,
+            subtitle = subtitle,
+            isEnabled = isEnabled,
+            action = action,
+            trailingContent = trailingContent,
+            onValueChanged = onValueChanged
+        )
+
+    @Composable
     inline fun <reified T> EnumEntry(
         preference: Preferences.Enum<T>,
         title: String,
@@ -256,7 +277,7 @@ object SettingComponents {
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
         noinline trailingContent: @Composable RowScope.() -> Unit = {},
-        crossinline onValueChanged: (T) -> Unit = {}
+        noinline onValueChanged: (T) -> Unit = {}
     ) where T: Enum<T>, T: TextView =
         EnumEntry( preference, title, { it.text }, modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
 
@@ -264,13 +285,13 @@ object SettingComponents {
     inline fun <reified T: Enum<T>> EnumEntry(
         preference: Preferences.Enum<T>,
         @StringRes titleId: Int,
-        crossinline getName: @Composable (T) -> String,
+        noinline getName: @Composable (T) -> String,
         modifier: Modifier = Modifier,
         subtitle: String = "",
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
         noinline trailingContent: @Composable RowScope.() -> Unit = {},
-        crossinline onValueChanged: (T) -> Unit = {}
+        noinline onValueChanged: (T) -> Unit = {}
     ) =
         EnumEntry( preference, stringResource( titleId ), getName, modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
 
@@ -283,7 +304,7 @@ object SettingComponents {
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
         noinline trailingContent: @Composable RowScope.() -> Unit = {},
-        crossinline onValueChanged: (T) -> Unit = {}
+        noinline onValueChanged: (T) -> Unit = {}
     ) where T: Enum<T>, T: TextView =
         EnumEntry( preference, stringResource( titleId ), modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
 
@@ -296,7 +317,7 @@ object SettingComponents {
         isEnabled: Boolean = true,
         action: Action = Action.NONE,
         noinline trailingContent: @Composable RowScope.() -> Unit = {},
-        crossinline onValueChanged: (T) -> Unit = {}
+        noinline onValueChanged: (T) -> Unit = {}
     ) where T: Enum<T>, T: TextView =
         EnumEntry( preference, stringResource( titleId ), modifier, stringResource( subtitleId ), isEnabled, action, trailingContent, onValueChanged )
 
