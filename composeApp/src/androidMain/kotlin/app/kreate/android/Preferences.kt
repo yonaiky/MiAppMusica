@@ -15,6 +15,7 @@ import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import app.kreate.android.Preferences.Companion.preferences
+import app.kreate.android.utils.innertube.getSystemCountryCode
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AlbumSortBy
 import it.fast4x.rimusic.enums.AlbumSwipeAction
@@ -875,6 +876,9 @@ sealed class Preferences<T>(
         }
         val OTHER_APP_LANGUAGE by lazy {
             Enum( preferences, "OtherAppLanguage", "otherLanguageApp", Languages.System )
+        }
+        val APP_REGION by lazy {
+            String( preferences, "AppRegion", "", getSystemCountryCode() )
         }
         val HOME_ARTIST_AND_ALBUM_FILTER by lazy {
             Enum( preferences, "filterBy", "", FilterBy.All )
