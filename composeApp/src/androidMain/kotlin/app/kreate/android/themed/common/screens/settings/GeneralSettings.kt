@@ -1,5 +1,6 @@
 package app.kreate.android.themed.common.screens.settings
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
@@ -27,6 +29,7 @@ import app.kreate.android.utils.innertube.getAppLanguageCode
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.styling.Dimensions
+import me.knighthat.utils.Toaster
 import java.util.Locale
 
 @UnstableApi
@@ -67,7 +70,19 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
                         Preferences.APP_LANGUAGE,
                         titleId = R.string.app_language,
                         subtitleId = R.string.setting_description_app_language,
-                        action = SettingComponents.Action.RESTART_APP
+                        onValueChanged = {
+                            try {
+                                // Apply it first before really selecting it
+                                AppCompatDelegate.setApplicationLocales(
+                                    LocaleListCompat.forLanguageTags( it.code )
+                                )
+
+                                Preferences.APP_LANGUAGE.value = it
+                            } catch (err: Exception) {
+                                err.printStackTrace()
+                                err.message?.also( Toaster::e )
+                            }
+                        }
                     )
 
                 if( search appearsIn R.string.setting_entry_app_region ) {

@@ -25,7 +25,6 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -79,7 +78,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.core.os.LocaleListCompat
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -578,15 +576,6 @@ class MainActivity :
                 val listener =
                     SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
                         when (key) {
-
-                            Preferences.APP_LANGUAGE.key -> {
-                                val lang = sharedPreferences.getEnum( key, Preferences.APP_LANGUAGE.defaultValue )
-                                val languageTag: String = lang.code.ifEmpty( Preferences.APP_LANGUAGE.defaultValue::code )
-                                AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.forLanguageTags( languageTag )
-                                )
-                            }
-
                             Preferences.PLAYER_PORTRAIT_THUMBNAIL_SIZE.key,
                             Preferences.MAIN_THEME.key,
                             Preferences.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED.key,
