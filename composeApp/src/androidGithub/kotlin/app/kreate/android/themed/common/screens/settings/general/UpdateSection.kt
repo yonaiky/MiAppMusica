@@ -45,8 +45,10 @@ fun LazyListScope.updateSection( search: SettingEntrySearch ) = section(R.string
     val changelogs = remember { ChangelogsDialog() }
     changelogs.Render()
 
-    SettingComponents.Text(
-        title = stringResource( R.string.setting_entry_view_changelogs ),
-        onClick = changelogs::showDialog
-    )
+    if( search appearsIn R.string.setting_entry_view_changelogs )
+        SettingComponents.Text(
+            title = stringResource( R.string.setting_entry_view_changelogs ),
+            onClick = changelogs::showDialog,
+            subtitle = "v${BuildConfig.VERSION_NAME}"
+        )
 }
