@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -35,27 +36,33 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastDistinctBy
+import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
-import app.kreate.android.utils.innertube.HOST_LANGUAGE
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
+import app.kreate.android.utils.innertube.toMediaItem
+import app.kreate.android.utils.innertube.toOldInnertubeArtist
+import app.kreate.android.utils.innertube.toOldInnertubePlaylist
+import app.kreate.android.utils.innertube.toSong
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -66,7 +73,6 @@ import it.fast4x.innertube.requests.chartsPageComplete
 import it.fast4x.innertube.requests.discoverPage
 import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MONTHLY_PREFIX
@@ -118,13 +124,18 @@ import it.fast4x.rimusic.utils.quickPicsTrendingSongKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import me.knighthat.innertube.model.InnertubeCharts
+import me.knighthat.innertube.model.InnertubePlaylist
+import me.knighthat.innertube.model.InnertubeRankedArtist
+import me.knighthat.innertube.model.InnertubeSong
+import me.knighthat.utils.Toaster
 import timber.log.Timber
-import java.util.Locale
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -169,14 +180,6 @@ fun HomeQuickPicks(
 
     var chartsPageResult by persist<Result<Innertube.ChartsPage?>>("home/chartsPage")
     var chartsPageInit by persist<Innertube.ChartsPage>("home/chartsPage")
-//    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
-
-    var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
-    }
-
-    val context = LocalContext.current
-
 
     val showRelatedAlbums by Preferences.QUICK_PICKS_SHOW_RELATED_ALBUMS
     val showSimilarArtists by Preferences.QUICK_PICKS_SHOW_RELATED_ARTISTS
@@ -196,7 +199,6 @@ fun HomeQuickPicks(
 
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
 
-    //var loadedData by rememberSaveable { mutableStateOf(false) }
     var loadedData by Preferences.IS_DATA_KEY_LOADED
 
     suspend fun loadData() {
@@ -795,186 +797,177 @@ fun HomeQuickPicks(
                         }
                     }
 
-                if (showCharts) {
+                if( Preferences.QUICK_PICKS_SHOW_CHARTS.value ) {
+                    var charts by remember {
+                        // Use [referentialEqualityPolicy] to limit update to when it changes
+                        // object, not the state of contents
+                        mutableStateOf<InnertubeCharts?>( null, referentialEqualityPolicy() )
+                    }
+                    LaunchedEffect( refreshing, countryCode ) {
+                        CoroutineScope( Dispatchers.IO ).launch {
+                            me.knighthat.innertube.Innertube.charts( CURRENT_LOCALE, null, countryCode )
+                                .onFailure {
+                                    it.printStackTrace()
+                                    it.message?.also( Toaster::e )
+                                }
+                                .getOrNull()
+                                .also { charts = it }
+                        }
+                    }
 
-                    chartsPageInit?.let { page ->
-
-                        val countryDisplayName by remember {derivedStateOf {
-                            val locale = Locale(HOST_LANGUAGE, countryCode)
-                            locale.getDisplayCountry( locale )
-                        }}
+                    charts?.run {
                         Title(
-                            title = "${stringResource(R.string.charts)} ($countryDisplayName)",
+                            title = "${stringResource(R.string.charts)} ($selectedCountryName)",
                             onClick = {
                                 menuState.display {
                                     Menu {
-                                        Locale.getISOCountries().forEach { code ->
-                                            val locale = Locale(HOST_LANGUAGE, code)
-                                            val displayName = locale.getDisplayCountry( locale )
-
+                                        menu.items.forEach { item ->
                                             MenuEntry(
                                                 icon = R.drawable.arrow_right,
-                                                text = displayName,
+                                                text = item.countryDisplayName,
                                                 onClick = {
-                                                    countryCode = code
+                                                    countryCode = item.countryCode
                                                     menuState.hide()
                                                 }
                                             )
                                         }
                                     }
                                 }
-                            },
+                            }
                         )
 
-                        page.playlists?.let { playlists ->
-                            /*
-                           BasicText(
-                               text = stringResource(R.string.playlists),
-                               style = typography().l.semiBold,
-                               modifier = Modifier
-                                   .padding(horizontal = 16.dp)
-                                   .padding(top = 24.dp, bottom = 8.dp)
-                           )
-                             */
+                        sections.forEach { section ->
+                            BasicText(
+                                text = section.title,
+                                style = typography().l.semiBold,
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .padding(top = 24.dp, bottom = 8.dp)
+                            )
 
-                            LazyRow(contentPadding = endPaddingValues) {
-                                items(
-                                    items = playlists.distinctBy { it.key },
-                                    key = Innertube.PlaylistItem::key,
-                                ) { playlist ->
-                                    PlaylistItem(
-                                        playlist = playlist,
-                                        thumbnailSizePx = playlistThumbnailSizePx,
-                                        thumbnailSizeDp = playlistThumbnailSizeDp,
-                                        alternative = true,
-                                        showSongsCount = false,
-                                        modifier = Modifier
-                                            .clickable(onClick = { onPlaylistClick(playlist.key) }),
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
-                            }
-                        }
-
-                        page.songs?.let { songs ->
-                            if (songs.isNotEmpty()) {
-                                BasicText(
-                                    text = stringResource(R.string.chart_top_songs),
-                                    style = typography().l.semiBold,
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(top = 24.dp, bottom = 8.dp)
-                                )
-
-
-                                LazyHorizontalGrid(
-                                    rows = GridCells.Fixed(2),
-                                    modifier = Modifier
-                                        .height(130.dp)
-                                        .fillMaxWidth(),
-                                    state = chartsPageSongLazyGridState,
-                                    flingBehavior = ScrollableDefaults.flingBehavior(),
-                                ) {
-                                    itemsIndexed(
-                                        items = if (parentalControlEnabled)
-                                            songs.filter {
-                                                !it.asSong.title.startsWith(
-                                                    EXPLICIT_PREFIX
+                            if( section.contents.all{ it is InnertubePlaylist } )
+                                section.contents
+                                    .fastMapNotNull { it as? InnertubePlaylist }
+                                    .also {
+                                        LazyRow(
+                                            contentPadding = endPaddingValues,
+                                            modifier = Modifier.wrapContentHeight()
+                                        ) {
+                                            items(
+                                                items = it,
+                                                key = InnertubePlaylist::hashCode
+                                            ) { playlist ->
+                                                PlaylistItem(
+                                                    playlist = playlist.toOldInnertubePlaylist,
+                                                    thumbnailSizePx = playlistThumbnailSizePx,
+                                                    thumbnailSizeDp = playlistThumbnailSizeDp,
+                                                    alternative = true,
+                                                    showSongsCount = false,
+                                                    modifier = Modifier
+                                                        .clickable(onClick = { onPlaylistClick(playlist.id) }),
+                                                    disableScrollingText = disableScrollingText
                                                 )
-                                            }.distinctBy { it.key }
-                                        else songs.distinctBy { it.key },
-                                        key = { _, song -> song.key }
-                                    ) { index, song ->
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier.padding(start = 16.dp)
-                                        ) {
-                                            BasicText(
-                                                text = "${index + 1}",
-                                                style = typography().l.bold.center.color(
-                                                    colorPalette().text
-                                                ),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                            SongItem(
-                                                song = song,
-                                                onDownloadClick = {},
-                                                downloadState = Download.STATE_STOPPED,
-                                                thumbnailSizePx = songThumbnailSizePx,
-                                                thumbnailSizeDp = songThumbnailSizeDp,
-                                                modifier = Modifier
-                                                    .clickable(onClick = {
-                                                        val mediaItem = song.asMediaItem
-                                                        binder?.stopRadio()
-                                                        binder?.player?.forcePlay(mediaItem)
-                                                        binder?.player?.addMediaItems(songs.map { it.asMediaItem })
-                                                    })
-                                                    .width(itemWidth),
-                                                disableScrollingText = disableScrollingText,
-                                                isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false
-                                            )
+                                            }
                                         }
                                     }
-                                }
-                            }
-                        }
-
-                        page.artists?.let { artists ->
-                            if (artists.isNotEmpty()) {
-                                BasicText(
-                                    text = stringResource(R.string.chart_top_artists),
-                                    style = typography().l.semiBold,
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(top = 24.dp, bottom = 8.dp)
-                                )
-
-
-                                LazyHorizontalGrid(
-                                    rows = GridCells.Fixed(2),
-                                    modifier = Modifier
-                                        .height(130.dp)
-                                        .fillMaxWidth(),
-                                    state = chartsPageArtistLazyGridState,
-                                    flingBehavior = ScrollableDefaults.flingBehavior(),
-                                ) {
-                                    itemsIndexed(
-                                        items = artists.distinctBy { it.key },
-                                        key = { _, artist -> artist.key }
-                                    ) { index, artist ->
-                                        Row(
-                                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier.padding(start = 16.dp)
+                            else if( section.contents.all{ it is InnertubeSong } )
+                                section.contents
+                                    .fastMapNotNull { it as? InnertubeSong }
+                                    .also { songs ->
+                                        LazyHorizontalGrid(
+                                            rows = GridCells.Fixed(2),
+                                            modifier = Modifier
+                                                .height(130.dp)
+                                                .fillMaxWidth(),
+                                            state = chartsPageSongLazyGridState,
+                                            flingBehavior = ScrollableDefaults.flingBehavior()
                                         ) {
-                                            BasicText(
-                                                text = "${index + 1}",
-                                                style = typography().l.bold.center.color(
-                                                    colorPalette().text
-                                                ),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                            ArtistItem(
-                                                artist = artist,
-                                                thumbnailSizePx = songThumbnailSizePx,
-                                                thumbnailSizeDp = songThumbnailSizeDp,
-                                                alternative = false,
-                                                modifier = Modifier
-                                                    .width(200.dp)
-                                                    .clickable(onClick = { onArtistClick(artist.key) }),
-                                                disableScrollingText = disableScrollingText
-                                            )
+                                            itemsIndexed(
+                                                items = songs.fastFilter { !parentalControlEnabled || !it.isExplicit }
+                                                             .fastDistinctBy(InnertubeSong::id ),
+                                                key = { i, s -> "${System.identityHashCode(s)}-$i"}
+                                            ) { index, song ->
+                                                Row(
+                                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    modifier = Modifier.padding(start = 16.dp)
+                                                ) {
+                                                    BasicText(
+                                                        text = "${index + 1}",
+                                                        style = typography().l.bold.center.color(
+                                                            colorPalette().text
+                                                        ),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    SongItem(
+                                                        song = song.toSong,
+                                                        onDownloadClick = {},
+                                                        downloadState = Download.STATE_STOPPED,
+                                                        thumbnailSizePx = songThumbnailSizePx,
+                                                        thumbnailSizeDp = songThumbnailSizeDp,
+                                                        modifier = Modifier
+                                                            .clickable(onClick = {
+                                                                val mediaItem = song.toMediaItem
+                                                                binder?.stopRadio()
+                                                                binder?.player?.forcePlay(mediaItem)
+                                                                binder?.player?.addMediaItems(songs.map { it.toMediaItem })
+                                                            })
+                                                            .width(itemWidth),
+                                                        disableScrollingText = disableScrollingText,
+                                                        isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
+                                                    )
+                                                }
+                                            }
                                         }
                                     }
-                                }
-                            }
+                            else if( section.contents.all{ it is InnertubeRankedArtist } )
+                                section.contents
+                                    .fastMapNotNull { it as? InnertubeRankedArtist }
+                                    .also { rankedArtists ->
+                                        LazyHorizontalGrid(
+                                            rows = GridCells.Fixed(2),
+                                            modifier = Modifier
+                                                .height(130.dp)
+                                                .fillMaxWidth(),
+                                            state = chartsPageArtistLazyGridState,
+                                            flingBehavior = ScrollableDefaults.flingBehavior(),
+                                        ) {
+                                            itemsIndexed(
+                                                items = rankedArtists.distinctBy( InnertubeRankedArtist::id ),
+                                                key = { i, s -> "${System.identityHashCode(s)}-$i"}
+                                            ) { index, artist ->
+                                                Row(
+                                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    modifier = Modifier.padding(start = 16.dp)
+                                                ) {
+                                                    BasicText(
+                                                        text = artist.rank,
+                                                        style = typography().l.bold.center.color(
+                                                            colorPalette().text
+                                                        ),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    ArtistItem(
+                                                        artist = artist.toOldInnertubeArtist,
+                                                        thumbnailSizePx = songThumbnailSizePx,
+                                                        thumbnailSizeDp = songThumbnailSizeDp,
+                                                        alternative = false,
+                                                        modifier = Modifier
+                                                            .width(200.dp)
+                                                            .clickable(onClick = { onArtistClick(artist.id) }),
+                                                        disableScrollingText = disableScrollingText
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                         }
                     }
-                }
 
+                }
 
                 homePageInit?.let { page ->
 
