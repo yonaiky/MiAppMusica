@@ -25,7 +25,7 @@ import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.section
 import app.kreate.android.themed.common.screens.settings.general.PlayerSettings
 import app.kreate.android.themed.common.screens.settings.general.updateSection
-import app.kreate.android.utils.innertube.getAppLanguageCode
+import app.kreate.android.utils.innertube.HOST_LANGUAGE
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -90,7 +90,7 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
                         preference = Preferences.APP_REGION,
                         title = stringResource( R.string.setting_entry_app_region ),
                         getName = {
-                            val locale = Locale(getAppLanguageCode(), it)
+                            val locale = Locale(HOST_LANGUAGE, it)
                             locale.getDisplayCountry( locale )
                         },
                         getList = { Locale.getISOCountries() },

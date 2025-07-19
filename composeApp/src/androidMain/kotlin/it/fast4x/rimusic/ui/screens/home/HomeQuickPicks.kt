@@ -35,6 +35,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +55,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.utils.innertube.HOST_LANGUAGE
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -69,7 +71,6 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.Countries
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayEventsType
@@ -123,6 +124,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Locale
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -190,7 +192,7 @@ fun HomeQuickPicks(
     val last50Year: Duration = 18250.days
     val from = last50Year.inWholeMilliseconds
 
-    var selectedCountryCode = Countries.US
+    var countryCode by Preferences.APP_REGION
 
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
 
@@ -202,7 +204,7 @@ fun HomeQuickPicks(
         //Used to refresh chart when country change
         if (showCharts)
             chartsPageResult =
-                Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
+                Innertube.chartsPageComplete( countryCode )
 
         if (loadedData) return
 
@@ -275,7 +277,7 @@ fun HomeQuickPicks(
         }
     }
 
-    LaunchedEffect(Unit, playEventType, selectedCountryCode) {
+    LaunchedEffect( Unit, playEventType, countryCode ) {
         loadData()
     }
 
@@ -797,17 +799,24 @@ fun HomeQuickPicks(
 
                     chartsPageInit?.let { page ->
 
+                        val countryDisplayName by remember {derivedStateOf {
+                            val locale = Locale(HOST_LANGUAGE, countryCode)
+                            locale.getDisplayCountry( locale )
+                        }}
                         Title(
-                            title = "${stringResource(R.string.charts)} (${selectedCountryCode.countryName})",
+                            title = "${stringResource(R.string.charts)} ($countryDisplayName)",
                             onClick = {
                                 menuState.display {
                                     Menu {
-                                        Countries.entries.forEach { country ->
+                                        Locale.getISOCountries().forEach { code ->
+                                            val locale = Locale(HOST_LANGUAGE, code)
+                                            val displayName = locale.getDisplayCountry( locale )
+
                                             MenuEntry(
                                                 icon = R.drawable.arrow_right,
-                                                text = country.countryName,
+                                                text = displayName,
                                                 onClick = {
-                                                    selectedCountryCode = country
+                                                    countryCode = code
                                                     menuState.hide()
                                                 }
                                             )
