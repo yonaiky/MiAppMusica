@@ -29,8 +29,8 @@ object Updater {
         return assets.fastFirstOrNull {
             // Get the first build that has name matches 'Kreate-<buildType>.apk'
             // e.g. Release version will have name 'Kreate-release.apk'
-            it.name == "%s-%s.apk".format( BuildConfig.APP_NAME, BuildConfig.BUILD_TYPE )
-        } ?: throw NoSuchFileException("Couldn't find build matching this build")       // TODO: Add to strings.xml
+            it.name == "%s-release.apk".format( BuildConfig.APP_NAME, BuildConfig.BUILD_TYPE )
+        } ?: throw NoSuchFileException(appContext().getString( R.string.error_no_build_matches_this_version ))
     }
 
     /**
@@ -89,7 +89,7 @@ object Updater {
             fetchUpdate()
 
             val isNewUpdateAvailable = trimVersion( BuildConfig.VERSION_NAME ) != trimVersion( tagName )
-            if( !isNewUpdateAvailable )
+            if( !isNewUpdateAvailable && (Preferences.SHOW_CHECK_UPDATE_STATUS.value || isForced) )
                 Toaster.i( R.string.info_no_update_available )
 
             when( Preferences.CHECK_UPDATE.value ) {

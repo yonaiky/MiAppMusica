@@ -871,6 +871,9 @@ sealed class Preferences<T>(
         val CHECK_UPDATE by lazy {
             Enum( preferences, "CheckUpdateState", "checkUpdateState", CheckUpdateState.DISABLED )
         }
+        val SHOW_CHECK_UPDATE_STATUS by lazy {
+            Boolean( preferences, "ShowNoUpdateAvailableMessage", "", true )
+        }
         val APP_LANGUAGE by lazy {
             Enum( preferences, "AppLanguage", "languageApp", Languages.System )
         }

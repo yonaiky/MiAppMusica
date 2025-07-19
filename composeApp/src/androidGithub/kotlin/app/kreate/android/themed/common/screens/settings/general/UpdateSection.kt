@@ -51,4 +51,21 @@ fun LazyListScope.updateSection( search: SettingEntrySearch ) = section(R.string
             onClick = changelogs::showDialog,
             subtitle = "v${BuildConfig.VERSION_NAME}"
         )
+
+    val updateAvailableTitle = stringResource(
+        R.string.setting_entry_show_no_update_available,
+        stringResource( R.string.info_no_update_available )
+    )
+    if( search appearsIn updateAvailableTitle )
+        SettingComponents.BooleanEntry(
+            preference = Preferences.SHOW_CHECK_UPDATE_STATUS,
+            title = updateAvailableTitle,
+            subtitle = stringResource(
+                if( Preferences.SHOW_CHECK_UPDATE_STATUS.value )
+                    R.string.setting_description_show_no_update_available_yes
+                else
+                    R.string.setting_description_show_no_update_available_no
+            ),
+            action = SettingComponents.Action.NONE
+        )
 }
