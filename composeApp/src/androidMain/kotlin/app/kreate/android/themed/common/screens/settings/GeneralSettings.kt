@@ -93,7 +93,7 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
                             val locale = Locale(getAppLanguageCode(), it)
                             locale.getDisplayCountry( locale )
                         },
-                        getList = { Locale.getISOCountries().toList() },
+                        getList = { Locale.getISOCountries() },
                         subtitle = stringResource( R.string.setting_description_app_region )
                     )
                 }
