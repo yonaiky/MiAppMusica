@@ -23,7 +23,7 @@ enum class ExoPlayerDiskDownloadCacheMaxSize(
     override val text: String
         @Composable
         get() = when ( this ) {
-            Disabled -> stringResource( R.string.turn_off )
+            Disabled -> stringResource( R.string.vt_disabled )
             Unlimited -> stringResource( R.string.unlimited )
             else -> this.name
         }

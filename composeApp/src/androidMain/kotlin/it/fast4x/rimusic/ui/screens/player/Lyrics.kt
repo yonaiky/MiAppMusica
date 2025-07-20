@@ -2151,7 +2151,7 @@ fun Lyrics(
                                                     Menu {
                                                         MenuEntry(
                                                             icon = if (romanization == Romanization.Off) R.drawable.checkmark else R.drawable.text,
-                                                            text = stringResource(R.string.turn_off),
+                                                            text = stringResource( R.string.vt_disabled ),
                                                             secondaryText = "",
                                                             onClick = {
                                                                 menuState.hide()
