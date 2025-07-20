@@ -1,0 +1,23 @@
+ADD:
+- In-app auto update (GitHub build)
+- New settings entry to view changelogs (GitHub build)
+- Option to change region
+- Toggle to show/hide "No updates available"
+
+CHANGE:
+- Update checker "Enabled" replaced with "auto download & install" (requires manual select to work)
+- Changing language is no longer require restart
+
+FIX:
+- Timeline background bar's height when PinBar is selected
+- Misaligned "check now" button in setting (GitHub build)
+- Discord login showed Piped logo
+- Discord login page hangs after login
+- Discord rich presence refused to update when song plays
+- Explicit tag didn't show on songs
+- Only explicit tag showed without title
+- Saved artists/albums didn't work without internet connection
+- Scroll locked when no internet connection became unavailable
+- Charts refused to update after changing region
+- Duplicate artists in Artists tab when followed in search
+- Fix song refused to update its information in some cases
