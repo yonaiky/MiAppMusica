@@ -219,7 +219,8 @@ fun AccountSettings( paddingValues: PaddingValues ) {
             }
 
             if( isAtLeastAndroid81 )
-                section( R.string.social_discord ) {
+                // This is a brand name that doesn't need translation
+                section( "Discord" ) {
 
                     if( search appearsIn R.string.discord_enable_rich_presence )
                         SettingComponents.BooleanEntry(

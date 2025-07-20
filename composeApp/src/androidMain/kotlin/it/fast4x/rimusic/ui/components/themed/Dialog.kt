@@ -79,7 +79,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -123,7 +122,6 @@ import it.fast4x.rimusic.ui.styling.ColorPalette
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
-import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.bold
@@ -1109,105 +1107,6 @@ inline fun GenericDialog(
             }
         }
     }
-}
-
-@Composable
-fun NewVersionDialog (
-    updatedProductName: String,
-    updatedVersionName: String,
-    updatedVersionCode: Int,
-    onDismiss: () -> Unit
-) {
-    val uriHandler = LocalUriHandler.current
-    DefaultDialog(
-        onDismiss = { onDismiss() },
-        content = {
-            BasicText(
-                text = stringResource(R.string.update_available),
-                style = typography().s.bold.copy(color = colorPalette().text),
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            BasicText(
-                text = String.format(stringResource(R.string.app_update_dialog_new),updatedVersionName),
-                style = typography().xs.semiBold.copy(color = colorPalette().text),
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            BasicText(
-                text = stringResource(R.string.actions_you_can_do),
-                style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(bottom = 20.dp)
-                    .fillMaxWidth()
-            ) {
-                BasicText(
-                    text = stringResource(R.string.open_the_github_releases_web_page_and_download_latest_version),
-                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                )
-                Image(
-                    painter = painterResource(R.drawable.globe),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette().shimmer),
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable {
-                            onDismiss()
-                            uriHandler.openUri("https://github.com/fast4x/RiMusic/releases/latest")
-                        }
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(bottom = 20.dp)
-                    .fillMaxWidth()
-            ) {
-                BasicText(
-                    text = stringResource(R.string.download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it),
-                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
-                    maxLines = 4,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                )
-                Image(
-                    painter = painterResource(R.drawable.downloaded),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette().shimmer),
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable {
-                            onDismiss()
-                            uriHandler.openUri("https://github.com/fast4x/RiMusic/releases/download/$updatedVersionName/app-foss-release.apk")
-                        }
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(bottom = 20.dp)
-                    .fillMaxWidth()
-            ) {
-                BasicText(
-                    text = stringResource(R.string.f_droid_users_can_wait_for_the_update_info),
-                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
-                    maxLines = 4,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-
-    )
 }
 
 @androidx.annotation.OptIn(UnstableApi::class)

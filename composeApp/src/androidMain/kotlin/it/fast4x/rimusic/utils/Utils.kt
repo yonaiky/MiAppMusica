@@ -47,12 +47,10 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
 import it.fast4x.rimusic.service.modern.isLocal
-import it.fast4x.rimusic.ui.components.themed.NewVersionDialog
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import me.knighthat.utils.Toaster
-import java.io.File
 import java.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -358,43 +356,6 @@ suspend fun Result<LibraryPage?>.completed(): Result<LibraryPage> = runCatching 
         items = items ?: emptyList(),
         continuation = page?.continuation
     )
-}
-
-
-@Composable
-fun CheckAvailableNewVersion(
-    onDismiss: () -> Unit,
-    updateAvailable: (Boolean) -> Unit
-) {
-    var updatedProductName = ""
-    var updatedVersionName = ""
-    var updatedVersionCode = 0
-    val file = File(LocalContext.current.filesDir, "RiMusicUpdatedVersionCode.ver")
-    if (file.exists()) {
-        val dataText = file.readText().substring(0, file.readText().length - 1).split("-")
-        updatedVersionCode =
-            try {
-                dataText.first().toInt()
-            } catch (e: Exception) {
-                0
-            }
-        updatedVersionName = if(dataText.size == 3) dataText[1] else ""
-        updatedProductName =  if(dataText.size == 3) dataText[2] else ""
-    }
-
-    if (updatedVersionCode > getVersionCode()) {
-        //if (updatedVersionCode > BuildConfig.VERSION_CODE)
-        NewVersionDialog(
-            updatedVersionName = updatedVersionName,
-            updatedVersionCode = updatedVersionCode,
-            updatedProductName = updatedProductName,
-            onDismiss = onDismiss
-        )
-        updateAvailable(true)
-    } else {
-        updateAvailable(false)
-        onDismiss()
-    }
 }
 
 fun isNetworkConnected(context: Context): Boolean {
