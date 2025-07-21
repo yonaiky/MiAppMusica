@@ -142,7 +142,7 @@ sealed class Preferences<T>(
         private const val ENCRYPTED_PREFERENCES_FILENAME = "secure_preferences"
 
         private lateinit var preferences: SharedPreferences
-        @RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.N)
         private lateinit var encryptedPreferences: SharedPreferences
 
         //<editor-fold defaultstate="collapsed" desc="Item size">
@@ -687,7 +687,7 @@ sealed class Preferences<T>(
         val DISCORD_LOGIN by lazy {
             Boolean( preferences, "DiscordLogin", "isDiscordPresenceEnabled", false )
         }
-        @delegate:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.N)
         val DISCORD_ACCESS_TOKEN by lazy {
             String( encryptedPreferences, "DiscordPersonalAccessToken", "", "" )
         }

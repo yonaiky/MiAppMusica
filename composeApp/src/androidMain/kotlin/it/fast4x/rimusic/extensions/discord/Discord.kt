@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.extensions.discord
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -11,6 +12,7 @@ import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -154,6 +156,7 @@ fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
 private lateinit var rpc: KizzyRPC
 private lateinit var activity: Activity
 
+@RequiresApi(Build.VERSION_CODES.N)
 fun updateDiscordPresence(
     mediaItem: MediaItem,
     timeStart: Long,

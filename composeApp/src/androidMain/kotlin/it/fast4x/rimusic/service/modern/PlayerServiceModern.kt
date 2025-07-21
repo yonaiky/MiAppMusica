@@ -485,6 +485,8 @@ class PlayerServiceModern : MediaLibraryService(),
             updateDefaultNotification()
             withContext(Dispatchers.Main) {
                 player.currentMediaItem?.also {
+                    if( !isAtLeastAndroid7 ) return@also
+
                     updateDiscordPresence(
                         mediaItem = it,
                         timeStart = if (player.isPlaying)
