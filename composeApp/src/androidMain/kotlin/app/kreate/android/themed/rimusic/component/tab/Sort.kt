@@ -19,8 +19,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.Drawable
 import it.fast4x.rimusic.enums.MenuStyle
@@ -65,7 +65,7 @@ open class Sort<T: Enum<T>>(
     @Composable
     override fun ListMenu() = me.knighthat.component.menu.ListMenu.Menu {
         // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
-        sortBy.javaClass.enumConstants.forEach {
+        sortBy::class.java.enumConstants?.forEach {
             me.knighthat.component.menu.ListMenu.Entry(
                 text = if (it is TextView) it.text else it.name,
                 icon = {
@@ -92,7 +92,7 @@ open class Sort<T: Enum<T>>(
     override fun GridMenu() = me.knighthat.component.menu.GridMenu.Menu {
         items(
             // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
-            items = sortBy.javaClass.enumConstants,
+            items = sortBy::class.java.enumConstants.orEmpty(),
             key = Enum<T>::ordinal
         ) {
             me.knighthat.component.menu.GridMenu.Entry(
