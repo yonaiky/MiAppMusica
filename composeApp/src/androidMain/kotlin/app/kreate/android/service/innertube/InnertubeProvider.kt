@@ -64,7 +64,12 @@ class InnertubeProvider: Innertube.Provider {
         defaultRequest {
             accept( ContentType.Application.Json )
             contentType( ContentType.Application.Json )
-            parametersOf( "prettyPrint", "false" )
+
+            headers {
+                append( "X-Goog-Api-Format-Version", "1" )
+                append( "X-Origin", Constants.YOUTUBE_MUSIC_URL )
+                append( "Referer", Constants.YOUTUBE_MUSIC_URL )
+            }
         }
     }
 
@@ -72,12 +77,12 @@ class InnertubeProvider: Innertube.Provider {
     override fun execute( request: Request ): Response = runBlocking( Dispatchers.IO ) {
         val result = CLIENT.request( request.url ) {
             method = HttpMethod.parse( request.httpMethod )
-            // Only setBody when it's not null
-            JSON.encodeToString( request.dataToSend ).also( this::setBody )
             // Disable pretty print - potentially save data
             url {
                 parameters.append( "prettyPrint", "false" )
             }
+            // Only setBody when it's not null
+            JSON.encodeToString( request.dataToSend ).also( this::setBody )
             // Add headers
             request.headers
                    .forEach( headers::appendAll )
