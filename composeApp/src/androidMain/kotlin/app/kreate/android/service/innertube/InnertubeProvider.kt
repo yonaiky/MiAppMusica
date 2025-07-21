@@ -76,6 +76,8 @@ class InnertubeProvider: Innertube.Provider {
         }
     }
 
+    override val visitorData: String by Preferences.YOUTUBE_VISITOR_DATA
+
     @Blocking
     override fun execute( request: Request ): Response = runBlocking( Dispatchers.IO ) {
         val result = CLIENT.request( request.url ) {
