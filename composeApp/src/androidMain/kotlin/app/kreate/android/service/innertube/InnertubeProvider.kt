@@ -7,6 +7,7 @@ import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.accept
+import io.ktor.client.request.headers
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -20,8 +21,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.ClassDiscriminatorMode
 import kotlinx.serialization.json.Json
+import me.knighthat.innertube.Constants
 import me.knighthat.innertube.Innertube
 import me.knighthat.innertube.request.Request
+import me.knighthat.innertube.request.body.Context
 import me.knighthat.innertube.response.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.jetbrains.annotations.Blocking
@@ -86,6 +89,13 @@ class InnertubeProvider: Innertube.Provider {
             // Add headers
             request.headers
                    .forEach( headers::appendAll )
+
+            headers {
+                val context = request.dataToSend?.context ?: Context.WEB_REMIX_DEFAULT
+
+                append( "X-YouTube-Client-Name", context.client.xClientName.toString() )
+                append( "X-YouTube-Client-Version", context.client.clientVersion )
+            }
         }
 
         Response(
