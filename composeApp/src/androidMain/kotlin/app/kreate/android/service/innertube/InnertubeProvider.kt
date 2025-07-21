@@ -76,6 +76,8 @@ class InnertubeProvider: Innertube.Provider {
         }
     }
 
+    override val cookies: String by Preferences.YOUTUBE_COOKIES
+    override val dataSyncId: String by Preferences.YOUTUBE_SYNC_ID
     override val visitorData: String by Preferences.YOUTUBE_VISITOR_DATA
 
     @Blocking
