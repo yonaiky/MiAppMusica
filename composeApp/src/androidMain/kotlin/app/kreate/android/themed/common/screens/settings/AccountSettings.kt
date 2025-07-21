@@ -187,17 +187,30 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                                     },
                                     shape = Preferences.THUMBNAIL_BORDER_RADIUS.value.shape
                                 ) {
-                                    YouTubeLogin(
-                                        onLogin = { cookieRetrieved ->
-                                            if (cookieRetrieved.contains("SAPISID")) {
-                                                isLoggedIn = true
-                                                loginYouTube = false
-                                                Toaster.i( "Login successful" )
-                                                onRestartServiceChange( true )
-                                            }
+                                    YouTubeLogin {
+                                        val message: String
+                                        if( Preferences.YOUTUBE_COOKIES.value.contains( "SAPISID" ) ) {
+                                            isLoggedIn = true
+                                            message = "Login successful"
+                                        } else {
+                                            Preferences.YOUTUBE_VISITOR_DATA.reset()
+                                            Preferences.YOUTUBE_SYNC_ID.reset()
+                                            Preferences.YOUTUBE_COOKIES.reset()
+                                            Preferences.YOUTUBE_ACCOUNT_NAME.reset()
+                                            Preferences.YOUTUBE_ACCOUNT_EMAIL.reset()
+                                            Preferences.YOUTUBE_SELF_CHANNEL_HANDLE.reset()
+                                            Preferences.YOUTUBE_ACCOUNT_AVATAR.reset()
 
+                                            message = "Login failed"
                                         }
-                                    )
+
+                                        loginYouTube = false
+                                        if( isLoggedIn )
+                                            Toaster.i( message )
+                                        else
+                                            Toaster.e( message )
+                                        onRestartServiceChange( true )
+                                    }
                                 }
 
                                 var restartActivity by Preferences.RESTART_ACTIVITY
