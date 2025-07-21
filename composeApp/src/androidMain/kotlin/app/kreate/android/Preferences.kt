@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.util.fastForEach
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
@@ -618,25 +619,25 @@ sealed class Preferences<T>(
             Boolean( preferences, "YouTubePlaylistsSync", "enableYoutubeSync", false )
         }
         val YOUTUBE_VISITOR_DATA by lazy {
-            String( preferences, "YouTubeVisitorData", "ytVisitorData", Constants.VISITOR_DATA )
+            String( encryptedPreferences, "YouTubeVisitorData", "ytVisitorData", Constants.VISITOR_DATA )
         }
         val YOUTUBE_SYNC_ID by lazy {
-            String( preferences, "YouTubeSyncId", "ytDataSyncIdKey", "" )
+            String( encryptedPreferences, "YouTubeSyncId", "ytDataSyncIdKey", "" )
         }
         val YOUTUBE_COOKIES by lazy {
-            String( preferences, "YouTubeCookies", "ytCookie", "" )
+            String( encryptedPreferences, "YouTubeCookies", "ytCookie", "" )
         }
         val YOUTUBE_ACCOUNT_NAME by lazy {
-            String( preferences, "YouTubeAccountName", "ytAccountNameKey", "" )
+            String( encryptedPreferences, "YouTubeAccountName", "ytAccountNameKey", "" )
         }
         val YOUTUBE_ACCOUNT_EMAIL by lazy {
-            String( preferences, "YouTubeAccountEmail", "ytAccountEmailKey", "" )
+            String( encryptedPreferences, "YouTubeAccountEmail", "ytAccountEmailKey", "" )
         }
         val YOUTUBE_SELF_CHANNEL_HANDLE by lazy {
-            String( preferences, "YouTubeSelfChannelHandle", "ytAccountChannelHandleKey", "" )
+            String( encryptedPreferences, "YouTubeSelfChannelHandle", "ytAccountChannelHandleKey", "" )
         }
         val YOUTUBE_ACCOUNT_AVATAR by lazy {
-            String( preferences, "YouTubeAccountAvatar", "ytAccountThumbnailKey", "" )
+            String( encryptedPreferences, "YouTubeAccountAvatar", "ytAccountThumbnailKey", "" )
         }
         val YOUTUBE_LAST_VIDEO_ID by lazy {
             String( preferences, "YouTubeLastVideoId", "lastVideoId", "" )
@@ -1044,8 +1045,21 @@ sealed class Preferences<T>(
          * to work.
          */
         fun load( context: Context) {
-            if( !::preferences.isInitialized )
+            if( !::preferences.isInitialized ) {
                 preferences = context.getSharedPreferences( PREFERENCES_FILENAME, Context.MODE_PRIVATE )
+                preferences.edit {
+                    // Using reflection to get unused keys would be a better
+                    // idea, but it'd force all keys to be initialized, which
+                    // is undesirable.
+                    listOf(
+                        "EnablePiped", "isPipedEnabled", "IsPipedCustom", "isPipedCustomEnabled",
+                        "YouTubeVisitorData", "ytVisitorData", "YouTubeSyncId", "ytDataSyncIdKey",
+                        "YouTubeCookies", "ytCookie", "YouTubeAccountName", "ytAccountNameKey",
+                        "YouTubeAccountEmail", "ytAccountEmailKey", "YouTubeSelfChannelHandle",
+                        "ytAccountChannelHandleKey", "YouTubeAccountAvatar", "ytAccountThumbnailKey"
+                    ).fastForEach( this::remove )
+                }
+            }
 
             if( !isAtLeastAndroid7 || ::encryptedPreferences.isInitialized ) return
 
@@ -1064,6 +1078,15 @@ sealed class Preferences<T>(
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
                 )
+                encryptedPreferences.edit {
+                    // Using reflection to get unused keys would be a better
+                    // idea, but it'd force all keys to be initialized, which
+                    // is undesirable.
+                    listOf(
+                        "pipedUsername", "pipedPassword", "pipedInstanceName", "pipedApiBaseUrl",
+                        "pipedApiToken",
+                    ).fastForEach( this::remove )
+                }
             } catch ( e: Exception ) {
                 runCatching {
                     context.deleteSharedPreferences( ENCRYPTED_PREFERENCES_FILENAME )
