@@ -738,7 +738,7 @@
     <string name="setting_entry_smart_rewind">Retroceder inteligente</string>
     <string name="setting_description_smart_rewind">O botão anterior agirá como um botão de retroceder após %s segundos</string>
     <string name="setting_entry_show_chip">Mostrar \"%s\" chip</string>
-    <string name="entry_setting_quick_picks_show_section">Mostrar \"%s\"</string>
+    <string name="show_quotes">Mostrar \"%s\"</string>
     <string name="setting_entry_crash_log">Registo de falhas</string>
     <string name="setting_entry_logs">Registos</string>
     <string name="setting_description_copy_or_export_logs">Toque aqui para exportar, toque no ícone para copiar</string>
@@ -767,7 +767,6 @@
     <string name="error_failed_to_extract_discord_acess_token">Falha ao extrair o token de acesso ao Discord</string>
     <string name="setting_entry_app_region">Região do aplicativo</string>
     <string name="setting_description_app_region">Afecta os resultados das tabelas, os álbuns recém-lançados, as listas de reprodução, os artistas e muito mais.</string>
-    <string name="setting_entry_show_no_update_available">Show \"%s\"</string>
     <string name="setting_description_show_no_update_available_yes">Notify update status on startup</string>
     <string name="setting_description_show_no_update_available_no">Will not annoy you with this message on startup</string>
     <string name="error_no_build_matches_this_version">Could not find any build matches this version</string>

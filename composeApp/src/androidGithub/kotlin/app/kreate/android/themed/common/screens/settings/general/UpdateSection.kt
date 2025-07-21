@@ -53,7 +53,7 @@ fun LazyListScope.updateSection( search: SettingEntrySearch ) = section(R.string
         )
 
     val updateAvailableTitle = stringResource(
-        R.string.setting_entry_show_no_update_available,
+        R.string.show_quotes,
         stringResource( R.string.info_no_update_available )
     )
     if( search appearsIn updateAvailableTitle )

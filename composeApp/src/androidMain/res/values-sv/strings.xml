@@ -737,7 +737,7 @@
     <string name="setting_entry_smart_rewind">Smart rewind</string>
     <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s secd seconds</string>
     <string name="setting_entry_show_chip">Show \"%s\" chip</string>
-    <string name="entry_setting_quick_picks_show_section">Show \"%s\"</string>
+    <string name="show_quotes">Show \"%s\"</string>
     <string name="setting_entry_crash_log">Crash log</string>
     <string name="setting_entry_logs">Logs</string>
     <string name="setting_description_copy_or_export_logs">Tap here to export, tap icon to copy</string>
@@ -766,7 +766,6 @@
     <string name="error_failed_to_extract_discord_acess_token">Failed to extract Discord access token</string>
     <string name="setting_entry_app_region">App region</string>
     <string name="setting_description_app_region">Affects chart results, newly released albums, playlists, artists, and more.</string>
-    <string name="setting_entry_show_no_update_available">Show \"%s\"</string>
     <string name="setting_description_show_no_update_available_yes">Notify update status on startup</string>
     <string name="setting_description_show_no_update_available_no">Will not annoy you with this message on startup</string>
     <string name="error_no_build_matches_this_version">Could not find any build matches this version</string>

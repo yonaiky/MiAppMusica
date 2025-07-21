@@ -77,7 +77,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.tips ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.tips ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_TIPS,
@@ -97,7 +97,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.charts ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.charts ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_CHARTS,
@@ -106,7 +106,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.related_albums ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.related_albums ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_RELATED_ALBUMS,
@@ -115,7 +115,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.similar_artists ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.similar_artists ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_RELATED_ARTISTS,
@@ -124,7 +124,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums_of_your_artists ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.new_albums_of_your_artists ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS_ARTISTS,
@@ -133,7 +133,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.new_albums ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.new_albums ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_NEW_ALBUMS,
@@ -142,7 +142,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.playlists_you_might_like ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.playlists_you_might_like ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_MIGHT_LIKE_PLAYLISTS,
@@ -151,7 +151,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.moods_and_genres ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.moods_and_genres ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_MOODS_AND_GENRES,
@@ -160,7 +160,7 @@ fun QuickPicksSettings( paddingValues: PaddingValues ) {
             }
 
             item {
-                val title = stringResource( R.string.entry_setting_quick_picks_show_section, stringResource( R.string.monthly_playlists ) )
+                val title = stringResource( R.string.show_quotes, stringResource( R.string.monthly_playlists ) )
                 if( search appearsIn title )
                     SettingComponents.BooleanEntry(
                         Preferences.QUICK_PICKS_SHOW_MONTHLY_PLAYLISTS,
