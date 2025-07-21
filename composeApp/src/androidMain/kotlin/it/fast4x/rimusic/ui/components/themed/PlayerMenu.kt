@@ -8,9 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.MediaItem
@@ -227,9 +225,6 @@ fun AddToPlaylistPlayerMenu(
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
 ) {
-    val isPipedEnabled by Preferences.ENABLE_PIPED
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     AddToPlaylistItemMenu(
         navController = navController,
         mediaItem = mediaItem,
@@ -281,9 +276,6 @@ fun AddToPlaylistArtistSongs(
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
 ) {
-    val isPipedEnabled by Preferences.ENABLE_PIPED
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     var position by remember {
         mutableIntStateOf(0)
     }

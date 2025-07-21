@@ -40,6 +40,7 @@ import me.knighthat.utils.Toaster
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
     fun setToken( token: String ) {

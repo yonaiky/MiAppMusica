@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import app.kreate.android.Preferences
 import app.kreate.android.R
 import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
@@ -30,7 +29,6 @@ import me.knighthat.component.dialog.TextInputDialog
 class NewPlaylistDialog private constructor(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>,
-    private val pipedState: MutableState<Boolean>
 ): TextInputDialog(InputDialogConstraints.ALL), MenuIcon, Descriptive {
 
     companion object {
@@ -40,8 +38,7 @@ class NewPlaylistDialog private constructor(
                 remember { mutableStateOf(false) },
                 remember {
                     mutableStateOf( TextFieldValue() )
-                },
-                Preferences.ENABLE_PIPED
+                }
             )
     }
 

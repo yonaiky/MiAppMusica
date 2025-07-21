@@ -48,7 +48,7 @@ import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.RestartPlayerService
-import it.fast4x.rimusic.utils.isAtLeastAndroid81
+import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import me.knighthat.utils.Toaster
 
 @ExperimentalMaterial3Api
@@ -218,7 +218,7 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                 }
             }
 
-            if( isAtLeastAndroid81 )
+            if( isAtLeastAndroid7 )
                 // This is a brand name that doesn't need translation
                 section( "Discord" ) {
 

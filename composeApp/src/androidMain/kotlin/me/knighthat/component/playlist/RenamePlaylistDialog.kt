@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import app.kreate.android.Preferences
 import app.kreate.android.R
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.models.Playlist
@@ -16,8 +15,7 @@ import me.knighthat.component.RenameDialog
 class RenamePlaylistDialog private constructor(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>,
-    private val pipedActiveState: MutableState<Boolean>,
-    private val getPlaylist: () -> Playlist?,
+    private val getPlaylist: () -> Playlist?
 ): RenameDialog(activeState, valueState) {
 
     companion object {
@@ -28,7 +26,6 @@ class RenamePlaylistDialog private constructor(
                 remember( getPlaylist()?.name ) {
                     mutableStateOf( TextFieldValue(getPlaylist()?.name ?: "") )
                 },
-                Preferences.ENABLE_PIPED,
                 getPlaylist
             )
     }

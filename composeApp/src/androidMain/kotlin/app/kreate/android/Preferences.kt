@@ -770,34 +770,6 @@ sealed class Preferences<T>(
             Int( preferences, "CustomDarkThemeAccent", "customThemeDark_accent", DefaultDarkColorPalette.accent.hashCode() )
         }
         //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="Piped">
-        val ENABLE_PIPED by lazy {
-            Boolean( preferences, "EnablePiped", "isPipedEnabled", false )
-        }
-        val IS_CUSTOM_PIPED by lazy {
-            Boolean( preferences, "IsPipedCustom", "isPipedCustomEnabled", false )
-        }
-        @delegate:RequiresApi(Build.VERSION_CODES.N)
-        val PIPED_USERNAME by lazy {
-            String( encryptedPreferences, "pipedUsername", "", "" )
-        }
-        @delegate:RequiresApi(Build.VERSION_CODES.N)
-        val PIPED_PASSWORD by lazy {
-            String( encryptedPreferences, "pipedPassword", "", "" )
-        }
-        @delegate:RequiresApi(Build.VERSION_CODES.N)
-        val PIPED_INSTANCE_NAME by lazy {
-            String( encryptedPreferences, "pipedInstanceName", "", "" )
-        }
-        @delegate:RequiresApi(Build.VERSION_CODES.N)
-        val PIPED_API_BASE_URL by lazy {
-            String( encryptedPreferences, "pipedApiBaseUrl", "", "" )
-        }
-        @delegate:RequiresApi(Build.VERSION_CODES.N)
-        val PIPED_API_TOKEN by lazy {
-            String( encryptedPreferences, "pipedApiToken", "", "" )
-        }
-        //</editor-fold>
 
         val HOME_SONGS_TOP_PLAYLIST_PERIOD by lazy {
             Enum( preferences, "HomeSongsTopPlaylistPeriod", "", StatisticsType.All )

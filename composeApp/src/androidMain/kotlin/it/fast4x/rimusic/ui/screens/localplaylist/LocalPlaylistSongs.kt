@@ -31,7 +31,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -157,14 +156,12 @@ fun LocalPlaylistSongs(
     // Essentials
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
-    val coroutineScope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
     val menuState = LocalMenuState.current
 
     // Settings
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
-    val isPipedEnabled by Preferences.ENABLE_PIPED
     val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
     var isRecommendationEnabled by Preferences.LOCAL_PLAYLIST_SMART_RECOMMENDATION
 

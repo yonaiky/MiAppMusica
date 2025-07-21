@@ -35,7 +35,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -166,8 +165,6 @@ fun InPlaylistMediaItemMenu(
     modifier: Modifier = Modifier,
     disableScrollingText: Boolean
 ) {
-    val isPipedEnabled by Preferences.ENABLE_PIPED
-    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
     NonQueuedMediaItemMenu(
@@ -518,11 +515,6 @@ fun BaseMediaItemMenu(
     disableScrollingText: Boolean
 ) {
     val context = LocalContext.current
-
-    val coroutineScope = rememberCoroutineScope()
-    val isPipedEnabled by Preferences.ENABLE_PIPED
-
-    //println("mediaItem in BaseMediaItemMenu albumId ${mediaItem.mediaMetadata.extras?.getString("albumId")}")
 
     MediaItemMenu(
         navController = navController,
