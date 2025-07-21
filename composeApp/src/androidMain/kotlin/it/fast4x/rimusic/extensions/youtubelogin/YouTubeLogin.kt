@@ -13,13 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import app.kreate.android.Preferences
-import app.kreate.android.R
-import it.fast4x.innertube.Innertube
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import me.knighthat.innertube.Innertube
 import me.knighthat.utils.Toaster
 
 @OptIn(
@@ -47,18 +47,18 @@ fun YouTubeLogin( onDone: () -> Unit ) {
                         if ( url?.startsWith("https://music.youtube.com") == true ) {
                             Preferences.YOUTUBE_COOKIES.value = CookieManager.getInstance().getCookie( url )
 
-                            cookie = CookieManager.getInstance().getCookie( url )
-                            GlobalScope.launch {
-                                Innertube.accountInfo().onSuccess {
-                                    accountName = it?.name.orEmpty()
-                                    accountEmail = it?.email.orEmpty()
-                                    accountChannelHandle = it?.channelHandle.orEmpty()
-                                    accountThumbnail = it?.thumbnailUrl.orEmpty()
-                                    onLogin(cookie)
-                                }.onFailure {
-                                    it.printStackTrace()
-                                    it.message?.let( Toaster::e )
-                                }
+                            CoroutineScope(Dispatchers.IO ).launch {
+                                Innertube.accountInfo(CURRENT_LOCALE )
+                                         .onSuccess {
+                                             Preferences.YOUTUBE_ACCOUNT_NAME.value = it.name
+                                             Preferences.YOUTUBE_ACCOUNT_EMAIL.value = it.email.orEmpty()
+                                             Preferences.YOUTUBE_SELF_CHANNEL_HANDLE.value = it.channelHandle.orEmpty()
+                                             Preferences.YOUTUBE_ACCOUNT_AVATAR.value = it.thumbnailUrl.firstOrNull()?.url.orEmpty()
+                                         }
+                                         .onFailure {
+                                             it.printStackTrace()
+                                             it.message?.also( Toaster::e )
+                                         }
                             }
 
                             onDone()

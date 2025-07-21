@@ -1,6 +1,9 @@
 package app.kreate.android.service.innertube
 
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import app.kreate.android.BuildConfig
+import app.kreate.android.Preferences
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.compression.ContentEncoding
@@ -14,7 +17,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
-import io.ktor.http.parametersOf
+import io.ktor.util.sha1
 import io.ktor.util.toMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -28,9 +31,26 @@ import me.knighthat.innertube.request.body.Context
 import me.knighthat.innertube.response.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.jetbrains.annotations.Blocking
+import timber.log.Timber
 
 
 class InnertubeProvider: Innertube.Provider {
+
+    private val COOKIE_MAP by derivedStateOf {
+        val cookies by Preferences.YOUTUBE_COOKIES
+        if( cookies.isBlank() ) return@derivedStateOf emptyMap()
+
+        runCatching {
+            cookies.split( ';' )
+                    .associate {
+                        val (k, v) = it.split('=', limit = 2)
+                        k.trim() to v.trim()
+                    }
+        }.onFailure {
+            it.printStackTrace()
+            Timber.tag( "InnertubeProvider" ).e( "Cookie parser failed!" )
+        }.getOrElse { emptyMap() }
+    }
 
     @OptIn(ExperimentalSerializationApi::class)
     private val JSON: Json = Json {
@@ -99,6 +119,24 @@ class InnertubeProvider: Innertube.Provider {
 
                 append( "X-YouTube-Client-Name", context.client.xClientName.toString() )
                 append( "X-YouTube-Client-Version", context.client.clientVersion )
+
+                // Series of checks, if 1 fails, then don't send login information
+                if (
+                    !request.useLogin
+                    || cookies.isBlank()
+                    || "SAPISID" !in COOKIE_MAP
+                ) return@headers
+
+                append( "cookie", cookies )
+
+                val currentTime = System.currentTimeMillis() / 1000
+                val sapisidHash: String
+                "%d %s %s".format( currentTime, COOKIE_MAP["SAPISID"], Constants.YOUTUBE_MUSIC_URL )
+                          .toByteArray()
+                          .let( ::sha1 )
+                          .joinToString("") { "%02x".format(it) }
+                          .also { sapisidHash = it }
+                append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
             }
         }
 
