@@ -7,7 +7,7 @@ import app.kreate.android.R
 import me.knighthat.enums.TextView
 
 enum class CoilDiskCacheMaxSize(
-    @Size val megabytes: Int
+    @field:Size val megabytes: Int
 ): TextView {
     `32MB`( 32 ),
     `64MB`( 64 ),

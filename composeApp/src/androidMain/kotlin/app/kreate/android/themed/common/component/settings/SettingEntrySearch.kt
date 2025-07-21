@@ -38,8 +38,8 @@ import kotlinx.coroutines.launch
 
 class SettingEntrySearch(
     private val scrollableState: ScrollableState,
-    @StringRes private val titleId: Int,
-    @DrawableRes override val iconId: Int
+    @field:StringRes private val titleId: Int,
+    @field:DrawableRes override val iconId: Int
 ): AbstractSearch(), Icon {
 
     @Composable

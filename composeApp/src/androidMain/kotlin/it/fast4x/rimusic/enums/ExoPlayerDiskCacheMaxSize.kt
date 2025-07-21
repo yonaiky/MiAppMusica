@@ -7,7 +7,7 @@ import app.kreate.android.R
 import me.knighthat.enums.TextView
 
 enum class ExoPlayerDiskCacheMaxSize(
-    @Size val megabytes: Int
+    @field:Size val megabytes: Int
 ): TextView {
 
     `Disabled`( 1 ),

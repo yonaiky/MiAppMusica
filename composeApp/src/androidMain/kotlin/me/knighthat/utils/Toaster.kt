@@ -9,8 +9,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
-import es.dmoral.toasty.Toasty
 import app.kreate.android.R
+import es.dmoral.toasty.Toasty
 import it.fast4x.rimusic.appContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,9 +33,9 @@ import org.intellij.lang.annotations.MagicConstant
 object Toaster {
 
     enum class Type(
-        @ColorInt val background: Int,
-        @ColorInt val foreground: Int,
-        @DrawableRes private val iconId: Int
+        @field:ColorInt val background: Int,
+        @field:ColorInt val foreground: Int,
+        @field:DrawableRes private val iconId: Int
     ) {
         NORMAL(
             Color.rgb( 108, 117, 125 ),

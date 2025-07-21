@@ -6,7 +6,7 @@ import app.kreate.android.R
 import org.intellij.lang.annotations.MagicConstant
 
 enum class QueueLoopType(
-    @MagicConstant(valuesFromClass = Player::class) val type: Int,
+    @field:MagicConstant(valuesFromClass = Player::class) val type: Int,
     @field:DrawableRes override val iconId: Int
 ): Drawable {
 
