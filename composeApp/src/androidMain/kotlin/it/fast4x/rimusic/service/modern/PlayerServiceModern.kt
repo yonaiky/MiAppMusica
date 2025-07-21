@@ -488,6 +488,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     if( !isAtLeastAndroid7 ) return@also
 
                     updateDiscordPresence(
+                        this@PlayerServiceModern,
                         mediaItem = it,
                         timeStart = if (player.isPlaying)
                             System.currentTimeMillis() - player.currentPosition

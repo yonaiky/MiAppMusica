@@ -159,6 +159,7 @@ private lateinit var activity: Activity
 
 @RequiresApi(Build.VERSION_CODES.N)
 fun updateDiscordPresence(
+    context: Context,
     mediaItem: MediaItem,
     timeStart: Long,
     timeEnd: Long
@@ -166,7 +167,9 @@ fun updateDiscordPresence(
     val token by Preferences.DISCORD_ACCESS_TOKEN
     if( token.isBlank() ) return@launch
 
-    if( !::rpc.isInitialized ) {
+    // Check if tokens are different in case
+    // user switches between their accounts.
+    if( !::rpc.isInitialized || rpc.token != token ) {
         rpc = KizzyRPC( token )
         activity = Activity(
             applicationId = "1370148610158759966",
