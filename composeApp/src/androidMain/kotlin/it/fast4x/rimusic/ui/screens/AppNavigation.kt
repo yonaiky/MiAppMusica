@@ -86,8 +86,13 @@ private val BROWSE_ID_ARG = navArgument( "browseId" ) {
 }
 private val PARAM_ARG = navArgument( "params" ) {
     type = NavType.StringType
-    // Use default value to make it optional
+    // Allow nullable, therefore, assigns null by default
     nullable = true
+}
+private val USE_LOGIN_ARG = navArgument( "useLogin" ) {
+    type = NavType.BoolType
+    // Use default value to make it optional
+    defaultValue = false
 }
 
 @androidx.annotation.OptIn()
@@ -235,14 +240,15 @@ fun AppNavigation(
         }
 
         composable(
-            route = "${NavRoutes.YT_PLAYLIST}/{browseId}?params={params}",
-            arguments = listOf( BROWSE_ID_ARG, PARAM_ARG )
+            route = "${NavRoutes.YT_PLAYLIST}/{browseId}?params={params}&useLogin={useLogin}",
+            arguments = listOf( BROWSE_ID_ARG, PARAM_ARG, USE_LOGIN_ARG )
         ) {
             // browseId must not be empty or null in any case
             val browseId = it.arguments!!.getString( "browseId" )!!
             val params = it.arguments!!.getString( "params" )
+            val useLogin = it.arguments!!.getBoolean( "useLogin" )
 
-            YouTubePlaylist( navController, browseId, params, miniPlayer )
+            YouTubePlaylist( navController, browseId, params,  useLogin, miniPlayer )
         }
 
         composable(

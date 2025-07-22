@@ -131,6 +131,7 @@ fun YouTubePlaylist(
     navController: NavController,
     browseId: String,
     params: String?,
+    useLogin: Boolean,
     miniPlayer: @Composable () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -224,7 +225,7 @@ fun YouTubePlaylist(
 
         val pageProvider: suspend (String?) -> Unit by rememberUpdatedState {
             if ( it.isNullOrBlank() )
-                Innertube.browsePlaylist( browseId, CURRENT_LOCALE )
+                Innertube.browsePlaylist( browseId, CURRENT_LOCALE, useLogin )
                          .onSuccess { page ->
                              playlistPage = page
 
@@ -236,7 +237,13 @@ fun YouTubePlaylist(
                              err.message?.also( Toaster::e )
                          }
             else if ( playlistPage?.visitorData != null )
-                Innertube.playlistContinued( playlistPage!!.visitorData!!, it, CURRENT_LOCALE, params )
+                Innertube.playlistContinued(
+                             playlistPage!!.visitorData!!,
+                             it,
+                             CURRENT_LOCALE,
+                             params,
+                             useLogin
+                         )
                          .onSuccess { continued ->
                              items.addAll(
                                  continued.songs
