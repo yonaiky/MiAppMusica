@@ -162,6 +162,8 @@ fun PlaylistItem(
 
         if( customThumbnail != null )
             flowOf( listOf( customThumbnail ) )
+        else if( playlist.thumbnailUrl != null )
+            flowOf( listOf( playlist.thumbnailUrl ) )
         else
             Database.songPlaylistMapTable
                     .sortSongsByPlayTime( playlist.playlist.id )
