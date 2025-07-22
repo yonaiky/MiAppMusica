@@ -23,26 +23,34 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastMap
+import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.UiType
@@ -59,13 +67,19 @@ import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.autoSyncToolbutton
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.SongShuffler
+import me.knighthat.innertube.Innertube
+import me.knighthat.utils.Toaster
 
 
 @ExperimentalMaterial3Api
@@ -75,7 +89,7 @@ import me.knighthat.component.tab.SongShuffler
 @ExperimentalFoundationApi
 @Composable
 fun HomeLibrary(
-    onPlaylistClick: (Playlist) -> Unit,
+    navController: NavController,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
@@ -88,6 +102,7 @@ fun HomeLibrary(
     val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     var items by persistList<PlaylistPreview>("home/playlists")
+    val onlinePlaylists = remember { mutableStateListOf<PlaylistPreview>() }
 
     var itemsOnDisplay by persistList<PlaylistPreview>("home/playlists/on_display")
 
@@ -127,12 +142,52 @@ fun HomeLibrary(
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.playlistTable
                 .sortPreviews( sort.sortBy, sort.sortOrder )
+                .combine( snapshotFlow { onlinePlaylists.toList() } ) { a, b ->
+                    // If playlist is imported by user, then don't make it show up again
+                    val browseIds = a.fastMapNotNull { it.playlist.browseId }.toSet()
+                    val filteredB = b.fastFilter { it.playlist.browseId !in browseIds }
+
+                    // Make online playlist stay on top
+                    filteredB + a
+                }
                 .distinctUntilChanged()
-                .collect { items = it }
+                .flowOn(Dispatchers.Default )
+                .collectLatest { items = it }
     }
     LaunchedEffect( items, search.input ) {
         itemsOnDisplay = items.filter {
             search appearsIn it.playlist.name
+        }
+    }
+    LaunchedEffect( Unit ) {
+        if(
+            !(Preferences.YOUTUBE_LOGIN.value
+            && Preferences.YOUTUBE_SYNC_ID.value.isNotBlank()
+            && Preferences.YOUTUBE_PLAYLISTS_SYNC.value)
+        ) return@LaunchedEffect
+        
+        CoroutineScope( Dispatchers.IO ).launch {
+            Innertube.library( CURRENT_LOCALE )
+                     .onSuccess {
+                         it.fastMap { playlist ->
+                                 PlaylistPreview(
+                                     playlist = Playlist(
+                                         id = 0,
+                                         name = playlist.name,
+                                         browseId = playlist.id,
+                                         isEditable = false,
+                                         isYoutubePlaylist = true
+                                     ),
+                                     songCount = 0,
+                                     thumbnailUrl = playlist.thumbnails.firstOrNull()?.url
+                                 )
+                             }
+                             .also( onlinePlaylists::addAll )
+                     }
+                     .onFailure {
+                         it.printStackTrace()
+                         it.message?.also( Toaster::e )
+                     }
         }
     }
 
@@ -234,7 +289,7 @@ fun HomeLibrary(
                     }
                     items(
                         items = itemsOnDisplay.filter( condition ),
-                        key = { it.playlist.id }
+                        key = System::identityHashCode
                     ) { preview ->
                         PlaylistItem(
                             playlist = preview,
@@ -246,7 +301,17 @@ fun HomeLibrary(
                                 .animateItem(fadeInSpec = null, fadeOutSpec = null)
                                 .clickable(onClick = {
                                     search.hideIfEmpty()
-                                    onPlaylistClick(preview.playlist)
+
+                                    if ( preview in onlinePlaylists )
+                                        NavRoutes.YT_PLAYLIST.navigateHere(
+                                            navController,
+                                            preview.playlist.browseId
+                                        )
+                                    else
+                                        NavRoutes.localPlaylist.navigateHere(
+                                            navController,
+                                            preview.playlist.id
+                                        )
                                 }),
                             disableScrollingText = disableScrollingText,
                             isYoutubePlaylist = preview.playlist.isYoutubePlaylist,

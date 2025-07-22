@@ -105,9 +105,7 @@ fun HomeScreen(
                 )
 
                 4 -> HomeLibrary(
-                    onPlaylistClick = {
-                        NavRoutes.localPlaylist.navigateHere( navController, it.id )
-                    },
+                    navController,
                     onSearchClick = {
                         NavRoutes.search.navigateHere( navController )
                     },
