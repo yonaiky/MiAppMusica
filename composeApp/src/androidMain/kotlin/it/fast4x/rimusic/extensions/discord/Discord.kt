@@ -7,8 +7,6 @@ import android.os.Build
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
-import android.webkit.JsResult
-import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebStorage
 import android.webkit.WebView
@@ -63,17 +61,6 @@ import org.jetbrains.annotations.Contract
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
-    fun setToken( token: String ) {
-        if( token == "null" || token == "error" ) {
-            Toaster.e( R.string.error_failed_to_extract_discord_acess_token )
-            return
-        }
-
-        Preferences.DISCORD_ACCESS_TOKEN.value = token
-        onDone()
-    }
-
-
     var webView: WebView? = null
 
     // This section is ripped from Metrolist - Full credit to their team
@@ -106,7 +93,22 @@ fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
                 addJavascriptInterface(object {
                     @JavascriptInterface
                     @Suppress("unused")     // To stop IDE from complaining
-                    fun onRetrieveToken( token: String ) = setToken( token )
+                    fun onRetrieveToken( token: String ) {
+                        Preferences.DISCORD_ACCESS_TOKEN.value = token
+                        onDone()
+                    }
+
+                    @JavascriptInterface
+                    @Suppress("unused")     // To stop IDE from complaining
+                    fun onFailure( message: String ) {
+                        if ( message == "null" )
+                            Toaster.e( R.string.error_failed_to_extract_discord_acess_token )
+                        else
+                            Toaster.e( message )
+
+                        onDone()
+                    }
+
                 }, "Android")
 
                 webViewClient = object : WebViewClient() {
@@ -122,21 +124,17 @@ fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
                                         } else {
                                             var i = document.createElement('iframe');
                                             document.body.appendChild(i);
-                                            setTimeout(function() {
-                                                try {
-                                                    var alt = i.contentWindow.localStorage.token;
-                                                    if (alt) {
-                                                        alert(alt.slice(1, -1));
-                                                    } else {
-                                                        alert("null");
-                                                    }
-                                                } catch (e) {
-                                                    alert("error");
-                                                }
-                                            }, 1000);
+                                            
+                                            token = i.contentWindow.localStorage.token;
                                         }
-                                    } catch (e) {
-                                        alert("error");
+                                        
+                                        if (token) {
+                                            Android.onRetrieveToken(token.slice(1, -1));
+                                        } else {
+                                            Android.onFailure("null");
+                                        }
+                                    } catch (err) {
+                                        Android.onFailure(err.message);
                                     }
                                 })();
                                 """.trimIndent(), null
@@ -148,19 +146,6 @@ fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
                         view: WebView,
                         request: WebResourceRequest
                     ): Boolean = false
-                }
-
-                webChromeClient = object : WebChromeClient() {
-                    override fun onJsAlert(
-                        view: WebView,
-                        url: String,
-                        message: String,
-                        result: JsResult
-                    ): Boolean {
-                        setToken( message )
-                        result.confirm()
-                        return true
-                    }
                 }
 
                 webView = this
