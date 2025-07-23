@@ -104,9 +104,6 @@ import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.song
 import it.fast4x.innertube.utils.LocalePreferenceItem
 import it.fast4x.innertube.utils.LocalePreferences
-import it.fast4x.innertube.utils.NewPipeDownloaderImpl
-import it.fast4x.innertube.utils.ProxyPreferenceItem
-import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.rimusic.enums.AnimatedGradient
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
@@ -147,7 +144,6 @@ import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.invokeOnReady
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
-import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.isVideo
 import it.fast4x.rimusic.utils.loadAppLog
 import it.fast4x.rimusic.utils.playNext
@@ -166,9 +162,7 @@ import me.knighthat.invidious.Invidious
 import me.knighthat.piped.Piped
 import me.knighthat.utils.Toaster
 import okhttp3.OkHttpClient
-import org.schabi.newpipe.extractor.NewPipe
 import timber.log.Timber
-import java.net.Proxy
 import java.util.Locale
 import java.util.Objects
 import kotlin.math.sqrt
@@ -365,26 +359,8 @@ class MainActivity :
 
         intentUriData = intent.data ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.toUri()
 
-        with(preferences) {
-            if ( Preferences.KEEP_SCREEN_ON.value ) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-            if ( Preferences.IS_PROXY_ENABLED.value ) {
-                val hostName by Preferences.PROXY_HOST
-                val proxyPort by Preferences.PROXY_PORT
-                val proxyMode by Preferences.PROXY_SCHEME
-                if (isValidIP(hostName)) {
-                    hostName?.let { hName ->
-                        ProxyPreferences.preference =
-                            ProxyPreferenceItem(hName, proxyPort, proxyMode)
-                    }
-                } else
-                    Toaster.e( "Your Proxy Hostname is invalid, please check it" )
-            }
-
-            val proxy = Innertube.proxy ?: Proxy.NO_PROXY
-            NewPipe.init( NewPipeDownloaderImpl(proxy) )
-        }
+        if ( Preferences.KEEP_SCREEN_ON.value )
+            window.addFlags( WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON )
 
         setContent {
             val colorPaletteMode by Preferences.THEME_MODE

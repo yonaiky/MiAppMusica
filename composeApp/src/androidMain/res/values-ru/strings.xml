@@ -775,4 +775,5 @@
     <string name="dialog_title_are_you_sure">Are you sure?</string>
     <string name="this_action_is_irreversible">This action is irreversible</string>
     <string name="dialog_text_download_all_warning">You might get blocked for downloading multiple songs at once, making them unplayable in offline mode.</string>
+    <string name="error_invalid_proxy">Invalid proxy</string>
 </resources>

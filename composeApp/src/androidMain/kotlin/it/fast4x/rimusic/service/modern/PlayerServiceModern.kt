@@ -79,6 +79,7 @@ import androidx.media3.session.SessionToken
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.service.createDataSourceFactory
+import app.kreate.android.service.newpipe.NewPipeDownloader
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.widget.Widget
@@ -157,6 +158,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.innertube.model.InnertubeSong
 import me.knighthat.utils.Toaster
+import org.schabi.newpipe.extractor.NewPipe
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -237,6 +239,8 @@ class PlayerServiceModern : MediaLibraryService(),
         Preferences.load( this )
 
         super.onCreate()
+
+        NewPipe.init( NewPipeDownloader() )
 
         // Enable Android Auto if disabled, REQUIRE ENABLING DEV MODE IN ANDROID AUTO
         try {
