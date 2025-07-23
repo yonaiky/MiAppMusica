@@ -38,12 +38,15 @@ interface FormatTable {
     ): Flow<List<FormatWithSong>>
 
     /**
-     * Song with [songId] will have its [Format] removed
+     * [Format] with [Format.songId] inside [songIds] will be removed.
      *
      * @return number of rows affected by this operation
      */
-    @Query("DELETE FROM Format WHERE songId = :songId")
-    fun deleteBySongId( songId: String ): Int
+    @Query("DELETE FROM Format WHERE songId IN (:songIds)")
+    fun deleteBySongId( songIds: List<String> ): Int
+
+    fun deleteBySongId( vararg songIds: String ): Int = deleteBySongId( songIds.toList() )
+
 
     /**
      * @param songId of song to look for

@@ -30,6 +30,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
+import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
+import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.song.PeriodSelector
@@ -72,8 +74,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import me.knighthat.component.SongItem
-import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
-import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HiddenSongs
 import me.knighthat.database.ext.FormatWithSong
@@ -92,7 +92,7 @@ fun HomeSongs(
     getSongs: () -> List<Song>,
 ) {
     // Essentials
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
     val context = LocalContext.current
     val menuState = LocalMenuState.current
 
@@ -114,8 +114,12 @@ fun HomeSongs(
         playlistName = builtInPlaylist.text,
         songs = getSongs
     )
-    val downloadAllDialog = DownloadAllSongsDialog( getSongs )
-    val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog( getSongs )
+    val downloadAllDialog = remember {
+        DownloadAllDialog( binder, context, getSongs )
+    }
+    val deleteDownloadsDialog = remember {
+        DeleteAllDownloadedDialog( binder, context, getSongs )
+    }
 
     /**
      * This variable tells [LazyColumn] to render [SongItemPlaceholder]

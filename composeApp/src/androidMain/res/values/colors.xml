@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="ic_launcher_background_dark">#08041D</color>
+    <color name="yellow_warning">#FFD700</color>
+    <color name="red_warning">#FF4C4C</color>
 </resources>

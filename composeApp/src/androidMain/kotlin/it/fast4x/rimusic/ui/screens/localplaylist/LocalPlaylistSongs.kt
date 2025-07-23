@@ -50,6 +50,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
+import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistSongsSort
@@ -130,8 +132,6 @@ import me.knighthat.component.SongItem
 import me.knighthat.component.playlist.PinPlaylist
 import me.knighthat.component.playlist.RenamePlaylistDialog
 import me.knighthat.component.playlist.Reposition
-import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
-import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
@@ -155,7 +155,7 @@ fun LocalPlaylistSongs(
 ) {
     // Essentials
     val context = LocalContext.current
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
     val lazyListState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
     val menuState = LocalMenuState.current
@@ -208,8 +208,12 @@ fun LocalPlaylistSongs(
             navController.popBackStack()
     }
     val renumberDialog = Reposition(playlistId)
-    val downloadAllDialog = DownloadAllSongsDialog ( ::getSongs )
-    val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog ( ::getSongs )
+    val downloadAllDialog = remember {
+        DownloadAllDialog( binder, context, ::getSongs )
+    }
+    val deleteDownloadsDialog = remember {
+        DeleteAllDownloadedDialog( binder, context, ::getSongs )
+    }
     val editThumbnailLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->

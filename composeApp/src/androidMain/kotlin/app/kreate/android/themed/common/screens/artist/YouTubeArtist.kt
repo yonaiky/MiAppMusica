@@ -59,6 +59,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
+import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
@@ -106,8 +108,6 @@ import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.SongItem
 import me.knighthat.component.artist.FollowButton
-import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
-import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.component.ui.screens.DynamicOrientationLayout
@@ -302,8 +302,12 @@ fun YouTubeArtist(
 
         val followButton = FollowButton { dbArtist }
         val shuffler = SongShuffler( ::getSongs )
-        val downloadAllDialog = DownloadAllSongsDialog( ::getSongs )
-        val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog( ::getSongs )
+        val downloadAllDialog = remember {
+            DownloadAllDialog( binder, context, ::getSongs )
+        }
+        val deleteAllDownloadsDialog = remember {
+            DeleteAllDownloadedDialog( binder, context, ::getSongs )
+        }
         val radio = Radio(::getSongs)
         val playNext = PlayNext {
             getMediaItems().let {

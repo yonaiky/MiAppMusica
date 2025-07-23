@@ -51,6 +51,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
+import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
@@ -108,8 +110,6 @@ import me.bush.translator.Language
 import me.bush.translator.Translator
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.SongItem
-import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
-import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Radio
@@ -166,8 +166,12 @@ fun YouTubePlaylist(
             playlistName = playlistPage?.name.orEmpty(),
             songs = ::getSongs
         )
-        val downloadAllDialog = DownloadAllSongsDialog ( ::getSongs )
-        val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog ( ::getSongs )
+        val downloadAllDialog = remember {
+            DownloadAllDialog( binder, context, ::getSongs )
+        }
+        val deleteDownloadsDialog = remember {
+            DeleteAllDownloadedDialog( binder, context, ::getSongs )
+        }
         val addToPlaylist = PlaylistsMenu.init(
             navController = navController,
             mediaItems = { _ -> getMediaItems() },

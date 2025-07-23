@@ -58,6 +58,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
+import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.album.Bookmark
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
@@ -105,8 +107,6 @@ import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.SongItem
 import me.knighthat.component.album.AlbumModifier
-import me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
-import me.knighthat.component.tab.DownloadAllSongsDialog
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
@@ -254,8 +254,12 @@ fun YouTubeAlbum(
         fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
         val bookmark = remember { Bookmark(browseId) }
-        val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog( ::getSongs )
-        val downloadALlDialog = DownloadAllSongsDialog( ::getSongs )
+        val deleteAllDownloadsDialog = remember {
+            DeleteAllDownloadedDialog( binder, context, ::getSongs )
+        }
+        val downloadALlDialog = remember {
+            DownloadAllDialog( binder, context, ::getSongs )
+        }
         val shuffle = SongShuffler {
             getMediaItems().map( MediaItem::asSong )
         }
