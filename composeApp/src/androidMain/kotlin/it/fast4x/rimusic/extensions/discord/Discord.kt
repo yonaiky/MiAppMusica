@@ -32,16 +32,21 @@ import com.my.kizzyrpc.model.Activity
 import com.my.kizzyrpc.model.Assets
 import com.my.kizzyrpc.model.Timestamps
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.cleanPrefix
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
@@ -51,12 +56,7 @@ import me.knighthat.innertube.Constants
 import me.knighthat.utils.ImageProcessor
 import me.knighthat.utils.Repository
 import me.knighthat.utils.Toaster
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import org.jetbrains.annotations.Contract
-import java.io.InputStream
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -177,10 +177,12 @@ fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
 //<editor-fold desc="Awesome adaptation to make song's thumbnail to show up in RPC. Thanks to NEVARLeVrai">
 // https://github.com/NEVARLeVrai/N-Zik
 private const val APPLICATION_ID = "1370148610158759966"
-private const val TMP_FILES_URL = "https://tmpfiles.org/api/v1/upload"
+private const val TEMP_FILE_HOST = "https://catbox.moe/user/api.php"
+private const val MEDIA_TYPE = "application/octet-stream"
 private const val MAX_DIMENSION = 1024                           // Per Discord's guidelines
 private const val MAX_FILE_SIZE_BYTES = 2L * 1024 * 1024     // 2 MB in bytes
 
+@OptIn(ExperimentalSerializationApi::class)
 private suspend fun uploadArtwork( context: Context, artworkUri: Uri? ): Result<Uri> =
     runCatching {
         val uploadableUri = ImageProcessor.compressArtwork(
@@ -190,34 +192,25 @@ private suspend fun uploadArtwork( context: Context, artworkUri: Uri? ): Result<
             MAX_DIMENSION,
             MAX_FILE_SIZE_BYTES
         )!!
-        if( uploadableUri == artworkUri )
+        if( uploadableUri.scheme!!.startsWith( "http" ) )
             return@runCatching uploadableUri
 
-        val fileData: RequestBody
-        context.contentResolver
-               .openInputStream( uploadableUri )!!
-               .use( InputStream::readBytes )
-               .toRequestBody( "image/*".toMediaType() )
-               .also { fileData = it }
-
-        val body = MultipartBody.Builder()
-            .setType( MultipartBody.FORM )
-            .addFormDataPart( "file", System.currentTimeMillis().toString(), fileData )
-            .build()
-
         Innertube.client
-                 .post( TMP_FILES_URL ) {
-                     setBody( body )
-                 }
-                 .body<JsonObject>()["data"]!!
-                 .jsonObject["url"]!!
-                 .jsonPrimitive
-                 .content
-                 .replace(
-                     "https://tmpfiles.org/",
-                     "https://tmpfiles.org/dl/"
+                 .submitFormWithBinaryData(
+                     url = TEMP_FILE_HOST,
+                     formData = formData {
+                         val fileData = context.contentResolver.openInputStream( uploadableUri )!!.readBytes()
+
+                         append("reqtype", "fileupload")
+                         append("userhash", "")
+                         append("fileToUpload", fileData, Headers.build {
+                             append( HttpHeaders.ContentDisposition, "filename=\"${System.currentTimeMillis()}\"" )
+                             append( HttpHeaders.ContentType, MEDIA_TYPE )
+                         })
+                     }
                  )
-                .toUri()
+                 .bodyAsText()
+                 .toUri()
     }
 
 private suspend fun getDiscordAssetUri( imageUrl: String, token: String ): String? {
@@ -256,6 +249,9 @@ private suspend fun getLargeImageUrl( context: Context, token: String, artworkUr
             getDiscordAssetUri( it.toString(), token )
         },
         onFailure = {
+            it.printStackTrace()
+            it.message?.also( Toaster::e )
+
             getSmallImageUrl( token )
         }
     )
