@@ -2,13 +2,8 @@ package app.kreate.android.service.innertube
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.compression.ContentEncoding
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
+import app.kreate.android.service.NetworkService
 import io.ktor.client.request.accept
 import io.ktor.client.request.headers
 import io.ktor.client.request.request
@@ -21,15 +16,11 @@ import io.ktor.util.sha1
 import io.ktor.util.toMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.ClassDiscriminatorMode
-import kotlinx.serialization.json.Json
 import me.knighthat.innertube.Constants
 import me.knighthat.innertube.Innertube
 import me.knighthat.innertube.request.Request
 import me.knighthat.innertube.request.body.Context
 import me.knighthat.innertube.response.Response
-import okhttp3.logging.HttpLoggingInterceptor
 import org.jetbrains.annotations.Blocking
 import timber.log.Timber
 
@@ -52,69 +43,32 @@ class InnertubeProvider: Innertube.Provider {
         }.getOrElse { emptyMap() }
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    private val JSON: Json = Json {
-        ignoreUnknownKeys = true
-        explicitNulls = false
-
-        // Exclude ("type": "me.knighthat.innertube.*")
-        // since there's no intention to deserialize json
-        // string back to the class
-        classDiscriminatorMode = ClassDiscriminatorMode.NONE
-    }
-
-    private val CLIENT = HttpClient(OkHttp) {
-        expectSuccess = true
-
-        // TODO: Add json (de)serialization once expanded to global use
-        install( ContentNegotiation )
-
-        install( ContentEncoding ) {
-            gzip(1f)
-            deflate(0.9F)
-        }
-
-        if( BuildConfig.DEBUG )
-            engine {
-                addInterceptor(
-                    HttpLoggingInterceptor().setLevel( HttpLoggingInterceptor.Level.HEADERS )
-                )
-                addInterceptor(
-                    HttpLoggingInterceptor().setLevel( HttpLoggingInterceptor.Level.BODY )
-                )
-            }
-
-        defaultRequest {
-            accept( ContentType.Application.Json )
-            contentType( ContentType.Application.Json )
-
-            headers {
-                append( "X-Goog-Api-Format-Version", "1" )
-                append( "X-Origin", Constants.YOUTUBE_MUSIC_URL )
-                append( "Referer", Constants.YOUTUBE_MUSIC_URL )
-            }
-        }
-    }
-
     override val cookies: String by Preferences.YOUTUBE_COOKIES
     override val dataSyncId: String by Preferences.YOUTUBE_SYNC_ID
     override val visitorData: String by Preferences.YOUTUBE_VISITOR_DATA
 
     @Blocking
     override fun execute( request: Request ): Response = runBlocking( Dispatchers.IO ) {
-        val result = CLIENT.request( request.url ) {
+        val result = NetworkService.client.request( request.url ) {
+            accept( ContentType.Application.Json )
+            contentType( ContentType.Application.Json )
             method = HttpMethod.parse( request.httpMethod )
+
             // Disable pretty print - potentially save data
             url {
                 parameters.append( "prettyPrint", "false" )
             }
             // Only setBody when it's not null
-            JSON.encodeToString( request.dataToSend ).also( this::setBody )
+            request.dataToSend?.also( this::setBody )
             // Add headers
             request.headers
                    .forEach( headers::appendAll )
 
             headers {
+                append( "X-Goog-Api-Format-Version", "1" )
+                append( "X-Origin", Constants.YOUTUBE_MUSIC_URL )
+                append( "Referer", Constants.YOUTUBE_MUSIC_URL )
+
                 val context = request.dataToSend?.context ?: Context.WEB_REMIX_DEFAULT
 
                 append( "X-YouTube-Client-Name", context.client.xClientName.toString() )
