@@ -245,7 +245,7 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                         var loginDiscord by remember { mutableStateOf(false) }
                         var discordPersonalAccessToken by Preferences.DISCORD_ACCESS_TOKEN
 
-                        val (titleId, subtitle) = remember {
+                        val (titleId, subtitle) = remember( Preferences.DISCORD_ACCESS_TOKEN.value ) {
                             if( Preferences.DISCORD_ACCESS_TOKEN.value.isBlank() )
                                 R.string.discord_connect to ""
                             else
