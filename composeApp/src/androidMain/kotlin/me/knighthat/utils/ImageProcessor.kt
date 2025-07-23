@@ -1,10 +1,11 @@
 package me.knighthat.utils
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.MediaStore
+import android.provider.OpenableColumns
 import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.contracts.ExperimentalContracts
@@ -33,30 +34,37 @@ object ImageProcessor {
         return inSampleSize
     }
 
-    private fun queryImageInfo( context: Context, artworkUri: Uri ): Triple<Int, Int, Long> {
+    private fun queryImageInfo( contentResolver: ContentResolver, artworkUri: Uri ): Triple<Int, Int, Long> {
         var srcWidth = 0
         var srcHeight = 0
         var srcSize = 0L
 
-        val projection = arrayOf(
-            MediaStore.Images.Media.WIDTH,
-            MediaStore.Images.Media.HEIGHT,
-            MediaStore.Images.Media.SIZE
-        )
-        context.contentResolver
-               .query( artworkUri, projection, null, null, null )!!
-               .use { cursor ->
-                   if( cursor.count <= 0 ) return@use
+        // FIXME: Error "invalid column_size" happens a lot
+        runCatching {
+            contentResolver.query( artworkUri, arrayOf( OpenableColumns.SIZE ), null, null, null )
+                ?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        val sizeIndex = cursor.getColumnIndex( OpenableColumns.SIZE )
+                        if ( sizeIndex != -1 )
+                            srcSize = cursor.getLong( sizeIndex )
+                    }
+                }
+        }
 
-                   val widthCol = cursor.getColumnIndex( MediaStore.Images.Media.WIDTH )
-                   val heightCol = cursor.getColumnIndex( MediaStore.Images.Media.HEIGHT )
-                   val sizeCol = cursor.getColumnIndex( MediaStore.Images.Media.SIZE )
-                   while( cursor.moveToNext() ) {
-                       srcWidth = cursor.getInt( widthCol )
-                       srcHeight = cursor.getInt( heightCol )
-                       srcSize = cursor.getLong( sizeCol )
-                   }
-               }
+        contentResolver.openInputStream( artworkUri )
+            ?.use { inStream ->
+                // This option should only read metadata, not the whole file
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = srcSize > 0L }
+                BitmapFactory.decodeStream( inStream, null, options )
+
+                if (options.outWidth != -1 && options.outHeight != -1) {
+                    srcWidth = options.outWidth
+                    srcHeight = options.outHeight
+                }
+
+                if( srcSize == 0L )
+                    srcSize = inStream.readBytes().size.toLong()
+            }
 
         return Triple(srcWidth, srcHeight, srcSize)
     }
@@ -102,7 +110,7 @@ object ImageProcessor {
         if ( mimeType == null || !mimeType.startsWith( "image/" ) )
             throw IllegalArgumentException("The provided URI does not point to an image file. MIME type: $mimeType")
 
-        val (originalWidth, originalHeight, originalFileSize) = queryImageInfo( context, artworkUri )
+        val (originalWidth, originalHeight, originalFileSize) = queryImageInfo( contentResolver, artworkUri )
         val needsResizing = originalWidth > maxWidth || originalHeight > maxHeight
         val needsCompression = originalFileSize > maxSize
         if ( !needsResizing && !needsCompression ) return artworkUri
