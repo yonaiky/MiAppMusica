@@ -241,9 +241,9 @@ private suspend fun uploadArtwork( artworkUri: Uri ): String? {
     }
 }
 
-private fun isLocalArtwork( artworkUri: Uri ): Boolean =
+private fun isLocalArtwork( context: Context, artworkUri: Uri ): Boolean =
     when( artworkUri.scheme ) {
-        "file", "content" -> artworkUri.toFile().exists()
+        "file", "content" -> context.contentResolver.openInputStream( artworkUri )?.use { true } == true
         else              -> false
     }
 
@@ -277,10 +277,10 @@ private suspend fun getDiscordAssetUri( imageUrl: String, token: String ): Strin
 private lateinit var smallImage: String
 
 @Contract("_,null->null")
-private suspend fun getLargeImageUrl( token: String, artworkUri: Uri? ): String? {
+private suspend fun getLargeImageUrl( context: Context, token: String, artworkUri: Uri? ): String? {
     if( artworkUri == null ) return null
 
-    val isLocalArtwork = isLocalArtwork( artworkUri )
+    val isLocalArtwork = isLocalArtwork( context, artworkUri )
     val onlineArtworkUri = if( isLocalArtwork )
         uploadArtwork( artworkUri )
     else
@@ -334,7 +334,7 @@ fun updateDiscordPresence(
             state = cleanPrefix( mediaItem.mediaMetadata.artist.toString() ),
             timestamps = Timestamps(timeEnd, timeStart),
             assets = Assets(
-                largeImage = getLargeImageUrl( token, mediaItem.mediaMetadata.artworkUri ),
+                largeImage = getLargeImageUrl( context, token, mediaItem.mediaMetadata.artworkUri ),
                 smallImage = getSmallImageUrl( token ),
             ),
             metadata = com.my.kizzyrpc.model.Metadata(
