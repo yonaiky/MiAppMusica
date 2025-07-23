@@ -2,8 +2,6 @@ package it.fast4x.rimusic.extensions.discord
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.view.ViewGroup
@@ -24,8 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.graphics.scale
-import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
@@ -51,14 +48,15 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.putJsonArray
 import me.knighthat.innertube.Constants
+import me.knighthat.utils.ImageProcessor
 import me.knighthat.utils.Repository
 import me.knighthat.utils.Toaster
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.jetbrains.annotations.Contract
-import java.io.File
-import java.io.FileOutputStream
+import java.io.InputStream
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -179,72 +177,47 @@ fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
 //<editor-fold desc="Awesome adaptation to make song's thumbnail to show up in RPC. Thanks to NEVARLeVrai">
 // https://github.com/NEVARLeVrai/N-Zik
 private const val APPLICATION_ID = "1370148610158759966"
+private const val TMP_FILES_URL = "https://tmpfiles.org/api/v1/upload"
+private const val MAX_DIMENSION = 1024                           // Per Discord's guidelines
+private const val MAX_FILE_SIZE_BYTES = 2L * 1024 * 1024     // 2 MB in bytes
 
-private fun compressImage(file: File, maxSize: Int = 512): File? {
-    return try {
-        val options = BitmapFactory.Options().apply { inJustDecodeBounds = false }
-        var bitmap = BitmapFactory.decodeFile(file.absolutePath, options)
+private suspend fun uploadArtwork( context: Context, artworkUri: Uri? ): Result<Uri> =
+    runCatching {
+        val uploadableUri = ImageProcessor.compressArtwork(
+            context,
+            artworkUri,
+            MAX_DIMENSION,
+            MAX_DIMENSION,
+            MAX_FILE_SIZE_BYTES
+        )!!
+        if( uploadableUri == artworkUri )
+            return@runCatching uploadableUri
 
-        if (bitmap.width > maxSize || bitmap.height > maxSize) {
-            val ratio = minOf(maxSize.toFloat() / bitmap.width, maxSize.toFloat() / bitmap.height)
-            val width = (bitmap.width * ratio).toInt()
-            val height = (bitmap.height * ratio).toInt()
-            bitmap = bitmap.scale(width, height)
-        }
+        val fileData: RequestBody
+        context.contentResolver
+               .openInputStream( uploadableUri )!!
+               .use( InputStream::readBytes )
+               .toRequestBody( "image/*".toMediaType() )
+               .also { fileData = it }
 
-        val compressedFile = File.createTempFile("compressed_", ".jpg", file.parentFile)
-        FileOutputStream(compressedFile).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 5, out)
-        }
-        compressedFile
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
+        val body = MultipartBody.Builder()
+            .setType( MultipartBody.FORM )
+            .addFormDataPart( "file", System.currentTimeMillis().toString(), fileData )
+            .build()
 
-const val TMP_FILES_URL = "https://tmpfiles.org/api/v1/upload"
-
-private suspend fun uploadArtwork( artworkUri: Uri ): String? {
-    val file = artworkUri.toFile()
-    val compressed = if (file.length() > 1_000_000) compressImage(file) else file
-
-    try {
-        val body: MultipartBody = MultipartBody.Builder()
-                                               .setType(MultipartBody.FORM)
-                                               .addFormDataPart(
-                                                   name = "file",
-                                                   filename = compressed!!.name,
-                                                   body = compressed.readBytes()
-                                                       .toRequestBody("image/*".toMediaType())
-                                               )
-                                               .build()
-        return Innertube.client
-                        .post( TMP_FILES_URL ) {
-                            setBody( body )
-                        }
-                        .body<JsonObject>()["data"]
-                        ?.jsonObject["url"]
-                        ?.jsonPrimitive
-                        ?.content
-                        ?.replace(
-                            "https://tmpfiles.org/",
-                            "https://tmpfiles.org/dl/"
-                        )
-    } catch (e: Exception) {
-        e.printStackTrace()
-        e.message?.also( Toaster::e )
-
-        return null
-    } finally {
-        if (compressed != null && compressed != file) compressed.delete()
-    }
-}
-
-private fun isLocalArtwork( context: Context, artworkUri: Uri ): Boolean =
-    when( artworkUri.scheme ) {
-        "file", "content" -> context.contentResolver.openInputStream( artworkUri )?.use { true } == true
-        else              -> false
+        Innertube.client
+                 .post( TMP_FILES_URL ) {
+                     setBody( body )
+                 }
+                 .body<JsonObject>()["data"]!!
+                 .jsonObject["url"]!!
+                 .jsonPrimitive
+                 .content
+                 .replace(
+                     "https://tmpfiles.org/",
+                     "https://tmpfiles.org/dl/"
+                 )
+                .toUri()
     }
 
 private suspend fun getDiscordAssetUri( imageUrl: String, token: String ): String? {
@@ -277,20 +250,15 @@ private suspend fun getDiscordAssetUri( imageUrl: String, token: String ): Strin
 private lateinit var smallImage: String
 
 @Contract("_,null->null")
-private suspend fun getLargeImageUrl( context: Context, token: String, artworkUri: Uri? ): String? {
-    if( artworkUri == null ) return null
-
-    val isLocalArtwork = isLocalArtwork( context, artworkUri )
-    val onlineArtworkUri = if( isLocalArtwork )
-        uploadArtwork( artworkUri )
-    else
-        artworkUri.toString().takeIf { it.startsWith("http") }
-
-    return if ( onlineArtworkUri != null )
-        getDiscordAssetUri(onlineArtworkUri, token)
-    else
-        getSmallImageUrl( token )
-}
+private suspend fun getLargeImageUrl( context: Context, token: String, artworkUri: Uri? ): String? =
+    uploadArtwork( context, artworkUri ).fold(
+        onSuccess = {
+            getDiscordAssetUri( it.toString(), token )
+        },
+        onFailure = {
+            getSmallImageUrl( token )
+        }
+    )
 
 private suspend fun getSmallImageUrl( token: String ): String? =
     if ( ::smallImage.isInitialized )
