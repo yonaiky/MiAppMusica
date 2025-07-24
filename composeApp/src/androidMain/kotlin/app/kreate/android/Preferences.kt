@@ -1088,6 +1088,8 @@ sealed class Preferences<T>(
                     ).fastForEach( this::remove )
                 }
             } catch ( e: Exception ) {
+                e.printStackTrace()
+
                 runCatching {
                     context.deleteSharedPreferences( ENCRYPTED_PREFERENCES_FILENAME )
                 }.onFailure {
