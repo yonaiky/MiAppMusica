@@ -1235,7 +1235,7 @@ sealed class Preferences<T>(
                  Set [fromFile] to the value of [key] if it's
                  existed in the preferences file.
 
-                 Reason for 2 separate steps is:
+                 Reasons for 2 separate steps are:
                  - When both [key] and [previousKey] are existed
                  in side the file, [previousKey] will be deleted
                  while value of [key] is being used.
@@ -1409,7 +1409,7 @@ sealed class Preferences<T>(
                  Set [fromFile] to the value of [key] if it's
                  existed in the preferences file.
 
-                 Reason for 2 separate steps is:
+                 Reasons for 2 separate steps are:
                  - When both [key] and [previousKey] are existed
                  in side the file, [previousKey] will be deleted
                  while value of [key] is being used.
@@ -1466,7 +1466,7 @@ sealed class Preferences<T>(
                  Set [fromFile] to the value of [key] if it's
                  existed in the preferences file.
 
-                 Reason for 2 separate steps is:
+                 Reasons for 2 separate steps are:
                  - When both [key] and [previousKey] are existed
                  in side the file, [previousKey] will be deleted
                  while value of [key] is being used.
@@ -1523,7 +1523,7 @@ sealed class Preferences<T>(
                  Set [fromFile] to the value of [key] if it's
                  existed in the preferences file.
 
-                 Reason for 2 separate steps is:
+                 Reasons for 2 separate steps are:
                  - When both [key] and [previousKey] are existed
                  in side the file, [previousKey] will be deleted
                  while value of [key] is being used.
@@ -1588,7 +1588,7 @@ sealed class Preferences<T>(
                  Set [fromFile] to the value of [key] if it's
                  existed in the preferences file.
 
-                 Reason for 2 separate steps is:
+                 Reasons for 2 separate steps are:
                  - When both [key] and [previousKey] are existed
                  in side the file, [previousKey] will be deleted
                  while value of [key] is being used.
