@@ -1179,7 +1179,7 @@ sealed class Preferences<T>(
 
     protected inner class DecimalEqualityPolicy: SnapshotMutationPolicy<T> {
         override fun equivalent( a: T, b: T ): kotlin.Boolean {
-            require( a is Comparable<*> && b is Comparable<*> && a!!::class == b!!::class )
+            require( a is Comparable<*> && b is Comparable<*> && a::class == b::class )
 
             @Suppress("UNCHECKED_CAST")
             val areEqual = (a as Comparable<Any>).compareTo( b ) == 0
@@ -1229,7 +1229,7 @@ sealed class Preferences<T>(
                     // Add this value to new [key], otherwise, only old key
                     // will be removed and new key is not added until next start
                     // with default value
-                    fromFile?.also { putString( key, it ) }
+                    fromFile.also { putString( key, it ) }
                 }
             }
 
@@ -1386,7 +1386,6 @@ sealed class Preferences<T>(
             policy = this.policy
         )
 
-        @Suppress("USELESS_NULLABLE")
         override fun getFromSharedPreferences(): kotlin.Int? {
             var fromFile: kotlin.Int? = null
 
@@ -1403,7 +1402,7 @@ sealed class Preferences<T>(
                     // Add this value to new [key], otherwise, only old key
                     // will be removed and new key is not added until next start
                     // with default value
-                    fromFile?.also { putInt( key, it ) }
+                    fromFile.also { putInt( key, it ) }
                 }
             }
 
@@ -1460,7 +1459,7 @@ sealed class Preferences<T>(
                     // Add this value to new [key], otherwise, only old key
                     // will be removed and new key is not added until next start
                     // with default value
-                    fromFile?.also { putLong( key, it ) }
+                    fromFile.also { putLong( key, it ) }
                 }
             }
 
@@ -1517,7 +1516,7 @@ sealed class Preferences<T>(
                     // Add this value to new [key], otherwise, only old key
                     // will be removed and new key is not added until next start
                     // with default value
-                    fromFile?.also { putFloat( key, it ) }
+                    fromFile.also { putFloat( key, it ) }
                 }
             }
 
@@ -1582,7 +1581,7 @@ sealed class Preferences<T>(
                     // Add this value to new [key], otherwise, only old key
                     // will be removed and new key is not added until next start
                     // with default value
-                    fromFile?.also { putBoolean( key, it ) }
+                    fromFile.also { putBoolean( key, it ) }
                 }
             }
 
