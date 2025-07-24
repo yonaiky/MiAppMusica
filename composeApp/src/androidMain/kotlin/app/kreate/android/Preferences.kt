@@ -1550,7 +1550,7 @@ sealed class Preferences<T>(
         defaultValue: kotlin.Boolean
     ): Preferences<kotlin.Boolean>(sharedPreferences, key, previousKey, defaultValue) {
 
-        override val policy = StructuralEqualityPolicy()
+        override val policy = ReferentialEqualityPolicy()
 
         override var value: kotlin.Boolean by mutableStateOf(
             value = getFromSharedPreferences() ?: defaultValue.also( ::write ),
