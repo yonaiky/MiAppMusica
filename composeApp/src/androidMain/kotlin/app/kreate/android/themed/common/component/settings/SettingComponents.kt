@@ -50,6 +50,7 @@ import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.component.dialog.Dialog
 import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.enums.TextView
+import me.knighthat.utils.Toaster
 
 object SettingComponents {
 
@@ -74,6 +75,8 @@ object SettingComponents {
      * Space between entries in vertical layout
      */
     const val VERTICAL_SPACING = 12
+
+    const val CHILDREN_PADDING = 25
 
     @Composable
     fun Description(
@@ -114,13 +117,14 @@ object SettingComponents {
         Row(
             horizontalArrangement = Arrangement.spacedBy( 16.dp ),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier.padding( all = DEFAULT_HORIZONTAL_PADDING.dp )
-                               .fillMaxWidth()
-                               .clickable(
-                                   enabled = isEnabled,
-                                   onClick = onClick
-                               )
-                               .alpha( if ( isEnabled ) 1f else 0.5f )
+            modifier = modifier
+                .padding(all = DEFAULT_HORIZONTAL_PADDING.dp)
+                .fillMaxWidth()
+                .clickable(
+                    enabled = isEnabled,
+                    onClick = onClick
+                )
+                .alpha(if (isEnabled) 1f else 0.5f)
         ) {
             Column( Modifier.weight( 1f ) ) {
                 BasicText(
@@ -182,11 +186,20 @@ object SettingComponents {
                                                    .fillMaxWidth()
                                                    .clickable {
                                                        selected = it
-                                                       onValueChanged( it )
+                                                       onValueChanged(it)
 
-                                                       if( action == Action.RESTART_APP ) {
-                                                           hideDialog()
-                                                           RestartAppDialog.showDialog()
+                                                       when (action) {
+                                                           Action.RESTART_APP -> {
+                                                               hideDialog()
+                                                               RestartAppDialog.showDialog()
+                                                           }
+
+                                                           Action.RESTART_PLAYER_SERVICE -> {
+                                                               Toaster.i( R.string.minimum_silence_length_warning )
+                                                               RestartPlayerService.requestRestart()
+                                                           }
+
+                                                           else -> { /* Does nothing */ }
                                                        }
                                                    }
                             ) {
@@ -199,8 +212,9 @@ object SettingComponents {
                                 }
                                 // Draws select indicator before the text
                                 Canvas(
-                                    modifier = Modifier.size( 18.dp )
-                                                       .background( inner, CircleShape )
+                                    modifier = Modifier
+                                        .size(18.dp)
+                                        .background(inner, CircleShape)
                                 ) {
                                     drawCircle(
                                         color = outer,
@@ -512,8 +526,9 @@ object SettingComponents {
             Slider(
                 value = realtimeValue,
                 onValueChange = { realtimeValue = it },
-                modifier = Modifier.fillMaxWidth()
-                                   .height( 15.dp ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(15.dp),
                 enabled = isEnabled,
                 valueRange = valueRange,
                 steps = steps,
@@ -604,8 +619,9 @@ object SettingComponents {
 
         Text( title, dialog::showDialog, modifier, subtitle, isEnabled ) {
             Box(
-                Modifier.size( 24.dp )
-                        .background( dialog.color, RoundedCornerShape( 3.dp ) )
+                Modifier
+                    .size(24.dp)
+                    .background(dialog.color, RoundedCornerShape(3.dp))
             )
         }
     }

@@ -3,4 +3,5 @@
     <color name="ic_launcher_background_dark">#08041D</color>
     <color name="yellow_warning">#FFD700</color>
     <color name="red_warning">#FF4C4C</color>
+    <color name="important">#FFBF4040</color>
 </resources>

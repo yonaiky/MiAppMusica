@@ -26,9 +26,11 @@ import androidx.media3.common.util.UnstableApi
 import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.settings.RestartPlayerService
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
-import app.kreate.android.themed.common.component.settings.section
+import app.kreate.android.themed.common.component.settings.entry
+import app.kreate.android.themed.common.component.settings.header
 import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -44,7 +46,6 @@ import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.InputNumericDialog
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.asMediaItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -140,9 +141,12 @@ fun DataSettings( paddingValues: PaddingValues ) {
             state = scrollState,
             contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
         ) {
-            section( R.string.cache, R.string.cache_cleared ) {
-                if( search appearsIn R.string.image_cache_max_size )
-                    ImageCacheFactory.DISK_CACHE.size.let { diskCacheSize ->
+            header(
+                titleId = R.string.cache,
+                subtitle = { stringResource( R.string.cache_cleared ) }
+            )
+            entry( search, R.string.image_cache_max_size ) {
+                ImageCacheFactory.DISK_CACHE.size.let { diskCacheSize ->
                     var coilCustomDiskCache by Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
                     val coilDiskCacheMaxSize by Preferences.THUMBNAIL_CACHE_SIZE
 
@@ -184,9 +188,8 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         if (coilDiskCacheMaxSize == CoilDiskCacheMaxSize.Custom)
                             showCoilCustomDiskCacheDialog = true
 
-                        onRestartServiceChange( true )
+                        RestartPlayerService.requestRestart()
                     }
-                    RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
 
                     if (showCoilCustomDiskCacheDialog) {
                         InputNumericDialog(
@@ -200,17 +203,17 @@ fun DataSettings( paddingValues: PaddingValues ) {
                                 //Log.d("customCache", it)
                                 coilCustomDiskCache = it.toInt()
                                 showCoilCustomDiskCacheDialog = false
-                                onRestartServiceChange( true )
+
+                                RestartPlayerService.requestRestart()
                             }
                         )
-                        RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
                     }
 
                     CacheSpaceIndicator(cacheType = CacheType.Images, horizontalPadding = 20.dp)
                 }
-
-                if( search appearsIn R.string.song_cache_max_size )
-                    binder?.cache?.cacheSpace?.let { diskCacheSize ->
+            }
+            entry( search, R.string.song_cache_max_size ) {
+                binder?.cache?.cacheSpace?.let { diskCacheSize ->
                     var exoPlayerCustomCache by Preferences.SONG_CACHE_CUSTOM_SIZE
                     val exoPlayerDiskCacheMaxSize by Preferences.SONG_CACHE_SIZE
 
@@ -260,10 +263,9 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         if (exoPlayerDiskCacheMaxSize == ExoPlayerDiskCacheMaxSize.Custom)
                             showExoPlayerCustomCacheDialog = true
 
-                        onRestartServiceChange( true )
+                        RestartPlayerService.requestRestart()
                     }
 
-                    RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false )  } )
 
                     if (showExoPlayerCustomCacheDialog) {
                         InputNumericDialog(
@@ -277,17 +279,17 @@ fun DataSettings( paddingValues: PaddingValues ) {
                                 //Log.d("customCache", it)
                                 exoPlayerCustomCache = it.toInt()
                                 showExoPlayerCustomCacheDialog = false
-                                onRestartServiceChange( true )
+
+                                RestartPlayerService.requestRestart()
                             }
                         )
-                        RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false )  } )
                     }
 
                     CacheSpaceIndicator(cacheType = CacheType.CachedSongs, horizontalPadding = 20.dp)
                 }
-
-                if( search appearsIn R.string.song_download_max_size )
-                    binder?.downloadCache?.cacheSpace?.let { diskCacheSize ->
+            }
+            entry( search, R.string.song_download_max_size ) {
+                binder?.downloadCache?.cacheSpace?.let { diskCacheSize ->
                     val exoPlayerDiskDownloadCacheMaxSize by Preferences.SONG_DOWNLOAD_SIZE
 
                     val subtitle by remember( diskCacheSize ) { derivedStateOf {
@@ -321,118 +323,104 @@ fun DataSettings( paddingValues: PaddingValues ) {
                                 onClick = { cleanDownloadCache = true }
                             )
                         }
-                    ) { onRestartServiceChange( true ) }
-
-                    RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
+                    )
 
                     CacheSpaceIndicator(cacheType = CacheType.DownloadedSongs, horizontalPadding = 20.dp)
                 }
-
-                if( search appearsIn R.string.set_cache_location )
-                    SettingComponents.EnumEntry(
-                        Preferences.EXO_CACHE_LOCATION,
-                        titleId = R.string.set_cache_location,
-                        subtitleId = R.string.info_private_cache_location_can_t_cleaned,
-                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                    ){ onRestartServiceChange( true ) }
-
-                RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
             }
 
-            section(
-                R.string.title_backup_and_restore,
-                context.getString( R.string.existing_data_will_be_overwritten, BuildConfig.APP_NAME )
-            ) {
-                if( search appearsIn R.string.save_to_backup ) {
-                    val exportDbDialog = ExportDatabaseDialog( context )
-                    exportDbDialog.Render()
+            header(
+                titleId = R.string.title_backup_and_restore,
+                subtitle = { stringResource( R.string.existing_data_will_be_overwritten, BuildConfig.APP_NAME ) }
+            )
+            entry( search, R.string.save_to_backup ) {
+                val exportDbDialog = ExportDatabaseDialog( context )
+                exportDbDialog.Render()
 
-                    SettingComponents.Text(
-                        title = stringResource( R.string.save_to_backup ),
-                        subtitle = stringResource( R.string.export_the_database ),
-                        onClick = exportDbDialog::showDialog
-                    )
-                }
-                if( search appearsIn R.string.restore_from_backup ) {
-                    val importDatabase = ImportDatabase( context )
+                SettingComponents.Text(
+                    title = stringResource( R.string.save_to_backup ),
+                    subtitle = stringResource( R.string.export_the_database ),
+                    onClick = exportDbDialog::showDialog
+                )
+            }
+            entry( search, R.string.restore_from_backup ) {
+                val importDatabase = ImportDatabase( context )
 
-                    SettingComponents.Text(
-                        title = stringResource(R.string.restore_from_backup),
-                        subtitle = stringResource(R.string.import_the_database),
-                        onClick = importDatabase::onShortClick
-                    )
-                }
-                if( search appearsIn R.string.store_settings_in_a_file ) {
-                    val exportSettingsDialog = ExportSettingsDialog( context )
-                    exportSettingsDialog.Render()
+                SettingComponents.Text(
+                    title = stringResource(R.string.restore_from_backup),
+                    subtitle = stringResource(R.string.import_the_database),
+                    onClick = importDatabase::onShortClick
+                )
+            }
+            entry( search, R.string.store_settings_in_a_file ) {
+                val exportSettingsDialog = ExportSettingsDialog( context )
+                exportSettingsDialog.Render()
 
-                    SettingComponents.Text(
-                        title = exportSettingsDialog.dialogTitle,
-                        subtitle = stringResource( R.string.store_settings_in_a_file ),
-                        onClick = exportSettingsDialog::showDialog
-                    )
-                    SettingComponents.Description(
-                        R.string.description_exclude_credentials,
-                        isImportant = true
-                    )
-                }
-                if( search appearsIn R.string.title_import_settings ) {
-                    val importSettings = ImportSettings( context )
+                SettingComponents.Text(
+                    title = exportSettingsDialog.dialogTitle,
+                    subtitle = stringResource( R.string.description_exclude_credentials ),
+                    onClick = exportSettingsDialog::showDialog
+                )
+            }
+            entry( search, R.string.title_import_settings ) {
+                val importSettings = ImportSettings( context )
 
-                    SettingComponents.Text(
-                        title = stringResource( R.string.title_import_settings ),
-                        subtitle = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
-                        onClick = importSettings::onShortClick
-                    )
-                }
-                if( search appearsIn "Import migration file" ) {
-                    val importMigration = ImportMigration( context, binder )
+                SettingComponents.Text(
+                    title = stringResource( R.string.title_import_settings ),
+                    subtitle = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
+                    onClick = importSettings::onShortClick
+                )
+            }
+            entry( search, "Import migration file" ) {
+                val importMigration = ImportMigration( context, binder )
 
-                    SettingComponents.Text(
-                        title = "Import migration file",
-                        subtitle = "For old users before conversion. \nUse old app to make a backup for migration",
-                        onClick = importMigration::onShortClick
-                    )
-                }
+                SettingComponents.Text(
+                    title = "Import migration file",
+                    subtitle = "For old users before conversion. \nUse old app to make a backup for migration",
+                    onClick = importMigration::onShortClick
+                )
             }
 
-            section( R.string.search_history ) {
-                if( search appearsIn R.string.pause_search_history )
-                    SettingComponents.BooleanEntry(
-                        Preferences.PAUSE_SEARCH_HISTORY,
-                        R.string.pause_search_history,
-                        R.string.neither_save_new_searched_query,
-                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                    ) { onRestartServiceChange( true ) }
-
-                RestartPlayerService(restartService, onRestart = { onRestartServiceChange( false ) } )
-
-                val queriesCount by remember {
+            header( R.string.search_history )
+            entry( search, R.string.pause_search_history ) {
+                SettingComponents.BooleanEntry(
+                    Preferences.PAUSE_SEARCH_HISTORY,
+                    R.string.pause_search_history,
+                    R.string.neither_save_new_searched_query,
+                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                )
+            }
+            entry( search, R.string.clear_search_history ) {
+                val subtitle by remember {
                     Database.searchTable
                             .findAllContain( "" )
-                            .map { it.size }
-                }.collectAsState( 0, Dispatchers.IO )
+                            .map { queries ->
 
-                val subtitle by remember { derivedStateOf {
-                    if (queriesCount > 0) {
-                        "${context.getString( R.string.delete )} $queriesCount${context.getString( R.string.search_queries )}"
-                    } else {
-                        context.getString( R.string.history_is_empty )
-                    }
-                }}
-
-                if( search appearsIn R.string.clear_search_history )
-                    SettingComponents.Text(
-                        title = stringResource( R.string.clear_search_history ),
-                        subtitle = subtitle,
-                        onClick = {
-                            Database.asyncTransaction {
-                                searchTable.deleteAll()
-
-                                Toaster.done()
+                                if ( queries.isNotEmpty() )
+                                    context.getString(
+                                        R.string.setting_description_delete_search_history,
+                                        context.resources.getQuantityString(
+                                            R.plurals.query,
+                                            queries.size,
+                                            queries.size
+                                        )
+                                    )
+                                else
+                                    context.getString( R.string.history_is_empty )
                             }
+                }.collectAsState( "", Dispatchers.IO )
+
+                SettingComponents.Text(
+                    title = stringResource( R.string.clear_search_history ),
+                    subtitle = subtitle,
+                    onClick = {
+                        Database.asyncTransaction {
+                            searchTable.deleteAll()
+
+                            Toaster.done()
                         }
-                    )
+                    }
+                )
             }
         }
     }

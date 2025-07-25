@@ -7,4 +7,11 @@
         <item quantity="other">%d second</item>
         <item quantity="few">%d second</item>
     </plurals>
+    <plurals name="query">
+        <item quantity="other">%d query</item>
+        <item quantity="many">%d query</item>
+        <item quantity="few">%d query</item>
+        <item quantity="two">%d query</item>
+        <item quantity="one">%d query</item>
+    </plurals>
 </resources>

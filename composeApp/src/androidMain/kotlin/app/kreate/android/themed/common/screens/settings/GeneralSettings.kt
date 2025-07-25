@@ -9,10 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,8 +21,9 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
-import app.kreate.android.themed.common.component.settings.section
-import app.kreate.android.themed.common.screens.settings.general.PlayerSettings
+import app.kreate.android.themed.common.component.settings.entry
+import app.kreate.android.themed.common.component.settings.header
+import app.kreate.android.themed.common.screens.settings.general.playerSettingsSection
 import app.kreate.android.themed.common.screens.settings.general.updateSection
 import app.kreate.android.utils.innertube.HOST_LANGUAGE
 import it.fast4x.rimusic.colorPalette
@@ -32,6 +32,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import me.knighthat.utils.Toaster
 import java.util.Locale
 
+@ExperimentalMaterial3Api
 @UnstableApi
 @Composable
 fun GeneralSettings( paddingValues: PaddingValues ) {
@@ -40,7 +41,6 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_general, R.drawable.app_icon_monochrome )
     }
-    val (restartService, onRestartServiceChange) = rememberSaveable { mutableStateOf( false ) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,53 +64,56 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
         ) {
             updateSection( search )
 
-            section( R.string.languages, sysLocaleText ) {
-                if( search appearsIn R.string.app_language )
-                    SettingComponents.EnumEntry(
-                        Preferences.APP_LANGUAGE,
-                        titleId = R.string.app_language,
-                        subtitleId = R.string.setting_description_app_language,
-                        onValueChanged = {
-                            try {
-                                // Apply it first before really selecting it
-                                AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.forLanguageTags( it.code )
-                                )
+            header(
+                titleId = R.string.languages,
+                subtitle = { sysLocaleText }
+            )
+            entry( search, R.string.app_language ) {
+                SettingComponents.EnumEntry(
+                    Preferences.APP_LANGUAGE,
+                    titleId = R.string.app_language,
+                    subtitleId = R.string.setting_description_app_language,
+                    onValueChanged = {
+                        try {
+                            // Apply it first before really selecting it
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.forLanguageTags( it.code )
+                            )
 
-                                Preferences.APP_LANGUAGE.value = it
-                            } catch (err: Exception) {
-                                err.printStackTrace()
-                                err.message?.also( Toaster::e )
-                            }
+                            Preferences.APP_LANGUAGE.value = it
+                        } catch (err: Exception) {
+                            err.printStackTrace()
+                            err.message?.also( Toaster::e )
                         }
-                    )
-
-                if( search appearsIn R.string.setting_entry_app_region ) {
-                    SettingComponents.ListEntry(
-                        preference = Preferences.APP_REGION,
-                        title = stringResource( R.string.setting_entry_app_region ),
-                        getName = {
-                            val locale = Locale(HOST_LANGUAGE, it)
-                            locale.getDisplayCountry( locale )
-                        },
-                        getList = { Locale.getISOCountries() },
-                        subtitle = stringResource( R.string.setting_description_app_region )
-                    )
-                }
+                    }
+                )
+            }
+            entry( search, R.string.setting_entry_app_region ) {
+                SettingComponents.ListEntry(
+                    preference = Preferences.APP_REGION,
+                    title = stringResource( R.string.setting_entry_app_region ),
+                    getName = {
+                        val locale = Locale(HOST_LANGUAGE, it)
+                        locale.getDisplayCountry( locale )
+                    },
+                    getList = { Locale.getISOCountries() },
+                    subtitle = stringResource( R.string.setting_description_app_region )
+                )
             }
 
-            section( R.string.notification_type, R.string.notification_type_info ) {
-                if( search appearsIn R.string.notification_type )
-                    SettingComponents.EnumEntry(
-                        Preferences.NOTIFICATION_TYPE,
-                        R.string.notification_type,
-                        action = SettingComponents.Action.RESTART_APP
-                    )
+            header(
+                titleId = R.string.notification_type,
+                subtitle = { stringResource( R.string.notification_type_info ) }
+            )
+            entry( search, R.string.notification_type ) {
+                SettingComponents.EnumEntry(
+                    Preferences.NOTIFICATION_TYPE,
+                    R.string.notification_type,
+                    action = SettingComponents.Action.RESTART_APP
+                )
             }
 
-            section( R.string.player ) {
-                PlayerSettings( search, restartService, onRestartServiceChange )
-            }
+            playerSettingsSection( search )
         }
     }
 }

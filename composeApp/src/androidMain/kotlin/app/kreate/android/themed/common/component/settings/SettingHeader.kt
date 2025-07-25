@@ -3,10 +3,14 @@ package app.kreate.android.themed.common.component.settings
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -19,44 +23,53 @@ import it.fast4x.rimusic.utils.semiBold
 
 @Composable
 fun SettingHeader(
-    title: String,
+    title: @Composable () -> String,
     modifier: Modifier = Modifier,
-    subtitle: String = ""
+    subtitle: @Composable () -> String = { "" },
+    trailingContent: @Composable () -> Unit = {}
 ) {
     val underlineColor = colorPalette().textDisabled.copy( .6f )
-    Column(
+
+    Row(
+        verticalAlignment = Alignment.Bottom,
         // Set background to make all other elements hidden
         // when scroll pass header
-        modifier.background( colorPalette().background0 )
-                .drawBehind {
-                    // Simple dimmed line to make distinction
-                    // between header and other elements.
-                    drawLine(
-                        color = underlineColor,
-                        start = Offset(0f, size.height),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = 2f
-                    )
-                }
-                .padding(
-                    top = 24.dp,
-                    bottom = 10.dp
-                )
-                .fillMaxWidth()
+        modifier = modifier.background( colorPalette().background0 )
+                           .drawBehind {
+                               // Simple dimmed line to make distinction
+                               // between header and other elements.
+                               drawLine(
+                                   color = underlineColor,
+                                   start = Offset(0f, size.height),
+                                   end = Offset(size.width, size.height),
+                                   strokeWidth = 2f
+                               )
+                           }
+                           .padding(
+                               top = 24.dp,
+                               bottom = 10.dp
+                           )
+                           .heightIn( min = 30.dp )
+                           .fillMaxWidth()
     ) {
-        BasicText(
-            text = title.uppercase(),
-            style = typography().m
-                                .semiBold
-                                .copy( colorPalette().accent ),
-        )
-
-        if ( subtitle.isNotBlank() )
+        Column( Modifier.weight( 1f ) ) {
             BasicText(
-                text = subtitle,
-                style = typography().xxs.secondary,
-                modifier = Modifier.padding( start = 3.dp )
+                text = title().uppercase(),
+                style = typography().m
+                                    .semiBold
+                                    .copy( colorPalette().accent ),
             )
+
+            if ( subtitle().isNotBlank() )
+                BasicText(
+                    text = subtitle(),
+                    style = typography().xxs.secondary,
+                    modifier = Modifier.padding( start = 3.dp )
+                )
+        }
+
+        RestartPlayerService.Render()
+        trailingContent()
     }
 }
 
@@ -64,12 +77,20 @@ fun SettingHeader(
 fun SettingHeader(
     @StringRes titleId: Int,
     modifier: Modifier = Modifier,
-    subtitle: String = ""
-) = SettingHeader( stringResource( titleId ), modifier, subtitle )
+    subtitle: @Composable () -> String = { "" },
+    trailingContent: @Composable () -> Unit = {}
+) = SettingHeader( { stringResource(titleId) }, modifier, subtitle, trailingContent )
 
-@Composable
-fun SettingHeader(
+fun LazyListScope.header(
+    title: @Composable () -> String,
+    modifier: Modifier = Modifier,
+    subtitle: @Composable () -> String = { "" },
+    trailingContent: @Composable () -> Unit = {}
+) = stickyHeader { SettingHeader( title, modifier, subtitle, trailingContent ) }
+
+fun LazyListScope.header(
     @StringRes titleId: Int,
-    @StringRes subtitleId: Int,
-    modifier: Modifier = Modifier
-) = SettingHeader( titleId, modifier, stringResource( subtitleId ) )
+    modifier: Modifier = Modifier,
+    subtitle: @Composable () -> String = { "" },
+    trailingContent: @Composable () -> Unit = {}
+) = header( { stringResource( titleId ) }, modifier, subtitle, trailingContent )

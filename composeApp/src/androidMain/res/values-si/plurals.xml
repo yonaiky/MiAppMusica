@@ -4,4 +4,8 @@
         <item quantity="one">%d second</item>
         <item quantity="other">%d second</item>
     </plurals>
+    <plurals name="query">
+        <item quantity="one">%d query</item>
+        <item quantity="other">%d query</item>
+    </plurals>
 </resources>

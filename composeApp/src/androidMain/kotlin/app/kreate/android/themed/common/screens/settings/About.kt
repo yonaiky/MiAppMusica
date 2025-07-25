@@ -31,7 +31,8 @@ import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
-import app.kreate.android.themed.common.component.settings.section
+import app.kreate.android.themed.common.component.settings.entry
+import app.kreate.android.themed.common.component.settings.header
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
@@ -138,59 +139,52 @@ fun About( paddingValues: PaddingValues ) {
                     )
                 }
             }
-            section( R.string.troubleshooting ) {
-                if( search appearsIn R.string.view_the_source_code )
-                    SettingComponents.Text(
-                        title = stringResource( R.string.view_the_source_code ),
-                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
-                        onClick = {
-                            uriHandler.openUri( Repository.REPO_URL )
-                        }
-                    )
 
-                if( search appearsIn R.string.word_documentation )
-                    SettingComponents.Text(
-                        title = stringResource( R.string.word_documentation ),
-                        subtitle = stringResource( R.string.opens_link_in_web_browser ),
-                        onClick = {
-                            uriHandler.openUri( "https://kreate.knighthat.me" )
-                        }
-                    )
+            header( R.string.troubleshooting )
+            entry( search, R.string.view_the_source_code ) {
+                SettingComponents.Text(
+                    title = stringResource( R.string.view_the_source_code ),
+                    subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
+                    onClick = {
+                        uriHandler.openUri( Repository.REPO_URL )
+                    }
+                )
+            }
+            entry( search, R.string.word_documentation ) {
+                SettingComponents.Text(
+                    title = stringResource( R.string.word_documentation ),
+                    subtitle = stringResource( R.string.opens_link_in_web_browser ),
+                    onClick = {
+                        uriHandler.openUri( "https://kreate.knighthat.me" )
+                    }
+                )
+            }
+            entry( search, R.string.report_an_issue ) {
+                SettingComponents.Text(
+                    title = stringResource( R.string.report_an_issue ),
+                    subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
+                    onClick = {
+                        val issuePath = "/issues/new?assignees=&labels=bug&template=bug_report.yaml"
+                        uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
+                    }
+                )
+            }
+            entry( search, R.string.request_a_feature_or_suggest_an_idea ) {
+                SettingComponents.Text(
+                    title = stringResource( R.string.request_a_feature_or_suggest_an_idea ),
+                    subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
+                    onClick = {
+                        val issuePath = "/issues/new?assignees=&labels=feature_request&template=feature_request.yaml"
+                        uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
+                    }
+                )
+            }
 
-                if( search appearsIn R.string.report_an_issue )
-                    SettingComponents.Text(
-                        title = stringResource( R.string.report_an_issue ),
-                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
-                        onClick = {
-                            val issuePath = "/issues/new?assignees=&labels=bug&template=bug_report.yaml"
-                            uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
-                        }
-                    )
+            header( { "$numTranslators ${context.getString(R.string.translators)}" } )
+            entry( search, R.string.translators ) { ShowTranslators() }
 
-                if( search appearsIn R.string.request_a_feature_or_suggest_an_idea )
-                    SettingComponents.Text(
-                        title = stringResource( R.string.request_a_feature_or_suggest_an_idea ),
-                        subtitle = stringResource( R.string.you_will_be_redirected_to_github ),
-                        onClick = {
-                            val issuePath = "/issues/new?assignees=&labels=feature_request&template=feature_request.yaml"
-                            uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
-                        }
-                    )
-            }
-            section(
-                "$numTranslators ${context.getString( R.string.translators )}",
-                R.string.in_alphabetical_order
-            ) {
-                if( search appearsIn R.string.translators )
-                    ShowTranslators()
-            }
-            section(
-                "$numCoders ${context.getString( R.string.about_developers_designers )}",
-                R.string.in_alphabetical_order
-            ) {
-                if( search appearsIn R.string.contributors )
-                    ShowDevelopers()
-            }
+            header( { "$numCoders ${context.getString( R.string.about_developers_designers )}" } )
+            entry( search, R.string.contributors ) { ShowDevelopers() }
         }
     }
 }

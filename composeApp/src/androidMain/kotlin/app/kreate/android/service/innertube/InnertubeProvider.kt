@@ -27,20 +27,22 @@ import timber.log.Timber
 
 class InnertubeProvider: Innertube.Provider {
 
-    private val COOKIE_MAP by derivedStateOf {
-        val cookies by Preferences.YOUTUBE_COOKIES
-        if( cookies.isBlank() ) return@derivedStateOf emptyMap()
+    companion object {
+        val COOKIE_MAP by derivedStateOf {
+            val cookies by Preferences.YOUTUBE_COOKIES
+            if( cookies.isBlank() ) return@derivedStateOf emptyMap()
 
-        runCatching {
-            cookies.split( ';' )
-                    .associate {
-                        val (k, v) = it.split('=', limit = 2)
-                        k.trim() to v.trim()
-                    }
-        }.onFailure {
-            it.printStackTrace()
-            Timber.tag( "InnertubeProvider" ).e( "Cookie parser failed!" )
-        }.getOrElse { emptyMap() }
+            runCatching {
+                cookies.split( ';' )
+                        .associate {
+                            val (k, v) = it.split('=', limit = 2)
+                            k.trim() to v.trim()
+                        }
+            }.onFailure {
+                it.printStackTrace()
+                Timber.tag( "InnertubeProvider" ).e( "Cookie parser failed!" )
+            }.getOrElse { emptyMap() }
+        }
     }
 
     override val cookies: String by Preferences.YOUTUBE_COOKIES

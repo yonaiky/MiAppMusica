@@ -774,4 +774,9 @@
     <string name="this_action_is_irreversible">This action is irreversible</string>
     <string name="dialog_text_download_all_warning">You might get blocked for downloading multiple songs at once, making them unplayable in offline mode.</string>
     <string name="error_invalid_proxy">Invalid proxy</string>
+    <string name="info_restart_player_service">Restart player service</string>
+    <string name="setting_entry_youtube_login">Log in to your YouTube account</string>
+    <string name="setting_entry_youtube_sync_data">Sync account to %s</string>
+    <string name="setting_description_youtube_sync_data">Automatically load playlists in \"%s\" tab</string>
+    <string name="setting_description_delete_search_history">Delete %s</string>
 </resources>
