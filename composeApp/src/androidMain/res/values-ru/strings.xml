@@ -738,7 +738,7 @@
     <string name="word_documentation">Документация</string>
     <string name="opens_link_in_web_browser">Открыть ссылку в браузере</string>
     <string name="setting_entry_smart_rewind">Умная перемотка</string>
-    <string name="setting_description_smart_rewind">Кнопка \"Назад\" будет работать как кнопка перемотки назад через %s секунд</string>
+    <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s</string>
     <string name="setting_entry_show_chip">Показать чип \"%s\"</string>
     <string name="show_quotes">Показать \"%s\"</string>
     <string name="setting_entry_crash_log">Crash log</string>

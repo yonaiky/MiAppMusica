@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <plurals name="second">
+        <item quantity="many">%d second</item>
+        <item quantity="one">%d second</item>
+        <item quantity="two">%d second</item>
+        <item quantity="other">%d second</item>
+        <item quantity="few">%d second</item>
+    </plurals>
+</resources>

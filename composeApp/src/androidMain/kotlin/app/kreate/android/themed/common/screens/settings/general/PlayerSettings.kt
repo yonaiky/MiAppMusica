@@ -4,32 +4,28 @@ import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.text.isDigitsOnly
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.AudioQualityFormat
-import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.rememberEqualizerLauncher
-import it.fast4x.rimusic.utils.semiBold
+import me.knighthat.component.dialog.InputDialogConstraints
 
 @OptIn(ExperimentalMaterial3Api::class)
 @UnstableApi
@@ -58,39 +54,22 @@ fun PlayerSettings(
                 Preferences.AUDIO_QUALITY.value = AudioQualityFormat.Auto
         }
     if( search appearsIn R.string.setting_entry_smart_rewind ) {
-
-        BasicText(
-            text = stringResource(R.string.setting_entry_smart_rewind),
-            style = typography().xs.semiBold.copy(color = colorPalette().text),
-            modifier = Modifier.padding(start = 12.dp)
-        )
-        BasicText(
-            text = stringResource(R.string.setting_description_smart_rewind),
-            style = typography().xxs.semiBold.copy(color = colorPalette().textDisabled),
-            modifier = Modifier.padding(start = 12.dp)
-        )
-        BasicText(
-            text = stringResource(R.string.jump_previous_blank),
-            style = typography().xxs.semiBold.copy(color = colorPalette().textDisabled),
-            modifier = Modifier.padding(start = 12.dp)
-        )
-
-        var jumpPrevious by Preferences.JUMP_PREVIOUS
-        TextField(
-            value = jumpPrevious,
-            onValueChange = {
-                if (it.isDigitsOnly())
-                    jumpPrevious = it
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-            colors = TextFieldDefaults.colors(
-                unfocusedTextColor = colorPalette().text,
-                focusedTextColor = colorPalette().text,
-                focusedIndicatorColor = colorPalette().text,
-                unfocusedIndicatorColor = colorPalette().text
-            ),
-            modifier = Modifier.padding(start = 12.dp)
+        val smartRewindInt by remember {derivedStateOf {
+            Preferences.SMART_REWIND.value.toInt()
+        }}
+        SettingComponents.InputDialogEntry(
+            preference = Preferences.SMART_REWIND,
+            title = stringResource( R.string.setting_entry_smart_rewind ),
+            constraint = InputDialogConstraints.POSITIVE_DECIMAL,
+            keyboardOption = KeyboardOptions.Default.copy( keyboardType = KeyboardType.Number ),
+            subtitle = stringResource(
+                R.string.setting_description_smart_rewind,
+                pluralStringResource(
+                    R.plurals.second,
+                    smartRewindInt ,
+                    smartRewindInt
+                )
+            )
         )
     }
     if( search appearsIn R.string.min_listening_time ) {

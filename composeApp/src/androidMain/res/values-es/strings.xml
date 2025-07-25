@@ -736,7 +736,7 @@
     <string name="word_documentation">Documentación</string>
     <string name="opens_link_in_web_browser">Abrir enlace en el navegador web</string>
     <string name="setting_entry_smart_rewind">Retroceso inteligente</string>
-    <string name="setting_description_smart_rewind">El botón anterior actuará como botón retroceder después de %s segundos</string>
+    <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s</string>
     <string name="setting_entry_show_chip">Mostrar chip \"%s\"</string>
     <string name="show_quotes">Mostrar \"%s\"</string>
     <string name="setting_entry_crash_log">Registro de fallos</string>

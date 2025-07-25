@@ -72,8 +72,8 @@ import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.playNext
-import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.smartRewind
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -376,7 +376,6 @@ fun ControlsModern(
         targetValue = if (isRotated) 360F else 0f,
         animationSpec = tween(durationMillis = 200), label = ""
     )
-    var jumpPrevious by Preferences.JUMP_PREVIOUS
 
   if (playerPlayButtonType != PlayerPlayButtonType.Disabled) {
       CustomElevatedButton(
@@ -390,11 +389,8 @@ fun ControlsModern(
                   indication = ripple(bounded = true),
                   interactionSource = remember { MutableInteractionSource() },
                   onClick = {
-                      if (jumpPrevious == "") jumpPrevious = "0"
-                      if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
-                          binder.player.seekTo(0)
-                      }
-                      else binder.player.playPrevious()
+                      binder.player.smartRewind()
+
                       if (effectRotationEnabled) isRotated = !isRotated
                   },
                   onLongClick = {}
@@ -616,11 +612,8 @@ fun ControlsModern(
                           interactionSource = null,
                           indication = null,
                           onClick = {
-                              if (jumpPrevious == "") jumpPrevious = "0"
-                              if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
-                                  binder.player.seekTo(0)
-                              }
-                              else binder.player.playPrevious()
+                              binder.player.smartRewind()
+
                               if (effectRotationEnabled) isRotated = !isRotated
                           },
                           onLongClick = {}

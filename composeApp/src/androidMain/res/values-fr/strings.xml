@@ -739,7 +739,7 @@ Volume BAS : titre précédent</string>
     <string name="word_documentation">Documentation</string>
     <string name="opens_link_in_web_browser">Ouvre le lien dans le navigateur Web</string>
     <string name="setting_entry_smart_rewind">Rembobinage intelligent</string>
-    <string name="setting_description_smart_rewind">Le bouton Précédent agira comme un bouton de retour en arrière après %s secondes</string>
+    <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s</string>
     <string name="setting_entry_show_chip">Afficher l\'onglet « %s »</string>
     <string name="show_quotes">Afficher « %s »</string>
     <string name="setting_entry_crash_log">Journal de crash</string>

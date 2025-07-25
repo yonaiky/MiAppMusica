@@ -736,7 +736,7 @@
     <string name="word_documentation">Belgelendirme</string>
     <string name="opens_link_in_web_browser">Bağlantıyı web tarayıcısında açar</string>
     <string name="setting_entry_smart_rewind">Akıllı geri sarma</string>
-    <string name="setting_description_smart_rewind">Önceki düğmesi, %s saniye sonra geri sarma düğmesi işlevi görecektir</string>
+    <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s</string>
     <string name="setting_entry_show_chip">\"%s\" çipini göster</string>
     <string name="show_quotes">\"%s\" bölümünü göster</string>
     <string name="setting_entry_crash_log">Çökme günlüğü</string>

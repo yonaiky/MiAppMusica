@@ -1017,8 +1017,8 @@ sealed class Preferences<T>(
         val IS_CONNECTION_METERED by lazy {
             Boolean( preferences, "IsConnectionMetered", "isConnectionMeteredEnabled", true )
         }
-        val JUMP_PREVIOUS by lazy {
-            String( preferences, "JumpPrevious", "jumpPrevious", "3" )
+        val SMART_REWIND by lazy {
+            Float(preferences, "SmartRewind", "", 3f)
         }
         val LOCAL_SONGS_FOLDER by lazy {
             String( preferences, "LocalSongsFolder", "defaultFolder", "/" )
@@ -1058,7 +1058,8 @@ sealed class Preferences<T>(
                         "YouTubeVisitorData", "ytVisitorData", "YouTubeSyncId", "ytDataSyncIdKey",
                         "YouTubeCookies", "ytCookie", "YouTubeAccountName", "ytAccountNameKey",
                         "YouTubeAccountEmail", "ytAccountEmailKey", "YouTubeSelfChannelHandle",
-                        "ytAccountChannelHandleKey", "YouTubeAccountAvatar", "ytAccountThumbnailKey"
+                        "ytAccountChannelHandleKey", "YouTubeAccountAvatar", "ytAccountThumbnailKey",
+                        "JumpPrevious", "jumpPrevious"
                     ).fastForEach( this::remove )
                 }
             }

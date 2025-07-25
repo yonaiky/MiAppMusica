@@ -173,6 +173,19 @@ fun Player.playPrevious() {
     playWhenReady = true
 }
 
+/**
+ * If there's no [MediaItem] before this, or, when [Player.getCurrentPosition]
+ * exceeded [Preferences.SMART_REWIND]'s value, player will be automatically
+ * starts at the beginning.
+ *
+ * Else, it will move to previous [MediaItem]
+ */
+fun Player.smartRewind() =
+    if( !hasPreviousMediaItem() || currentPosition > (Preferences.SMART_REWIND.value * 1000) )
+        seekTo( 0 )
+    else
+        seekToPreviousMediaItem()
+
 @UnstableApi
 fun Player.addNext(mediaItem: MediaItem, context: Context? = null) {
     if (context != null && excludeMediaItem(mediaItem, context)) return

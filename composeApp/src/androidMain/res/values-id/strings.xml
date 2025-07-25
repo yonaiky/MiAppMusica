@@ -736,7 +736,7 @@
     <string name="word_documentation">Documentation</string>
     <string name="opens_link_in_web_browser">Opens link in web browser</string>
     <string name="setting_entry_smart_rewind">Mundur cerdas</string>
-    <string name="setting_description_smart_rewind">Tombol Sebelumnya akan berfungsi seperti tombol Mundur setelah %s detik</string>
+    <string name="setting_description_smart_rewind">Previous button will act like rewind button after %s</string>
     <string name="setting_entry_show_chip">Tampilkan \"%s\" kepingan</string>
     <string name="show_quotes">Tampilkan \"%s\"</string>
     <string name="setting_entry_crash_log">Crash log</string>

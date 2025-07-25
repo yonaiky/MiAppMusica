@@ -75,8 +75,8 @@ import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.playNext
-import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.smartRewind
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -387,7 +387,6 @@ fun ControlsEssential(
 
     var queueLoopType by Preferences.QUEUE_LOOP_TYPE
     val playerBackgroundColors by Preferences.PLAYER_BACKGROUND
-    var jumpPrevious by Preferences.JUMP_PREVIOUS
     val currentMediaItem = binder.player.currentMediaItem
 
     Box {
@@ -427,11 +426,8 @@ fun ControlsEssential(
                 indication = ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
-                    if (jumpPrevious == "") jumpPrevious = "0"
-                    if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
-                        binder.player.seekTo(0)
-                    }
-                    else binder.player.playPrevious()
+                    binder.player.smartRewind()
+
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
                 onLongClick = {}

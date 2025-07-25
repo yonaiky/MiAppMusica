@@ -137,7 +137,7 @@ import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playNext
-import it.fast4x.rimusic.utils.playPrevious
+import it.fast4x.rimusic.utils.smartRewind
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.verticalFadingEdge
 import kotlinx.coroutines.Dispatchers
@@ -333,7 +333,6 @@ fun Lyrics(
         val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
         val effectRotationEnabled by Preferences.ROTATION_EFFECT
         var landscapeControls by Preferences.LYRICS_LANDSCAPE_CONTROLS
-        var jumpPrevious by Preferences.JUMP_PREVIOUS
         var isRotated by rememberSaveable { mutableStateOf(false) }
         val rotationAngle by animateFloatAsState(
             targetValue = if (isRotated) 360F else 0f,
@@ -1769,12 +1768,8 @@ fun Lyrics(
                                 indication = ripple(bounded = false),
                                 interactionSource = remember { MutableInteractionSource() },
                                 onClick = {
-                                    if (jumpPrevious == "") jumpPrevious = "0"
-                                    if(binder?.player?.hasPreviousMediaItem() == false || (jumpPrevious != "0" && (binder?.player?.currentPosition ?: 0) > jumpPrevious.toInt() * 1000)
-                                    ){
-                                        binder?.player?.seekTo(0)
-                                    }
-                                    else binder?.player?.playPrevious()
+                                    binder?.player?.smartRewind()
+
                                     if (effectRotationEnabled) isRotated = !isRotated
                                 }
                             )
