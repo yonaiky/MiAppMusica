@@ -36,16 +36,16 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             onDismiss = { resetCustomLightThemeDialog = false },
             onConfirm = {
                 resetCustomLightThemeDialog = false
-                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_TEXT_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE.reset()
-                Preferences.CUSTOM_LIGHT_ACCENT_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4.reset()
+                Preferences.CUSTOM_LIGHT_TEXT.reset()
+                Preferences.CUSTOM_LIGHT_TEXT_SECONDARY.reset()
+                Preferences.CUSTOM_LIGHT_TEXT_DISABLED.reset()
+                Preferences.CUSTOM_LIGHT_PLAY_BUTTON.reset()
+                Preferences.CUSTOM_LIGHT_ACCENT.reset()
             }
         )
     }
@@ -56,16 +56,16 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             onDismiss = { resetCustomDarkThemeDialog = false },
             onConfirm = {
                 resetCustomDarkThemeDialog = false
-                Preferences.CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_TEXT_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_TEXT_DISABLED_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_PLAY_BUTTON_HASH_CODE.reset()
-                Preferences.CUSTOM_DARK_ACCENT_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_0.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_1.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_2.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_3.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_4.reset()
+                Preferences.CUSTOM_DARK_TEXT.reset()
+                Preferences.CUSTOM_DARK_TEXT_SECONDARY.reset()
+                Preferences.CUSTOM_DARK_TEXT_DISABLED.reset()
+                Preferences.CUSTOM_DARK_PLAY_BUTTON.reset()
+                Preferences.CUSTOM_DARK_ACCENT.reset()
             }
         )
     }
@@ -81,7 +81,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
 
     AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.CustomColor) {
         SettingComponents.ColorPicker(
-            preference = Preferences.CUSTOM_COLOR_HASH_CODE,
+            preference = Preferences.CUSTOM_COLOR,
             titleId = R.string.customcolor,
             modifier = Modifier.padding( start = 25.dp ),
             subtitle = stringResource( R.string.restarting_rimusic_is_required )
@@ -105,52 +105,52 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                 }
             if( search appearsIn R.string.color_background_1  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0,
                     title = stringResource( R.string.color_background_1 )
                 )
             if( search appearsIn R.string.color_background_2  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1,
                     titleId = R.string.color_background_2
                 )
             if( search appearsIn R.string.color_background_3  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2,
                     titleId = R.string.color_background_3
                 )
             if( search appearsIn R.string.color_background_4  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3,
                     titleId = R.string.color_background_4
                 )
             if( search appearsIn R.string.color_background_5  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4,
                     titleId = R.string.color_background_5
                 )
             if( search appearsIn R.string.color_text  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_TEXT_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_TEXT,
                     titleId = R.string.color_text
                 )
             if( search appearsIn R.string.color_text_secondary  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_TEXT_SECONDARY,
                     titleId = R.string.color_text_secondary
                 )
             if( search appearsIn R.string.color_text_disabled  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_TEXT_DISABLED,
                     titleId = R.string.color_text_disabled
                 )
             if( search appearsIn R.string.color_icon_button_player  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_PLAY_BUTTON,
                     titleId = R.string.color_icon_button_player
                 )
             if( search appearsIn R.string.color_accent  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_LIGHT_ACCENT_HASH_CODE,
+                    preference = Preferences.CUSTOM_LIGHT_ACCENT,
                     titleId = R.string.color_accent
                 )
 
@@ -170,52 +170,52 @@ fun ThemeSettings( search: SettingEntrySearch ) {
                 }
             if( search appearsIn R.string.color_background_1  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_0,
                     titleId = R.string.color_background_1
                 )
             if( search appearsIn R.string.color_background_2  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_1,
                     titleId = R.string.color_background_2
                 )
             if( search appearsIn R.string.color_background_3  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_2,
                     titleId = R.string.color_background_3
                 )
             if( search appearsIn R.string.color_background_4  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_3,
                     titleId = R.string.color_background_4
                 )
             if( search appearsIn R.string.color_background_5  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_THEME_BACKGROUND_4,
                     titleId = R.string.color_background_5
                 )
             if( search appearsIn R.string.color_text  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_TEXT_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_TEXT,
                     titleId = R.string.color_text
                 )
             if( search appearsIn R.string.color_text_secondary  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_TEXT_SECONDARY,
                     titleId = R.string.color_text_secondary
                 )
             if( search appearsIn R.string.color_text_disabled  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_TEXT_DISABLED_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_TEXT_DISABLED,
                     titleId = R.string.color_text_disabled
                 )
             if( search appearsIn R.string.color_icon_button_player  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_PLAY_BUTTON_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_PLAY_BUTTON,
                     titleId = R.string.color_icon_button_player
                 )
             if( search appearsIn R.string.color_accent  )
                 SettingComponents.ColorPicker(
-                    preference = Preferences.CUSTOM_DARK_ACCENT_HASH_CODE,
+                    preference = Preferences.CUSTOM_DARK_ACCENT,
                     titleId = R.string.color_accent
                 )
         }

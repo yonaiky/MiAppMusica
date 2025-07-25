@@ -710,66 +710,66 @@ sealed class Preferences<T>(
         }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Custom light colors">
-        val CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_THEME_BACKGROUND_0 by lazy {
             Color(preferences, "CustomLightThemeBackground0", "customThemeLight_Background0", DefaultLightColorPalette.background0)
         }
-        val CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_THEME_BACKGROUND_1 by lazy {
             Color(preferences, "CustomLightThemeBackground1", "customThemeLight_Background1", DefaultLightColorPalette.background1)
         }
-        val CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_THEME_BACKGROUND_2 by lazy {
             Color(preferences, "CustomLightThemeBackground2", "customThemeLight_Background2", DefaultLightColorPalette.background2)
         }
-        val CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_THEME_BACKGROUND_3 by lazy {
             Color(preferences, "CustomLightThemeBackground3", "customThemeLight_Background3", DefaultLightColorPalette.background3)
         }
-        val CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_THEME_BACKGROUND_4 by lazy {
             Color(preferences, "CustomLightThemeBackground4", "customThemeLight_Background4", DefaultLightColorPalette.background4)
         }
-        val CUSTOM_LIGHT_TEXT_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_TEXT by lazy {
             Color(preferences, "CustomLightThemeText", "customThemeLight_Text", DefaultLightColorPalette.text)
         }
-        val CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_TEXT_SECONDARY by lazy {
             Color(preferences, "CustomLightThemeTextSecondary", "customThemeLight_textSecondary", DefaultLightColorPalette.textSecondary)
         }
-        val CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_TEXT_DISABLED by lazy {
             Color(preferences, "CustomLightThemeTextDisabled", "customThemeLight_textDisabled", DefaultLightColorPalette.textDisabled)
         }
-        val CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_PLAY_BUTTON by lazy {
             Color(preferences, "CustomLightThemePlayButton", "customThemeLight_iconButtonPlayer", DefaultLightColorPalette.iconButtonPlayer)
         }
-        val CUSTOM_LIGHT_ACCENT_HASH_CODE by lazy {
+        val CUSTOM_LIGHT_ACCENT by lazy {
             Color(preferences, "CustomLightThemeAccent", "customThemeLight_accent", DefaultLightColorPalette.accent)
         }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Custom dark theme">
-        val CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE by lazy {
+        val CUSTOM_DARK_THEME_BACKGROUND_0 by lazy {
             Color(preferences, "CustomDarkThemeBackground0", "customThemeDark_Background0", DefaultDarkColorPalette.background0)
         }
-        val CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE by lazy {
+        val CUSTOM_DARK_THEME_BACKGROUND_1 by lazy {
             Color(preferences, "CustomDarkThemeBackground1", "customThemeDark_Background1", DefaultDarkColorPalette.background1)
         }
-        val CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE by lazy {
+        val CUSTOM_DARK_THEME_BACKGROUND_2 by lazy {
             Color(preferences, "CustomDarkThemeBackground2", "customThemeDark_Background2", DefaultDarkColorPalette.background2)
         }
-        val CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE by lazy {
+        val CUSTOM_DARK_THEME_BACKGROUND_3 by lazy {
             Color(preferences, "CustomDarkThemeBackground3", "customThemeDark_Background3", DefaultDarkColorPalette.background3)
         }
-        val CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE by lazy {
+        val CUSTOM_DARK_THEME_BACKGROUND_4 by lazy {
             Color(preferences, "CustomDarkThemeBackground4", "customThemeDark_Background4", DefaultDarkColorPalette.background4)
         }
-        val CUSTOM_DARK_TEXT_HASH_CODE by lazy {
+        val CUSTOM_DARK_TEXT by lazy {
             Color(preferences, "CustomDarkThemeText", "customThemeDark_Text", DefaultDarkColorPalette.text)
         }
-        val CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE by lazy {
+        val CUSTOM_DARK_TEXT_SECONDARY by lazy {
             Color(preferences, "CustomDarkThemeTextSecondary", "customThemeDark_textSecondary", DefaultDarkColorPalette.textSecondary)
         }
-        val CUSTOM_DARK_TEXT_DISABLED_HASH_CODE by lazy {
+        val CUSTOM_DARK_TEXT_DISABLED by lazy {
             Color(preferences, "CustomDarkThemeTextDisabled", "customThemeDark_textDisabled", DefaultDarkColorPalette.textDisabled)
         }
-        val CUSTOM_DARK_PLAY_BUTTON_HASH_CODE by lazy {
+        val CUSTOM_DARK_PLAY_BUTTON by lazy {
             Color(preferences, "CustomDarkThemePlayButton", "customThemeDark_iconButtonPlayer", DefaultDarkColorPalette.iconButtonPlayer)
         }
-        val CUSTOM_DARK_ACCENT_HASH_CODE by lazy {
+        val CUSTOM_DARK_ACCENT by lazy {
             Color(preferences, "CustomDarkThemeAccent", "customThemeDark_accent", DefaultDarkColorPalette.accent)
         }
         //</editor-fold>
@@ -1026,7 +1026,7 @@ sealed class Preferences<T>(
         val SEEN_CHANGELOGS_VERSION by lazy {
             String( preferences, "SeenChangelogsVersion", "seenChangelogsVersionKey", "" )
         }
-        val CUSTOM_COLOR_HASH_CODE by lazy {
+        val CUSTOM_COLOR by lazy {
             Color(preferences, "CustomColorHashCode", "customColor", androidx.compose.ui.graphics.Color.Green)
         }
         val SEARCH_RESULTS_TAB_INDEX by lazy {

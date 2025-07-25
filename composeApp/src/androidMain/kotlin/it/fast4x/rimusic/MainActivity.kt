@@ -391,7 +391,7 @@ class MainActivity :
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
             var animatedGradient by Preferences.ANIMATED_GRADIENT
-            var customColor by Preferences.CUSTOM_COLOR_HASH_CODE
+            var customColor by Preferences.CUSTOM_COLOR
             val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
 
 
@@ -570,26 +570,26 @@ class MainActivity :
 
                             Preferences.COLOR_PALETTE.key,
                             Preferences.THEME_MODE.key,
-                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_TEXT_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE.key,
-                            Preferences.CUSTOM_LIGHT_ACCENT_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_TEXT_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_TEXT_DISABLED_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_PLAY_BUTTON_HASH_CODE.key,
-                            Preferences.CUSTOM_DARK_ACCENT_HASH_CODE.key,
+                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0.key,
+                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1.key,
+                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2.key,
+                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3.key,
+                            Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4.key,
+                            Preferences.CUSTOM_LIGHT_TEXT.key,
+                            Preferences.CUSTOM_LIGHT_TEXT_SECONDARY.key,
+                            Preferences.CUSTOM_LIGHT_TEXT_DISABLED.key,
+                            Preferences.CUSTOM_LIGHT_PLAY_BUTTON.key,
+                            Preferences.CUSTOM_LIGHT_ACCENT.key,
+                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_0.key,
+                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_1.key,
+                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_2.key,
+                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_3.key,
+                            Preferences.CUSTOM_DARK_THEME_BACKGROUND_4.key,
+                            Preferences.CUSTOM_DARK_TEXT.key,
+                            Preferences.CUSTOM_DARK_TEXT_SECONDARY.key,
+                            Preferences.CUSTOM_DARK_TEXT_DISABLED.key,
+                            Preferences.CUSTOM_DARK_PLAY_BUTTON.key,
+                            Preferences.CUSTOM_DARK_ACCENT.key,
                                 -> {
                                 val colorPaletteName = sharedPreferences.getEnum( Preferences.COLOR_PALETTE.key, Preferences.COLOR_PALETTE.defaultValue )
                                 val colorPaletteMode = sharedPreferences.getEnum( Preferences.THEME_MODE.key, Preferences.THEME_MODE.defaultValue )
