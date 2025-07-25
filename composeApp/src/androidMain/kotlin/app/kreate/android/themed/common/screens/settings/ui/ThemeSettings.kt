@@ -22,34 +22,10 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
-import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 
 @Composable
 fun ThemeSettings( search: SettingEntrySearch ) {
     var colorPaletteName by Preferences.COLOR_PALETTE
-    var colorPaletteMode by Preferences.THEME_MODE
-    var customThemeLight_Background0 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE
-    var customThemeLight_Background1 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE
-    var customThemeLight_Background2 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE
-    var customThemeLight_Background3 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE
-    var customThemeLight_Background4 by Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE
-    var customThemeLight_Text by Preferences.CUSTOM_LIGHT_TEXT_HASH_CODE
-    var customThemeLight_TextSecondary by Preferences.CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE
-    var customThemeLight_TextDisabled by Preferences.CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE
-    var customThemeLight_IconButtonPlayer by Preferences.CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE
-    var customThemeLight_Accent by Preferences.CUSTOM_LIGHT_ACCENT_HASH_CODE
-
-    var customThemeDark_Background0 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE
-    var customThemeDark_Background1 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE
-    var customThemeDark_Background2 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE
-    var customThemeDark_Background3 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE
-    var customThemeDark_Background4 by Preferences.CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE
-    var customThemeDark_Text by Preferences.CUSTOM_DARK_TEXT_HASH_CODE
-    var customThemeDark_TextSecondary by Preferences.CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE
-    var customThemeDark_TextDisabled by Preferences.CUSTOM_DARK_TEXT_DISABLED_HASH_CODE
-    var customThemeDark_IconButtonPlayer by Preferences.CUSTOM_DARK_PLAY_BUTTON_HASH_CODE
-    var customThemeDark_Accent by Preferences.CUSTOM_DARK_ACCENT_HASH_CODE
 
     var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
@@ -60,16 +36,16 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             onDismiss = { resetCustomLightThemeDialog = false },
             onConfirm = {
                 resetCustomLightThemeDialog = false
-                customThemeLight_Background0 = DefaultLightColorPalette.background0
-                customThemeLight_Background1 = DefaultLightColorPalette.background1
-                customThemeLight_Background2 = DefaultLightColorPalette.background2
-                customThemeLight_Background3 = DefaultLightColorPalette.background3
-                customThemeLight_Background4 = DefaultLightColorPalette.background4
-                customThemeLight_Text = DefaultLightColorPalette.text
-                customThemeLight_TextSecondary = DefaultLightColorPalette.textSecondary
-                customThemeLight_TextDisabled = DefaultLightColorPalette.textDisabled
-                customThemeLight_IconButtonPlayer = DefaultLightColorPalette.iconButtonPlayer
-                customThemeLight_Accent = DefaultLightColorPalette.accent
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_TEXT_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE.reset()
+                Preferences.CUSTOM_LIGHT_ACCENT_HASH_CODE.reset()
             }
         )
     }
@@ -80,16 +56,16 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             onDismiss = { resetCustomDarkThemeDialog = false },
             onConfirm = {
                 resetCustomDarkThemeDialog = false
-                customThemeDark_Background0 = DefaultDarkColorPalette.background0
-                customThemeDark_Background1 = DefaultDarkColorPalette.background1
-                customThemeDark_Background2 = DefaultDarkColorPalette.background2
-                customThemeDark_Background3 = DefaultDarkColorPalette.background3
-                customThemeDark_Background4 = DefaultDarkColorPalette.background4
-                customThemeDark_Text = DefaultDarkColorPalette.text
-                customThemeDark_TextSecondary = DefaultDarkColorPalette.textSecondary
-                customThemeDark_TextDisabled = DefaultDarkColorPalette.textDisabled
-                customThemeDark_IconButtonPlayer = DefaultDarkColorPalette.iconButtonPlayer
-                customThemeDark_Accent = DefaultDarkColorPalette.accent
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_TEXT_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_TEXT_DISABLED_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_PLAY_BUTTON_HASH_CODE.reset()
+                Preferences.CUSTOM_DARK_ACCENT_HASH_CODE.reset()
             }
         )
     }
@@ -100,7 +76,7 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             R.string.theme
         ) {
             if( colorPaletteName == ColorPaletteName.ModernBlack )
-                colorPaletteMode = ColorPaletteMode.System
+                Preferences.THEME_MODE.value = ColorPaletteMode.System
         }
 
     AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.CustomColor) {
