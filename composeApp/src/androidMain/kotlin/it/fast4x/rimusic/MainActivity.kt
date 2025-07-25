@@ -425,7 +425,7 @@ class MainActivity :
                     }
                     if (colorPaletteName == ColorPaletteName.CustomColor) {
                         colorPalette = dynamicColorPaletteOf(
-                            Color(customColor),
+                            customColor,
                             !lightTheme
                         )
                     }
@@ -647,7 +647,7 @@ class MainActivity :
                                     }
                                     if (colorPaletteName == ColorPaletteName.CustomColor) {
                                         colorPalette = dynamicColorPaletteOf(
-                                            Color(customColor),
+                                            customColor,
                                             !lightTheme
                                         )
                                     }

@@ -588,7 +588,7 @@ object SettingComponents {
 
     @Composable
     fun ColorPicker(
-        preference: Preferences.Int,
+        preference: Preferences.Color,
         title: String,
         modifier: Modifier = Modifier,
         subtitle: String = "",
@@ -596,9 +596,8 @@ object SettingComponents {
         action: Action = Action.NONE
     ) {
         val dialog = remember( preference.value ) {
-            val initialColor = Color(preference.value)
-            ColorPickerDialog(initialColor) {
-                preference.value = it.hashCode()
+            ColorPickerDialog(preference.value) {
+                preference.value = it
             }
         }
         dialog.Render()
@@ -613,7 +612,7 @@ object SettingComponents {
 
     @Composable
     fun ColorPicker(
-        preference: Preferences.Int,
+        preference: Preferences.Color,
         @StringRes titleId: Int,
         modifier: Modifier = Modifier,
         subtitle: String = "",

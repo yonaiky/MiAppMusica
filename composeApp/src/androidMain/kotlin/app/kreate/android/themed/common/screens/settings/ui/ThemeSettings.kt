@@ -60,16 +60,16 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             onDismiss = { resetCustomLightThemeDialog = false },
             onConfirm = {
                 resetCustomLightThemeDialog = false
-                customThemeLight_Background0 = DefaultLightColorPalette.background0.hashCode()
-                customThemeLight_Background1 = DefaultLightColorPalette.background1.hashCode()
-                customThemeLight_Background2 = DefaultLightColorPalette.background2.hashCode()
-                customThemeLight_Background3 = DefaultLightColorPalette.background3.hashCode()
-                customThemeLight_Background4 = DefaultLightColorPalette.background4.hashCode()
-                customThemeLight_Text = DefaultLightColorPalette.text.hashCode()
-                customThemeLight_TextSecondary = DefaultLightColorPalette.textSecondary.hashCode()
-                customThemeLight_TextDisabled = DefaultLightColorPalette.textDisabled.hashCode()
-                customThemeLight_IconButtonPlayer = DefaultLightColorPalette.iconButtonPlayer.hashCode()
-                customThemeLight_Accent = DefaultLightColorPalette.accent.hashCode()
+                customThemeLight_Background0 = DefaultLightColorPalette.background0
+                customThemeLight_Background1 = DefaultLightColorPalette.background1
+                customThemeLight_Background2 = DefaultLightColorPalette.background2
+                customThemeLight_Background3 = DefaultLightColorPalette.background3
+                customThemeLight_Background4 = DefaultLightColorPalette.background4
+                customThemeLight_Text = DefaultLightColorPalette.text
+                customThemeLight_TextSecondary = DefaultLightColorPalette.textSecondary
+                customThemeLight_TextDisabled = DefaultLightColorPalette.textDisabled
+                customThemeLight_IconButtonPlayer = DefaultLightColorPalette.iconButtonPlayer
+                customThemeLight_Accent = DefaultLightColorPalette.accent
             }
         )
     }
@@ -80,16 +80,16 @@ fun ThemeSettings( search: SettingEntrySearch ) {
             onDismiss = { resetCustomDarkThemeDialog = false },
             onConfirm = {
                 resetCustomDarkThemeDialog = false
-                customThemeDark_Background0 = DefaultDarkColorPalette.background0.hashCode()
-                customThemeDark_Background1 = DefaultDarkColorPalette.background1.hashCode()
-                customThemeDark_Background2 = DefaultDarkColorPalette.background2.hashCode()
-                customThemeDark_Background3 = DefaultDarkColorPalette.background3.hashCode()
-                customThemeDark_Background4 = DefaultDarkColorPalette.background4.hashCode()
-                customThemeDark_Text = DefaultDarkColorPalette.text.hashCode()
-                customThemeDark_TextSecondary = DefaultDarkColorPalette.textSecondary.hashCode()
-                customThemeDark_TextDisabled = DefaultDarkColorPalette.textDisabled.hashCode()
-                customThemeDark_IconButtonPlayer = DefaultDarkColorPalette.iconButtonPlayer.hashCode()
-                customThemeDark_Accent = DefaultDarkColorPalette.accent.hashCode()
+                customThemeDark_Background0 = DefaultDarkColorPalette.background0
+                customThemeDark_Background1 = DefaultDarkColorPalette.background1
+                customThemeDark_Background2 = DefaultDarkColorPalette.background2
+                customThemeDark_Background3 = DefaultDarkColorPalette.background3
+                customThemeDark_Background4 = DefaultDarkColorPalette.background4
+                customThemeDark_Text = DefaultDarkColorPalette.text
+                customThemeDark_TextSecondary = DefaultDarkColorPalette.textSecondary
+                customThemeDark_TextDisabled = DefaultDarkColorPalette.textDisabled
+                customThemeDark_IconButtonPlayer = DefaultDarkColorPalette.iconButtonPlayer
+                customThemeDark_Accent = DefaultDarkColorPalette.accent
             }
         )
     }

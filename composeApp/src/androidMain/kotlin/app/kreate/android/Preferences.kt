@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
+import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SnapshotMutationPolicy
@@ -12,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.util.fastForEach
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
@@ -709,66 +711,66 @@ sealed class Preferences<T>(
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Custom light colors">
         val CUSTOM_LIGHT_THEME_BACKGROUND_0_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeBackground0", "customThemeLight_Background0", DefaultLightColorPalette.background0.hashCode() )
+            Color(preferences, "CustomLightThemeBackground0", "customThemeLight_Background0", DefaultLightColorPalette.background0)
         }
         val CUSTOM_LIGHT_THEME_BACKGROUND_1_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeBackground1", "customThemeLight_Background1", DefaultLightColorPalette.background1.hashCode() )
+            Color(preferences, "CustomLightThemeBackground1", "customThemeLight_Background1", DefaultLightColorPalette.background1)
         }
         val CUSTOM_LIGHT_THEME_BACKGROUND_2_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeBackground2", "customThemeLight_Background2", DefaultLightColorPalette.background2.hashCode() )
+            Color(preferences, "CustomLightThemeBackground2", "customThemeLight_Background2", DefaultLightColorPalette.background2)
         }
         val CUSTOM_LIGHT_THEME_BACKGROUND_3_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeBackground3", "customThemeLight_Background3", DefaultLightColorPalette.background3.hashCode() )
+            Color(preferences, "CustomLightThemeBackground3", "customThemeLight_Background3", DefaultLightColorPalette.background3)
         }
         val CUSTOM_LIGHT_THEME_BACKGROUND_4_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeBackground4", "customThemeLight_Background4", DefaultLightColorPalette.background4.hashCode() )
+            Color(preferences, "CustomLightThemeBackground4", "customThemeLight_Background4", DefaultLightColorPalette.background4)
         }
         val CUSTOM_LIGHT_TEXT_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeText", "customThemeLight_Text", DefaultLightColorPalette.text.hashCode() )
+            Color(preferences, "CustomLightThemeText", "customThemeLight_Text", DefaultLightColorPalette.text)
         }
         val CUSTOM_LIGHT_TEXT_SECONDARY_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeTextSecondary", "customThemeLight_textSecondary", DefaultLightColorPalette.textSecondary.hashCode() )
+            Color(preferences, "CustomLightThemeTextSecondary", "customThemeLight_textSecondary", DefaultLightColorPalette.textSecondary)
         }
         val CUSTOM_LIGHT_TEXT_DISABLED_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeTextDisabled", "customThemeLight_textDisabled", DefaultLightColorPalette.textDisabled.hashCode() )
+            Color(preferences, "CustomLightThemeTextDisabled", "customThemeLight_textDisabled", DefaultLightColorPalette.textDisabled)
         }
         val CUSTOM_LIGHT_PLAY_BUTTON_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemePlayButton", "customThemeLight_iconButtonPlayer", DefaultLightColorPalette.iconButtonPlayer.hashCode() )
+            Color(preferences, "CustomLightThemePlayButton", "customThemeLight_iconButtonPlayer", DefaultLightColorPalette.iconButtonPlayer)
         }
         val CUSTOM_LIGHT_ACCENT_HASH_CODE by lazy {
-            Int( preferences, "CustomLightThemeAccent", "customThemeLight_accent", DefaultLightColorPalette.accent.hashCode() )
+            Color(preferences, "CustomLightThemeAccent", "customThemeLight_accent", DefaultLightColorPalette.accent)
         }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Custom dark theme">
         val CUSTOM_DARK_THEME_BACKGROUND_0_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeBackground0", "customThemeDark_Background0", DefaultDarkColorPalette.background0.hashCode() )
+            Color(preferences, "CustomDarkThemeBackground0", "customThemeDark_Background0", DefaultDarkColorPalette.background0)
         }
         val CUSTOM_DARK_THEME_BACKGROUND_1_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeBackground1", "customThemeDark_Background1", DefaultDarkColorPalette.background1.hashCode() )
+            Color(preferences, "CustomDarkThemeBackground1", "customThemeDark_Background1", DefaultDarkColorPalette.background1)
         }
         val CUSTOM_DARK_THEME_BACKGROUND_2_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeBackground2", "customThemeDark_Background2", DefaultDarkColorPalette.background2.hashCode() )
+            Color(preferences, "CustomDarkThemeBackground2", "customThemeDark_Background2", DefaultDarkColorPalette.background2)
         }
         val CUSTOM_DARK_THEME_BACKGROUND_3_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeBackground3", "customThemeDark_Background3", DefaultDarkColorPalette.background3.hashCode() )
+            Color(preferences, "CustomDarkThemeBackground3", "customThemeDark_Background3", DefaultDarkColorPalette.background3)
         }
         val CUSTOM_DARK_THEME_BACKGROUND_4_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeBackground4", "customThemeDark_Background4", DefaultDarkColorPalette.background4.hashCode() )
+            Color(preferences, "CustomDarkThemeBackground4", "customThemeDark_Background4", DefaultDarkColorPalette.background4)
         }
         val CUSTOM_DARK_TEXT_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeText", "customThemeDark_Text", DefaultDarkColorPalette.text.hashCode() )
+            Color(preferences, "CustomDarkThemeText", "customThemeDark_Text", DefaultDarkColorPalette.text)
         }
         val CUSTOM_DARK_TEXT_SECONDARY_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeTextSecondary", "customThemeDark_textSecondary", DefaultDarkColorPalette.textSecondary.hashCode() )
+            Color(preferences, "CustomDarkThemeTextSecondary", "customThemeDark_textSecondary", DefaultDarkColorPalette.textSecondary)
         }
         val CUSTOM_DARK_TEXT_DISABLED_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeTextDisabled", "customThemeDark_textDisabled", DefaultDarkColorPalette.textDisabled.hashCode() )
+            Color(preferences, "CustomDarkThemeTextDisabled", "customThemeDark_textDisabled", DefaultDarkColorPalette.textDisabled)
         }
         val CUSTOM_DARK_PLAY_BUTTON_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemePlayButton", "customThemeDark_iconButtonPlayer", DefaultDarkColorPalette.iconButtonPlayer.hashCode() )
+            Color(preferences, "CustomDarkThemePlayButton", "customThemeDark_iconButtonPlayer", DefaultDarkColorPalette.iconButtonPlayer)
         }
         val CUSTOM_DARK_ACCENT_HASH_CODE by lazy {
-            Int( preferences, "CustomDarkThemeAccent", "customThemeDark_accent", DefaultDarkColorPalette.accent.hashCode() )
+            Color(preferences, "CustomDarkThemeAccent", "customThemeDark_accent", DefaultDarkColorPalette.accent)
         }
         //</editor-fold>
 
@@ -1025,7 +1027,7 @@ sealed class Preferences<T>(
             String( preferences, "SeenChangelogsVersion", "seenChangelogsVersionKey", "" )
         }
         val CUSTOM_COLOR_HASH_CODE by lazy {
-            Int( preferences, "CustomColorHashCode", "customColor", Color.Green.hashCode() )
+            Color(preferences, "CustomColorHashCode", "customColor", androidx.compose.ui.graphics.Color.Green)
         }
         val SEARCH_RESULTS_TAB_INDEX by lazy {
             Int( preferences, "SearchResultsTabIndex", "searchResultScreenTabIndex", 0 )
@@ -1605,6 +1607,70 @@ sealed class Preferences<T>(
         override fun write( value: kotlin.Boolean) =
             sharedPreferences.edit {
                 putBoolean( key, value )
+            }
+    }
+
+    class Color(
+        sharedPreferences: SharedPreferences,
+        key: kotlin.String,
+        previousKey: kotlin.String,
+        defaultValue: androidx.compose.ui.graphics.Color
+    ): Preferences<androidx.compose.ui.graphics.Color>(sharedPreferences, key, previousKey, defaultValue) {
+
+        constructor(
+            sharedPreferences: SharedPreferences,
+            key: kotlin.String,
+            previousKey: kotlin.String,
+            @ColorRes defaultValue: kotlin.Int
+        ): this(sharedPreferences, key, previousKey, Color(ContextCompat.getColor( appContext(), defaultValue )))
+
+        override val policy = StructuralEqualityPolicy()
+
+        override var value: androidx.compose.ui.graphics.Color by mutableStateOf(
+            value = getFromSharedPreferences() ?: defaultValue.also( ::write ),
+            policy = this.policy
+        )
+
+        override fun getFromSharedPreferences(): androidx.compose.ui.graphics.Color? {
+            var fromFile: kotlin.Int? = null
+
+            /*
+                 Set [fromFile] to the value of [previousKey] if it's
+                 existed in the preferences file, then delete that key
+                 (for migration to new key)
+             */
+            if( sharedPreferences.contains( previousKey ) ) {
+                fromFile = sharedPreferences.getInt( previousKey, defaultValue.hashCode() )
+                sharedPreferences.edit( commit = true ) {
+                    remove( previousKey )
+
+                    // Add this value to new [key], otherwise, only old key
+                    // will be removed and new key is not added until next start
+                    // with default value
+                    fromFile.also { putInt( key, it ) }
+                }
+            }
+
+            /*
+                 Set [fromFile] to the value of [key] if it's
+                 existed in the preferences file.
+
+                 Reasons for 2 separate steps are:
+                 - When both [key] and [previousKey] are existed
+                 in side the file, [previousKey] will be deleted
+                 while value of [key] is being used.
+                 - Or either 1 of the key will be used if only
+                 1 of them existed inside the file.
+            */
+            if( sharedPreferences.contains( key ) )
+                fromFile = sharedPreferences.getInt( key, defaultValue.hashCode() )
+
+            return fromFile?.let( ::Color )
+        }
+
+        override fun write( value: androidx.compose.ui.graphics.Color ) =
+            sharedPreferences.edit {
+                putInt( key, value.hashCode() )
             }
     }
 }
