@@ -133,7 +133,7 @@ object Database {
             id = innertubeSong.id,
             title = PropUtils.retainIfModified(
                 dbSong?.title,
-                "%s${innertubeSong.name}".format( if( innertubeSong.isExplicit ) EXPLICIT_PREFIX else "" )
+                "%s%s".format( if( innertubeSong.isExplicit ) EXPLICIT_PREFIX else "", innertubeSong.name )
             ).orEmpty(),
             artistsText = PropUtils.retainIfModified( dbSong?.artistsText, innertubeSong.artistsText ),
             durationText = innertubeSong.durationText,       // Force update to new duration text
