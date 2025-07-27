@@ -1,0 +1,15 @@
+Fixed:
+
+- Thumbnail didn't show up in Discord RPC
+- YT login page refused to close after login
+- YT's playlists didn't show in Playlists tab
+- App crashed when local song is played
+- Discord login section remains "Connect" after successfully logged in
+- "Source error" on Android Auto
+- App crashed on some songs
+
+Changed:
+
+- Download all show some warning before continuing
+- Smart rewind feature shows dialog for input instead of input field in settings
+- Request to restart player after changing a setting will be shown at the header section
