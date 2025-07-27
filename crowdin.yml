@@ -1,6 +1,6 @@
 files:
-  - source: /composeApp/src/androidMain/res/values/strings.xml
-    translation: /composeApp/src/androidMain/res/values-%android_code%/strings.xml
+  - source: /composeApp/src/androidMain/res/values/{strings,plurals}.xml
+    translation: /composeApp/src/androidMain/res/values-%android_code%/%original_file_name%
     languages_mapping:
       android_code:
         af: af
