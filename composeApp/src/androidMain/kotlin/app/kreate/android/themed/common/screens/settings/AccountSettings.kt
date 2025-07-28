@@ -1,7 +1,9 @@
 package app.kreate.android.themed.common.screens.settings
 
+import android.os.Build
 import android.webkit.CookieManager
 import android.webkit.WebStorage
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,9 +52,9 @@ import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.isAtLeastAndroid7
 
 @ExperimentalMaterial3Api
+@RequiresApi(Build.VERSION_CODES.N)
 @Composable
 fun AccountSettings( paddingValues: PaddingValues ) {
     val context = LocalContext.current
@@ -205,62 +207,60 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                 }
             }
 
-            if( isAtLeastAndroid7 ) {
-                // This is a brand name that doesn't need translation
-                header( { "discord" } )
-                entry( search, R.string.discord_enable_rich_presence ) {
-                    SettingComponents.BooleanEntry(
-                        Preferences.DISCORD_LOGIN,
-                        R.string.discord_enable_rich_presence
-                    )
+            // This is a brand name that doesn't need translation
+            header( { "discord" } )
+            entry( search, R.string.discord_enable_rich_presence ) {
+                SettingComponents.BooleanEntry(
+                    Preferences.DISCORD_LOGIN,
+                    R.string.discord_enable_rich_presence
+                )
+            }
+            animatedEntry(
+                key = "discordLoginChildren",
+                visible = Preferences.DISCORD_LOGIN.value,
+                modifier = Modifier.padding( start = 25.dp )
+            ) {
+                var loginDiscord by remember { mutableStateOf(false) }
+                val (titleId, subtitle) = remember( Preferences.DISCORD_ACCESS_TOKEN.value ) {
+                    if( Preferences.DISCORD_ACCESS_TOKEN.value.isBlank() )
+                        R.string.discord_connect to ""
+                    else
+                        R.string.discord_disconnect to context.getString( R.string.discord_connected_to_discord_account )
                 }
-                animatedEntry(
-                    key = "discordLoginChildren",
-                    visible = Preferences.DISCORD_LOGIN.value,
-                    modifier = Modifier.padding( start = 25.dp )
-                ) {
-                    var loginDiscord by remember { mutableStateOf(false) }
-                    val (titleId, subtitle) = remember( Preferences.DISCORD_ACCESS_TOKEN.value ) {
-                        if( Preferences.DISCORD_ACCESS_TOKEN.value.isBlank() )
-                            R.string.discord_connect to ""
-                        else
-                            R.string.discord_disconnect to context.getString( R.string.discord_connected_to_discord_account )
-                    }
-                    if( search appearsIn titleId )
-                        SettingComponents.Text(
-                            title = stringResource( titleId ),
-                            subtitle = subtitle,
-                            onClick = {
-                                loginDiscord = Preferences.DISCORD_ACCESS_TOKEN.value.isBlank()
+                if( search appearsIn titleId )
+                    SettingComponents.Text(
+                        title = stringResource( titleId ),
+                        subtitle = subtitle,
+                        onClick = {
+                            loginDiscord = Preferences.DISCORD_ACCESS_TOKEN.value.isBlank()
 
-                                if( !loginDiscord )
-                                    Preferences.DISCORD_ACCESS_TOKEN.reset()
-                            }
-                        ) {
-                            Image(
-                                painter = painterResource( R.drawable.discord_logo ),
-                                contentDescription = null,
-                                modifier = Modifier.size( 24.dp )
-                            )
+                            if( !loginDiscord )
+                                Preferences.DISCORD_ACCESS_TOKEN.reset()
                         }
-
-                    CustomModalBottomSheet(
-                        showSheet = loginDiscord,
-                        onDismissRequest = { loginDiscord = false },
-                        containerColor = colorPalette().background0,
-                        contentColor = colorPalette().background0,
-                        modifier = Modifier.fillMaxWidth(),
-                        sheetState = rememberModalBottomSheetState( true ),
-                        dragHandle = {
-                            Surface(
-                                color = colorPalette().background0,
-                                shape = thumbnailShape()
-                            ) {}
-                        },
-                        shape = Preferences.THUMBNAIL_BORDER_RADIUS.value.shape
                     ) {
-                        DiscordLoginAndGetToken { loginDiscord = false }
+                        Image(
+                            painter = painterResource( R.drawable.discord_logo ),
+                            contentDescription = null,
+                            modifier = Modifier.size( 24.dp )
+                        )
                     }
+
+                CustomModalBottomSheet(
+                    showSheet = loginDiscord,
+                    onDismissRequest = { loginDiscord = false },
+                    containerColor = colorPalette().background0,
+                    contentColor = colorPalette().background0,
+                    modifier = Modifier.fillMaxWidth(),
+                    sheetState = rememberModalBottomSheetState( true ),
+                    dragHandle = {
+                        Surface(
+                            color = colorPalette().background0,
+                            shape = thumbnailShape()
+                        ) {}
+                    },
+                    shape = Preferences.THUMBNAIL_BORDER_RADIUS.value.shape
+                ) {
+                    DiscordLoginAndGetToken { loginDiscord = false }
                 }
             }
         }
