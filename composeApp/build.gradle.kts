@@ -1,4 +1,5 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import org.gradle.internal.extensions.stdlib.capitalized
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -222,6 +223,24 @@ android {
                    val suffix = if( flavorName == "izzy" ) "izzy" else buildType.name
                    it.outputFileName = "$APP_NAME-${suffix}.apk"
                }
+
+        if( buildType.name != "debug" ) {
+            val capitalizedFlavorName = "${flavorName.capitalized()}${buildType.name.capitalized()}"
+
+            tasks.register<Copy>("copyReleaseNoteTo${capitalizedFlavorName}Res" ) {
+                from( "$rootDir/fastlane/metadata/android/en-US/changelogs" )
+                val fileName = "${android.defaultConfig.versionCode!!}.txt"
+                setIncludes( listOf( fileName ) )
+
+                into( "$rootDir/composeApp/src/android$capitalizedFlavorName/res/raw" )
+
+                rename {
+                    if( it == fileName ) "release_notes.txt" else it
+                }
+            }
+
+            preBuildProvider.get().dependsOn( "copyReleaseNoteTo${capitalizedFlavorName}Res" )
+        }
     }
 
     sourceSets.all {
