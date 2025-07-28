@@ -361,7 +361,7 @@ fun LazyListScope.playerSettingsSection( search: SettingEntrySearch ) {
         )
     }
     animatedEntry(
-        key = "pipChildren",
+        key = "autoDownloadChildren",
         visible = Preferences.AUTO_DOWNLOAD.value,
         modifier = Modifier.padding( start = SettingComponents.CHILDREN_PADDING.dp )
     ) {
