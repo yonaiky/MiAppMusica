@@ -489,7 +489,7 @@ class PlayerServiceModern : MediaLibraryService(),
             updateDefaultNotification()
             withContext(Dispatchers.Main) {
                 player.currentMediaItem?.also {
-                    if( !isAtLeastAndroid7 || !Preferences.DISCORD_LOGIN.value ) return@also
+                    if( !isAtLeastAndroid6 || !Preferences.DISCORD_LOGIN.value ) return@also
 
                     updateDiscordPresence(
                         this@PlayerServiceModern,

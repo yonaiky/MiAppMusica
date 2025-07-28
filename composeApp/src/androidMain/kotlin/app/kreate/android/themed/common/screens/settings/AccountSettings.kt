@@ -54,7 +54,7 @@ import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import it.fast4x.rimusic.ui.styling.Dimensions
 
 @ExperimentalMaterial3Api
-@RequiresApi(Build.VERSION_CODES.N)
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun AccountSettings( paddingValues: PaddingValues ) {
     val context = LocalContext.current

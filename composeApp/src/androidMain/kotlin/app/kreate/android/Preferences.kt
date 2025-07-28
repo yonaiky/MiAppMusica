@@ -101,11 +101,13 @@ import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import it.fast4x.rimusic.utils.getDeviceVolume
+import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import me.knighthat.innertube.Constants
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.NonBlocking
 import timber.log.Timber
+import java.io.File
 import java.net.Proxy
 
 /**
@@ -145,7 +147,7 @@ sealed class Preferences<T>(
         private const val ENCRYPTED_PREFERENCES_FILENAME = "secure_preferences"
 
         private lateinit var preferences: SharedPreferences
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         private lateinit var encryptedPreferences: SharedPreferences
 
         //<editor-fold defaultstate="collapsed" desc="Item size">
@@ -620,31 +622,31 @@ sealed class Preferences<T>(
         val YOUTUBE_PLAYLISTS_SYNC by lazy {
             Boolean( preferences, "YouTubePlaylistsSync", "enableYoutubeSync", false )
         }
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_VISITOR_DATA by lazy {
             String( encryptedPreferences, "YouTubeVisitorData", "ytVisitorData", Constants.VISITOR_DATA )
         }
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_SYNC_ID by lazy {
             String( encryptedPreferences, "YouTubeSyncId", "ytDataSyncIdKey", "" )
         }
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_COOKIES by lazy {
             String( encryptedPreferences, "YouTubeCookies", "ytCookie", "" )
         }
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_ACCOUNT_NAME by lazy {
             String( encryptedPreferences, "YouTubeAccountName", "ytAccountNameKey", "" )
         }
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_ACCOUNT_EMAIL by lazy {
             String( encryptedPreferences, "YouTubeAccountEmail", "ytAccountEmailKey", "" )
         }
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_SELF_CHANNEL_HANDLE by lazy {
             String( encryptedPreferences, "YouTubeSelfChannelHandle", "ytAccountChannelHandleKey", "" )
         }
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_ACCOUNT_AVATAR by lazy {
             String( encryptedPreferences, "YouTubeAccountAvatar", "ytAccountThumbnailKey", "" )
         }
@@ -697,7 +699,7 @@ sealed class Preferences<T>(
         val DISCORD_LOGIN by lazy {
             Boolean( preferences, "DiscordLogin", "isDiscordPresenceEnabled", false )
         }
-        @get:RequiresApi(Build.VERSION_CODES.N)
+        @get:RequiresApi(Build.VERSION_CODES.M)
         val DISCORD_ACCESS_TOKEN by lazy {
             String( encryptedPreferences, "DiscordPersonalAccessToken", "", "" )
         }
@@ -1071,7 +1073,7 @@ sealed class Preferences<T>(
                 }
             }
 
-            if( !isAtLeastAndroid7 || ::encryptedPreferences.isInitialized ) return
+            if( !isAtLeastAndroid6 || ::encryptedPreferences.isInitialized ) return
 
             try {
                 // TODO: Implement custom encryption method
@@ -1101,7 +1103,13 @@ sealed class Preferences<T>(
                 e.printStackTrace()
 
                 runCatching {
-                    context.deleteSharedPreferences( ENCRYPTED_PREFERENCES_FILENAME )
+                    if( isAtLeastAndroid7 )
+                        context.deleteSharedPreferences( ENCRYPTED_PREFERENCES_FILENAME )
+                    else
+                        File(
+                            context.applicationInfo.dataDir,
+                            "shared_prefs/$ENCRYPTED_PREFERENCES_FILENAME.xml"
+                        ).delete()
                 }.onFailure {
                     Timber.tag( "Preferences" ).e( it, "Error while deleting encrypted preferences" )
                 }

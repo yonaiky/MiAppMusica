@@ -29,7 +29,7 @@ import me.knighthat.utils.Toaster
     ExperimentalMaterial3Api::class
 )
 @SuppressLint("SetJavaScriptEnabled")
-@RequiresApi(Build.VERSION_CODES.N)
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun YouTubeLogin( onDone: () -> Unit ) {
     var webView: WebView? = null

@@ -58,7 +58,7 @@ import org.jetbrains.annotations.Contract
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.N)
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
     var webView: WebView? = null
@@ -252,7 +252,7 @@ private suspend fun getSmallImageUrl( token: String ): String? =
 private lateinit var rpc: KizzyRPC
 private lateinit var activity: Activity
 
-@RequiresApi(Build.VERSION_CODES.N)
+@RequiresApi(Build.VERSION_CODES.M)
 fun updateDiscordPresence(
     context: Context,
     mediaItem: MediaItem,
