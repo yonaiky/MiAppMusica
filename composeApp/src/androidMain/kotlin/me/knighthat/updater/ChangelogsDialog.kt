@@ -40,7 +40,7 @@ open class ChangelogsDialog: Dialog {
 
     override var isActive: Boolean by mutableStateOf( false )
 
-    private fun parseReleaseNotes( lines: Stream<String>): List<Section> {
+    private fun parseReleaseNotes( lines: Stream<String> ): List<Section> {
         val sections = mutableListOf<Section>()
         var currentTitle: String? = null
         val currentChanges = mutableListOf<String>()
@@ -53,7 +53,7 @@ open class ChangelogsDialog: Dialog {
             currentChanges.clear()
         }
 
-        lines.forEach {  line ->
+        lines.forEach { line ->
             when {
                 line.endsWith( ":" ) -> {
                     // If [currentTitle] is not null, it means another section is reached.
@@ -68,9 +68,16 @@ open class ChangelogsDialog: Dialog {
                 }
             }
         }
-        packSection()
+        if( sections.isNotEmpty() )
+            packSection()
 
         return sections
+    }
+
+    @Composable
+    override fun Render() {
+        if( !BuildConfig.DEBUG )
+            super.Render()
     }
 
     @Composable
