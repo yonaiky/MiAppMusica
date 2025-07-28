@@ -197,6 +197,8 @@ android {
     productFlavors {
         create("github") {
             dimension = "prod"
+
+            isDefault = true
         }
 
         create( "fdroid" ) {
