@@ -124,12 +124,12 @@ android {
         compose = true
     }
 
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "me.knighthat.kreate"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 109
         versionName = "1.6.2"
 
