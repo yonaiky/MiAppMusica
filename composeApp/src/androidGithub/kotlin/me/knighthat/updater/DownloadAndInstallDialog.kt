@@ -38,6 +38,7 @@ import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -74,11 +75,14 @@ object DownloadAndInstallDialog: Dialog {
             return
         }
 
-        val apkUri = FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.provider", // must match manifest
-            apkFile
-        )
+        val apkUri = if(isAtLeastAndroid7 )
+            FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.provider", // must match manifest
+                apkFile
+            )
+        else
+            apkFile.toUri()
 
         val installIntent = Intent( Intent.ACTION_VIEW ).apply {
             setDataAndType( apkUri, "application/vnd.android.package-archive" )
