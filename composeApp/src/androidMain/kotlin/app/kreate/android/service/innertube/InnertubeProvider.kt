@@ -14,6 +14,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.util.sha1
 import io.ktor.util.toMap
+import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import me.knighthat.innertube.Constants
@@ -29,15 +30,17 @@ class InnertubeProvider: Innertube.Provider {
 
     companion object {
         val COOKIE_MAP by derivedStateOf {
-            val cookies by Preferences.YOUTUBE_COOKIES
-            if( cookies.isBlank() ) return@derivedStateOf emptyMap()
+            if( !isAtLeastAndroid7 || Preferences.YOUTUBE_COOKIES.value.isBlank() )
+                return@derivedStateOf emptyMap()
 
             runCatching {
-                cookies.split( ';' )
-                        .associate {
-                            val (k, v) = it.split('=', limit = 2)
-                            k.trim() to v.trim()
-                        }
+                Preferences.YOUTUBE_COOKIES
+                           .value
+                           .split( ';' )
+                           .associate {
+                               val (k, v) = it.split('=', limit = 2)
+                               k.trim() to v.trim()
+                           }
             }.onFailure {
                 it.printStackTrace()
                 Timber.tag( "InnertubeProvider" ).e( "Cookie parser failed!" )
@@ -45,9 +48,12 @@ class InnertubeProvider: Innertube.Provider {
         }
     }
 
-    override val cookies: String by Preferences.YOUTUBE_COOKIES
-    override val dataSyncId: String by Preferences.YOUTUBE_SYNC_ID
-    override val visitorData: String by Preferences.YOUTUBE_VISITOR_DATA
+    override val cookies: String
+        get() = if( isAtLeastAndroid7 ) Preferences.YOUTUBE_COOKIES.value else ""
+    override val dataSyncId: String
+        get() = if( isAtLeastAndroid7 ) Preferences.YOUTUBE_SYNC_ID.value else ""
+    override val visitorData: String
+        get() = if( isAtLeastAndroid7 ) Preferences.YOUTUBE_VISITOR_DATA.value else ""
 
     @Blocking
     override fun execute( request: Request ): Response = runBlocking( Dispatchers.IO ) {

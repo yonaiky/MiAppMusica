@@ -620,24 +620,31 @@ sealed class Preferences<T>(
         val YOUTUBE_PLAYLISTS_SYNC by lazy {
             Boolean( preferences, "YouTubePlaylistsSync", "enableYoutubeSync", false )
         }
+        @get:RequiresApi(Build.VERSION_CODES.N)
         val YOUTUBE_VISITOR_DATA by lazy {
             String( encryptedPreferences, "YouTubeVisitorData", "ytVisitorData", Constants.VISITOR_DATA )
         }
+        @get:RequiresApi(Build.VERSION_CODES.N)
         val YOUTUBE_SYNC_ID by lazy {
             String( encryptedPreferences, "YouTubeSyncId", "ytDataSyncIdKey", "" )
         }
+        @get:RequiresApi(Build.VERSION_CODES.N)
         val YOUTUBE_COOKIES by lazy {
             String( encryptedPreferences, "YouTubeCookies", "ytCookie", "" )
         }
+        @get:RequiresApi(Build.VERSION_CODES.N)
         val YOUTUBE_ACCOUNT_NAME by lazy {
             String( encryptedPreferences, "YouTubeAccountName", "ytAccountNameKey", "" )
         }
+        @get:RequiresApi(Build.VERSION_CODES.N)
         val YOUTUBE_ACCOUNT_EMAIL by lazy {
             String( encryptedPreferences, "YouTubeAccountEmail", "ytAccountEmailKey", "" )
         }
+        @get:RequiresApi(Build.VERSION_CODES.N)
         val YOUTUBE_SELF_CHANNEL_HANDLE by lazy {
             String( encryptedPreferences, "YouTubeSelfChannelHandle", "ytAccountChannelHandleKey", "" )
         }
+        @get:RequiresApi(Build.VERSION_CODES.N)
         val YOUTUBE_ACCOUNT_AVATAR by lazy {
             String( encryptedPreferences, "YouTubeAccountAvatar", "ytAccountThumbnailKey", "" )
         }
