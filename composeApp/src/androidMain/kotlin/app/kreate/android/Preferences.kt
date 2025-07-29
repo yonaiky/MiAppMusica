@@ -840,8 +840,8 @@ sealed class Preferences<T>(
         val LIKE_ICON by lazy {
             Enum( preferences, "LikeIcon", "iconLikeType", IconLikeType.Essential )
         }
-        val WALLPAPER_TYPE by lazy {
-            Enum( preferences, "WallpaperType", "wallpaperType", WallpaperType.Lockscreen )
+        val LIVE_WALLPAPER by lazy {
+            Enum(preferences, "LiveWallpaper", "", WallpaperType.DISABLED)
         }
         val ANIMATED_GRADIENT by lazy {
             Enum( preferences, "AnimatedGradient", "animatedGradient", AnimatedGradient.Linear )
@@ -908,9 +908,6 @@ sealed class Preferences<T>(
         }
         val ZOOM_OUT_ANIMATION by lazy {
             Boolean( preferences, "ZoomOutAnimation", "buttonzoomout", false )
-        }
-        val ENABLE_WALLPAPER by lazy {
-            Boolean( preferences, "EnableWallpaper", "enableWallpaper", false )
         }
         val ENABLE_DISCOVER by lazy {
             Boolean( preferences, "EnableDiscover", "discover", false )

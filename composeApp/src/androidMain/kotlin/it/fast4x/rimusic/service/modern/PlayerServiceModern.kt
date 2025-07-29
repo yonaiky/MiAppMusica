@@ -80,6 +80,8 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.service.createDataSourceFactory
 import app.kreate.android.service.newpipe.NewPipeDownloader
+import app.kreate.android.utils.centerCropBitmap
+import app.kreate.android.utils.centerCropToMatchScreenSize
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.widget.Widget
@@ -1199,25 +1201,31 @@ class PlayerServiceModern : MediaLibraryService(),
         }
         //***********************
 
-        updateWallpaper()
+        updateWallpaper( bitmapProvider.bitmap )
 
         return MediaNotification(NotificationId, customNotify.build())
     }
 
-    private fun updateWallpaper() {
-        val wallpaperEnabled by Preferences.ENABLE_WALLPAPER
-        val wallpaperType by Preferences.WALLPAPER_TYPE
-        if (isAtLeastAndroid7 && wallpaperEnabled) {
-            coroutineScope.launch(Dispatchers.IO) {
-                val wpManager = WallpaperManager.getInstance(this@PlayerServiceModern)
-                wpManager.setBitmap(bitmapProvider.bitmap, null, true,
-                    when (wallpaperType) {
-                        WallpaperType.Both -> (FLAG_LOCK or FLAG_SYSTEM)
-                        WallpaperType.Lockscreen -> FLAG_LOCK
-                        WallpaperType.Home -> FLAG_SYSTEM
-                    }
-                )
-            }
+    private fun updateWallpaper( bitmap: Bitmap ) {
+        val type by Preferences.LIVE_WALLPAPER
+        if( type == WallpaperType.DISABLED ) return
+
+        coroutineScope.launch( Dispatchers.Default ) {
+            val mgr = WallpaperManager.getInstance( this@PlayerServiceModern )
+            val cropRect = with( bitmap ) { centerCropToMatchScreenSize( width, height ) }
+
+            if( isAtLeastAndroid7 ) {
+                val flag = when( type ) {
+                    WallpaperType.BOTH          -> FLAG_LOCK or FLAG_SYSTEM
+                    WallpaperType.LOCKSCREEN    -> FLAG_LOCK
+                    WallpaperType.HOME          -> FLAG_SYSTEM
+                    // This is intended, [WallpaperType.DISABLED] must not present at this point
+                    WallpaperType.DISABLED      -> throw UnsupportedOperationException("WallpaperType.DISABLED is used")
+                }
+
+                mgr.setBitmap( bitmap, cropRect, true, flag )
+            } else if( type != WallpaperType.LOCKSCREEN )
+                mgr.setBitmap( centerCropBitmap( bitmap, cropRect ) )
         }
     }
 

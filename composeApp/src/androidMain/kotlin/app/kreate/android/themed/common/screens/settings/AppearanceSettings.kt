@@ -1,5 +1,7 @@
 package app.kreate.android.themed.common.screens.settings
 
+import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
@@ -24,9 +26,12 @@ import app.kreate.android.themed.common.screens.settings.player.playerActionBarS
 import app.kreate.android.themed.common.screens.settings.player.playerAppearanceSection
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
+import it.fast4x.rimusic.enums.NotificationType
+import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isLandscape
+import me.knighthat.utils.Toaster
 
 @Composable
 fun AppearanceSettings( paddingValues: PaddingValues ) {
@@ -74,26 +79,26 @@ fun AppearanceSettings( paddingValues: PaddingValues ) {
                 )
             }
 
-            if( isAtLeastAndroid7 ) {
+            animatedEntry(
+                key = "liveWallpaper",
+                visible = Preferences.NOTIFICATION_TYPE.value == NotificationType.Advanced
+            ) {
                 header( R.string.wallpaper )
-                entry( search, R.string.enable_wallpaper ) {
-                    SettingComponents.BooleanEntry(
-                        Preferences.ENABLE_WALLPAPER,
-                        R.string.enable_wallpaper
-                    )
-                }
-                animatedEntry(
-                    key = "wallpaperChildren",
-                    visible = Preferences.ENABLE_WALLPAPER.value,
-                    modifier = Modifier.padding( start = 25.dp )
-                ) {
-                    if( search appearsIn R.string.set_cover_thumbnail_as_wallpaper )
-                        SettingComponents.EnumEntry(
-                            Preferences.WALLPAPER_TYPE,
-                            R.string.set_cover_thumbnail_as_wallpaper,
-                            action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                        )
-                }
+                if( search appearsIn R.string.setting_entry_live_wallpaper )
+                    SettingComponents.EnumEntry(
+                        preference = Preferences.LIVE_WALLPAPER,
+                        title = stringResource( R.string.setting_entry_live_wallpaper ),
+                        subtitle = stringResource( R.string.setting_description_live_wallpaper ),
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                    ) {
+                        if( it == WallpaperType.LOCKSCREEN && !isAtLeastAndroid7 )
+                            Toaster.w(
+                                R.string.warning_only_available_on_android_and_above,
+                                "7",
+                                Build.VERSION_CODES.N,
+                                Toast.LENGTH_SHORT
+                            )
+                    }
             }
         }
     }
