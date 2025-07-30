@@ -1,6 +1,61 @@
 files:
-  - source: /composeApp/src/androidMain/res/values/{strings,plurals}.xml
-    translation: /composeApp/src/androidMain/res/values-%android_code%/%original_file_name%
+  # Strings
+  - source: /composeApp/src/androidMain/res/values/strings.xml
+    translation: /composeApp/src/androidMain/res/values-%android_code%/strings.xml
+    languages_mapping:
+      android_code:
+        af: af
+        ar: ar
+        az: az
+        ba: ba
+        bn: bn
+        ca: ca
+        cs: cs
+        da: da
+        de: de
+        el: el
+        en: en
+        eo: eo
+        es-ES: es
+        et: et
+        fa: fa
+        fi: fi
+        fil: fil
+        fr: fr
+        ga-IE: ga
+        gl: gl
+        he: he
+        hi: hi
+        hu: hu
+        ia: ia
+        id: id
+        it: it
+        ja: ja
+        ko: ko
+        ml-IN: ml
+        nl: nl
+        no: no
+        or: or
+        pl: pl
+        pt-PT: pt
+        ro: ro
+        ru: ru
+        si-LK: si
+        sv: sv
+        ta: ta
+        te: te
+        tr: tr
+        uk: uk
+        vi: vi
+        zh: zh
+        zh-CN: zh-rCN
+        zh-TW: zh-rTW
+        pt-BR: pt-rBR
+        sr: b+sr+Cyrl
+        sr-CS: b+sr+Latn
+  # Plurals
+  - source: /composeApp/src/androidMain/res/values/plurals.xml
+    translation: /composeApp/src/androidMain/res/values-%android_code%/plurals.xml
     languages_mapping:
       android_code:
         af: af
