@@ -4,6 +4,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import app.kreate.android.Preferences
 import app.kreate.android.service.NetworkService
+import io.ktor.client.plugins.compression.compress
 import io.ktor.client.request.accept
 import io.ktor.client.request.headers
 import io.ktor.client.request.request
@@ -100,6 +101,8 @@ class InnertubeProvider: Innertube.Provider {
                           .also { sapisidHash = it }
                 append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
             }
+
+            compress( "gzip" )
         }
 
         Response(
