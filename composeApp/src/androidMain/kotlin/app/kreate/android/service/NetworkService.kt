@@ -7,6 +7,7 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.compression.ContentEncoding
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.kotlinx.protobuf.protobuf
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.ClassDiscriminatorMode
 import kotlinx.serialization.json.Json
@@ -58,12 +59,13 @@ object NetworkService {
         }.getOrDefault( Proxy.NO_PROXY )
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     private fun initClient(): HttpClient =
         HttpClient(OkHttp) {
             expectSuccess = true
 
-            // TODO: Add json (de)serialization once expanded to global use
             install( ContentNegotiation ) {
+                protobuf()
                 json( JSON )
             }
 
