@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,18 +26,12 @@ import app.kreate.android.themed.common.component.settings.header
 import app.kreate.android.themed.common.screens.settings.ui.SwipeActionSettings
 import app.kreate.android.themed.common.screens.settings.ui.themeSettingsSection
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.ColorPaletteName
-import it.fast4x.rimusic.enums.IconLikeType
-import it.fast4x.rimusic.enums.MiniPlayerType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
-import it.fast4x.rimusic.enums.PlayerControlsType
-import it.fast4x.rimusic.enums.PlayerPlayButtonType
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
 import it.fast4x.rimusic.enums.PlayerTimelineSize
-import it.fast4x.rimusic.enums.PlayerTimelineType
 import it.fast4x.rimusic.enums.PlayerType
 import it.fast4x.rimusic.enums.QueueType
 import it.fast4x.rimusic.enums.ThumbnailType
@@ -73,57 +66,6 @@ fun UiSettings( paddingValues: PaddingValues ) {
         ) {
             header( R.string.user_interface )
 
-            var disablePlayerHorizontalSwipe by Preferences.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED
-            var playerTimelineType by Preferences.PLAYER_TIMELINE_TYPE
-            var visualizerEnabled by Preferences.PLAYER_VISUALIZER
-            var playerThumbnailSize by Preferences.PLAYER_PORTRAIT_THUMBNAIL_SIZE
-            var thumbnailTapEnabled by Preferences.PLAYER_TAP_THUMBNAIL_FOR_LYRICS
-            var showSearchTab by Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR
-            var showStatsInNavbar by Preferences.SHOW_STATS_IN_NAVIGATION_BAR
-            var navigationBarPosition by Preferences.NAVIGATION_BAR_POSITION
-            var showTopActionsBar by Preferences.PLAYER_SHOW_TOP_ACTIONS_BAR
-            var playerType by Preferences.PLAYER_TYPE
-            var queueType by Preferences.QUEUE_TYPE
-            var fadingedge by Preferences.PLAYER_BACKGROUND_FADING_EDGE
-            var carousel by Preferences.PLAYER_THUMBNAILS_CAROUSEL
-            var carouselSize by Preferences.CAROUSEL_SIZE
-            var thumbnailType by Preferences.THUMBNAIL_TYPE
-            var playerTimelineSize by Preferences.PLAYER_TIMELINE_SIZE
-            var playerInfoShowIcons by Preferences.PLAYER_SONG_INFO_ICON
-            var miniPlayerType by Preferences.MINI_PLAYER_TYPE
-            var playerSwapControlsWithTimeline by Preferences.PLAYER_IS_CONTROL_AND_TIMELINE_SWAPPED
-            var transparentBackgroundActionBarPlayer by Preferences.PLAYER_TRANSPARENT_ACTIONS_BAR
-            var playerControlsType by Preferences.PLAYER_CONTROLS_TYPE
-            var playerPlayButtonType by Preferences.PLAYER_PLAY_BUTTON_TYPE
-            var buttonzoomout by Preferences.ZOOM_OUT_ANIMATION
-            var iconLikeType by Preferences.LIKE_ICON
-            var playerBackgroundColors by Preferences.PLAYER_BACKGROUND
-            var blackgradient by Preferences.BLACK_GRADIENT
-            var showTotalTimeQueue by Preferences.PLAYER_SHOW_TOTAL_QUEUE_TIME
-            var showRemainingSongTime by Preferences.PLAYER_SHOW_SONGS_REMAINING_TIME
-            var showNextSongsInPlayer by Preferences.PLAYER_SHOW_NEXT_IN_QUEUE
-            var disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-            var effectRotationEnabled by Preferences.ROTATION_EFFECT
-            var clickLyricsText by Preferences.LYRICS_JUMP_ON_TAP
-            var playerEnableLyricsPopupMessage by Preferences.PLAYER_ACTION_LYRICS_POPUP_MESSAGE
-            var backgroundProgress by Preferences.MINI_PLAYER_PROGRESS_BAR
-            var actionspacedevenly by Preferences.PLAYER_ACTION_BUTTONS_SPACED_EVENLY
-            var tapqueue by Preferences.PLAYER_ACTIONS_BAR_TAP_TO_OPEN_QUEUE
-            var swipeUpQueue by Preferences.PLAYER_ACTIONS_BAR_SWIPE_UP_TO_OPEN_QUEUE
-            var showButtonPlayerDiscover by Preferences.PLAYER_ACTION_DISCOVER
-            var showButtonPlayerDownload by Preferences.PLAYER_ACTION_DOWNLOAD
-            var showButtonPlayerAddToPlaylist by Preferences.PLAYER_ACTION_ADD_TO_PLAYLIST
-            var showButtonPlayerLoop by Preferences.PLAYER_ACTION_LOOP
-            var showButtonPlayerShuffle by Preferences.PLAYER_ACTION_SHUFFLE
-            var showButtonPlayerLyrics by Preferences.PLAYER_ACTION_SHOW_LYRICS
-            var expandedplayertoggle by Preferences.PLAYER_ACTION_TOGGLE_EXPAND
-            var showButtonPlayerSleepTimer by Preferences.PLAYER_ACTION_SLEEP_TIMER
-            var showButtonPlayerSystemEqualizer by Preferences.PLAYER_ACTION_OPEN_EQUALIZER
-            var showButtonPlayerArrow by Preferences.PLAYER_ACTION_OPEN_QUEUE_ARROW
-            var showButtonPlayerMenu by Preferences.PLAYER_ACTION_SHOW_MENU
-            var showthumbnail by Preferences.PLAYER_SHOW_THUMBNAIL
-            var keepPlayerMinimized by Preferences.PLAYER_KEEP_MINIMIZED
-
             entry( search, R.string.interface_in_use ) {
                 SettingComponents.EnumEntry(
                     Preferences.MAIN_THEME,
@@ -131,61 +73,59 @@ fun UiSettings( paddingValues: PaddingValues ) {
                     action = SettingComponents.Action.RESTART_APP
                 ) {
                     if ( it == UiType.ViMusic ) {
-                        disablePlayerHorizontalSwipe = true
-                        playerTimelineType = PlayerTimelineType.FakeAudioBar
-                        visualizerEnabled = false
-                        playerThumbnailSize = PlayerThumbnailSize.Medium
-                        thumbnailTapEnabled = true
-                        showSearchTab = true
-                        showStatsInNavbar = true
-                        navigationBarPosition = NavigationBarPosition.Left
-                        showTopActionsBar = false
-                        playerType = PlayerType.Modern
-                        queueType = QueueType.Modern
-                        fadingedge = false
-                        carousel = true
-                        carouselSize = CarouselSize.Medium
-                        thumbnailType = ThumbnailType.Essential
-                        playerTimelineSize = PlayerTimelineSize.Medium
-                        playerInfoShowIcons = true
-                        miniPlayerType = MiniPlayerType.Modern
-                        playerSwapControlsWithTimeline = false
-                        transparentBackgroundActionBarPlayer = false
-                        playerControlsType = PlayerControlsType.Essential
-                        playerPlayButtonType = PlayerPlayButtonType.Disabled
-                        buttonzoomout = true
-                        iconLikeType = IconLikeType.Essential
-                        playerBackgroundColors = PlayerBackgroundColors.CoverColorGradient
-                        blackgradient = true
-                        showTotalTimeQueue = false
-                        showRemainingSongTime = false
-                        showNextSongsInPlayer = false
-                        disableScrollingText = false
-                        effectRotationEnabled = true
-                        clickLyricsText = true
-                        playerEnableLyricsPopupMessage = true
-                        backgroundProgress = BackgroundProgress.MiniPlayer
-                        transparentBackgroundActionBarPlayer = true
-                        actionspacedevenly = false
-                        tapqueue = false
-                        swipeUpQueue = true
-                        showButtonPlayerDiscover = false
-                        showButtonPlayerDownload = false
-                        showButtonPlayerAddToPlaylist = false
-                        showButtonPlayerLoop = false
-                        showButtonPlayerShuffle = false
-                        showButtonPlayerLyrics = false
-                        expandedplayertoggle = false
-                        showButtonPlayerSleepTimer = false
-                        showButtonPlayerSystemEqualizer = false
-                        showButtonPlayerArrow = false
-                        showButtonPlayerShuffle = false
-                        showButtonPlayerMenu = true
-                        showthumbnail = true
-                        keepPlayerMinimized = false
+                        Preferences.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED.value = true
+                        Preferences.PLAYER_TIMELINE_TYPE.reset()
+                        Preferences.PLAYER_VISUALIZER.reset()
+                        Preferences.PLAYER_PORTRAIT_THUMBNAIL_SIZE.value = PlayerThumbnailSize.Medium
+                        Preferences.PLAYER_TAP_THUMBNAIL_FOR_LYRICS.reset()
+                        Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR.reset()
+                        Preferences.SHOW_STATS_IN_NAVIGATION_BAR.value = true
+                        Preferences.NAVIGATION_BAR_POSITION.value = NavigationBarPosition.Left
+                        Preferences.PLAYER_SHOW_TOP_ACTIONS_BAR.value = false
+                        Preferences.PLAYER_TYPE.value = PlayerType.Modern
+                        Preferences.QUEUE_TYPE.value = QueueType.Modern
+                        Preferences.PLAYER_BACKGROUND_FADING_EDGE.reset()
+                        Preferences.PLAYER_THUMBNAILS_CAROUSEL.reset()
+                        Preferences.CAROUSEL_SIZE.value = CarouselSize.Medium
+                        Preferences.THUMBNAIL_TYPE.value = ThumbnailType.Essential
+                        Preferences.PLAYER_TIMELINE_SIZE.value = PlayerTimelineSize.Medium
+                        Preferences.PLAYER_SONG_INFO_ICON.reset()
+                        Preferences.MINI_PLAYER_TYPE.reset()
+                        Preferences.PLAYER_IS_CONTROL_AND_TIMELINE_SWAPPED.reset()
+                        Preferences.PLAYER_CONTROLS_TYPE.reset()
+                        Preferences.PLAYER_PLAY_BUTTON_TYPE.reset()
+                        Preferences.ZOOM_OUT_ANIMATION.value = true
+                        Preferences.LIKE_ICON.reset()
+                        Preferences.PLAYER_BACKGROUND.value = PlayerBackgroundColors.CoverColorGradient
+                        Preferences.BLACK_GRADIENT.value = true
+                        Preferences.PLAYER_SHOW_TOTAL_QUEUE_TIME.value = false
+                        Preferences.PLAYER_SHOW_SONGS_REMAINING_TIME.value = false
+                        Preferences.PLAYER_SHOW_NEXT_IN_QUEUE.reset()
+                        Preferences.SCROLLING_TEXT_DISABLED.reset()
+                        Preferences.ROTATION_EFFECT.reset()
+                        Preferences.LYRICS_JUMP_ON_TAP.reset()
+                        Preferences.PLAYER_ACTION_LYRICS_POPUP_MESSAGE.reset()
+                        Preferences.MINI_PLAYER_PROGRESS_BAR.reset()
+                        Preferences.PLAYER_TRANSPARENT_ACTIONS_BAR.value = true
+                        Preferences.PLAYER_ACTION_BUTTONS_SPACED_EVENLY.reset()
+                        Preferences.PLAYER_ACTIONS_BAR_TAP_TO_OPEN_QUEUE.value = false
+                        Preferences.PLAYER_ACTIONS_BAR_SWIPE_UP_TO_OPEN_QUEUE.reset()
+                        Preferences.PLAYER_ACTION_DISCOVER.reset()
+                        Preferences.PLAYER_ACTION_DOWNLOAD.value = false
+                        Preferences.PLAYER_ACTION_ADD_TO_PLAYLIST.value = false
+                        Preferences.PLAYER_ACTION_LOOP.value = false
+                        Preferences.PLAYER_ACTION_SHUFFLE.value = false
+                        Preferences.PLAYER_ACTION_SHOW_LYRICS.value = false
+                        Preferences.PLAYER_ACTION_TOGGLE_EXPAND.value = false
+                        Preferences.PLAYER_ACTION_SLEEP_TIMER.reset()
+                        Preferences.PLAYER_ACTION_OPEN_EQUALIZER.reset()
+                        Preferences.PLAYER_ACTION_OPEN_QUEUE_ARROW.value = false
+                        Preferences.PLAYER_ACTION_SHOW_MENU.value = true
+                        Preferences.PLAYER_SHOW_THUMBNAIL.reset()
+                        Preferences.PLAYER_KEEP_MINIMIZED.reset()
                     } else {
-                        disablePlayerHorizontalSwipe = false
-                        navigationBarPosition = NavigationBarPosition.Bottom
+                        Preferences.PLAYER_THUMBNAIL_HORIZONTAL_SWIPE_DISABLED.reset()
+                        Preferences.NAVIGATION_BAR_POSITION.reset()
                     }
                 }
             }
