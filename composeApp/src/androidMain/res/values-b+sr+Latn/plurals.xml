@@ -2,12 +2,12 @@
 <resources>
     <plurals name="second">
         <item quantity="one">%d second</item>
-        <item quantity="other">%d second</item>
         <item quantity="few">%d second</item>
+        <item quantity="other">%d second</item>
     </plurals>
     <plurals name="query">
         <item quantity="one">%d query</item>
-        <item quantity="other">%d query</item>
         <item quantity="few">%d query</item>
+        <item quantity="other">%d query</item>
     </plurals>
 </resources>
