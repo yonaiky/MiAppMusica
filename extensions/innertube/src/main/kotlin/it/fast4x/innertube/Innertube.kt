@@ -23,7 +23,6 @@ import io.ktor.http.contentType
 import io.ktor.http.userAgent
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.serialization.kotlinx.protobuf.protobuf
-import io.ktor.serialization.kotlinx.xml.xml
 import it.fast4x.innertube.clients.YouTubeLocale
 import it.fast4x.innertube.models.AccountInfo
 import it.fast4x.innertube.models.AccountMenuResponse
@@ -54,8 +53,6 @@ import it.fast4x.innertube.utils.sha1
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import nl.adaptivity.xmlutil.XmlDeclMode
-import nl.adaptivity.xmlutil.serialization.XML
 import java.net.Proxy
 import java.util.Locale
 
@@ -76,14 +73,6 @@ object Innertube {
                 explicitNulls = false
                 encodeDefaults = true
             })
-            xml(
-                format =
-                XML {
-                    xmlDeclMode = XmlDeclMode.Charset
-                    autoPolymorphic = true
-                },
-                contentType = ContentType.Text.Xml,
-            )
         }
 
         install(ContentEncoding) {

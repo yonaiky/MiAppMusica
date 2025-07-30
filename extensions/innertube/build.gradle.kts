@@ -19,7 +19,6 @@ dependencies {
     implementation(libs.ktor.client.serialization)
     implementation(libs.okhttp3.logging.interceptor)
     implementation(libs.ktor.serialization.json)
-    implementation(libs.ktor.serialization.kotlinx.xml)
     implementation(libs.ktor.serialization.kotlinx.protobuf)
     implementation(libs.newpipe.extractor)
     implementation(libs.ksoup.html)
