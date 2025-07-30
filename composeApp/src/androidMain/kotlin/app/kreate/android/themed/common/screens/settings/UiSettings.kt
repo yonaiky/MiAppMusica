@@ -370,7 +370,11 @@ fun UiSettings( paddingValues: PaddingValues ) {
             }
 
             header( R.string.statistics )
-            entry( search, R.string.statistics_max_number_of_items ) {
+            entry(
+                search = search,
+                titleId = R.string.statistics_max_number_of_items,
+                key = "maxNumOfItemsInStatistics"
+            ) {
                 SettingComponents.EnumEntry(
                     Preferences.MAX_NUMBER_OF_STATISTIC_ITEMS,
                     R.string.statistics_max_number_of_items
@@ -385,7 +389,11 @@ fun UiSettings( paddingValues: PaddingValues ) {
             }
 
             header( R.string.playlist_top )
-            entry( search, R.string.statistics_max_number_of_items ) {
+            entry(
+                search = search,
+                titleId = R.string.statistics_max_number_of_items,
+                key = "maxNumOfItemsInTopPlaylist"
+            ) {
                 SettingComponents.EnumEntry(
                     Preferences.MAX_NUMBER_OF_TOP_PLAYED,
                     R.string.statistics_max_number_of_items

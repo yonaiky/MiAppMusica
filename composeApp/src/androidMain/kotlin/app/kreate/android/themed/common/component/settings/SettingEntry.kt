@@ -12,12 +12,13 @@ import it.fast4x.rimusic.appContext
 fun LazyListScope.entry(
     search: SettingEntrySearch,
     title: String,
+    key: Any? = title,
     additionalCheck: Boolean = true,
     contentType: Any? = null,
     content: @Composable LazyItemScope.() -> Unit
 ) {
     if( additionalCheck && search appearsIn title )
-        item( title, contentType ) {
+        item( key, contentType ) {
             content.invoke( this )
         }
 }
@@ -25,11 +26,12 @@ fun LazyListScope.entry(
 fun LazyListScope.entry(
     search: SettingEntrySearch,
     @StringRes titleId: Int,
+    key: Any? = titleId,
     additionalCheck: Boolean = true,
     contentType: Any? = null,
     content: @Composable LazyItemScope.() -> Unit
 ) =
-    entry( search, appContext().getString( titleId ), additionalCheck, contentType, content )
+    entry( search, appContext().getString( titleId ), key, additionalCheck, contentType, content )
 
 fun LazyListScope.animatedEntry(
     key: Any?,
