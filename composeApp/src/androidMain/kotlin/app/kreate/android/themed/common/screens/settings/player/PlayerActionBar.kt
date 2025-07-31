@@ -1,15 +1,11 @@
 package app.kreate.android.themed.common.screens.settings.player
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
-import app.kreate.android.themed.common.component.settings.SettingHeader
 import app.kreate.android.themed.common.component.settings.animatedEntry
 import app.kreate.android.themed.common.component.settings.entry
 import app.kreate.android.themed.common.component.settings.header
@@ -124,81 +120,84 @@ fun LazyListScope.playerActionBarSection( search: SettingEntrySearch, isLandscap
             R.string.action_bar_show_menu_button
         )
     }
-    animatedEntry(
-        key = "showLyricsThumbnailFalse",
-        visible = !Preferences.LYRICS_SHOW_THUMBNAIL.value,
-    ) {
-        SettingHeader( R.string.full_screen_lyrics_components )
-
-        Column( Modifier.padding( start = 25.dp ) ) {
-            if ( Preferences.PLAYER_SHOW_TOTAL_QUEUE_TIME.value && search appearsIn R.string.show_total_time_of_queue )
-                SettingComponents.BooleanEntry(
-                    Preferences.PLAYER_IS_QUEUE_DURATION_EXPANDED,
-                    R.string.show_total_time_of_queue
-                )
-
-            if ( search appearsIn R.string.titleartist )
-                SettingComponents.BooleanEntry(
-                    Preferences.PLAYER_IS_TITLE_EXPANDED,
-                    R.string.titleartist
-                )
-
-            if ( search appearsIn R.string.timeline )
-                SettingComponents.BooleanEntry(
-                    Preferences.PLAYER_IS_TIMELINE_EXPANDED,
-                    R.string.timeline
-                )
-
-            if ( search appearsIn R.string.controls )
-                SettingComponents.BooleanEntry(
-                    Preferences.PLAYER_IS_CONTROLS_EXPANDED,
-                    R.string.controls
-                )
-
-            if( Preferences.PLAYER_STATS_FOR_NERDS.value
-                && (!(Preferences.PLAYER_SHOW_THUMBNAIL.value && Preferences.PLAYER_TYPE.value == PlayerType.Essential))
-                && search appearsIn R.string.statsfornerds
-            )
-                SettingComponents.BooleanEntry(
-                    Preferences.PLAYER_IS_STATS_FOR_NERDS_EXPANDED,
-                    R.string.statsfornerds
-                )
-
-            if (
-                (Preferences.PLAYER_ACTION_ADD_TO_PLAYLIST.value
-                        || Preferences.PLAYER_ACTION_OPEN_QUEUE_ARROW.value
-                        || Preferences.PLAYER_ACTION_DOWNLOAD.value
-                        || Preferences.PLAYER_ACTION_LOOP.value
-                        || Preferences.PLAYER_ACTION_SHOW_LYRICS.value
-                        || Preferences.PLAYER_ACTION_TOGGLE_EXPAND.value
-                        || Preferences.PLAYER_ACTION_SHUFFLE.value
-                        || Preferences.PLAYER_ACTION_SLEEP_TIMER.value
-                        || Preferences.PLAYER_ACTION_SHOW_MENU.value
-                        || Preferences.PLAYER_ACTION_OPEN_EQUALIZER.value
-                        || Preferences.PLAYER_ACTION_DISCOVER.value
-                        || Preferences.PLAYER_ACTION_TOGGLE_VIDEO.value)
-                && search appearsIn R.string.actionbar
-            )
-                SettingComponents.BooleanEntry(
-                    Preferences.PLAYER_IS_ACTIONS_BAR_EXPANDED,
-                    R.string.actionbar
-                )
-
-            if( Preferences.PLAYER_SHOW_NEXT_IN_QUEUE.value
-                && Preferences.PLAYER_IS_ACTIONS_BAR_EXPANDED.value
-                && search appearsIn R.string.miniqueue
-            )
-                SettingComponents.BooleanEntry(
-                    Preferences.PLAYER_IS_NEXT_IN_QUEUE_EXPANDED,
-                    R.string.miniqueue
-                )
-        }
-    }
     entry( search, R.string.title_playback_speed ) {
         SettingComponents.BooleanEntry(
             Preferences.AUDIO_SPEED,
             R.string.title_playback_speed,
             R.string.description_playback_speed
         )
+    }
+
+    if( !Preferences.LYRICS_SHOW_THUMBNAIL.value ) {
+        header( R.string.full_screen_lyrics_components )
+
+        animatedEntry(
+            key = "showLyricsThumbnailFalse",
+            visible = true
+        ) {
+            Column {
+                if ( Preferences.PLAYER_SHOW_TOTAL_QUEUE_TIME.value && search appearsIn R.string.show_total_time_of_queue )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PLAYER_IS_QUEUE_DURATION_EXPANDED,
+                        R.string.show_total_time_of_queue
+                    )
+
+                if ( search appearsIn R.string.titleartist )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PLAYER_IS_TITLE_EXPANDED,
+                        R.string.titleartist
+                    )
+
+                if ( search appearsIn R.string.timeline )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PLAYER_IS_TIMELINE_EXPANDED,
+                        R.string.timeline
+                    )
+
+                if ( search appearsIn R.string.controls )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PLAYER_IS_CONTROLS_EXPANDED,
+                        R.string.controls
+                    )
+
+                if( Preferences.PLAYER_STATS_FOR_NERDS.value
+                    && (!(Preferences.PLAYER_SHOW_THUMBNAIL.value && Preferences.PLAYER_TYPE.value == PlayerType.Essential))
+                    && search appearsIn R.string.statsfornerds
+                )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PLAYER_IS_STATS_FOR_NERDS_EXPANDED,
+                        R.string.statsfornerds
+                    )
+
+                if (
+                    (Preferences.PLAYER_ACTION_ADD_TO_PLAYLIST.value
+                            || Preferences.PLAYER_ACTION_OPEN_QUEUE_ARROW.value
+                            || Preferences.PLAYER_ACTION_DOWNLOAD.value
+                            || Preferences.PLAYER_ACTION_LOOP.value
+                            || Preferences.PLAYER_ACTION_SHOW_LYRICS.value
+                            || Preferences.PLAYER_ACTION_TOGGLE_EXPAND.value
+                            || Preferences.PLAYER_ACTION_SHUFFLE.value
+                            || Preferences.PLAYER_ACTION_SLEEP_TIMER.value
+                            || Preferences.PLAYER_ACTION_SHOW_MENU.value
+                            || Preferences.PLAYER_ACTION_OPEN_EQUALIZER.value
+                            || Preferences.PLAYER_ACTION_DISCOVER.value
+                            || Preferences.PLAYER_ACTION_TOGGLE_VIDEO.value)
+                    && search appearsIn R.string.actionbar
+                )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PLAYER_IS_ACTIONS_BAR_EXPANDED,
+                        R.string.actionbar
+                    )
+
+                if( Preferences.PLAYER_SHOW_NEXT_IN_QUEUE.value
+                    && Preferences.PLAYER_IS_ACTIONS_BAR_EXPANDED.value
+                    && search appearsIn R.string.miniqueue
+                )
+                    SettingComponents.BooleanEntry(
+                        Preferences.PLAYER_IS_NEXT_IN_QUEUE_EXPANDED,
+                        R.string.miniqueue
+                    )
+            }
+        }
     }
 }
