@@ -82,7 +82,12 @@ fun ActionBar(
     var expanded by remember { mutableStateOf(false) }
 
     // Search Icon
-    HeaderIcon( R.drawable.search) { NavRoutes.search.navigateHere( navController ) }
+    HeaderIcon( R.drawable.search ) {
+        navController.navigate( NavRoutes.search.name ) {
+            popUpTo( NavRoutes.search.name )
+            launchSingleTop = true
+        }
+    }
 
     if (isYouTubeLoggedIn()) {
         if (ytAccountThumbnail() != "")
