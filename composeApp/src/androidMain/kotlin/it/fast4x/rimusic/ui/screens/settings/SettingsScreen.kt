@@ -34,6 +34,7 @@ import app.kreate.android.themed.common.screens.settings.AccountSettings
 import app.kreate.android.themed.common.screens.settings.AppearanceSettings
 import app.kreate.android.themed.common.screens.settings.DataSettings
 import app.kreate.android.themed.common.screens.settings.GeneralSettings
+import app.kreate.android.themed.common.screens.settings.NetworkSettings
 import app.kreate.android.themed.common.screens.settings.OtherSettings
 import app.kreate.android.themed.common.screens.settings.QuickPicksSettings
 import app.kreate.android.themed.common.screens.settings.UiSettings
@@ -87,7 +88,8 @@ fun SettingsScreen(
             if( isAtLeastAndroid6 )
                 item(5, stringResource(R.string.tab_accounts), R.drawable.person)
             item(6, stringResource(R.string.tab_miscellaneous), R.drawable.equalizer)
-            item(7, stringResource(R.string.about), R.drawable.information)
+            item(7, stringResource( R.string.tab_network ), R.drawable.swap_vertical_outline)
+            item(8, stringResource(R.string.about), R.drawable.information)
 
         }
     ) { currentTabIndex ->
@@ -103,7 +105,8 @@ fun SettingsScreen(
                         AccountSettings( paddingValues )
                 }
                 6 -> OtherSettings( paddingValues )
-                7 -> About( paddingValues )
+                7 -> NetworkSettings( paddingValues )
+                8 -> About( paddingValues )
             }
         }
     }

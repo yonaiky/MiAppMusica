@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -24,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import app.kreate.android.Preferences
@@ -193,47 +191,6 @@ fun OtherSettings( paddingValues: PaddingValues ) {
 
                 // TODO: ADD this to comment of "ignore optimization"
                 // SettingComponents.Description( R.string.is_android12 )
-            }
-
-            header(
-                titleId = R.string.proxy,
-                subtitle = { stringResource( R.string.restarting_rimusic_is_required ) }
-            )
-            entry( search, R.string.enable_proxy ) {
-                SettingComponents.BooleanEntry(
-                    Preferences.IS_PROXY_ENABLED,
-                    R.string.enable_proxy
-                )
-            }
-            animatedEntry(
-                key = "proxyChildren",
-                visible = Preferences.IS_PROXY_ENABLED.value,
-                modifier = Modifier.padding( start = 25.dp )
-            ) {
-                Column {
-                    if( search appearsIn R.string.proxy_mode )
-                        SettingComponents.EnumEntry(
-                            Preferences.PROXY_SCHEME,
-                            R.string.proxy_mode,
-                            { it.name }
-                        )
-
-                    if( search appearsIn R.string.proxy_host )
-                        SettingComponents.InputDialogEntry(
-                            Preferences.PROXY_HOST,
-                            R.string.proxy_host,
-                            InputDialogConstraints.URL,
-                            keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Uri)
-                        )
-
-                    if( search appearsIn R.string.proxy_port )
-                        SettingComponents.InputDialogEntry(
-                            Preferences.PROXY_PORT,
-                            R.string.proxy_port,
-                            constraint = InputDialogConstraints.ONLY_INTEGERS,
-                            keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        )
-                }
             }
 
             header( R.string.parental_control )
