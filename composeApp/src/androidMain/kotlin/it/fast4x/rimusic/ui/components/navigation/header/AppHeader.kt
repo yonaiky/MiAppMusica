@@ -10,11 +10,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import app.kreate.android.R
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.extensions.games.pacman.Pacman
 import it.fast4x.rimusic.ui.components.themed.Button
 import it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -38,20 +36,18 @@ class AppHeader(
 
     @Composable
     private fun BackButton() {
-        if ( NavRoutes.home.isNotHere( navController ) )
-            androidx.compose.material3.IconButton(
-                onClick = {
-                    if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
-                        navController.popBackStack()
-                }
-            ) {
-                Button(
-                    R.drawable.chevron_back,
-                    colorPalette().favoritesIcon,
-                    0.dp,
-                    24.dp
-                ).Draw()
-            }
+        if( navController.previousBackStackEntry == null ) return
+
+        androidx.compose.material3.IconButton(
+            onClick = navController::navigateUp
+        ) {
+            Button(
+                R.drawable.chevron_back,
+                colorPalette().favoritesIcon,
+                0.dp,
+                24.dp
+            ).Draw()
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

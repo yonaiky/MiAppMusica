@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import app.kreate.android.R
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import it.fast4x.rimusic.colorPalette
@@ -81,20 +82,25 @@ private fun AppLogo(
 
 @Composable
 private fun AppLogoText( navController: NavController ) {
-    val iconTextClick: () -> Unit = {
-        if ( NavRoutes.home.isNotHere( navController ) )
-            NavRoutes.home.navigateHere( navController )
-    }
-
-
-
     Button(
         iconId = R.drawable.app_logo_text,
         color = AppBar.contentColor(),
         padding = 0.dp,
         size = 36.dp,
         forceWidth = 100.dp,
-        modifier = Modifier.clickable { iconTextClick() }
+        modifier = Modifier.clickable {
+            if ( NavRoutes.home.isHere( navController ) ) return@clickable
+
+            // In short, navigates to [NavRoutes.home] then previous stacks
+            // effectively make it the start again
+            navController.navigate( NavRoutes.home.name ) {
+                popUpTo( navController.graph.findStartDestination().id ) {
+                    inclusive = true
+                }
+
+                launchSingleTop = true
+            }
+        }
     ).Draw()
 }
 
