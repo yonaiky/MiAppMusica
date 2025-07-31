@@ -1044,6 +1044,9 @@ sealed class Preferences<T>(
         val ARTIST_SCREEN_TAB_INDEX  by lazy {
             Int( preferences, "ArtistScreenTabIndex", "artistScreenTabIndex", 0 )
         }
+        val SINGLE_BACK_FROM_SEARCH by lazy {
+            Boolean(preferences, "SingleBackFromSearch", "", true)
+        }
 
         /**
          * Initialize needed properties for settings to use.

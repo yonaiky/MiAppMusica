@@ -339,6 +339,15 @@ fun UiSettings( paddingValues: PaddingValues ) {
                     R.string.statistics_max_number_of_items
                 )
             }
+
+            header( android.R.string.search_go )
+            entry( search, R.string.setting_entry_single_back_from_search ) {
+                SettingComponents.BooleanEntry(
+                    preference = Preferences.SINGLE_BACK_FROM_SEARCH,
+                    title = stringResource( R.string.setting_entry_single_back_from_search ),
+                    subtitle = stringResource( R.string.setting_description_single_back_from_search )
+                )
+            }
         }
     }
 }

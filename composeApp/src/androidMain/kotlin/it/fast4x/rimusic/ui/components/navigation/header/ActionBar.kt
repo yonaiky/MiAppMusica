@@ -84,7 +84,8 @@ fun ActionBar(
     // Search Icon
     HeaderIcon( R.drawable.search ) {
         navController.navigate( NavRoutes.search.name ) {
-            popUpTo( NavRoutes.search.name )
+            if( Preferences.SINGLE_BACK_FROM_SEARCH.value )
+                popUpTo( NavRoutes.search.name )
             launchSingleTop = true
         }
     }
