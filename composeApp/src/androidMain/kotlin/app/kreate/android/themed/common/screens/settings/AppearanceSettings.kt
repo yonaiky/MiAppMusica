@@ -19,7 +19,6 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
-import app.kreate.android.themed.common.component.settings.animatedEntry
 import app.kreate.android.themed.common.component.settings.entry
 import app.kreate.android.themed.common.component.settings.header
 import app.kreate.android.themed.common.screens.settings.player.playerActionBarSection
@@ -79,12 +78,10 @@ fun AppearanceSettings( paddingValues: PaddingValues ) {
                 )
             }
 
-            animatedEntry(
-                key = "liveWallpaper",
-                visible = Preferences.NOTIFICATION_TYPE.value == NotificationType.Advanced
-            ) {
+            if( Preferences.NOTIFICATION_TYPE.value == NotificationType.Advanced ) {
                 header( R.string.wallpaper )
-                if( search appearsIn R.string.setting_entry_live_wallpaper )
+
+                entry( search, R.string.setting_entry_live_wallpaper ) {
                     SettingComponents.EnumEntry(
                         preference = Preferences.LIVE_WALLPAPER,
                         title = stringResource( R.string.setting_entry_live_wallpaper ),
@@ -99,6 +96,7 @@ fun AppearanceSettings( paddingValues: PaddingValues ) {
                                 Toast.LENGTH_SHORT
                             )
                     }
+                }
             }
         }
     }
