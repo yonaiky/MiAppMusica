@@ -380,13 +380,15 @@ class PlayerServiceModern : MediaLibraryService(),
 
         mediaLibrarySessionCallback.apply {
             binder = this@PlayerServiceModern.binder
-            toggleLike = ::toggleLike
-            toggleDownload = ::toggleDownload
-            toggleRepeat = ::toggleRepeat
-            toggleShuffle = ::toggleShuffle
-            startRadio = ::startRadio
+            toggleLike = binder::toggleLike
+            toggleDownload = binder::toggleDownload
+            toggleRepeat = binder::toggleRepeat
+            toggleShuffle = binder::toggleShuffle
+            startRadio = {
+                player.currentMediaItem?.let( binder::startRadio )
+            }
             callPause = binder::gracefulPause
-            actionSearch = ::actionSearch
+            actionSearch = binder::actionSearch
         }
 
         // Build the media library session
@@ -930,26 +932,6 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     }
 
-    fun toggleLike() {
-        binder.toggleLike()
-    }
-
-    fun toggleDownload() {
-        binder.toggleDownload()
-    }
-
-    fun toggleRepeat() {
-        binder.toggleRepeat()
-    }
-
-    fun toggleShuffle() {
-        binder.toggleShuffle()
-    }
-
-    fun startRadio() {
-        player.currentMediaItem?.let( binder::startRadio )
-    }
-
     @MainThread
     private fun updateBitmap() {
         with(bitmapProvider) {
@@ -1105,43 +1087,22 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     inner class NotificationActionReceiver(private val player: Player) : BroadcastReceiver() {
-
-
         @ExperimentalCoroutinesApi
         @FlowPreview
         override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                Action.pause.value -> binder.gracefulPause()
-                Action.play.value -> binder.gracefulPlay()
-                Action.next.value -> player.playNext()
-                Action.previous.value -> player.playPrevious()
-                Action.like.value -> {
-                    binder.toggleLike()
-                }
-
-                Action.download.value -> {
-                    binder.toggleDownload()
-                }
-
-                Action.playradio.value -> startRadio()
-
-                Action.shuffle.value -> {
-                    binder.toggleShuffle()
-                }
-
-                Action.search.value -> {
-                    binder.actionSearch()
-                }
-
-                Action.repeat.value -> {
-                    binder.toggleRepeat()
-                }
-
-
+            when ( intent.action ) {
+                Action.pause.value      -> binder::gracefulPause
+                Action.play.value       -> binder::gracefulPlay
+                Action.next.value       -> player::playNext
+                Action.previous.value   -> player::playPrevious
+                Action.like.value       -> mediaLibrarySessionCallback::toggleLike
+                Action.download.value   -> mediaLibrarySessionCallback::toggleDownload
+                Action.playradio.value  -> mediaLibrarySessionCallback.startRadio
+                Action.shuffle.value    -> mediaLibrarySessionCallback::toggleShuffle
+                Action.search.value     -> mediaLibrarySessionCallback::actionSearch
+                Action.repeat.value     -> mediaLibrarySessionCallback::toggleRepeat
             }
-
         }
-
     }
 
     open inner class Binder : AndroidBinder() {
