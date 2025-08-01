@@ -292,12 +292,19 @@ fun UiSettings( paddingValues: PaddingValues ) {
                         showPinned
                     )
             }
+            entry( search, R.string.setting_entry_monthly_playlist_compilation ) {
+                SettingComponents.BooleanEntry(
+                    preference = Preferences.MONTHLY_PLAYLIST_COMPILATION,
+                    title = stringResource( R.string.setting_entry_monthly_playlist_compilation ),
+                    subtitle = stringResource( R.string.setting_description_monthly_playlist_compilation )
+                )
+            }
             item {
                 val showMonthly = stringResource( R.string.setting_entry_show_chip, stringResource( R.string.monthly_playlists ) )
                 if ( search appearsIn showMonthly )
                     SettingComponents.BooleanEntry(
-                        Preferences.SHOW_MONTHLY_PLAYLISTS,
-                        showMonthly
+                        preference = Preferences.SHOW_MONTHLY_PLAYLISTS,
+                        title = showMonthly
                     )
             }
 
