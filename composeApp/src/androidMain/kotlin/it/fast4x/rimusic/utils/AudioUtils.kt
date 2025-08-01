@@ -1,19 +1,14 @@
 package it.fast4x.rimusic.utils
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Context.AUDIO_SERVICE
 import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
-import androidx.annotation.MainThread
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
@@ -110,47 +105,4 @@ fun MedleyMode(binder: PlayerServiceModern.Binder?, seconds: Int) {
             }
         }
     }
-}
-
-@MainThread
-fun ExoPlayer.fadeInEffect( duration: Long ) {
-    if( isPlaying ) return
-    if( duration == 0L ) {
-        if( playbackState == Player.STATE_IDLE )
-            prepare()
-        play()
-        return
-    }
-
-    val animator = ValueAnimator.ofFloat( 0f, getGlobalVolume() )
-    animator.duration = duration
-    animator.addUpdateListener {
-        volume = it.animatedValue as Float
-    }
-    animator.doOnStart {
-        if (playbackState == Player.STATE_IDLE)
-            prepare()
-        play()
-    }
-    animator.start()
-}
-
-@MainThread
-fun ExoPlayer.fadeOutEffect( duration: Long ) {
-    if( !isPlaying ) return
-    if( duration == 0L ) {
-        pause()
-        return
-    }
-
-    val animator = ValueAnimator.ofFloat( getGlobalVolume(), 0f )
-    animator.duration = duration
-    animator.addUpdateListener {
-        volume = it.animatedValue as Float
-    }
-    animator.doOnEnd {
-        pause()
-        restoreGlobalVolume()
-    }
-    animator.start()
 }

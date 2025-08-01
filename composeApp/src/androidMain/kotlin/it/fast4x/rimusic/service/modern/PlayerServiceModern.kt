@@ -78,6 +78,7 @@ import app.kreate.android.R
 import app.kreate.android.service.createDataSourceFactory
 import app.kreate.android.service.newpipe.NewPipeDownloader
 import app.kreate.android.service.player.ExoPlayerListener
+import app.kreate.android.service.player.VolumeFader
 import app.kreate.android.utils.centerCropBitmap
 import app.kreate.android.utils.centerCropToMatchScreenSize
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
@@ -113,8 +114,6 @@ import it.fast4x.rimusic.utils.activityPendingIntent
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.collect
-import it.fast4x.rimusic.utils.fadeInEffect
-import it.fast4x.rimusic.utils.fadeOutEffect
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.getEnum
 import it.fast4x.rimusic.utils.intent
@@ -176,6 +175,7 @@ class PlayerServiceModern : MediaLibraryService(),
     OnAudioVolumeChangedListener {
 
     private lateinit var listener: ExoPlayerListener
+    private lateinit var volumeFader: VolumeFader
     private val coroutineScope = CoroutineScope(Dispatchers.IO) + Job()
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var mediaSession: MediaLibrarySession
@@ -355,14 +355,13 @@ class PlayerServiceModern : MediaLibraryService(),
                 isHandleAudioFocusEnabled()
             )
             .setUsePlatformDiagnostics(false)
-            .setSeekBackIncrementMs(5000)
-            .setSeekForwardIncrementMs(5000)
             .build()
             .apply {
                 sleepTimer = SleepTimer(coroutineScope, this)
                 addListener(sleepTimer)
                 addAnalyticsListener(PlaybackStatsListener(false, this@PlayerServiceModern))
             }
+        volumeFader = VolumeFader(player)
 
         preferences.registerOnSharedPreferenceChangeListener(this)
 
@@ -591,6 +590,7 @@ class PlayerServiceModern : MediaLibraryService(),
             stopService(intent<MyDownloadService>())
             stopService(intent<PlayerServiceModern>())
 
+            volumeFader.release()
             player.removeListener( listener )
             player.stop()
             player.release()
@@ -1296,18 +1296,53 @@ class PlayerServiceModern : MediaLibraryService(),
          * Pause with fade out effect
          */
         @MainThread
-        fun gracefulPause() {
-            val duration by Preferences.AUDIO_FADE_DURATION
-            player.fadeOutEffect( duration.asMillis )
+        fun gracefulPause() = with( player ) {
+            if( !isPlaying ) return
+
+            val duration = Preferences.AUDIO_FADE_DURATION.value.asMillis
+            if( duration == 0L ) {
+                pause()
+                return
+            }
+
+            val originalVolume = volume
+            volumeFader.startFade(
+                start = volume,
+                end = 0f,
+                durationInMillis = duration,
+                doOnEnd = {
+                    pause()
+                    volume = originalVolume
+                }
+            )
         }
 
         /**
          * Start playing with fade in effect
          */
         @MainThread
-        fun gracefulPlay() {
-            val duration by Preferences.AUDIO_FADE_DURATION
-            player.fadeInEffect( duration.asMillis )
+        fun gracefulPlay() = with( player ) {
+            if( isPlaying ) return
+
+            val duration = Preferences.AUDIO_FADE_DURATION.value.asMillis
+            if( duration == 0L ) {
+                if( playbackState == Player.STATE_IDLE )
+                    prepare()
+                play()
+                return
+            }
+
+            volumeFader.startFade(
+                start = 0f,
+                end = volume,
+                durationInMillis = duration,
+                doOnStart = {
+                    volume = 0f
+                    if ( playbackState == Player.STATE_IDLE )
+                        prepare()
+                    play()
+                }
+            )
         }
 
         /**
