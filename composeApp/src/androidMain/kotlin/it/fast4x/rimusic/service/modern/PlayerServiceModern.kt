@@ -79,6 +79,7 @@ import app.kreate.android.service.createDataSourceFactory
 import app.kreate.android.service.newpipe.NewPipeDownloader
 import app.kreate.android.service.player.ExoPlayerListener
 import app.kreate.android.service.player.VolumeFader
+import app.kreate.android.service.player.VolumeObserver
 import app.kreate.android.utils.centerCropBitmap
 import app.kreate.android.utils.centerCropToMatchScreenSize
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
@@ -98,8 +99,6 @@ import it.fast4x.rimusic.enums.NotificationButtons
 import it.fast4x.rimusic.enums.NotificationType
 import it.fast4x.rimusic.enums.PresetsReverb
 import it.fast4x.rimusic.enums.WallpaperType
-import it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
-import it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import it.fast4x.rimusic.extensions.connectivity.AndroidConnectivityObserverLegacy
 import it.fast4x.rimusic.extensions.discord.updateDiscordPresence
 import it.fast4x.rimusic.isHandleAudioFocusEnabled
@@ -169,13 +168,14 @@ val MediaItem.isLocal get() = mediaId.startsWith(LOCAL_KEY_PREFIX)
 val Song.isLocal get() = id.startsWith(LOCAL_KEY_PREFIX)
 
 @UnstableApi
-class PlayerServiceModern : MediaLibraryService(),
+class PlayerServiceModern:
+    MediaLibraryService(),
     PlaybackStatsListener.Callback,
-    SharedPreferences.OnSharedPreferenceChangeListener,
-    OnAudioVolumeChangedListener {
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var listener: ExoPlayerListener
     private lateinit var volumeFader: VolumeFader
+    private lateinit var volumeObserver: VolumeObserver
     private val coroutineScope = CoroutineScope(Dispatchers.IO) + Job()
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var mediaSession: MediaLibrarySession
@@ -184,7 +184,6 @@ class PlayerServiceModern : MediaLibraryService(),
     lateinit var player: ExoPlayer
     lateinit var cache: Cache
     lateinit var downloadCache: Cache
-    private lateinit var audioVolumeObserver: AudioVolumeObserver
     private lateinit var bitmapProvider: BitmapProvider
     private var isPersistentQueueEnabled: Boolean = false
     private var isclosebackgroundPlayerEnabled = false
@@ -230,6 +229,9 @@ class PlayerServiceModern : MediaLibraryService(),
         super.onCreate()
 
         NewPipe.init( NewPipeDownloader() )
+
+        volumeObserver = VolumeObserver(this, ::onVolumeChange)
+        volumeObserver.register()
 
         // Enable Android Auto if disabled, REQUIRE ENABLING DEV MODE IN ANDROID AUTO
         try {
@@ -439,9 +441,6 @@ class PlayerServiceModern : MediaLibraryService(),
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
         controllerFuture.addListener({ controllerFuture.get() }, MoreExecutors.directExecutor())
 
-        audioVolumeObserver = AudioVolumeObserver(this)
-        audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
-
         // Download listener help to notify download change to UI
         downloadListener = object : DownloadManager.Listener {
             override fun onDownloadChanged(
@@ -586,8 +585,7 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onDestroy() {
         runCatching {
             listener.saveQueueToDatabase()
-
-            preferences.unregisterOnSharedPreferenceChangeListener(this)
+            volumeObserver.unregister()
 
             stopService(intent<MyDownloadService>())
             stopService(intent<PlayerServiceModern>())
@@ -610,7 +608,6 @@ class PlayerServiceModern : MediaLibraryService(),
             MyDownloadHelper.getDownloadManager(this).removeListener(downloadListener)
 
             loudnessEnhancer?.release()
-            audioVolumeObserver.unregister()
 
             timerJob?.cancel()
             timerJob = null
@@ -621,6 +618,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
             coroutineScope.cancel()
 
+            preferences.unregisterOnSharedPreferenceChangeListener(this)
         }.onFailure {
             Timber.e("Failed onDestroy in PlayerService ${it.stackTraceToString()}")
         }
@@ -652,19 +650,18 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     private var pausedByZeroVolume = false
-    override fun onAudioVolumeChanged(currentVolume: Int, maxVolume: Int) {
-        if ( Preferences.PAUSE_WHEN_VOLUME_SET_TO_ZERO.value ) {
-            if (player.isPlaying && currentVolume < 1) {
-                binder.gracefulPause()
-                pausedByZeroVolume = true
-            } else if (pausedByZeroVolume && currentVolume >= 1) {
-                binder.gracefulPlay()
-                pausedByZeroVolume = false
-            }
+
+    private fun onVolumeChange( volume: Int ) {
+        if( !Preferences.PAUSE_WHEN_VOLUME_SET_TO_ZERO.value ) return
+
+        if ( player.isPlaying && volume < 1 ) {
+            binder.gracefulPause()
+            pausedByZeroVolume = true
+        } else if ( pausedByZeroVolume && volume >= 1 ) {
+            binder.gracefulPlay()
+            pausedByZeroVolume = false
         }
     }
-
-    override fun onAudioVolumeDirectionChanged(direction: Int) {}
 
     private fun maybeBassBoost() {
         if ( !Preferences.AUDIO_BASS_BOOSTED.value ) {
