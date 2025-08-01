@@ -141,7 +141,7 @@ fun InfoAlbumAndArtistEssential(
                     }
                 )
 
-            if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
+            if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee(iterations = Int.MAX_VALUE)
 
             /*if (isExplicit || playerControlsType == PlayerControlsType.Modern ) {
                 Box(

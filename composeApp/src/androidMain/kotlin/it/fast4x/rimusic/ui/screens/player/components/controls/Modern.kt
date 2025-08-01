@@ -160,7 +160,7 @@ fun InfoAlbumAndArtistModern(
 
             val textoutline by Preferences.TEXT_OUTLINE
 
-            if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee()
+            if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee(iterations = Int.MAX_VALUE)
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
