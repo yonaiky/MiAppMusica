@@ -73,7 +73,7 @@ jobs:
     
     permissions:
       # Allows GITHUB_TOKEN to modify pull requests
-      pull-requests: write  
+      issues: write  
       
     steps:
       - name: Add comment
