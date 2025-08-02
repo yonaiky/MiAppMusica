@@ -1,0 +1,16 @@
+Added:
+- "Network" settings
+- Button to disable monthly playlist compilation
+- Animation in "Next in queue" when next song is loaded
+
+Fixed:
+- App crashed in UI Settings
+- Multi-pages depp in searches requires as many back to get back to home page
+- "Fullscreen lyrics components" misalignment
+- Proxy address and ports refused input
+- Scrolling text in player stops after 3 rounds
+
+Changed:
+- Live wallpaper is now available on Android 5+
+- Back button showed in Search when launched by shortcut
+- Improve back handler app-wide
