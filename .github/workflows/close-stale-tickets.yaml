@@ -12,36 +12,33 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      actions: write
       issues: write
 
     steps:
       - uses: actions/stale@v9
         with:
-          days-before-issue-stale: 7
-          close-issue-message: This ticket is now closed due to no input
-          stale-issue-label: stale
-          close-issue-reason: completed
-          exempt-issue-labels: question,open,enhancement
-          any-of-issue-labels: stale,external,invalid,not_our_fault
-          remove-issue-stale-when-updated: false
-          exempt-all-issue-assignees: true
+          days-before-issue-stale: 14
+          days-before-issue-close: 7
+          stale-issue-label: 'stale'
+          close-issue-message: 'This issue has been automatically closed because it has been marked as stale and has not had recent activity.'
+          exempt-issue-labels: 'open'
+          only-issue-labels: 'bug'
+          any-of-issue-labels: 'external,invalid,not_our_fault,not_planned'
+          remove-issue-stale-when-updated: true
 
   pr-tickets:
     runs-on: ubuntu-latest
 
     permissions:
-      actions: write
       pull-requests: write
 
     steps:
       - uses: actions/stale@v9
         with:
-          days-before-pr-stale: 14
+          days-before-pr-stale: 21
           days-before-pr-close: 7
-          close-pr-message: This ticket is now closed due to no input
-          stale-pr-label: stale
-          exempt-pr-labels: translation,dependencies,open
-          any-of-pr-labels: borked
-          remove-pr-stale-when-updated: false
-          exempt-all-pr-assignees: true
+          stale-issue-label: 'stale'
+          close-pr-message: 'This issue has been automatically closed because it has been marked as stale and has not had recent activity.'
+          exempt-pr-labels: 'translation,dependencies,open'
+          any-of-pr-labels: 'borked,invalid'
+          remove-pr-stale-when-updated: true
