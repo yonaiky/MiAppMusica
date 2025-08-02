@@ -12,9 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import app.kreate.android.Preferences
-import coil.compose.AsyncImagePainter
 import it.fast4x.rimusic.utils.isLandscape
 
 /**
@@ -31,7 +31,7 @@ import it.fast4x.rimusic.utils.isLandscape
  */
 @Composable
 fun DynamicOrientationLayout(
-    thumbnail: AsyncImagePainter,
+    thumbnail: Painter,
     content: @Composable () -> Unit
 ) {
     if( isLandscape )
