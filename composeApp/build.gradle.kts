@@ -55,7 +55,6 @@ kotlin {
             implementation(libs.material.icon.desktop)
             implementation(libs.vlcj)
 
-            implementation(libs.coil.network.okhttp)
             runtimeOnly(libs.kotlinx.coroutines.swing)
 
             /*
@@ -103,9 +102,8 @@ kotlin {
             implementation(libs.navigation.kmp)
 
             //coil3 mp
-            implementation(libs.coil.compose.core)
-            implementation(libs.coil.compose)
-            implementation(libs.coil.mp)
+            implementation(libs.coil3.compose.core)
+            implementation( libs.coil3.network.ktor )
 
             implementation(libs.translator)
 
