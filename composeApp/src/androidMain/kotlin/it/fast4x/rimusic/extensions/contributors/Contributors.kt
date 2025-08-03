@@ -1,6 +1,7 @@
 package it.fast4x.rimusic.extensions.contributors
 
 import android.content.Context
+import androidx.annotation.RawRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import it.fast4x.rimusic.extensions.contributors.models.Translator
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 private val JSON: Json by lazy {
@@ -27,6 +29,24 @@ private val JSON: Json by lazy {
 }
 private lateinit var developersList: List<Developer>
 private lateinit var translatorsList: List<Translator>
+
+@OptIn(ExperimentalSerializationApi::class)
+private inline fun <reified T> parseRawJson(
+    context: Context,
+    @RawRes rawId: Int,
+    crossinline sortCategory: (T) -> String
+): List<T> =
+    runCatching {
+        context.resources
+            .openRawResource( rawId )
+            .use { inStream ->
+                JSON.decodeFromStream<List<T>>( inStream )
+                    .sortedBy( sortCategory )
+            }
+    }.onFailure { err ->
+        err.printStackTrace()
+        err.message?.also( Toaster::e )
+    }.getOrDefault( emptyList() )
 
 @Composable
 fun countDevelopers(): Int {
@@ -44,18 +64,8 @@ fun countDevelopers(): Int {
 
 @OptIn(ExperimentalSerializationApi::class)
 private fun initDevelopers(context: Context) {
-    try {
-        context.resources
-               .openRawResource( R.raw.contributors )
-               .use { inStream ->
-                   JSON.decodeFromStream<List<Developer>>( inStream )
-                       .sortedBy { it.displayName ?: it.username }
-               }
-               .also { developersList = it }
-    } catch ( e: Exception ) {
-        Timber.e( e.stackTraceToString() )
-        println("Contributors initDevelopers Exception: ${e.message}")
-        developersList = emptyList()
+    developersList = parseRawJson( context, R.raw.contributors ) {
+        it.displayName ?: it.username
     }
 }
 
@@ -78,18 +88,8 @@ fun ShowDevelopers() {
 
 @OptIn(ExperimentalSerializationApi::class)
 private fun initTranslators(context: Context) {
-    try {
-        context.resources
-               .openRawResource( R.raw.translators )
-               .use { inStream ->
-                   JSON.decodeFromStream<List<Translator>>( inStream )
-                       .sortedBy { it.displayName ?: it.username }
-               }
-               .also { translatorsList = it }
-    } catch ( e: Exception ) {
-        Timber.e( e.stackTraceToString() )
-        println("Contributors initTranslators Exception: ${e.message}")
-        translatorsList = emptyList()
+    translatorsList = parseRawJson( context, R.raw.translators ) {
+        it.displayName ?: it.username
     }
 }
 
