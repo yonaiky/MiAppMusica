@@ -121,3 +121,6 @@
 -dontwarn jdk.dynalink.linker.support.CompositeTypeBasedGuardingDynamicLinker
 -dontwarn jdk.dynalink.linker.support.Guards
 -dontwarn jdk.dynalink.support.ChainedCallSite
+
+## Rules for OkHttp3 - Added since 5.1.0
+-dontwarn okhttp3.internal.Util
