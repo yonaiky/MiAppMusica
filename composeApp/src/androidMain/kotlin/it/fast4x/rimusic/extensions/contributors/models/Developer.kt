@@ -32,17 +32,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import coil.compose.rememberAsyncImagePainter
-import com.google.gson.annotations.SerializedName
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.styling.favoritesIcon
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Developer(
     val id: Int,
-    @SerializedName( "login" ) val username: String,
-    @SerializedName( "name" ) val displayName: String?,
-    @SerializedName( "html_url" )val url: String,
-    @SerializedName( "avatar_url") val avatar: String,
+    @SerialName("login") val username: String,
+    @SerialName("name") val displayName: String?,
+    @SerialName("html_url")val url: String,
+    @SerialName("avatar_url") val avatar: String,
     val contributions: Int?
 ) {
     private val handle: String

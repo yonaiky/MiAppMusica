@@ -314,7 +314,6 @@ dependencies {
     implementation(libs.androidyoutubeplayer)
     implementation(libs.androidx.glance.widgets)
     implementation(libs.kizzy.rpc)
-    implementation(libs.gson)
     implementation (libs.hypnoticcanvas)
     implementation (libs.hypnoticcanvas.shaders)
 

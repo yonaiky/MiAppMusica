@@ -12,17 +12,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
-import com.google.gson.Gson
-import com.google.gson.JsonArray
 import it.fast4x.rimusic.extensions.contributors.models.Developer
 import it.fast4x.rimusic.extensions.contributors.models.Translator
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
 import timber.log.Timber
-import java.io.InputStream
 
-private val GSON = Gson()
+private val JSON: Json by lazy {
+    Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+    }
+}
 private lateinit var developersList: List<Developer>
 private lateinit var translatorsList: List<Translator>
-
 
 @Composable
 fun countDevelopers(): Int {
@@ -38,19 +42,16 @@ fun countDevelopers(): Int {
 
 
 
-private fun initDevelopers( context: Context) {
+@OptIn(ExperimentalSerializationApi::class)
+private fun initDevelopers(context: Context) {
     try {
-        val fileStream: InputStream =
-            context.resources.openRawResource(R.raw.contributors)
-
-        val json: JsonArray =
-            GSON.fromJson(fileStream.bufferedReader(), JsonArray::class.java)
-
-//        val result = URL("https://raw.githubusercontent.com/fast4x/RiMusic/master/composeApp/src/androidMain/res/raw/contributors.json").readText()
-//        val json = GSON.fromJson(result, JsonArray::class.java)
-
-        developersList = json.map { GSON.fromJson(it, Developer::class.java) }
-            .sortedBy { it.username }
+        context.resources
+               .openRawResource( R.raw.contributors )
+               .use { inStream ->
+                   JSON.decodeFromStream<List<Developer>>( inStream )
+                       .sortedBy { it.displayName ?: it.username }
+               }
+               .also { developersList = it }
     } catch ( e: Exception ) {
         Timber.e( e.stackTraceToString() )
         println("Contributors initDevelopers Exception: ${e.message}")
@@ -75,18 +76,16 @@ fun ShowDevelopers() {
 }
 
 
-private fun initTranslators( context: Context) {
+@OptIn(ExperimentalSerializationApi::class)
+private fun initTranslators(context: Context) {
     try {
-        val fileStream: InputStream =
-            context.resources.openRawResource(R.raw.translators)
-        val json: JsonArray =
-            GSON.fromJson(fileStream.bufferedReader(), JsonArray::class.java)
-
-//        val result = URL("https://raw.githubusercontent.com/fast4x/RiMusic/master/composeApp/src/androidMain/res/raw/translators.json").readText()
-//        val json = GSON.fromJson(result, JsonArray::class.java)
-
-        translatorsList = json.map { GSON.fromJson(it, Translator::class.java) }
-            .sortedBy { it.displayName }
+        context.resources
+               .openRawResource( R.raw.translators )
+               .use { inStream ->
+                   JSON.decodeFromStream<List<Translator>>( inStream )
+                       .sortedBy { it.displayName ?: it.username }
+               }
+               .also { translatorsList = it }
     } catch ( e: Exception ) {
         Timber.e( e.stackTraceToString() )
         println("Contributors initTranslators Exception: ${e.message}")

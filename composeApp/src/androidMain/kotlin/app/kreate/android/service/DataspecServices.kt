@@ -13,8 +13,8 @@ import app.kreate.android.R
 import app.kreate.android.network.innertube.Store
 import app.kreate.android.utils.CharUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
-import com.google.gson.Gson
 import com.grack.nanojson.JsonObject
+import com.grack.nanojson.JsonWriter
 import io.ktor.client.statement.bodyAsText
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.Innertube.createPoTokenChallenge
@@ -171,7 +171,7 @@ private fun getFormatUrl(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean,
 ): Uri {
-    val jsonString = Gson().toJson( responseJson )
+    val jsonString = JsonWriter.string( responseJson )
     val playerResponse = jsonParser.decodeFromString<PlayerResponse>( jsonString )
 
     checkPlayability( playerResponse.playabilityStatus )

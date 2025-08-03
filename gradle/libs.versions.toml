@@ -32,7 +32,6 @@ toasty = "1.5.2"
 androidyoutubeplayer = "12.1.2"
 glance = "1.1.1"
 kizzyrpc = "1.0.71"
-gson = "2.13.1"
 navigationKMP = "2.9.0-beta04"
 vlcj = "4.11.0"
 kotlinxCoroutines = "1.10.2"
@@ -137,7 +136,6 @@ math3 = { group = "org.apache.commons", name = "commons-math3", version.ref = "m
 toasty = { group = "com.github.GrenderG", name = "Toasty", version.ref = "toasty" }
 androidyoutubeplayer = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "androidyoutubeplayer" }
 kizzy-rpc = { group = "com.github.dead8309", name = "KizzyRPC", version.ref = "kizzyrpc" }
-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 vlcj = {  group = "uk.co.caprica", name = "vlcj", version.ref = "vlcj" }
 brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 desugaring-nio = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugaring" }

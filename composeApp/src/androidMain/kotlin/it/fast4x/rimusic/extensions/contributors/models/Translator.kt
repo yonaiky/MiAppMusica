@@ -31,18 +31,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.google.gson.annotations.SerializedName
 import app.kreate.android.R
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Translator(
-    @SerializedName( "username" ) val username: String,
-    @SerializedName( "displayName" ) val displayName: String?,
-    @SerializedName( "languages" ) val languages: String,
-    @SerializedName( "profileUrl" ) val profileUrl: String?,
-    @SerializedName( "avatarUrl" ) val avatarUrl: String?
+    val username: String,
+    val displayName: String?,
+    val languages: String,
+    val profileUrl: String?,
+    val avatarUrl: String?
 ) {
     private val usernameByProfile: String
         get() = profileUrl?.split( "/" )?.last().toString()
