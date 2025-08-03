@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,15 +32,12 @@ import androidx.compose.ui.unit.dp
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
+import app.kreate.android.themed.common.component.settings.about.Contributors
 import app.kreate.android.themed.common.component.settings.entry
 import app.kreate.android.themed.common.component.settings.header
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.extensions.contributors.ShowDevelopers
-import it.fast4x.rimusic.extensions.contributors.ShowTranslators
-import it.fast4x.rimusic.extensions.contributors.countDevelopers
-import it.fast4x.rimusic.extensions.contributors.countTranslators
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -56,6 +54,7 @@ fun About( paddingValues: PaddingValues ) {
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_accounts, R.drawable.person )
     }
+    val contributors = remember { Contributors(context) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -101,9 +100,6 @@ fun About( paddingValues: PaddingValues ) {
                 )
             }
         }
-
-        val numTranslators = countTranslators()
-        val numCoders = countDevelopers()
 
         LazyColumn(
             state = scrollState,
@@ -180,11 +176,15 @@ fun About( paddingValues: PaddingValues ) {
                 )
             }
 
-            header( { "$numTranslators ${context.getString(R.string.translators)}" } )
-            entry( search, R.string.translators ) { ShowTranslators() }
+            header( { "${contributors.translators.size} ${context.getString(R.string.translators)}" } )
+            entry( search, R.string.translators ) {
+                Contributors.Show( contributors.translators )
+            }
 
-            header( { "$numCoders ${context.getString( R.string.about_developers_designers )}" } )
-            entry( search, R.string.contributors ) { ShowDevelopers() }
+            header( { "${contributors.developers.size} ${context.getString( R.string.about_developers_designers )}" } )
+            entry( search, R.string.contributors ) {
+                Contributors.Show( contributors.developers )
+            }
         }
     }
 }
