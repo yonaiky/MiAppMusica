@@ -1,7 +1,6 @@
 package app.kreate.android.service
 
 import android.content.ContentResolver
-import android.net.Uri
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -13,7 +12,6 @@ import app.kreate.android.R
 import app.kreate.android.network.innertube.Store
 import app.kreate.android.utils.CharUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
-import com.grack.nanojson.JsonObject
 import com.grack.nanojson.JsonWriter
 import io.ktor.client.statement.bodyAsText
 import it.fast4x.innertube.Innertube
@@ -163,42 +161,10 @@ private fun extractFormat(
                 streamingData?.autoMaxQualityFormat
     }
 
-@UnstableApi
-private fun getFormatUrl(
-    videoId: String,
-    cpn: String,
-    responseJson: JsonObject,
-    audioQualityFormat: AudioQualityFormat,
-    connectionMetered: Boolean,
-): Uri {
-    val jsonString = JsonWriter.string( responseJson )
-    val playerResponse = jsonParser.decodeFromString<PlayerResponse>( jsonString )
-
-    checkPlayability( playerResponse.playabilityStatus )
-
-    val format = extractFormat(
-        playerResponse.streamingData,
-        audioQualityFormat,
-        connectionMetered
-    )?.also { upsertSongFormat( videoId, it ) }
-
-    return YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, format?.url.orEmpty() )
-                                         .toUri()
-                                         .buildUpon()
-                                         .appendQueryParameter( "range", "0-${format?.contentLength ?: 1_000_000}" )
-                                         .appendQueryParameter( "cpn", cpn )
-                                         .build()
-}
-
-@UnstableApi
-fun getAndroidReelFormatUrl(
-    videoId: String,
-    audioQualityFormat: AudioQualityFormat,
-    connectionMetered: Boolean
-): Uri {
-    val cpn = CharUtils.randomString( 16 )
+fun getAndroidResponse( videoId: String, cpn: String ): PlayerResponse {
     val response = YoutubeStreamHelper.getAndroidReelPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn )
-    return getFormatUrl( videoId, cpn, response, audioQualityFormat, connectionMetered )
+    return JsonWriter.string( response )
+                     .let( jsonParser::decodeFromString )
 }
 
 private fun String.getPoToken(): String? =
@@ -219,18 +185,14 @@ private suspend fun generateIosPoToken() =
                 .getPoToken()
         }
 
-@UnstableApi
-suspend fun getIosFormatUrl(
-    videoId: String,
-    audioQualityFormat: AudioQualityFormat,
-    connectionMetered: Boolean
-): Uri {
-    val cpn = CharUtils.randomString( 16 )
+suspend fun getIosResponse(videoId: String, cpn: String ): PlayerResponse {
     val visitorData = Store.getIosVisitorData()
     val playerRequestToken = generateIosPoToken().orEmpty()
     val poTokenResult = PoTokenResult(visitorData, playerRequestToken, null )
     val response = YoutubeStreamHelper.getIosPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn, poTokenResult )
-    return getFormatUrl( videoId, cpn, response, audioQualityFormat, connectionMetered )
+
+    return JsonWriter.string( response )
+                     .let( jsonParser::decodeFromString )
 }
 //</editor-fold>
 
@@ -240,19 +202,36 @@ fun DataSpec.process(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): DataSpec = runBlocking( Dispatchers.IO ) {
-    val formatUri = runBlocking( Dispatchers.IO ) {
+    val cpn = CharUtils.randomString( 16 )
+    val playerResponse =
         try {
-            getAndroidReelFormatUrl( videoId, audioQualityFormat, connectionMetered )
+            getAndroidResponse( videoId, cpn )
         } catch ( e: Exception ) {
             when( e ) {
                 is LoginRequiredException,
-                is UnplayableException -> getIosFormatUrl( videoId, audioQualityFormat, connectionMetered )
+                is UnplayableException -> getIosResponse( videoId, cpn )
                 else -> throw e
             }
         }
-    }
 
-    withUri( formatUri ).subrange( uriPositionOffset )
+    checkPlayability( playerResponse.playabilityStatus )
+
+    val format = extractFormat(
+        playerResponse.streamingData,
+        audioQualityFormat,
+        connectionMetered
+    )
+
+    upsertSongFormat( videoId, format!! )
+
+    YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, format.url.orEmpty() )
+                                  .toUri()
+                                  .buildUpon()
+                                  .appendQueryParameter( "range", "$uriPositionOffset-${format.contentLength ?: CHUNK_LENGTH}" )
+                                  .appendQueryParameter( "cpn", cpn )
+                                  .build()
+                                  .let( ::withUri )
+                                  .subrange( uriPositionOffset )
 }
 
 //<editor-fold defaultstate="collapsed" desc="Data source factories">
