@@ -30,6 +30,7 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
@@ -76,8 +77,6 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.getLikedIcon
-import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.playNext
@@ -414,16 +413,23 @@ fun MiniPlayer(
                         .padding(horizontal = 2.dp, vertical = 8.dp)
                         .size(24.dp)
                 )
-                if (miniPlayerType == MiniPlayerType.Modern)
-                 it.fast4x.rimusic.ui.components.themed.IconButton(
-                     icon = if( isSongLiked ) getLikedIcon() else getUnlikedIcon(),
-                     color = colorPalette().favoritesIcon,
-                     onClick = ::toggleLike,
-                     modifier = Modifier
-                         .rotate(rotationAngle)
-                         .padding(horizontal = 2.dp, vertical = 8.dp)
-                         .size(24.dp)
-                 )
+                if (miniPlayerType == MiniPlayerType.Modern) {
+                    val iconId by remember {derivedStateOf {
+                        with( Preferences.LIKE_ICON.value ) {
+                            if( isSongLiked ) likedIconId else neutralIconId
+                        }
+                    }}
+                    it.fast4x.rimusic.ui.components.themed.IconButton(
+                        icon = iconId,
+                        color = colorPalette().favoritesIcon,
+                        onClick = ::toggleLike,
+                        modifier = Modifier
+                            .rotate(rotationAngle)
+                            .padding(horizontal = 2.dp, vertical = 8.dp)
+                            .size(24.dp)
+                    )
+                }
+
 
             }
 

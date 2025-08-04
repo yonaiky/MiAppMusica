@@ -63,7 +63,6 @@ import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.downloadedStateMedia
 import it.fast4x.rimusic.utils.getDownloadState
-import it.fast4x.rimusic.utils.getLikedIcon
 import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
@@ -204,15 +203,16 @@ fun SongItem(
 
             thumbnailOverlay()
 
-            if( song.likedAt != null )
+            if( song.likedAt != null ) {
                 HeaderIconButton(
                     onClick = {},
-                    icon = getLikedIcon(),
+                    icon = Preferences.LIKE_ICON.value.likedIconId,
                     color = colorPalette().favoritesIcon,
                     iconSize = 12.dp,
                     modifier = Modifier.align( Alignment.BottomStart )
                                        .absoluteOffset( x = (-8).dp )
                 )
+            }
         }
 
         // Song's information

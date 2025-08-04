@@ -70,7 +70,6 @@ import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.dropShadow
 import it.fast4x.rimusic.utils.getLikeState
-import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.smartRewind
@@ -232,7 +231,7 @@ fun InfoAlbumAndArtistModern(
                     )
                     if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
                         Icon(
-                            painter = painterResource(id = getUnlikedIcon()),
+                            painter = Preferences.LIKE_ICON.value.neutralIcon,
                             tint = colorPalette().text,
                             contentDescription = null,
                             modifier = Modifier

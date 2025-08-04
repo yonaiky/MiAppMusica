@@ -73,7 +73,6 @@ import it.fast4x.rimusic.utils.HorizontalfadingEdge2
 import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.getLikeState
-import it.fast4x.rimusic.utils.getUnlikedIcon
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.smartRewind
@@ -247,7 +246,7 @@ fun InfoAlbumAndArtistEssential(
                     )
                     if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
                         Icon(
-                            painter = painterResource(id = getUnlikedIcon()),
+                            painter = Preferences.LIKE_ICON.value.neutralIcon,
                             tint = colorPalette().text,
                             contentDescription = null,
                             modifier = Modifier
@@ -402,7 +401,7 @@ fun ControlsEssential(
         )
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) {
             Icon(
-                painter = painterResource(id = getUnlikedIcon()),
+                painter = Preferences.LIKE_ICON.value.neutralIcon,
                 tint = colorPalette().text,
                 contentDescription = null,
                 modifier = Modifier

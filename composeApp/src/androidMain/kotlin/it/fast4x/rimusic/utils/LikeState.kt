@@ -1,12 +1,10 @@
 package it.fast4x.rimusic.utils
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import app.kreate.android.Preferences
 import it.fast4x.rimusic.Database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -18,11 +16,12 @@ fun getLikeState(mediaId: String): Int {
                 .likeState( mediaId )
                 .distinctUntilChanged()
     }.collectAsState( false, Dispatchers.IO )
+    val icon by Preferences.LIKE_ICON
 
     return when( songLikeState ) {
-        false -> getDislikedIcon()
-        null -> getUnlikedIcon()
-        true -> getLikedIcon()
+        false -> icon.dislikeIconId
+        null -> icon.neutralIconId
+        true -> icon.likedIconId
     }
 }
 
