@@ -162,7 +162,6 @@ fun LocalPlaylistSongs(
 
     // Settings
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
     var isRecommendationEnabled by Preferences.LOCAL_PLAYLIST_SMART_RECOMMENDATION
 
     // Non-vital
@@ -537,9 +536,7 @@ fun LocalPlaylistSongs(
                             thumbnailSizePx = playlistThumbnailSizePx,
                             alternative = true,
                             showName = false,
-                            modifier = Modifier
-                                .padding(top = 14.dp),
-                            disableScrollingText = disableScrollingText,
+                            modifier = Modifier.padding(top = 14.dp),
                             thumbnailUrl = if (thumbnailUrl.value == "") null else thumbnailUrl.value
                         )
                     }

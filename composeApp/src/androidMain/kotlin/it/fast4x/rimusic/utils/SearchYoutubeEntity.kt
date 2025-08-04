@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.SearchBody
@@ -47,8 +47,7 @@ fun SearchYoutubeEntity (
     navController: NavController,
     onDismiss: () -> Unit,
     query: String,
-    filter: Innertube.SearchFilter = Innertube.SearchFilter.Video,
-    disableScrollingText: Boolean
+    filter: Innertube.SearchFilter = Innertube.SearchFilter.Video
 ) {
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
@@ -120,8 +119,7 @@ fun SearchYoutubeEntity (
                                             NonQueuedMediaItemMenu(
                                                 navController = rememberNavController(),
                                                 mediaItem = video.asMediaItem,
-                                                onDismiss = menuState::hide,
-                                                disableScrollingText = disableScrollingText
+                                                onDismiss = menuState::hide
                                             )
                                         };
                                         hapticFeedback.performHapticFeedback(
@@ -137,8 +135,7 @@ fun SearchYoutubeEntity (
                                         //binder?.setupRadio(video.info?.endpoint)
                                         onDismiss()
                                     }
-                                ),
-                            disableScrollingText = disableScrollingText
+                                )
                         )
                     }
                 },

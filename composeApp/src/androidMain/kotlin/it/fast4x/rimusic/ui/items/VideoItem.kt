@@ -1,7 +1,6 @@
 package it.fast4x.rimusic.ui.items
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -16,28 +15,27 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.kreate.android.utils.scrollingText
 import coil.compose.AsyncImage
 import it.fast4x.innertube.Innertube
+import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.thumbnailShape
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.thumbnailShape
-import it.fast4x.rimusic.typography
 
 @Composable
 fun VideoItem(
     video: Innertube.VideoItem,
     thumbnailHeightDp: Dp,
     thumbnailWidthDp: Dp,
-    modifier: Modifier = Modifier,
-    disableScrollingText: Boolean
+    modifier: Modifier = Modifier
 ) {
     VideoItem(
         thumbnailUrl = video.thumbnail?.url,
@@ -47,8 +45,7 @@ fun VideoItem(
         views = video.viewsText,
         thumbnailHeightDp = thumbnailHeightDp,
         thumbnailWidthDp = thumbnailWidthDp,
-        modifier = modifier,
-        disableScrollingText = disableScrollingText
+        modifier = modifier
     )
 }
 
@@ -61,8 +58,7 @@ fun VideoItem(
     views: String?,
     thumbnailHeightDp: Dp,
     thumbnailWidthDp: Dp,
-    modifier: Modifier = Modifier,
-    disableScrollingText: Boolean
+    modifier: Modifier = Modifier
 ) {
     ItemContainer(
         alternative = false,
@@ -103,8 +99,7 @@ fun VideoItem(
                 style = typography().xs.semiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                modifier = Modifier.scrollingText()
             )
 
             BasicText(
@@ -112,8 +107,7 @@ fun VideoItem(
                 style = typography().xs.semiBold.secondary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                modifier = Modifier.scrollingText()
             )
 
             views?.let {
@@ -124,7 +118,7 @@ fun VideoItem(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .padding(top = 4.dp)
-                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                        .scrollingText()
                 )
             }
         }

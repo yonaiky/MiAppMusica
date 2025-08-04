@@ -247,7 +247,6 @@ fun Player(
     val showTopActionsBar by Preferences.PLAYER_SHOW_TOP_ACTIONS_BAR
     val blackgradient by Preferences.BLACK_GRADIENT
     val bottomgradient by Preferences.PLAYER_BOTTOM_GRADIENT
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
     var discoverState = Preferences.ENABLE_DISCOVER
     val titleExpanded by Preferences.PLAYER_IS_TITLE_EXPANDED
     val timelineExpanded by Preferences.PLAYER_IS_TIMELINE_EXPANDED
@@ -1828,8 +1827,7 @@ fun Player(
                                                     binder = binder,
                                                     onClosePlayer = {
                                                         onDismiss()
-                                                    },
-                                                    disableScrollingText = disableScrollingText
+                                                    }
                                                 )
                                             }
                                         }
@@ -2230,8 +2228,7 @@ fun Player(
             SearchYoutubeEntity(
                 navController = navController,
                 onDismiss = { showSearchEntity = false },
-                query = "${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}",
-                disableScrollingText = disableScrollingText
+                query = "${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}"
             )
         }
 

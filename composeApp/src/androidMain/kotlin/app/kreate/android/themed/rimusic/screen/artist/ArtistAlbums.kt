@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.kreate.android.Preferences
 import app.kreate.android.R
 import io.ktor.client.call.body
 import it.fast4x.innertube.Innertube
@@ -46,8 +45,6 @@ fun ArtistAlbums(
     miniplayer: @Composable () -> Unit
 ) {
     val lazyGridState = rememberLazyGridState()
-
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     var isRefreshing by remember { mutableStateOf( false ) }
     val thumbnailSizeDp = Dimensions.thumbnails.album + 24.dp
@@ -119,8 +116,7 @@ fun ArtistAlbums(
                         alternative = true,
                         modifier = Modifier.clickable(onClick = {
                             NavRoutes.YT_ALBUM.navigateHere( navController, it.key )
-                        }),
-                        disableScrollingText = disableScrollingText
+                        })
                     )
                 }
             }

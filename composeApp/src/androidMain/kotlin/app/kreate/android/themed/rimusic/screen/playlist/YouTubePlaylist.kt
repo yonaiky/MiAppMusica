@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -57,6 +56,7 @@ import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toSong
+import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
@@ -85,7 +85,6 @@ import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.collectLatest
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -388,9 +387,7 @@ fun YouTubePlaylist(
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.align( Alignment.BottomCenter )
                                                    .padding( horizontal = 30.dp )
-                                                   .conditional( !Preferences.SCROLLING_TEXT_DISABLED.value ) {
-                                                       basicMarquee( iterations = Int.MAX_VALUE )
-                                                   }
+                                                   .scrollingText()
                             )
                         }
                     }

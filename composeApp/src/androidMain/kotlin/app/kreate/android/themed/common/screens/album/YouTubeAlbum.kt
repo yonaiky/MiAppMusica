@@ -3,7 +3,6 @@ package app.kreate.android.themed.common.screens.album
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,7 +55,6 @@ import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
@@ -66,6 +64,7 @@ import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.renderDescription
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
@@ -94,7 +93,6 @@ import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -163,8 +161,7 @@ private fun LazyListScope.renderSection(
     section: InnertubeAlbum.Section,
     sectionTextModifier: Modifier,
     albumThumbnailSizePx: Int,
-    albumThumbnailSizeDp: Dp,
-    disableScrollingText: Boolean
+    albumThumbnailSizeDp: Dp
 ) {
     stickyHeader( System.identityHashCode( section ) ) {
         Text(
@@ -191,7 +188,6 @@ private fun LazyListScope.renderSection(
                         alternative = true,
                         thumbnailSizePx = albumThumbnailSizePx,
                         thumbnailSizeDp = albumThumbnailSizeDp,
-                        disableScrollingText = disableScrollingText,
                         isYoutubeAlbum = true,
                         modifier = Modifier.clickable {
                             NavRoutes.YT_ALBUM.navigateHere( navController, item.id )
@@ -226,7 +222,6 @@ fun YouTubeAlbum(
         val menuState = LocalMenuState.current
         val lazyListState = rememberLazyListState()
         //</editor-fold>
-        val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
         var albumPage: InnertubeAlbum? by remember { mutableStateOf( null ) }
         val dbAlbum: Album? by remember {
@@ -409,9 +404,7 @@ fun YouTubeAlbum(
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.align( Alignment.BottomCenter )
                                                    .padding( horizontal = 30.dp )
-                                                   .conditional( !Preferences.SCROLLING_TEXT_DISABLED.value ) {
-                                                       basicMarquee( iterations = Int.MAX_VALUE )
-                                                   }
+                                                   .scrollingText()
                             )
                         }
                     }
@@ -526,7 +519,7 @@ fun YouTubeAlbum(
 
                     albumPage?.sections?.fastForEach {
                         renderSection(
-                            navController, it, sectionTextModifier, albumThumbnailSizePx, albumThumbnailSizeDp, disableScrollingText
+                            navController, it, sectionTextModifier, albumThumbnailSizePx, albumThumbnailSizeDp
                         )
                     }
 

@@ -103,8 +103,6 @@ fun LocalSongSearch(
 
     var thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
     val focusRequester = remember {
         FocusRequester()
     }
@@ -275,15 +273,13 @@ fun LocalSongSearch(
                                     InHistoryMediaItemMenu(
                                         navController = navController,
                                         song = song,
-                                        onDismiss = menuState::hide,
-                                        disableScrollingText = disableScrollingText
+                                        onDismiss = menuState::hide
                                     )
                                 }
                             },
                             onClick = { binder?.startRadio( song ) }
                         )
                         .animateItem(),
-                    disableScrollingText = disableScrollingText,
                     isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
                 )
             }

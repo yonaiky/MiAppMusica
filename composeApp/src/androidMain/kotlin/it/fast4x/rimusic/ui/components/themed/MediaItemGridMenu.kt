@@ -91,8 +91,7 @@ fun NonQueuedMediaItemGridMenu(
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onHideFromDatabase: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
-    onDownload: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onDownload: (() -> Unit)? = null
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -110,8 +109,7 @@ fun NonQueuedMediaItemGridMenu(
         onRemoveFromPlaylist = onRemoveFromPlaylist,
         onHideFromDatabase = onHideFromDatabase,
         onRemoveFromQuickPicks = onRemoveFromQuickPicks,
-        modifier = modifier,
-        disableScrollingText = disableScrollingText
+        modifier = modifier
     )
 }
 
@@ -135,8 +133,7 @@ fun BaseMediaItemGridMenu(
     onClosePlayer: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)? = null,
-    onMatchingSong: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onMatchingSong: (() -> Unit)? = null
 ) {
     //val context = LocalContext.current
 
@@ -199,8 +196,7 @@ fun BaseMediaItemGridMenu(
         onGoToPlaylist = {
             NavRoutes.localPlaylist.navigateHere( navController, it )
         },
-        modifier = modifier,
-        disableScrollingText = disableScrollingText
+        modifier = modifier
     )
 }
 
@@ -211,8 +207,7 @@ fun MiniMediaItemGridMenu(
     mediaItem: MediaItem,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
-    disableScrollingText: Boolean
+    modifier: Modifier = Modifier
 ) {
 
     MediaItemGridMenu(
@@ -240,8 +235,7 @@ fun MiniMediaItemGridMenu(
             }
         },
         onAddToPreferites = onAddToPreferites,
-        modifier = modifier,
-        disableScrollingText = disableScrollingText
+        modifier = modifier
     )
 }
 
@@ -269,8 +263,7 @@ fun MediaItemGridMenu (
     onGoToAlbum: ((String) -> Unit)? = null,
     onGoToArtist: ((String) -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
-    onGoToPlaylist: ((Long) -> Unit)?,
-    disableScrollingText: Boolean
+    onGoToPlaylist: ((Long) -> Unit)?
 ) {
     val binder = LocalPlayerServiceBinder.current
     val uriHandler = LocalUriHandler.current
@@ -365,9 +358,7 @@ fun MediaItemGridMenu (
                 },
                 downloadState = downloadState,
                 thumbnailSizeDp = thumbnailSizeDp,
-                modifier = Modifier
-                    .weight(1f),
-                disableScrollingText = disableScrollingText
+                modifier = Modifier.weight(1f)
             )
 
             val isSongLiked by remember( mediaItem.mediaId ) {

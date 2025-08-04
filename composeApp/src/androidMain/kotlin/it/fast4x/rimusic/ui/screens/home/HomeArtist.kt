@@ -104,8 +104,6 @@ fun HomeArtists(
 
     var itemsOnDisplay by persistList<Artist>( "home/artists/on_display" )
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
     val search = remember { Search(lazyGridState) }
 
     val sort = remember {
@@ -297,7 +295,6 @@ fun HomeArtists(
                                                    search.hideIfEmpty()
                                                    onArtistClick( artist )
                                                }),
-                            disableScrollingText = disableScrollingText,
                             isYoutubeArtist = artist.isYoutubeArtist
                         )
                     }

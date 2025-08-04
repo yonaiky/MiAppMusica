@@ -92,8 +92,7 @@ fun PlaylistsItemMenu(
     onEditThumbnail: (() -> Unit)? = null,
     onResetThumbnail: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
-    onLinkUnlink: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onLinkUnlink: (() -> Unit)? = null
 ) {
     var isViewingPlaylists by remember {
         mutableStateOf(false)
@@ -133,8 +132,7 @@ fun PlaylistsItemMenu(
             onImportFavorites = onImportFavorites,
             onEditThumbnail = onEditThumbnail,
             onResetThumbnail = onResetThumbnail,
-            onGoToPlaylist = onGoToPlaylist,
-            disableScrollingText = disableScrollingText
+            onGoToPlaylist = onGoToPlaylist
         )
     } else {
 
@@ -402,7 +400,6 @@ fun PlaylistsItemMenu(
                                 playlist = playlist,
                                 thumbnailSizePx = thumbnailSizePx,
                                 thumbnailSizeDp = thumbnailSizeDp,
-                                disableScrollingText = disableScrollingText,
                                 isEditable =  playlist.playlist.isEditable,
                                 isYoutubePlaylist = playlist.playlist.isYoutubePlaylist
                             )

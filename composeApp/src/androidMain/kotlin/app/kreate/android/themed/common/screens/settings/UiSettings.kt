@@ -101,7 +101,7 @@ fun UiSettings( paddingValues: PaddingValues ) {
                         Preferences.PLAYER_SHOW_TOTAL_QUEUE_TIME.value = false
                         Preferences.PLAYER_SHOW_SONGS_REMAINING_TIME.value = false
                         Preferences.PLAYER_SHOW_NEXT_IN_QUEUE.reset()
-                        Preferences.SCROLLING_TEXT_DISABLED.reset()
+                        Preferences.MARQUEE_TEXT_EFFECT.reset()
                         Preferences.ROTATION_EFFECT.reset()
                         Preferences.LYRICS_JUMP_ON_TAP.reset()
                         Preferences.PLAYER_ACTION_LYRICS_POPUP_MESSAGE.reset()

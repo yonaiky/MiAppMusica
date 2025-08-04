@@ -120,8 +120,7 @@ fun InHistoryMediaItemMenu(
     song: Song,
     onHideFromDatabase: (() -> Unit)? = {},
     onDeleteFromDatabase: (() -> Unit)? = {},
-    modifier: Modifier = Modifier,
-    disableScrollingText: Boolean
+    modifier: Modifier = Modifier
 ) {
 
     NonQueuedMediaItemMenu(
@@ -145,8 +144,7 @@ fun InHistoryMediaItemMenu(
                 }
             }
         },
-        modifier = modifier,
-        disableScrollingText = disableScrollingText
+        modifier = modifier
     )
 }
 
@@ -162,8 +160,7 @@ fun InPlaylistMediaItemMenu(
     positionInPlaylist: Int,
     song: Song,
     onMatchingSong: (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
-    disableScrollingText: Boolean
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
@@ -212,8 +209,7 @@ fun InPlaylistMediaItemMenu(
         },
         onMatchingSong = { if (onMatchingSong != null) {onMatchingSong()}
             onDismiss() },
-        modifier = modifier,
-        disableScrollingText = disableScrollingText
+        modifier = modifier
     )
 }
 
@@ -229,8 +225,7 @@ fun NonQueuedMediaItemMenuLibrary(
     onRemoveFromPlaylist: (() -> Unit)? = null,
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
-    onMatchingSong: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onMatchingSong: (() -> Unit)? = null
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -288,8 +283,7 @@ fun NonQueuedMediaItemMenuLibrary(
                     }
                 }
             },
-            modifier = modifier,
-            disableScrollingText = disableScrollingText
+            modifier = modifier
         )
     } else {
 
@@ -322,8 +316,7 @@ fun NonQueuedMediaItemMenuLibrary(
                 }
             },
             onMatchingSong = onMatchingSong,
-            modifier = modifier,
-            disableScrollingText = disableScrollingText
+            modifier = modifier
         )
     }
 }
@@ -343,8 +336,7 @@ fun NonQueuedMediaItemMenu(
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onDownload: (() -> Unit)? = null,
     onAddToPreferites: (() -> Unit)? = null,
-    onMatchingSong: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onMatchingSong: (() -> Unit)? = null
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -370,8 +362,7 @@ fun NonQueuedMediaItemMenu(
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = onAddToPreferites,
             onMatchingSong =  onMatchingSong,
-            modifier = modifier,
-            disableScrollingText = disableScrollingText
+            modifier = modifier
         )
     } else {
 
@@ -391,8 +382,7 @@ fun NonQueuedMediaItemMenu(
             onRemoveFromQuickPicks = onRemoveFromQuickPicks,
             onAddToPreferites = onAddToPreferites,
             onMatchingSong =  onMatchingSong,
-            modifier = modifier,
-            disableScrollingText = disableScrollingText
+            modifier = modifier
         )
     }
 }
@@ -408,8 +398,7 @@ fun QueuedMediaItemMenu(
     onMatchingSong: (() -> Unit)? = null,
     mediaItem: MediaItem,
     indexInQueue: Int?,
-    modifier: Modifier = Modifier,
-    disableScrollingText: Boolean
+    modifier: Modifier = Modifier
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -447,8 +436,7 @@ fun QueuedMediaItemMenu(
                         addToYtLikedSong(mediaItem)
                     }
                 }
-            },
-            disableScrollingText = disableScrollingText
+            }
         )
     } else {
         BaseMediaItemMenu(
@@ -482,8 +470,7 @@ fun QueuedMediaItemMenu(
                     }
                 }
             },
-            onMatchingSong = onMatchingSong,
-            disableScrollingText = disableScrollingText
+            onMatchingSong = onMatchingSong
         )
     }
 }
@@ -511,8 +498,7 @@ fun BaseMediaItemMenu(
     onClosePlayer: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)?,
-    onMatchingSong: (() -> Unit)?,
-    disableScrollingText: Boolean
+    onMatchingSong: (() -> Unit)?
 ) {
     val context = LocalContext.current
 
@@ -573,8 +559,7 @@ fun BaseMediaItemMenu(
         onGoToPlaylist = {
             NavRoutes.localPlaylist.navigateHere( navController, it )
         },
-        modifier = modifier,
-        disableScrollingText = disableScrollingText
+        modifier = modifier
     )
 }
 
@@ -588,8 +573,7 @@ fun MiniMediaItemMenu(
     mediaItem: MediaItem,
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onAddToPreferites: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-    disableScrollingText: Boolean
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
 
@@ -629,8 +613,7 @@ fun MiniMediaItemMenu(
             context.startActivity(Intent.createChooser(sendIntent, null))
         },
         onAddToPreferites = onAddToPreferites,
-        modifier = modifier,
-        disableScrollingText = disableScrollingText
+        modifier = modifier
     )
 }
 
@@ -661,8 +644,7 @@ fun MediaItemMenu(
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onShare: () -> Unit,
     onGoToPlaylist: ((Long) -> Unit)? = null,
-    onMatchingSong: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onMatchingSong: (() -> Unit)? = null
 ) {
     val density = LocalDensity.current
 
@@ -1013,9 +995,7 @@ fun MediaItemMenu(
                         },
                         downloadState = downloadState,
                         thumbnailSizeDp = thumbnailSizeDp,
-                        modifier = Modifier
-                            .weight(1f),
-                        disableScrollingText = disableScrollingText
+                        modifier = Modifier.weight(1f)
                     )
 
 

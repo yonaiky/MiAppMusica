@@ -773,7 +773,7 @@
     <string name="dialog_title_are_you_sure">Bist du sicher?</string>
     <string name="this_action_is_irreversible">Diese Aktion kann nicht rückgängig gemacht werden</string>
     <string name="dialog_text_download_all_warning">Do wirst eventuell für das gleichzeitige Herunterladen mehrerer Songs geblockt. Dadurch sind sie nicht spielbar im Offline Modus.</string>
-    <string name="error_invalid_proxy"></string>
+    <string name="error_invalid_proxy" />
     <string name="info_restart_player_service">Restart player service</string>
     <string name="setting_entry_youtube_login">In YouTube Account einloggen</string>
     <string name="setting_entry_youtube_sync_data">Sync account to %s</string>
@@ -789,4 +789,6 @@
     <string name="proxy_mode_direct">No proxy</string>
     <string name="setting_entry_monthly_playlist_compilation">Compile monthly playlist</string>
     <string name="setting_description_monthly_playlist_compilation">Compile a playlist at the beginning of the month based on what you\'ve listened to in the past month</string>
+    <string name="setting_entry_marquee_effect">Marquee effect</string>
+    <string name="setting_description_marquee_effect">Apply scrolling text if it exceeds viewable area</string>
 </resources>

@@ -86,8 +86,6 @@ fun HomeStatistics(
          */
     }
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
 /*
     val sortOrderIconRotation by animateFloatAsState(
         targetValue = if (sortOrder == SortOrder.Ascending) 0f else 180f,
@@ -148,8 +146,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.Today) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 
@@ -164,8 +161,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneWeek) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 
@@ -180,8 +176,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneMonth) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 
@@ -196,8 +191,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.ThreeMonths) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 
@@ -212,8 +206,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.SixMonths) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 
@@ -228,8 +221,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.OneYear) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 
@@ -244,8 +236,7 @@ fun HomeStatistics(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onStatisticsType(StatisticsType.All) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 

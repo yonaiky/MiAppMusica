@@ -52,7 +52,6 @@ fun AlbumItem(
     alternative: Boolean = false,
     yearCentered: Boolean = true,
     showAuthors: Boolean = false,
-    disableScrollingText: Boolean,
     isYoutubeAlbum: Boolean = false
 ) {
     AlbumItem(
@@ -66,7 +65,6 @@ fun AlbumItem(
         alternative = alternative,
         showAuthors = showAuthors,
         modifier = modifier,
-        disableScrollingText = disableScrollingText,
         isYoutubeAlbum = isYoutubeAlbum
     )
 }
@@ -80,8 +78,7 @@ fun AlbumItem(
     alternative: Boolean = false,
     yearCentered: Boolean? = true,
     showAuthors: Boolean? = false,
-    isYoutubeAlbum: Boolean = false,
-    disableScrollingText: Boolean
+    isYoutubeAlbum: Boolean = false
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnail?.url,
@@ -93,7 +90,6 @@ fun AlbumItem(
         thumbnailSizeDp = thumbnailSizeDp,
         alternative = alternative,
         modifier = modifier,
-        disableScrollingText = disableScrollingText,
         isYoutubeAlbum = isYoutubeAlbum
     )
 }
@@ -110,7 +106,6 @@ fun AlbumItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showAuthors: Boolean? = false,
-    disableScrollingText: Boolean,
     isYoutubeAlbum: Boolean = false
 ) {
     ItemContainer(

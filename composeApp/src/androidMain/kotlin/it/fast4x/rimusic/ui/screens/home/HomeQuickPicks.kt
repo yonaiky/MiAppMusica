@@ -45,7 +45,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
@@ -333,10 +332,6 @@ fun HomeQuickPicks(
     }
     cachedSongs?.addAll(downloadedSongs)
 
-    val hapticFeedback = LocalHapticFeedback.current
-
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
     PullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = ::refresh
@@ -589,8 +584,7 @@ fun HomeQuickPicks(
                                         alternative = true,
                                         modifier = Modifier.clickable(onClick = {
                                             onAlbumClick(it.key)
-                                        }),
-                                        disableScrollingText = disableScrollingText
+                                        })
                                     )
                                 }
                             }
@@ -615,8 +609,7 @@ fun HomeQuickPicks(
                                     alternative = true,
                                     modifier = Modifier.clickable(onClick = {
                                         onAlbumClick(it.key)
-                                    }),
-                                    disableScrollingText = disableScrollingText
+                                    })
                                 )
                             }
                         }
@@ -642,8 +635,7 @@ fun HomeQuickPicks(
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = { onAlbumClick(album.key) }),
-                                    disableScrollingText = disableScrollingText
+                                        .clickable(onClick = { onAlbumClick(album.key) })
                                 )
                             }
                         }
@@ -668,8 +660,7 @@ fun HomeQuickPicks(
                                     thumbnailSizeDp = artistThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = { onArtistClick(artist.key) }),
-                                    disableScrollingText = disableScrollingText
+                                        .clickable(onClick = { onArtistClick(artist.key) })
                                 )
                             }
                         }
@@ -699,8 +690,7 @@ fun HomeQuickPicks(
                                     isYoutubePlaylist = true,
                                     modifier = Modifier.clickable {
                                         NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
-                                    },
-                                    disableScrollingText = disableScrollingText
+                                    }
                                 )
                             }
                         }
@@ -788,7 +778,6 @@ fun HomeQuickPicks(
                                             .clickable {
                                                 NavRoutes.localPlaylist.navigateHere( navController, playlist.playlist.id )
                                             },
-                                        disableScrollingText = disableScrollingText,
                                         isYoutubePlaylist = playlist.playlist.isYoutubePlaylist,
                                         isEditable = playlist.playlist.isEditable
                                     )
@@ -864,8 +853,7 @@ fun HomeQuickPicks(
                                                     alternative = true,
                                                     showSongsCount = false,
                                                     modifier = Modifier
-                                                        .clickable(onClick = { onPlaylistClick(playlist.id) }),
-                                                    disableScrollingText = disableScrollingText
+                                                        .clickable(onClick = { onPlaylistClick(playlist.id) })
                                                 )
                                             }
                                         }
@@ -914,7 +902,6 @@ fun HomeQuickPicks(
                                                                 binder?.player?.addMediaItems(songs.map { it.toMediaItem })
                                                             })
                                                             .width(itemWidth),
-                                                        disableScrollingText = disableScrollingText,
                                                         isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
                                                     )
                                                 }
@@ -957,8 +944,7 @@ fun HomeQuickPicks(
                                                         alternative = false,
                                                         modifier = Modifier
                                                             .width(200.dp)
-                                                            .clickable(onClick = { onArtistClick(artist.id) }),
-                                                        disableScrollingText = disableScrollingText
+                                                            .clickable(onClick = { onArtistClick(artist.id) })
                                                     )
                                                 }
                                             }
@@ -994,7 +980,6 @@ fun HomeQuickPicks(
                                             thumbnailSizeDp = albumThumbnailSizeDp,
                                             onDownloadClick = {},
                                             downloadState = Download.STATE_STOPPED,
-                                            disableScrollingText = disableScrollingText,
                                             isNowPlaying = false,
                                             modifier = Modifier.clickable(onClick = {
                                                 binder?.player?.forcePlay(item.asMediaItem)
@@ -1009,7 +994,6 @@ fun HomeQuickPicks(
                                             alternative = true,
                                             thumbnailSizePx = albumThumbnailSizePx,
                                             thumbnailSizeDp = albumThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText,
                                             modifier = Modifier.clickable(onClick = {
                                                 NavRoutes.YT_ALBUM.navigateHere( navController, item.key )
                                             })
@@ -1023,7 +1007,6 @@ fun HomeQuickPicks(
                                             artist = item,
                                             thumbnailSizePx = artistThumbnailSizePx,
                                             thumbnailSizeDp = artistThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText,
                                             modifier = Modifier.clickable(onClick = {
                                                 NavRoutes.YT_ARTIST.navigateHere( navController, item.key )
                                             })
@@ -1037,7 +1020,6 @@ fun HomeQuickPicks(
                                             alternative = true,
                                             thumbnailSizePx = playlistThumbnailSizePx,
                                             thumbnailSizeDp = playlistThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText,
                                             modifier = Modifier.clickable(onClick = {
                                                 NavRoutes.YT_PLAYLIST.navigateHere( navController, item.key )
                                             })
@@ -1050,7 +1032,6 @@ fun HomeQuickPicks(
                                             video = item,
                                             thumbnailHeightDp = playlistThumbnailSizeDp,
                                             thumbnailWidthDp = playlistThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText,
                                             modifier = Modifier.clickable(onClick = {
                                                 binder?.stopRadio()
                                                 if (isVideoEnabled())

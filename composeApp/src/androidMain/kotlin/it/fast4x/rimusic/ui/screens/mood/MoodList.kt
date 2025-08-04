@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.kreate.android.Preferences
 import app.kreate.android.R
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
@@ -86,8 +85,6 @@ fun MoodList(
         .padding(horizontal = 16.dp)
         .padding(top = 24.dp, bottom = 8.dp)
         .padding(endPaddingValues)
-
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     Column (
         modifier = Modifier
@@ -148,8 +145,7 @@ fun MoodList(
                                             childItem.info?.endpoint?.browseId?.let {
                                                 NavRoutes.YT_ALBUM.navigateHere( navController, it )
                                             }
-                                        },
-                                        disableScrollingText = disableScrollingText
+                                        }
                                     )
 
                                     is Innertube.ArtistItem -> ArtistItem(
@@ -161,8 +157,7 @@ fun MoodList(
                                             childItem.info?.endpoint?.browseId?.let {
                                                 NavRoutes.YT_ARTIST.navigateHere( navController, it )
                                             }
-                                        },
-                                        disableScrollingText = disableScrollingText
+                                        }
                                     )
 
                                     is Innertube.PlaylistItem -> PlaylistItem(
@@ -174,8 +169,7 @@ fun MoodList(
                                             childItem.info?.endpoint?.browseId?.let { browseId ->
                                                 NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId )
                                             }
-                                        },
-                                        disableScrollingText = disableScrollingText
+                                        }
                                     )
 
                                     else -> {}

@@ -873,8 +873,8 @@ sealed class Preferences<T>(
         val STATISTIC_PAGE_CATEGORY by lazy {
             Enum( preferences, "StatisticPageCategory", "statisticsCategory", StatisticsCategory.Songs )
         }
-        val SCROLLING_TEXT_DISABLED by lazy {
-            Boolean( preferences, "ScrollingText", "disableScrollingText", false )
+        val MARQUEE_TEXT_EFFECT by lazy {
+            Boolean(preferences, "MarqueeEffect", "", true )
         }
         val PARENTAL_CONTROL by lazy {
             Boolean( preferences, "ParentalControl", "parentalControlEnabled", false )
@@ -1068,7 +1068,7 @@ sealed class Preferences<T>(
                         "YouTubeCookies", "ytCookie", "YouTubeAccountName", "ytAccountNameKey",
                         "YouTubeAccountEmail", "ytAccountEmailKey", "YouTubeSelfChannelHandle",
                         "ytAccountChannelHandleKey", "YouTubeAccountAvatar", "ytAccountThumbnailKey",
-                        "JumpPrevious", "jumpPrevious"
+                        "JumpPrevious", "jumpPrevious", "ScrollingText", "disableScrollingText"
                     ).fastForEach( this::remove )
                 }
             }

@@ -195,8 +195,6 @@ fun MiniPlayer(
     )
     val disableClosingPlayerSwipingDown by Preferences.MINI_DISABLE_SWIPE_DOWN_TO_DISMISS
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
     SwipeToDismissBox(
         modifier = Modifier
             .padding(horizontal = 16.dp)

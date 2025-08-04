@@ -99,7 +99,6 @@ fun HomeLibrary(
 
     // Non-vital
     var playlistType by Preferences.HOME_LIBRARY_TYPE
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     var items by persistList<PlaylistPreview>("home/playlists")
     val onlinePlaylists = remember { mutableStateListOf<PlaylistPreview>() }
@@ -313,7 +312,6 @@ fun HomeLibrary(
                                             preview.playlist.id
                                         )
                                 }),
-                            disableScrollingText = disableScrollingText,
                             isYoutubePlaylist = preview.playlist.isYoutubePlaylist,
                             isEditable = preview.playlist.isEditable
                         )

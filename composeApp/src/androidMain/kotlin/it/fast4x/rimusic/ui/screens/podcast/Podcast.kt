@@ -188,7 +188,6 @@ fun Podcast(
     }
 
     var thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     var totalPlayTimes = 0L
     podcastPage?.listEpisode?.forEach {
@@ -544,8 +543,7 @@ fun Podcast(
                                                     },
                                                     onGoToPlaylist = {
                                                         NavRoutes.localPlaylist.navigateHere( navController, it )
-                                                    },
-                                                    disableScrollingText = disableScrollingText
+                                                    }
                                                 )
                                             }
                                         },
@@ -738,8 +736,7 @@ fun Podcast(
                                                     menuState.hide()
                                                     forceRecompose = true
                                                 },
-                                                mediaItem = song.asMediaItem,
-                                                disableScrollingText = disableScrollingText
+                                                mediaItem = song.asMediaItem
                                             )
                                         };
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -754,7 +751,6 @@ fun Podcast(
                                             }
                                     }
                                 ),
-                            disableScrollingText = disableScrollingText,
                             isNowPlaying = binder?.player?.isNowPlaying(song.videoId) ?: false,
                             forceRecompose = forceRecompose
                         )

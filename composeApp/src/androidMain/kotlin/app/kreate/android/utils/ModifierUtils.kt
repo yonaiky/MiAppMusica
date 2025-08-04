@@ -15,7 +15,7 @@ import app.kreate.android.Preferences
  * @see basicMarquee
  */
 fun Modifier.scrollingText( iterations: Int = Int.MAX_VALUE ) =
-    if( !Preferences.SCROLLING_TEXT_DISABLED.value )
+    if( Preferences.MARQUEE_TEXT_EFFECT.value )
         this.basicMarquee( iterations = iterations )
     else
         this

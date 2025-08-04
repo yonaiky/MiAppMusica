@@ -172,8 +172,6 @@ fun OnlineSearch(
     val hapticFeedback = LocalHapticFeedback.current
     val binder = LocalPlayerServiceBinder.current
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
     Box(
         modifier = Modifier
             .background(colorPalette().background0)
@@ -357,8 +355,7 @@ fun OnlineSearch(
                                                 NonQueuedMediaItemMenu(
                                                     navController = navController,
                                                     onDismiss = menuState::hide,
-                                                    mediaItem = mediaItem,
-                                                    disableScrollingText = disableScrollingText
+                                                    mediaItem = mediaItem
                                                 )
                                             };
                                             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -367,7 +364,6 @@ fun OnlineSearch(
                                             binder?.player?.forcePlay(mediaItem)
                                         }
                                     ),
-                                disableScrollingText = disableScrollingText,
                                 isNowPlaying = binder?.player?.isNowPlaying(mediaItem.mediaId) ?: false
                             )
                         }
@@ -384,8 +380,7 @@ fun OnlineSearch(
                                 modifier = Modifier
                                     .clickable {
                                         NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
-                                    },
-                                disableScrollingText = disableScrollingText
+                                    }
                             )
                         }
                     }
@@ -399,8 +394,7 @@ fun OnlineSearch(
                                 thumbnailSizeDp = songThumbnailSizeDp,
                                 modifier = Modifier.clickable {
                                     NavRoutes.YT_ARTIST.navigateHere( navController, artist.key )
-                                },
-                                disableScrollingText = disableScrollingText
+                                }
                             )
                         }
                     }

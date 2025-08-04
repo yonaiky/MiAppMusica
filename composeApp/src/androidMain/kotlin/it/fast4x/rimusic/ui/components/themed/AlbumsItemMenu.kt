@@ -80,8 +80,7 @@ fun AlbumsItemMenu(
     onEnqueue: (() -> Unit)? = null,
     onAddToPlaylist: ((PlaylistPreview) -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
-    onAddToFavourites: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onAddToFavourites: (() -> Unit)? = null
 ) {
     val density = LocalDensity.current
 
@@ -109,8 +108,7 @@ fun AlbumsItemMenu(
             onEnqueue = onEnqueue,
             onAddToPlaylist = onAddToPlaylist,
             onGoToPlaylist = onGoToPlaylist,
-            onAddToFavourites = onAddToFavourites,
-            disableScrollingText = disableScrollingText
+            onAddToFavourites = onAddToFavourites
         )
     } else {
         AnimatedContent(
@@ -366,8 +364,7 @@ fun AlbumsItemMenu(
                             album = album,
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
-                            yearCentered = false,
-                            disableScrollingText = disableScrollingText
+                            yearCentered = false
                         )
 
                         /*

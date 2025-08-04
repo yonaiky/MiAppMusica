@@ -168,7 +168,6 @@ fun HomePage(
 
     val hapticFeedback = LocalHapticFeedback.current
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
     val showSearchTab by Preferences.SHOW_SEARCH_IN_NAVIGATION_BAR
 
     PullToRefreshBox(
@@ -236,7 +235,6 @@ fun HomePage(
                                         thumbnailSizeDp = songThumbnailSizeDp,
                                         onDownloadClick = {},
                                         downloadState = Download.STATE_STOPPED,
-                                        disableScrollingText = disableScrollingText,
                                         isNowPlaying = false,
                                         modifier = Modifier.clickable(onClick = {
                                             binder?.player?.forcePlay(item.asMediaItem)
@@ -251,7 +249,6 @@ fun HomePage(
                                         alternative = true,
                                         thumbnailSizePx = albumThumbnailSizePx,
                                         thumbnailSizeDp = albumThumbnailSizeDp,
-                                        disableScrollingText = disableScrollingText,
                                         modifier = Modifier.clickable(onClick = {
                                             NavRoutes.YT_ALBUM.navigateHere( navController, item.key )
                                         })
@@ -264,7 +261,6 @@ fun HomePage(
                                         artist = item,
                                         thumbnailSizePx = artistThumbnailSizePx,
                                         thumbnailSizeDp = artistThumbnailSizeDp,
-                                        disableScrollingText = disableScrollingText,
                                         modifier = Modifier.clickable {
                                             NavRoutes.YT_ARTIST.navigateHere( navController, item.key )
                                         }
@@ -277,7 +273,6 @@ fun HomePage(
                                         alternative = true,
                                         thumbnailSizePx = playlistThumbnailSizePx,
                                         thumbnailSizeDp = playlistThumbnailSizeDp,
-                                        disableScrollingText = disableScrollingText,
                                         modifier = Modifier.clickable(onClick = {
                                             NavRoutes.YT_PLAYLIST.navigateHere( navController, item.key )
                                         })
@@ -288,8 +283,7 @@ fun HomePage(
                                     VideoItem(
                                         video = item,
                                         thumbnailHeightDp = playlistThumbnailSizeDp,
-                                        thumbnailWidthDp = playlistThumbnailSizeDp,
-                                        disableScrollingText = disableScrollingText
+                                        thumbnailWidthDp = playlistThumbnailSizeDp
                                     )
                                 }
 

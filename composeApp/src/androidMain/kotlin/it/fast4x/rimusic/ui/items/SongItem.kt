@@ -87,7 +87,6 @@ fun SongItem(
     onDownloadClick: () -> Unit,
     downloadState: Int,
     thumbnailContent: (@Composable BoxScope.() -> Unit)? = null,
-    disableScrollingText: Boolean,
     isNowPlaying: Boolean = false,
     forceRecompose: Boolean = false
 ) {
@@ -104,7 +103,6 @@ fun SongItem(
         downloadState = downloadState,
         mediaItem = song.asMediaItem,
         onThumbnailContent = thumbnailContent,
-        disableScrollingText = disableScrollingText,
         isNowPlaying = isNowPlaying,
         forceRecompose = forceRecompose
     )
@@ -122,7 +120,6 @@ fun SongItem(
     onDownloadClick: () -> Unit,
     downloadState: Int,
     isRecommended: Boolean = false,
-    disableScrollingText: Boolean,
     isNowPlaying: Boolean = false,
     forceRecompose: Boolean = false
 ) {
@@ -141,7 +138,6 @@ fun SongItem(
         downloadState = downloadState,
         isRecommended = isRecommended,
         mediaItem = song,
-        disableScrollingText = disableScrollingText,
         isNowPlaying = isNowPlaying,
         forceRecompose = forceRecompose
     )
@@ -158,7 +154,6 @@ fun SongItem(
     trailingContent: (@Composable () -> Unit)? = null,
     onDownloadClick: () -> Unit,
     downloadState: Int,
-    disableScrollingText: Boolean,
     isNowPlaying: Boolean = false,
     forceRecompose: Boolean = false
 ) {
@@ -176,7 +171,6 @@ fun SongItem(
         },
         downloadState = downloadState,
         mediaItem = song.asMediaItem,
-        disableScrollingText = disableScrollingText,
         isNowPlaying = isNowPlaying,
         forceRecompose = forceRecompose
     )
@@ -194,7 +188,6 @@ fun SongItem(
     downloadState: Int,
     isRecommended: Boolean = false,
     mediaItem: MediaItem,
-    disableScrollingText: Boolean,
     isNowPlaying: Boolean = false,
     forceRecompose: Boolean = false
 ) {
@@ -218,7 +211,6 @@ fun SongItem(
         downloadState = downloadState,
         isRecommended = isRecommended,
         mediaItem = mediaItem,
-        disableScrollingText = disableScrollingText,
         isNowPlaying = isNowPlaying,
         forceRecompose = forceRecompose
     )
@@ -327,7 +319,6 @@ fun SongItem(
     downloadState: Int,
     isRecommended: Boolean = false,
     mediaItem: MediaItem,
-    disableScrollingText: Boolean,
     isNowPlaying: Boolean = false,
     forceRecompose: Boolean = false
 ) {

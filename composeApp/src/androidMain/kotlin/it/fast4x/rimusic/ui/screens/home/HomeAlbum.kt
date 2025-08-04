@@ -114,7 +114,6 @@ fun HomeAlbums(
     val lazyGridState = rememberLazyGridState()
 
     // Settings
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
     var albumType by Preferences.HOME_ALBUM_TYPE
 
     var items by persistList<Album>( "home/albums" )
@@ -454,8 +453,7 @@ fun HomeAlbums(
                                                 },
                                                 onGoToPlaylist = {
                                                     NavRoutes.localPlaylist.navigateHere( navController, it )
-                                                },
-                                                disableScrollingText = disableScrollingText
+                                                }
                                             )
                                         }
                                     },
@@ -465,7 +463,6 @@ fun HomeAlbums(
                                     }
                                 )
                                 .clip(thumbnailShape()),
-                            disableScrollingText = disableScrollingText,
                             isYoutubeAlbum = album.isYoutubeAlbum
                         )
                     }

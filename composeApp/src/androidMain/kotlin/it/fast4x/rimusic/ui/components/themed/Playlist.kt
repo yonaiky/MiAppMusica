@@ -41,7 +41,6 @@ fun Playlist(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showName: Boolean = true,
-    disableScrollingText: Boolean,
     thumbnailUrl: String? = null,
 ) {
     val thumbnails by remember {
@@ -127,7 +126,6 @@ fun Playlist(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        showName = showName,
-        disableScrollingText = disableScrollingText
+        showName = showName
     )
 }

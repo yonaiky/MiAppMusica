@@ -114,7 +114,6 @@ fun PlaylistItem(
     alternative: Boolean = false,
     showName: Boolean = true,
     iconSize: Dp = 34.dp,
-    disableScrollingText: Boolean,
     isYoutubePlaylist : Boolean = false,
     isEditable : Boolean = false
 ) {
@@ -136,7 +135,6 @@ fun PlaylistItem(
         modifier = modifier,
         alternative = alternative,
         showName = showName,
-        disableScrollingText = disableScrollingText,
         isYoutubePlaylist = isYoutubePlaylist,
         isEditable = isEditable
     )
@@ -150,7 +148,6 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showName: Boolean = true,
-    disableScrollingText: Boolean,
     isYoutubePlaylist: Boolean,
     isEditable: Boolean
 ) {
@@ -183,7 +180,6 @@ fun PlaylistItem(
         modifier = modifier,
         alternative = alternative,
         showName = showName,
-        disableScrollingText = disableScrollingText,
         isYoutubePlaylist = isYoutubePlaylist,
         isEditable = isEditable
     )
@@ -197,7 +193,6 @@ fun PlaylistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showSongsCount: Boolean = true,
-    disableScrollingText: Boolean,
     isYoutubePlaylist : Boolean = false,
     isEditable : Boolean = false
 ) {
@@ -219,7 +214,6 @@ fun PlaylistItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        disableScrollingText = disableScrollingText,
         isYoutubePlaylist = isYoutubePlaylist,
         isEditable = isEditable
     )
@@ -237,7 +231,6 @@ fun PlaylistItem(
     alternative: Boolean = false,
     showName: Boolean = true,
     showSongsCount: Boolean = true,
-    disableScrollingText: Boolean,
     isYoutubePlaylist : Boolean = false,
     isEditable : Boolean = false
 ) {

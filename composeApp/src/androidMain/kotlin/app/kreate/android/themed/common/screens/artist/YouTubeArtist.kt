@@ -3,7 +3,6 @@ package app.kreate.android.themed.common.screens.artist
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,7 +56,6 @@ import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
@@ -68,6 +66,7 @@ import app.kreate.android.utils.innertube.toOldInnertubeArtist
 import app.kreate.android.utils.innertube.toOldInnertubePlaylist
 import app.kreate.android.utils.innertube.toSong
 import app.kreate.android.utils.renderDescription
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -93,7 +92,6 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
@@ -202,8 +200,7 @@ private fun LazyListScope.renderSection(
     params: String?,
     items: List<InnertubeItem>,
     albumThumbnailSizePx: Int,
-    albumThumbnailSizeDp: Dp,
-    disableScrollingText: Boolean
+    albumThumbnailSizeDp: Dp
 ) = item( title ) {
     LazyRow {
         this@LazyRow.items(
@@ -217,7 +214,6 @@ private fun LazyListScope.renderSection(
                         alternative = true,
                         thumbnailSizePx = albumThumbnailSizePx,
                         thumbnailSizeDp = albumThumbnailSizeDp,
-                        disableScrollingText = disableScrollingText,
                         isYoutubeAlbum = true,
                         modifier = Modifier.clickable {
                             NavRoutes.YT_ALBUM.navigateHere(
@@ -233,7 +229,6 @@ private fun LazyListScope.renderSection(
                         alternative = true,
                         thumbnailSizePx = albumThumbnailSizePx,
                         thumbnailSizeDp = albumThumbnailSizeDp,
-                        disableScrollingText = disableScrollingText,
                         modifier = Modifier.clickable {
                             NavRoutes.YT_PLAYLIST.navigateHere(navController, item.id)
                         }
@@ -245,7 +240,6 @@ private fun LazyListScope.renderSection(
                         alternative = true,
                         thumbnailSizePx = albumThumbnailSizePx,
                         thumbnailSizeDp = albumThumbnailSizeDp,
-                        disableScrollingText = disableScrollingText,
                         modifier = Modifier.clickable {
                             NavRoutes.YT_ARTIST.navigateHere( navController, item.id )
                         }
@@ -277,7 +271,6 @@ fun YouTubeArtist(
         val binder = LocalPlayerServiceBinder.current ?: return@Skeleton
         val lazyListState = rememberLazyListState()
         //</editor-fold>
-        val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
         var artistPage: InnertubeArtist? by remember { mutableStateOf( null ) }
         val dbArtist: Artist? by remember {
@@ -421,9 +414,7 @@ fun YouTubeArtist(
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.align( Alignment.BottomCenter )
                                                    .padding( horizontal = 30.dp )
-                                                   .conditional( !Preferences.SCROLLING_TEXT_DISABLED.value ) {
-                                                       basicMarquee( iterations = Int.MAX_VALUE )
-                                                   }
+                                                   .scrollingText()
                             )
                         }
                     }
@@ -548,7 +539,6 @@ fun YouTubeArtist(
                                 items,
                                 albumThumbnailSizePx,
                                 albumThumbnailSizeDp,
-                                disableScrollingText
                             )
                     }
 

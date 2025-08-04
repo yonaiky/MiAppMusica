@@ -149,7 +149,6 @@ fun BoxScope.ActionBar(
     val tapQueue by Preferences.PLAYER_ACTIONS_BAR_TAP_TO_OPEN_QUEUE
     val transparentBackgroundActionBarPlayer by Preferences.PLAYER_TRANSPARENT_ACTIONS_BAR
     val swipeUpQueue by Preferences.PLAYER_ACTIONS_BAR_SWIPE_UP_TO_OPEN_QUEUE
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     var showQueue by showQueueState
     var isShowingVisualizer by showVisualizerState
@@ -703,8 +702,7 @@ fun BoxScope.ActionBar(
                                     onDismiss = menuState::hide,
                                     mediaItem = mediaItem,
                                     binder = binder,
-                                    onClosePlayer = onDismiss,
-                                    disableScrollingText = disableScrollingText
+                                    onClosePlayer = onDismiss
                                 )
                             }
                         },

@@ -117,7 +117,6 @@ fun StatisticsPage(
     val thumbnailRoundness by Preferences.THUMBNAIL_BORDER_RADIUS
 
     val showStatsListeningTime by Preferences.SHOW_LISTENING_STATS
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     val context = LocalContext.current
 
@@ -332,8 +331,7 @@ fun StatisticsPage(
                                                 onDismiss = {
                                                     menuState.hide()
                                                     forceRecompose = true
-                                                },
-                                                disableScrollingText = disableScrollingText
+                                                }
                                             )
                                         }
                                     },
@@ -346,7 +344,6 @@ fun StatisticsPage(
                                     }
                                 )
                                 .fillMaxWidth(),
-                            disableScrollingText = disableScrollingText,
                             isNowPlaying = binder?.player?.isNowPlaying(songs.get(it).id) ?: false,
                             forceRecompose = forceRecompose
                         )
@@ -372,8 +369,7 @@ fun StatisticsPage(
                             modifier = Modifier.clickable {
                                 if ( artists[it].id.isNotBlank() )
                                     NavRoutes.YT_ARTIST.navigateHere( navController, artists[it].id )
-                            },
-                            disableScrollingText = disableScrollingText
+                            }
                         )
                     }
 
@@ -397,8 +393,7 @@ fun StatisticsPage(
                                 .clickable(onClick = {
                                     if (albums[it].id != "")
                                         NavRoutes.YT_ALBUM.navigateHere( navController, albums[it].id )
-                                }),
-                            disableScrollingText = disableScrollingText
+                                })
                         )
                     }
 
@@ -481,8 +476,7 @@ fun StatisticsPage(
                                 }
 
                                 route.navigateHere( navController, path )
-                            },
-                            disableScrollingText = disableScrollingText
+                            }
                         )
                     }
                 }

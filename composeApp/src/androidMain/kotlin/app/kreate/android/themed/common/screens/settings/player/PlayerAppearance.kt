@@ -727,11 +727,11 @@ fun LazyListScope.playerAppearanceSection( search: SettingEntrySearch, isLandsca
                 )
         }
     }
-    entry( search, R.string.disable_scrolling_text ) {
+    entry( search, R.string.setting_entry_marquee_effect ) {
         SettingComponents.BooleanEntry(
-            Preferences.SCROLLING_TEXT_DISABLED,
-            R.string.disable_scrolling_text,
-            R.string.scrolling_text_is_used_for_long_texts
+            preference = Preferences.MARQUEE_TEXT_EFFECT,
+            title = stringResource( R.string.setting_entry_marquee_effect ),
+            subtitle = stringResource( R.string.setting_description_marquee_effect )
         )
     }
     val (titleId, subtitleId) = if( playerType == PlayerType.Modern && !isLandscape )

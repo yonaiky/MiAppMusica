@@ -17,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -26,7 +25,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import app.kreate.android.Preferences
 import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.ui.components.themed.GridMenuItemHeight
@@ -81,7 +79,6 @@ object GridMenu {
             content = icon
         )
 
-        val isScrollingTextDisabled by Preferences.SCROLLING_TEXT_DISABLED
         Text(
             text = text,
             overflow = TextOverflow.Ellipsis,

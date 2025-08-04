@@ -38,8 +38,7 @@ import it.fast4x.rimusic.ui.styling.px
 @ExperimentalFoundationApi
 @Composable
 fun HomeSearch(
-    onSearchType: (SearchType) -> Unit,
-    disableScrollingText: Boolean
+    onSearchType: (SearchType) -> Unit
 ) {
     val thumbnailSizeDp = 108.dp
     val thumbnailSizePx = thumbnailSizeDp.px
@@ -94,8 +93,7 @@ fun HomeSearch(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onSearchType(SearchType.Online) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 
@@ -110,8 +108,7 @@ fun HomeSearch(
                     modifier = Modifier
                         .clip(thumbnailShape())
                         .clickable(onClick = { onSearchType(SearchType.Library) })
-                        .animateItem(),
-                    disableScrollingText = disableScrollingText
+                        .animateItem()
                 )
             }
 
@@ -126,8 +123,7 @@ fun HomeSearch(
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
-                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
-                    disableScrollingText = disableScrollingText
+                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
             }
 

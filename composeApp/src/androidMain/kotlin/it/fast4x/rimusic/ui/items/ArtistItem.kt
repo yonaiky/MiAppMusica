@@ -44,7 +44,6 @@ fun ArtistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showName: Boolean = true,
-    disableScrollingText: Boolean,
     isYoutubeArtist : Boolean = false
 ) {
     ArtistItem(
@@ -56,7 +55,6 @@ fun ArtistItem(
         modifier = modifier,
         alternative = alternative,
         showName = showName,
-        disableScrollingText = disableScrollingText,
         isYoutubeArtist = isYoutubeArtist
     )
 }
@@ -68,7 +66,6 @@ fun ArtistItem(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
-    disableScrollingText: Boolean,
     isYoutubeArtist : Boolean = false,
     smallThumbnail: Boolean = false
 ) {
@@ -80,7 +77,6 @@ fun ArtistItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         alternative = alternative,
-        disableScrollingText = disableScrollingText,
         isYoutubeArtist = isYoutubeArtist,
         smallThumbnail = smallThumbnail
     )
@@ -96,7 +92,6 @@ fun ArtistItem(
     modifier: Modifier = Modifier,
     alternative: Boolean = false,
     showName: Boolean = true,
-    disableScrollingText: Boolean,
     isYoutubeArtist : Boolean = false,
     smallThumbnail: Boolean = false
 ) {

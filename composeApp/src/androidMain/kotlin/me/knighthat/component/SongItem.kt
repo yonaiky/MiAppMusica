@@ -155,7 +155,6 @@ fun SongItem(
     // Essentials
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
     val hapticFeedback = LocalHapticFeedback.current
 
     val colorPalette = colorPalette()

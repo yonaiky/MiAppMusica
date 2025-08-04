@@ -73,7 +73,6 @@ fun HistoryList(
     val menuState = LocalMenuState.current
 
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
 
     /**
      * Topology:
@@ -224,8 +223,7 @@ fun HistoryList(
                                     NonQueuedMediaItemMenuLibrary(
                                         navController = navController,
                                         mediaItem = mediaItem,
-                                        onDismiss = menuState::hide,
-                                        disableScrollingText = disableScrollingText
+                                        onDismiss = menuState::hide
                                     )
                                 }
                             }

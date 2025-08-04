@@ -94,8 +94,6 @@ fun SearchResultScreen(
     val isVideoEnabled by Preferences.PLAYER_ACTION_TOGGLE_VIDEO
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
     val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit = {
         Title(
             title = stringResource(R.string.search_results_for),
@@ -387,8 +385,7 @@ fun SearchResultScreen(
                                             },
                                             onLongClick = {}
 
-                                        ),
-                                    disableScrollingText = disableScrollingText
+                                        )
                                 )
                             }
                         },
@@ -429,8 +426,7 @@ fun SearchResultScreen(
                                 thumbnailSizeDp = thumbnailSizeDp,
                                 modifier = Modifier.clickable {
                                     NavRoutes.YT_ARTIST.navigateHere( navController, artist.key )
-                                },
-                                disableScrollingText = disableScrollingText
+                                }
                             )
                         },
                         itemPlaceholderContent = {
@@ -489,8 +485,7 @@ fun SearchResultScreen(
                                                     NonQueuedMediaItemMenu(
                                                         navController = navController,
                                                         mediaItem = video.asMediaItem,
-                                                        onDismiss = menuState::hide,
-                                                        disableScrollingText = disableScrollingText
+                                                        onDismiss = menuState::hide
                                                     )
                                                 };
                                                 hapticFeedback.performHapticFeedback(
@@ -504,8 +499,7 @@ fun SearchResultScreen(
                                                 else
                                                     localBinder?.player?.forcePlay(video.asMediaItem)
                                             }
-                                        ),
-                                    disableScrollingText = disableScrollingText
+                                        )
                                 )
                             }
                         },
@@ -558,8 +552,7 @@ fun SearchResultScreen(
                                 modifier = Modifier
                                     .clickable(onClick = {
                                         NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
-                                    }),
-                                disableScrollingText = disableScrollingText
+                                    })
                             )
                         },
                         itemPlaceholderContent = {
@@ -600,8 +593,7 @@ fun SearchResultScreen(
                                 modifier = Modifier.clickable {
                                     println("mediaItem searchResultScreen playlist key ${playlist.key}")
                                     NavRoutes.podcast.navigateHere( navController, playlist.key )
-                                },
-                                disableScrollingText = disableScrollingText
+                                }
                             )
                         },
                         itemPlaceholderContent = {

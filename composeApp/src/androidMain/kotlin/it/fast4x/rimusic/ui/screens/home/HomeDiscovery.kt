@@ -114,8 +114,6 @@ fun HomeDiscovery(
 
     //Log.d("mediaItemArtists",preferitesArtists.toString())
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
     BoxWithConstraints {
 
         val moodItemWidthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
@@ -193,8 +191,7 @@ fun HomeDiscovery(
                                                 onNewReleaseAlbumClick(
                                                     it.key
                                                 )
-                                            }),
-                                            disableScrollingText = disableScrollingText
+                                            })
                                         )
                                // }
 
@@ -217,8 +214,7 @@ fun HomeDiscovery(
                                 thumbnailSizePx = thumbnailPx,
                                 thumbnailSizeDp = thumbnailDp,
                                 alternative = true,
-                                modifier = Modifier.clickable(onClick = { onNewReleaseAlbumClick(it.key) }),
-                                disableScrollingText = disableScrollingText
+                                modifier = Modifier.clickable(onClick = { onNewReleaseAlbumClick(it.key) })
                             )
                         }
                     }

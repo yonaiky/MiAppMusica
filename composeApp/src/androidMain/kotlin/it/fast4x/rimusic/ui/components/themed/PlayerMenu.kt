@@ -45,8 +45,7 @@ fun PlayerMenu(
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
-    onMatchingSong: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onMatchingSong: (() -> Unit)? = null
     ) {
     val menuState = LocalMenuState.current
     val menuStyle by Preferences.MENU_STYLE
@@ -105,8 +104,7 @@ fun PlayerMenu(
             },
              */
             onHideFromDatabase = { isHiding = true },
-            onClosePlayer = onClosePlayer,
-            disableScrollingText = disableScrollingText
+            onClosePlayer = onClosePlayer
         )
     } else {
         BaseMediaItemMenu(
@@ -137,8 +135,7 @@ fun PlayerMenu(
                 }
             },
             onClosePlayer = onClosePlayer,
-            onMatchingSong = onMatchingSong,
-            disableScrollingText = disableScrollingText
+            onMatchingSong = onMatchingSong
         )
     }
 
@@ -154,8 +151,7 @@ fun MiniPlayerMenu(
     binder: PlayerServiceModern.Binder,
     mediaItem: MediaItem,
     onDismiss: () -> Unit,
-    onClosePlayer: () -> Unit,
-    disableScrollingText: Boolean
+    onClosePlayer: () -> Unit
 ) {
 
     val menuStyle by Preferences.MENU_STYLE
@@ -182,8 +178,7 @@ fun MiniPlayerMenu(
                     }
                 }
             },
-            onDismiss = onDismiss,
-            disableScrollingText = disableScrollingText
+            onDismiss = onDismiss
         )
     } else {
         MiniMediaItemMenu(
@@ -207,8 +202,7 @@ fun MiniPlayerMenu(
                     }
                 }
             },
-            onDismiss = onDismiss,
-            disableScrollingText = disableScrollingText
+            onDismiss = onDismiss
         )
     }
 

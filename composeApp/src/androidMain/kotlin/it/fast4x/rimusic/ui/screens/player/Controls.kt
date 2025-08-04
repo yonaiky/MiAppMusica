@@ -158,8 +158,6 @@ fun Controls(
         nextmediaItemtitle = binder.player.getMediaItemAt(nextmediaItemIndex).mediaMetadata.title.toString()
     */
 
-    var disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
     val animatedPosition = remember { Animatable(position.toFloat()) }
     var isSeeking by remember { mutableStateOf(false) }
 
@@ -253,7 +251,6 @@ fun Controls(
                             mediaId = mediaId,
                             likedAt = currentSong?.likedAt,
                             onCollapse = onCollapse,
-                            disableScrollingText = disableScrollingText,
                             artist = artist,
                             artistIds = artistIds,
                             isExplicit = isExplicit
@@ -269,7 +266,6 @@ fun Controls(
                             mediaId = mediaId,
                             likedAt = currentSong?.likedAt,
                             onCollapse = onCollapse,
-                            disableScrollingText = disableScrollingText,
                             artist = artist,
                             artistIds = artistIds,
                             isExplicit = isExplicit
@@ -331,7 +327,6 @@ fun Controls(
                         mediaId = mediaId,
                         likedAt = currentSong?.likedAt,
                         onCollapse = onCollapse,
-                        disableScrollingText = disableScrollingText,
                         artist = artist,
                         artistIds = artistIds,
                         isExplicit = isExplicit
@@ -347,7 +342,6 @@ fun Controls(
                         mediaId = mediaId,
                         likedAt = currentSong?.likedAt,
                         onCollapse = onCollapse,
-                        disableScrollingText = disableScrollingText,
                         artist = artist,
                         artistIds = artistIds,
                         isExplicit = isExplicit
@@ -428,7 +422,6 @@ fun Controls(
                     mediaId = mediaId,
                     likedAt = currentSong?.likedAt,
                     onCollapse = onCollapse,
-                    disableScrollingText = disableScrollingText,
                     artist = artist,
                     artistIds = artistIds,
                     isExplicit = isExplicit
@@ -444,7 +437,6 @@ fun Controls(
                     mediaId = mediaId,
                     likedAt = currentSong?.likedAt,
                     onCollapse = onCollapse,
-                    disableScrollingText = disableScrollingText,
                     artist = artist,
                     artistIds = artistIds,
                     isExplicit = isExplicit

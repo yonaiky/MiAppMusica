@@ -61,9 +61,6 @@ fun NewAlbums(
 
     val lazyGridState = rememberLazyGridState()
 
-    val disableScrollingText by Preferences.SCROLLING_TEXT_DISABLED
-
-
     Column(
         modifier = Modifier
             .background(colorPalette().background0)
@@ -114,8 +111,7 @@ fun NewAlbums(
                         alternative = true,
                         modifier = Modifier.clickable(onClick = {
                             NavRoutes.YT_ALBUM.navigateHere( navController, it.key )
-                        }),
-                        disableScrollingText = disableScrollingText
+                        })
                     )
                 }
                 item(

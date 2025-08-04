@@ -93,8 +93,7 @@ fun PlaylistsItemGridMenu(
     onEditThumbnail: (() -> Unit)? = null,
     onResetThumbnail: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)? = null,
-    onLinkUnlink: (() -> Unit)? = null,
-    disableScrollingText: Boolean
+    onLinkUnlink: (() -> Unit)? = null
     ) {
     var isViewingPlaylists by remember {
         mutableStateOf(false)
@@ -363,7 +362,6 @@ fun PlaylistsItemGridMenu(
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
                             modifier = Modifier.height(90.dp),
-                            disableScrollingText = disableScrollingText,
                             isYoutubePlaylist = playlist.playlist.isYoutubePlaylist,
                             isEditable = playlist.playlist.isEditable
                         )
