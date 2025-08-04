@@ -1,6 +1,5 @@
 package me.knighthat.component.menu
 
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -28,9 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.ui.components.themed.GridMenuItemHeight
-import it.fast4x.rimusic.utils.conditional
 import me.knighthat.component.menu.MenuConstants.CONTENT_HEIGHT_FRACTION
 import me.knighthat.component.menu.MenuConstants.CONTENT_HORIZONTAL_PADDING
 import me.knighthat.component.menu.MenuConstants.CONTENT_TOP_PADDING
@@ -91,9 +90,7 @@ object GridMenu {
             textAlign = TextAlign.Center,
             maxLines = 1,
             modifier = Modifier.fillMaxWidth()
-                               .conditional( !isScrollingTextDisabled ) {
-                                   basicMarquee( iterations = Int.MAX_VALUE )
-                               }
+                               .scrollingText()
         )
     }
 }

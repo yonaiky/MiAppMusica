@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -30,16 +29,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.kreate.android.utils.scrollingText
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.bold
-import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
 import kotlin.random.Random
 
 @Composable
@@ -57,7 +56,7 @@ fun Header(
                 style = typography().xxl.medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                modifier = Modifier.scrollingText()
             )
         },
         actionsContent = actionsContent

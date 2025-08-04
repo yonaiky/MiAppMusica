@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -49,6 +48,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
@@ -142,7 +142,7 @@ fun InfoAlbumAndArtistModern(
                 )
             }
 
-            var modifierTitle = Modifier
+            val modifierTitle = Modifier.scrollingText()
                 .combinedClickable (
                     indication = ripple(bounded = true),
                     interactionSource = remember { MutableInteractionSource() },
@@ -160,7 +160,6 @@ fun InfoAlbumAndArtistModern(
 
             val textoutline by Preferences.TEXT_OUTLINE
 
-            if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee(iterations = Int.MAX_VALUE)
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -297,7 +296,7 @@ fun InfoAlbumAndArtistModern(
             )
         }
 
-        var modifierArtist = Modifier
+        val modifierArtist = Modifier.scrollingText()
             .combinedClickable (
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
@@ -315,7 +314,6 @@ fun InfoAlbumAndArtistModern(
             )
 
         var textoutline by Preferences.TEXT_OUTLINE
-        if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
         Box(
 
         ) {

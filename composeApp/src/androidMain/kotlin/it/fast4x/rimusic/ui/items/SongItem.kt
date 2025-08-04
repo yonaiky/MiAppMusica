@@ -3,7 +3,6 @@ package it.fast4x.rimusic.ui.items
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,8 +37,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.compose.rememberNavController
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
+import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -482,7 +482,7 @@ fun SongItem(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .weight(1f)
-                            .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                            .scrollingText()
                     )
 
                     /*
@@ -534,7 +534,7 @@ fun SongItem(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
-                            .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                            .scrollingText()
                             .weight(1f)
                     )
                 if ( playlistindicator && isSongMappedToPlaylist ) {
@@ -630,7 +630,7 @@ fun SongItem(
                     overflow = TextOverflow.Clip,
                     modifier = Modifier
                         .weight(1f)
-                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                        .scrollingText()
                 )
 
                 duration?.let {

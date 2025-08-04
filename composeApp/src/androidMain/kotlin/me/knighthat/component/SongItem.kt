@@ -2,7 +2,6 @@ package me.knighthat.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,9 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -265,9 +265,7 @@ fun SongItem(
                     text = cleanPrefix( song.title ),
                     style = typography().xs.semiBold,
                     modifier = Modifier.weight( 1f )
-                                       .conditional( !disableScrollingText ) {
-                                           basicMarquee( iterations = Int.MAX_VALUE )
-                                       }
+                                       .scrollingText()
                 )
             }
 
@@ -278,9 +276,7 @@ fun SongItem(
                     style = typography().xs.semiBold.secondary,
                     overflow = TextOverflow.Clip,
                     modifier = Modifier.weight( 1f )
-                                       .conditional( !disableScrollingText ) {
-                                           basicMarquee( iterations = Int.MAX_VALUE )
-                                       }
+                                       .scrollingText()
                 )
 
                 /*

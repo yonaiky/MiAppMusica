@@ -8,7 +8,6 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -52,6 +51,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
@@ -126,7 +126,7 @@ fun InfoAlbumAndArtistEssential(
         ) {
 
 
-            var modifierTitle = Modifier
+            val modifierTitle = Modifier.scrollingText()
                 .combinedClickable (
                     indication = ripple(bounded = true),
                     interactionSource = remember { MutableInteractionSource() },
@@ -140,8 +140,6 @@ fun InfoAlbumAndArtistEssential(
                         textCopyToClipboard(cleanPrefix(title ?: ""), context = appContext())
                     }
                 )
-
-            if (!disableScrollingText) modifierTitle = modifierTitle.basicMarquee(iterations = Int.MAX_VALUE)
 
             /*if (isExplicit || playerControlsType == PlayerControlsType.Modern ) {
                 Box(
@@ -290,7 +288,7 @@ fun InfoAlbumAndArtistEssential(
             )
 
 
-        var modifierArtist = Modifier
+        val modifierArtist = Modifier.scrollingText()
             .combinedClickable (
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
@@ -306,8 +304,6 @@ fun InfoAlbumAndArtistEssential(
                     textCopyToClipboard(artist ?: "", context = appContext())
                 }
             )
-
-        if (!disableScrollingText) modifierArtist = modifierArtist.basicMarquee()
 
         BoxWithConstraints(
             modifier = Modifier

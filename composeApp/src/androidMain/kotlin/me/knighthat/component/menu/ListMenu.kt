@@ -1,6 +1,5 @@
 package me.knighthat.component.menu
 
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,8 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.utils.conditional
 import me.knighthat.component.menu.MenuConstants.CONTENT_HEIGHT_FRACTION
 import me.knighthat.component.menu.MenuConstants.CONTENT_TOP_PADDING
 
@@ -84,9 +83,7 @@ object ListMenu {
                 textAlign = TextAlign.Start,
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth()
-                                   .conditional( !isScrollingTextDisabled ) {
-                                       basicMarquee( iterations = Int.MAX_VALUE )
-                                   }
+                                   .scrollingText()
             )
         }
 

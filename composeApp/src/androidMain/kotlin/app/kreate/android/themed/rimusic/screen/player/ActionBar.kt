@@ -7,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -69,6 +68,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.cleanPrefix
@@ -347,7 +347,7 @@ fun BoxScope.ActionBar(
                                             fontSize = typography().xxxs.semiBold.fontSize,
                                         ),
                                         maxLines = 1,
-                                        modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
+                                        modifier = Modifier.scrollingText()
                                     )
                                     BasicText(
                                         text = titleText,
@@ -364,7 +364,7 @@ fun BoxScope.ActionBar(
                                             fontSize = typography().xxxs.semiBold.fontSize,
                                         ),
                                         maxLines = 1,
-                                        modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
+                                        modifier = Modifier.scrollingText()
                                     )
                                 }
                                 //</editor-fold>
@@ -383,7 +383,7 @@ fun BoxScope.ActionBar(
                                             fontSize = typography().xxxs.semiBold.fontSize,
                                         ),
                                         maxLines = 1,
-                                        modifier = Modifier.conditional(!disableScrollingText) { basicMarquee() }
+                                        modifier = Modifier.scrollingText()
                                     )
                                     BasicText(
                                         text = artistsText,
@@ -405,7 +405,7 @@ fun BoxScope.ActionBar(
                                             fontSize = typography().xxxs.semiBold.fontSize,
                                         ),
                                         maxLines = 1,
-                                        modifier = Modifier.conditional( !disableScrollingText ) { basicMarquee() }
+                                        modifier = Modifier.scrollingText()
                                     )
                                 }
                                 //</editor-fold>
