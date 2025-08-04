@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -52,7 +51,7 @@ fun About( paddingValues: PaddingValues ) {
     val scrollState = rememberLazyListState()
 
     val search = remember {
-        SettingEntrySearch( scrollState, R.string.tab_accounts, R.drawable.person )
+        SettingEntrySearch( scrollState, R.string.about, R.drawable.person )
     }
     val contributors = remember { Contributors(context) }
 
