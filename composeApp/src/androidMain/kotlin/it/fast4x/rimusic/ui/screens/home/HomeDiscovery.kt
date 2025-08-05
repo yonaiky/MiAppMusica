@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -65,9 +66,8 @@ import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.items.AlbumItem
-import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.center
@@ -171,6 +171,11 @@ fun HomeDiscovery(
                     }
                 }
 
+                val appearance = LocalAppearance.current
+                val albumItemValues = remember( appearance ) {
+                    AlbumItem.Values.from( appearance )
+                }
+
                  if ( newReleaseAlbumsFiltered.distinct().isNotEmpty() && artists.isNotEmpty() ) {
                     BasicText(
                         text = stringResource(R.string.new_albums_of_your_artists),
@@ -179,22 +184,18 @@ fun HomeDiscovery(
                     )
 
                     LazyRow(contentPadding = endPaddingValues) {
-                        items(items = newReleaseAlbumsFiltered.distinct(), key = { it.key }) {
-                              //preferitesArtists.forEach { artist ->
-                              //      if (artist.name == it.authors?.first()?.name)
-                                        AlbumItem(
-                                            album = it,
-                                            thumbnailSizePx = thumbnailPx,
-                                            thumbnailSizeDp = thumbnailDp,
-                                            alternative = true,
-                                            modifier = Modifier.clickable(onClick = {
-                                                onNewReleaseAlbumClick(
-                                                    it.key
-                                                )
-                                            })
-                                        )
-                               // }
-
+                        items(
+                            items = newReleaseAlbumsFiltered.distinct(),
+                            key = System::identityHashCode
+                        ) { album ->
+                            AlbumItem.Vertical(
+                                innertubeAlbum = album,
+                                widthDp = thumbnailDp,
+                                values = albumItemValues,
+                                modifier = Modifier.clickable {
+                                    onNewReleaseAlbumClick( album.key )
+                                }
+                            )
                         }
                     }
 
@@ -208,13 +209,17 @@ fun HomeDiscovery(
                     )
 
                     LazyRow(contentPadding = endPaddingValues) {
-                        items(items = page.newReleaseAlbums, key = { it.key }) {
-                            AlbumItem(
-                                album = it,
-                                thumbnailSizePx = thumbnailPx,
-                                thumbnailSizeDp = thumbnailDp,
-                                alternative = true,
-                                modifier = Modifier.clickable(onClick = { onNewReleaseAlbumClick(it.key) })
+                        items(
+                            items = page.newReleaseAlbums,
+                            key = System::identityHashCode
+                        ) { album ->
+                            AlbumItem.Vertical(
+                                innertubeAlbum = album,
+                                widthDp = thumbnailDp,
+                                values = albumItemValues,
+                                modifier = Modifier.clickable {
+                                    onNewReleaseAlbumClick( album.key )
+                                }
                             )
                         }
                     }
@@ -268,10 +273,7 @@ fun HomeDiscovery(
                 TextPlaceholder(modifier = sectionTextModifier)
                 Row {
                     repeat(2) {
-                        AlbumItemPlaceholder(
-                            thumbnailSizeDp = thumbnailDp,
-                            alternative = true
-                        )
+                        AlbumItem.VerticalPlaceholder( thumbnailSizeDp )
                     }
                 TextPlaceholder(modifier = sectionTextModifier)
                 LazyHorizontalGrid(

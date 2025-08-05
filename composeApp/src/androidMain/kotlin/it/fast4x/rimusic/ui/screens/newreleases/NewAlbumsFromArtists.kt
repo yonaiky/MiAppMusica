@@ -32,6 +32,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -42,8 +43,8 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.secondary
@@ -103,6 +104,11 @@ fun NewAlbumsFromArtists(
                 }
             }
 
+            val appearance = LocalAppearance.current
+            val albumItemValues = remember( appearance ) {
+                AlbumItem.Values.from( appearance )
+            }
+
             LazyVerticalGrid(
                 state = lazyGridState,
                 columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
@@ -130,15 +136,15 @@ fun NewAlbumsFromArtists(
                 if (newReleaseAlbumsFiltered.isNotEmpty()) {
                     items(
                         items = newReleaseAlbumsFiltered.distinct(),
-                        key = { it.key }) {
-                        AlbumItem(
-                            album = it,
-                            thumbnailSizePx = thumbnailSizePx,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            alternative = true,
-                            modifier = Modifier.clickable(onClick = {
-                                NavRoutes.YT_ALBUM.navigateHere( navController, it.key )
-                            })
+                        key = System::identityHashCode
+                    ) { album ->
+                        AlbumItem.Vertical(
+                            innertubeAlbum = album,
+                            widthDp = thumbnailSizeDp,
+                            values = albumItemValues,
+                            modifier = Modifier.clickable {
+                                NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
+                            }
                         )
                     }
                 } else {

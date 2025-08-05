@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,6 +28,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.discoverPage
@@ -34,8 +36,8 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 
 @ExperimentalTextApi
@@ -77,6 +79,11 @@ fun NewAlbums(
 
         /***************/
         discoverPage?.getOrNull()?.let { page ->
+            val appearance = LocalAppearance.current
+            val albumItemValues = remember {
+                AlbumItem.Values.from( appearance )
+            }
+
             LazyVerticalGrid(
                 state = lazyGridState,
                 columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
@@ -103,15 +110,15 @@ fun NewAlbums(
 
                 items(
                     items = page.newReleaseAlbums.distinct(),
-                    key = { it.key }) {
-                    AlbumItem(
-                        album = it,
-                        thumbnailSizePx = thumbnailSizePx,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier.clickable(onClick = {
-                            NavRoutes.YT_ALBUM.navigateHere( navController, it.key )
-                        })
+                    key = System::identityHashCode
+                ) { album ->
+                    AlbumItem.Vertical(
+                        innertubeAlbum = album,
+                        widthDp = thumbnailSizeDp,
+                        values = albumItemValues,
+                        modifier = Modifier.clickable{
+                            NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
+                        }
                     )
                 }
                 item(

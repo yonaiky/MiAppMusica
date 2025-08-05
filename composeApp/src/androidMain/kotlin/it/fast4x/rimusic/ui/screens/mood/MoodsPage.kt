@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -44,7 +45,6 @@ import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.home.MoodGridItemColored
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.center
@@ -152,10 +152,7 @@ fun MoodsPage(
                 TextPlaceholder(modifier = sectionTextModifier)
                 Row {
                     repeat(6) {
-                        AlbumItemPlaceholder(
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            alternative = true
-                        )
+                        AlbumItem.VerticalPlaceholder( thumbnailSizeDp )
                     }
                 }
             }

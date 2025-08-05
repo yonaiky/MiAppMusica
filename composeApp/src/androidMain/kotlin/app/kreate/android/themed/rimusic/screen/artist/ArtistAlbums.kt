@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import io.ktor.client.call.body
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.BrowseResponse
@@ -28,8 +29,8 @@ import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.ui.components.Skeleton
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -99,6 +100,11 @@ fun ArtistAlbums(
                 }
             }
         ) {
+            val appearance = LocalAppearance.current
+            val albumItemValues = remember( appearance ) {
+                AlbumItem.Values.from( appearance )
+            }
+
             LazyVerticalGrid(
                 state = lazyGridState,
                 columns = GridCells.Adaptive( Dimensions.thumbnails.album + 24.dp ),
@@ -108,15 +114,14 @@ fun ArtistAlbums(
                 items(
                     items = albums.distinctBy( Innertube.AlbumItem::key ),
                     key = Innertube.AlbumItem::key
-                ) {
-                    AlbumItem(
-                        album = it,
-                        thumbnailSizePx = thumbnailSizePx,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        alternative = true,
-                        modifier = Modifier.clickable(onClick = {
-                            NavRoutes.YT_ALBUM.navigateHere( navController, it.key )
-                        })
+                ) { album ->
+                    AlbumItem.Vertical(
+                        innertubeAlbum = album,
+                        widthDp = thumbnailSizeDp,
+                        values = albumItemValues,
+                        modifier = Modifier.clickable {
+                            NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
+                        }
                     )
                 }
             }

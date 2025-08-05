@@ -41,6 +41,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
@@ -52,8 +53,8 @@ import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.semiBold
@@ -360,12 +361,12 @@ fun AlbumsItemMenu(
                         modifier = Modifier
                             .padding(end = 12.dp)
                     ) {
-                        AlbumItem(
-                            album = album,
-                            thumbnailSizePx = thumbnailSizePx,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            yearCentered = false
-                        )
+                        val appearance = LocalAppearance.current
+                        val albumItemValues = remember( appearance ) {
+                            AlbumItem.Values.from( appearance )
+                        }
+
+                        AlbumItem.Horizontal( album, thumbnailSizeDp, albumItemValues )
 
                         /*
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

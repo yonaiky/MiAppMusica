@@ -47,6 +47,7 @@ import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.Search
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -74,7 +75,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -388,13 +388,15 @@ fun HomeAlbums(
                             mutableIntStateOf(0)
                         }
                         val context = LocalContext.current
+                        val appearance = LocalAppearance.current
+                        val albumItemValues = remember( appearance ) {
+                            AlbumItem.Values.from( appearance )
+                        }
 
-                        AlbumItem(
-                            alternative = true,
-                            showAuthors = true,
+                        AlbumItem.Vertical(
                             album = album,
-                            thumbnailSizeDp = itemSize.size.dp,
-                            thumbnailSizePx = itemSize.size.px,
+                            widthDp = itemSize.size.dp,
+                            values = albumItemValues,
                             modifier = Modifier
                                 .combinedClickable(
 
@@ -462,8 +464,7 @@ fun HomeAlbums(
                                         onAlbumClick( album )
                                     }
                                 )
-                                .clip(thumbnailShape()),
-                            isYoutubeAlbum = album.isYoutubeAlbum
+                                .clip(thumbnailShape())
                         )
                     }
                 }

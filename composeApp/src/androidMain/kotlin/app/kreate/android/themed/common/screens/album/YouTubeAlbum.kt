@@ -61,10 +61,10 @@ import app.kreate.android.R
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.album.Bookmark
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
-import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.renderDescription
 import app.kreate.android.utils.scrollingText
@@ -87,7 +87,6 @@ import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -181,17 +180,21 @@ private fun LazyListScope.renderSection(
 
     section.contents.fastMapNotNull { it as? InnertubeAlbum }.also {
         item( section.title ) {
+            val appearance = LocalAppearance.current
+            val albumItemValues = remember( appearance ) {
+                AlbumItem.Values.from( appearance )
+            }
+
             LazyRow {
                 this@LazyRow.items(
                     items = it,
                     key = InnertubeAlbum::id
                 ) { item ->
-                    AlbumItem(
-                        album = item.toAlbum,
-                        alternative = true,
-                        thumbnailSizePx = albumThumbnailSizePx,
-                        thumbnailSizeDp = albumThumbnailSizeDp,
-                        isYoutubeAlbum = true,
+
+                    AlbumItem.Vertical(
+                        innertubeAlbum = item,
+                        widthDp = albumThumbnailSizeDp,
+                        values = albumItemValues,
                         modifier = Modifier.clickable {
                             NavRoutes.YT_ALBUM.navigateHere( navController, item.id )
                         }

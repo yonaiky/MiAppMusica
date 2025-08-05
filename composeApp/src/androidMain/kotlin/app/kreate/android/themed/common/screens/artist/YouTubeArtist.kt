@@ -62,9 +62,9 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
-import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.innertube.toOldInnertubeArtist
 import app.kreate.android.utils.innertube.toOldInnertubePlaylist
@@ -87,8 +87,6 @@ import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.PlayNext
-import it.fast4x.rimusic.ui.items.AlbumItem
-import it.fast4x.rimusic.ui.items.AlbumPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -206,6 +204,11 @@ private fun LazyListScope.renderSection(
     albumThumbnailSizePx: Int,
     albumThumbnailSizeDp: Dp
 ) = item( title ) {
+    val appearance = LocalAppearance.current
+    val albumItemValues = remember( appearance ) {
+        AlbumItem.Values.from( appearance )
+    }
+
     LazyRow {
         this@LazyRow.items(
             items = items,
@@ -213,19 +216,7 @@ private fun LazyListScope.renderSection(
         ) { item ->
             when (item) {
                 is InnertubeAlbum ->
-                    AlbumItem(
-                        album = item.toAlbum,
-                        alternative = true,
-                        thumbnailSizePx = albumThumbnailSizePx,
-                        thumbnailSizeDp = albumThumbnailSizeDp,
-                        isYoutubeAlbum = true,
-                        modifier = Modifier.clickable {
-                            NavRoutes.YT_ALBUM.navigateHere(
-                                navController,
-                                "${item.id}?params=$params"
-                            )
-                        }
-                    )
+                    AlbumItem.Vertical( item, albumThumbnailSizeDp, albumItemValues )
 
                 is InnertubePlaylist ->
                     PlaylistItem(
@@ -474,7 +465,7 @@ fun YouTubeArtist(
 
                         items( 2 ) {
                             LazyRow {
-                                this@LazyRow.items( 10 ) { AlbumPlaceholder() }
+                                this@LazyRow.items( 10 ) { AlbumItem.VerticalPlaceholder() }
                             }
                         }
                     } else if( artistPage == null && songs.isNotEmpty() ) {

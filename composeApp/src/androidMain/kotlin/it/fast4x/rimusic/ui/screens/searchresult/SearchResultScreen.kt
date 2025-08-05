@@ -29,6 +29,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -49,8 +50,6 @@ import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.Title
-import it.fast4x.rimusic.ui.items.AlbumItem
-import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
 import it.fast4x.rimusic.ui.items.PlaylistItem
@@ -393,27 +392,23 @@ fun SearchResultScreen(
                                     }
                                 }
                             ) {
-                                AlbumItem(
-                                    yearCentered = false,
-                                    album = album,
-                                    thumbnailSizePx = thumbnailSizePx,
-                                    thumbnailSizeDp = thumbnailSizeDp,
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onClick = {
-                                                NavRoutes.YT_ALBUM.navigateHere(
-                                                    navController,
-                                                    album.key
-                                                )
-                                            },
-                                            onLongClick = {}
+                                val appearance = LocalAppearance.current
+                                val albumItemValues = remember( appearance ) {
+                                    AlbumItem.Values.from( appearance )
+                                }
 
-                                        )
+                                AlbumItem.Horizontal(
+                                    innertubeAlbum = album,
+                                    heightDp = thumbnailSizeDp,
+                                    values = albumItemValues,
+                                    modifier = Modifier.clickable {
+                                        NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
+                                    }
                                 )
                             }
                         },
                         itemPlaceholderContent = {
-                            AlbumItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)
+                            AlbumItem.VerticalPlaceholder( thumbnailSizeDp )
                         }
                     )
                 }

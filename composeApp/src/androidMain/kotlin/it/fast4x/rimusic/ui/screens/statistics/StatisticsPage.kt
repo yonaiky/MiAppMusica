@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.BasicText
@@ -51,6 +52,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -68,7 +70,6 @@ import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -204,6 +205,9 @@ fun StatisticsPage(
         }
         val songItemValues = remember( colorPalette, typography ) {
             SongItem.Values.from( colorPalette, typography )
+        }
+        val albumItemValues = remember( colorPalette, typography ) {
+            AlbumItem.Values.from( colorPalette, typography )
         }
 
             val lazyGridState = rememberLazyGridState()
@@ -368,25 +372,21 @@ fun StatisticsPage(
 
                 if (statisticsCategory == StatisticsCategory.Albums)
                     items(
-                        count = albums.count()
-                    ) {
+                        items = albums,
+                        key = System::identityHashCode
+                    ) { album ->
+                        album.thumbnailUrl ?: UpdateYoutubeAlbum( album.id )
 
-                        if (albums[it].thumbnailUrl.toString() == "null")
-                            UpdateYoutubeAlbum(albums[it].id)
-
-                        AlbumItem(
-                            thumbnailUrl = albums[it].thumbnailUrl,
-                            title = "${it+1}. ${albums[it].title}",
-                            authors = albums[it].authorsText,
-                            year = albums[it].year,
-                            thumbnailSizePx = albumThumbnailSizePx,
-                            thumbnailSizeDp = albumThumbnailSizeDp,
-                            alternative = true,
-                            modifier = Modifier
-                                .clickable(onClick = {
-                                    if (albums[it].id != "")
-                                        NavRoutes.YT_ALBUM.navigateHere( navController, albums[it].id )
-                                })
+                        AlbumItem.Vertical(
+                            album = album,
+                            widthDp = albumThumbnailSizeDp,
+                            values = albumItemValues,
+                            showArtists = false,
+                            showYear = false,
+                            modifier = Modifier.clickable {
+                                if (album.id != "")
+                                    NavRoutes.YT_ALBUM.navigateHere(navController, album.id)
+                            }
                         )
                     }
 

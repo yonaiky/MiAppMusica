@@ -59,6 +59,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchSuggestionsBody
@@ -76,7 +77,6 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
-import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -378,20 +378,21 @@ fun OnlineSearch(
                         )
                     }
                 }
-                suggestions.recommendedAlbum.let {
+                suggestions.recommendedAlbum?.let { album ->
                     item{
-                        it?.let { album ->
-                            AlbumItem(
-                                yearCentered = false,
-                                album = album,
-                                thumbnailSizePx = songThumbnailSizePx,
-                                thumbnailSizeDp = songThumbnailSizeDp,
-                                modifier = Modifier
-                                    .clickable {
-                                        NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
-                                    }
-                            )
+                        val appearance = LocalAppearance.current
+                        val albumItemValues = remember( appearance ) {
+                            AlbumItem.Values.from( appearance )
                         }
+
+                        AlbumItem.Horizontal(
+                            innertubeAlbum = album,
+                            heightDp = songThumbnailSizeDp,
+                            values = albumItemValues,
+                            modifier = Modifier.clickable {
+                                NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
+                            }
+                        )
                     }
                 }
                 suggestions.recommendedArtist.let {

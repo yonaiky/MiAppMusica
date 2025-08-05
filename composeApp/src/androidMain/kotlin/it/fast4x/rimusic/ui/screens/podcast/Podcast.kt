@@ -66,6 +66,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
@@ -94,7 +95,6 @@ import it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
-import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -342,10 +342,8 @@ fun Podcast(
                                     .aspectRatio(4f / 3)
                             ) {
                                 ShimmerHost {
-                                    AlbumItemPlaceholder(
-                                        thumbnailSizeDp = 200.dp,
-                                        alternative = true
-                                    )
+                                    AlbumItem.VerticalPlaceholder( 200.dp )
+
                                     BasicText(
                                         text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
                                         style = typography().xs.medium,
