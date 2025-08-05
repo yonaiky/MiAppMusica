@@ -5,7 +5,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
@@ -39,15 +39,19 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
@@ -67,10 +71,11 @@ import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
-import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.ui.styling.shimmer
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.UpdateYoutubeAlbum
 import it.fast4x.rimusic.utils.UpdateYoutubeArtist
 import it.fast4x.rimusic.utils.asMediaItem
@@ -78,10 +83,6 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.formatAsTime
-import it.fast4x.rimusic.utils.getDownloadState
-import it.fast4x.rimusic.utils.isDownloadedSong
-import it.fast4x.rimusic.utils.isNowPlaying
-import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
@@ -101,7 +102,9 @@ fun StatisticsPage(
     navController: NavController,
     statisticsType: StatisticsType
 ) {
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
+    val (colorPalette, typography) = LocalAppearance.current
+    val hapticFeedback = LocalHapticFeedback.current
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
@@ -191,6 +194,18 @@ fun StatisticsPage(
                 else Dimensions.contentWidthRightBar
             )
     ) {
+        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+        binder.player.DisposableListener {
+            object : Player.Listener {
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                    currentlyPlaying = mediaItem?.mediaId
+                }
+            }
+        }
+        val songItemValues = remember( colorPalette, typography ) {
+            SongItem.Values.from( colorPalette, typography )
+        }
+
             val lazyGridState = rememberLazyGridState()
             LazyVerticalGrid(
                 state = lazyGridState,
@@ -286,66 +301,44 @@ fun StatisticsPage(
                             }
                         }
 
-
-                    items(
-                        count = songs.count(),
-                    ) {
-
-                        downloadState = getDownloadState(songs.get(it).asMediaItem.mediaId)
-                        val isDownloaded = isDownloadedSong(songs.get(it).asMediaItem.mediaId)
-                        var forceRecompose by remember { mutableStateOf(false) }
-                        SongItem(
-                            song = songs.get(it).asMediaItem,
-                            onDownloadClick = {
-                                binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
-                                Database.asyncTransaction {
-                                    formatTable.deleteBySongId( songs[it].id )
-                                }
-                                manageDownload(
-                                    context = context,
-                                    mediaItem = songs.get(it).asMediaItem,
-                                    downloadState = isDownloaded
-                                )
-                            },
-                            downloadState = downloadState,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            thumbnailSizePx = thumbnailSize,
-                            onThumbnailContent = {
+                    itemsIndexed(
+                        items = songs,
+                        key = { i, s -> "${System.identityHashCode(s)}-$i"}
+                    ) { index, song ->
+                        SongItem.Render(
+                            song = song,
+                            context = context,
+                            binder = binder,
+                            hapticFeedback = hapticFeedback,
+                            values = songItemValues,
+                            isPlaying = song.id == currentlyPlaying,
+                            navController = navController,
+                            thumbnailOverlay = {
                                 BasicText(
-                                    text = "${it + 1}",
+                                    text = "${index + 1}",
                                     style = typography().s.semiBold.center.color(colorPalette().text),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier
-                                        .width(thumbnailSizeDp)
-                                        .align(Alignment.Center)
+                                    modifier = Modifier.width( thumbnailSizeDp )
+                                                       .align( Alignment.Center )
                                 )
                             },
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            NonQueuedMediaItemMenu(
-                                                navController = navController,
-                                                mediaItem = songs.get(it).asMediaItem,
-                                                onDismiss = {
-                                                    menuState.hide()
-                                                    forceRecompose = true
-                                                }
-                                            )
-                                        }
-                                    },
-                                    onClick = {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            songs.map(Song::asMediaItem),
-                                            it
-                                        )
-                                    }
+                            onLongClick = {
+                                menuState.display {
+                                    NonQueuedMediaItemMenu(
+                                        navController = navController,
+                                        mediaItem = song.asMediaItem,
+                                        onDismiss = menuState::hide
+                                    )
+                                }
+                            },
+                            onClick = {
+                                binder.stopRadio()
+                                binder.player.forcePlayAtIndex(
+                                    songs.map(Song::asMediaItem),
+                                    index
                                 )
-                                .fillMaxWidth(),
-                            isNowPlaying = binder?.player?.isNowPlaying(songs.get(it).id) ?: false,
-                            forceRecompose = forceRecompose
+                            }
                         )
                     }
                 }

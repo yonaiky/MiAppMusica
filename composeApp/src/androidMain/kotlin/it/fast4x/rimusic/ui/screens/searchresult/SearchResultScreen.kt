@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -21,10 +23,13 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -50,11 +55,12 @@ import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
@@ -68,7 +74,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.knighthat.component.SongItem
 import me.knighthat.utils.Toaster
 
 @ExperimentalTextApi
@@ -85,7 +90,8 @@ fun SearchResultScreen(
     onSearchAgain: () -> Unit
 ) {
     val context = LocalContext.current
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
+    val (colorPalette, typography) = LocalAppearance.current
     val saveableStateHolder = rememberSaveableStateHolder()
     val (tabIndex, onTabIndexChanges) = Preferences.SEARCH_RESULTS_TAB_INDEX
 
@@ -111,6 +117,18 @@ fun SearchResultScreen(
     }
 
     val emptyItemsText = stringResource(R.string.no_results_found)
+
+    var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+    binder.player.DisposableListener {
+        object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                currentlyPlaying = mediaItem?.mediaId
+            }
+        }
+    }
+    val songItemValues = remember( colorPalette, typography ) {
+        SongItem.Values.from( colorPalette, typography )
+    }
 
     Skeleton(
         navController,
@@ -179,8 +197,13 @@ fun SearchResultScreen(
                                     localBinder?.player?.enqueue(song.asMediaItem)
                                 }
                             ) {
-                                SongItem(
+                                SongItem.Render(
                                     song = song.asSong,
+                                    context = context,
+                                    binder = binder,
+                                    hapticFeedback = hapticFeedback,
+                                    isPlaying = currentlyPlaying == song.key,
+                                    values = songItemValues,
                                     navController = navController,
                                     onClick = {
                                         binder?.startRadio( song.asMediaItem, false, song.info?.endpoint )
@@ -188,7 +211,7 @@ fun SearchResultScreen(
                                 )
                             }
                         },
-                        itemPlaceholderContent = { SongItemPlaceholder() }
+                        itemPlaceholderContent = { SongItem.Placeholder() }
                     )
                 }
 

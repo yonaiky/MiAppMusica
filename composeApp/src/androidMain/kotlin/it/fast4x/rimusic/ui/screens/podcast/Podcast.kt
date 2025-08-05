@@ -48,7 +48,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -60,11 +59,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -93,12 +95,12 @@ import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
-import it.fast4x.rimusic.ui.items.SongItem
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addToYtPlaylist
 import it.fast4x.rimusic.utils.asMediaItem
@@ -108,10 +110,8 @@ import it.fast4x.rimusic.utils.fadingEdge
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.forcePlayFromBeginning
 import it.fast4x.rimusic.utils.formatAsTime
-import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.resize
@@ -137,7 +137,8 @@ fun Podcast(
     params: String?,
     maxDepth: Int?,
 ) {
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
+    val (colorPalette, typography) = LocalAppearance.current
     val context = LocalContext.current
     val menuState = LocalMenuState.current
 
@@ -238,6 +239,18 @@ fun Podcast(
                         1f
                 )
         ) {
+            var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+            binder.player.DisposableListener {
+                object : Player.Listener {
+                    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                        currentlyPlaying = mediaItem?.mediaId
+                    }
+                }
+            }
+            val songItemValues = remember( colorPalette, typography ) {
+                SongItem.Values.from( colorPalette, typography )
+            }
+
             LazyColumn(
                 state = lazyListState,
                 //contentPadding = LocalPlayerAwareWindowInsets.current
@@ -683,7 +696,6 @@ fun Podcast(
                     } ?: emptyList())
                 { index, song ->
                     val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                    downloadState = getDownloadState(song.asMediaItem.mediaId)
                     val isDownloaded = if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
 
                     SwipeablePlaylistItem(
@@ -708,51 +720,31 @@ fun Podcast(
                             binder?.player?.enqueue(song.asMediaItem)
                         }
                     ) {
-                        var forceRecompose by remember { mutableStateOf(false) }
-                        SongItem(
-                            song = song.asMediaItem,
-                            onDownloadClick = {
-                                binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                                Database.asyncTransaction {
-                                    formatTable.findBySongId( song.asMediaItem.mediaId )
-                                }
-                                if (!isLocal)
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = song.asMediaItem,
-                                        downloadState = isDownloaded
+                        SongItem.Render(
+                            mediaItem = song.asMediaItem,
+                            context = context,
+                            binder = binder,
+                            hapticFeedback = hapticFeedback,
+                            values = songItemValues,
+                            isPlaying = song.videoId == currentlyPlaying,
+                            onLongClick = {
+                                menuState.display {
+                                    NonQueuedMediaItemMenu(
+                                        navController = navController,
+                                        onDismiss = menuState::hide,
+                                        mediaItem = song.asMediaItem
                                     )
+                                }
                             },
-                            downloadState = downloadState,
-                            thumbnailSizePx = songThumbnailSizePx,
-                            thumbnailSizeDp = songThumbnailSizeDp,
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            NonQueuedMediaItemMenu(
-                                                navController = navController,
-                                                onDismiss = {
-                                                    menuState.hide()
-                                                    forceRecompose = true
-                                                },
-                                                mediaItem = song.asMediaItem
-                                            )
-                                        };
-                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    },
-                                    onClick = {
-                                        searching = false
-                                        filter = null
-                                        podcastPage?.listEpisode?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
-                                            ?.let { mediaItems ->
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlayAtIndex(mediaItems, index)
-                                            }
+                            onClick = {
+                                searching = false
+                                filter = null
+                                podcastPage?.listEpisode?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
+                                    ?.let { mediaItems ->
+                                        binder.stopRadio()
+                                        binder.player.forcePlayAtIndex(mediaItems, index)
                                     }
-                                ),
-                            isNowPlaying = binder?.player?.isNowPlaying(song.videoId) ?: false,
-                            forceRecompose = forceRecompose
+                            }
                         )
                     }
                 }
@@ -765,16 +757,7 @@ fun Podcast(
                 }
 
                 if (podcastPage == null) {
-                    item(key = "loading") {
-                        ShimmerHost(
-                            modifier = Modifier
-                                .fillParentMaxSize()
-                        ) {
-                            repeat(4) {
-                                SongItemPlaceholder()
-                            }
-                        }
-                    }
+                    item( "loading" ) { SongItem.Placeholder() }
                 }
             }
 

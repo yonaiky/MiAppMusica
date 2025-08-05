@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -21,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,36 +29,35 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
-import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.align
-import it.fast4x.rimusic.utils.asMediaItem
-import it.fast4x.rimusic.utils.getDownloadState
-import it.fast4x.rimusic.utils.isDownloadedSong
-import it.fast4x.rimusic.utils.isNowPlaying
-import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -82,8 +79,10 @@ fun LocalSongSearch(
     onAction3: () -> Unit,
     onAction4: () -> Unit,
 ) {
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
     val menuState = LocalMenuState.current
+    val (colorPalette, typography) = LocalAppearance.current
+    val hapticFeedback = LocalHapticFeedback.current
 
     val items by remember {
         Database.songTable
@@ -121,6 +120,18 @@ fun LocalSongSearch(
                     1f
             )
     ) {
+        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+        binder.player.DisposableListener {
+            object : Player.Listener {
+                override fun onMediaItemTransition( mediaItem: MediaItem?, reason: Int ) {
+                    currentlyPlaying = mediaItem?.mediaId
+                }
+            }
+        }
+        val songItemValues = remember( colorPalette, typography ) {
+            SongItem.Values.from( colorPalette, typography )
+        }
+
         LazyColumn(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current
@@ -245,42 +256,25 @@ fun LocalSongSearch(
                 items = items,
                 key = Song::id,
             ) { song ->
-                val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-                downloadState = getDownloadState(song.asMediaItem.mediaId)
-                val isDownloaded = if (!isLocal) isDownloadedSong(song.asMediaItem.mediaId) else true
-                SongItem(
+                SongItem.Render(
                     song = song,
-                    onDownloadClick = {
-                        binder?.cache?.removeResource(song.asMediaItem.mediaId)
-                        Database.asyncTransaction {
-                            formatTable.findBySongId( song.id )
+                    context = context,
+                    binder = binder,
+                    hapticFeedback = hapticFeedback,
+                    values = songItemValues,
+                    isPlaying = song.id == currentlyPlaying,
+                    onLongClick = {
+                        menuState.display {
+                            InHistoryMediaItemMenu(
+                                navController = navController,
+                                song = song,
+                                onDismiss = menuState::hide
+                            )
                         }
-
-                        if (!isLocal)
-                        manageDownload(
-                            context = context,
-                            mediaItem = song.asMediaItem,
-                            downloadState = isDownloaded
-                        )
                     },
-                    downloadState = downloadState,
-                    thumbnailSizePx = thumbnailSizePx,
-                    thumbnailSizeDp = thumbnailSizeDp,
-                    modifier = Modifier
-                        .combinedClickable(
-                            onLongClick = {
-                                menuState.display {
-                                    InHistoryMediaItemMenu(
-                                        navController = navController,
-                                        song = song,
-                                        onDismiss = menuState::hide
-                                    )
-                                }
-                            },
-                            onClick = { binder?.startRadio( song ) }
-                        )
-                        .animateItem(),
-                    isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
+                    onClick = {
+                        binder.startRadio( song )
+                    }
                 )
             }
         }

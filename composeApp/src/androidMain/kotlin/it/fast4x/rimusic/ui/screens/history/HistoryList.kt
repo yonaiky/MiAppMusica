@@ -18,18 +18,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.requests.HistoryPage
@@ -49,6 +54,8 @@ import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenuLibrary
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.forcePlay
@@ -69,7 +76,9 @@ fun HistoryList(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
+    val hapticFeedback = LocalHapticFeedback.current
+    val (colorPalette, typography) = LocalAppearance.current
     val menuState = LocalMenuState.current
 
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
@@ -137,6 +146,18 @@ fun HistoryList(
             )
     ) {
 
+        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+        binder.player.DisposableListener {
+            object : Player.Listener {
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                    currentlyPlaying = mediaItem?.mediaId
+                }
+            }
+        }
+        val songItemValues = remember( colorPalette, typography ) {
+            SongItem.Values.from( colorPalette, typography )
+        }
+
         LazyColumn(
             contentPadding = LocalPlayerAwareWindowInsets.current
                 .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
@@ -184,11 +205,16 @@ fun HistoryList(
                         key = { it.event.id }
                     ) { event ->
 
-                        me.knighthat.component.SongItem(
+                        SongItem.Render(
                             song = event.song,
+                            context = context,
+                            binder = binder,
+                            hapticFeedback = hapticFeedback,
+                            isPlaying = currentlyPlaying == event.song.id,
+                            values = songItemValues,
                             navController = navController,
                             onClick = {
-                                binder?.player?.forcePlay( event.song.asMediaItem )
+                                binder.player.forcePlay( event.song.asMediaItem )
                             }
                         )
                     }
@@ -212,11 +238,16 @@ fun HistoryList(
                                        .filter { it.mediaId.isNotEmpty() },
                         key = { it.mediaId }
                     ) { mediaItem ->
-                        me.knighthat.component.SongItem(
+                        SongItem.Render(
                             song = mediaItem.asSong,
+                            context = context,
+                            binder = binder,
+                            hapticFeedback = hapticFeedback,
+                            isPlaying = currentlyPlaying == mediaItem.mediaId,
+                            values = songItemValues,
                             navController = navController,
                             onClick = {
-                                binder?.player?.forcePlay( mediaItem )
+                                binder.player.forcePlay( mediaItem )
                             },
                             onLongClick = {
                                 menuState.display {

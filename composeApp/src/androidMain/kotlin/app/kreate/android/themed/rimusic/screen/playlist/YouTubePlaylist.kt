@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +47,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastFilter
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
@@ -54,6 +57,7 @@ import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toSong
 import app.kreate.android.utils.scrollingText
@@ -77,9 +81,10 @@ import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
@@ -108,7 +113,6 @@ import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
 import me.knighthat.coil.ImageCacheFactory
-import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Radio
@@ -144,6 +148,8 @@ fun YouTubePlaylist(
         }
     ) {
         val binder = LocalPlayerServiceBinder.current ?: return@Skeleton
+        val (colorPalette, typography) = LocalAppearance.current
+        val hapticFeedback = LocalHapticFeedback.current
         val lazyListState = rememberLazyListState()
 
         var playlistPage: InnertubePlaylist? by remember { mutableStateOf(null) }
@@ -306,6 +312,18 @@ fun YouTubePlaylist(
         exportDialog.Render()
         downloadAllDialog.Render()
         deleteDownloadsDialog.Render()
+
+        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+        binder.player.DisposableListener {
+            object : Player.Listener {
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                    currentlyPlaying = mediaItem?.mediaId
+                }
+            }
+        }
+        val songItemValues = remember( colorPalette, typography ) {
+            SongItem.Values.from( colorPalette, typography )
+        }
 
         val thumbnailPainter =
             ImageCacheFactory.Painter( playlistPage?.thumbnails?.firstOrNull()?.url )
@@ -531,8 +549,13 @@ fun YouTubePlaylist(
                                 binder.player.enqueue(song.asMediaItem)
                             }
                         ) {
-                            SongItem(
+                            SongItem.Render(
                                 song = song,
+                                context = context,
+                                binder = binder,
+                                hapticFeedback = hapticFeedback,
+                                isPlaying = currentlyPlaying == song.id,
+                                values = songItemValues,
                                 itemSelector = itemSelector,
                                 navController = navController,
                                 modifier = Modifier.animateItem(),
@@ -546,7 +569,7 @@ fun YouTubePlaylist(
 
 
                     if ( playlistPage == null || continuation != null )
-                        item("loading") { SongItemPlaceholder() }
+                        item("loading") { SongItem.Placeholder() }
                 }
 
                 val showFloatingIcon by Preferences.SHOW_FLOATING_ICON

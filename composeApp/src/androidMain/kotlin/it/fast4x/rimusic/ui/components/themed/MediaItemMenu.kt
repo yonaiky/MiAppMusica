@@ -48,6 +48,7 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,11 +57,13 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
@@ -79,11 +82,12 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.addToYtLikedSong
@@ -95,12 +99,10 @@ import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.getLikeState
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isNetworkConnected
-import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
@@ -648,9 +650,11 @@ fun MediaItemMenu(
 ) {
     val density = LocalDensity.current
 
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
+    val (colorPalette, typography) = LocalAppearance.current
+    val hapticFeedback = LocalHapticFeedback.current
 
     val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
 
@@ -977,27 +981,27 @@ fun MediaItemMenu(
                     modifier = Modifier
                         .padding(end = 12.dp)
                 ) {
-                    SongItem(
-                        mediaItem = mediaItem,
-                        thumbnailUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx)
-                            ?.toString(),
-                        onDownloadClick = {
-                            binder?.cache?.removeResource(mediaItem.mediaId)
-                            Database.asyncTransaction {
-                                formatTable.deleteBySongId( mediaItem.mediaId )
+                    var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+                    binder.player.DisposableListener {
+                        object : Player.Listener {
+                            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                                currentlyPlaying = mediaItem?.mediaId
                             }
-                            if (!isLocal)
-                                manageDownload(
-                                    context = context,
-                                    mediaItem = mediaItem,
-                                    downloadState = isDownloaded
-                                )
-                        },
-                        downloadState = downloadState,
-                        thumbnailSizeDp = thumbnailSizeDp,
-                        modifier = Modifier.weight(1f)
-                    )
+                        }
+                    }
+                    val songItemValues = remember( colorPalette, typography ) {
+                        SongItem.Values.from( colorPalette, typography )
+                    }
 
+                    SongItem.Render(
+                        mediaItem = mediaItem,
+                        context = context,
+                        binder = binder,
+                        hapticFeedback = hapticFeedback,
+                        isPlaying = mediaItem.mediaId == currentlyPlaying,
+                        values = songItemValues,
+                        navController = navController
+                    )
 
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         IconButton(

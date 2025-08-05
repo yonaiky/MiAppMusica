@@ -22,10 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastMap
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
@@ -35,6 +38,7 @@ import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.song.PeriodSelector
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
@@ -53,10 +57,11 @@ import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
@@ -73,7 +78,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.HiddenSongs
 import me.knighthat.database.ext.FormatWithSong
@@ -95,6 +99,8 @@ fun HomeSongs(
     val binder = LocalPlayerServiceBinder.current ?: return
     val context = LocalContext.current
     val menuState = LocalMenuState.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val (colorPalette, typography) = LocalAppearance.current
 
     //<editor-fold defaultstate="collapsed" desc="Settings">
     val parentalControlEnabled by Preferences.PARENTAL_CONTROL
@@ -230,16 +236,25 @@ fun HomeSongs(
     deleteDownloadsDialog.Render()
     //</editor-fold>
 
+    var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+    binder.player.DisposableListener {
+        object : Player.Listener {
+            override fun onMediaItemTransition( mediaItem: MediaItem?, reason: Int ) {
+                currentlyPlaying = mediaItem?.mediaId
+            }
+        }
+    }
+    val songItemValues = remember( colorPalette, typography ) {
+        SongItem.Values.from( colorPalette, typography )
+    }
+
     LazyColumn(
         state = lazyListState,
         userScrollEnabled = !isLoading,
         contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
     ) {
         if( isLoading )
-            items(
-                count = 20,
-                key = { it }
-            ) { SongItemPlaceholder() }
+            items( 20, null ) { SongItem.Placeholder() }
 
         itemsIndexed(
             items = itemsOnDisplay,
@@ -271,8 +286,13 @@ fun HomeSongs(
                     binder?.player?.enqueue(mediaItem)
                 }
             ) {
-                SongItem(
+                SongItem.Render(
                     song = song,
+                    context = context,
+                    binder = binder,
+                    hapticFeedback = hapticFeedback,
+                    isPlaying = song.id == currentlyPlaying,
+                    values = songItemValues,
                     itemSelector = itemSelector,
                     navController = navController,
                     modifier = Modifier.animateItem(),

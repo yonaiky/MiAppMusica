@@ -40,9 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -58,7 +58,7 @@ import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
-import com.valentinilk.shimmer.shimmer
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.compose.reordering.draggedItem
@@ -79,8 +79,8 @@ import it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
@@ -91,7 +91,6 @@ import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.shouldBePlaying
-import me.knighthat.component.SongItem
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.ui.screens.player.DeleteFromQueue
@@ -117,7 +116,9 @@ fun Queue(
     // Essentials
     val context = LocalContext.current
     val windowInsets = WindowInsets.systemBars
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
+    val (colorPalette, typography) = LocalAppearance.current
+    val hapticFeedback = LocalHapticFeedback.current
     val player = binder?.player ?: return
     val menuState = LocalMenuState.current
 
@@ -128,12 +129,19 @@ fun Queue(
             tag = "queue/songs",
             player.currentTimeline.mediaItems.map( MediaItem::asSong )
         )
+        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
         player.DisposableListener {
             object : Player.Listener {
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                     items = player.currentTimeline.mediaItems.map( MediaItem::asSong )
                 }
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                    currentlyPlaying = mediaItem?.mediaId
+                }
             }
+        }
+        val songItemValues = remember( colorPalette, typography ) {
+            SongItem.Values.from( colorPalette, typography )
         }
         var itemsOnDisplay by persistList<Song>( "queue/on_display" )
 
@@ -298,8 +306,13 @@ fun Queue(
                                 )
                             }
                         ) {
-                            SongItem(
+                            SongItem.Render(
                                 song = song,
+                                context = context,
+                                binder = binder,
+                                hapticFeedback = hapticFeedback,
+                                isPlaying = currentlyPlaying == song.id,
+                                values = songItemValues,
                                 itemSelector = itemSelector,
                                 navController = navController,
                                 trailingContent = {
@@ -332,12 +345,8 @@ fun Queue(
                 }
 
                 if( binder.isLoadingRadio )
-                    item {
-                        Column( Modifier.shimmer() ) {
-                            repeat(3) { index ->
-                                SongItemPlaceholder( Modifier.alpha( 1f - index * 0.125f ) )
-                            }
-                        }
+                    items( 3 ) {
+                        SongItem.Placeholder()
                     }
             }
 

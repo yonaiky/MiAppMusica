@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -54,11 +55,14 @@ import androidx.compose.ui.util.fastAll
 import androidx.compose.ui.util.fastFlatMap
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
@@ -87,9 +91,10 @@ import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.AlbumPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.enqueue
@@ -104,7 +109,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
-import me.knighthat.component.SongItem
 import me.knighthat.component.artist.FollowButton
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
@@ -269,6 +273,8 @@ fun YouTubeArtist(
         //<editor-fold desc="Essentials">
         val context = LocalContext.current
         val binder = LocalPlayerServiceBinder.current ?: return@Skeleton
+        val (colorPalette, typography) = LocalAppearance.current
+        val hapticFeedback = LocalHapticFeedback.current
         val lazyListState = rememberLazyListState()
         //</editor-fold>
 
@@ -341,6 +347,18 @@ fun YouTubeArtist(
             isRefreshing = false
         }
         LaunchedEffect( Unit ) { onRefresh() }
+
+        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+        binder.player.DisposableListener {
+            object : Player.Listener {
+                override fun onMediaItemTransition( mediaItem: MediaItem?, reason: Int ) {
+                    currentlyPlaying = mediaItem?.mediaId
+                }
+            }
+        }
+        val songItemValues = remember( colorPalette, typography ) {
+            SongItem.Values.from( colorPalette, typography )
+        }
 
         val thumbnailPainter = ImageCacheFactory.Painter( dbArtist?.thumbnailUrl )
         DynamicOrientationLayout( thumbnailPainter ) {
@@ -452,7 +470,7 @@ fun YouTubeArtist(
                     }
 
                     if( artistPage == null && dbArtist == null ) {
-                        items( 5 ) { SongItemPlaceholder() }
+                        items( 5 ) { SongItem.Placeholder() }
 
                         items( 2 ) {
                             LazyRow {
@@ -478,8 +496,13 @@ fun YouTubeArtist(
                                     binder.player.addNext( song.asMediaItem )
                                 }
                             ) {
-                                SongItem(
+                                SongItem.Render(
                                     song = song,
+                                    context = context,
+                                    binder = binder,
+                                    hapticFeedback = hapticFeedback,
+                                    isPlaying = currentlyPlaying == song.id,
+                                    values = songItemValues,
                                     navController = navController,
                                     showThumbnail = true,
                                     onClick = {
@@ -515,8 +538,13 @@ fun YouTubeArtist(
                                              binder.player.addNext( song.toMediaItem )
                                          }
                                      ) {
-                                         SongItem(
+                                         SongItem.Render(
                                              song = song.toSong,
+                                             context = context,
+                                             binder = binder,
+                                             hapticFeedback = hapticFeedback,
+                                             isPlaying = currentlyPlaying == song.id,
+                                             values = songItemValues,
                                              navController = navController,
                                              showThumbnail = true,
                                              onClick = {

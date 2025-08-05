@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,16 +53,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastMapNotNull
+import androidx.glance.LocalContext
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.innertube.toOldInnertubeArtist
 import app.kreate.android.utils.innertube.toOldInnertubePlaylist
-import app.kreate.android.utils.innertube.toSong
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -100,12 +104,12 @@ import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
-import it.fast4x.rimusic.ui.items.SongItem
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.WelcomeMessage
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
@@ -114,7 +118,6 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.playVideo
 import it.fast4x.rimusic.utils.quickPicsDiscoverPageKey
 import it.fast4x.rimusic.utils.quickPicsHomePageKey
@@ -156,7 +159,10 @@ fun HomeQuickPicks(
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val binder = LocalPlayerServiceBinder.current
+    val context = LocalContext.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val binder = LocalPlayerServiceBinder.current ?: return
+    val (colorPalette, typography) = LocalAppearance.current
     val menuState = LocalMenuState.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
     var playEventType by Preferences.QUICK_PICKS_TYPE
@@ -494,6 +500,18 @@ fun HomeQuickPicks(
                             .padding(bottom = 8.dp)
                     )
 
+                    var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+                    binder.player.DisposableListener {
+                        object : Player.Listener {
+                            override fun onMediaItemTransition( mediaItem: MediaItem?, reason: Int ) {
+                                currentlyPlaying = mediaItem?.mediaId
+                            }
+                        }
+                    }
+                    val songItemValues = remember( colorPalette, typography ) {
+                        SongItem.Values.from( colorPalette, typography )
+                    }
+
                     LazyHorizontalGrid(
                         state = quickPicksLazyGridState,
                         rows = GridCells.Fixed(if (relatedInit != null) 3 else 1),
@@ -509,14 +527,18 @@ fun HomeQuickPicks(
                     ) {
                         trending?.let { song ->
                             item {
-                                me.knighthat.component.SongItem(
+                                SongItem.Render(
                                     song = song,
-                                    navController = navController,
-                                    onClick = {
-                                        binder?.startRadio( song, true )
-                                    },
-                                    modifier = Modifier.width( itemInHorizontalGridWidth )
-                                )
+                                    context = context,
+                                    binder = binder,
+                                    hapticFeedback = hapticFeedback,
+                                    isPlaying = song.id == currentlyPlaying,
+                                    values = songItemValues,
+                                    modifier = Modifier.width( itemInHorizontalGridWidth ),
+                                    navController = navController
+                                ) {
+                                    binder.startRadio( song, true )
+                                }
                             }
                         }
 
@@ -532,14 +554,18 @@ fun HomeQuickPicks(
                                                    .orEmpty(),
                                 key = Song::id
                             ) { song ->
-                                me.knighthat.component.SongItem(
+                                SongItem.Render(
                                     song = song,
-                                    navController = navController,
-                                    onClick = {
-                                        binder?.startRadio( song, true )
-                                    },
-                                    modifier = Modifier.width( itemInHorizontalGridWidth )
-                                )
+                                    context = context,
+                                    binder = binder,
+                                    hapticFeedback = hapticFeedback,
+                                    isPlaying = song.id == currentlyPlaying,
+                                    values = songItemValues,
+                                    modifier = Modifier.width( itemInHorizontalGridWidth ),
+                                    navController = navController
+                                ) {
+                                    binder.startRadio( song, true )
+                                }
                             }
                         }
                     }
@@ -862,6 +888,18 @@ fun HomeQuickPicks(
                                 section.contents
                                     .fastMapNotNull { it as? InnertubeSong }
                                     .also { songs ->
+                                        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+                                        binder.player.DisposableListener {
+                                            object : Player.Listener {
+                                                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                                                    currentlyPlaying = mediaItem?.mediaId
+                                                }
+                                            }
+                                        }
+                                        val songItemValues = remember( colorPalette, typography ) {
+                                            SongItem.Values.from( colorPalette, typography )
+                                        }
+
                                         LazyHorizontalGrid(
                                             rows = GridCells.Fixed(2),
                                             modifier = Modifier
@@ -888,21 +926,19 @@ fun HomeQuickPicks(
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis
                                                     )
-                                                    SongItem(
-                                                        song = song.toSong,
-                                                        onDownloadClick = {},
-                                                        downloadState = Download.STATE_STOPPED,
-                                                        thumbnailSizePx = songThumbnailSizePx,
-                                                        thumbnailSizeDp = songThumbnailSizeDp,
-                                                        modifier = Modifier
-                                                            .clickable(onClick = {
-                                                                val mediaItem = song.toMediaItem
-                                                                binder?.stopRadio()
-                                                                binder?.player?.forcePlay(mediaItem)
-                                                                binder?.player?.addMediaItems(songs.map { it.toMediaItem })
-                                                            })
-                                                            .width(itemWidth),
-                                                        isNowPlaying = binder?.player?.isNowPlaying(song.id) ?: false
+                                                    SongItem.Render(
+                                                        innertubeSong = song,
+                                                        context = context,
+                                                        binder = binder,
+                                                        hapticFeedback = hapticFeedback,
+                                                        values = songItemValues,
+                                                        isPlaying = song.id == currentlyPlaying,
+                                                        onClick = {
+                                                            val mediaItem = song.toMediaItem
+                                                            binder.stopRadio()
+                                                            binder.player.forcePlay(mediaItem)
+                                                            binder.player.addMediaItems(songs.map { it.toMediaItem })
+                                                        }
                                                     )
                                                 }
                                             }
@@ -969,21 +1005,34 @@ fun HomeQuickPicks(
                             style = typography().l.semiBold.color(colorPalette().text),
                             modifier = Modifier.padding(horizontal = 16.dp).padding(vertical = 4.dp)
                         )
+
+                        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+                        binder.player.DisposableListener {
+                            object : Player.Listener {
+                                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                                    currentlyPlaying = mediaItem?.mediaId
+                                }
+                            }
+                        }
+                        val songItemValues = remember( colorPalette, typography ) {
+                            SongItem.Values.from( colorPalette, typography )
+                        }
                         LazyRow(contentPadding = endPaddingValues) {
                             items(it.items) { item ->
                                 when (item) {
                                     is Innertube.SongItem -> {
                                         println("Innertube homePage SongItem: ${item.info?.name}")
-                                        SongItem(
-                                            song = item,
-                                            thumbnailSizePx = albumThumbnailSizePx,
-                                            thumbnailSizeDp = albumThumbnailSizeDp,
-                                            onDownloadClick = {},
-                                            downloadState = Download.STATE_STOPPED,
-                                            isNowPlaying = false,
-                                            modifier = Modifier.clickable(onClick = {
-                                                binder?.player?.forcePlay(item.asMediaItem)
-                                            })
+                                        SongItem.Render(
+                                            innertubeSong = item,
+                                            context = context,
+                                            binder = binder,
+                                            hapticFeedback = hapticFeedback,
+                                            values = songItemValues,
+                                            isPlaying = item.key == currentlyPlaying,
+                                            navController = navController,
+                                            onClick = {
+                                                binder.player.forcePlay( item.asMediaItem )
+                                            },
                                         )
                                     }
 
@@ -1062,7 +1111,7 @@ fun HomeQuickPicks(
                 ) else {
                     ShimmerHost {
                         repeat(3) {
-                            SongItemPlaceholder()
+                            SongItem.Placeholder()
                         }
 
                         TextPlaceholder(modifier = sectionTextModifier)

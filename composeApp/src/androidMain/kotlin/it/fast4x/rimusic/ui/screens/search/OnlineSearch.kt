@@ -42,6 +42,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,11 +52,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchSuggestionsBody
 import it.fast4x.innertube.requests.searchSuggestionsWithItems
@@ -71,17 +75,16 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.Header
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
-import it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import it.fast4x.rimusic.ui.items.AlbumItem
 import it.fast4x.rimusic.ui.items.ArtistItem
-import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.align
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.forcePlay
-import it.fast4x.rimusic.utils.isNowPlaying
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.secondary
 import kotlinx.coroutines.Dispatchers
@@ -170,7 +173,9 @@ fun OnlineSearch(
     val songThumbnailSizePx = songThumbnailSizeDp.px
     val menuState = LocalMenuState.current
     val hapticFeedback = LocalHapticFeedback.current
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
+    val context = LocalContext.current
+    val (colorPalette, typography) = LocalAppearance.current
 
     Box(
         modifier = Modifier
@@ -184,6 +189,18 @@ fun OnlineSearch(
                     1f
             )
     ) {
+        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+        binder.player.DisposableListener {
+            object : Player.Listener {
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                    currentlyPlaying = mediaItem?.mediaId
+                }
+            }
+        }
+        val songItemValues = remember( colorPalette, typography ) {
+            SongItem.Values.from( colorPalette, typography )
+        }
+
         LazyColumn(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current
@@ -336,37 +353,29 @@ fun OnlineSearch(
                     )
                 }
 
-                suggestions.recommendedSong.let {
+                suggestions.recommendedSong?.let { song ->
                     item{
-                        it?.asMediaItem?.let { mediaItem ->
-                            SongItem(
-                                song = mediaItem,
-                                thumbnailSizePx = songThumbnailSizePx,
-                                thumbnailSizeDp = songThumbnailSizeDp,
-                                onThumbnailContent = {
-                                    NowPlayingSongIndicator(mediaItem.mediaId, binder?.player)
-                                },
-                                onDownloadClick = {},
-                                downloadState = downloadState,
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                NonQueuedMediaItemMenu(
-                                                    navController = navController,
-                                                    onDismiss = menuState::hide,
-                                                    mediaItem = mediaItem
-                                                )
-                                            };
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        },
-                                        onClick = {
-                                            binder?.player?.forcePlay(mediaItem)
-                                        }
-                                    ),
-                                isNowPlaying = binder?.player?.isNowPlaying(mediaItem.mediaId) ?: false
-                            )
-                        }
+                        SongItem.Render(
+                            innertubeSong = song,
+                            context = context,
+                            binder = binder,
+                            hapticFeedback = hapticFeedback,
+                            values = songItemValues,
+                            isPlaying = song.key == currentlyPlaying,
+                            onLongClick = {
+                                menuState.display {
+                                    NonQueuedMediaItemMenu(
+                                        navController = navController,
+                                        onDismiss = menuState::hide,
+                                        mediaItem = song.asMediaItem
+                                    )
+                                };
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                            },
+                            onClick = {
+                                binder.player.forcePlay(song.asMediaItem)
+                            }
+                        )
                     }
                 }
                 suggestions.recommendedAlbum.let {

@@ -1,6 +1,5 @@
 package it.fast4x.rimusic.ui.components.themed
 
-import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
@@ -11,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -37,16 +35,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
@@ -58,11 +59,11 @@ import it.fast4x.rimusic.models.Info
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.items.SongItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.favoritesIcon
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.addSongToYtPlaylist
 import it.fast4x.rimusic.utils.asSong
@@ -70,16 +71,12 @@ import it.fast4x.rimusic.utils.enqueue
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.getDownloadState
 import it.fast4x.rimusic.utils.isDownloadedSong
-import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.positionAndDurationState
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import me.knighthat.sync.YouTubeSync
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -265,9 +262,11 @@ fun MediaItemGridMenu (
     onRemoveFromQuickPicks: (() -> Unit)? = null,
     onGoToPlaylist: ((Long) -> Unit)?
 ) {
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val (colorPalette, typography) = LocalAppearance.current
 
     val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
 
@@ -332,80 +331,6 @@ fun MediaItemGridMenu (
 
     val height by remember {
         mutableStateOf(0.dp)
-    }
-
-    val topContent = @Composable {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(end = 12.dp)
-        ) {
-            SongItem(
-                mediaItem = mediaItem,
-                thumbnailUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(thumbnailSizePx)
-                    ?.toString(),
-                onDownloadClick = {
-                    binder?.cache?.removeResource(mediaItem.mediaId)
-                    Database.asyncTransaction {
-                        formatTable.deleteBySongId( mediaItem.mediaId )
-                    }
-                    if (!isLocal)
-                        manageDownload(
-                            context = context,
-                            mediaItem = mediaItem,
-                            downloadState = isDownloaded
-                        )
-                },
-                downloadState = downloadState,
-                thumbnailSizeDp = thumbnailSizeDp,
-                modifier = Modifier.weight(1f)
-            )
-
-            val isSongLiked by remember( mediaItem.mediaId ) {
-                Database.songTable
-                    .isLiked( mediaItem.mediaId )
-                    .distinctUntilChanged()
-            }.collectAsState( false, Dispatchers.IO )
-
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                IconButton(
-                    icon = if ( isSongLiked ) R.drawable.heart else R.drawable.heart_outline,
-                    color = colorPalette().favoritesIcon,
-                    onClick = {
-                        CoroutineScope( Dispatchers.IO ).launch {
-                            YouTubeSync.toggleSongLike( context, mediaItem )
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(all = 4.dp)
-                        .size(24.dp)
-                )
-
-                if (!isLocal)
-                    IconButton(
-                        icon = R.drawable.share_social,
-                        color = colorPalette().text,
-                        onClick = {
-                            val sendIntent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                type = "text/plain"
-                                putExtra(
-                                    Intent.EXTRA_TEXT,
-                                    "https://music.youtube.com/watch?v=${mediaItem.mediaId}"
-                                )
-                            }
-
-                            context.startActivity(Intent.createChooser(sendIntent, null))
-                        },
-                        modifier = Modifier
-                            .padding(all = 4.dp)
-                            .size(24.dp)
-                    )
-
-
-            }
-
-        }
     }
 
     var showCircularSlider by remember {
@@ -768,7 +693,27 @@ fun MediaItemGridMenu (
                         .calculateBottomPadding()
                 ),
                 topContent = {
-                    topContent()
+                    var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+                    binder.player.DisposableListener {
+                        object : Player.Listener {
+                            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                                currentlyPlaying = mediaItem?.mediaId
+                            }
+                        }
+                    }
+                    val songItemValues = remember( colorPalette, typography ) {
+                        SongItem.Values.from( colorPalette, typography )
+                    }
+
+                    SongItem.Render(
+                        mediaItem = mediaItem,
+                        context = context,
+                        binder = binder,
+                        hapticFeedback = hapticFeedback,
+                        isPlaying = mediaItem.mediaId == currentlyPlaying,
+                        values = songItemValues,
+                        navController = navController
+                    )
                 }
             ) {
 

@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -53,6 +54,7 @@ import androidx.compose.ui.util.fastJoinToString
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
@@ -60,6 +62,7 @@ import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.album.Bookmark
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.innertube.toMediaItem
@@ -85,9 +88,10 @@ import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.items.AlbumItem
-import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
@@ -103,7 +107,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.knighthat.coil.ImageCacheFactory
-import me.knighthat.component.SongItem
 import me.knighthat.component.album.AlbumModifier
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Radio
@@ -218,6 +221,8 @@ fun YouTubeAlbum(
     ) {
         //<editor-fold desc="Essentials">
         val binder = LocalPlayerServiceBinder.current ?: return@Skeleton
+        val hapticFeedback = LocalHapticFeedback.current
+        val (colorPalette, typography) = LocalAppearance.current
         val context = LocalContext.current
         val menuState = LocalMenuState.current
         val lazyListState = rememberLazyListState()
@@ -333,6 +338,18 @@ fun YouTubeAlbum(
             isRefreshing = false
         }
         LaunchedEffect( Unit ) { onRefresh() }
+
+        var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+        binder.player.DisposableListener {
+            object : Player.Listener {
+                override fun onMediaItemTransition( mediaItem: MediaItem?, reason: Int ) {
+                    currentlyPlaying = mediaItem?.mediaId
+                }
+            }
+        }
+        val songItemValues = remember( colorPalette, typography ) {
+            SongItem.Values.from( colorPalette, typography )
+        }
 
         val thumbnailPainter = ImageCacheFactory.Painter( dbAlbum?.thumbnailUrl )
         DynamicOrientationLayout( thumbnailPainter ) {
@@ -469,7 +486,7 @@ fun YouTubeAlbum(
                     }
 
                     if( items.isEmpty() )
-                        items( 10 ) { SongItemPlaceholder() }
+                        items( 10 ) { SongItem.Placeholder() }
                     else
                         itemsIndexed(
                             items = items,
@@ -481,8 +498,13 @@ fun YouTubeAlbum(
                                     binder.player.addNext(song.asMediaItem)
                                 }
                             ) {
-                                SongItem(
+                                SongItem.Render(
                                     song = song,
+                                    context = context,
+                                    binder = binder,
+                                    hapticFeedback = hapticFeedback,
+                                    isPlaying = currentlyPlaying == song.id,
+                                    values = songItemValues,
                                     itemSelector = itemSelector,
                                     navController = navController,
                                     showThumbnail = false,

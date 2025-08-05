@@ -327,7 +327,7 @@ object MyDownloadHelper {
             removeDownload( context, mediaItem )
     }
 
-    fun handleDownload(context: Context, song: Song, removeIfDownloaded: Boolean = false ) {
+    fun handleDownload( context: Context, song: Song, removeIfDownloaded: Boolean = false ) {
         if( song.isLocal ) return
 
         val isDownloaded =
@@ -337,5 +337,17 @@ object MyDownloadHelper {
             removeDownload( context, song.asMediaItem )
         else if( !isDownloaded )
             addDownload( context, song.asMediaItem )
+    }
+
+    fun handleDownload( context: Context, mediaItem: MediaItem, removeIfDownloaded: Boolean = false ) {
+        if( mediaItem.isLocal ) return
+
+        val isDownloaded =
+            downloads.value.values.any{ it.state == Download.STATE_COMPLETED && it.request.id == mediaItem.mediaId }
+
+        if( isDownloaded && removeIfDownloaded )
+            removeDownload( context, mediaItem )
+        else if( !isDownloaded )
+            addDownload( context, mediaItem )
     }
 }

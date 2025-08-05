@@ -22,12 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
@@ -45,6 +47,7 @@ import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
@@ -53,7 +56,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import me.knighthat.component.SongItem
 import me.knighthat.component.menu.GridMenu
 import me.knighthat.component.menu.ListMenu
 import me.knighthat.component.song.ChangeAuthorDialog
@@ -111,7 +113,8 @@ class SongItemMenu private constructor(
     @Composable
     override fun MenuComponent() {
         val context = LocalContext.current
-        val binder = LocalPlayerServiceBinder.current
+        val binder = LocalPlayerServiceBinder.current ?: return
+        val (colorPalette, typography) = LocalAppearance.current
 
         /*
          * This big chunk of code is currently running as singleton.
@@ -195,12 +198,25 @@ class SongItemMenu private constructor(
                     modifier = Modifier.size( 24.dp )
                 )
 
-                SongItem(
-                    song = song,
+                val songItemValues = remember {
+                    SongItem.Values.from( colorPalette, typography ).copy(
+                        nowPlayingOverlayColor = Color.Transparent
+                    )
+                }
+                SongItem.Structure(
                     modifier = Modifier.padding(
                         top = 5.dp,
                         bottom = 10.dp
                     ),
+                    thumbnail = {
+                        SongItem.Thumbnail( song.thumbnailUrl, songItemValues )
+                    },
+                    firstLine = {
+                        SongItem.Title( song.cleanTitle(), songItemValues )
+                    },
+                    secondLine = {
+                        SongItem.Artists( song.cleanArtistsText(), songItemValues )
+                    },
                     trailingContent = {
                         val isLiked by remember {
                             Database.songTable

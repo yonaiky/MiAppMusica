@@ -37,16 +37,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastMap
 import androidx.core.content.ContextCompat
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -57,6 +61,8 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.bold
@@ -66,7 +72,6 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid13
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
 import me.knighthat.component.FolderItem
-import me.knighthat.component.SongItem
 import me.knighthat.utils.PathUtils
 import me.knighthat.utils.Toaster
 import me.knighthat.utils.getLocalSongs
@@ -85,7 +90,9 @@ fun OnDeviceSong(
 ) {
     // Essentials
     val context = LocalContext.current
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
+    val (colorPalette, typography) = LocalAppearance.current
+    val hapticFeedback = LocalHapticFeedback.current
     val menuState = LocalMenuState.current
 
     //<editor-fold defaultstate="collapsed" desc="Settings">
@@ -219,6 +226,18 @@ fun OnDeviceSong(
             }
         }
 
+    var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+    binder.player.DisposableListener {
+        object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int ) {
+                currentlyPlaying = mediaItem?.mediaId
+            }
+        }
+    }
+    val songItemValues = remember( colorPalette, typography ) {
+        SongItem.Values.from( colorPalette, typography )
+    }
+
     LazyColumn(
         state = lazyListState,
         userScrollEnabled = songsOnDevice.isNotEmpty(),
@@ -254,8 +273,13 @@ fun OnDeviceSong(
                     binder?.player?.enqueue(mediaItem)
                 }
             ) {
-                SongItem(
+                SongItem.Render(
                     song = song,
+                    context = context,
+                    binder = binder,
+                    hapticFeedback = hapticFeedback,
+                    isPlaying = currentlyPlaying == song.id,
+                    values = songItemValues,
                     itemSelector = itemSelector,
                     navController = navController,
                     modifier = Modifier.animateItem(),

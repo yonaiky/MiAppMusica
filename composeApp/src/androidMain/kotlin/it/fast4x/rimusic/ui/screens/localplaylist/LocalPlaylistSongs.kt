@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -46,6 +47,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
@@ -56,6 +59,7 @@ import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistSongsSort
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import app.kreate.android.themed.rimusic.component.song.SongItem
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import it.fast4x.compose.persist.persistList
 import it.fast4x.compose.reordering.draggedItem
@@ -100,10 +104,12 @@ import it.fast4x.rimusic.ui.components.themed.ResetThumbnail
 import it.fast4x.rimusic.ui.components.themed.Synchronize
 import it.fast4x.rimusic.ui.components.themed.ThumbnailPicker
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.onOverlay
 import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.DeletePlaylist
+import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
@@ -128,7 +134,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.knighthat.component.ResetCache
-import me.knighthat.component.SongItem
 import me.knighthat.component.playlist.PinPlaylist
 import me.knighthat.component.playlist.RenamePlaylistDialog
 import me.knighthat.component.playlist.Reposition
@@ -156,6 +161,8 @@ fun LocalPlaylistSongs(
     // Essentials
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current ?: return
+    val hapticFeedback = LocalHapticFeedback.current
+    val (colorPalette, typography) = LocalAppearance.current
     val lazyListState = rememberLazyListState()
     val uriHandler = LocalUriHandler.current
     val menuState = LocalMenuState.current
@@ -470,6 +477,17 @@ fun LocalPlaylistSongs(
     val playlistNotMonthlyType =
         playlist?.name?.startsWith(MONTHLY_PREFIX, 0, true) == false
 
+    var currentlyPlaying by remember { mutableStateOf(binder.player.currentMediaItem?.mediaId) }
+    binder.player.DisposableListener {
+        object : Player.Listener {
+            override fun onMediaItemTransition( mediaItem: MediaItem?, reason: Int ) {
+                currentlyPlaying = mediaItem?.mediaId
+            }
+        }
+    }
+    val songItemValues = remember( colorPalette, typography ) {
+        SongItem.Values.from( colorPalette, typography )
+    }
 
     Box(
         modifier = Modifier
@@ -676,10 +694,11 @@ fun LocalPlaylistSongs(
                     // Drag anchor
                     if ( !positionLock.isLocked() ) {
                         Box(
-                            modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
-                                               .size( 24.dp )
-                                               .zIndex( 2f )
-                                               .align( Alignment.CenterEnd ),
+                            modifier = Modifier
+                                .padding(end = 16.dp) // Accommodate horizontal padding of SongItem
+                                               .size(24.dp)
+                                .zIndex(2f)
+                                .align(Alignment.CenterEnd),
                             contentAlignment = Alignment.Center
                         ) {
 
@@ -732,8 +751,14 @@ fun LocalPlaylistSongs(
                             )
                         },
                     ) {
-                        SongItem(
+                        SongItem.Render(
                             song = song,
+                            context = context,
+                            binder = binder,
+                            hapticFeedback = hapticFeedback,
+                            isPlaying = song.id == currentlyPlaying,
+                            values = songItemValues,
+                            isInPlaylistScreen = true,
                             itemSelector = itemSelector,
                             navController = navController,
                             isRecommended = song in relatedSongs,
