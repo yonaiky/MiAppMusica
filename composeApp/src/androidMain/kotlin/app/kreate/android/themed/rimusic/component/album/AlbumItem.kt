@@ -46,6 +46,8 @@ object AlbumItem {
 
     const val VERTICAL_SPACING = 5
     const val HORIZONTAL_SPACING = 10
+    const val ROW_SPACING = VERTICAL_SPACING * 4
+    const val COLUMN_SPACING = HORIZONTAL_SPACING
 
     /**
      * Text is clipped if exceeds length limit, plus,

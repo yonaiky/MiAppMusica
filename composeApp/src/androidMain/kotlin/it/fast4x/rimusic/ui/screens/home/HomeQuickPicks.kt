@@ -601,7 +601,10 @@ fun HomeQuickPicks(
                                 modifier = sectionTextModifier
                             )
 
-                            LazyRow(contentPadding = endPaddingValues) {
+                            LazyRow(
+                                contentPadding = endPaddingValues,
+                                horizontalArrangement = Arrangement.spacedBy(AlbumItem.COLUMN_SPACING.dp )
+                            ) {
                                 items(
                                     items = newReleaseAlbumsFiltered.distinctBy { it.key },
                                     key = System::identityHashCode
@@ -626,7 +629,10 @@ fun HomeQuickPicks(
                             //modifier = Modifier.fillMaxWidth(0.7f)
                         )
 
-                        LazyRow(contentPadding = endPaddingValues) {
+                        LazyRow(
+                            contentPadding = endPaddingValues,
+                            horizontalArrangement = Arrangement.spacedBy(AlbumItem.COLUMN_SPACING.dp )
+                        ) {
                             items(
                                 items = page.newReleaseAlbums.distinctBy { it.key },
                                 key = System::identityHashCode
@@ -652,7 +658,10 @@ fun HomeQuickPicks(
                             modifier = sectionTextModifier
                         )
 
-                        LazyRow(contentPadding = endPaddingValues) {
+                        LazyRow(
+                            contentPadding = endPaddingValues,
+                            horizontalArrangement = Arrangement.spacedBy(AlbumItem.COLUMN_SPACING.dp )
+                        ) {
                             items(
                                 items = albums.distinctBy { it.key },
                                 key = System::identityHashCode

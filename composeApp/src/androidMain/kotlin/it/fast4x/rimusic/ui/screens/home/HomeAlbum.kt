@@ -323,7 +323,8 @@ fun HomeAlbums(
                     //contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
                     modifier = Modifier.background( colorPalette().background0 )
                                        .fillMaxSize(),
-                    contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
+                    contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
+                    verticalArrangement = Arrangement.spacedBy(AlbumItem.ROW_SPACING.dp )
                 ) {
                     items(
                         items = itemsOnDisplay,
