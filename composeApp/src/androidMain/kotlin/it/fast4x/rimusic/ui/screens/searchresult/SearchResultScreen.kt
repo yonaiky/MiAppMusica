@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
+import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -50,8 +51,6 @@ import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.Title
-import it.fast4x.rimusic.ui.items.ArtistItem
-import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
@@ -417,6 +416,10 @@ fun SearchResultScreen(
                     val thumbnailSizeDp = 64.dp
                     val thumbnailSizePx = thumbnailSizeDp.px
 
+                    val artistItemValues = remember( colorPalette, typography ) {
+                        ArtistItem.Values.from( colorPalette, typography )
+                    }
+
                     ItemsPage(
                         tag = "searchResults/$query/artists",
                         itemsPageProvider = { continuation ->
@@ -438,17 +441,17 @@ fun SearchResultScreen(
                         emptyItemsText = emptyItemsText,
                         headerContent = headerContent,
                         itemContent = { artist ->
-                            ArtistItem(
-                                artist = artist,
-                                thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp,
+                            ArtistItem.Render(
+                                innertubeArtist = artist,
+                                widthDp = thumbnailSizeDp,
+                                values = artistItemValues,
                                 modifier = Modifier.clickable {
                                     NavRoutes.YT_ARTIST.navigateHere( navController, artist.key )
                                 }
                             )
                         },
                         itemPlaceholderContent = {
-                            ArtistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)
+                            ArtistItem.Placeholder( thumbnailSizeDp )
                         }
                     )
                 }

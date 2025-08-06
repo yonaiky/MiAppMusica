@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
+import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -48,7 +49,6 @@ import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -137,8 +137,9 @@ fun MoodList(
                         val albumItemValues = remember( appearance ) {
                             AlbumItem.Values.from( appearance )
                         }
-
-
+                        val artistItemValues = remember( appearance ) {
+                            ArtistItem.Values.from( appearance )
+                        }
 
                         LazyRow {
                             items(items = item.items, key = { it.key }) { childItem ->
@@ -155,11 +156,10 @@ fun MoodList(
                                         }
                                     )
 
-                                    is Innertube.ArtistItem -> ArtistItem(
-                                        artist = childItem,
-                                        thumbnailSizePx = thumbnailSizePx,
-                                        thumbnailSizeDp = thumbnailSizeDp,
-                                        alternative = true,
+                                    is Innertube.ArtistItem -> ArtistItem.Render(
+                                        innertubeArtist = childItem,
+                                        widthDp = thumbnailSizeDp,
+                                        values = artistItemValues,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let {
                                                 NavRoutes.YT_ARTIST.navigateHere( navController, it )

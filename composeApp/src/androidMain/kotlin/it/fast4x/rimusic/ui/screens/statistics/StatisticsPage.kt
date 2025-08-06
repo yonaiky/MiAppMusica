@@ -53,6 +53,7 @@ import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
+import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -70,7 +71,6 @@ import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
-import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -208,6 +208,9 @@ fun StatisticsPage(
         }
         val albumItemValues = remember( colorPalette, typography ) {
             AlbumItem.Values.from( colorPalette, typography )
+        }
+        val artistItemValues = remember( colorPalette, typography ) {
+            ArtistItem.Values.from( colorPalette, typography )
         }
 
             val lazyGridState = rememberLazyGridState()
@@ -349,23 +352,18 @@ fun StatisticsPage(
 
                 if (statisticsCategory == StatisticsCategory.Artists)
                     items(
-                        count = artists.count()
-                    ) {
+                        items = artists,
+                        key = System::identityHashCode
+                    ) { artist ->
+                        artist.thumbnailUrl ?: UpdateYoutubeArtist( artist.id )
 
-                        if (artists[it].thumbnailUrl.toString() == "null")
-                            UpdateYoutubeArtist(artists[it].id)
-
-                        ArtistItem(
-                            thumbnailUrl = artists[it].thumbnailUrl,
-                            name = "${it+1}. ${artists[it].name}",
-                            showName = true,
-                            subscribersCount = null,
-                            thumbnailSizePx = artistThumbnailSizePx,
-                            thumbnailSizeDp = artistThumbnailSizeDp,
-                            alternative = true,
+                        ArtistItem.Render(
+                            artist = artist,
+                            widthDp = artistThumbnailSizeDp,
+                            values = artistItemValues,
                             modifier = Modifier.clickable {
-                                if ( artists[it].id.isNotBlank() )
-                                    NavRoutes.YT_ARTIST.navigateHere( navController, artists[it].id )
+                                if ( artist.id.isNotBlank() )
+                                    NavRoutes.YT_ARTIST.navigateHere( navController, artist.id )
                             }
                         )
                     }

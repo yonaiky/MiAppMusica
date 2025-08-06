@@ -12,6 +12,7 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.Thumbnail
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.utils.EXPLICIT_BUNDLE_TAG
 import me.knighthat.innertube.model.InnertubeAlbum
@@ -60,6 +61,14 @@ val InnertubeAlbum.toAlbum: Album
         thumbnailUrl = thumbnails.firstOrNull()?.url,
         year = year,
         authorsText = artists.fastJoinToString { it.text },
+    )
+
+val InnertubeArtist.toArtist: Artist
+    get() = Artist(
+        id = id,
+        name = name,
+        thumbnailUrl = thumbnails.firstOrNull()?.url,
+        isYoutubeArtist = true
     )
 
 val InnertubePlaylist.toOldInnertubePlaylist: Innertube.PlaylistItem

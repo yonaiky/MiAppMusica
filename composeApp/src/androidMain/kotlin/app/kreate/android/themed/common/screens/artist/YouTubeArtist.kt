@@ -63,10 +63,10 @@ import app.kreate.android.R
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
+import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
-import app.kreate.android.utils.innertube.toOldInnertubeArtist
 import app.kreate.android.utils.innertube.toOldInnertubePlaylist
 import app.kreate.android.utils.innertube.toSong
 import app.kreate.android.utils.renderDescription
@@ -87,7 +87,6 @@ import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.PlayNext
-import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -208,6 +207,9 @@ private fun LazyListScope.renderSection(
     val albumItemValues = remember( appearance ) {
         AlbumItem.Values.from( appearance )
     }
+    val artistItemValues = remember( appearance ) {
+        ArtistItem.Values.from( appearance )
+    }
 
     LazyRow {
         this@LazyRow.items(
@@ -230,11 +232,10 @@ private fun LazyListScope.renderSection(
                     )
 
                 is InnertubeArtist ->
-                    ArtistItem(
-                        artist = item.toOldInnertubeArtist,
-                        alternative = true,
-                        thumbnailSizePx = albumThumbnailSizePx,
-                        thumbnailSizeDp = albumThumbnailSizeDp,
+                    ArtistItem.Render(
+                        innertubeArtist = item,
+                        widthDp = albumThumbnailSizeDp,
+                        values = artistItemValues,
                         modifier = Modifier.clickable {
                             NavRoutes.YT_ARTIST.navigateHere( navController, item.id )
                         }

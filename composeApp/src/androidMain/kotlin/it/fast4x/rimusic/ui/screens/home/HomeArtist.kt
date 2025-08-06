@@ -42,6 +42,7 @@ import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.Search
+import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import it.fast4x.compose.persist.persistList
@@ -63,7 +64,6 @@ import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScroll
 import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -277,25 +277,30 @@ fun HomeArtists(
                 // Sticky search bar
                 search.SearchBar()
 
+                val artistItemValues = remember( colorPalette, typography ) {
+                    ArtistItem.Values.from( colorPalette, typography )
+                }
+
                 LazyVerticalGrid(
                     state = lazyGridState,
                     columns = GridCells.Adaptive( itemSize.size.dp ),
                     modifier = Modifier.background( colorPalette().background0 )
                                        .fillMaxSize(),
-                    contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
+                    contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
+                    verticalArrangement = Arrangement.spacedBy( ArtistItem.ROW_SPACING.dp )
                 ) {
-                    items(items = itemsOnDisplay, key = Artist::id) { artist ->
-                        ArtistItem(
+                    items(
+                        items = itemsOnDisplay,
+                        key = Artist::id
+                    ) { artist ->
+                        ArtistItem.Render(
                             artist = artist,
-                            thumbnailSizeDp = itemSize.size.dp,
-                            thumbnailSizePx = itemSize.size.px,
-                            alternative = true,
-                            modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
-                                               .clickable(onClick = {
-                                                   search.hideIfEmpty()
-                                                   onArtistClick( artist )
-                                               }),
-                            isYoutubeArtist = artist.isYoutubeArtist
+                            widthDp = itemSize.size.dp,
+                            values = artistItemValues,
+                            modifier = Modifier.clickable {
+                                search.hideIfEmpty()
+                                onArtistClick( artist )
+                            }
                         )
                     }
                 }

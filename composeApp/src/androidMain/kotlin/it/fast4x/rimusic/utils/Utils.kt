@@ -42,6 +42,7 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.context
 import it.fast4x.rimusic.models.Album
+import it.fast4x.rimusic.models.Artist
 import it.fast4x.rimusic.models.Lyrics
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -182,6 +183,14 @@ val Song.asMediaItem: MediaItem
         )
         .setCustomCacheKey(id)
         .build()
+
+val Innertube.ArtistItem.asArtist: Artist
+    get() = Artist(
+        id = key,
+        name = title,
+        thumbnailUrl = thumbnail?.url,
+        isYoutubeArtist = true
+    )
 
 val MediaItem.asSong: Song
     get() = Song (

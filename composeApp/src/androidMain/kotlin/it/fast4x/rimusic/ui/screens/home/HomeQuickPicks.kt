@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
@@ -32,6 +35,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,6 +53,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
@@ -62,11 +67,12 @@ import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
+import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
-import app.kreate.android.utils.innertube.toOldInnertubeArtist
 import app.kreate.android.utils.innertube.toOldInnertubePlaylist
+import app.kreate.android.utils.scrollingText
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
@@ -100,7 +106,6 @@ import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
-import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
@@ -575,6 +580,9 @@ fun HomeQuickPicks(
                 val albumItemValues = remember(  colorPalette, typography  ) {
                     AlbumItem.Values.from(  colorPalette, typography  )
                 }
+                val artistItemValues = remember( colorPalette, typography ) {
+                    ArtistItem.Values.from( colorPalette, typography )
+                }
 
                 discoverPageInit?.let { page ->
                     val artists by remember {
@@ -686,18 +694,21 @@ fun HomeQuickPicks(
                             modifier = sectionTextModifier
                         )
 
-                        LazyRow(contentPadding = endPaddingValues) {
+                        LazyRow(
+                            contentPadding = endPaddingValues,
+                            horizontalArrangement = Arrangement.spacedBy( ArtistItem.COLUMN_SPACING.dp )
+                        ) {
                             items(
                                 items = artists.distinctBy { it.key },
                                 key = Innertube.ArtistItem::key,
                             ) { artist ->
-                                ArtistItem(
-                                    artist = artist,
-                                    thumbnailSizePx = artistThumbnailSizePx,
-                                    thumbnailSizeDp = artistThumbnailSizeDp,
-                                    alternative = true,
-                                    modifier = Modifier
-                                        .clickable(onClick = { onArtistClick(artist.key) })
+                                ArtistItem.Render(
+                                    innertubeArtist = artist,
+                                    widthDp = artistThumbnailSizeDp,
+                                    values = artistItemValues,
+                                    modifier = Modifier.clickable {
+                                        onArtistClick(artist.key)
+                                    }
                                 )
                             }
                         }
@@ -972,9 +983,10 @@ fun HomeQuickPicks(
                                                 key = { i, s -> "${System.identityHashCode(s)}-$i"}
                                             ) { index, artist ->
                                                 Row(
-                                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                                    horizontalArrangement = Arrangement.spacedBy( 10.dp ),
                                                     verticalAlignment = Alignment.CenterVertically,
-                                                    modifier = Modifier.padding(start = 16.dp)
+                                                    modifier = Modifier.padding( start = 16.dp )
+                                                                       .requiredHeight( songThumbnailSizeDp )
                                                 ) {
                                                     BasicText(
                                                         text = artist.rank,
@@ -984,15 +996,38 @@ fun HomeQuickPicks(
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis
                                                     )
-                                                    ArtistItem(
-                                                        artist = artist.toOldInnertubeArtist,
-                                                        thumbnailSizePx = songThumbnailSizePx,
-                                                        thumbnailSizeDp = songThumbnailSizeDp,
-                                                        alternative = false,
-                                                        modifier = Modifier
-                                                            .width(200.dp)
-                                                            .clickable(onClick = { onArtistClick(artist.id) })
-                                                    )
+
+                                                    Box( Modifier.requiredSize( songThumbnailSizeDp ) ) {
+                                                        ArtistItem.Thumbnail(
+                                                            artistId = artist.id,
+                                                            thumbnailUrl = artist.thumbnails.firstOrNull()?.url,
+                                                            widthDp = songThumbnailSizeDp,
+                                                            showPlatformIcon = false
+                                                        )
+                                                    }
+
+                                                    Column(
+                                                        verticalArrangement = Arrangement.Center,
+                                                        modifier = Modifier.requiredHeight( songThumbnailSizeDp )
+                                                    ) {
+                                                        ArtistItem.Title(
+                                                            title = artist.name,
+                                                            values = artistItemValues,
+                                                            textAlign = TextAlign.Start
+                                                        )
+
+                                                        artist.shortNumSubscribers?.let { subscribers ->
+                                                            Text(
+                                                                text = subscribers,
+                                                                style = typography.xs,
+                                                                color = colorPalette.textSecondary,
+                                                                maxLines = 1,
+                                                                overflow = TextOverflow.Clip,
+                                                                textAlign = TextAlign.Start,
+                                                                modifier = Modifier.scrollingText()
+                                                            )
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -1028,7 +1063,10 @@ fun HomeQuickPicks(
                         val songItemValues = remember( colorPalette, typography ) {
                             SongItem.Values.from( colorPalette, typography )
                         }
-                        LazyRow(contentPadding = endPaddingValues) {
+                        LazyRow(
+                            contentPadding = endPaddingValues,
+                            horizontalArrangement = Arrangement.spacedBy( ArtistItem.COLUMN_SPACING.dp )
+                        ) {
                             items(it.items) { item ->
                                 when (item) {
                                     is Innertube.SongItem -> {
@@ -1061,13 +1099,13 @@ fun HomeQuickPicks(
 
                                     is Innertube.ArtistItem -> {
                                         println("Innertube homePage ArtistItem: ${item.info?.name}")
-                                        ArtistItem(
-                                            artist = item,
-                                            thumbnailSizePx = artistThumbnailSizePx,
-                                            thumbnailSizeDp = artistThumbnailSizeDp,
-                                            modifier = Modifier.clickable(onClick = {
+                                        ArtistItem.Render(
+                                            innertubeArtist = item,
+                                            widthDp = artistThumbnailSizeDp,
+                                            values = artistItemValues,
+                                            modifier = Modifier.clickable {
                                                 NavRoutes.YT_ARTIST.navigateHere( navController, item.key )
-                                            })
+                                            }
                                         )
                                     }
 
