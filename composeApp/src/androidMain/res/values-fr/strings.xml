@@ -774,7 +774,7 @@ Volume BAS : titre précédent</string>
     <string name="setting_description_show_no_update_available_no">Ne vous ennuiera pas avec ce message au démarrage</string>
     <string name="error_no_build_matches_this_version">Impossible de trouver une compilation correspondant à cette version</string>
     <string name="dialog_title_are_you_sure">Es-tu sûr ?</string>
-    <string name="this_action_is_irreversible">Cette action est irréversible</string>
+    <string name="dialog_text_this_action_is_irreversible">Cette action est irréversible</string>
     <string name="dialog_text_download_all_warning">Vous pourriez être bloqué si vous téléchargez plusieurs titres à la fois, ce qui les rendrait illisibles en mode hors ligne.</string>
     <string name="error_invalid_proxy">Proxy invalide</string>
     <string name="info_restart_player_service">Redémarrer le lecteur</string>

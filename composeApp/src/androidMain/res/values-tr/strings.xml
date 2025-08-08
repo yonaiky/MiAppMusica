@@ -771,7 +771,7 @@
     <string name="setting_description_show_no_update_available_no">Bu mesaj, başlangıçta bir daha gösterilmeyecek</string>
     <string name="error_no_build_matches_this_version">Bu sürüme uygun bir derleme bulunamadı</string>
     <string name="dialog_title_are_you_sure">Emin misiniz?</string>
-    <string name="this_action_is_irreversible">Bu işlem geri alınamaz</string>
+    <string name="dialog_text_this_action_is_irreversible">Bu işlem geri alınamaz</string>
     <string name="dialog_text_download_all_warning">Aynı anda birden fazla şarkı indirirseniz engellenebilirsiniz, ve bu şarkılar çevrimdışı modda çalınamaz hale gelebilir.</string>
     <string name="error_invalid_proxy">Geçersiz proxy</string>
     <string name="info_restart_player_service">Oynatıcı servisini yeniden başlat</string>

@@ -771,7 +771,7 @@
     <string name="setting_description_show_no_update_available_no">No te molestaré con este mensaje al inicio</string>
     <string name="error_no_build_matches_this_version">No se pudo encontrar ninguna compilación que coincida con esta versión</string>
     <string name="dialog_title_are_you_sure">¿Estás seguro?</string>
-    <string name="this_action_is_irreversible">Esta acción es irreversible</string>
+    <string name="dialog_text_this_action_is_irreversible">Esta acción es irreversible</string>
     <string name="dialog_text_download_all_warning">Es posible que bloqueen la descarga de varias canciones a la vez, por lo que no podrás reproducirlas en modo sin conexión.</string>
     <string name="error_invalid_proxy">Proxy no válido</string>
     <string name="info_restart_player_service">Reiniciar servicio del reproductor</string>
