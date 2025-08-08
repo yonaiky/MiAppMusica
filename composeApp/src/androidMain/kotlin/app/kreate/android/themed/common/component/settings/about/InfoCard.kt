@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -28,10 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import app.kreate.android.coil3.ImageFactory
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import kotlinx.serialization.Serializable
-import me.knighthat.coil.ImageCacheFactory
 
 @Serializable
 abstract class InfoCard {
@@ -68,7 +67,7 @@ abstract class InfoCard {
 
     @Composable
     protected fun Avatar() =
-        ImageCacheFactory.Thumbnail(
+        ImageFactory.AsyncImage(
             thumbnailUrl = this.avatarUrl,
             contentDescription = "$username\'s avatar",
             contentScale = ContentScale.Fit,

@@ -43,6 +43,7 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.utils.innertube.toSong
 import app.kreate.android.utils.scrollingText
@@ -70,7 +71,6 @@ import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shimmerEffect
 import kotlinx.coroutines.Dispatchers
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.menu.song.SongItemMenu
 import me.knighthat.innertube.model.InnertubeSong
 import me.knighthat.utils.Toaster
@@ -319,7 +319,7 @@ object SongItem {
         ) {
             // Actual thumbnail (from cache or fetch from url)
             if( showThumbnail )
-                ImageCacheFactory.Thumbnail(
+                ImageFactory.AsyncImage(
                     thumbnailUrl = thumbnailUrl,
                     contentScale = ContentScale.FillHeight
                 )

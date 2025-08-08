@@ -24,9 +24,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import it.fast4x.rimusic.utils.BlurTransformation
+import app.kreate.android.coil3.BlurTransformation
+import app.kreate.android.coil3.ImageFactory
 import it.fast4x.rimusic.utils.isAtLeastAndroid12
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.player.BlurAdjuster
 import kotlin.math.sqrt
 
@@ -50,7 +50,7 @@ private fun BlurFilter(
      * aren't observable - issue #266 (Android 26-)
      */
     val size = remember( maxWidth, maxHeight ) {
-        maxOf( maxWidth, maxHeight )
+        maxOf( this.maxWidth, maxHeight )
     }
     // Probably not a best fit, but it gets the job done
     val scale = with(LocalDensity.current) {
@@ -90,7 +90,7 @@ private fun BlurFilter(
             )
         )
 
-        ImageCacheFactory.Thumbnail(
+        ImageFactory.AsyncImage(
             thumbnailUrl = thumbnailUrl,
             transformations = blurTransformation,
             contentDescription = "blurred_background",

@@ -26,12 +26,12 @@ import androidx.media3.common.util.UnstableApi
 import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.common.component.settings.RestartPlayerService
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.entry
 import app.kreate.android.themed.common.component.settings.header
-import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
@@ -52,7 +52,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.export.ExportDatabaseDialog
 import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
@@ -60,7 +59,6 @@ import me.knighthat.component.import.ImportMigration
 import me.knighthat.component.import.ImportSettings
 import me.knighthat.utils.Toaster
 
-@ExperimentalCoilApi
 @UnstableApi
 @Composable
 fun DataSettings( paddingValues: PaddingValues ) {
@@ -82,7 +80,7 @@ fun DataSettings( paddingValues: PaddingValues ) {
             onDismiss = {
                 cleanCacheImages = false
             },
-            onConfirm = ImageCacheFactory.DISK_CACHE::clear
+            onConfirm = ImageFactory.diskCache::clear
         )
     }
 
@@ -146,7 +144,7 @@ fun DataSettings( paddingValues: PaddingValues ) {
                 subtitle = { stringResource( R.string.cache_cleared ) }
             )
             entry( search, R.string.image_cache_max_size ) {
-                ImageCacheFactory.DISK_CACHE.size.let { diskCacheSize ->
+                ImageFactory.diskCache.size.let { diskCacheSize ->
                     var coilCustomDiskCache by Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
                     val coilDiskCacheMaxSize by Preferences.THUMBNAIL_CACHE_SIZE
 

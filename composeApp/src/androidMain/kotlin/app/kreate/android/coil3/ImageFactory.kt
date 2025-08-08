@@ -1,0 +1,146 @@
+package app.kreate.android.coil3
+
+import android.content.Context
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import app.kreate.android.Preferences
+import app.kreate.android.R
+import app.kreate.android.drawable.APP_ICON_BITMAP
+import app.kreate.android.service.NetworkService
+import coil3.ImageLoader
+import coil3.asImage
+import coil3.compose.AsyncImagePainter.State
+import coil3.disk.DiskCache
+import coil3.disk.directory
+import coil3.network.ktor3.KtorNetworkFetcherFactory
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.fallback
+import coil3.request.placeholder
+import coil3.request.transformations
+import coil3.transform.Transformation
+import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
+import it.fast4x.rimusic.thumbnail
+import it.fast4x.rimusic.ui.styling.LocalAppearance
+
+object ImageFactory {
+
+    // This is isn't for all devices, some devices need
+    // bigger sizes so the image won't distort, but 900 (px)
+    // is fit for majority of devices and the their storage sizes
+    // isn't too big either.
+    const val THUMBNAIL_SIZE = 900;
+    val defaultModifier: Modifier
+        @Composable
+        get() {
+            val appearance = LocalAppearance.current
+
+            return Modifier.clip( appearance.thumbnailShape )
+                           .fillMaxSize()
+        }
+
+    lateinit var diskCache: DiskCache
+    lateinit var imageLoader: ImageLoader
+
+    fun init( context: Context ) {
+        if( !::diskCache.isInitialized )
+            DiskCache.Builder()
+                     .directory(
+                         context.cacheDir.resolve( "coil3" )
+                     )
+                     .maxSizeBytes(
+                         when(
+                             val diskSize = Preferences.THUMBNAIL_CACHE_SIZE.value
+                         ) {
+                             CoilDiskCacheMaxSize.Custom -> Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
+                                                                       .value
+                                                                       .times( 1000L )
+                                                                       .times( 1000 )
+
+                             else                        -> diskSize.bytes
+                         }
+                     )
+                     .build()
+                     .also { diskCache = it }
+
+        if( !::imageLoader.isInitialized )
+            // TODO: Add a toggle in setting that let user enable network caching
+            // This feature will set an expiration date on cache, forcing
+            // user to "re-fetch" the image data again after a period of time.
+            // This will potentially double the storage.
+            ImageLoader.Builder( context )
+                       .crossfade( true )
+                       .diskCachePolicy( CachePolicy.ENABLED )
+                       .diskCache( diskCache )
+                       .error( APP_ICON_BITMAP.asImage() )
+                       .components {
+                           add(
+                               KtorNetworkFetcherFactory(NetworkService.client)
+                           )
+                       }
+                       .build()
+                       .also { imageLoader = it }
+    }
+
+    fun requestBuilder(
+        thumbnailUrl: String?,
+        builder: ImageRequest.Builder.() -> Unit = {}
+    ) =
+        /*
+         * TODO: Make a simple system to detect network speed and/or
+         * TODO: data saver that automatically lower the quality to
+         * TODO: reduce loading time and to preserve data usage.
+         */
+        ImageRequest.Builder( appContext() )
+                    .data( thumbnailUrl.thumbnail( THUMBNAIL_SIZE ) )
+                    .diskCacheKey( thumbnailUrl )
+                    .placeholder( R.drawable.loader )
+                    .error( R.drawable.noimage )
+                    .fallback( R.drawable.image )
+                    .apply( builder )
+                    .build()
+
+    @Composable
+    fun AsyncImage(
+        thumbnailUrl: String?,
+        modifier: Modifier = defaultModifier,
+        contentDescription: String? = null,
+        contentScale: ContentScale = ContentScale.FillBounds,
+        transformations: List<Transformation> = emptyList()
+    ) =
+        coil3.compose.AsyncImage(
+            model = requestBuilder( thumbnailUrl ){
+                transformations( transformations )
+            },
+            imageLoader = imageLoader,
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+            modifier = modifier
+        )
+
+    @Composable
+    fun rememberAsyncImagePainter(
+        thumbnailUrl: String?,
+        contentScale: ContentScale = ContentScale.FillBounds,
+        transformations: List<Transformation> = emptyList(),
+        onLoading: ((State.Loading) -> Unit)? = null,
+        onSuccess: ((State.Success) -> Unit)? = null,
+        onError: ((State.Error) -> Unit)? = null
+    ) =
+        coil3.compose.rememberAsyncImagePainter(
+            model = requestBuilder( thumbnailUrl ) {
+                transformations( transformations )
+            },
+            imageLoader = imageLoader,
+            contentScale = contentScale,
+            onLoading = onLoading,
+            onSuccess = onSuccess,
+            onError = onError
+        )
+}

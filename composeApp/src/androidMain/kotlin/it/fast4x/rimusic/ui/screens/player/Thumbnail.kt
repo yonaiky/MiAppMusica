@@ -41,8 +41,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
 import app.kreate.android.Preferences
+import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
@@ -64,7 +65,6 @@ import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.currentWindow
 import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.isLandscape
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.net.UnknownHostException
@@ -154,7 +154,7 @@ fun Thumbnail(
 
     val window = nullableWindow ?: return
 
-    val coverPainter = ImageCacheFactory.Painter(
+    val coverPainter = ImageFactory.rememberAsyncImagePainter(
         thumbnailUrl = window.mediaItem.mediaMetadata.artworkUri.toString(),
         onError = { artImageAvailable = false },
         onSuccess = { artImageAvailable = true }

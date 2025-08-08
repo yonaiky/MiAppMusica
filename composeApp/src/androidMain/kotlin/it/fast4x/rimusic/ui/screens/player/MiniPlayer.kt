@@ -62,6 +62,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -88,7 +89,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.sync.YouTubeSync
 import me.knighthat.utils.Toaster
 import kotlin.math.absoluteValue
@@ -305,7 +305,7 @@ fun MiniPlayer(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.height( Dimensions.miniPlayerHeight )
             ) {
-                ImageCacheFactory.Thumbnail(
+                ImageFactory.AsyncImage(
                     thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString(),
                     contentScale = ContentScale.FillHeight,
                     modifier = Modifier.clip( thumbnailShape() )

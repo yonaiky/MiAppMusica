@@ -68,6 +68,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -99,7 +100,6 @@ import it.fast4x.rimusic.utils.shuffleQueue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.player.PlaybackSpeed
 import me.knighthat.utils.Toaster
 
@@ -309,7 +309,7 @@ fun BoxScope.ActionBar(
                             val showAlbumCover by Preferences.PLAYER_SHOW_NEXT_IN_QUEUE_THUMBNAIL
                             if ( showAlbumCover )
                                 Box( Modifier.align(Alignment.CenterVertically) ) {
-                                    ImageCacheFactory.Thumbnail(
+                                    ImageFactory.AsyncImage(
                                         thumbnailUrl = mediaItemAtIndex.mediaMetadata
                                                                        .artworkUri
                                                                        .toString(),

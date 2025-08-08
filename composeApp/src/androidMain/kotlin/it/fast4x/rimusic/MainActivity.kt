@@ -89,7 +89,9 @@ import androidx.palette.graphics.Palette
 import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.service.innertube.InnertubeProvider
+import app.kreate.android.service.updater.UpdatePlugins
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
@@ -224,6 +226,9 @@ class MainActivity :
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        UpdatePlugins.execute( this )
+
         MonetCompat.enablePaletteCompat()
 
         enableEdgeToEdge(
@@ -333,6 +338,7 @@ class MainActivity :
     )
     fun startApp() {
         me.knighthat.innertube.Innertube.client = InnertubeProvider()
+        ImageFactory.init( this )
 
         // Used in QuickPics for load data from remote instead of last saved in SharedPreferences
         Preferences.IS_DATA_KEY_LOADED.value = false

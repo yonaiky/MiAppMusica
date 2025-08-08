@@ -118,6 +118,7 @@ import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.kreate.android.screens.player.background.BlurredCover
 import app.kreate.android.themed.rimusic.screen.player.ActionBar
@@ -193,7 +194,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.player.BlurAdjuster
 import me.knighthat.utils.Toaster
 import kotlin.Float.Companion.POSITIVE_INFINITY
@@ -1347,7 +1347,7 @@ fun Player(
                                          .conditional(fadingedge) {horizontalFadingEdge()}
                                      ) {
 
-                                     val coverPainter = ImageCacheFactory.Painter(
+                                     val coverPainter = ImageFactory.rememberAsyncImagePainter(
                                          binder.player.getMediaItemAt( it ).mediaMetadata.artworkUri.toString()
                                      )
 
@@ -1915,7 +1915,7 @@ fun Player(
                                          }
                                  ){
 
-                                     val coverPainter = ImageCacheFactory.Painter(
+                                     val coverPainter = ImageFactory.rememberAsyncImagePainter(
                                          binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
                                      )
 

@@ -53,6 +53,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
@@ -112,7 +113,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.bush.translator.Language
 import me.bush.translator.Translator
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.tab.ExportSongsToCSVDialog
 import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Radio
@@ -326,7 +326,7 @@ fun YouTubePlaylist(
         }
 
         val thumbnailPainter =
-            ImageCacheFactory.Painter( playlistPage?.thumbnails?.firstOrNull()?.url )
+            ImageFactory.rememberAsyncImagePainter( playlistPage?.thumbnails?.firstOrNull()?.url )
 
         DynamicOrientationLayout(thumbnailPainter) {
             Box( Modifier.fillMaxSize() ) {

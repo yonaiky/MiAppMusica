@@ -37,6 +37,7 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastJoinToString
 import androidx.compose.ui.util.fastZip
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
@@ -53,7 +54,6 @@ import it.fast4x.rimusic.utils.shimmerEffect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.mapLatest
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.innertube.model.InnertubePlaylist
 import me.knighthat.innertube.response.Runs
 
@@ -133,7 +133,7 @@ object PlaylistItem {
             modifier = modifier.requiredSize( widthDp )
                                .padding( bottom = VERTICAL_SPACING.dp ),
         ) {
-            ImageCacheFactory.Thumbnail(
+            ImageFactory.AsyncImage(
                 thumbnailUrl = thumbnailUrl,
                 contentScale = ContentScale.FillWidth
             )
@@ -190,7 +190,7 @@ object PlaylistItem {
             Box( modifier.requiredSize( sizeDp ) )
         else if( thumbnailUrls.size < 4 )
             Box( modifier.requiredSize( sizeDp ) ) {
-                ImageCacheFactory.Thumbnail(
+                ImageFactory.AsyncImage(
                     thumbnailUrl = if( useRandom ) thumbnailUrls.random() else thumbnailUrls.first(),
                     contentScale = ContentScale.Fit
                 )
@@ -220,7 +220,7 @@ object PlaylistItem {
 
                 CORNERS.fastZip( thumbnailUrls.toList(), Alignment::to )
                             .fastForEach { (corner, url) ->
-                                ImageCacheFactory.Thumbnail(
+                                ImageFactory.AsyncImage(
                                     thumbnailUrl = url,
                                     // Some thumbnails aren't in 1:1 ratio (4:3, 16:9, etc.)
                                     // Without [contentScale], the image is *squished*

@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.utils.innertube.toArtist
 import app.kreate.android.utils.scrollingText
@@ -35,7 +36,6 @@ import it.fast4x.rimusic.ui.styling.Typography
 import it.fast4x.rimusic.utils.asArtist
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shimmerEffect
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.innertube.model.InnertubeArtist
 
 object ArtistItem {
@@ -83,7 +83,7 @@ object ArtistItem {
             modifier.requiredSize( widthDp )
                                .padding( bottom = VERTICAL_SPACING.dp ),
         ) {
-            ImageCacheFactory.Thumbnail(
+            ImageFactory.AsyncImage(
                 thumbnailUrl = thumbnailUrl,
                 contentScale = ContentScale.FillWidth
             )

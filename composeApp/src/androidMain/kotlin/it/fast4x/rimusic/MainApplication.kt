@@ -3,15 +3,12 @@ package it.fast4x.rimusic
 import android.app.Application
 import androidx.compose.runtime.getValue
 import app.kreate.android.Preferences
-import coil.ImageLoader
-import coil.ImageLoaderFactory
 import it.fast4x.rimusic.utils.CaptureCrash
 import it.fast4x.rimusic.utils.FileLoggingTree
-import me.knighthat.coil.ImageCacheFactory
 import timber.log.Timber
 import java.io.File
 
-class MainApplication : Application(), ImageLoaderFactory {
+class MainApplication : Application() {
 
     override fun onCreate() {
         Preferences.load( this )
@@ -44,9 +41,6 @@ class MainApplication : Application(), ImageLoaderFactory {
 
         super.onTerminate()
     }
-
-    override fun newImageLoader(): ImageLoader = ImageCacheFactory.LOADER
-
 }
 
 object Dependencies {

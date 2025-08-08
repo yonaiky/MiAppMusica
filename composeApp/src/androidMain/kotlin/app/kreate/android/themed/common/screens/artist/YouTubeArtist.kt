@@ -60,6 +60,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
@@ -104,7 +105,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.artist.FollowButton
 import me.knighthat.component.tab.Radio
 import me.knighthat.component.tab.SongShuffler
@@ -353,7 +353,7 @@ fun YouTubeArtist(
             SongItem.Values.from( colorPalette, typography )
         }
 
-        val thumbnailPainter = ImageCacheFactory.Painter( dbArtist?.thumbnailUrl )
+        val thumbnailPainter = ImageFactory.rememberAsyncImagePainter( dbArtist?.thumbnailUrl )
         DynamicOrientationLayout( thumbnailPainter ) {
             PullToRefreshBox(
                 isRefreshing = isRefreshing,
