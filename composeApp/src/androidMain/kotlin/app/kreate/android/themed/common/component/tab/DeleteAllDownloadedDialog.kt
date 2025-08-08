@@ -74,7 +74,7 @@ class DeleteAllDownloadedDialog(
             )
 
             BasicText(
-                text = stringResource( R.string.this_action_is_irreversible ),
+                text = stringResource( R.string.dialog_text_this_action_is_irreversible ),
                 style = typography().s.bold.copy( colorResource( R.color.red_warning ) )
             )
         }

@@ -7,6 +7,7 @@ kotlin-ksp = "2.2.0-2.0.2"
 compose = "1.8.3"
 compose-activity = "1.10.1"
 shimmer = "1.3.3"
+coil = "2.7.0"
 coil3 = "3.3.0"
 room = "2.7.2"
 sqlite = "2.5.2"
@@ -97,6 +98,7 @@ okhttp3-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref 
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp3" }
 
 # Coil
+compose-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil3-compose-core = { group = "io.coil-kt.coil3", name = "coil-compose-core", version.ref = "coil3" }
 coil3-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil3" }
 

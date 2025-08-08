@@ -25,6 +25,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.themed.common.component.settings.SettingComponents
+import app.kreate.android.themed.common.component.settings.data.ExoCacheIndicator
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.screen.home.onDevice.OnDeviceSong
@@ -32,7 +34,6 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.BuiltInPlaylist
-import it.fast4x.rimusic.enums.CacheType
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
@@ -42,7 +43,6 @@ import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.tab.toolbar.Button
-import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
@@ -67,7 +67,7 @@ import timber.log.Timber
 @Composable
 fun HomeSongsScreen(navController: NavController ) {
     // Essentials
-    val binder = LocalPlayerServiceBinder.current
+    val binder = LocalPlayerServiceBinder.current ?: return
     val lazyListState = rememberLazyListState()
     val menuState = LocalMenuState.current
 
@@ -189,12 +189,15 @@ fun HomeSongsScreen(navController: NavController ) {
 
                     when (builtInPlaylist) {
                         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Offline -> {
-                            CacheSpaceIndicator(
-                                cacheType = when (builtInPlaylist) {
-                                    BuiltInPlaylist.Downloaded -> CacheType.DownloadedSongs
-                                    BuiltInPlaylist.Offline -> CacheType.CachedSongs
-                                    else -> CacheType.CachedSongs
-                                }
+                            val indicator = remember( builtInPlaylist, binder.cache ) {
+                                ExoCacheIndicator( binder.cache )
+                            }
+                            indicator.ProgressBar(
+                                Modifier.padding(
+                                            horizontal = SettingComponents.HORIZONTAL_PADDING.dp,
+                                            vertical = 12.dp
+                                        )
+                                        .fillMaxWidth()
                             )
                         }
                         else -> {}

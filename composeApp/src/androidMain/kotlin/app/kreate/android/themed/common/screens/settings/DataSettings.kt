@@ -30,28 +30,21 @@ import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.common.component.settings.RestartPlayerService
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
+import app.kreate.android.themed.common.component.settings.data.ExoCacheIndicator
+import app.kreate.android.themed.common.component.settings.data.ImageCacheIndicator
 import app.kreate.android.themed.common.component.settings.entry
 import app.kreate.android.themed.common.component.settings.header
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.CacheType
 import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.service.MyDownloadHelper
-import it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
-import it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
-import it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import it.fast4x.rimusic.ui.components.themed.InputNumericDialog
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.asMediaItem
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import me.knighthat.component.export.ExportDatabaseDialog
 import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
@@ -73,53 +66,13 @@ fun DataSettings( paddingValues: PaddingValues ) {
     var showExoPlayerCustomCacheDialog by remember { mutableStateOf(false) }
     var showCoilCustomDiskCacheDialog by remember { mutableStateOf(false) }
 
-    var cleanCacheImages by remember { mutableStateOf( false ) }
-    if ( cleanCacheImages ) {
-        ConfirmationDialog(
-            text = stringResource(R.string.do_you_really_want_to_delete_cache),
-            onDismiss = {
-                cleanCacheImages = false
-            },
-            onConfirm = ImageFactory.diskCache::clear
-        )
+    val progressBarModifier = remember {
+        Modifier.padding(
+                    horizontal = SettingComponents.HORIZONTAL_PADDING.dp,
+                    vertical = 12.dp
+                )
+                .fillMaxWidth()
     }
-
-    var cleanCacheOfflineSongs by remember { mutableStateOf( false ) }
-    if ( cleanCacheOfflineSongs )
-        ConfirmationDialog(
-            text = stringResource(R.string.do_you_really_want_to_delete_cache),
-            onDismiss = {
-                cleanCacheOfflineSongs = false
-            },
-            onConfirm = {
-                binder?.cache?.keys?.forEach { song ->
-                    binder.cache.removeResource(song)
-                }
-            }
-        )
-
-    var cleanDownloadCache by remember { mutableStateOf( false ) }
-    if ( cleanDownloadCache )
-        ConfirmationDialog(
-            text = stringResource(R.string.do_you_really_want_to_delete_cache),
-            onDismiss = {
-                cleanDownloadCache = false
-            },
-            onConfirm = {
-                binder?.downloadCache?.keys?.forEach { songId ->
-                    binder.downloadCache.removeResource(songId)
-
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Database.songTable
-                                .findById( songId )
-                                .first()
-                                ?.asMediaItem
-                                ?.let { MyDownloadHelper.removeDownload( context, it ) }
-                    }
-                }
-            }
-        )
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -144,9 +97,13 @@ fun DataSettings( paddingValues: PaddingValues ) {
                 subtitle = { stringResource( R.string.cache_cleared ) }
             )
             entry( search, R.string.image_cache_max_size ) {
-                ImageFactory.diskCache.size.let { diskCacheSize ->
+                ImageFactory.diskCache.let { cache ->
+                    val diskCacheSize = cache.size
                     var coilCustomDiskCache by Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
                     val coilDiskCacheMaxSize by Preferences.THUMBNAIL_CACHE_SIZE
+                    val indicator = remember( cache ) {
+                        ImageCacheIndicator( cache )
+                    }
 
                     val subtitle by remember { derivedStateOf {
                         // How much space taken by this cache
@@ -175,12 +132,7 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         subtitle = Preferences.THUMBNAIL_CACHE_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
-                            HeaderIconButton(
-                                icon = R.drawable.trash,
-                                enabled = true,
-                                color = colorPalette().text,
-                                onClick = { cleanCacheImages = true }
-                            )
+                            indicator.ToolBarButton()
                         }
                     ) {
                         if (coilDiskCacheMaxSize == CoilDiskCacheMaxSize.Custom)
@@ -207,13 +159,17 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         )
                     }
 
-                    CacheSpaceIndicator(cacheType = CacheType.Images, horizontalPadding = 20.dp)
+                    indicator.ProgressBar( progressBarModifier )
                 }
             }
             entry( search, R.string.song_cache_max_size ) {
-                binder?.cache?.cacheSpace?.let { diskCacheSize ->
+                binder?.cache?.let { cache ->
+                    val diskCacheSize = cache.cacheSpace
                     var exoPlayerCustomCache by Preferences.SONG_CACHE_CUSTOM_SIZE
                     val exoPlayerDiskCacheMaxSize by Preferences.SONG_CACHE_SIZE
+                    val indicator = remember( cache ) {
+                        ExoCacheIndicator( cache )
+                    }
 
                     val subtitle by remember( diskCacheSize ) { derivedStateOf {
                         // How much space taken by this cache
@@ -250,12 +206,7 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         subtitle = Preferences.SONG_CACHE_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
-                            HeaderIconButton(
-                                icon = R.drawable.trash,
-                                enabled = true,
-                                color = colorPalette().text,
-                                onClick = { cleanCacheImages = true }
-                            )
+                            indicator.ToolBarButton()
                         }
                     ) {
                         if (exoPlayerDiskCacheMaxSize == ExoPlayerDiskCacheMaxSize.Custom)
@@ -283,12 +234,16 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         )
                     }
 
-                    CacheSpaceIndicator(cacheType = CacheType.CachedSongs, horizontalPadding = 20.dp)
+                    indicator.ProgressBar( progressBarModifier )
                 }
             }
             entry( search, R.string.song_download_max_size ) {
-                binder?.downloadCache?.cacheSpace?.let { diskCacheSize ->
+                binder?.downloadCache?.let { cache ->
+                    val diskCacheSize = cache.cacheSpace
                     val exoPlayerDiskDownloadCacheMaxSize by Preferences.SONG_DOWNLOAD_SIZE
+                    val indicator = remember( cache ) {
+                        ExoCacheIndicator( cache )
+                    }
 
                     val subtitle by remember( diskCacheSize ) { derivedStateOf {
                         // How much space taken by this cache
@@ -314,16 +269,11 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         subtitle = Preferences.SONG_DOWNLOAD_SIZE.value.text + subtitle,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
                         trailingContent = {
-                            HeaderIconButton(
-                                icon = R.drawable.trash,
-                                enabled = true,
-                                color = colorPalette().text,
-                                onClick = { cleanDownloadCache = true }
-                            )
+                            indicator.ToolBarButton()
                         }
                     )
 
-                    CacheSpaceIndicator(cacheType = CacheType.DownloadedSongs, horizontalPadding = 20.dp)
+                    indicator.ProgressBar( progressBarModifier )
                 }
             }
 
