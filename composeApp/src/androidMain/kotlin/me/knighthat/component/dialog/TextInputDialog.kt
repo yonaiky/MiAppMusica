@@ -70,7 +70,7 @@ abstract class TextInputDialog(
             keyboardOptions = keyboardOption,
             leadingIcon = { LeadingIcon() },
             trailingIcon = { TrailingIcon() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth( .9f )
                                .conditional( keyboardOption.keyboardType == KeyboardType.Password
                                        || keyboardOption.keyboardType == KeyboardType.NumberPassword
                                ) {
