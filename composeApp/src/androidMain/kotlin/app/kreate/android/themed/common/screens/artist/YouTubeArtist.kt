@@ -64,10 +64,10 @@ import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
+import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
-import app.kreate.android.utils.innertube.toOldInnertubePlaylist
 import app.kreate.android.utils.innertube.toSong
 import app.kreate.android.utils.renderDescription
 import app.kreate.android.utils.scrollingText
@@ -87,7 +87,6 @@ import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.Enqueue
 import it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import it.fast4x.rimusic.ui.components.themed.PlayNext
-import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -210,6 +209,9 @@ private fun LazyListScope.renderSection(
     val artistItemValues = remember( appearance ) {
         ArtistItem.Values.from( appearance )
     }
+    val playlistItemValues = remember( appearance ) {
+        PlaylistItem.Values.from( appearance )
+    }
 
     LazyRow {
         this@LazyRow.items(
@@ -221,11 +223,10 @@ private fun LazyListScope.renderSection(
                     AlbumItem.Vertical( item, albumThumbnailSizeDp, albumItemValues )
 
                 is InnertubePlaylist ->
-                    PlaylistItem(
-                        playlist = item.toOldInnertubePlaylist,
-                        alternative = true,
-                        thumbnailSizePx = albumThumbnailSizePx,
-                        thumbnailSizeDp = albumThumbnailSizeDp,
+                    PlaylistItem.Vertical(
+                        innertubePlaylist = item,
+                        widthDp = albumThumbnailSizeDp,
+                        values = playlistItemValues,
                         modifier = Modifier.clickable {
                             NavRoutes.YT_PLAYLIST.navigateHere(navController, item.id)
                         }

@@ -38,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -54,9 +53,8 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
+import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -71,7 +69,6 @@ import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
-import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -85,13 +82,13 @@ import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.formatAsTime
 import it.fast4x.rimusic.utils.semiBold
-import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
@@ -181,6 +178,10 @@ fun StatisticsPage(
         StatisticsCategory.Albums to StatisticsCategory.Albums.text,
         StatisticsCategory.Playlists to StatisticsCategory.Playlists.text
     )
+
+    val playlistItemValues = remember( colorPalette, typography ) {
+        PlaylistItem.Values.from( colorPalette, typography )
+    }
 
     Box(
         modifier = Modifier
@@ -388,73 +389,18 @@ fun StatisticsPage(
                         )
                     }
 
-                if (statisticsCategory == StatisticsCategory.Playlists) {
+                if (statisticsCategory == StatisticsCategory.Playlists)
                     items(
-                        count = playlists.count()
-                    ) {
-                        val thumbnails by remember {
-                            Database.songPlaylistMapTable
-                                    .sortSongsByPlayTime( playlists[it].playlist.id )
-                                    .distinctUntilChanged()
-                                    .map { list ->
-                                        list.takeLast( 4 ).map { song ->
-                                            song.thumbnailUrl.thumbnail( playlistThumbnailSizePx / 2 )
-                                        }
-                                    }
-                        }.collectAsState( emptyList(), Dispatchers.IO )
-
-                        PlaylistItem(
-                            thumbnailContent = {
-                                if (thumbnails.toSet().size == 1) {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(thumbnails.first())
-                                            .setHeader("User-Agent", "Mozilla/5.0")
-                                            .build(), //thumbnails.first().thumbnail(thumbnailSizePx),
-                                        onError = {error ->
-                                            Timber.e("Failed AsyncImage in PlaylistItem ${error.result.throwable.stackTraceToString()}")
-                                        },
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                    )
-                                } else {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                    ) {
-                                        listOf(
-                                            Alignment.TopStart,
-                                            Alignment.TopEnd,
-                                            Alignment.BottomStart,
-                                            Alignment.BottomEnd
-                                        ).forEachIndexed { index, alignment ->
-                                            val thumbnail = thumbnails.getOrNull(index)
-                                            if (thumbnail != null)
-                                                AsyncImage(
-                                                    model = ImageRequest.Builder(LocalContext.current)
-                                                        .data(thumbnail)
-                                                        .setHeader("User-Agent", "Mozilla/5.0")
-                                                        .build(),
-                                                    onError = {error ->
-                                                        Timber.e("Failed AsyncImage 1 in PlaylistItem ${error.result.throwable.stackTraceToString()}")
-                                                    },
-                                                    contentDescription = null,
-                                                    contentScale = ContentScale.Crop,
-                                                    modifier = Modifier
-                                                        .align(alignment)
-                                                        .size(playlistThumbnailSizeDp /2)
-                                                )
-                                        }
-                                    }
-                                }
-                            },
-                            songCount = playlists[it].songCount,
-                            name = "${it+1}. ${playlists[it].playlist.name}",
-                            channelName = null,
-                            thumbnailSizeDp = playlistThumbnailSizeDp,
-                            alternative = true,
+                        items = playlists,
+                        key = { p -> p.playlist.id }
+                    ) { preview ->
+                        PlaylistItem.Vertical(
+                            playlist = preview.playlist,
+                            widthDp = playlistThumbnailSizeDp,
+                            values = playlistItemValues,
+                            songCount = preview.songCount,
                             modifier = Modifier.clickable {
-                                val playlist = playlists[it].playlist
+                                val playlist = preview.playlist
                                 val route: NavRoutes
                                 val path: String
 
@@ -470,9 +416,6 @@ fun StatisticsPage(
                             }
                         )
                     }
-                }
-
-
             }
 
             Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))

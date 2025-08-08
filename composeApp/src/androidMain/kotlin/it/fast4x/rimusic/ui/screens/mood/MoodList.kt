@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
+import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -49,7 +50,6 @@ import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
-import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -140,6 +140,9 @@ fun MoodList(
                         val artistItemValues = remember( appearance ) {
                             ArtistItem.Values.from( appearance )
                         }
+                        val playlistItemValues = remember( appearance ) {
+                            PlaylistItem.Values.from( appearance )
+                        }
 
                         LazyRow {
                             items(items = item.items, key = { it.key }) { childItem ->
@@ -167,11 +170,10 @@ fun MoodList(
                                         }
                                     )
 
-                                    is Innertube.PlaylistItem -> PlaylistItem(
-                                        playlist = childItem,
-                                        thumbnailSizePx = thumbnailSizePx,
-                                        thumbnailSizeDp = thumbnailSizeDp,
-                                        alternative = true,
+                                    is Innertube.PlaylistItem -> PlaylistItem.Vertical(
+                                        innertubePlaylist = childItem,
+                                        widthDp = thumbnailSizeDp,
+                                        values = playlistItemValues,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let { browseId ->
                                                 NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId )

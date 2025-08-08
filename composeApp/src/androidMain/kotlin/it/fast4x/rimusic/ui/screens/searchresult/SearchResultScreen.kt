@@ -31,6 +31,7 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
+import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -51,8 +52,6 @@ import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.Title
-import it.fast4x.rimusic.ui.items.PlaylistItem
-import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -69,11 +68,13 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.playVideo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
@@ -537,6 +538,10 @@ fun SearchResultScreen(
                     val thumbnailSizeDp = Dimensions.thumbnails.playlist
                     val thumbnailSizePx = thumbnailSizeDp.px
 
+                    val playlistItemValues = remember( colorPalette, typography ) {
+                        PlaylistItem.Values.from( colorPalette, typography )
+                    }
+
                     ItemsPage(
                         tag = "searchResults/$query/${
                             when (currentTabIndex) {
@@ -565,19 +570,17 @@ fun SearchResultScreen(
                         emptyItemsText = emptyItemsText,
                         headerContent = headerContent,
                         itemContent = { playlist ->
-                            PlaylistItem(
-                                playlist = playlist,
-                                thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                showSongsCount = false,
-                                modifier = Modifier
-                                    .clickable(onClick = {
-                                        NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
-                                    })
+                            PlaylistItem.Horizontal(
+                                innertubePlaylist = playlist,
+                                heightDp = thumbnailSizeDp,
+                                values = playlistItemValues,
+                                modifier = Modifier.clickable {
+                                    NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
+                                }
                             )
                         },
                         itemPlaceholderContent = {
-                            PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)
+                            PlaylistItem.VerticalPlaceholder( thumbnailSizeDp )
                         }
                     )
                 }
@@ -585,6 +588,10 @@ fun SearchResultScreen(
                 6 -> {
                     val thumbnailSizeDp = Dimensions.thumbnails.playlist
                     val thumbnailSizePx = thumbnailSizeDp.px
+
+                    val playlistItemValues = remember( colorPalette, typography ) {
+                        PlaylistItem.Values.from( colorPalette, typography )
+                    }
 
                     ItemsPage(
                         tag = "searchResults/$query/podcasts",
@@ -606,19 +613,17 @@ fun SearchResultScreen(
                         emptyItemsText = emptyItemsText,
                         headerContent = headerContent,
                         itemContent = { playlist ->
-                            PlaylistItem(
-                                playlist = playlist,
-                                thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                showSongsCount = false,
+                            PlaylistItem.Vertical(
+                                innertubePlaylist = playlist,
+                                widthDp = thumbnailSizeDp,
+                                values = playlistItemValues,
                                 modifier = Modifier.clickable {
-                                    println("mediaItem searchResultScreen playlist key ${playlist.key}")
                                     NavRoutes.podcast.navigateHere( navController, playlist.key )
                                 }
                             )
                         },
                         itemPlaceholderContent = {
-                            PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp)
+                            PlaylistItem.VerticalPlaceholder( thumbnailSizeDp )
                         }
                     )
                 }

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
+import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MONTHLY_PREFIX
@@ -51,13 +52,15 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.isNetworkConnected
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @UnstableApi
@@ -356,14 +359,18 @@ fun PlaylistsItemGridMenu(
                         .calculateBottomPadding()
                 ),
                 topContent = {
-                    if (playlist != null) {
-                        PlaylistItem(
-                            playlist = playlist,
-                            thumbnailSizePx = thumbnailSizePx,
-                            thumbnailSizeDp = thumbnailSizeDp,
-                            modifier = Modifier.height(90.dp),
-                            isYoutubePlaylist = playlist.playlist.isYoutubePlaylist,
-                            isEditable = playlist.playlist.isEditable
+                    playlist?.also { preview ->
+                        val appearance = LocalAppearance.current
+                        val playlistItemValues = remember( appearance ) {
+                            PlaylistItem.Values.from( appearance )
+                        }
+
+                        PlaylistItem.Horizontal(
+                            playlist = preview.playlist,
+                            heightDp = thumbnailSizeDp,
+                            values = playlistItemValues,
+                            modifier = Modifier.height( 90.dp ),
+                            songCount = preview.songCount
                         )
                     }
                 }

@@ -5,13 +5,13 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -22,25 +22,23 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFilter
-import androidx.compose.ui.util.fastMap
-import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.Search
+import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
@@ -54,7 +52,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.models.PlaylistPreview
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
@@ -63,15 +60,15 @@ import it.fast4x.rimusic.ui.components.tab.TabHeader
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.items.PlaylistItem
 import it.fast4x.rimusic.ui.styling.Dimensions
+import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.autoSyncToolbutton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -79,9 +76,11 @@ import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.component.tab.ImportSongsFromCSV
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.innertube.Innertube
+import me.knighthat.innertube.model.InnertubePlaylist
 import me.knighthat.utils.Toaster
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExperimentalMaterial3Api
 @UnstableApi
 @SuppressLint("SuspiciousIndentation")
@@ -96,16 +95,35 @@ fun HomeLibrary(
     // Essentials
     val lazyGridState = rememberLazyGridState()
     val menuState = LocalMenuState.current
+    val appearance = LocalAppearance.current
 
     // Non-vital
     var playlistType by Preferences.HOME_LIBRARY_TYPE
+    val listPrefix by remember {derivedStateOf {
+        when( playlistType ) {
+            PlaylistsType.Playlist -> ""    // Matches everything
+            PlaylistsType.PinnedPlaylist -> PINNED_PREFIX
+            PlaylistsType.MonthlyPlaylist -> MONTHLY_PREFIX
+            PlaylistsType.YTPlaylist -> YTP_PREFIX
+        }
+    }}
 
     var items by persistList<PlaylistPreview>("home/playlists")
-    val onlinePlaylists = remember { mutableStateListOf<PlaylistPreview>() }
-
-    var itemsOnDisplay by persistList<PlaylistPreview>("home/playlists/on_display")
+    var onlinePlaylists by remember { mutableStateOf( emptyList<InnertubePlaylist>() ) }
 
     val search = remember { Search(lazyGridState) }
+
+    val itemsOnDisplay by remember {derivedStateOf {
+        items.fastFilter {
+                 (playlistType == PlaylistsType.YTPlaylist && it.playlist.isYoutubePlaylist)
+                         || it.playlist.name.startsWith( listPrefix, true )
+             }
+             .fastFilter { search appearsIn it.playlist.cleanName() }
+    }}
+    val onlineOnDisplay by remember {derivedStateOf {
+        onlinePlaylists.fastFilter { listPrefix.isBlank() || playlistType == PlaylistsType.YTPlaylist }
+                       .fastFilter { search appearsIn it.name }
+    }}
 
     val sort = remember {
         Sort(menuState, Preferences.HOME_LIBRARY_SORT_BY, Preferences.HOME_LIBRARY_SORT_ORDER)
@@ -141,22 +159,9 @@ fun HomeLibrary(
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
         Database.playlistTable
                 .sortPreviews( sort.sortBy, sort.sortOrder )
-                .combine( snapshotFlow { onlinePlaylists.toList() } ) { a, b ->
-                    // If playlist is imported by user, then don't make it show up again
-                    val browseIds = a.fastMapNotNull { it.playlist.browseId }.toSet()
-                    val filteredB = b.fastFilter { it.playlist.browseId !in browseIds }
-
-                    // Make online playlist stay on top
-                    filteredB + a
-                }
                 .distinctUntilChanged()
                 .flowOn(Dispatchers.Default )
                 .collectLatest { items = it }
-    }
-    LaunchedEffect( items, search.input ) {
-        itemsOnDisplay = items.filter {
-            search appearsIn it.playlist.name
-        }
     }
     LaunchedEffect( Unit ) {
         if(
@@ -168,20 +173,7 @@ fun HomeLibrary(
         CoroutineScope( Dispatchers.IO ).launch {
             Innertube.library( CURRENT_LOCALE )
                      .onSuccess {
-                         it.fastMap { playlist ->
-                                 PlaylistPreview(
-                                     playlist = Playlist(
-                                         id = 0,
-                                         name = playlist.name,
-                                         browseId = playlist.id,
-                                         isEditable = false,
-                                         isYoutubePlaylist = true
-                                     ),
-                                     songCount = 0,
-                                     thumbnailUrl = playlist.thumbnails.firstOrNull()?.url
-                                 )
-                             }
-                             .also( onlinePlaylists::addAll )
+                         onlinePlaylists = it
                      }
                      .onFailure {
                          it.printStackTrace()
@@ -228,6 +220,10 @@ fun HomeLibrary(
         }
     }
 
+    val playlistItemValues = remember( appearance ) {
+        PlaylistItem.Values.from( appearance )
+    }
+
     PullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = ::refresh
@@ -259,8 +255,9 @@ fun HomeLibrary(
                 LazyVerticalGrid(
                     state = lazyGridState,
                     columns = GridCells.Adaptive( itemSize.size.dp ),
-                    modifier = Modifier
-                        .background(colorPalette().background0)
+                    modifier = Modifier.background( colorPalette().background0 ),
+                    verticalArrangement = Arrangement.spacedBy( PlaylistItem.ROW_SPACING.dp ),
+                    contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer)
                 ) {
                     item(
                         key = "separator",
@@ -274,57 +271,37 @@ fun HomeLibrary(
                         )
                     }
 
-                    val listPrefix =
-                        when( playlistType ) {
-                            PlaylistsType.Playlist -> ""    // Matches everything
-                            PlaylistsType.PinnedPlaylist -> PINNED_PREFIX
-                            PlaylistsType.MonthlyPlaylist -> MONTHLY_PREFIX
-                            PlaylistsType.YTPlaylist -> YTP_PREFIX
-                        }
-                    val condition: (PlaylistPreview) -> Boolean = {
-                        if (playlistType == PlaylistsType.YTPlaylist){
-                            it.playlist.isYoutubePlaylist
-                        } else it.playlist.name.startsWith( listPrefix, true )
-                    }
                     items(
-                        items = itemsOnDisplay.filter( condition ),
-                        key = System::identityHashCode
-                    ) { preview ->
-                        PlaylistItem(
-                            playlist = preview,
-                            thumbnailSizeDp = itemSize.size.dp,
-                            thumbnailSizePx = itemSize.size.px,
-                            alternative = true,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                                .clickable(onClick = {
-                                    search.hideIfEmpty()
+                        items = onlineOnDisplay,
+                        key = InnertubePlaylist::id
+                    ) { playlist ->
+                        PlaylistItem.Vertical(
+                            innertubePlaylist = playlist,
+                            widthDp = itemSize.size.dp,
+                            values = playlistItemValues,
+                            modifier = Modifier.clickable {
+                                search.hideIfEmpty()
 
-                                    if ( preview in onlinePlaylists )
-                                        NavRoutes.YT_PLAYLIST.navigateHere(
-                                            navController,
-                                            preview.playlist.browseId
-                                        )
-                                    else
-                                        NavRoutes.localPlaylist.navigateHere(
-                                            navController,
-                                            preview.playlist.id
-                                        )
-                                }),
-                            isYoutubePlaylist = preview.playlist.isYoutubePlaylist,
-                            isEditable = preview.playlist.isEditable
+                                NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.id )
+                            }
                         )
                     }
+                    items(
+                        items = itemsOnDisplay,
+                        key = System::identityHashCode
+                    ) { preview ->
+                        PlaylistItem.Vertical(
+                            playlist = preview.playlist,
+                            widthDp = itemSize.size.dp,
+                            values = playlistItemValues,
+                            songCount = preview.songCount,
+                            modifier = Modifier.clickable {
+                                search.hideIfEmpty()
 
-                    item(
-                        key = "footer",
-                        contentType = 0,
-                        span = { GridItemSpan(maxLineSpan) }
-                    ) {
-                        Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
+                                NavRoutes.localPlaylist.navigateHere( navController, preview.playlist.id )
+                            }
+                        )
                     }
-
                 }
             }
 

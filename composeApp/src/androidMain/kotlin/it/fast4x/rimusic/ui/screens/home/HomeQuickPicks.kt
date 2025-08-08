@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
@@ -68,10 +67,10 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
+import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
-import app.kreate.android.utils.innertube.toOldInnertubePlaylist
 import app.kreate.android.utils.scrollingText
 import it.fast4x.compose.persist.persist
 import it.fast4x.compose.persist.persistList
@@ -106,8 +105,6 @@ import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
-import it.fast4x.rimusic.ui.items.PlaylistItem
-import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.styling.Dimensions
@@ -132,6 +129,7 @@ import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -146,7 +144,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
@@ -583,6 +581,9 @@ fun HomeQuickPicks(
                 val artistItemValues = remember( colorPalette, typography ) {
                     ArtistItem.Values.from( colorPalette, typography )
                 }
+                val playlistItemValues = remember( colorPalette, typography ) {
+                    PlaylistItem.Values.from( colorPalette, typography )
+                }
 
                 discoverPageInit?.let { page ->
                     val artists by remember {
@@ -724,18 +725,18 @@ fun HomeQuickPicks(
                                 .padding(top = 24.dp, bottom = 8.dp)
                         )
 
-                        LazyRow(contentPadding = endPaddingValues) {
+                        LazyRow(
+                            contentPadding = endPaddingValues,
+                            horizontalArrangement = Arrangement.spacedBy( PlaylistItem.COLUMN_SPACING.dp )
+                        ) {
                             items(
                                 items = playlists.distinctBy { it.key },
                                 key = Innertube.PlaylistItem::key,
                             ) { playlist ->
-                                PlaylistItem(
-                                    playlist = playlist,
-                                    thumbnailSizePx = playlistThumbnailSizePx,
-                                    thumbnailSizeDp = playlistThumbnailSizeDp,
-                                    alternative = true,
-                                    showSongsCount = false,
-                                    isYoutubePlaylist = true,
+                                PlaylistItem.Vertical(
+                                    innertubePlaylist = playlist,
+                                    widthDp = playlistThumbnailSizeDp,
+                                    values = playlistItemValues,
                                     modifier = Modifier.clickable {
                                         NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
                                     }
@@ -807,27 +808,22 @@ fun HomeQuickPicks(
                                     .padding(top = 24.dp, bottom = 8.dp)
                             )
 
-                            LazyRow(contentPadding = endPaddingValues) {
+                            LazyRow(
+                                contentPadding = endPaddingValues,
+                                horizontalArrangement = Arrangement.spacedBy( PlaylistItem.COLUMN_SPACING.dp )
+                            ) {
                                 items(
                                     items = playlists.distinctBy { it.playlist.id },
                                     key = { it.playlist.id }
-                                ) { playlist ->
-                                    PlaylistItem(
-                                        playlist = playlist,
-                                        thumbnailSizeDp = playlistThumbnailSizeDp,
-                                        thumbnailSizePx = playlistThumbnailSizePx,
-                                        alternative = true,
-                                        modifier = Modifier
-                                            .animateItem(
-                                                fadeInSpec = null,
-                                                fadeOutSpec = null
-                                            )
-                                            .fillMaxSize()
-                                            .clickable {
-                                                NavRoutes.localPlaylist.navigateHere( navController, playlist.playlist.id )
-                                            },
-                                        isYoutubePlaylist = playlist.playlist.isYoutubePlaylist,
-                                        isEditable = playlist.playlist.isEditable
+                                ) { preview ->
+                                    PlaylistItem.Vertical(
+                                        playlist = preview.playlist,
+                                        widthDp = playlistThumbnailSizeDp,
+                                        values = playlistItemValues,
+                                        showSongCount = false,
+                                        modifier = Modifier.clickable {
+                                            NavRoutes.localPlaylist.navigateHere( navController, preview.playlist.id )
+                                        }
                                     )
                                 }
                             }
@@ -886,22 +882,26 @@ fun HomeQuickPicks(
                                 section.contents
                                     .fastMapNotNull { it as? InnertubePlaylist }
                                     .also {
+                                        val playlistItemValues = remember( colorPalette, typography ) {
+                                            PlaylistItem.Values.from( colorPalette, typography )
+                                        }
+
                                         LazyRow(
                                             contentPadding = endPaddingValues,
-                                            modifier = Modifier.wrapContentHeight()
+                                            modifier = Modifier.wrapContentHeight(),
+                                            horizontalArrangement = Arrangement.spacedBy( PlaylistItem.COLUMN_SPACING.dp )
                                         ) {
                                             items(
                                                 items = it,
                                                 key = InnertubePlaylist::hashCode
                                             ) { playlist ->
-                                                PlaylistItem(
-                                                    playlist = playlist.toOldInnertubePlaylist,
-                                                    thumbnailSizePx = playlistThumbnailSizePx,
-                                                    thumbnailSizeDp = playlistThumbnailSizeDp,
-                                                    alternative = true,
-                                                    showSongsCount = false,
-                                                    modifier = Modifier
-                                                        .clickable(onClick = { onPlaylistClick(playlist.id) })
+                                                PlaylistItem.Vertical(
+                                                    innertubePlaylist = playlist,
+                                                    widthDp = playlistThumbnailSizeDp,
+                                                    values = playlistItemValues,
+                                                    modifier = Modifier.clickable {
+                                                        onPlaylistClick( playlist.id )
+                                                    }
                                                 )
                                             }
                                         }
@@ -1111,14 +1111,13 @@ fun HomeQuickPicks(
 
                                     is Innertube.PlaylistItem -> {
                                         println("Innertube homePage PlaylistItem: ${item.info?.name}")
-                                        PlaylistItem(
-                                            playlist = item,
-                                            alternative = true,
-                                            thumbnailSizePx = playlistThumbnailSizePx,
-                                            thumbnailSizeDp = playlistThumbnailSizeDp,
-                                            modifier = Modifier.clickable(onClick = {
+                                        PlaylistItem.Vertical(
+                                            innertubePlaylist = item,
+                                            widthDp = playlistThumbnailSizeDp,
+                                            values = playlistItemValues,
+                                            modifier = Modifier.clickable {
                                                 NavRoutes.YT_PLAYLIST.navigateHere( navController, item.key )
-                                            })
+                                            }
                                         )
                                     }
 
@@ -1173,10 +1172,7 @@ fun HomeQuickPicks(
 
                         Row {
                             repeat(2) {
-                                PlaylistItemPlaceholder(
-                                    thumbnailSizeDp = albumThumbnailSizeDp,
-                                    alternative = true
-                                )
+                                PlaylistItem.VerticalPlaceholder( albumThumbnailSizeDp )
                             }
                         }
                     }

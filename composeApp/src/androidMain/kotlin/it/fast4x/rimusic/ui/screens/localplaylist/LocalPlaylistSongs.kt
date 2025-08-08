@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +58,7 @@ import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.ItemSelector
 import app.kreate.android.themed.rimusic.component.Search
+import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistSongsSort
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import app.kreate.android.themed.rimusic.component.song.SongItem
@@ -98,7 +100,6 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.IconInfo
 import it.fast4x.rimusic.ui.components.themed.ListenOnYouTube
 import it.fast4x.rimusic.ui.components.themed.PlayNext
-import it.fast4x.rimusic.ui.components.themed.Playlist
 import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.components.themed.ResetThumbnail
 import it.fast4x.rimusic.ui.components.themed.Synchronize
@@ -128,6 +129,7 @@ import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.saveImageToInternalStorage
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
@@ -145,6 +147,7 @@ import me.knighthat.utils.Toaster
 import timber.log.Timber
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @KotlinCsvExperimental
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation", "UnrememberedMutableState")
@@ -547,15 +550,12 @@ fun LocalPlaylistSongs(
                 ) {
 
                     playlist?.let {
-                        Playlist(
+                        PlaylistItem.Thumbnail(
                             playlist = it,
-                            songCount = items.size,
-                            thumbnailSizeDp = playlistThumbnailSizeDp,
-                            thumbnailSizePx = playlistThumbnailSizePx,
-                            alternative = true,
-                            showName = false,
-                            modifier = Modifier.padding(top = 14.dp),
-                            thumbnailUrl = if (thumbnailUrl.value == "") null else thumbnailUrl.value
+                            sizeDp = playlistThumbnailSizeDp,
+                            modifier = Modifier.padding( all = 14.dp )
+                                               .clip( thumbnailShape() ),
+                            showPlatformIcon = false
                         )
                     }
 
