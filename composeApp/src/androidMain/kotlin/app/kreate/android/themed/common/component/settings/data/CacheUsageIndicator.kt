@@ -64,7 +64,7 @@ abstract class CacheUsageIndicator: ConfirmDialog, Button {
             trackColor = colorPalette.textDisabled,
             strokeCap = StrokeCap.Round,
             gapSize = Dp.Hairline
-        )
+        ) {}
         super.Render()
     }
 
