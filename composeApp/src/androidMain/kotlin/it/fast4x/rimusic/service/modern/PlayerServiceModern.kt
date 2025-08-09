@@ -78,6 +78,7 @@ import app.kreate.android.R
 import app.kreate.android.service.createDataSourceFactory
 import app.kreate.android.service.newpipe.NewPipeDownloader
 import app.kreate.android.service.player.ExoPlayerListener
+import app.kreate.android.service.player.PlaybackController
 import app.kreate.android.service.player.VolumeFader
 import app.kreate.android.service.player.VolumeObserver
 import app.kreate.android.utils.centerCropBitmap
@@ -155,6 +156,7 @@ import java.io.IOException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempDirectory
+import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import android.os.Binder as AndroidBinder
@@ -480,7 +482,7 @@ class PlayerServiceModern:
             updateDownloadedState()
             println("PlayerServiceModern onCreate currentSongIsDownloaded ${currentSongStateDownload.value}")
 
-            listener.updateMediaControl()
+            listener.updateMediaControl( this@PlayerServiceModern, player )
             withContext(Dispatchers.Main) {
                 player.currentMediaItem?.also {
                     if( !isAtLeastAndroid6 || !Preferences.DISCORD_LOGIN.value ) return@also
@@ -838,64 +840,24 @@ class PlayerServiceModern:
             )
             .addAction(R.drawable.play_skip_forward, "Skip forward", nextIntent)
 
-        //***********************
-        val notificationPlayerFirstIcon by Preferences.MEDIA_NOTIFICATION_FIRST_ICON
-        val notificationPlayerSecondIcon by Preferences.MEDIA_NOTIFICATION_SECOND_ICON
+        //<editor-fold desc="Custom buttons">
+        val buttons = mutableListOf<Triple<Int, String, PendingIntent>>()
+        NotificationButtons.entries.fastForEach { button ->
+            val iconId = runBlocking {
+                PlaybackController.getIconId( player, button )
+            }
+            val triple = Triple(iconId, getString( button.textId ), button.pendingIntent)
 
-        NotificationButtons.entries.let { buttons ->
-            buttons
-                .filter { it == notificationPlayerFirstIcon }
-                .map {
-                    customNotify.addAction(
-                        it.getStateIcon(
-                            it,
-                            currentSong.value?.likedAt,
-                            currentSongStateDownload.value,
-                            player.repeatMode,
-                            player.shuffleModeEnabled
-                        ),
-                        appContext().resources.getString( it.textId ),
-                        it.pendingIntent
-                    )
-                }
+            if( button === Preferences.MEDIA_NOTIFICATION_FIRST_ICON.value )
+                buttons.add( 0, triple )
+            else if( button === Preferences.MEDIA_NOTIFICATION_SECOND_ICON.value )
+                buttons.add( min(1, buttons.size), triple )
         }
 
-        NotificationButtons.entries.let { buttons ->
-            buttons
-                .filter { it == notificationPlayerSecondIcon }
-                .map {
-                    customNotify.addAction(
-                        it.getStateIcon(
-                            it,
-                            currentSong.value?.likedAt,
-                            currentSongStateDownload.value,
-                            player.repeatMode,
-                            player.shuffleModeEnabled
-                        ),
-                        appContext().resources.getString( it.textId ),
-                        it.pendingIntent
-                    )
-                }
+        buttons.fastForEach { (iconId, title, intent) ->
+            customNotify.addAction( iconId, title, intent )
         }
-
-        NotificationButtons.entries.let { buttons ->
-            buttons
-                .filterNot { it == notificationPlayerFirstIcon || it == notificationPlayerSecondIcon }
-                .map {
-                    customNotify.addAction(
-                        it.getStateIcon(
-                            it,
-                            currentSong.value?.likedAt,
-                            currentSongStateDownload.value,
-                            player.repeatMode,
-                            player.shuffleModeEnabled
-                        ),
-                        appContext().resources.getString( it.textId ),
-                        it.pendingIntent
-                    )
-                }
-        }
-        //***********************
+        //</editor-fold>
 
         updateWallpaper( bitmapProvider.bitmap )
 
@@ -1043,7 +1005,7 @@ class PlayerServiceModern:
         }
         */
         println("PlayerServiceModern updateDownloadedState downloads count ${downloads.size} currentSongIsDownloaded ${currentSong.value?.id}")
-        listener.updateMediaControl()
+        listener.updateMediaControl( this@PlayerServiceModern, player )
     }
 
     @UnstableApi
@@ -1314,7 +1276,7 @@ class PlayerServiceModern:
                     songTable.rotateLikeState( it.id )
                 }.also {
                     currentSong.debounce(1000).collect(coroutineScope) {
-                        listener.updateMediaControl()
+                        listener.updateMediaControl( this@PlayerServiceModern, player )
                     }
                 }
             }
@@ -1334,12 +1296,12 @@ class PlayerServiceModern:
 
         fun toggleRepeat() {
             player.toggleRepeatMode()
-            listener.updateMediaControl()
+            listener.updateMediaControl( this@PlayerServiceModern, player )
         }
 
         fun toggleShuffle() {
             player.toggleShuffleMode()
-            listener.updateMediaControl()
+            listener.updateMediaControl( this@PlayerServiceModern, player )
         }
 
         fun actionSearch() {

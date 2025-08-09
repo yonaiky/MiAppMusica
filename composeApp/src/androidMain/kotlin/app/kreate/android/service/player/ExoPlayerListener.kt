@@ -1,5 +1,6 @@
 package app.kreate.android.service.player
 
+import android.content.Context
 import android.media.audiofx.LoudnessEnhancer
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
@@ -32,7 +33,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.utils.Toaster
@@ -88,60 +88,14 @@ class ExoPlayerListener(
      * (Re)render media control in notification area.
      */
     @AnyThread
-    fun updateMediaControl() {
-        suspend fun buildButton( button: NotificationButtons ): CommandButton {
-            val iconType = when( button ) {
-                NotificationButtons.Favorites -> {
-                    // Any call to [Player] must happen on main thread
-                    val isLiked =
-                        withContext( Dispatchers.Main ) { player.currentMediaItem }
-                            ?.mediaId
-                            ?.let {
-                                Database.songTable
-                                        .isLiked( it )
-                                        .first()
-                            } ?: false
-
-                    if( isLiked )
-                        CommandButton.ICON_THUMB_UP_FILLED
-                    else
-                        CommandButton.ICON_THUMB_UP_UNFILLED
-                }
-                NotificationButtons.Repeat -> {
-                    val repeatMode = withContext(Dispatchers.Main ) {
-                        player.repeatMode
-                    }
-
-                    when( repeatMode ) {
-                        Player.REPEAT_MODE_ALL -> CommandButton.ICON_REPEAT_ALL
-                        Player.REPEAT_MODE_OFF -> CommandButton.ICON_REPEAT_OFF
-                        Player.REPEAT_MODE_ONE -> CommandButton.ICON_REPEAT_ONE
-                        else -> throw IllegalStateException("Unknown repeat mode $repeatMode")
-                    }
-                }
-                NotificationButtons.Shuffle -> CommandButton.ICON_SHUFFLE_ON
-                NotificationButtons.Radio -> CommandButton.ICON_RADIO
-                NotificationButtons.Search,
-                NotificationButtons.Download-> CommandButton.ICON_UNDEFINED
-            }
-
-            return CommandButton.Builder( iconType )
-                                .setDisplayName( appContext().resources.getString( button.textId ) )
-                                .setSessionCommand( button.sessionCommand )
-                                .apply {
-                                    if( button === NotificationButtons.Search || button === NotificationButtons.Download )
-                                        setCustomIconResId( button.iconId )
-                                }
-                                .build()
-        }
-
+    fun updateMediaControl( context: Context, player: Player ) {
         CoroutineScope(Dispatchers.Default ).launch {
             var firstButton: CommandButton? = null
             var secondButton: CommandButton? = null
             val buttons = mutableListOf<CommandButton>()
 
             NotificationButtons.entries
-                .fastMap { it to buildButton( it ) }
+                .fastMap { it to PlaybackController.makeButton( context, player, it ) }
                 .fastForEach { (nBtn, cmdBtn) ->
                     when (nBtn) {
                         Preferences.MEDIA_NOTIFICATION_FIRST_ICON.value -> firstButton = cmdBtn
@@ -232,7 +186,7 @@ class ExoPlayerListener(
     override fun onPlayWhenReadyChanged( playWhenReady: Boolean, reason: Int ) = saveQueueToDatabase()
 
     override fun onRepeatModeChanged( repeatMode: Int ) {
-        updateMediaControl()
+        updateMediaControl( appContext(), this.player )
         Preferences.QUEUE_LOOP_TYPE.value = QueueLoopType.from( repeatMode )
     }
 
@@ -241,7 +195,7 @@ class ExoPlayerListener(
 
         maybeNormalizeVolume()
         loadFromRadio(reason)
-        updateMediaControl()
+        updateMediaControl( appContext(), this.player )
         updateBitmap()
     }
 
@@ -251,7 +205,7 @@ class ExoPlayerListener(
     }
 
     override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
-        updateMediaControl()
+        updateMediaControl( appContext(), this.player )
         if (shuffleModeEnabled) {
             val shuffledIndices = IntArray(player.mediaItemCount) { it }
             shuffledIndices.shuffle()
