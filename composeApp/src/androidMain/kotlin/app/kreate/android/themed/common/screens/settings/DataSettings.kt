@@ -1,22 +1,22 @@
 package app.kreate.android.themed.common.screens.settings
 
+import android.content.Context
 import android.text.format.Formatter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +30,7 @@ import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.common.component.settings.RestartPlayerService
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
+import app.kreate.android.themed.common.component.settings.StorageSizeInputDialog
 import app.kreate.android.themed.common.component.settings.data.ExoCacheIndicator
 import app.kreate.android.themed.common.component.settings.data.ImageCacheIndicator
 import app.kreate.android.themed.common.component.settings.entry
@@ -37,20 +38,68 @@ import app.kreate.android.themed.common.component.settings.header
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
-import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
-import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.ui.components.themed.InputNumericDialog
 import it.fast4x.rimusic.ui.styling.Dimensions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
+import me.knighthat.component.dialog.InputDialogConstraints
+import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
 import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
 import me.knighthat.component.import.ImportMigration
 import me.knighthat.component.import.ImportSettings
 import me.knighthat.utils.Toaster
+import kotlin.math.roundToInt
+
+@Composable
+private fun SettingComponents.StorageSizeEntry(
+    context: Context,
+    preference: Preferences.Long,
+    title: String,
+    subtitle: String,
+    currentValue: Long,
+    action: SettingComponents.Action,
+    trailingContent: @Composable RowScope.() -> Unit = {}
+) {
+    val dialog = remember( context, currentValue ) {
+        StorageSizeInputDialog(
+            constraint = InputDialogConstraints.ALL,
+            currentValue = currentValue,
+            context = context,
+            preference = preference,
+            title = title,
+            onConfirm = when( action ) {
+                SettingComponents.Action.NONE -> ::println
+                SettingComponents.Action.RESTART_APP -> RestartAppDialog::showDialog
+                SettingComponents.Action.RESTART_PLAYER_SERVICE -> RestartPlayerService::requestRestart
+            }
+        )
+    }
+    dialog.Render()
+
+    Text(
+        title = title,
+        onClick = dialog::showDialog,
+        subtitle = subtitle,
+        trailingContent = trailingContent
+    )
+}
+
+fun cacheSubtitle( context: Context, preference: Preferences.Long, currentValue: () -> Long ) =
+    derivedStateOf {
+        val fromSetting by preference
+        if( fromSetting == 0L ) return@derivedStateOf context.getString( R.string.vt_disabled )
+
+        val maxSize = when( fromSetting ) {
+            Long.MAX_VALUE -> context.getString( R.string.unlimited )
+            else -> Formatter.formatShortFileSize( context, fromSetting )
+        }
+        val usage = Formatter.formatShortFileSize( context, currentValue() )
+        val percentage = ((currentValue().toFloat() / fromSetting) * 100).roundToInt()
+
+        context.getString( R.string.setting_description_storage_usage, maxSize, usage, percentage )
+    }
 
 @UnstableApi
 @Composable
@@ -62,9 +111,6 @@ fun DataSettings( paddingValues: PaddingValues ) {
     val search = remember {
         SettingEntrySearch( scrollState, R.string.tab_data, R.drawable.server )
     }
-    val (restartService, onRestartServiceChange) = rememberSaveable { mutableStateOf( false ) }
-    var showExoPlayerCustomCacheDialog by remember { mutableStateOf(false) }
-    var showCoilCustomDiskCacheDialog by remember { mutableStateOf(false) }
 
     val progressBarModifier = remember {
         Modifier.padding(
@@ -98,182 +144,97 @@ fun DataSettings( paddingValues: PaddingValues ) {
             )
             entry( search, R.string.image_cache_max_size ) {
                 ImageFactory.diskCache.let { cache ->
-                    val diskCacheSize = cache.size
-                    var coilCustomDiskCache by Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
-                    val coilDiskCacheMaxSize by Preferences.THUMBNAIL_CACHE_SIZE
                     val indicator = remember( cache ) {
                         ImageCacheIndicator( cache )
                     }
-
-                    val subtitle by remember { derivedStateOf {
-                        // How much space taken by this cache
-                        val diskUsage = Formatter.formatShortFileSize( context, diskCacheSize )
-                        // Total space can be had
-                        val total = when( coilDiskCacheMaxSize ) {
-                            CoilDiskCacheMaxSize.Custom -> coilCustomDiskCache * 1000L * 1000
-                            else -> coilDiskCacheMaxSize.bytes
-                        }
-                        val maxSize = if( coilDiskCacheMaxSize == CoilDiskCacheMaxSize.Custom ) {
-                            val sizeBytes = total * 1000L * 1000
-                            val formattedSize = Formatter.formatShortFileSize( context, sizeBytes )
-                            "/$formattedSize"
-                        } else
-                            ""
-                        // Percentage based on used/total
-                        val result = (diskCacheSize * 100) / total
-                        val percentage = "($result%)"
-
-                        val used = context.getString( R.string.used )
-                        " - $diskUsage$maxSize$used $percentage"
-                    }}
-                    SettingComponents.EnumEntry(
-                        Preferences.THUMBNAIL_CACHE_SIZE,
-                        R.string.image_cache_max_size,
-                        subtitle = Preferences.THUMBNAIL_CACHE_SIZE.value.text + subtitle,
-                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
-                        trailingContent = {
-                            indicator.ToolBarButton()
-                        }
-                    ) {
-                        if (coilDiskCacheMaxSize == CoilDiskCacheMaxSize.Custom)
-                            showCoilCustomDiskCacheDialog = true
-
-                        RestartPlayerService.requestRestart()
+                    // indicator's progress is observable, and is actually gets updated when
+                    // cache is cleared. So this is used to re-compose subtitle when action is performed.
+                    val subtitle by remember( indicator.progress ) {
+                        cacheSubtitle( context, Preferences.IMAGE_CACHE_SIZE, cache::size )
                     }
 
-                    if (showCoilCustomDiskCacheDialog) {
-                        InputNumericDialog(
-                            title = stringResource(R.string.set_custom_cache),
-                            placeholder = stringResource(R.string.enter_value_in_mb),
-                            value = coilCustomDiskCache.toString(),
-                            valueMin = "32",
-                            valueMax = "10000",
-                            onDismiss = { showCoilCustomDiskCacheDialog = false },
-                            setValue = {
-                                //Log.d("customCache", it)
-                                coilCustomDiskCache = it.toInt()
-                                showCoilCustomDiskCacheDialog = false
-
-                                RestartPlayerService.requestRestart()
-                            }
-                        )
+                    SettingComponents.StorageSizeEntry(
+                        context = context,
+                        preference = Preferences.IMAGE_CACHE_SIZE,
+                        title = stringResource( R.string.image_cache_max_size ),
+                        subtitle = subtitle,
+                        currentValue = cache.size,
+                        action = SettingComponents.Action.RESTART_APP
+                    ) {
+                        if( Preferences.IMAGE_CACHE_SIZE.value > 0 )
+                            indicator.ToolBarButton()
                     }
 
                     indicator.ProgressBar( progressBarModifier )
+
+                    LaunchedEffect( Preferences.IMAGE_CACHE_SIZE.value ) {
+                        if( 0L == Preferences.IMAGE_CACHE_SIZE.value )
+                            indicator.onConfirm()
+                    }
                 }
             }
             entry( search, R.string.song_cache_max_size ) {
                 binder?.cache?.let { cache ->
-                    val diskCacheSize = cache.cacheSpace
-                    var exoPlayerCustomCache by Preferences.SONG_CACHE_CUSTOM_SIZE
-                    val exoPlayerDiskCacheMaxSize by Preferences.SONG_CACHE_SIZE
                     val indicator = remember( cache ) {
-                        ExoCacheIndicator( cache )
+                        ExoCacheIndicator(Preferences.EXO_CACHE_SIZE, cache)
                     }
+                    // indicator's progress is observable, and is actually gets updated when
+                    // cache is cleared. So this is used to re-compose subtitle when action is performed.
+                    val subtitle by remember( indicator.progress ) {
+                        cacheSubtitle( context, Preferences.EXO_CACHE_SIZE, cache::getCacheSpace )
+                    }
+                    val maxCacheSize by Preferences.EXO_CACHE_SIZE
 
-                    val subtitle by remember( diskCacheSize ) { derivedStateOf {
-                        // How much space taken by this cache
-                        val diskUsage = Formatter.formatShortFileSize( context, diskCacheSize )
-                        // Total space can be had
-                        val maxSize = if( exoPlayerDiskCacheMaxSize == ExoPlayerDiskCacheMaxSize.Custom ) {
-                            val sizeBytes = exoPlayerCustomCache * 1000L * 1000
-                            val formattedSize = Formatter.formatShortFileSize( context, sizeBytes )
-                            "/$formattedSize"
-                        } else
-                            ""
-                        // Percentage based on used/total
-                        val percentage = when( exoPlayerDiskCacheMaxSize ) {
-                            ExoPlayerDiskCacheMaxSize.Unlimited -> ""
-                            else -> {
-                                val total = if( exoPlayerDiskCacheMaxSize == ExoPlayerDiskCacheMaxSize.Custom )
-                                    exoPlayerCustomCache * 1000L * 1000
-                                else
-                                    exoPlayerDiskCacheMaxSize.bytes
-                                val result = (diskCacheSize * 100) / total
-                                "($result%)"
-                            }
-                        }
-
-                        if( exoPlayerDiskCacheMaxSize != ExoPlayerDiskCacheMaxSize.Disabled ) {
-                            val used = context.getString(R.string.used)
-                            " - $diskUsage$maxSize$used $percentage"
-                        } else
-                            ""
-                    }}
-                    SettingComponents.EnumEntry(
-                        Preferences.SONG_CACHE_SIZE,
-                        R.string.song_cache_max_size,
-                        subtitle = Preferences.SONG_CACHE_SIZE.value.text + subtitle,
-                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
-                        trailingContent = {
-                            indicator.ToolBarButton()
-                        }
+                    SettingComponents.StorageSizeEntry(
+                        context = context,
+                        preference = Preferences.EXO_CACHE_SIZE,
+                        title = stringResource( R.string.image_cache_max_size ),
+                        subtitle = subtitle,
+                        currentValue = cache.cacheSpace,
+                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
                     ) {
-                        if (exoPlayerDiskCacheMaxSize == ExoPlayerDiskCacheMaxSize.Custom)
-                            showExoPlayerCustomCacheDialog = true
-
-                        RestartPlayerService.requestRestart()
-                    }
-
-
-                    if (showExoPlayerCustomCacheDialog) {
-                        InputNumericDialog(
-                            title = stringResource(R.string.set_custom_cache),
-                            placeholder = stringResource(R.string.enter_value_in_mb),
-                            value = exoPlayerCustomCache.toString(),
-                            valueMin = "32",
-                            valueMax = "10000",
-                            onDismiss = { showExoPlayerCustomCacheDialog = false },
-                            setValue = {
-                                //Log.d("customCache", it)
-                                exoPlayerCustomCache = it.toInt()
-                                showExoPlayerCustomCacheDialog = false
-
-                                RestartPlayerService.requestRestart()
-                            }
-                        )
+                        if( maxCacheSize > 0 )
+                            indicator.ToolBarButton()
                     }
 
                     indicator.ProgressBar( progressBarModifier )
+
+                    LaunchedEffect( maxCacheSize ) {
+                        if( 0L == maxCacheSize )
+                            indicator.onConfirm()
+                    }
                 }
             }
             entry( search, R.string.song_download_max_size ) {
                 binder?.downloadCache?.let { cache ->
-                    val diskCacheSize = cache.cacheSpace
-                    val exoPlayerDiskDownloadCacheMaxSize by Preferences.SONG_DOWNLOAD_SIZE
                     val indicator = remember( cache ) {
-                        ExoCacheIndicator( cache )
+                        ExoCacheIndicator(Preferences.EXO_DOWNLOAD_SIZE, cache)
+                    }
+                    // indicator's progress is observable, and is actually gets updated when
+                    // cache is cleared. So this is used to re-compose subtitle when action is performed.
+                    val subtitle by remember( indicator.progress ) {
+                        cacheSubtitle( context, Preferences.EXO_DOWNLOAD_SIZE, cache::getCacheSpace )
+                    }
+                    val maxCacheSize by Preferences.EXO_DOWNLOAD_SIZE
+
+                    SettingComponents.StorageSizeEntry(
+                        context = context,
+                        preference = Preferences.EXO_DOWNLOAD_SIZE,
+                        title = stringResource( R.string.image_cache_max_size ),
+                        subtitle = subtitle,
+                        currentValue = cache.cacheSpace,
+                        action = SettingComponents.Action.RESTART_APP
+                    ) {
+                        if( maxCacheSize > 0 )
+                            indicator.ToolBarButton()
                     }
 
-                    val subtitle by remember( diskCacheSize ) { derivedStateOf {
-                        // How much space taken by this cache
-                        val diskUsage = Formatter.formatShortFileSize( context, diskCacheSize )
-                        // Percentage based on used/total
-                        val percentage = when( exoPlayerDiskDownloadCacheMaxSize ) {
-                            ExoPlayerDiskDownloadCacheMaxSize.Unlimited -> ""
-                            else -> {
-                                val result = (diskCacheSize * 100) / exoPlayerDiskDownloadCacheMaxSize.bytes
-                                "($result%)"
-                            }
-                        }
-
-                        if( exoPlayerDiskDownloadCacheMaxSize != ExoPlayerDiskDownloadCacheMaxSize.Disabled ) {
-                            val used = context.getString(R.string.used)
-                            " - $diskUsage$used $percentage"
-                        } else
-                            ""
-                    }}
-                    SettingComponents.EnumEntry(
-                        Preferences.SONG_DOWNLOAD_SIZE,
-                        R.string.song_download_max_size,
-                        subtitle = Preferences.SONG_DOWNLOAD_SIZE.value.text + subtitle,
-                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE,
-                        trailingContent = {
-                            indicator.ToolBarButton()
-                        }
-                    )
-
                     indicator.ProgressBar( progressBarModifier )
+
+                    LaunchedEffect( maxCacheSize ) {
+                        if( 0L == maxCacheSize )
+                            indicator.onConfirm()
+                    }
                 }
             }
 

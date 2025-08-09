@@ -3,9 +3,11 @@ package app.kreate.android.coil3
 import android.content.Context
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.util.fastCoerceAtLeast
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.drawable.APP_ICON_BITMAP
@@ -25,9 +27,9 @@ import coil3.request.placeholder
 import coil3.request.transformations
 import coil3.transform.Transformation
 import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.thumbnail
 import it.fast4x.rimusic.ui.styling.LocalAppearance
+import kotlinx.coroutines.Dispatchers
 
 object ImageFactory {
 
@@ -49,23 +51,17 @@ object ImageFactory {
     lateinit var imageLoader: ImageLoader
 
     fun init( context: Context ) {
+        val cacheSize by Preferences.IMAGE_CACHE_SIZE
         if( !::diskCache.isInitialized )
             DiskCache.Builder()
                      .directory(
                          context.cacheDir.resolve( "coil3" )
                      )
-                     .maxSizeBytes(
-                         when(
-                             val diskSize = Preferences.THUMBNAIL_CACHE_SIZE.value
-                         ) {
-                             CoilDiskCacheMaxSize.Custom -> Preferences.THUMBNAIL_CACHE_CUSTOM_SIZE
-                                                                       .value
-                                                                       .times( 1000L )
-                                                                       .times( 1000 )
-
-                             else                        -> diskSize.bytes
-                         }
-                     )
+                     // DiskCache.Builder doesn't allow 0 byte.
+                     // `1` is there for the sake of creating this,
+                     // but won't be added to ImageLoader
+                     .maxSizeBytes( cacheSize.fastCoerceAtLeast( 1L ) )
+                     .cleanupCoroutineContext( Dispatchers.IO )
                      .build()
                      .also { diskCache = it }
 
@@ -77,12 +73,15 @@ object ImageFactory {
             ImageLoader.Builder( context )
                        .crossfade( true )
                        .diskCachePolicy( CachePolicy.ENABLED )
-                       .diskCache( diskCache )
                        .error( APP_ICON_BITMAP.asImage() )
                        .components {
                            add(
                                KtorNetworkFetcherFactory(NetworkService.client)
                            )
+                       }
+                       .apply {
+                           if( cacheSize > 0 )
+                               diskCache( diskCache )
                        }
                        .build()
                        .also { imageLoader = it }

@@ -190,7 +190,12 @@ fun HomeSongsScreen(navController: NavController ) {
                     when (builtInPlaylist) {
                         BuiltInPlaylist.Downloaded, BuiltInPlaylist.Offline -> {
                             val indicator = remember( builtInPlaylist, binder.cache ) {
-                                ExoCacheIndicator( binder.cache )
+                                val preference = if( builtInPlaylist === BuiltInPlaylist.Downloaded )
+                                    Preferences.EXO_DOWNLOAD_SIZE
+                                else
+                                    Preferences.EXO_CACHE_SIZE
+
+                                ExoCacheIndicator(preference, binder.cache)
                             }
                             indicator.ProgressBar(
                                 Modifier.padding(

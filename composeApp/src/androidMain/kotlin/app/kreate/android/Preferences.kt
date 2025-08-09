@@ -31,7 +31,6 @@ import it.fast4x.rimusic.enums.BackgroundProgress
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.CarouselSize
 import it.fast4x.rimusic.enums.CheckUpdateState
-import it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import it.fast4x.rimusic.enums.ColorPaletteMode
 import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.DurationInMilliseconds
@@ -462,23 +461,23 @@ sealed class Preferences<T>(
         }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Cache">
-        val THUMBNAIL_CACHE_SIZE by lazy {
-            Enum( preferences, "ThumbnailCacheSize", "coilDiskCacheMaxSize", CoilDiskCacheMaxSize.`128MB` )
-        }
-        val THUMBNAIL_CACHE_CUSTOM_SIZE by lazy {
-            Int( preferences, "ThumbnailCacheCustomSize", "exoPlayerCustomCache", 32 )
-        }
         val SONG_CACHE_SIZE by lazy {
             Enum( preferences, "SongCacheSize", "exoPlayerDiskCacheMaxSize", ExoPlayerDiskCacheMaxSize.`2GB` )
-        }
-        val SONG_CACHE_CUSTOM_SIZE by lazy {
-            Int( preferences, "SongCacheCustomSize", "", 32 )
         }
         val SONG_DOWNLOAD_SIZE by lazy {
             Enum( preferences, "SongDownloadSize", "exoPlayerDiskDownloadCacheMaxSize", ExoPlayerDiskDownloadCacheMaxSize.`2GB` )
         }
         val EXO_CACHE_LOCATION by lazy {
             Enum( preferences, "ExoCacheLocation", "exoPlayerCacheLocationKey", ExoPlayerCacheLocation.System )
+        }
+        val IMAGE_CACHE_SIZE by lazy {
+            Long(preferences, "ThumbnailCacheSizeBytes", "", kotlin.Long.MAX_VALUE)
+        }
+        val EXO_CACHE_SIZE by lazy {
+            Long(preferences, "SongCacheSizeBytes", "", kotlin.Long.MAX_VALUE)
+        }
+        val EXO_DOWNLOAD_SIZE by lazy {
+            Long(preferences, "SongDownloadSizeBytes", "", kotlin.Long.MAX_VALUE)
         }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Notification">
@@ -1068,7 +1067,9 @@ sealed class Preferences<T>(
                         "YouTubeCookies", "ytCookie", "YouTubeAccountName", "ytAccountNameKey",
                         "YouTubeAccountEmail", "ytAccountEmailKey", "YouTubeSelfChannelHandle",
                         "ytAccountChannelHandleKey", "YouTubeAccountAvatar", "ytAccountThumbnailKey",
-                        "JumpPrevious", "jumpPrevious", "ScrollingText", "disableScrollingText"
+                        "JumpPrevious", "jumpPrevious", "ScrollingText", "disableScrollingText",
+                        "ThumbnailCacheSize", "coilDiskCacheMaxSize", "ThumbnailCacheCustomSize",
+                        "exoPlayerCustomCache", "SongCacheCustomSize"
                     ).fastForEach( this::remove )
                 }
             }

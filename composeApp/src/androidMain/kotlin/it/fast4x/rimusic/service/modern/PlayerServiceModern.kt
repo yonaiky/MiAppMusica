@@ -94,7 +94,6 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
-import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import it.fast4x.rimusic.enums.NotificationButtons
 import it.fast4x.rimusic.enums.NotificationType
 import it.fast4x.rimusic.enums.PresetsReverb
@@ -217,6 +216,34 @@ class PlayerServiceModern:
 
     private lateinit var notificationActionReceiver: NotificationActionReceiver
 
+    private fun initCache(): Cache {
+        val fromSetting by Preferences.EXO_CACHE_SIZE
+
+        val cacheEvictor = when( fromSetting ) {
+            0L, Long.MAX_VALUE -> NoOpCacheEvictor()
+            else -> LeastRecentlyUsedCacheEvictor( fromSetting )
+        }
+        val cacheDir = when( fromSetting ) {
+            // Temporary directory deletes itself after close
+            // It means songs remain on device as long as it's open
+            0L -> createTempDirectory( CACHE_DIRNAME ).toFile()
+
+            // Looks a bit ugly but what it does is
+            // check location set by user and return
+            // appropriate path with [CACHE_DIRNAME] appended.
+            else -> when( Preferences.EXO_CACHE_LOCATION.value ) {
+                ExoPlayerCacheLocation.System  -> cacheDir
+                ExoPlayerCacheLocation.Private -> filesDir
+            }.resolve( CACHE_DIRNAME )
+        }
+
+        // Ensure this location exists
+        cacheDir.mkdirs()
+
+        return SimpleCache( cacheDir, cacheEvictor, StandaloneDatabaseProvider(this) )
+    }
+
+
     @kotlin.OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     override fun onCreate() {
         // When persistent queue is enabled, Android
@@ -310,38 +337,7 @@ class PlayerServiceModern:
 
         audioQualityFormat = Preferences.AUDIO_QUALITY.value
 
-        val cacheSize by Preferences.SONG_CACHE_SIZE
-
-        val cacheEvictor = when( cacheSize ) {
-            ExoPlayerDiskCacheMaxSize.Unlimited -> NoOpCacheEvictor()
-
-            ExoPlayerDiskCacheMaxSize.Custom    -> {
-                val customCacheSize = Preferences.SONG_CACHE_CUSTOM_SIZE.value * 1000 * 1000L
-                LeastRecentlyUsedCacheEvictor( customCacheSize )
-            }
-
-            else                                -> LeastRecentlyUsedCacheEvictor( cacheSize.bytes )
-        }
-
-        val cacheDir = when( cacheSize ) {
-            // Temporary directory deletes itself after close
-            // It means songs remain on device as long as it's open
-            ExoPlayerDiskCacheMaxSize.Disabled -> createTempDirectory( CACHE_DIRNAME ).toFile()
-
-            else                               ->
-                // Looks a bit ugly but what it does is
-                // check location set by user and return
-                // appropriate path with [CACHE_DIRNAME] appended.
-                when( Preferences.EXO_CACHE_LOCATION.value ) {
-                    ExoPlayerCacheLocation.System  -> cacheDir
-                    ExoPlayerCacheLocation.Private -> filesDir
-                }.resolve( CACHE_DIRNAME )
-        }
-
-        // Ensure this location exists
-        cacheDir.mkdirs()
-
-        cache = SimpleCache( cacheDir, cacheEvictor, StandaloneDatabaseProvider(this) )
+        cache = initCache()
         downloadCache = MyDownloadHelper.getDownloadCache( applicationContext )
 
         player = ExoPlayer.Builder(this)

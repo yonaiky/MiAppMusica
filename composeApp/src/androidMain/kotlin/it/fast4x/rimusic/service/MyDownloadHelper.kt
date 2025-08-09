@@ -27,7 +27,6 @@ import coil.request.ImageRequest
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
-import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.utils.asMediaItem
@@ -126,32 +125,30 @@ object MyDownloadHelper {
 
     @Synchronized
     private fun initDownloadCache( context: Context ): SimpleCache {
-        val cacheSize by Preferences.SONG_DOWNLOAD_SIZE
+        val fromSetting by Preferences.EXO_DOWNLOAD_SIZE
 
-        val cacheEvictor = when( cacheSize ) {
-            ExoPlayerDiskDownloadCacheMaxSize.Unlimited -> NoOpCacheEvictor()
-            else                                        -> LeastRecentlyUsedCacheEvictor( cacheSize.bytes )
+        val cacheEvictor = when( fromSetting ) {
+            0L, Long.MAX_VALUE -> NoOpCacheEvictor()
+            else -> LeastRecentlyUsedCacheEvictor( fromSetting )
         }
-
-        val cacheDir = when( cacheSize ) {
+        val cacheDir = when( fromSetting ) {
             // Temporary directory deletes itself after close
             // It means songs remain on device as long as it's open
-            ExoPlayerDiskDownloadCacheMaxSize.Disabled -> createTempDirectory( CACHE_DIRNAME ).toFile()
+            0L -> createTempDirectory( CACHE_DIRNAME ).toFile()
 
-            else                               ->
-                // Looks a bit ugly but what it does is
-                // check location set by user and return
-                // appropriate path with [CACHE_DIRNAME] appended.
-                when( Preferences.EXO_CACHE_LOCATION.value ) {
-                    ExoPlayerCacheLocation.System  -> context.cacheDir
-                    ExoPlayerCacheLocation.Private -> context.filesDir
-                }.resolve( CACHE_DIRNAME )
+            // Looks a bit ugly but what it does is
+            // check location set by user and return
+            // appropriate path with [CACHE_DIRNAME] appended.
+            else -> when( Preferences.EXO_CACHE_LOCATION.value ) {
+                ExoPlayerCacheLocation.System  -> context.cacheDir
+                ExoPlayerCacheLocation.Private -> context.filesDir
+            }.resolve( CACHE_DIRNAME )
         }
 
         // Ensure this location exists
         cacheDir.mkdirs()
 
-        return SimpleCache( cacheDir, cacheEvictor, getDatabaseProvider(context) )
+        return SimpleCache( cacheDir, cacheEvictor, StandaloneDatabaseProvider(context) )
     }
 
     @Synchronized
