@@ -1,0 +1,14 @@
+Fixed:
+- Contributors' contribution count didn't show
+- Typo in About tab in Settings
+- Remove cache in system settings didn't remove thumbnail cache
+- Option to choose notification type (functionalities remain intact)
+
+Changed:
+- "Disabling scrolling text" is now "Marquee effect"
+- Thumbnails and layout of Song, Artists, Albums, Playlists, etc. are sightly changed
+- Redirect thumbnail fetcher to Proxy (if applicable)
+- Cache storage progress bar will no longer shows stop indicator at the end
+
+Removed:
+- "Import migration" in Data settings
