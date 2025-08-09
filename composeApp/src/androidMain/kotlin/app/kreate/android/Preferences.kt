@@ -36,8 +36,6 @@ import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.DurationInMilliseconds
 import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
-import it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
-import it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
 import it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import it.fast4x.rimusic.enums.FilterBy
 import it.fast4x.rimusic.enums.FontType
@@ -461,12 +459,6 @@ sealed class Preferences<T>(
         }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Cache">
-        val SONG_CACHE_SIZE by lazy {
-            Enum( preferences, "SongCacheSize", "exoPlayerDiskCacheMaxSize", ExoPlayerDiskCacheMaxSize.`2GB` )
-        }
-        val SONG_DOWNLOAD_SIZE by lazy {
-            Enum( preferences, "SongDownloadSize", "exoPlayerDiskDownloadCacheMaxSize", ExoPlayerDiskDownloadCacheMaxSize.`2GB` )
-        }
         val EXO_CACHE_LOCATION by lazy {
             Enum( preferences, "ExoCacheLocation", "exoPlayerCacheLocationKey", ExoPlayerCacheLocation.System )
         }
@@ -1069,7 +1061,8 @@ sealed class Preferences<T>(
                         "ytAccountChannelHandleKey", "YouTubeAccountAvatar", "ytAccountThumbnailKey",
                         "JumpPrevious", "jumpPrevious", "ScrollingText", "disableScrollingText",
                         "ThumbnailCacheSize", "coilDiskCacheMaxSize", "ThumbnailCacheCustomSize",
-                        "exoPlayerCustomCache", "SongCacheCustomSize"
+                        "exoPlayerCustomCache", "SongCacheCustomSize", "SongCacheSize",
+                        "exoPlayerDiskCacheMaxSize"
                     ).fastForEach( this::remove )
                 }
             }

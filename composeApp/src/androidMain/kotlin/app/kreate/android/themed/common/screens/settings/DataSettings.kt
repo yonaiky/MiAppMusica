@@ -47,7 +47,6 @@ import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.export.ExportDatabaseDialog
 import me.knighthat.component.export.ExportSettingsDialog
 import me.knighthat.component.import.ImportDatabase
-import me.knighthat.component.import.ImportMigration
 import me.knighthat.component.import.ImportSettings
 import me.knighthat.utils.Toaster
 import kotlin.math.roundToInt
@@ -278,15 +277,6 @@ fun DataSettings( paddingValues: PaddingValues ) {
                     title = stringResource( R.string.title_import_settings ),
                     subtitle = stringResource( R.string.restore_settings_from_file, stringResource( R.string.title_export_settings ) ),
                     onClick = importSettings::onShortClick
-                )
-            }
-            entry( search, "Import migration file" ) {
-                val importMigration = ImportMigration( context, binder )
-
-                SettingComponents.Text(
-                    title = "Import migration file",
-                    subtitle = "For old users before conversion. \nUse old app to make a backup for migration",
-                    onClick = importMigration::onShortClick
                 )
             }
 
