@@ -101,18 +101,6 @@ fun GeneralSettings( paddingValues: PaddingValues ) {
                 )
             }
 
-            header(
-                titleId = R.string.notification_type,
-                subtitle = { stringResource( R.string.notification_type_info ) }
-            )
-            entry( search, R.string.notification_type ) {
-                SettingComponents.EnumEntry(
-                    Preferences.NOTIFICATION_TYPE,
-                    R.string.notification_type,
-                    action = SettingComponents.Action.RESTART_APP
-                )
-            }
-
             playerSettingsSection( search )
         }
     }

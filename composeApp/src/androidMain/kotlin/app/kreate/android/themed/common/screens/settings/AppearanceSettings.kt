@@ -25,7 +25,6 @@ import app.kreate.android.themed.common.screens.settings.player.playerActionBarS
 import app.kreate.android.themed.common.screens.settings.player.playerAppearanceSection
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.enums.NotificationType
 import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
@@ -78,24 +77,22 @@ fun AppearanceSettings( paddingValues: PaddingValues ) {
                 )
             }
 
-            if( Preferences.NOTIFICATION_TYPE.value == NotificationType.Advanced ) {
-                header( R.string.wallpaper )
+            header( R.string.wallpaper )
 
-                entry( search, R.string.setting_entry_live_wallpaper ) {
-                    SettingComponents.EnumEntry(
-                        preference = Preferences.LIVE_WALLPAPER,
-                        title = stringResource( R.string.setting_entry_live_wallpaper ),
-                        subtitle = stringResource( R.string.setting_description_live_wallpaper ),
-                        action = SettingComponents.Action.RESTART_PLAYER_SERVICE
-                    ) {
-                        if( it == WallpaperType.LOCKSCREEN && !isAtLeastAndroid7 )
-                            Toaster.w(
-                                R.string.warning_only_available_on_android_and_above,
-                                "7",
-                                Build.VERSION_CODES.N,
-                                Toast.LENGTH_SHORT
-                            )
-                    }
+            entry( search, R.string.setting_entry_live_wallpaper ) {
+                SettingComponents.EnumEntry(
+                    preference = Preferences.LIVE_WALLPAPER,
+                    title = stringResource( R.string.setting_entry_live_wallpaper ),
+                    subtitle = stringResource( R.string.setting_description_live_wallpaper ),
+                    action = SettingComponents.Action.RESTART_PLAYER_SERVICE
+                ) {
+                    if( it == WallpaperType.LOCKSCREEN && !isAtLeastAndroid7 )
+                        Toaster.w(
+                            R.string.warning_only_available_on_android_and_above,
+                            "7",
+                            Build.VERSION_CODES.N,
+                            Toast.LENGTH_SHORT
+                        )
                 }
             }
         }

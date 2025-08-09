@@ -23,7 +23,6 @@ import android.media.audiofx.AudioEffect
 import android.media.audiofx.BassBoost
 import android.media.audiofx.LoudnessEnhancer
 import android.media.audiofx.PresetReverb
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.MainThread
@@ -39,7 +38,6 @@ import androidx.media3.common.AuxEffectInfo
 import androidx.media3.common.C
 import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
@@ -65,20 +63,16 @@ import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
-import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.MediaController
 import androidx.media3.session.MediaLibraryService
-import androidx.media3.session.MediaNotification
 import androidx.media3.session.MediaSession
-import androidx.media3.session.MediaStyleNotificationHelper
 import androidx.media3.session.SessionToken
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.service.createDataSourceFactory
 import app.kreate.android.service.newpipe.NewPipeDownloader
 import app.kreate.android.service.player.ExoPlayerListener
-import app.kreate.android.service.player.PlaybackController
 import app.kreate.android.service.player.VolumeFader
 import app.kreate.android.service.player.VolumeObserver
 import app.kreate.android.utils.centerCropBitmap
@@ -86,17 +80,13 @@ import app.kreate.android.utils.centerCropToMatchScreenSize
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.widget.Widget
-import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.MainActivity
 import it.fast4x.rimusic.appContext
-import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
-import it.fast4x.rimusic.enums.NotificationButtons
-import it.fast4x.rimusic.enums.NotificationType
 import it.fast4x.rimusic.enums.PresetsReverb
 import it.fast4x.rimusic.enums.WallpaperType
 import it.fast4x.rimusic.extensions.connectivity.AndroidConnectivityObserverLegacy
@@ -109,7 +99,6 @@ import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.MyDownloadService
 import it.fast4x.rimusic.utils.CoilBitmapLoader
 import it.fast4x.rimusic.utils.TimerJob
-import it.fast4x.rimusic.utils.activityPendingIntent
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.broadCastPendingIntent
 import it.fast4x.rimusic.utils.collect
@@ -119,7 +108,6 @@ import it.fast4x.rimusic.utils.intent
 import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
-import it.fast4x.rimusic.utils.isAtLeastAndroid8
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.mediaItems
 import it.fast4x.rimusic.utils.playNext
@@ -156,7 +144,6 @@ import java.io.IOException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.createTempDirectory
-import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import android.os.Binder as AndroidBinder
@@ -283,45 +270,9 @@ class PlayerServiceModern:
             }
         }
 
-        when( Preferences.NOTIFICATION_TYPE.value ){
-            NotificationType.Default -> {
-                // DEFAULT NOTIFICATION PROVIDER
-                //        setMediaNotificationProvider(
-                //            DefaultMediaNotificationProvider(
-                //                this,
-                //                { NotificationId },
-                //                NotificationChannelId,
-                //                R.string.player
-                //            )
-                //            .apply {
-                //                setSmallIcon(R.drawable.app_icon)
-                //            }
-                //        )
-
-                // DEFAULT NOTIFICATION PROVIDER MODDED
-                setMediaNotificationProvider(CustomMediaNotificationProvider(this)
-                    .apply {
-                        setSmallIcon(R.drawable.ic_launcher_monochrome)
-                    }
-                )
-            }
-            NotificationType.Advanced -> {
-                // CUSTOM NOTIFICATION PROVIDER -> CUSTOM NOTIFICATION PROVIDER WITH ACTIONS AND PENDING INTENT
-                // ACTUALLY NOT STABLE
-                setMediaNotificationProvider(object : MediaNotification.Provider{
-                    override fun createNotification(
-                        mediaSession: MediaSession,
-                        customLayout: ImmutableList<CommandButton>,
-                        actionFactory: MediaNotification.ActionFactory,
-                        onNotificationChangedCallback: MediaNotification.Provider.Callback
-                    ): MediaNotification {
-                        return updateCustomNotification(mediaSession)
-                    }
-
-                    override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean { return false }
-                })
-            }
-        }
+        DefaultMediaNotificationProvider(this)
+            .apply { setSmallIcon( R.drawable.ic_launcher_monochrome ) }
+            .also( ::setMediaNotificationProvider )
 
         runCatching {
             bitmapProvider = BitmapProvider(
@@ -789,81 +740,6 @@ class PlayerServiceModern:
         }
     )
 
-    private fun updateCustomNotification(session: MediaSession): MediaNotification {
-
-        val playIntent = Action.play.pendingIntent
-        val pauseIntent = Action.pause.pendingIntent
-        val nextIntent = Action.next.pendingIntent
-        val prevIntent = Action.previous.pendingIntent
-
-        val mediaMetadata = player.mediaMetadata
-
-        bitmapProvider.load(mediaMetadata.artworkUri) {}
-
-        val customNotify = if (isAtLeastAndroid8) {
-            NotificationCompat.Builder(this, NotificationChannelId)
-        } else {
-            NotificationCompat.Builder(this)
-        }
-            .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
-            .setContentText(
-                if (mediaMetadata.albumTitle != null && mediaMetadata.artist != "")
-                    "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
-                else mediaMetadata.artist
-            )
-            .setSubText(
-                if (mediaMetadata.albumTitle != null && mediaMetadata.artist != "")
-                    "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
-                else mediaMetadata.artist
-            )
-            .setLargeIcon(bitmapProvider.bitmap)
-            .setAutoCancel(false)
-            .setOnlyAlertOnce(true)
-            .setShowWhen(false)
-            .setSmallIcon(player.playerError?.let { R.drawable.alert_circle }
-                ?: R.drawable.ic_launcher_monochrome)
-            .setOngoing(false)
-            .setContentIntent(activityPendingIntent<MainActivity>(
-                flags = PendingIntent.FLAG_UPDATE_CURRENT
-            ) {
-                putExtra("expandPlayerBottomSheet", true)
-            })
-            .setDeleteIntent(broadCastPendingIntent<NotificationDismissReceiver>())
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
-            .setStyle(MediaStyleNotificationHelper.MediaStyle(session))
-            .addAction(R.drawable.play_skip_back, "Skip back", prevIntent)
-            .addAction(
-                if (player.isPlaying) R.drawable.pause else R.drawable.play,
-                if (player.isPlaying) "Pause" else "Play",
-                if (player.isPlaying) pauseIntent else playIntent
-            )
-            .addAction(R.drawable.play_skip_forward, "Skip forward", nextIntent)
-
-        //<editor-fold desc="Custom buttons">
-        val buttons = mutableListOf<Triple<Int, String, PendingIntent>>()
-        NotificationButtons.entries.fastForEach { button ->
-            val iconId = runBlocking {
-                PlaybackController.getIconId( player, button )
-            }
-            val triple = Triple(iconId, getString( button.textId ), button.pendingIntent)
-
-            if( button === Preferences.MEDIA_NOTIFICATION_FIRST_ICON.value )
-                buttons.add( 0, triple )
-            else if( button === Preferences.MEDIA_NOTIFICATION_SECOND_ICON.value )
-                buttons.add( min(1, buttons.size), triple )
-        }
-
-        buttons.fastForEach { (iconId, title, intent) ->
-            customNotify.addAction( iconId, title, intent )
-        }
-        //</editor-fold>
-
-        updateWallpaper( bitmapProvider.bitmap )
-
-        return MediaNotification(NotificationId, customNotify.build())
-    }
-
     private fun updateWallpaper( bitmap: Bitmap ) {
         val type by Preferences.LIVE_WALLPAPER
         if( type == WallpaperType.DISABLED ) return
@@ -895,7 +771,10 @@ class PlayerServiceModern:
                 newUriForLoad = null
             }
 
-            load(newUriForLoad) { updateWidgets() }
+            load(newUriForLoad) {
+                updateWidgets()
+                updateWallpaper( it )
+            }
         }
     }
 
@@ -1007,24 +886,6 @@ class PlayerServiceModern:
         println("PlayerServiceModern updateDownloadedState downloads count ${downloads.size} currentSongIsDownloaded ${currentSong.value?.id}")
         listener.updateMediaControl( this@PlayerServiceModern, player )
     }
-
-    @UnstableApi
-    class CustomMediaNotificationProvider(context: Context) : DefaultMediaNotificationProvider(context) {
-        override fun getNotificationContentTitle(metadata: MediaMetadata): CharSequence? {
-            val customMetadata = MediaMetadata.Builder()
-                .setTitle(cleanPrefix(metadata.title?.toString() ?: ""))
-                .build()
-            return super.getNotificationContentTitle(customMetadata)
-        }
-
-//        override fun getNotificationContentText(metadata: MediaMetadata): CharSequence? {
-//            val customMetadata = MediaMetadata.Builder()
-//                .setArtist(cleanPrefix(metadata.artist?.toString() ?: ""))
-//                .build()
-//            return super.getNotificationContentText(customMetadata)
-//        }
-    }
-
 
     class NotificationDismissReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {

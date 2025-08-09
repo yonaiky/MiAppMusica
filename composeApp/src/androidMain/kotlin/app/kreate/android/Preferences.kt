@@ -59,7 +59,6 @@ import it.fast4x.rimusic.enums.MusicAnimationType
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.NavigationBarType
 import it.fast4x.rimusic.enums.NotificationButtons
-import it.fast4x.rimusic.enums.NotificationType
 import it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import it.fast4x.rimusic.enums.PauseBetweenSongs
 import it.fast4x.rimusic.enums.PipModule
@@ -478,9 +477,6 @@ sealed class Preferences<T>(
         }
         val MEDIA_NOTIFICATION_SECOND_ICON by lazy {
             Enum( preferences, "MediaNotificationSecondIcon", "notificationPlayerSecondIcon", NotificationButtons.Favorites )
-        }
-        val NOTIFICATION_TYPE by lazy {
-            Enum( preferences, "NotificationType", "notificationType", NotificationType.Default )
         }
         //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Lyrics">
