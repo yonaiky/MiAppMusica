@@ -370,7 +370,7 @@
     <string name="month_december_s">Decembrie %s</string>
     <string name="info_reorder_is_possible_only_in_ascending_sort">Reordonarea este posibilă doar în ordine crescătoare</string>
     <string name="info_lyrics_found_on_s">Versurile au fost găsite pe %s</string>
-    <string name="info_lyrics_not_found_on_s_try_on_s">Versurile nu au fost găsite pe %s, încearcă pe %s</string>
+    <string name="info_lyrics_not_found_on_s_try_on_s">Lyrics not found on %1$s, try on %2$s</string>
     <string name="info_lyrics_not_found_on_s">Versurile nu au fost găsite pe %s</string>
     <string name="info_lyrics_tracks_found_on_s">Pistele de versuri au fost găsite pe %s</string>
     <string name="background_colors">Culori de fundal</string>

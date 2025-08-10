@@ -370,7 +370,7 @@
     <string name="month_december_s">Disyembre %s</string>
     <string name="info_reorder_is_possible_only_in_ascending_sort">Pwedeng iayos lamang mula pataas</string>
     <string name="info_lyrics_found_on_s">Nakita ang mga Lyrics sa %s</string>
-    <string name="info_lyrics_not_found_on_s_try_on_s">Walang nakitang mga Lyrics sa %s, subukan sa %s</string>
+    <string name="info_lyrics_not_found_on_s_try_on_s">Lyrics not found on %1$s, try on %2$s</string>
     <string name="info_lyrics_not_found_on_s">Walang nakitang mga lyrics sa %s</string>
     <string name="info_lyrics_tracks_found_on_s">Nahanap ang lyrics tracks sa %s</string>
     <string name="background_colors">Kulay ng background</string>

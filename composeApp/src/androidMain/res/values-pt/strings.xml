@@ -370,7 +370,7 @@
     <string name="month_december_s">Dezembro %s</string>
     <string name="info_reorder_is_possible_only_in_ascending_sort">A reordenação só é possível em ordem ascendente</string>
     <string name="info_lyrics_found_on_s">Letra encontrada em %s</string>
-    <string name="info_lyrics_not_found_on_s_try_on_s">Letra não encontrada em %s, tente em %s</string>
+    <string name="info_lyrics_not_found_on_s_try_on_s">Lyrics not found on %1$s, try on %2$s</string>
     <string name="info_lyrics_not_found_on_s">Letra não encontrada em %s</string>
     <string name="info_lyrics_tracks_found_on_s">Faixas de letras encontradas em %s</string>
     <string name="background_colors">Cor de fundo</string>
