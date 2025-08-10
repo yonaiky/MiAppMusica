@@ -70,6 +70,7 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.service.createDataSourceFactory
 import app.kreate.android.service.newpipe.NewPipeDownloader
 import app.kreate.android.service.player.ExoPlayerListener
@@ -245,6 +246,8 @@ class PlayerServiceModern:
         super.onCreate()
 
         NewPipe.init( NewPipeDownloader() )
+
+        ImageFactory.init( this )
 
         volumeObserver = VolumeObserver(this, ::onVolumeChange)
         volumeObserver.register()
