@@ -793,8 +793,6 @@
     <string name="setting_description_marquee_effect">Sürüşən mətn görünən sahəni keçərsə, tətbiq et</string>
     <string name="info_explicit_song">This song may not be suitable for all ages</string>
     <string name="info_added_by_smart_recommendations">Added by smart recommendations</string>
-    <string name="info_explicit_song">This song may not be suitable for all ages</string>
-    <string name="info_added_by_smart_recommendations">Added by smart recommendations</string>
     <string name="info_delete_cache">Delete cache</string>
     <string name="setting_description_storage_usage">%1$s - %2$s used (%3$d%%)</string>
 </resources>
