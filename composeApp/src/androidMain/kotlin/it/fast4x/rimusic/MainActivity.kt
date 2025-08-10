@@ -26,10 +26,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -97,8 +93,6 @@ import coil.request.ImageRequest
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
 import com.kieronquinn.monetcompat.core.MonetCompat
 import com.kieronquinn.monetcompat.interfaces.MonetColorsChangedListener
-import com.valentinilk.shimmer.LocalShimmerTheme
-import com.valentinilk.shimmer.defaultShimmerTheme
 import dev.kdrag0n.monet.theme.ColorScheme
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -726,24 +720,6 @@ class MainActivity :
                     RippleConfiguration(color = appearance.colorPalette.text)
                 }
 
-            val shimmerTheme = remember {
-                defaultShimmerTheme.copy(
-                    animationSpec = infiniteRepeatable(
-                        animation = tween(
-                            durationMillis = 800,
-                            easing = LinearEasing,
-                            delayMillis = 250,
-                        ),
-                        repeatMode = RepeatMode.Restart
-                    ),
-                    shaderColors = listOf(
-                        Color.Unspecified.copy(alpha = 0.25f),
-                        Color.White.copy(alpha = 0.50f),
-                        Color.Unspecified.copy(alpha = 0.25f),
-                    ),
-                )
-            }
-
             LaunchedEffect(Unit) {
                 val colorPaletteName by Preferences.COLOR_PALETTE
                 if (colorPaletteName == ColorPaletteName.Customized) {
@@ -832,7 +808,6 @@ class MainActivity :
                             LocalAppearance provides appearance,
                             LocalIndication provides ripple(bounded = true),
                             LocalRippleConfiguration provides rippleConfiguration,
-                            LocalShimmerTheme provides shimmerTheme,
                             LocalPlayerServiceBinder provides binder,
                             LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
                             LocalLayoutDirection provides LayoutDirection.Ltr,

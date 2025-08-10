@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
-import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.discoverPage
@@ -41,14 +40,13 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.models.toUiMood
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.screens.home.MoodGridItemColored
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.secondary
+import it.fast4x.rimusic.utils.shimmerEffect
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -85,31 +83,43 @@ fun MoodsPage(
                     1f
             )
     ) {
-        discoverPage?.getOrNull()?.let { moodResult ->
-            LazyVerticalGrid(
-                state = moodAngGenresLazyGridState,
-                columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
-                modifier = Modifier
-                    .background(colorPalette().background0)
-                    .fillMaxSize()
-            ) {
-                item(
-                    key = "header",
-                    contentType = 0,
-                    span = { GridItemSpan(maxLineSpan) }
-                ) {
-                    HeaderWithIcon(
-                        title = stringResource(R.string.moods_and_genres),
-                        iconId = R.drawable.search,
-                        enabled = true,
-                        showIcon = false,
-                        modifier = Modifier,
-                        onClick = {}
-                    )
+        if( discoverPage == null ) {
+            HeaderPlaceholder( Modifier.shimmerEffect() )
+            repeat(4) {
+                Row {
+                    repeat(6) {
+                        AlbumItem.VerticalPlaceholder( thumbnailSizeDp )
+                    }
                 }
+            }
+        }
 
-                discoverPage?.getOrNull()?.let { page ->
-                    if (page.moods.isNotEmpty()) {
+        discoverPage?.fold(
+            onSuccess = { moodResult ->
+                LazyVerticalGrid(
+                    state = moodAngGenresLazyGridState,
+                    columns = GridCells.Adaptive(Dimensions.thumbnails.album + 24.dp),
+                    modifier = Modifier
+                        .background(colorPalette().background0)
+                        .fillMaxSize()
+                ) {
+                    item(
+                        key = "header",
+                        contentType = 0,
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        HeaderWithIcon(
+                            title = stringResource(R.string.moods_and_genres),
+                            iconId = R.drawable.search,
+                            enabled = true,
+                            showIcon = false,
+                            modifier = Modifier,
+                            onClick = {}
+                        )
+                    }
+
+                    discoverPage?.getOrNull()?.let { page ->
+                        if (page.moods.isNotEmpty()) {
 
                             items(
                                 items = page.moods.sortedBy { it.title },
@@ -131,31 +141,21 @@ fun MoodsPage(
 
                     }
 
-                item(key = "bottom") {
-                    Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
-                }
-
-                }
-
-
-        } ?: discoverPage?.exceptionOrNull()?.let {
-            BasicText(
-                text = stringResource(R.string.page_not_been_loaded),
-                style = typography().s.secondary.center,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(all = 16.dp)
-            )
-        } ?: ShimmerHost {
-            HeaderPlaceholder(modifier = Modifier.shimmer())
-            repeat(4) {
-                TextPlaceholder(modifier = sectionTextModifier)
-                Row {
-                    repeat(6) {
-                        AlbumItem.VerticalPlaceholder( thumbnailSizeDp )
+                    item(key = "bottom") {
+                        Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
                     }
+
                 }
+            },
+            onFailure = {
+                BasicText(
+                    text = stringResource(R.string.page_not_been_loaded),
+                    style = typography().s.secondary.center,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(all = 16.dp)
+                )
             }
-        }
+        )
     }
 }

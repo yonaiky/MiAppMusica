@@ -83,7 +83,6 @@ import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -341,18 +340,16 @@ fun Podcast(
                                     .fillMaxWidth()
                                     .aspectRatio(4f / 3)
                             ) {
-                                ShimmerHost {
-                                    AlbumItem.VerticalPlaceholder( 200.dp )
+                                AlbumItem.VerticalPlaceholder( 200.dp )
 
-                                    BasicText(
-                                        text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
-                                        style = typography().xs.medium,
-                                        maxLines = 1,
-                                        modifier = Modifier
-                                            //.padding(top = 10.dp)
+                                BasicText(
+                                    text = stringResource(R.string.info_wait_it_may_take_a_few_minutes),
+                                    style = typography().xs.medium,
+                                    maxLines = 1,
+                                    modifier = Modifier
+                                    //.padding(top = 10.dp)
 
-                                    )
-                                }
+                                )
                             }
                         }
                     }

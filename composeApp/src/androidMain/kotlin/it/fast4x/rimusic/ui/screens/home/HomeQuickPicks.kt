@@ -95,7 +95,6 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.LocalMenuState
-import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.Loader
 import it.fast4x.rimusic.ui.components.themed.Menu
@@ -127,6 +126,7 @@ import it.fast4x.rimusic.utils.quickPicsTrendingSongKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.shimmerEffect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -1155,25 +1155,23 @@ fun HomeQuickPicks(
                             NavRoutes.settings.navigateHere( navController )
                         }
                 ) else {
-                    ShimmerHost {
-                        repeat(3) {
-                            SongItem.Placeholder()
+                    repeat(3) {
+                        SongItem.Placeholder()
+                    }
+
+                    TextPlaceholder( sectionTextModifier.shimmerEffect() )
+
+                    Row {
+                        repeat(2) {
+                            AlbumItem.VerticalPlaceholder( albumThumbnailSizeDp )
                         }
+                    }
 
-                        TextPlaceholder(modifier = sectionTextModifier)
+                    TextPlaceholder( sectionTextModifier.shimmerEffect() )
 
-                        Row {
-                            repeat(2) {
-                                AlbumItem.VerticalPlaceholder( albumThumbnailSizeDp )
-                            }
-                        }
-
-                        TextPlaceholder(modifier = sectionTextModifier)
-
-                        Row {
-                            repeat(2) {
-                                PlaylistItem.VerticalPlaceholder( albumThumbnailSizeDp )
-                            }
+                    Row {
+                        repeat(2) {
+                            PlaylistItem.VerticalPlaceholder( albumThumbnailSizeDp )
                         }
                     }
                 }

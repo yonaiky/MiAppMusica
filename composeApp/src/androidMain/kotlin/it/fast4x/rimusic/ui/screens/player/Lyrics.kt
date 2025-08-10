@@ -92,7 +92,6 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
-import com.valentinilk.shimmer.shimmer
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.lyrics
@@ -137,6 +136,7 @@ import it.fast4x.rimusic.utils.getHttpClient
 import it.fast4x.rimusic.utils.languageDestination
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.playNext
+import it.fast4x.rimusic.utils.shimmerEffect
 import it.fast4x.rimusic.utils.smartRewind
 import it.fast4x.rimusic.utils.textCopyToClipboard
 import it.fast4x.rimusic.utils.verticalFadingEdge
@@ -1647,15 +1647,14 @@ fun Lyrics(
 
             if ((text == null && !isError) || showPlaceholder) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .shimmer()
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     repeat(4) {
                         TextPlaceholder(
                             color = colorPalette().onOverlayShimmer,
                             modifier = Modifier
                                 .alpha(1f - it * 0.1f)
+                                .shimmerEffect()
                         )
                     }
                 }

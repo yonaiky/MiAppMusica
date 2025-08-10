@@ -34,7 +34,6 @@ import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
-import com.valentinilk.shimmer.shimmer
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
@@ -46,16 +45,15 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.typography
-import it.fast4x.rimusic.ui.components.ShimmerHost
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
+import it.fast4x.rimusic.utils.shimmerEffect
 
 internal const val defaultBrowseId = "FEmusic_moods_and_genres_category"
 
@@ -99,112 +97,9 @@ fun MoodList(
                     1f
             )
     ) {
-        moodPage?.getOrNull()?.let { moodResult ->
-            LazyColumn(
-                state = lazyListState,
-                //contentPadding = LocalPlayerAwareWindowInsets.current
-                //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
-                modifier = Modifier
-                    .background(colorPalette().background0)
-                    .fillMaxSize()
-            ) {
-                item(
-                    key = "header",
-                    contentType = 0
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        HeaderWithIcon(
-                            title = mood.name,
-                            iconId = R.drawable.globe,
-                            enabled = true,
-                            showIcon = true,
-                            modifier = Modifier,
-                            onClick = {}
-                        )
-                    }
-                }
-
-                moodResult.items.forEach { item ->
-                    item {
-                        BasicText(
-                            text = item.title,
-                            style = typography().m.semiBold,
-                            modifier = sectionTextModifier
-                        )
-                    }
-                    item {
-                        val appearance = LocalAppearance.current
-                        val albumItemValues = remember( appearance ) {
-                            AlbumItem.Values.from( appearance )
-                        }
-                        val artistItemValues = remember( appearance ) {
-                            ArtistItem.Values.from( appearance )
-                        }
-                        val playlistItemValues = remember( appearance ) {
-                            PlaylistItem.Values.from( appearance )
-                        }
-
-                        LazyRow {
-                            items(items = item.items, key = { it.key }) { childItem ->
-                                if (childItem.key == defaultBrowseId) return@items
-                                when (childItem) {
-                                    is Innertube.AlbumItem -> AlbumItem.Vertical(
-                                        innertubeAlbum = childItem,
-                                        widthDp = thumbnailSizeDp,
-                                        values = albumItemValues,
-                                        modifier = Modifier.clickable {
-                                            childItem.info?.endpoint?.browseId?.let {
-                                                NavRoutes.YT_ALBUM.navigateHere( navController, it )
-                                            }
-                                        }
-                                    )
-
-                                    is Innertube.ArtistItem -> ArtistItem.Render(
-                                        innertubeArtist = childItem,
-                                        widthDp = thumbnailSizeDp,
-                                        values = artistItemValues,
-                                        modifier = Modifier.clickable {
-                                            childItem.info?.endpoint?.browseId?.let {
-                                                NavRoutes.YT_ARTIST.navigateHere( navController, it )
-                                            }
-                                        }
-                                    )
-
-                                    is Innertube.PlaylistItem -> PlaylistItem.Vertical(
-                                        innertubePlaylist = childItem,
-                                        widthDp = thumbnailSizeDp,
-                                        values = playlistItemValues,
-                                        modifier = Modifier.clickable {
-                                            childItem.info?.endpoint?.browseId?.let { browseId ->
-                                                NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId )
-                                            }
-                                        }
-                                    )
-
-                                    else -> {}
-                                }
-                            }
-                        }
-                    }
-                }
-
-                item(key = "bottom") {
-                    Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
-                }
-
-            }
-        } ?: moodPage?.exceptionOrNull()?.let {
-            BasicText(
-                text = stringResource(R.string.page_not_been_loaded),
-                style = typography().s.secondary.center,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(all = 16.dp)
-            )
-        } ?: ShimmerHost {
-            HeaderPlaceholder(modifier = Modifier.shimmer())
+        if( moodPage == null ) {
+            HeaderPlaceholder( Modifier.shimmerEffect() )
             repeat(4) {
-                TextPlaceholder(modifier = sectionTextModifier)
                 Row {
                     repeat(6) {
                         AlbumItem.VerticalPlaceholder( thumbnailSizeDp )
@@ -212,5 +107,112 @@ fun MoodList(
                 }
             }
         }
+
+        moodPage?.fold(
+            onSuccess = { moodResult ->
+                LazyColumn(
+                    state = lazyListState,
+                    //contentPadding = LocalPlayerAwareWindowInsets.current
+                    //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+                    modifier = Modifier
+                        .background(colorPalette().background0)
+                        .fillMaxSize()
+                ) {
+                    item(
+                        key = "header",
+                        contentType = 0
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            HeaderWithIcon(
+                                title = mood.name,
+                                iconId = R.drawable.globe,
+                                enabled = true,
+                                showIcon = true,
+                                modifier = Modifier,
+                                onClick = {}
+                            )
+                        }
+                    }
+
+                    moodResult.items.forEach { item ->
+                        item {
+                            BasicText(
+                                text = item.title,
+                                style = typography().m.semiBold,
+                                modifier = sectionTextModifier
+                            )
+                        }
+                        item {
+                            val appearance = LocalAppearance.current
+                            val albumItemValues = remember( appearance ) {
+                                AlbumItem.Values.from( appearance )
+                            }
+                            val artistItemValues = remember( appearance ) {
+                                ArtistItem.Values.from( appearance )
+                            }
+                            val playlistItemValues = remember( appearance ) {
+                                PlaylistItem.Values.from( appearance )
+                            }
+
+                            LazyRow {
+                                items(items = item.items, key = { it.key }) { childItem ->
+                                    if (childItem.key == defaultBrowseId) return@items
+                                    when (childItem) {
+                                        is Innertube.AlbumItem -> AlbumItem.Vertical(
+                                            innertubeAlbum = childItem,
+                                            widthDp = thumbnailSizeDp,
+                                            values = albumItemValues,
+                                            modifier = Modifier.clickable {
+                                                childItem.info?.endpoint?.browseId?.let {
+                                                    NavRoutes.YT_ALBUM.navigateHere( navController, it )
+                                                }
+                                            }
+                                        )
+
+                                        is Innertube.ArtistItem -> ArtistItem.Render(
+                                            innertubeArtist = childItem,
+                                            widthDp = thumbnailSizeDp,
+                                            values = artistItemValues,
+                                            modifier = Modifier.clickable {
+                                                childItem.info?.endpoint?.browseId?.let {
+                                                    NavRoutes.YT_ARTIST.navigateHere( navController, it )
+                                                }
+                                            }
+                                        )
+
+                                        is Innertube.PlaylistItem -> PlaylistItem.Vertical(
+                                            innertubePlaylist = childItem,
+                                            widthDp = thumbnailSizeDp,
+                                            values = playlistItemValues,
+                                            modifier = Modifier.clickable {
+                                                childItem.info?.endpoint?.browseId?.let { browseId ->
+                                                    NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId )
+                                                }
+                                            }
+                                        )
+
+                                        else -> {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    item(key = "bottom") {
+                        Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
+                    }
+
+                }
+            },
+            onFailure = {
+                BasicText(
+                    text = stringResource(R.string.page_not_been_loaded),
+                    style = typography().s.secondary.center,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(all = 16.dp)
+                )
+            }
+        )
     }
 }

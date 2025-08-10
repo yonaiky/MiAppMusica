@@ -25,16 +25,15 @@ import androidx.compose.ui.unit.dp
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.utils.plus
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
-import it.fast4x.rimusic.ui.components.ShimmerHost
+import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.secondary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.typography
 
 @ExperimentalAnimationApi
 @Composable
@@ -123,15 +122,9 @@ inline fun <T : Innertube.Item> ItemsPage(
             if (!(itemsPage != null && itemsPage?.continuation == null)) {
                 item(key = "loading") {
                     val isFirstLoad = itemsPage?.items.isNullOrEmpty()
-                    ShimmerHost(
-                        modifier = Modifier
-                            .run {
-                                if (isFirstLoad) fillParentMaxSize() else this
-                            }
-                    ) {
-                        repeat(if (isFirstLoad) initialPlaceholderCount else continuationPlaceholderCount) {
-                            itemPlaceholderContent()
-                        }
+
+                    repeat(if (isFirstLoad) initialPlaceholderCount else continuationPlaceholderCount) {
+                        itemPlaceholderContent()
                     }
                 }
             }

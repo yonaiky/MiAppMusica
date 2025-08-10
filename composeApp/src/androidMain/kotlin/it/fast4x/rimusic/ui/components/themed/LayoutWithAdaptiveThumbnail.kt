@@ -1,6 +1,5 @@
 package it.fast4x.rimusic.ui.components.themed
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -20,11 +19,10 @@ import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
-import com.valentinilk.shimmer.shimmer
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
-import it.fast4x.rimusic.ui.styling.shimmer
 import it.fast4x.rimusic.utils.isLandscape
+import it.fast4x.rimusic.utils.shimmerEffect
 
 
 @Composable
@@ -157,9 +155,7 @@ fun adaptiveThumbnailContent(
 
         if (isLoading) {
             Spacer(
-                modifier = modifier
-                    .shimmer()
-                    .background(colorPalette().shimmer)
+                modifier = modifier.shimmerEffect()
             )
         } else {
             ImageFactory.AsyncImage(

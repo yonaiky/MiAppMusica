@@ -294,7 +294,6 @@ dependencies {
     implementation(libs.compose.activity)
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui)
-    implementation(libs.compose.shimmer)
     implementation(libs.compose.coil)
     implementation(libs.androidx.palette)
     implementation(libs.media3.exoplayer)
