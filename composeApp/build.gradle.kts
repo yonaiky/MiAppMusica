@@ -76,11 +76,11 @@ kotlin {
             // Related to built-in game, maybe removed in future?
             implementation(libs.compose.runtime.livedata)
 
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation( libs.ktor.serialization.kotlinx.protobuf )
-            implementation(libs.ktor.client.encoding)
+            implementation(libs.ktor.core)
+            implementation(libs.ktor.okhttp)
+            implementation(libs.ktor.content.negotiation)
+            implementation(libs.ktor.serialization.protobuf)
+            implementation(libs.ktor.encoding)
             implementation( libs.ktor.serialization.json )
             implementation(libs.okhttp3.logging.interceptor)
         }

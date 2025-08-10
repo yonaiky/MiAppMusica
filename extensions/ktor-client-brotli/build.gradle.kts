@@ -7,6 +7,6 @@ sourceSets.all {
 }
 
 dependencies {
-    implementation(libs.ktor.client.encoding)
+    implementation(libs.ktor.encoding)
     implementation(libs.brotli)
 }
