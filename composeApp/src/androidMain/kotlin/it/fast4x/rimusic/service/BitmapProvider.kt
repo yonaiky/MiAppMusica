@@ -3,15 +3,14 @@ package it.fast4x.rimusic.service
 
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.core.graphics.applyCanvas
-import coil.imageLoader
-import coil.request.CachePolicy
-import coil.request.Disposable
-import coil.request.ImageRequest
-import it.fast4x.rimusic.utils.thumbnail
+import app.kreate.android.coil3.ImageFactory
+import coil3.request.Disposable
+import coil3.request.allowHardware
+import coil3.toBitmap
 import it.fast4x.rimusic.appContext
+import it.fast4x.rimusic.utils.thumbnail
 import timber.log.Timber
 
 //context(Context)
@@ -73,29 +72,22 @@ class BitmapProvider(
         lastUri = uri
 
         runCatching {
-            lastEnqueued = appContext().imageLoader.enqueue(
-                ImageRequest.Builder(appContext())
-                    .networkCachePolicy(CachePolicy.ENABLED)
-                    .data(uri.thumbnail(bitmapSize))
-                    .allowHardware(false)
-                    .diskCacheKey(uri.thumbnail(bitmapSize).toString())
-                    //.memoryCacheKey(uri.thumbnail(bitmapSize).toString())
-                    .listener(
-                        onError = { _, result ->
-                            Timber.e("Failed to load bitmap ${result.throwable.stackTraceToString()}")
-                            lastBitmap = null
-                            onDone(bitmap)
-                            //listener?.invoke(lastBitmap)
-                        },
-                        onSuccess = { _, result ->
-                            lastBitmap = (result.drawable as BitmapDrawable).bitmap
-                            onDone(bitmap)
-                            //listener?.invoke(lastBitmap)
-                        }
-                    )
-
-                    .build()
-            )
+            lastEnqueued = ImageFactory.requestBuilder( uri.thumbnail(bitmapSize).toString() ) {
+                allowHardware( false )
+                listener(
+                    onError = { _, result ->
+                        Timber.e("Failed to load bitmap ${result.throwable.stackTraceToString()}")
+                        lastBitmap = null
+                        onDone(bitmap)
+                        //listener?.invoke(lastBitmap)
+                    },
+                    onSuccess = { _, result ->
+                        lastBitmap = result.image.toBitmap()
+                        onDone(bitmap)
+                        //listener?.invoke(lastBitmap)
+                    }
+                )
+            }.let(ImageFactory.imageLoader::enqueue )
         }.onFailure {
             Timber.e("Failed enqueue in BitmapProvider ${it.stackTraceToString()}")
         }

@@ -1,6 +1,7 @@
 package app.kreate.android.coil3
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,6 +13,7 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.drawable.APP_ICON_BITMAP
 import app.kreate.android.service.NetworkService
+import coil3.Image
 import coil3.ImageLoader
 import coil3.asImage
 import coil3.compose.AsyncImagePainter.State
@@ -25,11 +27,14 @@ import coil3.request.error
 import coil3.request.fallback
 import coil3.request.placeholder
 import coil3.request.transformations
+import coil3.toBitmap
 import coil3.transform.Transformation
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.thumbnail
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import kotlinx.coroutines.Dispatchers
+import org.jetbrains.annotations.Contract
+import kotlin.contracts.ExperimentalContracts
 
 object ImageFactory {
 
@@ -142,4 +147,19 @@ object ImageFactory {
             onSuccess = onSuccess,
             onError = onError
         )
+
+    @OptIn(ExperimentalContracts::class)
+    @Contract("null,_->null")
+    suspend fun bitmap(
+        thumbnailUrl: String,
+        toBitmap: Image.() -> Bitmap = Image::toBitmap,
+        requestBuilder: ImageRequest.Builder.() -> Unit = {}
+    ) = runCatching {
+        requestBuilder( thumbnailUrl, requestBuilder )
+            .let( imageLoader::enqueue )
+            .job
+            .await()
+            .image!!
+            .toBitmap()
+    }
 }

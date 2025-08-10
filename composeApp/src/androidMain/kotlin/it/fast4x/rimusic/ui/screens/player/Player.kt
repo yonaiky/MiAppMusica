@@ -122,6 +122,7 @@ import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.kreate.android.screens.player.background.BlurredCover
 import app.kreate.android.themed.rimusic.screen.player.ActionBar
+import coil3.request.allowHardware
 import com.mikepenz.hypnoticcanvas.shaderBackground
 import com.mikepenz.hypnoticcanvas.shaders.BlackCherryCosmos
 import com.mikepenz.hypnoticcanvas.shaders.GlossyGradients
@@ -177,7 +178,6 @@ import it.fast4x.rimusic.utils.doubleShadowDrop
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.formatAsDuration
 import it.fast4x.rimusic.utils.formatAsTime
-import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.horizontalFadingEdge
 import it.fast4x.rimusic.utils.isExplicit
 import it.fast4x.rimusic.utils.isLandscape
@@ -186,6 +186,7 @@ import it.fast4x.rimusic.utils.playAtIndex
 import it.fast4x.rimusic.utils.playNext
 import it.fast4x.rimusic.utils.playPrevious
 import it.fast4x.rimusic.utils.positionAndDurationState
+import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shouldBePlaying
 import it.fast4x.rimusic.utils.thumbnail
@@ -639,12 +640,16 @@ fun Player(
             playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
             playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient || updateBrush
         ) {
-            try {
-                val bitmap = getBitmapFromUrl(
-                    context,
-                    binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.thumbnail(1200).toString()
-                )
-
+            val thumbnailUrl: String =  binder.player
+                                              .currentWindow
+                                              ?.mediaItem
+                                              ?.mediaMetadata
+                                              ?.artworkUri
+                                              .toString()
+                                              .resize( 1200, 1200 )
+            ImageFactory.bitmap( thumbnailUrl ) {
+                allowHardware( false )
+            }.onSuccess { bitmap ->
                 dynamicColorPalette = dynamicColorPaletteOf(
                     bitmap,
                     !lightTheme
@@ -653,17 +658,13 @@ fun Player(
 
                 val palette = Palette.from(bitmap).generate()
 
-                dominant = palette.getDominantColor(dynamicColorPalette.accent.toArgb())
-                vibrant = palette.getVibrantColor(dynamicColorPalette.accent.toArgb())
-                lightVibrant = palette.getLightVibrantColor(dynamicColorPalette.accent.toArgb())
-                darkVibrant = palette.getDarkVibrantColor(dynamicColorPalette.accent.toArgb())
-                muted = palette.getMutedColor(dynamicColorPalette.accent.toArgb())
-                lightMuted = palette.getLightMutedColor(dynamicColorPalette.accent.toArgb())
-                darkMuted = palette.getDarkMutedColor(dynamicColorPalette.accent.toArgb())
-
-            } catch (e: Exception) {
-                dynamicColorPalette = color
-                println("Player Error getting dynamic color ${e.printStackTrace()}")
+                dominant = palette.getDominantColor( dynamicColorPalette.accent.toArgb() )
+                vibrant = palette.getVibrantColor( dynamicColorPalette.accent.toArgb() )
+                lightVibrant = palette.getLightVibrantColor( dynamicColorPalette.accent.toArgb() )
+                darkVibrant = palette.getDarkVibrantColor( dynamicColorPalette.accent.toArgb() )
+                muted = palette.getMutedColor( dynamicColorPalette.accent.toArgb() )
+                lightMuted = palette.getLightMutedColor( dynamicColorPalette.accent.toArgb() )
+                darkMuted = palette.getDarkMutedColor( dynamicColorPalette.accent.toArgb() )
             }
         }
         println("Player after getting dynamic color $dynamicColorPalette")

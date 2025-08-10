@@ -97,8 +97,7 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import app.kreate.android.coil3.ImageFactory
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.SearchBody
@@ -119,9 +118,7 @@ import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import it.fast4x.rimusic.ui.styling.ColorPalette
-import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.favoritesIcon
-import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.bold
@@ -134,12 +131,10 @@ import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isValidIP
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.removeYTSongFromPlaylist
-import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.setDeviceVolume
 import it.fast4x.rimusic.utils.setGlobalVolume
-import it.fast4x.rimusic.utils.thumbnail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -567,21 +562,20 @@ inline fun SelectorArtistsDialog(
                         }
 
                         Box {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(artist?.thumbnailUrl?.resize(1200, 1200))
-                                    .build(),
-                                contentDescription = "",
+                            ImageFactory.AsyncImage(
+                                thumbnailUrl = artist?.thumbnailUrl,
                                 contentScale = ContentScale.Fit,
-                                modifier = Modifier
-                                    .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
-                                    .clickable(
-                                        onClick = {
-                                            onDismiss()
-                                            onValueSelected(browseId)
-                                        }
-                                    )
-                                    .align(Alignment.Center)
+                                modifier = Modifier.align(Alignment.Center)
+                                                   .requiredSize(
+                                                       if ( isLandscape )
+                                                               0.85 * screenHeight
+                                                       else
+                                                           0.85 * screenWidth
+                                                   )
+                                                   .clickable {
+                                                       onDismiss()
+                                                       onValueSelected(browseId)
+                                                   }
                             )
                             if (artist?.isYoutubeArtist == true) {
                                 Image(
@@ -1776,16 +1770,12 @@ fun SongMatchingDialog(
                     .padding(vertical = 10.dp)
             ) {
                 Box {
-                    AsyncImage(
-                        model = songToRematch.asMediaItem.mediaMetadata.artworkUri.thumbnail(
-                            Dimensions.thumbnails.song.px / 2
-                        ),
-                        contentDescription = null,
+                    ImageFactory.AsyncImage(
+                        thumbnailUrl = songToRematch.asMediaItem.mediaMetadata.artworkUri.toString(),
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .padding(end = 5.dp)
-                            .clip(RoundedCornerShape(5.dp))
-                            .size(40.dp)
+                        modifier = Modifier.padding( end = 5.dp )
+                                           .clip( RoundedCornerShape(5.dp) )
+                                           .size( 40.dp )
                     )
                     if (songToRematch.likedAt != null) {
                         HeaderIconButton(
@@ -1941,16 +1931,12 @@ fun SongMatchingDialog(
                                     )
                             ) {
                                 Box {
-                                    AsyncImage(
-                                        model = song.asMediaItem.mediaMetadata.artworkUri.thumbnail(
-                                            Dimensions.thumbnails.song.px / 2
-                                        ),
-                                        contentDescription = null,
+                                    ImageFactory.AsyncImage(
+                                        thumbnailUrl = song.asMediaItem.mediaMetadata.artworkUri.toString(),
                                         contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .padding(end = 5.dp)
-                                            .clip(RoundedCornerShape(5.dp))
-                                            .size(30.dp)
+                                        modifier = Modifier.padding( end = 5.dp )
+                                                          .clip( RoundedCornerShape(5.dp) )
+                                                          .size( 30.dp )
                                     )
                                     if (song.asSong.likedAt != null) {
                                         HeaderIconButton(

@@ -15,8 +15,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.utils.scrollingText
-import coil.compose.AsyncImage
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.thumbnailShape
@@ -66,13 +66,11 @@ fun VideoItem(
         modifier = modifier
     ) {
         Box {
-            AsyncImage(
-                model = thumbnailUrl,
-                contentDescription = null,
+            ImageFactory.AsyncImage(
+                thumbnailUrl = thumbnailUrl,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(thumbnailShape())
-                    .size(width = thumbnailWidthDp, height = thumbnailHeightDp)
+                modifier = Modifier.clip( thumbnailShape() )
+                                   .size( thumbnailWidthDp, thumbnailHeightDp )
             )
 
             duration?.let {

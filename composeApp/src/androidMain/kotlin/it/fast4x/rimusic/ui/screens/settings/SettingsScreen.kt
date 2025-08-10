@@ -38,7 +38,6 @@ import app.kreate.android.themed.common.screens.settings.NetworkSettings
 import app.kreate.android.themed.common.screens.settings.OtherSettings
 import app.kreate.android.themed.common.screens.settings.QuickPicksSettings
 import app.kreate.android.themed.common.screens.settings.UiSettings
-import coil.annotation.ExperimentalCoilApi
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.typography
@@ -51,7 +50,6 @@ import me.knighthat.component.dialog.RestartAppDialog
 
 @UnstableApi
 @OptIn(
-    ExperimentalCoilApi::class,
     ExperimentalMaterial3Api::class
 )
 @Composable

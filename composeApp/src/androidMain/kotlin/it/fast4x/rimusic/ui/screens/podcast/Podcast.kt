@@ -66,9 +66,9 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
-import coil.compose.AsyncImage
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -113,7 +113,6 @@ import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.medium
-import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.secondary
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.CoroutineScope
@@ -270,18 +269,16 @@ fun Podcast(
                     ) {
                         if (podcastPage != null) {
                             if(!isLandscape)
-                                AsyncImage(
-                                    model = podcastPage!!.thumbnail.firstOrNull()?.url?.resize(1200, 900),
-                                    contentDescription = "loading...",
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.Center)
-                                        .fadingEdge(
-                                            top = WindowInsets.systemBars
-                                                .asPaddingValues()
-                                                .calculateTopPadding() + Dimensions.fadeSpacingTop,
-                                            bottom = Dimensions.fadeSpacingBottom
-                                        )
+                                ImageFactory.AsyncImage(
+                                    thumbnailUrl = podcastPage!!.thumbnail.firstOrNull()?.url,
+                                    modifier = Modifier.fillMaxWidth()
+                                                       .align( Alignment.Center )
+                                                       .fadingEdge(
+                                                           top = WindowInsets.systemBars
+                                                               .asPaddingValues()
+                                                               .calculateTopPadding() + Dimensions.fadeSpacingTop,
+                                                           bottom = Dimensions.fadeSpacingBottom
+                                                       )
                                 )
 
                             AutoResizeText(

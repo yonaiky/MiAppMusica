@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.graphics.drawable.BitmapDrawable
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -66,6 +65,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
@@ -88,8 +88,8 @@ import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.service.innertube.InnertubeProvider
 import app.kreate.android.service.updater.UpdatePlugins
-import coil.imageLoader
-import coil.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.toBitmap
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
 import com.kieronquinn.monetcompat.core.MonetCompat
 import com.kieronquinn.monetcompat.interfaces.MonetColorsChangedListener
@@ -111,7 +111,6 @@ import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.extensions.pip.PipEventContainer
 import it.fast4x.rimusic.extensions.pip.PipModuleContainer
-import it.fast4x.rimusic.extensions.pip.PipModuleCover
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
@@ -462,17 +461,14 @@ class MainActivity :
 
                 val colorPaletteMode by Preferences.THEME_MODE
                 coroutineScope.launch(Dispatchers.Main) {
-                    val result = imageLoader.execute(
-                        ImageRequest.Builder(this@MainActivity)
-                            .data(url)
-                            .allowHardware(false)
-                            .build()
-                    )
+                    val result = ImageFactory.requestBuilder( url ) {
+                        allowHardware( false )
+                    }.let { ImageFactory.imageLoader.execute( it ) }
                     val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
                     val isDark =
                         colorPaletteMode == ColorPaletteMode.Dark || isPicthBlack || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
 
-                    val bitmap = (result.drawable as? BitmapDrawable)?.bitmap
+                    val bitmap = result.image?.toBitmap()
                     if (bitmap != null) {
                         val palette = Palette
                             .from(bitmap)
@@ -791,9 +787,15 @@ class MainActivity :
                             when (pipModule) {
                                 PipModule.Cover -> {
                                     PipModuleContainer {
-                                        PipModuleCover(
-                                            url = binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri.toString()
-                                                .resize(1200, 1200)
+                                        ImageFactory.AsyncImage(
+                                            thumbnailUrl = binder?.player
+                                                                 ?.currentMediaItem
+                                                                 ?.mediaMetadata
+                                                                 ?.artworkUri
+                                                                 .toString()
+                                                                 .resize( 1200, 1200 ),
+                                            contentScale = ContentScale.Fit,
+                                            modifier = Modifier.fillMaxSize()
                                         )
                                     }
                                 }

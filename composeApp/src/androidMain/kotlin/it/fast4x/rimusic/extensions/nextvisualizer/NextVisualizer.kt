@@ -38,7 +38,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.drawable.APP_ICON_BITMAP
+import coil3.request.allowHardware
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.extensions.nextvisualizer.painters.Painter
@@ -67,13 +69,12 @@ import it.fast4x.rimusic.ui.components.themed.IconButton
 import it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import it.fast4x.rimusic.utils.DisposableListener
 import it.fast4x.rimusic.utils.currentWindow
-import it.fast4x.rimusic.utils.getBitmapFromUrl
 import it.fast4x.rimusic.utils.hasPermission
 import it.fast4x.rimusic.utils.isCompositionLaunched
 import it.fast4x.rimusic.utils.resize
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import me.knighthat.utils.Toaster
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -239,43 +240,45 @@ fun getVisualizers(): List<Painter> {
     val binder = LocalPlayerServiceBinder.current
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-            try {
-                bitmapCover = getBitmapFromUrl(
-                    context,
-                    binder?.player?.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
-                        .resize(1200, 1200)
-                )
-            } catch (e: Exception) {
-                Timber.e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
+        val thumbnailUrl: String =  binder?.player
+                                          ?.currentWindow
+                                          ?.mediaItem
+                                          ?.mediaMetadata
+                                          ?.artworkUri
+                                          .toString()
+                                          .resize( 1200, 1200 )
+        ImageFactory.bitmap( thumbnailUrl ) {
+            allowHardware( false )
+        }.fold(
+            onSuccess = {
+                bitmapCover = it
+            },
+            onFailure = { err ->
+                err.printStackTrace()
+                err.message?.also( Toaster::e )
             }
+        )
     }
-    /*
-    LaunchedEffect(Unit, binder?.player?.currentWindow?.mediaItem?.mediaId) {
-        try {
-            bitmapCover = getBitmapFromUrl(
-                context,
-                binder?.player?.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString().resize(1200, 1200)
-            )
-        } catch (e: Exception) {
-            Timber.e("Failed get bitmap in NextVisualizer ${e.stackTraceToString()}")
-        }
-    }
-     */
 
     binder?.player?.DisposableListener {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 coroutineScope.launch {
-                    try {
-                        bitmapCover = getBitmapFromUrl(
-                            context,
-                            binder.player.currentWindow?.mediaItem?.mediaMetadata?.artworkUri.toString()
-                                .resize(1200, 1200)
-                        )
-                    } catch (e: Exception) {
-                        bitmapCover = APP_ICON_BITMAP
-                        Timber.e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
-                    }
+                    val thumbnailUrl: String =  mediaItem?.mediaMetadata
+                                                         ?.artworkUri
+                                                         .toString()
+                                                         .resize( 1200, 1200 )
+                    ImageFactory.bitmap( thumbnailUrl ) {
+                        allowHardware( false )
+                    }.fold(
+                        onSuccess = {
+                            bitmapCover = it
+                        },
+                        onFailure = { err ->
+                            err.printStackTrace()
+                            err.message?.also( Toaster::e )
+                        }
+                    )
                 }
             }
         }

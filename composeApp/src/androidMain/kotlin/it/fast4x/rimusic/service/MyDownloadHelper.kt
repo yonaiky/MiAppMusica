@@ -20,10 +20,10 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.Requirements
 import app.kreate.android.Preferences
+import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.service.createDataSourceFactory
-import coil.imageLoader
-import coil.request.CachePolicy
-import coil.request.ImageRequest
+import coil3.request.allowHardware
+import coil3.request.bitmapConfig
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.enums.ExoPlayerCacheLocation
@@ -253,16 +253,11 @@ object MyDownloadHelper {
                 println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
             }
             downloadSyncedLyrics( mediaItem.asSong )
-            context.imageLoader.execute(
-                ImageRequest.Builder(context)
-                    .networkCachePolicy(CachePolicy.ENABLED)
-                    .data(imageUrl)
-                    .size(1200)
-                    .bitmapConfig(Bitmap.Config.ARGB_8888)
-                    .allowHardware(false)
-                    .diskCacheKey(imageUrl.toString())
-                    .build()
-            )
+
+            ImageFactory.requestBuilder( imageUrl.toString() ) {
+                bitmapConfig( Bitmap.Config.ARGB_8888 )
+                allowHardware( false )
+            }
         }
 
     }

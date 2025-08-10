@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
-import coil.compose.AsyncImage
+import app.kreate.android.coil3.ImageFactory
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.extensions.pip.isPipSupported
@@ -92,13 +92,12 @@ fun ActionBar(
 
     if (isYouTubeLoggedIn()) {
         if (ytAccountThumbnail() != "")
-            AsyncImage(
-                model = ytAccountThumbnail(),
-                contentDescription = null,
-                modifier = Modifier.height(40.dp)
-                    .padding(end = 10.dp)
-                    .clip( thumbnailShape() )
-                    .clickable { expanded = !expanded }
+            ImageFactory.AsyncImage(
+                thumbnailUrl = ytAccountThumbnail(),
+                modifier = Modifier.height( 40.dp )
+                                   .padding( end = 10.dp )
+                                   .clip( thumbnailShape() )
+                                   .clickable { expanded = !expanded }
             )
         else HeaderIcon( R.drawable.ytmusic, size = 30.dp ) { expanded = !expanded }
     } else HeaderIcon( R.drawable.burger ) { expanded = !expanded }
