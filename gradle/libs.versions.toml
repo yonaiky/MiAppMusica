@@ -73,7 +73,6 @@ ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor"
 ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-encoding = { group = "io.ktor", name = "ktor-client-encoding", version.ref = "ktor" }
-ktor-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-serialization-protobuf = { group = "io.ktor", name = "ktor-serialization-kotlinx-protobuf", version.ref = "ktor" }
 
@@ -149,3 +148,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 [bundles]
 compose-kmp = ['compose-kmp-animation', 'compose-kmp-foundation', 'compose-kmp-material3', 'compose-kmp-ui']
+ktor = ['ktor-core', 'ktor-encoding', 'ktor-content-negotiation', 'ktor-serialization-json', 'ktor-serialization-protobuf']

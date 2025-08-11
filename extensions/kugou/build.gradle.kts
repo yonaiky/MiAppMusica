@@ -15,6 +15,5 @@ dependencies {
     implementation(libs.ktor.okhttp)
     implementation(libs.ktor.content.negotiation)
     implementation(libs.ktor.encoding)
-    implementation(libs.ktor.serialization)
     implementation(libs.ktor.serialization.json)
 }

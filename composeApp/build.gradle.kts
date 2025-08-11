@@ -73,14 +73,29 @@ kotlin {
 
             // Related to built-in game, maybe removed in future?
             implementation(libs.compose.runtime.livedata)
+            implementation( libs.androidx.glance.widgets )
+            implementation( libs.androidx.constraintlayout )
 
-            implementation(libs.ktor.core)
+            implementation( libs.androidx.appcompat )
+            implementation( libs.androidx.appcompat.resources )
+            implementation( libs.androidx.palette )
+
+            implementation( libs.monetcompat )
+            implementation(libs.androidmaterial)
+
             implementation(libs.ktor.okhttp)
-            implementation(libs.ktor.content.negotiation)
-            implementation(libs.ktor.serialization.protobuf)
-            implementation(libs.ktor.encoding)
-            implementation( libs.ktor.serialization.json )
             implementation(libs.okhttp3.logging.interceptor)
+
+            // Deprecating
+            implementation( libs.androidx.crypto )
+
+            // Player implementations
+            implementation( libs.media3.exoplayer )
+            implementation( libs.androidyoutubeplayer )
+
+            implementation( libs.timber )
+
+            implementation( libs.toasty )
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -92,6 +107,10 @@ kotlin {
 
             implementation(projects.innertube)
             implementation(projects.oldtube)
+            implementation(projects.kugou)
+            implementation(projects.lrclib)
+
+            implementation( libs.kizzy.rpc )
 
             // Room KMP
             implementation( libs.room.runtime )
@@ -106,6 +125,15 @@ kotlin {
             implementation(libs.translator)
 
             implementation( libs.bundles.compose.kmp )
+
+            implementation ( libs.hypnoticcanvas )
+            implementation ( libs.hypnoticcanvas.shaders )
+
+            implementation( libs.kotlin.csv )
+
+            implementation( libs.bundles.ktor )
+
+            implementation( libs.math3 )
         }
     }
 }
@@ -290,30 +318,7 @@ room {
 }
 
 dependencies {
-    implementation(libs.androidx.palette)
-    implementation(libs.media3.exoplayer)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.appcompat.resources)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.kotlin.csv)
-    implementation(libs.monetcompat)
-    implementation(libs.androidmaterial)
-    implementation(libs.timber)
-    implementation(libs.androidx.crypto)
-    implementation(libs.math3)
-    implementation(libs.toasty)
-    implementation(libs.androidyoutubeplayer)
-    implementation(libs.androidx.glance.widgets)
-    implementation(libs.kizzy.rpc)
-    implementation (libs.hypnoticcanvas)
-    implementation (libs.hypnoticcanvas.shaders)
-
     ksp( libs.room.compiler )
-
-    implementation(projects.innertube)
-    implementation(projects.oldtube)
-    implementation(projects.kugou)
-    implementation(projects.lrclib)
 
     coreLibraryDesugaring(libs.desugaring.nio)
 }
