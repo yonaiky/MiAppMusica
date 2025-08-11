@@ -17,7 +17,7 @@ materialdesktop = "1.7.3"
 androidmaterial = "1.12.0"
 constraintlayout = "1.1.1"
 translator = "1.1.1"
-kotlin-csv = "1.9.3"
+kotlin-csv = "1.10.0"
 monetcompat = "0.4.1"
 timber = "5.0.1"
 crypto = "1.1.0-beta01"
@@ -121,7 +121,7 @@ androidmaterial = { group = "com.google.android.material", name = "material", ve
 
 # Extras
 translator = {  group = "com.github.therealbush", name = "translator", version.ref = "translator" }
-kotlin-csv = {  group = "com.github.doyaaaaaken", name = "kotlin-csv-jvm", version.ref = "kotlin-csv" }
+kotlin-csv = {  group = "com.jsoizo", name = "kotlin-csv-jvm", version.ref = "kotlin-csv" }
 timber = {  group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 math3 = { group = "org.apache.commons", name = "commons-math3", version.ref = "math3" }
 toasty = { group = "com.github.GrenderG", name = "Toasty", version.ref = "toasty" }
