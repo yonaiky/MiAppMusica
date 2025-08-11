@@ -45,9 +45,9 @@ class ExoPlayerListener(
     private val binder: PlayerServiceModern.Binder,
     private val isNetworkAvailable: MutableStateFlow<Boolean>,
     private val waitingForNetwork: MutableStateFlow<Boolean>,
-    private val updateBitmap: () -> Unit,
     private val sendOpenEqualizerIntent: () -> Unit,
-    private val sendCloseEqualizerIntent: () -> Unit
+    private val sendCloseEqualizerIntent: () -> Unit,
+    private val onMediaTransition: (MediaItem?) -> Unit
 ): Player.Listener {
 
     private var loudnessEnhancer: LoudnessEnhancer? = null
@@ -195,8 +195,7 @@ class ExoPlayerListener(
 
         maybeNormalizeVolume()
         loadFromRadio(reason)
-        updateMediaControl( appContext(), this.player )
-        updateBitmap()
+        onMediaTransition( mediaItem )
     }
 
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {

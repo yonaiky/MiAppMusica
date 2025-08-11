@@ -233,6 +233,30 @@ class PlayerServiceModern:
         return SimpleCache( cacheDir, cacheEvictor, StandaloneDatabaseProvider(this) )
     }
 
+    private fun onMediaItemTransition( mediaItem: MediaItem? ) {
+        updateBitmap()
+        listener.updateMediaControl( this, player )
+        updateDownloadedState()
+        updateWidgets()
+
+        mediaItem?.also {
+            if( !isAtLeastAndroid6 || !Preferences.DISCORD_LOGIN.value ) return@also
+
+            updateDiscordPresence(
+                this@PlayerServiceModern,
+                mediaItem = it,
+                timeStart = if ( player.isPlaying )
+                    System.currentTimeMillis() - player.currentPosition
+                else
+                    0L,
+                timeEnd = if ( player.isPlaying )
+                    (System.currentTimeMillis() - player.currentPosition) + player.duration
+                else
+                    0L
+            )
+        }
+    }
+
 
     @kotlin.OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     override fun onCreate() {
@@ -370,9 +394,9 @@ class PlayerServiceModern:
             binder,
             isNetworkAvailable,
             waitingForNetwork,
-            ::updateBitmap,
             ::sendOpenEqualizerIntent,
-            ::sendCloseEqualizerIntent
+            ::sendCloseEqualizerIntent,
+            ::onMediaItemTransition
         )
 
         player.skipSilenceEnabled = Preferences.AUDIO_SKIP_SILENCE.value
@@ -436,7 +460,6 @@ class PlayerServiceModern:
             updateDownloadedState()
             println("PlayerServiceModern onCreate currentSongIsDownloaded ${currentSongStateDownload.value}")
 
-            listener.updateMediaControl( this@PlayerServiceModern, player )
             withContext(Dispatchers.Main) {
                 player.currentMediaItem?.also {
                     if( !isAtLeastAndroid6 || !Preferences.DISCORD_LOGIN.value ) return@also

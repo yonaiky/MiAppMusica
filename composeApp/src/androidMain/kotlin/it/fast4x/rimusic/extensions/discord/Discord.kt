@@ -162,8 +162,7 @@ fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
 //<editor-fold desc="Awesome adaptation to make song's thumbnail to show up in RPC. Thanks to NEVARLeVrai">
 // https://github.com/NEVARLeVrai/N-Zik
 private const val APPLICATION_ID = "1370148610158759966"
-private const val TEMP_FILE_HOST = "https://catbox.moe/user/api.php"
-private const val MEDIA_TYPE = "application/octet-stream"
+private const val TEMP_FILE_HOST = "https://litterbox.catbox.moe/resources/internals/api.php "
 private const val MAX_DIMENSION = 1024                           // Per Discord's guidelines
 private const val MAX_FILE_SIZE_BYTES = 2L * 1024 * 1024     // 2 MB in bytes
 
@@ -184,13 +183,15 @@ private suspend fun uploadArtwork( context: Context, artworkUri: Uri? ): Result<
                  .submitFormWithBinaryData(
                      url = TEMP_FILE_HOST,
                      formData = formData {
-                         val fileData = context.contentResolver.openInputStream( uploadableUri )!!.readBytes()
+                         val (mimeType, fileData) = with( context.contentResolver ) {
+                             getType( uploadableUri )!! to openInputStream( uploadableUri )!!.readBytes()
+                         }
 
                          append("reqtype", "fileupload")
-                         append("userhash", "")
+                         append("time", "1h")
                          append("fileToUpload", fileData, Headers.build {
                              append( HttpHeaders.ContentDisposition, "filename=\"${System.currentTimeMillis()}\"" )
-                             append( HttpHeaders.ContentType, MEDIA_TYPE )
+                             append( HttpHeaders.ContentType, mimeType )
                          })
                      }
                  )
