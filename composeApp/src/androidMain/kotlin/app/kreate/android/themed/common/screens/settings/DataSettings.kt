@@ -187,7 +187,7 @@ fun DataSettings( paddingValues: PaddingValues ) {
                     SettingComponents.StorageSizeEntry(
                         context = context,
                         preference = Preferences.EXO_CACHE_SIZE,
-                        title = stringResource( R.string.image_cache_max_size ),
+                        title = stringResource( R.string.song_cache_max_size ),
                         subtitle = subtitle,
                         currentValue = cache.cacheSpace,
                         action = SettingComponents.Action.RESTART_PLAYER_SERVICE
@@ -219,7 +219,7 @@ fun DataSettings( paddingValues: PaddingValues ) {
                     SettingComponents.StorageSizeEntry(
                         context = context,
                         preference = Preferences.EXO_DOWNLOAD_SIZE,
-                        title = stringResource( R.string.image_cache_max_size ),
+                        title = stringResource( R.string.song_download_max_size ),
                         subtitle = subtitle,
                         currentValue = cache.cacheSpace,
                         action = SettingComponents.Action.RESTART_APP
