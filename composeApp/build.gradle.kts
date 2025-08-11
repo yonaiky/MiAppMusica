@@ -1,7 +1,6 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.gradle.internal.extensions.stdlib.capitalized
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val APP_NAME = "Kreate"
@@ -29,7 +28,6 @@ repositories {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
             freeCompilerArgs.add("-Xcontext-parameters")
@@ -107,6 +105,7 @@ kotlin {
 
             implementation(libs.translator)
 
+            implementation( libs.bundles.compose.kmp )
         }
     }
 }
@@ -291,16 +290,11 @@ room {
 }
 
 dependencies {
-    implementation(libs.compose.activity)
-    implementation(libs.compose.foundation)
-    implementation(libs.compose.ui)
     implementation(libs.androidx.palette)
     implementation(libs.media3.exoplayer)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.appcompat.resources)
-    implementation(libs.material3)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.compose.animation)
     implementation(libs.kotlin.csv)
     implementation(libs.monetcompat)
     implementation(libs.androidmaterial)
@@ -323,7 +317,4 @@ dependencies {
     implementation(projects.lrclib)
 
     coreLibraryDesugaring(libs.desugaring.nio)
-
-    // Debug only
-    debugImplementation(libs.ui.tooling.preview.android)
 }
