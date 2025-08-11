@@ -1,10 +1,12 @@
 package app.kreate.android.service
 
 import android.content.ContentResolver
+import android.content.Context
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
@@ -29,7 +31,6 @@ import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.utils.isConnectionMetered
 import it.fast4x.rimusic.utils.isNetworkAvailable
-import it.fast4x.rimusic.utils.okHttpDataSourceFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -125,6 +126,10 @@ private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingD
         }
     }
 }
+
+@UnstableApi
+private fun upstreamDatasourceFactory( context: Context ): DataSource.Factory =
+    DefaultDataSource.Factory( context, KtorHttpDatasource.Factory(NetworkService.client ) )
 
 //<editor-fold defaultstate="collapsed" desc="Extractors">
 private val jsonParser =
@@ -236,7 +241,7 @@ fun DataSpec.process(
 
 //<editor-fold defaultstate="collapsed" desc="Data source factories">
 @UnstableApi
-fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory =
+fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.Factory =
     ResolvingDataSource.Factory(
         CacheDataSource.Factory()
                        .setCache( downloadCache )
@@ -244,7 +249,7 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory =
                            CacheDataSource.Factory()
                                           .setCache( cache )
                                           .setUpstreamDataSourceFactory(
-                                              appContext().okHttpDataSourceFactory
+                                              upstreamDatasourceFactory( context )
                                           )
                        )
                        .setCacheWriteDataSinkFactory( null )
@@ -273,13 +278,13 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory =
     }
 
 @UnstableApi
-fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory =
+fun MyDownloadHelper.createDataSourceFactory( context: Context ): DataSource.Factory =
     ResolvingDataSource.Factory(
         CacheDataSource.Factory()
-                       .setCache( getDownloadCache(appContext()) )
+                       .setCache( getDownloadCache(context) )
                        .apply {
                            setUpstreamDataSourceFactory(
-                               appContext().okHttpDataSourceFactory
+                               upstreamDatasourceFactory( context )
                            )
                            setCacheWriteDataSinkFactory( null )
                        }
@@ -295,6 +300,6 @@ fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory =
             // No need to fetch online for already cached data
             dataSpec
         else
-            dataSpec.process( videoId, audioQualityFormat, appContext().isConnectionMetered() )
+            dataSpec.process( videoId, audioQualityFormat, context.isConnectionMetered() )
     }
 //</editor-fold>

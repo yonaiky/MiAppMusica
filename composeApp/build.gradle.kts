@@ -296,7 +296,6 @@ dependencies {
     implementation(libs.compose.ui)
     implementation(libs.androidx.palette)
     implementation(libs.media3.exoplayer)
-    implementation(libs.media3.datasource.okhttp)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.appcompat.resources)
     implementation(libs.material3)

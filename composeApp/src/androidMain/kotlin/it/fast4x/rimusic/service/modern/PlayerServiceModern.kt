@@ -735,7 +735,7 @@ class PlayerServiceModern:
     }
 
     private fun createMediaSourceFactory() = DefaultMediaSourceFactory(
-        createDataSourceFactory(),
+        createDataSourceFactory( this ),
         DefaultExtractorsFactory()
     ).setLoadErrorHandlingPolicy(
         object : DefaultLoadErrorHandlingPolicy() {

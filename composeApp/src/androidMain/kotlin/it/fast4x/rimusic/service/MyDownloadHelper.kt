@@ -168,7 +168,7 @@ object MyDownloadHelper {
                 context,
                 getDatabaseProvider(context),
                 getDownloadCache(context),
-                createDataSourceFactory(),
+                createDataSourceFactory( context ),
                 executor
             ).apply {
                 maxParallelDownloads = 3
