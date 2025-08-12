@@ -44,7 +44,6 @@ compose-kmp = "1.8.2"
 # Kotlinx
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "kotlinxCoroutines" }
-kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swings", version = "kotlinxCoroutines" }
 
 # Compose
 # Used by built-in game(s)

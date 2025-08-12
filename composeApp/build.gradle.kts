@@ -53,8 +53,6 @@ kotlin {
             implementation(libs.material.icon.desktop)
             implementation(libs.vlcj)
 
-            runtimeOnly(libs.kotlinx.coroutines.swing)
-
             /*
             // Uncomment only for build jvm desktop version
             // Comment before build android version
