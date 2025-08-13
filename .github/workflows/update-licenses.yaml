@@ -80,7 +80,7 @@ jobs:
       - name: Commit changes
         if: steps.git_status.outputs.has_changes == 'true'
         run: |
-          git add composeApp/src/androidMain/res/raw/licenses.csv
+          git add composeApp/src/androidMain/res/raw/licenses.json
           git commit -m "licenses update ${{ needs.vars.outputs.date }}"
 
       - name: Push new branch
