@@ -38,6 +38,7 @@ junit5 = "5.13.4"
 webkit = "1.14.0"
 newpipe-extractor = "0.24.8"
 compose-kmp = "1.8.2"
+license-report = "2.9"
 
 
 [libraries]
@@ -143,6 +144,7 @@ room = { id = "androidx.room", version.ref = "room" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+license-report = { id = "com.github.jk1.dependency-license-report", version.ref = "license-report" }
 
 
 [bundles]

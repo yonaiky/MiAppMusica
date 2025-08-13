@@ -1,4 +1,7 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import com.github.jk1.license.filter.DependencyFilter
+import com.github.jk1.license.filter.ExcludeTransitiveDependenciesFilter
+import com.github.jk1.license.render.JsonReportRenderer
 import org.gradle.internal.extensions.stdlib.capitalized
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -15,9 +18,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.room)
 
-
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias( libs.plugins.license.report )
 }
 
 repositories {
@@ -319,4 +322,30 @@ dependencies {
     ksp( libs.room.compiler )
 
     coreLibraryDesugaring(libs.desugaring.nio)
+}
+
+// Use `gradlew dependencies` to get report in composeApp/build/reports/dependency-license
+licenseReport {
+    // Select projects to examine for dependencies.
+    // Defaults to current project and all its subprojects
+    projects = arrayOf( project )
+
+    // Adjust the configurations to fetch dependencies. Default is 'runtimeClasspath'
+    // For Android projects use 'releaseRuntimeClasspath' or 'yourFlavorNameReleaseRuntimeClasspath'
+    // Use 'ALL' to dynamically resolve all configurations:
+    // configurations = ALL
+    configurations = arrayOf( "githubUncompressedRuntimeClasspath" )
+
+    // Don't include artifacts of project's own group into the report
+    excludeOwnGroup = true
+
+    // Don't exclude bom dependencies.
+    // If set to true, then all BOMs will be excluded from the report
+    excludeBoms = true
+
+    // Set custom report renderer, implementing ReportRenderer.
+    // Yes, you can write your own to support any format necessary.
+    renderers = arrayOf( JsonReportRenderer() )
+
+    filters = arrayOf<DependencyFilter>( ExcludeTransitiveDependenciesFilter() )
 }
