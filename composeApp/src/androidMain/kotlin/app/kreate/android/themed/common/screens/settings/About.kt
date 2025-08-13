@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
@@ -35,6 +36,7 @@ import app.kreate.android.themed.common.component.settings.about.Contributors
 import app.kreate.android.themed.common.component.settings.entry
 import app.kreate.android.themed.common.component.settings.header
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.typography
@@ -45,7 +47,10 @@ import it.fast4x.rimusic.utils.secondary
 import me.knighthat.utils.Repository
 
 @Composable
-fun About( paddingValues: PaddingValues ) {
+fun About(
+    navController: NavController,
+    paddingValues: PaddingValues
+) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val scrollState = rememberLazyListState()
@@ -172,6 +177,12 @@ fun About( paddingValues: PaddingValues ) {
                         val issuePath = "/issues/new?assignees=&labels=feature_request&template=feature_request.yaml"
                         uriHandler.openUri( Repository.REPO_URL.plus(issuePath) )
                     }
+                )
+            }
+            entry( search, R.string.word_licenses ) {
+                SettingComponents.Text(
+                    title = stringResource( R.string.word_licenses ),
+                    onClick = { NavRoutes.LICENSES.navigateHere( navController ) },
                 )
             }
 

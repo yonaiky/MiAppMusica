@@ -26,7 +26,8 @@ enum class NavRoutes {
     artistAlbums,
     YT_PLAYLIST,
     YT_ARTIST,
-    YT_ALBUM;
+    YT_ALBUM,
+    LICENSES;
 
     companion object {
 

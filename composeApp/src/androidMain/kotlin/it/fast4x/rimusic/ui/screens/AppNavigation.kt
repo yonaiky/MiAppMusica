@@ -48,6 +48,7 @@ import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.screens.album.YouTubeAlbum
 import app.kreate.android.themed.common.screens.artist.YouTubeArtist
+import app.kreate.android.themed.common.screens.settings.about.Licenses
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
 import app.kreate.android.themed.rimusic.screen.playlist.YouTubePlaylist
 import it.fast4x.rimusic.Database
@@ -412,6 +413,10 @@ fun AppNavigation(
             val params = navBackStackEntry.arguments?.getString("params").orEmpty()
 
             ArtistAlbums( navController, id, params, miniPlayer )
+        }
+
+        composable( NavRoutes.LICENSES.name ) {
+            Licenses( navController, miniPlayer )
         }
     }
 

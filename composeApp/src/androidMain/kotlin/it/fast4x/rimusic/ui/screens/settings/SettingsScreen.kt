@@ -104,7 +104,7 @@ fun SettingsScreen(
                 }
                 6 -> OtherSettings( paddingValues )
                 7 -> NetworkSettings( paddingValues )
-                8 -> About( paddingValues )
+                8 -> About( navController, paddingValues )
             }
         }
     }
