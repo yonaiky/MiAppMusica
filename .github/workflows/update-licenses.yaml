@@ -63,15 +63,16 @@ jobs:
         id: git_status
         run: |
           if [[ -z "$(git status --porcelain)" ]]; then
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          else
             echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
         # 'continue-on-error: true' allows this step to not fail the workflow if no changes are found.
         continue-on-error: true
 
       # https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
       - name: Configure Git user
+        if: steps.git_status.outputs.has_changes == 'true'
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
