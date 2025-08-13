@@ -57,7 +57,7 @@ jobs:
         run: ./gradlew generateLicenseReport
 
       - name: Move license file into res/raw folder
-        run: mv composeApp/build/reports/dependency-license/licenses.csv composeApp/src/androidMain/res/raw/licenses.csv
+        run: mv composeApp/build/reports/dependency-license/index.json composeApp/src/androidMain/res/raw/licenses.json
 
       - name: Check for changes
         id: git_status
