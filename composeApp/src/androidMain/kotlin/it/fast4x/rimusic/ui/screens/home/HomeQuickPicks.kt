@@ -54,6 +54,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import androidx.compose.ui.util.fastFilter
@@ -104,7 +105,6 @@ import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
 import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
-import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -1123,17 +1123,19 @@ fun HomeQuickPicks(
 
                                     is Innertube.VideoItem -> {
                                         println("Innertube homePage VideoItem: ${item.info?.name}")
-                                        VideoItem(
-                                            video = item,
-                                            thumbnailHeightDp = playlistThumbnailSizeDp,
-                                            thumbnailWidthDp = playlistThumbnailSizeDp,
-                                            modifier = Modifier.clickable(onClick = {
-                                                binder?.stopRadio()
-                                                if (isVideoEnabled())
-                                                    binder?.player?.playVideo(item.asMediaItem)
+                                        SongItem.Render(
+                                            innertubeVideo = item,
+                                            hapticFeedback = hapticFeedback,
+                                            isPlaying = currentlyPlaying == item.key,
+                                            values = songItemValues,
+                                            thumbnailSizeDp = DpSize(playlistThumbnailSizeDp, playlistThumbnailSizeDp),
+                                            onClick = {
+                                                binder.stopRadio()
+                                                if ( isVideoEnabled() )
+                                                    binder.player.playVideo( item.asMediaItem )
                                                 else
-                                                    binder?.player?.forcePlay(item.asMediaItem)
-                                            })
+                                                    binder.player.forcePlay( item.asMediaItem )
+                                            }
                                         )
                                     }
 

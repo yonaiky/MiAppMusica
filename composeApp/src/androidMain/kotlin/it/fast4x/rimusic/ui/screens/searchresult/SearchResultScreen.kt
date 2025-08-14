@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -22,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -52,8 +52,6 @@ import it.fast4x.rimusic.ui.components.SwipeableAlbumItem
 import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.Title
-import it.fast4x.rimusic.ui.items.VideoItem
-import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
@@ -496,39 +494,37 @@ fun SearchResultScreen(
                                     localBinder?.player?.enqueue(video.asMediaItem)
                                 }
                             ) {
-                                VideoItem(
-                                    video = video,
-                                    thumbnailWidthDp = thumbnailWidthDp,
-                                    thumbnailHeightDp = thumbnailHeightDp,
-                                    modifier = Modifier
-                                        .combinedClickable(
-                                            onLongClick = {
-                                                menuState.display {
-                                                    NonQueuedMediaItemMenu(
-                                                        navController = navController,
-                                                        mediaItem = video.asMediaItem,
-                                                        onDismiss = menuState::hide
-                                                    )
-                                                };
-                                                hapticFeedback.performHapticFeedback(
-                                                    HapticFeedbackType.LongPress
-                                                )
-                                            },
-                                            onClick = {
-                                                localBinder?.stopRadio()
-                                                if (isVideoEnabled)
-                                                    localBinder?.player?.playVideo(video.asMediaItem)
-                                                else
-                                                    localBinder?.player?.forcePlay(video.asMediaItem)
-                                            }
+                                SongItem.Render(
+                                    innertubeVideo = video,
+                                    hapticFeedback = hapticFeedback,
+                                    isPlaying = currentlyPlaying == video.key,
+                                    values = songItemValues,
+                                    thumbnailSizeDp = DpSize(thumbnailWidthDp, thumbnailHeightDp),
+                                    onLongClick = {
+                                        menuState.display {
+                                            NonQueuedMediaItemMenu(
+                                                navController = navController,
+                                                mediaItem = video.asMediaItem,
+                                                onDismiss = menuState::hide
+                                            )
+                                        };
+                                        hapticFeedback.performHapticFeedback(
+                                            HapticFeedbackType.LongPress
                                         )
+                                    },
+                                    onClick = {
+                                        localBinder?.stopRadio()
+                                        if (isVideoEnabled)
+                                            localBinder?.player?.playVideo(video.asMediaItem)
+                                        else
+                                            localBinder?.player?.forcePlay(video.asMediaItem)
+                                    }
                                 )
                             }
                         },
                         itemPlaceholderContent = {
-                            VideoItemPlaceholder(
-                                thumbnailHeightDp = thumbnailHeightDp,
-                                thumbnailWidthDp = thumbnailWidthDp
+                            SongItem.Placeholder(
+                                DpSize(thumbnailWidthDp, thumbnailHeightDp)
                             )
                         }
                     )
