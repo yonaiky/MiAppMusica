@@ -67,6 +67,7 @@ import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
+import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.innertube.toSong
@@ -213,7 +214,9 @@ private fun LazyListScope.renderSection(
         PlaylistItem.Values.from( appearance )
     }
 
-    LazyRow {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(ItemUtils.COLUMN_SPACING.dp )
+    ) {
         this@LazyRow.items(
             items = items,
             key = InnertubeItem::id
@@ -466,7 +469,9 @@ fun YouTubeArtist(
                         items( 5 ) { SongItem.Placeholder() }
 
                         items( 2 ) {
-                            LazyRow {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(AlbumItem.COLUMN_SPACING.dp )
+                            ) {
                                 this@LazyRow.items( 10 ) { AlbumItem.VerticalPlaceholder() }
                             }
                         }

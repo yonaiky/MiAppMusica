@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
+import app.kreate.android.utils.ItemUtils
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
@@ -154,7 +156,9 @@ fun MoodList(
                                 PlaylistItem.Values.from( appearance )
                             }
 
-                            LazyRow {
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(ItemUtils.COLUMN_SPACING.dp )
+                            ) {
                                 items(items = item.items, key = { it.key }) { childItem ->
                                     if (childItem.key == defaultBrowseId) return@items
                                     when (childItem) {

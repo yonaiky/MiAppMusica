@@ -185,7 +185,9 @@ private fun LazyListScope.renderSection(
                 AlbumItem.Values.from( appearance )
             }
 
-            LazyRow {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(AlbumItem.COLUMN_SPACING.dp )
+            ) {
                 this@LazyRow.items(
                     items = it,
                     key = InnertubeAlbum::id
