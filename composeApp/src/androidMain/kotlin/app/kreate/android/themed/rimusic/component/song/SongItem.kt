@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -36,7 +38,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastJoinToString
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
@@ -50,6 +54,7 @@ import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
+import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.DownloadedStateMedia
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -63,6 +68,7 @@ import it.fast4x.rimusic.ui.styling.Typography
 import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.ui.styling.favoritesOverlay
 import it.fast4x.rimusic.ui.styling.onOverlay
+import it.fast4x.rimusic.ui.styling.overlay
 import it.fast4x.rimusic.utils.asSong
 import it.fast4x.rimusic.utils.conditional
 import it.fast4x.rimusic.utils.downloadedStateMedia
@@ -311,11 +317,12 @@ object SongItem {
         isPlaying: Boolean = false ,
         isLiked: Boolean = false,
         showThumbnail: Boolean = true,
+        sizeDp: DpSize = DpSize(Dimensions.thumbnails.song, Dimensions.thumbnails.song),
         thumbnailOverlay: @Composable BoxScope.() -> Unit = {}
     ) =
         Box(
             contentAlignment = Alignment.Center,
-            modifier = modifier.size( Dimensions.thumbnails.song )
+            modifier = modifier.size( sizeDp )
         ) {
             // Actual thumbnail (from cache or fetch from url)
             if( showThumbnail )
@@ -327,7 +334,7 @@ object SongItem {
             if( isPlaying )
                 MusicAnimation(
                     color = values.nowPlayingIndicatorColor,
-                    modifier = Modifier.size( Dimensions.thumbnails.song / 2 )
+                    modifier = Modifier.size( sizeDp / 2 )
                 )
 
             thumbnailOverlay()
@@ -375,13 +382,16 @@ object SongItem {
         }
 
     @Composable
-    fun Placeholder( modifier: Modifier = Modifier ) =
+    fun Placeholder(
+        thumbnailSize: DpSize = DpSize(Dimensions.thumbnails.song, Dimensions.thumbnails.song),
+        modifier: Modifier = Modifier
+    ) =
         Structure(
             modifier = modifier,
             thumbnail = {
                 Box(
                     Modifier.clip( thumbnailShape() )
-                            .size( Dimensions.thumbnails.song )
+                            .size( thumbnailSize )
                             .shimmerEffect()
                 )
             },
