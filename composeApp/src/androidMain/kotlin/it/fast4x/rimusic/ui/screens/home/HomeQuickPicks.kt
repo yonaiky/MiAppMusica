@@ -54,10 +54,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastFilterNotNull
 import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -70,6 +70,7 @@ import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
+import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import app.kreate.android.utils.innertube.toMediaItem
 import app.kreate.android.utils.scrollingText
@@ -91,7 +92,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayEventsType
 import it.fast4x.rimusic.enums.UiType
-import it.fast4x.rimusic.isVideoEnabled
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.typography
@@ -118,7 +118,6 @@ import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.isLandscape
-import it.fast4x.rimusic.utils.playVideo
 import it.fast4x.rimusic.utils.quickPicsDiscoverPageKey
 import it.fast4x.rimusic.utils.quickPicsHomePageKey
 import it.fast4x.rimusic.utils.quickPicsRelatedPageKey
@@ -1060,90 +1059,12 @@ fun HomeQuickPicks(
                                 }
                             }
                         }
-                        val songItemValues = remember( colorPalette, typography ) {
-                            SongItem.Values.from( colorPalette, typography )
-                        }
-                        LazyRow(
-                            contentPadding = endPaddingValues,
-                            horizontalArrangement = Arrangement.spacedBy( ArtistItem.COLUMN_SPACING.dp )
-                        ) {
-                            items(it.items) { item ->
-                                when (item) {
-                                    is Innertube.SongItem -> {
-                                        println("Innertube homePage SongItem: ${item.info?.name}")
-                                        SongItem.Render(
-                                            innertubeSong = item,
-                                            context = context,
-                                            binder = binder,
-                                            hapticFeedback = hapticFeedback,
-                                            values = songItemValues,
-                                            isPlaying = item.key == currentlyPlaying,
-                                            navController = navController,
-                                            onClick = {
-                                                binder.player.forcePlay( item.asMediaItem )
-                                            },
-                                        )
-                                    }
-
-                                    is Innertube.AlbumItem -> {
-                                        println("Innertube homePage AlbumItem: ${item.info?.name}")
-                                        AlbumItem.Vertical(
-                                            innertubeAlbum = item,
-                                            widthDp = albumThumbnailSizeDp,
-                                            values = albumItemValues,
-                                            modifier = Modifier.clickable {
-                                                NavRoutes.YT_ALBUM.navigateHere( navController, item.key )
-                                            }
-                                        )
-                                    }
-
-                                    is Innertube.ArtistItem -> {
-                                        println("Innertube homePage ArtistItem: ${item.info?.name}")
-                                        ArtistItem.Render(
-                                            innertubeArtist = item,
-                                            widthDp = artistThumbnailSizeDp,
-                                            values = artistItemValues,
-                                            modifier = Modifier.clickable {
-                                                NavRoutes.YT_ARTIST.navigateHere( navController, item.key )
-                                            }
-                                        )
-                                    }
-
-                                    is Innertube.PlaylistItem -> {
-                                        println("Innertube homePage PlaylistItem: ${item.info?.name}")
-                                        PlaylistItem.Vertical(
-                                            innertubePlaylist = item,
-                                            widthDp = playlistThumbnailSizeDp,
-                                            values = playlistItemValues,
-                                            modifier = Modifier.clickable {
-                                                NavRoutes.YT_PLAYLIST.navigateHere( navController, item.key )
-                                            }
-                                        )
-                                    }
-
-                                    is Innertube.VideoItem -> {
-                                        println("Innertube homePage VideoItem: ${item.info?.name}")
-                                        SongItem.Render(
-                                            innertubeVideo = item,
-                                            hapticFeedback = hapticFeedback,
-                                            isPlaying = currentlyPlaying == item.key,
-                                            values = songItemValues,
-                                            thumbnailSizeDp = DpSize(playlistThumbnailSizeDp, playlistThumbnailSizeDp),
-                                            onClick = {
-                                                binder.stopRadio()
-                                                if ( isVideoEnabled() )
-                                                    binder.player.playVideo( item.asMediaItem )
-                                                else
-                                                    binder.player.forcePlay( item.asMediaItem )
-                                            }
-                                        )
-                                    }
-
-                                    null -> {}
-                                }
-
-                            }
-                        }
+                        ItemUtils.LazyRowItem(
+                            navController = navController,
+                            innertubeItems = it.items.fastFilterNotNull(),
+                            thumbnailSizeDp = albumThumbnailSizeDp,
+                            currentlyPlaying = currentlyPlaying
+                        )
                     }
                 } ?: if (!isYouTubeLoggedIn()) BasicText(
                     text = stringResource(R.string.log_in_to_ytm),

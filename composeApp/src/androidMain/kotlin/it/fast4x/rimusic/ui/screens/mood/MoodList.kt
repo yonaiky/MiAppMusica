@@ -1,10 +1,9 @@
 package it.fast4x.rimusic.ui.screens.mood
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,24 +16,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastFilter
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
-import app.kreate.android.themed.rimusic.component.artist.ArtistItem
-import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.utils.ItemUtils
 import it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -43,14 +39,12 @@ import it.fast4x.innertube.requests.BrowseResult
 import it.fast4x.innertube.requests.browse
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.models.Mood
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.ui.styling.px
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.secondary
@@ -59,6 +53,7 @@ import it.fast4x.rimusic.utils.shimmerEffect
 
 internal const val defaultBrowseId = "FEmusic_moods_and_genres_category"
 
+@OptIn(UnstableApi::class)
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @Composable
@@ -145,60 +140,13 @@ fun MoodList(
                             )
                         }
                         item {
-                            val appearance = LocalAppearance.current
-                            val albumItemValues = remember( appearance ) {
-                                AlbumItem.Values.from( appearance )
-                            }
-                            val artistItemValues = remember( appearance ) {
-                                ArtistItem.Values.from( appearance )
-                            }
-                            val playlistItemValues = remember( appearance ) {
-                                PlaylistItem.Values.from( appearance )
-                            }
-
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(ItemUtils.COLUMN_SPACING.dp )
-                            ) {
-                                items(items = item.items, key = { it.key }) { childItem ->
-                                    if (childItem.key == defaultBrowseId) return@items
-                                    when (childItem) {
-                                        is Innertube.AlbumItem -> AlbumItem.Vertical(
-                                            innertubeAlbum = childItem,
-                                            widthDp = thumbnailSizeDp,
-                                            values = albumItemValues,
-                                            modifier = Modifier.clickable {
-                                                childItem.info?.endpoint?.browseId?.let {
-                                                    NavRoutes.YT_ALBUM.navigateHere( navController, it )
-                                                }
-                                            }
-                                        )
-
-                                        is Innertube.ArtistItem -> ArtistItem.Render(
-                                            innertubeArtist = childItem,
-                                            widthDp = thumbnailSizeDp,
-                                            values = artistItemValues,
-                                            modifier = Modifier.clickable {
-                                                childItem.info?.endpoint?.browseId?.let {
-                                                    NavRoutes.YT_ARTIST.navigateHere( navController, it )
-                                                }
-                                            }
-                                        )
-
-                                        is Innertube.PlaylistItem -> PlaylistItem.Vertical(
-                                            innertubePlaylist = childItem,
-                                            widthDp = thumbnailSizeDp,
-                                            values = playlistItemValues,
-                                            modifier = Modifier.clickable {
-                                                childItem.info?.endpoint?.browseId?.let { browseId ->
-                                                    NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId )
-                                                }
-                                            }
-                                        )
-
-                                        else -> {}
-                                    }
-                                }
-                            }
+                            ItemUtils.LazyRowItem(
+                                navController = navController,
+                                innertubeItems = item.items.fastFilter { it.key != defaultBrowseId },
+                                thumbnailSizeDp = thumbnailSizeDp,
+                                // SongItem and VideoItem are not available here
+                                currentlyPlaying = null
+                            )
                         }
                     }
 

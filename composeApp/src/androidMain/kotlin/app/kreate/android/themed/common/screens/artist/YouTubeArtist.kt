@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -48,7 +47,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastAll
@@ -64,8 +62,6 @@ import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.common.component.tab.DeleteAllDownloadedDialog
 import app.kreate.android.themed.common.component.tab.DownloadAllDialog
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
-import app.kreate.android.themed.rimusic.component.artist.ArtistItem
-import app.kreate.android.themed.rimusic.component.playlist.PlaylistItem
 import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
@@ -115,7 +111,6 @@ import me.knighthat.innertube.Innertube
 import me.knighthat.innertube.model.InnertubeAlbum
 import me.knighthat.innertube.model.InnertubeArtist
 import me.knighthat.innertube.model.InnertubeItem
-import me.knighthat.innertube.model.InnertubePlaylist
 import me.knighthat.innertube.model.InnertubeSong
 import me.knighthat.utils.PropUtils
 import me.knighthat.utils.Toaster
@@ -193,60 +188,6 @@ private fun LazyListScope.renderSection(
     }
 
     itemContent( section.title, section.params, section.contents )
-}
-
-private fun LazyListScope.renderSection(
-    navController: NavController,
-    title: String,
-    params: String?,
-    items: List<InnertubeItem>,
-    albumThumbnailSizePx: Int,
-    albumThumbnailSizeDp: Dp
-) = item( title ) {
-    val appearance = LocalAppearance.current
-    val albumItemValues = remember( appearance ) {
-        AlbumItem.Values.from( appearance )
-    }
-    val artistItemValues = remember( appearance ) {
-        ArtistItem.Values.from( appearance )
-    }
-    val playlistItemValues = remember( appearance ) {
-        PlaylistItem.Values.from( appearance )
-    }
-
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(ItemUtils.COLUMN_SPACING.dp )
-    ) {
-        this@LazyRow.items(
-            items = items,
-            key = InnertubeItem::id
-        ) { item ->
-            when (item) {
-                is InnertubeAlbum ->
-                    AlbumItem.Vertical( item, albumThumbnailSizeDp, albumItemValues )
-
-                is InnertubePlaylist ->
-                    PlaylistItem.Vertical(
-                        innertubePlaylist = item,
-                        widthDp = albumThumbnailSizeDp,
-                        values = playlistItemValues,
-                        modifier = Modifier.clickable {
-                            NavRoutes.YT_PLAYLIST.navigateHere(navController, item.id)
-                        }
-                    )
-
-                is InnertubeArtist ->
-                    ArtistItem.Render(
-                        innertubeArtist = item,
-                        widthDp = albumThumbnailSizeDp,
-                        values = artistItemValues,
-                        modifier = Modifier.clickable {
-                            NavRoutes.YT_ARTIST.navigateHere( navController, item.id )
-                        }
-                    )
-            }
-        }
-    }
 }
 
 @ExperimentalMaterial3Api
@@ -558,14 +499,14 @@ fun YouTubeArtist(
                              }
 
                         if( !items.fastAll { it is InnertubeSong } )
-                            renderSection(
-                                navController,
-                                title,
-                                params,
-                                items,
-                                albumThumbnailSizePx,
-                                albumThumbnailSizeDp,
-                            )
+                            item {
+                                ItemUtils.LazyRowItem(
+                                    navController = navController,
+                                    innertubeItems = items,
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    currentlyPlaying = null
+                                )
+                            }
                     }
 
                     artistPage?.description?.also( this::renderDescription )
