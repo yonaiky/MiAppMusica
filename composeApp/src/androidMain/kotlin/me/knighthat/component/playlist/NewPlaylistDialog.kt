@@ -13,16 +13,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import app.kreate.android.R
-import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.models.Playlist
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import me.knighthat.component.dialog.InputDialogConstraints
 import me.knighthat.component.dialog.TextInputDialog
 
@@ -74,30 +69,8 @@ class NewPlaylistDialog private constructor(
         super.onSet( newValue )
         if( errorMessage.isNotEmpty() ) return
 
-        var playlist: Playlist? = null
-
-        if (isYouTubeSyncEnabled()) {
-            CoroutineScope(Dispatchers.IO).launch {
-                YtMusic.createPlaylist(newValue)
-                       .getOrNull()
-                       .also {
-                           playlist = Playlist(
-                               name = newValue,
-                               browseId = it,
-                               isYoutubePlaylist = true,
-                               isEditable = true
-                           )
-                           println("Innertube YtMusic createPlaylist: $it")
-                       }
-            }
-        } else {
-            playlist = Playlist(name = newValue)
-        }
-
-        playlist?.let {
-            Database.asyncTransaction {
-                playlistTable.insert( it )
-            }
+        Database.asyncTransaction {
+            playlistTable.insert( Playlist(name = newValue) )
         }
 
         hideDialog()
