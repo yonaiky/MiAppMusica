@@ -47,6 +47,7 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.colorPalette
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.UiType
@@ -277,8 +278,15 @@ fun HomeLibrary(
                             innertubePlaylist = playlist,
                             widthDp = itemSize.size.dp,
                             values = playlistItemValues,
-                            navController = navController,
-                            onClick = search::hideIfEmpty
+                            navController = null,
+                            onClick = {
+                                search.hideIfEmpty()
+
+                                NavRoutes.YT_PLAYLIST.navigateHere(
+                                    navController = navController,
+                                    path = "${playlist.id}?useLogin=true"
+                                )
+                            }
                         )
                     }
                     items(

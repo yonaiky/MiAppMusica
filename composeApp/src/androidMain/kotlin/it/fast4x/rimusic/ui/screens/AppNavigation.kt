@@ -246,7 +246,7 @@ fun AppNavigation(
             val params = it.arguments!!.getString( "params" )
             val useLogin = it.arguments!!.getBoolean( "useLogin" )
 
-            YouTubePlaylist( navController, browseId, params,  useLogin, miniPlayer )
+            YouTubePlaylist( navController, browseId, params, useLogin, miniPlayer )
         }
 
         composable(
