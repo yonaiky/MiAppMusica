@@ -63,6 +63,7 @@ import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import it.fast4x.rimusic.utils.autoSyncToolbutton
+import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -164,6 +165,7 @@ fun HomeLibrary(
     }
     LaunchedEffect( Unit ) {
         if(
+            !isAtLeastAndroid6 ||
             !(Preferences.YOUTUBE_LOGIN.value
             && Preferences.YOUTUBE_SYNC_ID.value.isNotBlank()
             && Preferences.YOUTUBE_PLAYLISTS_SYNC.value)
