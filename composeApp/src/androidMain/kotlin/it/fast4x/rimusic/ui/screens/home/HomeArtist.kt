@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.rimusic.component.Search
@@ -84,6 +85,7 @@ import me.knighthat.component.tab.SongShuffler
 @ExperimentalComposeUiApi
 @Composable
 fun HomeArtists(
+    navController: NavController,
     onArtistClick: (Artist) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
@@ -297,10 +299,8 @@ fun HomeArtists(
                             artist = artist,
                             widthDp = itemSize.size.dp,
                             values = artistItemValues,
-                            modifier = Modifier.clickable {
-                                search.hideIfEmpty()
-                                onArtistClick( artist )
-                            }
+                            navController = navController,
+                            onClick = search::hideIfEmpty,
                         )
                     }
                 }

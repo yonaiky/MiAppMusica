@@ -69,7 +69,6 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.models.SearchQuery
 import it.fast4x.rimusic.typography
@@ -394,14 +393,7 @@ fun OnlineSearch(
                             ArtistItem.Values.from( appearance )
                         }
 
-                        ArtistItem.Render(
-                            innertubeArtist = artist,
-                            widthDp = songThumbnailSizeDp,
-                            values = artistItemValues,
-                            modifier = Modifier.clickable {
-                                NavRoutes.YT_ARTIST.navigateHere( navController, artist.key )
-                            }
-                        )
+                        ArtistItem.Render( artist, songThumbnailSizeDp, artistItemValues, navController )
                     }
                 }
 

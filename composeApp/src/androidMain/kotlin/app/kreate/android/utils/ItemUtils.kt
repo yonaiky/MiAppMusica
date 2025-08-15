@@ -117,11 +117,7 @@ object ItemUtils {
                         innertubeArtist = childItem,
                         widthDp = thumbnailSizeDp,
                         values = artistItemValues,
-                        modifier = Modifier.clickable {
-                            childItem.info?.endpoint?.browseId?.let {
-                                NavRoutes.YT_ARTIST.navigateHere( navController, it )
-                            }
-                        }
+                        navController = navController
                     )
 
                     is Innertube.PlaylistItem -> PlaylistItem.Vertical(
@@ -194,9 +190,7 @@ object ItemUtils {
                         innertubeArtist = item,
                         widthDp = thumbnailSizeDp,
                         values = artistIV,
-                        modifier = Modifier.clickable {
-                            NavRoutes.YT_ARTIST.navigateHere( navController, item.id )
-                        }
+                        navController = navController
                     )
 
                     is InnertubePlaylist -> PlaylistItem.Vertical(

@@ -153,7 +153,6 @@ import kotlin.time.Duration.Companion.days
 @Composable
 fun HomeQuickPicks(
     navController: NavController,
-    onArtistClick: (String) -> Unit,
     onPlaylistClick: (String) -> Unit,
     onSearchClick: () -> Unit,
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
@@ -684,9 +683,7 @@ fun HomeQuickPicks(
                                     innertubeArtist = artist,
                                     widthDp = artistThumbnailSizeDp,
                                     values = artistItemValues,
-                                    modifier = Modifier.clickable {
-                                        onArtistClick(artist.key)
-                                    }
+                                    navController = navController
                                 )
                             }
                         }

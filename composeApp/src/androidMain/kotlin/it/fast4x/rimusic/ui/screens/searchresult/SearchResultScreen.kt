@@ -433,14 +433,7 @@ fun SearchResultScreen(
                         emptyItemsText = emptyItemsText,
                         headerContent = headerContent,
                         itemContent = { artist ->
-                            ArtistItem.Render(
-                                innertubeArtist = artist,
-                                widthDp = thumbnailSizeDp,
-                                values = artistItemValues,
-                                modifier = Modifier.clickable {
-                                    NavRoutes.YT_ARTIST.navigateHere( navController, artist.key )
-                                }
-                            )
+                            ArtistItem.Render( artist, thumbnailSizeDp, artistItemValues, navController )
                         },
                         itemPlaceholderContent = {
                             ArtistItem.Placeholder( thumbnailSizeDp )

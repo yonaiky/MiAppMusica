@@ -362,10 +362,7 @@ fun StatisticsPage(
                             artist = artist,
                             widthDp = artistThumbnailSizeDp,
                             values = artistItemValues,
-                            modifier = Modifier.clickable {
-                                if ( artist.id.isNotBlank() )
-                                    NavRoutes.YT_ARTIST.navigateHere( navController, artist.id )
-                            }
+                            navController = navController
                         )
                     }
 
