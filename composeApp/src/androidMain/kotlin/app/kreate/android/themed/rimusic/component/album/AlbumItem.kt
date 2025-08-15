@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
+import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
@@ -38,7 +39,6 @@ import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.ui.styling.Appearance
 import it.fast4x.rimusic.ui.styling.ColorPalette
-import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.Typography
 import it.fast4x.rimusic.utils.asAlbum
 import it.fast4x.rimusic.utils.semiBold
@@ -223,16 +223,19 @@ object AlbumItem {
 
     @Composable
     fun VerticalPlaceholder(
-        widthDp: Dp = Dimensions.thumbnails.album,
-        modifier: Modifier = Modifier
+        widthDp: Dp,
+        modifier: Modifier = Modifier,
+        showTitle: Boolean = false
     ) =
         VerticalStructure(
             widthDp = widthDp,
             modifier = modifier,
             thumbnail = {
-                Box( Modifier.size(widthDp).shimmerEffect() )
+                ItemUtils.ThumbnailPlaceholder( widthDp )
             },
-            firstLine = {
+            firstLine = st@ {
+                if( !showTitle ) return@st
+
                 Title(
                     title = "",
                     values = Values.unspecified,

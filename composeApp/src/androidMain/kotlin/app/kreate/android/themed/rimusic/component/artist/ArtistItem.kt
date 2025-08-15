@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
+import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.innertube.toArtist
 import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
@@ -134,14 +135,17 @@ object ArtistItem {
     fun Placeholder(
         widthDp: Dp,
         modifier: Modifier = Modifier,
+        showTitle: Boolean = false
     ) =
         Structure(
             widthDp = widthDp,
             modifier = modifier,
             thumbnail = {
-                Box( Modifier.size(widthDp).shimmerEffect() )
+                ItemUtils.ThumbnailPlaceholder( widthDp )
             },
-            firstLine = {
+            firstLine = st@ {
+                if( !showTitle ) return@st
+
                 Title(
                     title = "",
                     values = Values.unspecified,

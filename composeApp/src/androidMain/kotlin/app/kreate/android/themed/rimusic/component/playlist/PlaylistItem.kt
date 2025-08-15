@@ -40,6 +40,7 @@ import androidx.compose.ui.util.fastZip
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
+import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.Database
@@ -350,15 +351,18 @@ object PlaylistItem {
     @Composable
     fun VerticalPlaceholder(
         widthDp: Dp,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
+        showTitle: Boolean = false
     ) =
         VerticalStructure(
             widthDp = widthDp,
             modifier = modifier,
             thumbnail = {
-                Box( Modifier.requiredSize( widthDp ).shimmerEffect() )
+                ItemUtils.ThumbnailPlaceholder( widthDp )
             },
-            firstLine = {
+            firstLine = st@ {
+                if( !showTitle ) return@st
+
                 Title(
                     title = "",
                     values = Values.unspecified,

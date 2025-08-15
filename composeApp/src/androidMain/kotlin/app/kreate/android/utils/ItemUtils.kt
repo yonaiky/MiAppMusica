@@ -1,12 +1,15 @@
 package app.kreate.android.utils
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Dp
@@ -22,10 +25,12 @@ import app.kreate.android.utils.innertube.toMediaItem
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.isVideoEnabled
+import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.forcePlay
 import it.fast4x.rimusic.utils.playVideo
+import it.fast4x.rimusic.utils.shimmerEffect
 import me.knighthat.innertube.model.InnertubeAlbum
 import me.knighthat.innertube.model.InnertubeArtist
 import me.knighthat.innertube.model.InnertubeItem
@@ -36,6 +41,13 @@ import me.knighthat.innertube.model.InnertubeSong
 object ItemUtils {
 
     const val COLUMN_SPACING = 10
+
+    @Composable
+    fun ThumbnailPlaceholder(
+        sizeDp: Dp,
+        modifier: Modifier = Modifier
+    ) =
+        Box( modifier.size( sizeDp ).clip(thumbnailShape() ).shimmerEffect() )
 
     @JvmName("OldInnertubeLazyRowItem")
     @UnstableApi
