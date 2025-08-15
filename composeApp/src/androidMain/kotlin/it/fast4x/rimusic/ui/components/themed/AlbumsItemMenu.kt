@@ -366,7 +366,7 @@ fun AlbumsItemMenu(
                             AlbumItem.Values.from( appearance )
                         }
 
-                        AlbumItem.Horizontal( album, thumbnailSizeDp, albumItemValues )
+                        AlbumItem.Horizontal( album, thumbnailSizeDp, albumItemValues, navController )
 
                         /*
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {

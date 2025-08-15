@@ -74,7 +74,6 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.MODIFIED_PREFIX
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.models.SongAlbumMap
@@ -192,15 +191,7 @@ private fun LazyListScope.renderSection(
                     items = it,
                     key = InnertubeAlbum::id
                 ) { item ->
-
-                    AlbumItem.Vertical(
-                        innertubeAlbum = item,
-                        widthDp = albumThumbnailSizeDp,
-                        values = albumItemValues,
-                        modifier = Modifier.clickable {
-                            NavRoutes.YT_ALBUM.navigateHere( navController, item.id )
-                        }
-                    )
+                    AlbumItem.Vertical( item, albumThumbnailSizeDp, albumItemValues, navController )
                 }
             }
         }

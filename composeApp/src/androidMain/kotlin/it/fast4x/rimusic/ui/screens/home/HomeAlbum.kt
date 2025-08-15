@@ -5,7 +5,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,7 +35,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -62,7 +60,6 @@ import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.models.Song
-import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.components.ButtonsRow
 import it.fast4x.rimusic.ui.components.LocalMenuState
 import it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
@@ -398,74 +395,67 @@ fun HomeAlbums(
                             album = album,
                             widthDp = itemSize.size.dp,
                             values = albumItemValues,
-                            modifier = Modifier
-                                .combinedClickable(
-
-                                    onLongClick = {
-                                        menuState.display {
-                                            AlbumsItemMenu(
-                                                navController = navController,
-                                                onDismiss = menuState::hide,
-                                                album = album,
-                                                onChangeAlbumTitle = {
-                                                    showDialogChangeAlbumTitle = true
-                                                },
-                                                onChangeAlbumAuthors = {
-                                                    showDialogChangeAlbumAuthors = true
-                                                },
-                                                onChangeAlbumCover = {
-                                                    showDialogChangeAlbumCover = true
-                                                },
-                                                onPlayNext = {
-                                                    println("mediaItem ${songs}")
-                                                    binder?.player?.addNext(
-                                                        songs.map(Song::asMediaItem), context
-                                                    )
-
-                                                },
-                                                onEnqueue = {
-                                                    println("mediaItem ${songs}")
-                                                    binder?.player?.enqueue(
-                                                        songs.map(Song::asMediaItem), context
-                                                    )
-
-                                                },
-                                                onAddToPlaylist = { playlistPreview ->
-                                                    position =
-                                                        playlistPreview.songCount.minus(1) ?: 0
-                                                    //Log.d("mediaItem", " maxPos in Playlist $it ${position}")
-                                                    if (position > 0) position++ else position =
-                                                        0
-
-                                                    if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
-                                                        songs.forEachIndexed { index, song ->
-                                                            Database.asyncTransaction {
-                                                                mapIgnore( playlistPreview.playlist, song )
-                                                            }
-                                                        }
-                                                    } else {
-                                                        CoroutineScope(Dispatchers.IO).launch {
-                                                            addToYtPlaylist(playlistPreview.playlist.id,
-                                                                position,
-                                                                playlistPreview.playlist.browseId ?: "",
-                                                                songs.map{it.asMediaItem})
-                                                        }
-                                                    }
-
-
-                                                },
-                                                onGoToPlaylist = {
-                                                    NavRoutes.localPlaylist.navigateHere( navController, it )
-                                                }
+                            navController = navController,
+                            onLongClick = {
+                                menuState.display {
+                                    AlbumsItemMenu(
+                                        navController = navController,
+                                        onDismiss = menuState::hide,
+                                        album = album,
+                                        onChangeAlbumTitle = {
+                                            showDialogChangeAlbumTitle = true
+                                        },
+                                        onChangeAlbumAuthors = {
+                                            showDialogChangeAlbumAuthors = true
+                                        },
+                                        onChangeAlbumCover = {
+                                            showDialogChangeAlbumCover = true
+                                        },
+                                        onPlayNext = {
+                                            println("mediaItem ${songs}")
+                                            binder?.player?.addNext(
+                                                songs.map(Song::asMediaItem), context
                                             )
+
+                                        },
+                                        onEnqueue = {
+                                            println("mediaItem ${songs}")
+                                            binder?.player?.enqueue(
+                                                songs.map(Song::asMediaItem), context
+                                            )
+
+                                        },
+                                        onAddToPlaylist = { playlistPreview ->
+                                            position =
+                                                playlistPreview.songCount.minus(1) ?: 0
+                                            //Log.d("mediaItem", " maxPos in Playlist $it ${position}")
+                                            if (position > 0) position++ else position =
+                                                0
+
+                                            if (!isYouTubeSyncEnabled() || !playlistPreview.playlist.isYoutubePlaylist) {
+                                                songs.forEachIndexed { index, song ->
+                                                    Database.asyncTransaction {
+                                                        mapIgnore( playlistPreview.playlist, song )
+                                                    }
+                                                }
+                                            } else {
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    addToYtPlaylist(playlistPreview.playlist.id,
+                                                        position,
+                                                        playlistPreview.playlist.browseId ?: "",
+                                                        songs.map{it.asMediaItem})
+                                                }
+                                            }
+
+
+                                        },
+                                        onGoToPlaylist = {
+                                            NavRoutes.localPlaylist.navigateHere( navController, it )
                                         }
-                                    },
-                                    onClick = {
-                                        search.hideIfEmpty()
-                                        onAlbumClick( album )
-                                    }
-                                )
-                                .clip(thumbnailShape())
+                                    )
+                                }
+                            },
+                            onClick = search::hideIfEmpty
                         )
                     }
                 }

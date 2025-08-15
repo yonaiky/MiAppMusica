@@ -1,6 +1,7 @@
 package app.kreate.android.themed.rimusic.component.album
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -27,11 +28,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.models.Album
 import it.fast4x.rimusic.ui.styling.Appearance
 import it.fast4x.rimusic.ui.styling.ColorPalette
@@ -165,6 +168,8 @@ object AlbumItem {
     fun VerticalStructure(
         widthDp: Dp,
         thumbnail: @Composable ColumnScope.() -> Unit,
+        onClick: () -> Unit,
+        onLongClick: () -> Unit,
         modifier: Modifier = Modifier,
         firstLine: @Composable ColumnScope.() -> Unit = {},
         secondLine: @Composable ColumnScope.() -> Unit = {},
@@ -173,6 +178,10 @@ object AlbumItem {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.requiredWidth( widthDp )
+                               .combinedClickable(
+                                   onClick = onClick,
+                                   onLongClick = onLongClick
+                               )
         ) {
             thumbnail()
             firstLine()
@@ -184,6 +193,8 @@ object AlbumItem {
     fun HorizontalStructure(
         heightDp: Dp,
         thumbnail: @Composable BoxScope.() -> Unit,
+        onClick: () -> Unit,
+        onLongClick: () -> Unit,
         modifier: Modifier = Modifier,
         firstLine: @Composable ColumnScope.() -> Unit = {},
         secondLine: @Composable ColumnScope.() -> Unit = {},
@@ -193,6 +204,10 @@ object AlbumItem {
             horizontalArrangement = Arrangement.spacedBy( HORIZONTAL_SPACING.dp ),
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier.requiredHeight( heightDp )
+                               .combinedClickable(
+                                   onClick = onClick,
+                                   onLongClick = onLongClick
+                               )
         ) {
             Box(
                 modifier = Modifier.requiredSize( heightDp ),
@@ -224,7 +239,9 @@ object AlbumItem {
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth().shimmerEffect()
                 )
-            }
+            },
+            onClick = {},
+            onLongClick = {}
         )
 
     @Composable
@@ -232,9 +249,12 @@ object AlbumItem {
         album: Album,
         widthDp: Dp,
         values: Values,
+        navController: NavController?,
         modifier: Modifier = Modifier,
         showYear: Boolean = true,
         showArtists: Boolean = true,
+        onClick: () -> Unit = {},
+        onLongClick: () -> Unit = {}
     ) =
         VerticalStructure(
             widthDp = widthDp,
@@ -271,7 +291,14 @@ object AlbumItem {
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth( .9f )
                 )
-            }
+            },
+            onClick = {
+                onClick.invoke()
+
+                if( navController != null )
+                    NavRoutes.YT_ALBUM.navigateHere( navController, album.id )
+            },
+            onLongClick = onLongClick
         )
 
     @Composable
@@ -279,9 +306,12 @@ object AlbumItem {
         album: Album,
         heightDp: Dp,
         values: Values,
+        navController: NavController?,
         modifier: Modifier = Modifier,
         showYear: Boolean = true,
-        showArtists: Boolean = true
+        showArtists: Boolean = true,
+        onClick: () -> Unit = {},
+        onLongClick: () -> Unit = {}
     ) =
         HorizontalStructure(
             heightDp = heightDp,
@@ -319,7 +349,14 @@ object AlbumItem {
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
+            },
+            onClick = {
+                onClick.invoke()
+
+                if( navController != null )
+                    NavRoutes.YT_ALBUM.navigateHere( navController, album.id )
+            },
+            onLongClick = onLongClick
         )
 
     @Composable
@@ -327,32 +364,41 @@ object AlbumItem {
         innertubeAlbum: Innertube.AlbumItem,
         heightDp: Dp,
         values: Values,
+        navController: NavController?,
         modifier: Modifier = Modifier,
         showYear: Boolean = true,
-        showArtists: Boolean = true
-    ) = Horizontal( innertubeAlbum.asAlbum, heightDp, values, modifier, showYear, showArtists )
+        showArtists: Boolean = true,
+        onClick: () -> Unit = {},
+        onLongClick: () -> Unit = {}
+    ) = Horizontal( innertubeAlbum.asAlbum, heightDp, values, navController, modifier, showYear, showArtists, onClick, onLongClick )
 
     @Composable
     fun Vertical(
         innertubeAlbum: Innertube.AlbumItem,
         widthDp: Dp,
         values: Values,
+        navController: NavController?,
         modifier: Modifier = Modifier,
         showYear: Boolean = true,
         showArtists: Boolean = true,
+        onClick: () -> Unit = {},
+        onLongClick: () -> Unit = {}
     ) =
-        Vertical( innertubeAlbum.asAlbum, widthDp, values, modifier, showYear, showArtists )
+        Vertical( innertubeAlbum.asAlbum, widthDp, values, navController, modifier, showYear, showArtists, onClick, onLongClick )
 
     @Composable
     fun Vertical(
         innertubeAlbum: InnertubeAlbum,
         widthDp: Dp,
         values: Values,
+        navController: NavController?,
         modifier: Modifier = Modifier,
         showYear: Boolean = true,
         showArtists: Boolean = true,
+        onClick: () -> Unit = {},
+        onLongClick: () -> Unit = {}
     ) =
-        Vertical( innertubeAlbum.toAlbum, widthDp, values, modifier,showYear, showArtists )
+        Vertical( innertubeAlbum.toAlbum, widthDp, values, navController, modifier,showYear, showArtists, onClick, onLongClick )
 
     data class Values(
         val titleTextStyle: TextStyle,

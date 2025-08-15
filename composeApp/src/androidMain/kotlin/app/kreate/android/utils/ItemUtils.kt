@@ -110,11 +110,7 @@ object ItemUtils {
                         innertubeAlbum = childItem,
                         widthDp = thumbnailSizeDp,
                         values = albumItemValues,
-                        modifier = Modifier.clickable {
-                            childItem.info?.endpoint?.browseId?.let {
-                                NavRoutes.YT_ALBUM.navigateHere( navController, it )
-                            }
-                        }
+                        navController = navController
                     )
 
                     is Innertube.ArtistItem -> ArtistItem.Render(
@@ -191,9 +187,7 @@ object ItemUtils {
                         innertubeAlbum = item,
                         widthDp = thumbnailSizeDp,
                         values = albumIV,
-                        modifier = Modifier.clickable {
-                            NavRoutes.YT_ALBUM.navigateHere( navController, item.id )
-                        }
+                        navController = navController
                     )
 
                     is InnertubeArtist -> ArtistItem.Render(

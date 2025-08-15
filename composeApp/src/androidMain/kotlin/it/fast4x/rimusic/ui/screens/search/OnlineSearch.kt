@@ -385,14 +385,7 @@ fun OnlineSearch(
                             AlbumItem.Values.from( appearance )
                         }
 
-                        AlbumItem.Horizontal(
-                            innertubeAlbum = album,
-                            heightDp = songThumbnailSizeDp,
-                            values = albumItemValues,
-                            modifier = Modifier.clickable {
-                                NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
-                            }
-                        )
+                        AlbumItem.Horizontal( album, songThumbnailSizeDp, albumItemValues, navController )
                     }
                 }
                 suggestions.recommendedArtist?.let { artist ->

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -39,7 +38,6 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.discoverPageNewAlbums
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -138,14 +136,7 @@ fun NewAlbumsFromArtists(
                         items = newReleaseAlbumsFiltered.distinct(),
                         key = System::identityHashCode
                     ) { album ->
-                        AlbumItem.Vertical(
-                            innertubeAlbum = album,
-                            widthDp = thumbnailSizeDp,
-                            values = albumItemValues,
-                            modifier = Modifier.clickable {
-                                NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
-                            }
-                        )
+                        AlbumItem.Vertical( album, thumbnailSizeDp, albumItemValues, navController )
                     }
                 } else {
                     item(

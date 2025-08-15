@@ -1,7 +1,6 @@
 package app.kreate.android.themed.rimusic.screen.artist
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,7 +26,6 @@ import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.GridRenderer
 import it.fast4x.innertube.utils.from
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.ui.components.Skeleton
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -115,14 +113,7 @@ fun ArtistAlbums(
                     items = albums.distinctBy( Innertube.AlbumItem::key ),
                     key = Innertube.AlbumItem::key
                 ) { album ->
-                    AlbumItem.Vertical(
-                        innertubeAlbum = album,
-                        widthDp = thumbnailSizeDp,
-                        values = albumItemValues,
-                        modifier = Modifier.clickable {
-                            NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
-                        }
-                    )
+                    AlbumItem.Vertical( album, thumbnailSizeDp, albumItemValues, navController )
                 }
             }
         }

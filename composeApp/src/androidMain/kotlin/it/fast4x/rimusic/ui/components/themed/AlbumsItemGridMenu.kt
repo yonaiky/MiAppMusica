@@ -349,7 +349,7 @@ fun AlbumsItemGridMenu(
                             AlbumItem.Values.from( appearance )
                         }
 
-                        AlbumItem.Horizontal( album, thumbnailSizeDp, albumItemValues )
+                        AlbumItem.Horizontal( album, thumbnailSizeDp, albumItemValues, navController )
                     }
                 ) {
 

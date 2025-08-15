@@ -153,7 +153,6 @@ import kotlin.time.Duration.Companion.days
 @Composable
 fun HomeQuickPicks(
     navController: NavController,
-    onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
     onPlaylistClick: (String) -> Unit,
     onSearchClick: () -> Unit,
@@ -617,14 +616,7 @@ fun HomeQuickPicks(
                                     items = newReleaseAlbumsFiltered.distinctBy { it.key },
                                     key = System::identityHashCode
                                 ) { album ->
-                                    AlbumItem.Vertical(
-                                        innertubeAlbum = album,
-                                        widthDp = albumThumbnailSizeDp,
-                                        values = albumItemValues,
-                                        modifier = Modifier.clickable {
-                                            onAlbumClick( album.key )
-                                        }
-                                    )
+                                    AlbumItem.Vertical( album, albumThumbnailSizeDp, albumItemValues, navController )
                                 }
                             }
 
@@ -645,14 +637,7 @@ fun HomeQuickPicks(
                                 items = page.newReleaseAlbums.distinctBy { it.key },
                                 key = System::identityHashCode
                             ) { album ->
-                                AlbumItem.Vertical(
-                                    innertubeAlbum = album,
-                                    widthDp = albumThumbnailSizeDp,
-                                    values = albumItemValues,
-                                    modifier = Modifier.clickable {
-                                        onAlbumClick( album.key )
-                                    }
-                                )
+                                AlbumItem.Vertical( album, albumThumbnailSizeDp, albumItemValues, navController )
                             }
                         }
                     }
@@ -674,14 +659,7 @@ fun HomeQuickPicks(
                                 items = albums.distinctBy { it.key },
                                 key = System::identityHashCode
                             ) { album ->
-                                AlbumItem.Vertical(
-                                    innertubeAlbum = album,
-                                    widthDp = albumThumbnailSizeDp,
-                                    values = albumItemValues,
-                                    modifier = Modifier.clickable {
-                                        onAlbumClick( album.key )
-                                    }
-                                )
+                                AlbumItem.Vertical( album, albumThumbnailSizeDp, albumItemValues, navController )
                             }
                         }
                     }

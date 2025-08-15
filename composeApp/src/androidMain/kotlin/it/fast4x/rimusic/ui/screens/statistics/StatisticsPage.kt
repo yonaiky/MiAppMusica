@@ -382,10 +382,7 @@ fun StatisticsPage(
                             values = albumItemValues,
                             showArtists = false,
                             showYear = false,
-                            modifier = Modifier.clickable {
-                                if (album.id != "")
-                                    NavRoutes.YT_ALBUM.navigateHere(navController, album.id)
-                            }
+                            navController = navController
                         )
                     }
 

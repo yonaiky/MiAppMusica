@@ -395,14 +395,7 @@ fun SearchResultScreen(
                                     AlbumItem.Values.from( appearance )
                                 }
 
-                                AlbumItem.Horizontal(
-                                    innertubeAlbum = album,
-                                    heightDp = thumbnailSizeDp,
-                                    values = albumItemValues,
-                                    modifier = Modifier.clickable {
-                                        NavRoutes.YT_ALBUM.navigateHere( navController, album.key )
-                                    }
-                                )
+                                AlbumItem.Horizontal( album, thumbnailSizeDp, albumItemValues, navController )
                             }
                         },
                         itemPlaceholderContent = {
