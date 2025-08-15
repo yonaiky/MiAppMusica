@@ -556,9 +556,7 @@ fun SearchResultScreen(
                                 innertubePlaylist = playlist,
                                 heightDp = thumbnailSizeDp,
                                 values = playlistItemValues,
-                                modifier = Modifier.clickable {
-                                    NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
-                                }
+                                navController = navController
                             )
                         },
                         itemPlaceholderContent = {
@@ -599,6 +597,7 @@ fun SearchResultScreen(
                                 innertubePlaylist = playlist,
                                 widthDp = thumbnailSizeDp,
                                 values = playlistItemValues,
+                                navController = null,
                                 modifier = Modifier.clickable {
                                     NavRoutes.podcast.navigateHere( navController, playlist.key )
                                 }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -393,7 +392,8 @@ fun StatisticsPage(
                             widthDp = playlistThumbnailSizeDp,
                             values = playlistItemValues,
                             songCount = preview.songCount,
-                            modifier = Modifier.clickable {
+                            navController = null,
+                            onClick = {
                                 val playlist = preview.playlist
                                 val route: NavRoutes
                                 val path: String

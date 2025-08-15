@@ -54,9 +54,6 @@ fun HomeScreen(
         saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
             when (currentTabIndex) {
                 0 -> HomeQuickPicks(
-                    onPlaylistClick = {
-                        NavRoutes.YT_PLAYLIST.navigateHere( navController, it )
-                    },
                     onSearchClick = {
                         NavRoutes.search.navigateHere( navController )
                     },

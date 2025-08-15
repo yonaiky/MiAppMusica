@@ -370,7 +370,8 @@ fun PlaylistsItemGridMenu(
                             heightDp = thumbnailSizeDp,
                             values = playlistItemValues,
                             modifier = Modifier.height( 90.dp ),
-                            songCount = preview.songCount
+                            songCount = preview.songCount,
+                            navController = null
                         )
                     }
                 }

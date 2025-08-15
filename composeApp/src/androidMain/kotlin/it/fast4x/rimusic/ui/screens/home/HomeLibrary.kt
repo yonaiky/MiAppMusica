@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,7 +47,6 @@ import it.fast4x.rimusic.MONTHLY_PREFIX
 import it.fast4x.rimusic.PINNED_PREFIX
 import it.fast4x.rimusic.YTP_PREFIX
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlaylistsType
 import it.fast4x.rimusic.enums.UiType
@@ -279,11 +277,8 @@ fun HomeLibrary(
                             innertubePlaylist = playlist,
                             widthDp = itemSize.size.dp,
                             values = playlistItemValues,
-                            modifier = Modifier.clickable {
-                                search.hideIfEmpty()
-
-                                NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.id )
-                            }
+                            navController = navController,
+                            onClick = search::hideIfEmpty
                         )
                     }
                     items(
@@ -295,11 +290,8 @@ fun HomeLibrary(
                             widthDp = itemSize.size.dp,
                             values = playlistItemValues,
                             songCount = preview.songCount,
-                            modifier = Modifier.clickable {
-                                search.hideIfEmpty()
-
-                                NavRoutes.localPlaylist.navigateHere( navController, preview.playlist.id )
-                            }
+                            navController = navController,
+                            onClick = search::hideIfEmpty
                         )
                     }
                 }

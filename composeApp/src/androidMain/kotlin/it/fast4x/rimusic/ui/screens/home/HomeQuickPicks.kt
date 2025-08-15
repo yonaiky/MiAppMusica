@@ -153,7 +153,6 @@ import kotlin.time.Duration.Companion.days
 @Composable
 fun HomeQuickPicks(
     navController: NavController,
-    onPlaylistClick: (String) -> Unit,
     onSearchClick: () -> Unit,
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
     onSettingsClick: () -> Unit
@@ -711,9 +710,7 @@ fun HomeQuickPicks(
                                     innertubePlaylist = playlist,
                                     widthDp = playlistThumbnailSizeDp,
                                     values = playlistItemValues,
-                                    modifier = Modifier.clickable {
-                                        NavRoutes.YT_PLAYLIST.navigateHere( navController, playlist.key )
-                                    }
+                                    navController = navController
                                 )
                             }
                         }
@@ -795,9 +792,7 @@ fun HomeQuickPicks(
                                         widthDp = playlistThumbnailSizeDp,
                                         values = playlistItemValues,
                                         showSongCount = false,
-                                        modifier = Modifier.clickable {
-                                            NavRoutes.localPlaylist.navigateHere( navController, preview.playlist.id )
-                                        }
+                                        navController = navController
                                     )
                                 }
                             }
@@ -873,9 +868,7 @@ fun HomeQuickPicks(
                                                     innertubePlaylist = playlist,
                                                     widthDp = playlistThumbnailSizeDp,
                                                     values = playlistItemValues,
-                                                    modifier = Modifier.clickable {
-                                                        onPlaylistClick( playlist.id )
-                                                    }
+                                                    navController = navController
                                                 )
                                             }
                                         }

@@ -1,6 +1,5 @@
 package app.kreate.android.utils
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,7 +20,6 @@ import app.kreate.android.themed.rimusic.component.song.SongItem
 import app.kreate.android.utils.innertube.toMediaItem
 import it.fast4x.innertube.Innertube
 import it.fast4x.rimusic.LocalPlayerServiceBinder
-import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.isVideoEnabled
 import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.asMediaItem
@@ -124,11 +122,7 @@ object ItemUtils {
                         innertubePlaylist = childItem,
                         widthDp = thumbnailSizeDp,
                         values = playlistItemValues,
-                        modifier = Modifier.clickable {
-                            childItem.info?.endpoint?.browseId?.let { browseId ->
-                                NavRoutes.YT_PLAYLIST.navigateHere( navController, browseId )
-                            }
-                        }
+                        navController = navController
                     )
                 }
             }
@@ -197,9 +191,7 @@ object ItemUtils {
                         innertubePlaylist = item,
                         widthDp = thumbnailSizeDp,
                         values = playlistIV,
-                        modifier = Modifier.clickable {
-                            NavRoutes.YT_PLAYLIST.navigateHere( navController, item.id )
-                        }
+                        navController = navController
                     )
                 }
             }
