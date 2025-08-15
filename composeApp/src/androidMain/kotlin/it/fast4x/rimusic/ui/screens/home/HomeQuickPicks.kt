@@ -101,10 +101,8 @@ import it.fast4x.rimusic.ui.components.themed.Loader
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.components.themed.Title2Actions
-import it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.ui.styling.LocalAppearance
@@ -1048,30 +1046,22 @@ fun HomeQuickPicks(
                         SongItem.Placeholder()
                     }
 
-                    TextPlaceholder( sectionTextModifier.shimmerEffect() )
+                    repeat( 2 ) {
+                        Text(
+                            text = "",
+                            style = typography.l.semiBold,
+                            modifier = Modifier.padding( 16.dp, 24.dp, 16.dp, 8.dp )
+                                               .fillMaxWidth( .45f )
+                                               .shimmerEffect()
+                        )
 
-                    Row {
-                        repeat(2) {
+                        ItemUtils.PlaceholderRowItem {
                             AlbumItem.VerticalPlaceholder( albumThumbnailSizeDp )
-                        }
-                    }
-
-                    TextPlaceholder( sectionTextModifier.shimmerEffect() )
-
-                    Row {
-                        repeat(2) {
-                            PlaylistItem.VerticalPlaceholder( albumThumbnailSizeDp )
                         }
                     }
                 }
 
-
-
-
-
-
                 Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
-
 
                 //} ?:
 

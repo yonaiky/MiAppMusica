@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -410,10 +409,8 @@ fun YouTubeArtist(
                         items( 5 ) { SongItem.Placeholder() }
 
                         items( 2 ) {
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(AlbumItem.COLUMN_SPACING.dp )
-                            ) {
-                                this@LazyRow.items( 10 ) { AlbumItem.VerticalPlaceholder() }
+                            ItemUtils.PlaceholderRowItem {
+                                AlbumItem.VerticalPlaceholder( Dimensions.thumbnails.album )
                             }
                         }
                     } else if( artistPage == null && songs.isNotEmpty() ) {

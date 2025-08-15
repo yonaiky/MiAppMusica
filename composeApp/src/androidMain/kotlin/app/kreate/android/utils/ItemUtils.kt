@@ -1,6 +1,7 @@
 package app.kreate.android.utils
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -197,6 +198,19 @@ object ItemUtils {
             }
         }
     }
+
+    @Composable
+    fun PlaceholderRowItem(
+        modifier: Modifier = Modifier,
+        itemContent: @Composable LazyItemScope.(index: Int) -> Unit
+    ) =
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(COLUMN_SPACING.dp ),
+            userScrollEnabled = false,
+            modifier = modifier
+        ) {
+            items( 10, itemContent =  itemContent )
+        }
 
     private data class Quadruple<T1, T2, T3, T4>(val t1: T1, val t2: T2, val t3: T3, val t4: T4)
 }
