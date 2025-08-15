@@ -40,6 +40,7 @@ import androidx.compose.ui.util.fastZip
 import androidx.navigation.NavController
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
+import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
@@ -191,7 +192,12 @@ object PlaylistItem {
         thumbnailContent: @Composable BoxScope.() -> Unit = {}
     ) =
         if( thumbnailUrls.isEmpty() )
-            Box( modifier.requiredSize( sizeDp ) )
+            Image(
+                bitmap = APP_ICON_IMAGE_BITMAP,
+                contentDescription = null,
+                modifier = modifier.requiredSize( sizeDp ),
+                contentScale = ContentScale.FillBounds,
+            )
         else if( thumbnailUrls.size < 4 )
             Box( modifier.requiredSize( sizeDp ) ) {
                 ImageFactory.AsyncImage(
