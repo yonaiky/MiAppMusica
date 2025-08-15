@@ -1011,8 +1011,6 @@ fun HomeQuickPicks(
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
                         println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
 
-                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 16.dp).padding(top = 14.dp, bottom = 4.dp))
-
                         BasicText(
                             text = it.title,
                             style = typography().l.semiBold.color(colorPalette().text),
