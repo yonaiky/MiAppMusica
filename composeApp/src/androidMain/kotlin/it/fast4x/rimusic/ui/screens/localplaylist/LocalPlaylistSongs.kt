@@ -68,9 +68,7 @@ import it.fast4x.compose.reordering.draggedItem
 import it.fast4x.compose.reordering.rememberReorderingState
 import it.fast4x.compose.reordering.reorder
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.NextBody
-import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
@@ -116,7 +114,6 @@ import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.center
 import it.fast4x.rimusic.utils.checkFileExists
 import it.fast4x.rimusic.utils.color
-import it.fast4x.rimusic.utils.completed
 import it.fast4x.rimusic.utils.deleteFileIfExists
 import it.fast4x.rimusic.utils.durationTextToMillis
 import it.fast4x.rimusic.utils.enqueue
@@ -133,8 +130,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import me.knighthat.component.ResetCache
 import me.knighthat.component.playlist.PinPlaylist
 import me.knighthat.component.playlist.RenamePlaylistDialog
@@ -280,31 +275,8 @@ fun LocalPlaylistSongs(
         }
     )
 
+    // TODO: Rework
     fun sync() {
-        playlist?.let {
-            Database.asyncTransaction {
-                runBlocking(Dispatchers.IO) {
-                    withContext(Dispatchers.IO) {
-                        Innertube.playlistPage(
-                            BrowseBody(
-                                browseId = it.browseId
-                                    ?: ""
-                            )
-                        )
-                            ?.completed()
-                    }
-                }?.getOrNull()?.let { remotePlaylist ->
-                    songPlaylistMapTable.clear( playlistId )
-
-                    remotePlaylist.songsPage
-                        ?.items
-                        ?.map(Innertube.SongItem::asMediaItem)
-                        ?.let { mediaItems ->
-                            mapIgnore( it, *mediaItems.toTypedArray() )
-                        }
-                }
-            }
-        }
     }
     val syncComponent = Synchronize { sync() }
     val listenOnYT = ListenOnYouTube {
