@@ -1,0 +1,16 @@
+Add:
+- Licenses page in About
+- Spaces between albums, artists, and playlists
+
+Changed:
+- Rework on shimmering effect
+- Player will now use Proxy to get data
+- Apply default image when playlist's thumbnail is unavailable
+
+Fixed:
+- Image fetcher failed to start with app
+- Duplicate "image cache size" in Data Settings
+- Notification, download state, and DiscordRPC refused to update
+- Clicking on albums, artists, and playlists didn't go to said page
+- Local playlist failed to create when YT sync is enabled
+- Local playlist's content erased when YT sync is enabled
