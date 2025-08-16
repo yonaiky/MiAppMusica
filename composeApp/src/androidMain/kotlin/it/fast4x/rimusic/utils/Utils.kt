@@ -80,6 +80,7 @@ val Innertube.Podcast.EpisodeItem.asMediaItem: MediaItem
                 .setArtist(author.toString())
                 .setAlbumTitle(title)
                 .setArtworkUri(thumbnail.firstOrNull()?.url?.toUri())
+                .setDurationMs( durationToMillis(durationString ?: "0") )
                 .setExtras(
                     bundleOf(
                         //"albumId" to album?.endpoint?.browseId,
@@ -105,6 +106,7 @@ val Innertube.SongItem.asMediaItem: MediaItem
                 .setArtist(authors?.filter {it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" })
                 .setAlbumTitle(album?.name)
                 .setArtworkUri(thumbnail?.url?.toUri())
+                .setDurationMs( durationToMillis(durationText ?: "0") )
                 .setExtras(
                     bundleOf(
                         "albumId" to album?.endpoint?.browseId,
@@ -140,6 +142,7 @@ val Innertube.VideoItem.asMediaItem: MediaItem
                 .setTitle(info?.name)
                 .setArtist(authors?.joinToString(", ") { it.name ?: "" })
                 .setArtworkUri(thumbnail?.url?.toUri())
+                .setDurationMs( durationToMillis(durationText ?: "0") )
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
@@ -166,6 +169,7 @@ val Song.asMediaItem: MediaItem
                 .setTitle(title)
                 .setArtist(artistsText)
                 .setArtworkUri(thumbnailUrl?.toUri())
+                .setDurationMs( durationToMillis(durationText ?: "0") )
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
