@@ -2,6 +2,7 @@ package app.kreate.android.service
 
 import android.content.ContentResolver
 import android.content.Context
+import androidx.compose.ui.util.fastFilter
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -11,14 +12,8 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import app.kreate.android.R
-import app.kreate.android.network.innertube.Store
 import app.kreate.android.utils.CharUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
-import com.grack.nanojson.JsonWriter
-import io.ktor.client.statement.bodyAsText
-import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.Innertube.createPoTokenChallenge
-import it.fast4x.innertube.models.PlayerResponse
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AudioQualityFormat
@@ -36,14 +31,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
+import me.knighthat.innertube.Constants
 import me.knighthat.innertube.Endpoints
+import me.knighthat.innertube.UserAgents
+import me.knighthat.innertube.response.PlayerResponse
 import me.knighthat.utils.Toaster
-import org.schabi.newpipe.extractor.localization.ContentCountry
-import org.schabi.newpipe.extractor.localization.Localization
-import org.schabi.newpipe.extractor.services.youtube.PoTokenResult
-import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
-import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 import me.knighthat.innertube.Innertube as NewInnertube
 
 private const val CHUNK_LENGTH = 512 * 1024L     // 512Kb
@@ -113,12 +105,12 @@ private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingD
         Database.asyncTransaction {
             formatTable.insertIgnore(Format(
                 videoId,
-                format.itag,
+                format.itag.toInt(),
                 format.mimeType,
                 format.bitrate.toLong(),
-                format.contentLength,
-                format.lastModified,
-                format.loudnessDb?.toFloat()
+                format.contentLength?.toLong(),
+                format.lastModified.toLong(),
+                format.loudnessDb
             ))
 
             // Format must be added successfully before setting variable
@@ -131,76 +123,6 @@ private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingD
 private fun upstreamDatasourceFactory( context: Context ): DataSource.Factory =
     DefaultDataSource.Factory( context, KtorHttpDatasource.Factory(NetworkService.client ) )
 
-//<editor-fold defaultstate="collapsed" desc="Extractors">
-private val jsonParser =
-    Json {
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        useArrayPolymorphism = true
-        explicitNulls = false
-    }
-
-@UnstableApi
-private fun checkPlayability( playabilityStatus: PlayerResponse.PlayabilityStatus? ) {
-    if( playabilityStatus?.status != "OK" )
-        when( playabilityStatus?.status ) {
-            "LOGIN_REQUIRED"    -> throw LoginRequiredException()
-            "UNPLAYABLE"        -> throw UnplayableException()
-            else                -> throw UnknownException()
-        }
-}
-
-private fun extractFormat(
-    streamingData: PlayerResponse.StreamingData?,
-    audioQualityFormat: AudioQualityFormat,
-    connectionMetered: Boolean
-): PlayerResponse.StreamingData.Format? =
-    when (audioQualityFormat) {
-        AudioQualityFormat.High -> streamingData?.highestQualityFormat
-        AudioQualityFormat.Medium -> streamingData?.mediumQualityFormat
-        AudioQualityFormat.Low -> streamingData?.lowestQualityFormat
-        AudioQualityFormat.Auto ->
-            if (connectionMetered && isConnectionMeteredEnabled())
-                streamingData?.mediumQualityFormat
-            else
-                streamingData?.autoMaxQualityFormat
-    }
-
-fun getAndroidResponse( videoId: String, cpn: String ): PlayerResponse {
-    val response = YoutubeStreamHelper.getAndroidReelPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn )
-    return JsonWriter.string( response )
-                     .let( jsonParser::decodeFromString )
-}
-
-private fun String.getPoToken(): String? =
-    this.replace("[", "")
-        .replace("]", "")
-        .split(",")
-        .findLast { it.contains("\"") }
-        ?.replace("\"", "")
-
-private suspend fun generateIosPoToken() =
-    createPoTokenChallenge().bodyAsText()
-        .let { challenge ->
-            val listChallenge = jsonParser.decodeFromString<List<String?>>(challenge)
-            listChallenge.filterIsInstance<String>().firstOrNull()
-        }?.let { poTokenChallenge ->
-            Innertube.generatePoToken(poTokenChallenge)
-                .bodyAsText()
-                .getPoToken()
-        }
-
-suspend fun getIosResponse(videoId: String, cpn: String ): PlayerResponse {
-    val visitorData = Store.getIosVisitorData()
-    val playerRequestToken = generateIosPoToken().orEmpty()
-    val poTokenResult = PoTokenResult(visitorData, playerRequestToken, null )
-    val response = YoutubeStreamHelper.getIosPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn, poTokenResult )
-
-    return JsonWriter.string( response )
-                     .let( jsonParser::decodeFromString )
-}
-//</editor-fold>
-
 @UnstableApi
 fun DataSpec.process(
     videoId: String,
@@ -208,35 +130,44 @@ fun DataSpec.process(
     connectionMetered: Boolean
 ): DataSpec = runBlocking( Dispatchers.IO ) {
     val cpn = CharUtils.randomString( 16 )
-    val playerResponse =
-        try {
-            getAndroidResponse( videoId, cpn )
-        } catch ( e: Exception ) {
-            when( e ) {
-                is LoginRequiredException,
-                is UnplayableException -> getIosResponse( videoId, cpn )
-                else -> throw e
-            }
+    val headers = Constants.JSON_HEADERS.toMutableMap()
+    headers.replace( "User-Agent", listOf( UserAgents.IOS ) )
+    val playerResponse = NewInnertube.ytmIosPlayer( videoId, CURRENT_LOCALE, headers, cpn ).getOrThrow()
+
+    when( playerResponse.playabilityStatus.status ) {
+        "OK"                -> {}
+        "LOGIN_REQUIRED"    -> throw LoginRequiredException()
+        "UNPLAYABLE"        -> throw UnplayableException()
+        else                -> throw UnknownException()
+    }
+
+    val format = with( playerResponse.streamingData!! ) {
+        val availableFormats = this.adaptiveFormats.fastFilter {
+            it.mimeType.startsWith( "audio/" )
+        }.sortedBy { it.bitrate }
+
+        when ( audioQualityFormat ) {
+            AudioQualityFormat.High -> availableFormats.last()
+            AudioQualityFormat.Medium -> availableFormats[availableFormats.size / 2]
+            AudioQualityFormat.Low -> availableFormats.first()
+            AudioQualityFormat.Auto ->
+                if ( connectionMetered && isConnectionMeteredEnabled() )
+                    availableFormats[availableFormats.size / 2]
+                else
+                    availableFormats.last()
         }
+    }
 
-    checkPlayability( playerResponse.playabilityStatus )
+    upsertSongFormat( videoId, format )
 
-    val format = extractFormat(
-        playerResponse.streamingData,
-        audioQualityFormat,
-        connectionMetered
-    )
-
-    upsertSongFormat( videoId, format!! )
-
-    YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, format.url.orEmpty() )
-                                  .toUri()
-                                  .buildUpon()
-                                  .appendQueryParameter( "range", "$uriPositionOffset-${format.contentLength ?: CHUNK_LENGTH}" )
-                                  .appendQueryParameter( "cpn", cpn )
-                                  .build()
-                                  .let( ::withUri )
-                                  .subrange( uriPositionOffset )
+    format.url!!
+          .toUri()
+          .buildUpon()
+          .appendQueryParameter( "range", "$uriPositionOffset-${format.contentLength ?: CHUNK_LENGTH}" )
+          .appendQueryParameter( "cpn", cpn )
+          .build()
+          .let( ::withUri )
+          .subrange( uriPositionOffset )
 }
 
 //<editor-fold defaultstate="collapsed" desc="Data source factories">
