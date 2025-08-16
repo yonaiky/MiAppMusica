@@ -242,17 +242,13 @@ class PlayerServiceModern:
         mediaItem?.also {
             if( !isAtLeastAndroid6 || !Preferences.DISCORD_LOGIN.value ) return@also
 
+            val startTime = System.currentTimeMillis() - player.currentPosition
+            val duration = mediaItem.mediaMetadata.durationMs ?: 0
             updateDiscordPresence(
                 this@PlayerServiceModern,
                 mediaItem = it,
-                timeStart = if ( player.isPlaying )
-                    System.currentTimeMillis() - player.currentPosition
-                else
-                    0L,
-                timeEnd = if ( player.isPlaying )
-                    (System.currentTimeMillis() - player.currentPosition) + player.duration
-                else
-                    0L
+                timeStart = startTime,
+                timeEnd = startTime + duration
             )
         }
     }
