@@ -6,7 +6,11 @@
     </plurals>
     <plurals name="query">
         <item quantity="one">%d búsqueda</item>
-        <item quantity="other">%d query</item>
+        <item quantity="other">%d búsquedas</item>
+    </plurals>
+    <plurals name="file">
+        <item quantity="one">%d archivo</item>
+        <item quantity="other">%d archivos</item>
     </plurals>
     <plurals name="file">
         <item quantity="one">%d file</item>
