@@ -268,7 +268,7 @@ jobs:
           # Name: v0.0.1-20250303 | Weekly Build
           name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | Weekly Build
           tag_name: v${{ needs.versioning.outputs.downstream }}
-          make-latest: "true"
+          make_latest: "true"
           body: |           
             ## What's `Kreate-izzy.apk`
             
