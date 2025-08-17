@@ -1,0 +1,4 @@
+Fixed:
+- App crashed when queue contained empty duration (1.6.6)
+- App crashed on startup
+
