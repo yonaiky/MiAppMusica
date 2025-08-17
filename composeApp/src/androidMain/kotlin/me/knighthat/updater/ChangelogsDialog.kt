@@ -68,8 +68,7 @@ open class ChangelogsDialog: Dialog {
                 }
             }
         }
-        if( sections.isNotEmpty() )
-            packSection()
+        currentTitle?.let( ::packSection )
 
         return sections
     }
