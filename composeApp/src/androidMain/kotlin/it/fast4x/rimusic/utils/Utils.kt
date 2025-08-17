@@ -80,7 +80,7 @@ val Innertube.Podcast.EpisodeItem.asMediaItem: MediaItem
                 .setArtist(author.toString())
                 .setAlbumTitle(title)
                 .setArtworkUri(thumbnail.firstOrNull()?.url?.toUri())
-                .setDurationMs( durationToMillis(durationString ?: "0") )
+                .setDurationMs( durationToMillis(durationString.orEmpty()) )
                 .setExtras(
                     bundleOf(
                         //"albumId" to album?.endpoint?.browseId,
@@ -106,7 +106,7 @@ val Innertube.SongItem.asMediaItem: MediaItem
                 .setArtist(authors?.filter {it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" })
                 .setAlbumTitle(album?.name)
                 .setArtworkUri(thumbnail?.url?.toUri())
-                .setDurationMs( durationToMillis(durationText ?: "0") )
+                .setDurationMs( durationToMillis( durationText.orEmpty() ) )
                 .setExtras(
                     bundleOf(
                         "albumId" to album?.endpoint?.browseId,
@@ -142,7 +142,7 @@ val Innertube.VideoItem.asMediaItem: MediaItem
                 .setTitle(info?.name)
                 .setArtist(authors?.joinToString(", ") { it.name ?: "" })
                 .setArtworkUri(thumbnail?.url?.toUri())
-                .setDurationMs( durationToMillis(durationText ?: "0") )
+                .setDurationMs( durationToMillis( durationText.orEmpty() ) )
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
@@ -169,7 +169,7 @@ val Song.asMediaItem: MediaItem
                 .setTitle(title)
                 .setArtist(artistsText)
                 .setArtworkUri(thumbnailUrl?.toUri())
-                .setDurationMs( durationToMillis(durationText ?: "0") )
+                .setDurationMs( durationToMillis( durationText.orEmpty() ) )
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
@@ -270,6 +270,9 @@ fun Uri?.thumbnail(size: Int): Uri? {
 
 fun formatAsDuration(millis: Long) = DateUtils.formatElapsedTime(millis / 1000).removePrefix("0")
 fun durationToMillis(duration: String): Long {
+    if( duration.isBlank() || !duration.contains( ":" ) )
+        return 0
+
     val parts = duration.split(":")
     if (parts.size == 3){
         val hours = parts[0].toLong()
