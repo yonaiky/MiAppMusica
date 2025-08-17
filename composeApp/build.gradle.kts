@@ -158,8 +158,8 @@ android {
         applicationId = "me.knighthat.kreate"
         minSdk = 21
         targetSdk = 36
-        versionCode = 112
-        versionName = "1.6.5"
+        versionCode = 113
+        versionName = "1.6.6"
 
         /*
                 UNIVERSAL VARIABLES
