@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.dialog.CrashReportDialog
@@ -121,11 +122,11 @@ fun LazyListScope.debugSection(search: SettingEntrySearch ) {
             )
         }
 
-        if( search appearsIn R.string.enable_log_debug )
+        if( search appearsIn R.string.setting_entry_runtime_log )
             SettingComponents.BooleanEntry(
                 preference = Preferences.RUNTIME_LOG,
-                title = stringResource( R.string.enable_log_debug ),
-                subtitle = stringResource( R.string.if_enabled_create_a_log_file_to_highlight_errors ),
+                title = stringResource( R.string.setting_entry_runtime_log ),
+                subtitle = stringResource( R.string.setting_description_runtime_log, BuildConfig.APP_NAME ),
                 action = SettingComponents.Action.RESTART_APP
             )
         AnimatedVisibility(
