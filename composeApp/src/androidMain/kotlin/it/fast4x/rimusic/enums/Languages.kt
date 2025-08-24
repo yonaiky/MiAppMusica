@@ -71,25 +71,27 @@ enum class Languages(
     Vietnamese( "vi" );
 
     @get:Composable
-    override val text: String by lazy {
-        if( this == System )
-            return@lazy appContext().getString( R.string.system_language )
+    override val text: String
+        get() {
+            if( this == System )
+                return appContext().getString( R.string.system_language )
 
-        val parts = code.split( "-", "_" )
-        val locale = when( parts.size ) {
-            1 -> Locale(parts[0])
-            2 -> {
-                // Both Cyrillic and Latin of Serbian are scripts, not region
-                if( parts[0] == "sr" )
-                    Locale.Builder()
-                          .setLanguage( parts[0] )
-                          .setScript( parts[1] )
-                          .build()
-                else
-                    Locale(parts[0], parts[1])
+            val parts = code.split( "-", "_" )
+            val locale = when( parts.size ) {
+                1 -> Locale(parts[0])
+                2 -> {
+                    // Both Cyrillic and Latin of Serbian are scripts, not region
+                    if( parts[0] == "sr" )
+                        Locale.Builder()
+                            .setLanguage( parts[0] )
+                            .setScript( parts[1] )
+                            .build()
+                    else
+                        Locale(parts[0], parts[1])
+                }
+                else -> throw UnsupportedOperationException("Unsupported locale parts: $parts")
             }
-            else -> throw UnsupportedOperationException("Unsupported locale parts: $parts")
+
+            return locale.getDisplayName( locale )
         }
-        locale.getDisplayName( locale )
-    }
 }
