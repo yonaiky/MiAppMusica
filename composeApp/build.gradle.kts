@@ -72,7 +72,6 @@ kotlin {
             implementation( libs.androidx.palette )
 
             implementation( libs.monetcompat )
-            implementation(libs.androidmaterial)
 
             implementation(libs.ktor.okhttp)
             implementation(libs.okhttp3.logging.interceptor)
