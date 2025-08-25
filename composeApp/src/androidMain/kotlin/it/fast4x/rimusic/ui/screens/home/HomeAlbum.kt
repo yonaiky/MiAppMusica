@@ -101,7 +101,6 @@ import me.knighthat.database.AlbumTable
 @Composable
 fun HomeAlbums(
     navController: NavController,
-    onAlbumClick: (Album) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
@@ -129,7 +128,7 @@ fun HomeAlbums(
 
     val randomizer = object: Randomizer<Album> {
         override fun getItems(): List<Album> = itemsOnDisplay
-        override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
+        override fun onClick(index: Int) = NavRoutes.YT_ALBUM.navigateHere( navController, itemsOnDisplay[index] )
     }
     val shuffle = SongShuffler(
         databaseCall = Database.albumTable::allSongsInBookmarked,

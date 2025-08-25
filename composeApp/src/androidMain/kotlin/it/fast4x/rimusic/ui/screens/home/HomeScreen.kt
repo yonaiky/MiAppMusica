@@ -72,9 +72,6 @@ fun HomeScreen(
 
                 2 -> HomeArtists(
                     navController = navController,
-                    onArtistClick = {
-                        NavRoutes.YT_ARTIST.navigateHere( navController, it.id )
-                    },
                     onSearchClick = {
                         NavRoutes.search.navigateHere( navController )
                     },
@@ -85,9 +82,6 @@ fun HomeScreen(
 
                 3 -> HomeAlbums(
                     navController = navController,
-                    onAlbumClick = {
-                        NavRoutes.YT_ALBUM.navigateHere( navController, it.id )
-                    },
                     onSearchClick = {
                         NavRoutes.search.navigateHere( navController )
                     },

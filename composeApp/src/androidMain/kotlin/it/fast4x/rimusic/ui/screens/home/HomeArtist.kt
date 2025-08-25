@@ -52,6 +52,7 @@ import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ArtistsType
 import it.fast4x.rimusic.enums.FilterBy
+import it.fast4x.rimusic.enums.NavRoutes
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.UiType
 import it.fast4x.rimusic.models.Artist
@@ -86,7 +87,6 @@ import me.knighthat.component.tab.SongShuffler
 @Composable
 fun HomeArtists(
     navController: NavController,
-    onArtistClick: (Artist) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
@@ -115,7 +115,7 @@ fun HomeArtists(
 
     val randomizer = object: Randomizer<Artist> {
         override fun getItems(): List<Artist> = itemsOnDisplay
-        override fun onClick(index: Int) = onArtistClick(itemsOnDisplay[index])
+        override fun onClick(index: Int) = NavRoutes.YT_ARTIST.navigateHere( navController, itemsOnDisplay[index] )
 
     }
     val shuffle = SongShuffler(
