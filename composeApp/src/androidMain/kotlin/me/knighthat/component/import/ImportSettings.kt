@@ -7,6 +7,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.util.fastForEach
+import androidx.compose.ui.util.fastMapNotNull
+import androidx.core.content.edit
+import app.kreate.android.Preferences
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.knighthat.component.ImportFromFile
 import me.knighthat.component.dialog.RestartAppDialog
+import me.knighthat.utils.csv.PreferenceCSV
 import java.io.InputStream
 
 class ImportSettings private constructor(
@@ -21,24 +25,35 @@ class ImportSettings private constructor(
 ): ImportFromFile(launcher) {
 
     companion object {
-        fun onImportFromCsv( context: Context, inStream: InputStream ) =
+        fun onImportFromCsv( inStream: InputStream ) =
             csvReader().readAllWithHeader( inStream )
-                       .fastForEach { row -> // Experimental, revert back to [forEach] if needed
-                           val type = row["Type"] ?: ""
-                           val key = row["Key"] ?: ""
-                           val value = row["Value"] ?: ""
+                       .fastMapNotNull { row ->
+                           val type = row["Type"]
+                           val key = row["Key"]
+                           val value = row["Value"].orEmpty()
 
-                           val editor = context.preferences.edit()
-                           when( type.lowercase() ) {
-                               "string" -> editor.putString( key, value )
-                               "int" -> editor.putInt( key, value.toInt() )
-                               "long" -> editor.putLong( key, value.toLong() )
-                               "float" -> editor.putFloat( key, value.toFloat() )
-                               "boolean" -> editor.putBoolean( key, value.toBoolean() )
+                           if(
+                               type.isNullOrBlank()
+                               || key.isNullOrBlank()
+                               || (type.lowercase() == "string" && value.isBlank())
+                           )
+                               null
+                           else
+                               PreferenceCSV(type, key, value)
+                       }
+                       .also { preferences ->
+                           Preferences.preferences.edit( true ) {
+                               preferences.fastForEach { (type, key, value) ->
+                                   val valueStr = value.toString()
+                                   when( type ) {
+                                       "string" -> putString( key, valueStr )
+                                       "int" -> putInt( key, valueStr.toInt() )
+                                       "long" -> putLong( key, valueStr.toLong() )
+                                       "float" -> putFloat( key, valueStr.toFloat() )
+                                       "boolean" -> putBoolean( key, valueStr.toBoolean() )
+                                   }
+                               }
                            }
-                           // Important! No action is allowed during this process to
-                           // prevent race-condition. [commit] blocks thread until it's done
-                           editor.commit()
                        }
 
         @Composable
@@ -55,9 +70,7 @@ class ImportSettings private constructor(
                     CoroutineScope(Dispatchers.IO).launch {
                         context.contentResolver
                                .openInputStream( uri )
-                               ?.use { inStream ->         // Use [use] because it closes stream on exit
-                                   onImportFromCsv( context, inStream )
-                               }
+                               ?.use( ::onImportFromCsv )
 
                         RestartAppDialog.showDialog()
                     }

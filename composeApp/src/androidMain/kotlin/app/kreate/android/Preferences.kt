@@ -143,7 +143,8 @@ sealed class Preferences<T>(
         private const val PREFERENCES_FILENAME = "preferences"
         private const val ENCRYPTED_PREFERENCES_FILENAME = "secure_preferences"
 
-        private lateinit var preferences: SharedPreferences
+        lateinit var preferences: SharedPreferences
+            private set
         @get:RequiresApi(Build.VERSION_CODES.M)
         private lateinit var encryptedPreferences: SharedPreferences
 

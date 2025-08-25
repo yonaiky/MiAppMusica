@@ -12,14 +12,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.util.fastForEach
 import app.kreate.android.BuildConfig
+import app.kreate.android.Preferences
 import app.kreate.android.R
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
-import it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.knighthat.component.ExportToFileDialog
+import me.knighthat.utils.csv.PreferenceCSV
+import java.io.OutputStream
+import kotlin.math.exp
 
 class ExportSettingsDialog private constructor(
     valueState: MutableState<TextFieldValue>,
@@ -28,32 +32,24 @@ class ExportSettingsDialog private constructor(
 ): ExportToFileDialog(valueState, activeState, launcher) {
 
     companion object {
-        private fun onExportToCsv(
-            uri: Uri,
-            context: Context
-        ) = CoroutineScope( Dispatchers.IO ).launch {       // Run in background to prevent UI thread from freezing due to large file.
-            val entries: List<Triple<String, String, Any>> = context.preferences
-                                                                    .all
-                                                                    .map {
-                                                                        val value = it.value ?: Unit
-                                                                        val type = value::class.simpleName ?: "null"
-                                                                        Triple( type, it.key, value )
-                                                                    }
-                                                                    .filter { it.first != "null" && it.third !== Unit }
+        private fun onExportToCsv( outStream: OutputStream ) {
+            val entries = Preferences.preferences.all.mapNotNull {
+                val value = it.value ?: return@mapNotNull null
+                val type = value::class.simpleName ?: return@mapNotNull null
 
-            context.contentResolver
-                   .openOutputStream( uri )
-                   ?.use { outStream ->         // Use [use] because it closes stream on exit
-                       csvWriter().open( outStream ) {
-                           writeRow( "Type", "Key", "Value" )
-                           flush()
+                PreferenceCSV(type, it.key, value)
+            }
 
-                           entries.forEach {
-                               writeRow( it.first, it.second, it.third )
-                           }
-                           close()
-                       }
-                   }
+            csvWriter().open( outStream ) {
+                writeRow( "Type", "Key", "Value" )
+                flush()
+
+                entries.fastForEach {
+                    it.write( this )
+                }
+
+                close()
+            }
         }
 
         @Composable
@@ -68,7 +64,14 @@ class ExportSettingsDialog private constructor(
                 ) { uri ->
                     // [uri] must be non-null (meaning path exists) in order to work
                     uri ?: return@rememberLauncherForActivityResult
-                    onExportToCsv( uri, context )
+
+                    // Run in background to prevent UI thread
+                    // from freezing due to large file.
+                    CoroutineScope(Dispatchers.IO).launch {
+                        context.contentResolver
+                               .openOutputStream( uri )
+                               ?.use( ::onExportToCsv )
+                    }
                 }
             )
     }
