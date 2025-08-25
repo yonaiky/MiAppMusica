@@ -1,5 +1,6 @@
 package app.kreate.android.service
 
+import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -12,6 +13,7 @@ import kotlinx.serialization.json.ClassDiscriminatorMode
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
@@ -75,20 +77,10 @@ object NetworkService {
             engine {
                 this.proxy = getProxy()
 
-                /*
-                Temporarily disabled because [HttpLoggingInterceptor] throws
-                "java.io.IOException: ID1ID2: actual 0x00007b22 != expected 0x00001f8b"
-                on some uncompressed responses
-
-                if( BuildConfig.DEBUG ) {
-                    addInterceptor(
-                        HttpLoggingInterceptor().setLevel( HttpLoggingInterceptor.Level.HEADERS )
-                    )
+                if( BuildConfig.DEBUG )
                     addInterceptor(
                         HttpLoggingInterceptor().setLevel( HttpLoggingInterceptor.Level.BODY )
                     )
-                }
-                */
             }
         }
 }
