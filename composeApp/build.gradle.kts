@@ -48,23 +48,13 @@ kotlin {
             }
         }
 
-        val desktopMain by getting
-        desktopMain.dependencies {
+        jvmMain.dependencies {
             implementation(compose.components.resources)
             implementation(compose.desktop.currentOs)
 
             implementation(libs.material.icon.desktop)
             implementation(libs.vlcj)
-
-            /*
-            // Uncomment only for build jvm desktop version
-            // Comment before build android version
-            configurations.commonMainApi {
-                exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
-            }
-            */
         }
-
         androidMain.dependencies {
             implementation(libs.media3.session)
             implementation(libs.kotlinx.coroutines.guava)
