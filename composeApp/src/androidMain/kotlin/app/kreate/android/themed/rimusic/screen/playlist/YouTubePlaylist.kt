@@ -245,9 +245,9 @@ fun YouTubePlaylist(
                              err.printStackTrace()
                              err.message?.also( Toaster::e )
                          }
-            else if ( playlistPage?.visitorData != null )
+            else if ( playlistPage?.visitorData != null || useLogin )
                 Innertube.playlistContinued(
-                             playlistPage!!.visitorData!!,
+                             if( useLogin ) Innertube.client.visitorData else playlistPage!!.visitorData!!,
                              it,
                              CURRENT_LOCALE,
                              params,
