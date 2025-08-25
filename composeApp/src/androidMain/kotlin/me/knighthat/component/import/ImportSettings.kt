@@ -21,7 +21,7 @@ class ImportSettings private constructor(
 ): ImportFromFile(launcher) {
 
     companion object {
-        fun onImport( context: Context, inStream: InputStream ) =
+        fun onImportFromCsv( context: Context, inStream: InputStream ) =
             csvReader().readAllWithHeader( inStream )
                        .fastForEach { row -> // Experimental, revert back to [forEach] if needed
                            val type = row["Type"] ?: ""
@@ -56,7 +56,7 @@ class ImportSettings private constructor(
                         context.contentResolver
                                .openInputStream( uri )
                                ?.use { inStream ->         // Use [use] because it closes stream on exit
-                                   onImport( context, inStream )
+                                   onImportFromCsv( context, inStream )
                                }
 
                         RestartAppDialog.showDialog()

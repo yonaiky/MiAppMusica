@@ -28,7 +28,7 @@ class ExportSettingsDialog private constructor(
 ): ExportToFileDialog(valueState, activeState, launcher) {
 
     companion object {
-        private fun onExport(
+        private fun onExportToCsv(
             uri: Uri,
             context: Context
         ) = CoroutineScope( Dispatchers.IO ).launch {       // Run in background to prevent UI thread from freezing due to large file.
@@ -68,12 +68,12 @@ class ExportSettingsDialog private constructor(
                 ) { uri ->
                     // [uri] must be non-null (meaning path exists) in order to work
                     uri ?: return@rememberLauncherForActivityResult
-                    onExport( uri, context )
+                    onExportToCsv( uri, context )
                 }
             )
     }
 
-    override val extension: String = "xml"
+    override val extension: String = "csv"
     override val dialogTitle: String
         @Composable
         get() = stringResource( R.string.title_export_settings )
