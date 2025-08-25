@@ -611,6 +611,12 @@ sealed class Preferences<T>(
         val YOUTUBE_PLAYLISTS_SYNC by lazy {
             Boolean( preferences, "YouTubePlaylistsSync", "enableYoutubeSync", false )
         }
+        val YOUTUBE_ARTISTS_SYNC by lazy {
+            Boolean(preferences, "YouTubeArtistsSync", "", false)
+        }
+        val YOUTUBE_ALBUMS_SYNC by lazy {
+            Boolean(preferences, "YouTubeAlbumsSync", "", false)
+        }
         @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_VISITOR_DATA by lazy {
             String( encryptedPreferences, "YouTubeVisitorData", "ytVisitorData", Constants.VISITOR_DATA )

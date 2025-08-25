@@ -26,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
@@ -46,6 +49,8 @@ import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.artist.ArtistItem
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
+import app.kreate.android.utils.innertube.InnertubeUtils
 import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.YtMusic
 import it.fast4x.rimusic.Database
@@ -72,11 +77,15 @@ import it.fast4x.rimusic.ui.styling.LocalAppearance
 import it.fast4x.rimusic.utils.autoSyncToolbutton
 import it.fast4x.rimusic.utils.importYTMSubscribedChannels
 import it.fast4x.rimusic.utils.semiBold
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.component.tab.SongShuffler
+import me.knighthat.innertube.Innertube
+import me.knighthat.innertube.model.InnertubeArtist
+import me.knighthat.utils.Toaster
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -104,9 +113,18 @@ fun HomeArtists(
     var items by persistList<Artist>( "")
     var itemsToFilter by persistList<Artist>( "home/artists" )
 
-    var itemsOnDisplay by persistList<Artist>( "home/artists/on_display" )
+    var onlineArtists by remember {
+        mutableStateOf( emptyList<InnertubeArtist>() )
+    }
 
     val search = remember { Search(lazyGridState) }
+
+    var itemsOnDisplay by persistList<Artist>( "home/artists/on_display" )
+    val onlineOnDisplay by remember {derivedStateOf {
+        onlineArtists.fastFilter { filterBy === FilterBy.All || filterBy === FilterBy.YoutubeLibrary }
+                       .fastFilter { search appearsIn it.name }
+    }}
+
 
     val sort = remember {
         Sort(menuState, Preferences.HOME_ARTISTS_SORT_BY, Preferences.HOME_ARTISTS_SORT_ORDER)
@@ -160,6 +178,21 @@ fun HomeArtists(
                     }
                 }
             }
+        }
+    }
+    LaunchedEffect( Unit ) {
+        if( !InnertubeUtils.isLoggedIn || !Preferences.YOUTUBE_ARTISTS_SYNC.value )
+            return@LaunchedEffect
+
+        CoroutineScope( Dispatchers.IO ).launch {
+            Innertube.library( CURRENT_LOCALE )
+                     .onSuccess { results ->
+                         onlineArtists = results.fastMapNotNull { it as? InnertubeArtist }
+                     }
+                     .onFailure {
+                         it.printStackTrace()
+                         it.message?.also( Toaster::e )
+                     }
         }
     }
 
@@ -291,6 +324,19 @@ fun HomeArtists(
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
                     verticalArrangement = Arrangement.spacedBy( ArtistItem.ROW_SPACING.dp )
                 ) {
+                    items(
+                        items = onlineOnDisplay,
+                        key = InnertubeArtist::id
+                    ) { artist ->
+                        ArtistItem.Render(
+                            innertubeArtist = artist,
+                            widthDp = itemSize.size.dp,
+                            values = artistItemValues,
+                            navController = navController,
+                            onClick = search::hideIfEmpty
+                        )
+                    }
+
                     items(
                         items = itemsOnDisplay,
                         key = Artist::id

@@ -26,6 +26,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +41,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastMapNotNull
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.Preferences
@@ -48,6 +51,8 @@ import app.kreate.android.themed.rimusic.component.Search
 import app.kreate.android.themed.rimusic.component.album.AlbumItem
 import app.kreate.android.themed.rimusic.component.tab.ItemSize
 import app.kreate.android.themed.rimusic.component.tab.Sort
+import app.kreate.android.utils.innertube.CURRENT_LOCALE
+import app.kreate.android.utils.innertube.InnertubeUtils
 import it.fast4x.compose.persist.persistList
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -91,6 +96,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import me.knighthat.component.tab.SongShuffler
 import me.knighthat.database.AlbumTable
+import me.knighthat.innertube.Innertube
+import me.knighthat.innertube.model.InnertubeAlbum
+import me.knighthat.utils.Toaster
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -108,18 +116,27 @@ fun HomeAlbums(
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
     val lazyGridState = rememberLazyGridState()
+    val (colorPalette, typography) = LocalAppearance.current
+    val context = LocalContext.current
 
     // Settings
     var albumType by Preferences.HOME_ALBUM_TYPE
+    var filterBy by Preferences.HOME_ARTIST_AND_ALBUM_FILTER
+
 
     var items by persistList<Album>( "home/albums" )
     var itemsToFilter by persistList<Album>( "home/artists" )
-    var filterBy by Preferences.HOME_ARTIST_AND_ALBUM_FILTER
-    val (colorPalette, typography) = LocalAppearance.current
-
-    var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
+    var onlineAlbums by remember {
+        mutableStateOf( emptyList<InnertubeAlbum>() )
+    }
 
     val search = remember { Search(lazyGridState) }
+
+    var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
+    val onlineOnDisplay by remember {derivedStateOf {
+        onlineAlbums.fastFilter { filterBy === FilterBy.All || filterBy === FilterBy.YoutubeLibrary }
+                       .fastFilter { search appearsIn it.name }
+    }}
 
     val sort = remember {
         Sort(menuState, Preferences.HOME_ALBUMS_SORT_BY, Preferences.HOME_ALBUM_SORT_ORDER)
@@ -194,6 +211,21 @@ fun HomeAlbums(
                                           ?.key
                      }?.let { albumTable.updateCover( album.id, it ) }
                  }
+        }
+    }
+    LaunchedEffect( Unit ) {
+        if( !InnertubeUtils.isLoggedIn || !Preferences.YOUTUBE_ALBUMS_SYNC.value )
+            return@LaunchedEffect
+
+        CoroutineScope( Dispatchers.IO ).launch {
+            Innertube.library( CURRENT_LOCALE )
+                     .onSuccess { results ->
+                         onlineAlbums = results.fastMapNotNull { it as? InnertubeAlbum }
+                     }
+                     .onFailure {
+                         it.printStackTrace()
+                         it.message?.also( Toaster::e )
+                     }
         }
     }
 
@@ -313,6 +345,10 @@ fun HomeAlbums(
                 // Sticky search bar
                 search.SearchBar()
 
+                val albumItemValues = remember( colorPalette, typography ) {
+                    AlbumItem.Values.from( colorPalette, typography )
+                }
+
                 LazyVerticalGrid(
                     state = lazyGridState,
                     columns = GridCells.Adaptive( itemSize.size.dp ),
@@ -322,6 +358,19 @@ fun HomeAlbums(
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
                     verticalArrangement = Arrangement.spacedBy(AlbumItem.ROW_SPACING.dp )
                 ) {
+                    items(
+                        items = onlineOnDisplay,
+                        key = InnertubeAlbum::id
+                    ) { album ->
+                        AlbumItem.Vertical(
+                            innertubeAlbum = album,
+                            widthDp = itemSize.size.dp,
+                            values = albumItemValues,
+                            navController = navController,
+                            onClick = search::hideIfEmpty
+                        )
+                    }
+
                     items(
                         items = itemsOnDisplay,
                         key = Album::id
@@ -383,11 +432,6 @@ fun HomeAlbums(
 
                         var position by remember {
                             mutableIntStateOf(0)
-                        }
-                        val context = LocalContext.current
-                        val appearance = LocalAppearance.current
-                        val albumItemValues = remember( appearance ) {
-                            AlbumItem.Values.from( appearance )
                         }
 
                         AlbumItem.Vertical(

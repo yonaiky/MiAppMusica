@@ -35,7 +35,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
@@ -166,15 +165,34 @@ fun AccountSettings( paddingValues: PaddingValues ) {
                             }
                     }
 
-                    val title = stringResource( R.string.setting_entry_youtube_sync_data, BuildConfig.APP_NAME )
-                    if( search appearsIn title )
+                    val syncPlaylistsTitle = stringResource(
+                        R.string.setting_entry_sync_quotes,
+                        stringResource( R.string.playlists )
+                    )
+                    if( search appearsIn syncPlaylistsTitle )
                         SettingComponents.BooleanEntry(
-                            Preferences.YOUTUBE_PLAYLISTS_SYNC,
-                            title = title,
-                            subtitle = stringResource(
-                                R.string.setting_description_youtube_sync_data,
-                                stringResource( R.string.playlists )
-                            )
+                            preference = Preferences.YOUTUBE_PLAYLISTS_SYNC,
+                            title = syncPlaylistsTitle
+                        )
+
+                    val syncArtistsTitle = stringResource(
+                        R.string.setting_entry_sync_quotes,
+                        stringResource( R.string.artists )
+                    )
+                    if( search appearsIn syncArtistsTitle )
+                        SettingComponents.BooleanEntry(
+                            preference = Preferences.YOUTUBE_ARTISTS_SYNC,
+                            title = syncArtistsTitle
+                        )
+
+                    val syncAlbumsTitle = stringResource(
+                        R.string.setting_entry_sync_quotes,
+                        stringResource( R.string.albums )
+                    )
+                    if( search appearsIn syncAlbumsTitle )
+                        SettingComponents.BooleanEntry(
+                            preference = Preferences.YOUTUBE_ALBUMS_SYNC,
+                            title = syncAlbumsTitle
                         )
                 }
 
