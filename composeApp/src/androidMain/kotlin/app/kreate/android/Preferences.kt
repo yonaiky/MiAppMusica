@@ -777,6 +777,23 @@ sealed class Preferences<T>(
             Color(preferences, "CustomDarkThemeAccent", "customThemeDark_accent", DefaultDarkColorPalette.accent)
         }
         //</editor-fold>
+        //<editor-fold desc="Logging">
+        val RUNTIME_LOG by lazy {
+            Boolean(preferences, "DebugLog", "logDebugEnabled", false)
+        }
+        val RUNTIME_LOG_SHARED by lazy {
+            Boolean(preferences, "DebugLogShared", "", true)
+        }
+        val RUNTIME_LOG_LEVEL by lazy {
+            Int(preferences, "DebugLogLevel", "", Log.INFO)
+        }
+        val RUNTIME_LOG_FILE_COUNT by lazy {
+            Int(preferences, "DebugLogFileCount", "", 5)
+        }
+        val RUNTIME_LOG_MAX_SIZE_PER_FILE by lazy {
+            Long(preferences, "DebugLogMaxSizePerFile", "", 5L * 1024 * 1024)   // 5 Mb
+        }
+        //</editor-fold>
 
         val HOME_SONGS_TOP_PLAYLIST_PERIOD by lazy {
             Enum( preferences, "HomeSongsTopPlaylistPeriod", "", StatisticsType.All )
@@ -996,21 +1013,6 @@ sealed class Preferences<T>(
         }
         val KEEP_SCREEN_ON by lazy {
             Boolean( preferences, "KeepScreenOn", "isKeepScreenOnEnabled", false )
-        }
-        val RUNTIME_LOG by lazy {
-            Boolean(preferences, "DebugLog", "logDebugEnabled", false)
-        }
-        val RUNTIME_LOG_SHARED by lazy {
-            Boolean(preferences, "DebugLogShared", "", true)
-        }
-        val RUNTIME_LOG_LEVEL by lazy {
-            Int(preferences, "DebugLogLevel", "", Log.INFO)
-        }
-        val RUNTIME_LOG_FILE_COUNT by lazy {
-            Int(preferences, "DebugLogFileCount", "", 5)
-        }
-        val RUNTIME_LOG_MAX_SIZE_PER_FILE by lazy {
-            Long(preferences, "DebugLogMaxSizePerFile", "", 5L * 1024 * 1024)   // 5 Mb
         }
         val AUTO_SYNC by lazy {
             Boolean( preferences, "AutoSync", "autosync", false )
