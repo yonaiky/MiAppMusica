@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastJoinToString
 import androidx.compose.ui.util.fastMaxOfOrNull
 import androidx.core.net.toUri
 import app.kreate.android.R
@@ -63,12 +62,6 @@ class CrashReportDialog(private val context: Context): Dialog() {
 
     fun openCrashlogFile() =
         context.contentResolver.openInputStream( crashlogFile.toUri() )
-
-    fun crashlogText(): String =
-        openCrashlogFile()?.bufferedReader()
-                          ?.readLines()
-                          .orEmpty()
-                          .fastJoinToString( "" ) { it }
 
     override fun showDialog() {
         if( isAvailable() )
@@ -135,7 +128,9 @@ class CrashReportDialog(private val context: Context): Dialog() {
                 onClick = {
                     hideDialog()
 
-                    textCopyToClipboard( crashlogText(), context )
+                    openCrashlogFile()?.bufferedReader()?.readText()?.also {
+                        textCopyToClipboard( it, context )
+                    }
 
                     uriHandler.openUri(
                         with(Repository ) {

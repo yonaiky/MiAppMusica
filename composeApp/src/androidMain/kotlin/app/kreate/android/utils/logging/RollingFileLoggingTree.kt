@@ -8,6 +8,7 @@ import timber.log.Timber
 import java.io.Closeable
 import java.io.File
 import java.io.PrintWriter
+import java.text.DateFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
@@ -28,6 +29,16 @@ class RollingFileLoggingTree(
             Log.ASSERT  to "ASSERT"
         )
         private val timestampFormat: DateTimeFormatter = DateTimeFormatter.ofPattern( "HH:mm:ss" )
+
+        fun getLogFiles( logDir: File, fileNameFormat: DateFormat ): Array<out File> =
+            logDir.listFiles {
+                try {
+                    fileNameFormat.parse( it.nameWithoutExtension )
+                    true
+                } catch ( _: Exception ) {
+                    false
+                }
+            }.orEmpty()
     }
 
     private val logDir: File = cacheDir.resolve( "logs" )
@@ -63,14 +74,7 @@ class RollingFileLoggingTree(
         }
 
         //<editor-fold desc="Remove old log files">
-        val prevLogFiles = logDir.listFiles {
-            try {
-                fileNameFormat.parse( it.nameWithoutExtension )
-                true
-            } catch ( _: Exception ) {
-                false
-            }
-        }.orEmpty()
+        val prevLogFiles = getLogFiles( logDir, fileNameFormat )
 
         if( prevLogFiles.size >= this.fileCount )
             prevLogFiles.sortedBy { fileNameFormat.parse( it.nameWithoutExtension ) }

@@ -151,10 +151,10 @@ object SettingComponents {
 
     @Composable
     fun <T> ListEntry(
-        preference: Preferences<T>,
         title: String,
         getName: @Composable (T) -> String,
-        getList: Preferences<T>.() -> Array<T>,
+        initialValue: T,
+        getList: () -> Array<T>,
         modifier: Modifier = Modifier,
         subtitle: String = "",
         isEnabled: Boolean = true,
@@ -162,7 +162,7 @@ object SettingComponents {
         trailingContent: @Composable RowScope.() -> Unit = {},
         onValueChanged: (T) -> Unit = {}
     ) {
-        var selected by preference
+        var selected by remember { mutableStateOf(initialValue) }
 
         val dialog = remember {
             object : Dialog {
@@ -176,7 +176,7 @@ object SettingComponents {
                 override fun DialogBody() {
                     LazyColumn( Modifier.wrapContentHeight() ) {
                         items(
-                            items = preference.getList(),
+                            items = getList(),
                             key = System::identityHashCode
                         ) {
                             Row(
@@ -251,11 +251,26 @@ object SettingComponents {
             onClick = dialog::showDialog,
             modifier = modifier,
             // Default to show current value's name if no subtitle is provided
-            subtitle = subtitle.ifBlank { getName( preference.value ) },
+            subtitle = subtitle.ifBlank { getName( selected ) },
             isEnabled = isEnabled,
             trailingContent = trailingContent
         )
     }
+
+    @Composable
+    fun <T> ListEntry(
+        preference: Preferences<T>,
+        title: String,
+        getName: @Composable (T) -> String,
+        getList: Preferences<T>.() -> Array<T>,
+        modifier: Modifier = Modifier,
+        subtitle: String = "",
+        isEnabled: Boolean = true,
+        action: Action = Action.NONE,
+        trailingContent: @Composable RowScope.() -> Unit = {},
+        onValueChanged: (T) -> Unit = {}
+    ) =
+        ListEntry( title, getName, preference.value, { preference.getList() }, modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
 
     @Composable
     inline fun <reified T: Enum<T>> EnumEntry(

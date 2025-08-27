@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -43,39 +42,41 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import me.knighthat.component.dialog.InputDialogConstraints
+import me.knighthat.utils.TimeDateUtils
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.io.File
+import java.util.UUID
+import kotlin.io.path.createTempFile
 
 @Composable
-private fun Entry(
+private fun CopyLogIcon(
     context: Context,
-    @StringRes titleId: Int,
-    @StringRes subtitleId: Int,
+    logFile: () -> File,
     isEnabled: Boolean,
-    onExport: () -> Unit,
-    logText: () -> String
-) =
-    SettingComponents.Text(
-        title = stringResource( titleId ),
-        onClick = onExport,
-        subtitle = stringResource( subtitleId ),
-        isEnabled = isEnabled
-    ) {
-        Icon(
-            painter = painterResource( R.drawable.copy ),
-            contentDescription = stringResource( R.string.copy_log_to_clipboard ),
-            tint = colorPalette().background4,
-            modifier = Modifier.size( 24.dp )
-                               .clickable( enabled = isEnabled ) {
-                                   val text = logText()
-                                   if ( text.isEmpty() )
-                                       Toaster.w( R.string.no_log_available )
-                                   else
-                                       textCopyToClipboard( text, context )
-                               }
-        )
+) {
+    fun copyFileToClipboard() {
+        CoroutineScope(Dispatchers.IO ).launch {
+            val logText = context.contentResolver.openInputStream( logFile().toUri() )?.bufferedReader()?.readText()
+
+            if( logText.isNullOrBlank() )
+                Toaster.w( R.string.no_log_available )
+            else
+                textCopyToClipboard( logText, context )
+        }
     }
+
+    Icon(
+        painter = painterResource( R.drawable.copy ),
+        contentDescription = stringResource( R.string.copy_log_to_clipboard ),
+        tint = colorPalette().background4,
+        modifier = Modifier.size(24.dp)
+                           .clickable(
+                               enabled = isEnabled,
+                               onClick = ::copyFileToClipboard
+                           )
+    )
+}
 
 @OptIn(ExperimentalSerializationApi::class)
 fun LazyListScope.debugSection(search: SettingEntrySearch ) {
@@ -109,17 +110,18 @@ fun LazyListScope.debugSection(search: SettingEntrySearch ) {
 
         if( search appearsIn R.string.setting_entry_crash_log ) {
             val crashReportDialog = remember( context ) { CrashReportDialog(context) }
-            Entry(
-                context = context,
-                titleId = R.string.setting_entry_crash_log,
-                subtitleId = R.string.setting_description_copy_or_export_logs,
+
+            SettingComponents.Text(
+                title = stringResource( R.string.setting_entry_crash_log ),
+                subtitle = stringResource( R.string.setting_description_copy_or_export_logs ),
                 isEnabled = crashReportDialog.isAvailable(),
-                onExport = {
+                onClick = {
                     from = crashReportDialog.crashlogFile
                     launcher.launch( crashReportDialog.crashlogFile.name )
-                },
-                logText = crashReportDialog::crashlogText
-            )
+                }
+            ) {
+                CopyLogIcon( context, crashReportDialog::crashlogFile, crashReportDialog.isAvailable() )
+            }
         }
 
         if( search appearsIn R.string.setting_entry_runtime_log )
@@ -190,6 +192,39 @@ fun LazyListScope.debugSection(search: SettingEntrySearch ) {
                         subtitle = stringResource( R.string.setting_description_runtime_log_max_size_per_file, sizeString ),
                         currentValue = maxSizePerFile,
                         action = SettingComponents.Action.RESTART_APP
+                    )
+                }
+
+                val logDir = context.cacheDir.resolve("logs")
+                if( search appearsIn R.string.setting_entry_runtime_log
+                    && logDir.exists()
+                    && logDir.isDirectory
+                ) {
+                    val logFiles = remember( logDir ) {
+                        val fileNameFormat = TimeDateUtils.logFileName()
+
+                        RollingFileLoggingTree.getLogFiles( logDir, fileNameFormat )
+                            .apply {
+                                sortByDescending {
+                                    fileNameFormat.parse( it.nameWithoutExtension )
+                                }
+                            } as Array<File>
+                    }
+
+                    SettingComponents.ListEntry(
+                        title = stringResource( R.string.setting_entry_runtime_log ),
+                        subtitle = stringResource( R.string.setting_description_copy_or_export_logs ),
+                        getName = { it.nameWithoutExtension },
+                        initialValue = createTempFile( UUID.randomUUID().toString() ).toFile(),
+                        getList = { logFiles },
+                        action = SettingComponents.Action.NONE,
+                        trailingContent = {
+                            CopyLogIcon( context, logFiles::first, true )
+                        },
+                        onValueChanged = {
+                            from = it
+                            launcher.launch( it.name )
+                        }
                     )
                 }
             }
