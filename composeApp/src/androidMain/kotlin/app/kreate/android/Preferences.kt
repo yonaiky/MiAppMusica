@@ -619,7 +619,7 @@ sealed class Preferences<T>(
         }
         @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_VISITOR_DATA by lazy {
-            String( encryptedPreferences, "YouTubeVisitorData", "ytVisitorData", Constants.VISITOR_DATA )
+            String( encryptedPreferences, "YouTubeVisitorData", "ytVisitorData", Constants.CHROME_WINDOWS_VISITOR_DATA )
         }
         @get:RequiresApi(Build.VERSION_CODES.M)
         val YOUTUBE_SYNC_ID by lazy {
