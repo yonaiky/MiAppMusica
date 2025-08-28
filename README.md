@@ -46,7 +46,6 @@
 - Check for Updates, which can be enabled or disabled in settings
 - Export cached/downloaded media
 - Export settings
-- Weekly update
 - Plays music even with no internet connection
 - Fully featured in-app update checker and auto-update $.^2$
 

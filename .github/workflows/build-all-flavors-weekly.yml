@@ -3,14 +3,14 @@ name: Build all flavors
 on:
   schedule:
     # Gotta wait until contributors.json is updated
-    - cron: '0 0 * * 0'  # Every Sunday at 0AM
+    - cron: '0 3 1,14 * *'  # 3AM on the 1st and 14th of every month
 
   # Allow manual trigger
   workflow_dispatch:
 
 # Prevent multiple jobs from running at the same time
 concurrency:
-  group: 'weekly-deploy'
+  group: 'biweekly-deploy'
   cancel-in-progress: false  # Don't cancel any in-progress runs in this group
 
 jobs:
@@ -265,8 +265,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: '*.apk'
-          # Name: v0.0.1-20250303 | Weekly Build
-          name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | Weekly Build
+          # Name: v0.0.1-20250303
+          name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }}
           tag_name: v${{ needs.versioning.outputs.downstream }}
           make_latest: "true"
           body: |           
