@@ -15,8 +15,7 @@ on:
       - '**'
 
   schedule:
-    # Runs every other day at midnight UTC
-    - cron: '0 0 */2 * *'
+    - cron: '0 16 * * 5'   # 4PM every friday
 
   # Allows manual triggering
   workflow_dispatch:
