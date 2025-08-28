@@ -37,9 +37,7 @@ kotlin {
         }
     }
 
-    jvm("desktop")
-
-
+    jvm()
 
     sourceSets {
         all {
