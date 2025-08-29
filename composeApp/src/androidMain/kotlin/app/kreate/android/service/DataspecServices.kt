@@ -385,14 +385,17 @@ fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.
 
         val videoId = dataSpec.uri.toString().substringAfter("watch?v=")
 
+        fun isCached() =
+            cache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
+        fun isDownloaded() =
+            downloadCache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
+
         val isLocal = dataSpec.uri.scheme == ContentResolver.SCHEME_CONTENT || dataSpec.uri.scheme == ContentResolver.SCHEME_FILE
-        val isCached = cache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
-        val isDownloaded = downloadCache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
 
         if( !isLocal )
             upsertSongInfo( videoId )
 
-        return@Factory if( isLocal || isCached || isDownloaded ){
+        return@Factory if( isLocal || isCached() || isDownloaded() ){
             Timber.tag( LOG_TAG ).d( "$videoId exists in cache, proceeding to use from cache" )
             // No need to fetch online for already cached data
             dataSpec
