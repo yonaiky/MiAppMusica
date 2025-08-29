@@ -10,6 +10,7 @@ import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.ResolvingDataSource
+import androidx.media3.datasource.cache.CacheDataSink
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import app.kreate.android.R
@@ -372,6 +373,11 @@ fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.
                                           .setCache( cache )
                                           .setUpstreamDataSourceFactory(
                                               upstreamDatasourceFactory( context )
+                                          )
+                                          .setCacheWriteDataSinkFactory(
+                                              CacheDataSink.Factory()
+                                                           .setCache( cache )
+                                                           .setFragmentSize( CHUNK_LENGTH )
                                           )
                        )
                        .setCacheWriteDataSinkFactory( null )
