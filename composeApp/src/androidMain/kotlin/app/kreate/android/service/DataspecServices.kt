@@ -379,6 +379,7 @@ fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.
                                                            .setCache( cache )
                                                            .setFragmentSize( CHUNK_LENGTH )
                                           )
+                                          .setFlags( FLAG_IGNORE_CACHE_ON_ERROR )
                        )
                        .setCacheWriteDataSinkFactory( null )
                        .setFlags( FLAG_IGNORE_CACHE_ON_ERROR )
