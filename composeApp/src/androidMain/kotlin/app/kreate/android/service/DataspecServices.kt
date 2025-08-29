@@ -52,6 +52,7 @@ import kotlin.time.Duration.Companion.seconds
 import me.knighthat.innertube.Innertube as NewInnertube
 import me.knighthat.innertube.request.body.Context as InnertubeContext
 
+private const val LOG_TAG = "dataspec"
 private const val CHUNK_LENGTH = 512 * 1024L     // 512Kb
 
 /**
@@ -191,8 +192,8 @@ private fun getSignatureTimestampOrNull( videoId: String ): Int? =
     runCatching {
         YoutubeJavaScriptPlayerManager.getSignatureTimestamp(videoId)
     }
-    .onSuccess { Timber.tag("dataspec").d("Signature timestamp obtained: $it") }
-    .onFailure { Timber.tag("dataspec").e(it, "Failed to get signature timestamp") }
+    .onSuccess { Timber.tag( LOG_TAG ).d( "Signature timestamp obtained: $it" ) }
+    .onFailure { Timber.tag( LOG_TAG ).e( it, "Failed to get signature timestamp" ) }
     .getOrNull()
 
 private suspend fun validateStreamUrl( streamUrl: String ): Boolean =
@@ -202,7 +203,7 @@ private suspend fun validateStreamUrl( streamUrl: String ): Boolean =
                       .status
                       .value == 200
     } catch( e: Exception ) {
-        Timber.tag("dataspec").e(e, "streamUrl is unplayable")
+        Timber.tag( LOG_TAG ).e( e, "streamUrl is unplayable" )
         false
     }
 
@@ -293,7 +294,7 @@ private suspend fun getPlayerResponse(
                 e.message?.also( Toaster::e )
 
             lastException = e
-            Timber.tag("dataspec").e( e, "getPlayerResponse returns error" )
+            Timber.tag( LOG_TAG ).e( e, "getPlayerResponse returns error" )
         }
 
         // **IMPORTANT**: Missing this causes infinite loop
@@ -303,7 +304,7 @@ private suspend fun getPlayerResponse(
     if( lastException != null ) throw lastException
 
     return requireNotNull( cache ) {
-        Timber.tag("dataspec").e("`streamUrl` is verified but `cache` is still null")
+        Timber.tag( LOG_TAG ).e( "`streamUrl` is verified but `cache` is still null" )
     }
 }
 //</editor-fold>
@@ -326,24 +327,24 @@ fun DataSpec.process(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): DataSpec = runBlocking( Dispatchers.IO ) {
-    Timber.tag("dataspec").v("processing $videoId at quality $audioQualityFormat with connection metered: $connectionMetered")
+    Timber.tag( LOG_TAG ).v( "processing $videoId at quality $audioQualityFormat with connection metered: $connectionMetered" )
 
     val cache: Cache
     if( cachedStreamUrl.contains( videoId ) ) {
-        Timber.tag("dataspec").d("Found $videoId in cachedStreamUrl")
+        Timber.tag( LOG_TAG ).d( "Found $videoId in cachedStreamUrl" )
 
         cache = cachedStreamUrl[videoId]!!
 
         // Handle expired url with 30secs offset
         if( cache.expiredTimeMillis - 30.seconds.inWholeMilliseconds <= System.currentTimeMillis() ) {
-            Timber.tag("dataspec").d("url for $videoId has expired!")
+            Timber.tag( LOG_TAG ).d( "url for $videoId has expired!" )
 
             cachedStreamUrl.remove( videoId )
 
             return@runBlocking process( videoId, audioQualityFormat, connectionMetered )
         }
     } else {
-        Timber.tag("dataspec").d("url for $videoId isn't stored! Fetching new url")
+        Timber.tag( LOG_TAG ).d( "url for $videoId isn't stored! Fetching new url" )
 
         cachedStreamUrl[videoId] = getPlayerResponse( videoId, audioQualityFormat, connectionMetered )
         cache = cachedStreamUrl[videoId]!!
@@ -391,10 +392,11 @@ fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.
         if( !isLocal )
             upsertSongInfo( videoId )
 
-        return@Factory if( isLocal || isCached || isDownloaded )
+        return@Factory if( isLocal || isCached || isDownloaded ){
+            Timber.tag( LOG_TAG ).d( "$videoId exists in cache, proceeding to use from cache" )
             // No need to fetch online for already cached data
             dataSpec
-        else
+        }else
             dataSpec.process( videoId, audioQualityFormat, applicationContext.isConnectionMetered() )
     }
 
@@ -418,10 +420,11 @@ fun MyDownloadHelper.createDataSourceFactory( context: Context ): DataSource.Fac
 
         val isDownloaded = downloadCache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
 
-        return@Factory if( isDownloaded )
+        return@Factory if( isDownloaded ){
+            Timber.tag( LOG_TAG ).d( "$videoId is downloaded, proceeding to use from cache" )
             // No need to fetch online for already cached data
             dataSpec
-        else
+        }else
             dataSpec.process( videoId, audioQualityFormat, context.isConnectionMetered() )
     }
 //</editor-fold>
