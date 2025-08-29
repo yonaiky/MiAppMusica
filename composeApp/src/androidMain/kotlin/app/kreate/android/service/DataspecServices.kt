@@ -132,7 +132,7 @@ private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingD
                 format.bitrate.toLong(),
                 format.contentLength?.toLong(),
                 format.lastModified.toLong(),
-                format.loudnessDb?.toFloat()
+                format.loudnessDb
             ))
 
             // Format must be added successfully before setting variable
@@ -215,34 +215,96 @@ private fun checkPlayabilityStatus( playabilityStatus: PlayerResponse.Playabilit
         else                -> throw UnknownException(playabilityStatus.reason)
     }
 
-@UnstableApi
-private fun getPlayerResponse(
+private fun getPlayerResponseFromNewPipe(
+    index: Int,
     songId: String,
-    context: InnertubeContext,
-    signatureTimestamp: Int?
+    cpn: String
 ): PlayerResponse {
-    val response = NewInnertube.player(
-        songId = songId,
-        context = context,
-        localization = CURRENT_LOCALE,
-        signatureTimestamp = signatureTimestamp,
-        visitorData = context.client.visitorData
-    ).getOrThrow()
+    fun parsePlayerResponseViaReflection( jsonObject: com.grack.nanojson.JsonObject ): PlayerResponse {
+        val serializerClass = Class.forName("me.knighthat.internal.response.PlayerResponseImpl$\$serializer")
+        val serializerInstance = serializerClass.getDeclaredField("INSTANCE").get(null) as KSerializer<*>
 
-    checkPlayabilityStatus(
-        requireNotNull( response.playabilityStatus )
-    )
+        return jsonParser.decodeFromString(
+            serializerInstance, JsonWriter.string( jsonObject )
+        ) as PlayerResponse
+    }
 
-    return response
+    val (gl, hl) = with( CURRENT_LOCALE ) {
+        ContentCountry(regionCode) to Localization(languageCode)
+    }
+    val jsonResponse = if( index == CONTEXTS.lastIndex + 1 )
+        YoutubeStreamHelper.getAndroidReelPlayerResponse( gl, hl, songId, cpn )
+    else
+        YoutubeStreamHelper.getIosPlayerResponse( gl, hl, songId, cpn, null )
+
+    return parsePlayerResponseViaReflection( jsonResponse )
 }
 
-private fun parsePlayerResponseViaReflection( jsonObject: com.grack.nanojson.JsonObject ): PlayerResponse {
-    val serializerClass = Class.forName("me.knighthat.internal.response.PlayerResponseImpl$\$serializer")
-    val serializerInstance = serializerClass.getDeclaredField("INSTANCE").get(null) as KSerializer<*>
+@OptIn(ExperimentalSerializationApi::class)
+@UnstableApi
+private suspend fun getPlayerResponse(
+    songId: String,
+    audioQualityFormat: AudioQualityFormat,
+    connectionMetered: Boolean
+): Cache {
+    var cache: Cache? = null
 
-    return jsonParser.decodeFromString(
-        serializerInstance, JsonWriter.string( jsonObject )
-    ) as PlayerResponse
+    val cpn = CharUtils.randomString( 12 )
+    val signatureTimestamp = getSignatureTimestampOrNull( songId )
+    var lastException: Throwable? = null
+
+    var index = 0
+    while( index < CONTEXTS.size + 2 ) {
+        try {
+            val response = if( index > CONTEXTS.lastIndex )
+                getPlayerResponseFromNewPipe( index, songId, cpn )
+            else
+                NewInnertube.player( songId, CONTEXTS[index], CURRENT_LOCALE, signatureTimestamp, CONTEXTS[index].client.visitorData )
+                            .getOrThrow()
+            checkPlayabilityStatus(
+                requireNotNull( response.playabilityStatus )
+            )
+
+            val format = extractFormat( response.streamingData, audioQualityFormat, connectionMetered )
+            val streamUrl = extractStreamUrl( songId, format )
+
+            if( validateStreamUrl( streamUrl ) ) {
+                // This variable must be set to [null] here
+                // Otherwise, error will be thrown as soon as the while-loop ends
+                lastException = null
+
+                format.also {
+                    upsertSongFormat( songId, it )
+                }
+
+                cache = Cache(
+                    cpn,
+                    format.contentLength?.toLong() ?: CHUNK_LENGTH,
+                    streamUrl,
+                    response.streamingData?.expiresInSeconds?.toLong() ?: 0L
+                )
+
+                break
+            }
+        } catch ( e: Exception ) {
+            if( e is MissingFieldException )
+                // Only show this exception because this needs update
+                // Other errors might be because of unsuccessful stream extraction
+                e.message?.also( Toaster::e )
+
+            lastException = e
+            Timber.tag("dataspec").e( e, "getPlayerResponse returns error" )
+        }
+
+        // **IMPORTANT**: Missing this causes infinite loop
+        index++
+    }
+
+    if( lastException != null ) throw lastException
+
+    return requireNotNull( cache ) {
+        Timber.tag("dataspec").e("`streamUrl` is verified but `cache` is still null")
+    }
 }
 //</editor-fold>
 
@@ -264,14 +326,13 @@ fun DataSpec.process(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): DataSpec = runBlocking( Dispatchers.IO ) {
-    val cpn: String
-    var playableUrl: String? = null
-    var length: Long
+    Timber.tag("dataspec").v("processing $videoId at quality $audioQualityFormat with connection metered: $connectionMetered")
 
+    val cache: Cache
     if( cachedStreamUrl.contains( videoId ) ) {
         Timber.tag("dataspec").d("Found $videoId in cachedStreamUrl")
 
-        val cache = cachedStreamUrl[videoId]!!
+        cache = cachedStreamUrl[videoId]!!
 
         // Handle expired url with 30secs offset
         if( cache.expiredTimeMillis - 30.seconds.inWholeMilliseconds <= System.currentTimeMillis() ) {
@@ -281,79 +342,18 @@ fun DataSpec.process(
 
             return@runBlocking process( videoId, audioQualityFormat, connectionMetered )
         }
-
-        cpn = cache.cpn
-        playableUrl = cache.playableUrl
-        length = cache.contentLength
     } else {
         Timber.tag("dataspec").d("url for $videoId isn't stored! Fetching new url")
 
-        cpn = CharUtils.randomString( 12 )
-        val signatureTimestamp = getSignatureTimestampOrNull( videoId )
-        var lastException: Throwable? = null
-        var playableFormat: PlayerResponse.StreamingData.Format? = null
-        var expiredInSeconds = 0L
-
-        var index = 0
-        while( index < CONTEXTS.size + 2 ) {
-            try {
-                val response = if( index > CONTEXTS.lastIndex ) {
-                    val (gl, hl) = with( CURRENT_LOCALE ) {
-                        ContentCountry(regionCode) to Localization(languageCode)
-                    }
-
-                    val jsonResponse = if( index == CONTEXTS.lastIndex + 1 )
-                        YoutubeStreamHelper.getAndroidReelPlayerResponse( gl, hl, videoId, cpn )
-                    else
-                        YoutubeStreamHelper.getIosPlayerResponse( gl, hl, videoId, cpn, null )
-
-                    parsePlayerResponseViaReflection( jsonResponse )
-                } else
-                    getPlayerResponse( videoId, CONTEXTS[index], signatureTimestamp )
-                val format = extractFormat( response.streamingData, audioQualityFormat, connectionMetered )
-                val streamUrl = extractStreamUrl( videoId, format )
-
-                if( validateStreamUrl( streamUrl ) ) {
-                    lastException = null
-
-                    playableFormat = format
-                    playableUrl = streamUrl
-                    expiredInSeconds = response.streamingData?.expiresInSeconds?.toLong() ?: 0L
-
-                    break
-                }
-            } catch ( e: Exception ) {
-                if( e is MissingFieldException )
-                    e.message?.also( Toaster::e )
-
-                lastException = e
-                Timber.tag("dataspec").e( e, "Client returns error ${e.message}" )
-            }
-
-            // **IMPORTANT**: Missing this causes infinite loop
-            index++
-        }
-
-        if( lastException != null ) throw lastException
-        requireNotNull( playableUrl ) {
-            Timber.tag("dataspec").e("lastException is `null`, so does `playableUrl`")
-        }
-
-        playableFormat?.also {
-            upsertSongFormat( videoId, it )
-        }
-
-        length = playableFormat?.contentLength?.toLong() ?: CHUNK_LENGTH
-
-        val expiredTimeMillis = expiredInSeconds.seconds.inWholeMilliseconds + System.currentTimeMillis()
-        cachedStreamUrl[videoId] = Cache(cpn, length, playableUrl, expiredTimeMillis)
+        cachedStreamUrl[videoId] = getPlayerResponse( videoId, audioQualityFormat, connectionMetered )
+        cache = cachedStreamUrl[videoId]!!
     }
 
-    YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, playableUrl )
+    YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, cache.playableUrl )
                                   .toUri()
                                   .buildUpon()
-                                  .appendQueryParameter( "range", "$uriPositionOffset-$length" )
-                                  .appendQueryParameter( "cpn", cpn )
+                                  .appendQueryParameter( "range", "$uriPositionOffset-${cache.contentLength}" )
+                                  .appendQueryParameter( "cpn", cache.cpn )
                                   .build()
                                   .let( ::withUri )
                                   .subrange( uriPositionOffset, C.LENGTH_UNSET.toLong() )
@@ -426,7 +426,7 @@ fun MyDownloadHelper.createDataSourceFactory( context: Context ): DataSource.Fac
     }
 //</editor-fold>
 
-data class Cache(
+private data class Cache(
     val cpn: String,
     val contentLength: Long,
     val playableUrl: String,
