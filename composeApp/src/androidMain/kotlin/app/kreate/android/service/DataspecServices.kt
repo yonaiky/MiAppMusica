@@ -17,6 +17,7 @@ import app.kreate.android.R
 import app.kreate.android.utils.CharUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
 import com.grack.nanojson.JsonWriter
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.head
 import io.ktor.http.URLBuilder
 import io.ktor.http.parseQueryString
@@ -32,6 +33,7 @@ import it.fast4x.rimusic.service.UnplayableException
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.utils.isConnectionMetered
 import it.fast4x.rimusic.utils.isNetworkAvailable
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -49,6 +51,7 @@ import org.schabi.newpipe.extractor.localization.Localization
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
 import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 import timber.log.Timber
+import javax.security.auth.login.LoginException
 import kotlin.time.Duration.Companion.seconds
 import me.knighthat.innertube.Innertube as NewInnertube
 import me.knighthat.innertube.request.body.Context as InnertubeContext
@@ -100,11 +103,19 @@ private fun upsertSongInfo( videoId: String ) {       // Use this to prevent sus
     // Skip adding if it's just added in previous call
     if( videoId == justInserted || !isNetworkAvailable( appContext() ) ) return
 
+    Timber.tag( LOG_TAG ).v( "fetching and upserting $videoId's information to the database" )
+
     databaseWorker = CoroutineScope(Dispatchers.IO ).launch {
         NewInnertube.songBasicInfo( videoId, CURRENT_LOCALE )
-                    .onSuccess{ Database.upsert( it ) }
+                    .onSuccess{
+                        Timber.tag( LOG_TAG ).v( "$videoId's information successfully found and parsed" )
+
+                        Database.upsert( it )
+
+                        Timber.tag( LOG_TAG ).d( "$videoId's information successfully upserted to the database" )
+                    }
                     .onFailure {
-                        it.printStackTrace()
+                        Timber.tag( LOG_TAG ).e( it, "failed to upsert $videoId's information to database" )
 
                         val message= it.message ?: appContext().getString( R.string.failed_to_fetch_original_property )
                         Toaster.e( message )
@@ -120,6 +131,8 @@ private fun upsertSongInfo( videoId: String ) {       // Use this to prevent sus
 private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingData.Format ) {
     // Skip adding if it's just added in previous call
     if( videoId == justInserted ) return
+
+    Timber.tag( LOG_TAG ).v( "upserting format ${format.itag} of song $videoId to the database" )
 
     CoroutineScope(Dispatchers.IO ).launch {
         // Wait until this job is finish to make sure song's info
@@ -137,6 +150,8 @@ private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingD
                 format.loudnessDb
             ))
 
+            Timber.tag( LOG_TAG ).d( "$videoId is successfully upserted to the database" )
+
             // Format must be added successfully before setting variable
             justInserted = videoId
         }
@@ -153,6 +168,8 @@ private fun extractFormat(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): PlayerResponse.StreamingData.Format {
+    Timber.tag( LOG_TAG ).v( "extracting format with quality $audioQualityFormat and metered connection: $connectionMetered")
+
     val sortedAudioFormats =
         streamingData?.adaptiveFormats
                      ?.fastFilter {
@@ -171,11 +188,15 @@ private fun extractFormat(
                 sortedAudioFormats[sortedAudioFormats.size / 2]
             else
                 sortedAudioFormats.last()
+    }.also {
+        Timber.tag( LOG_TAG ).d( "extracted format ${it.itag}" )
     }
 }
 
 private fun extractStreamUrl( videoId: String, format: PlayerResponse.StreamingData.Format ): String =
     format.signatureCipher?.let { signatureCipher ->
+        Timber.tag( LOG_TAG ).v( "deobfuscating signature $signatureCipher" )
+
         val (s, sp, url) = with( parseQueryString( signatureCipher ) ) {
             Triple(
                 requireNotNull( this["s"] ) { "missing signature cipher" },
@@ -198,20 +219,22 @@ private fun getSignatureTimestampOrNull( videoId: String ): Int? =
     .getOrNull()
 
 private suspend fun validateStreamUrl( streamUrl: String ): Boolean =
-    try {
-        NetworkService.client
-                      .head( streamUrl )
-                      .status
-                      .value == 200
-    } catch( e: Exception ) {
-        Timber.tag( LOG_TAG ).e( e, "streamUrl is unplayable" )
-        false
-    }
+    NetworkService.client
+                  .head( streamUrl ) {
+                      Timber.tag( LOG_TAG ).v( "Validating `streamUrl`..." )
+
+                      expectSuccess = false
+                  }
+                  .status
+                  .value
+                  .also {
+                      Timber.tag( LOG_TAG ).d( "`streamUrl` returns code $it" )
+                  } == 200
 
 @UnstableApi
 private fun checkPlayabilityStatus( playabilityStatus: PlayerResponse.PlayabilityStatus ) =
     when( playabilityStatus.status ) {
-        "OK"                -> { /* Does nothing */ }
+        "OK"                -> { Timber.tag( LOG_TAG ).d( "`playabilityStatus` is OK" ) }
         "LOGIN_REQUIRED"    -> throw LoginRequiredException(playabilityStatus.reason)
         "UNPLAYABLE"        -> throw UnplayableException(playabilityStatus.reason)
         else                -> throw UnknownException(playabilityStatus.reason)
@@ -289,13 +312,22 @@ private suspend fun getPlayerResponse(
                 break
             }
         } catch ( e: Exception ) {
-            if( e is MissingFieldException )
+            when( e ) {
                 // Only show this exception because this needs update
                 // Other errors might be because of unsuccessful stream extraction
-                e.message?.also( Toaster::e )
+                is MissingFieldException -> e.message?.also( Toaster::e )
+
+                // Must be placed last because most exceptions above are lumped
+                // into this exception in the end. And the message is vague
+                is UnplayableException,
+                is LoginException,
+                is NullPointerException,            // When a component of cipherSignature wasn't found
+                is CancellationException -> e.message?.also { Timber.tag( LOG_TAG ).i( it ) }
+
+                else -> Timber.tag( LOG_TAG ).e( e, "getPlayerResponse returns error" )
+            }
 
             lastException = e
-            Timber.tag( LOG_TAG ).e( e, "getPlayerResponse returns error" )
         }
 
         // **IMPORTANT**: Missing this causes infinite loop
@@ -305,7 +337,7 @@ private suspend fun getPlayerResponse(
     if( lastException != null ) throw lastException
 
     return requireNotNull( cache ) {
-        Timber.tag( LOG_TAG ).e( "`streamUrl` is verified but `cache` is still null" )
+        "`streamUrl` is verified but `cache` is still null"
     }
 }
 //</editor-fold>
