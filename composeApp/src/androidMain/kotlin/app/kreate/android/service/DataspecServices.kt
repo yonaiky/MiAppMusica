@@ -2,6 +2,7 @@ package app.kreate.android.service
 
 import android.content.ContentResolver
 import android.content.Context
+import androidx.compose.ui.util.fastFilter
 import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DataSource
@@ -11,14 +12,11 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import app.kreate.android.R
-import app.kreate.android.network.innertube.Store
-import app.kreate.android.utils.CharUtils
 import app.kreate.android.utils.innertube.CURRENT_LOCALE
-import com.grack.nanojson.JsonWriter
-import io.ktor.client.statement.bodyAsText
-import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.Innertube.createPoTokenChallenge
-import it.fast4x.innertube.models.PlayerResponse
+import io.ktor.client.request.get
+import io.ktor.http.HttpMethod
+import io.ktor.http.URLBuilder
+import io.ktor.http.parseQueryString
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AudioQualityFormat
@@ -36,15 +34,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 import me.knighthat.innertube.Endpoints
+import me.knighthat.innertube.response.PlayerResponse
 import me.knighthat.utils.Toaster
-import org.schabi.newpipe.extractor.localization.ContentCountry
-import org.schabi.newpipe.extractor.localization.Localization
-import org.schabi.newpipe.extractor.services.youtube.PoTokenResult
+import org.schabi.newpipe.extractor.exceptions.ParsingException
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
-import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
+import timber.log.Timber
 import me.knighthat.innertube.Innertube as NewInnertube
+import me.knighthat.innertube.request.body.Context as InnertubeContext
 
 private const val CHUNK_LENGTH = 512 * 1024L     // 512Kb
 
@@ -113,11 +112,11 @@ private fun upsertSongFormat( videoId: String, format: PlayerResponse.StreamingD
         Database.asyncTransaction {
             formatTable.insertIgnore(Format(
                 videoId,
-                format.itag,
+                format.itag.toInt(),
                 format.mimeType,
                 format.bitrate.toLong(),
-                format.contentLength,
-                format.lastModified,
+                format.contentLength?.toLong(),
+                format.lastModified.toLong(),
                 format.loudnessDb?.toFloat()
             ))
 
@@ -132,14 +131,6 @@ private fun upstreamDatasourceFactory( context: Context ): DataSource.Factory =
     DefaultDataSource.Factory( context, KtorHttpDatasource.Factory(NetworkService.client ) )
 
 //<editor-fold defaultstate="collapsed" desc="Extractors">
-private val jsonParser =
-    Json {
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        useArrayPolymorphism = true
-        explicitNulls = false
-    }
-
 @UnstableApi
 private fun checkPlayability( playabilityStatus: PlayerResponse.PlayabilityStatus? ) {
     if( playabilityStatus?.status != "OK" )
@@ -154,92 +145,134 @@ private fun extractFormat(
     streamingData: PlayerResponse.StreamingData?,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
-): PlayerResponse.StreamingData.Format? =
-    when (audioQualityFormat) {
-        AudioQualityFormat.High -> streamingData?.highestQualityFormat
-        AudioQualityFormat.Medium -> streamingData?.mediumQualityFormat
-        AudioQualityFormat.Low -> streamingData?.lowestQualityFormat
+): PlayerResponse.StreamingData.Format? {
+    val sortedAudioFormats =
+        streamingData?.adaptiveFormats
+                     ?.fastFilter {
+                         it.mimeType.startsWith( "audio" )
+                     }
+                     ?.sortedBy(PlayerResponse.StreamingData.Format::bitrate )
+                     .orEmpty()
+    check( sortedAudioFormats.isNotEmpty() )
+
+    return when( audioQualityFormat ) {
+        AudioQualityFormat.High -> sortedAudioFormats.last()
+        AudioQualityFormat.Medium -> sortedAudioFormats[sortedAudioFormats.size / 2]
+        AudioQualityFormat.Low -> sortedAudioFormats.first()
         AudioQualityFormat.Auto ->
             if (connectionMetered && isConnectionMeteredEnabled())
-                streamingData?.mediumQualityFormat
+                sortedAudioFormats[sortedAudioFormats.size / 2]
             else
-                streamingData?.autoMaxQualityFormat
+                sortedAudioFormats.last()
     }
-
-fun getAndroidResponse( videoId: String, cpn: String ): PlayerResponse {
-    val response = YoutubeStreamHelper.getAndroidReelPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn )
-    return JsonWriter.string( response )
-                     .let( jsonParser::decodeFromString )
 }
 
-private fun String.getPoToken(): String? =
-    this.replace("[", "")
-        .replace("]", "")
-        .split(",")
-        .findLast { it.contains("\"") }
-        ?.replace("\"", "")
+private fun getSignatureTimestampOrNull( videoId: String ): Int? =
+    runCatching {
+        YoutubeJavaScriptPlayerManager.getSignatureTimestamp(videoId)
+    }
+    .onSuccess { Timber.tag("dataspec").d("Signature timestamp obtained: $it") }
+    .onFailure { Timber.tag("dataspec").e(it, "Failed to get signature timestamp") }
+    .getOrNull()
 
-private suspend fun generateIosPoToken() =
-    createPoTokenChallenge().bodyAsText()
-        .let { challenge ->
-            val listChallenge = jsonParser.decodeFromString<List<String?>>(challenge)
-            listChallenge.filterIsInstance<String>().firstOrNull()
-        }?.let { poTokenChallenge ->
-            Innertube.generatePoToken(poTokenChallenge)
-                .bodyAsText()
-                .getPoToken()
-        }
+private val CONTEXTS = arrayOf(
+    InnertubeContext.WEB_REMIX_DEFAULT,
+    InnertubeContext.TVHTML5_EMBEDDED_PLAYER_DEFAULT,
+    InnertubeContext.IOS_DEFAULT,
+    InnertubeContext.ANDROID_DEFAULT,
+    InnertubeContext.ANDROID_VR_DEFAULT,
+    InnertubeContext.WEB_DEFAULT
+)
 
-suspend fun getIosResponse(videoId: String, cpn: String ): PlayerResponse {
-    val visitorData = Store.getIosVisitorData()
-    val playerRequestToken = generateIosPoToken().orEmpty()
-    val poTokenResult = PoTokenResult(visitorData, playerRequestToken, null )
-    val response = YoutubeStreamHelper.getIosPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn, poTokenResult )
-
-    return JsonWriter.string( response )
-                     .let( jsonParser::decodeFromString )
-}
+private suspend fun validateStreamUrl( streamUrl: String ): Boolean =
+    try {
+        NetworkService.client
+                      .get( streamUrl ) { method = HttpMethod.Head }
+                      .status
+                      .value == 200
+    } catch( e: Exception ) {
+        Timber.tag("dataspec").e(e, "streamUrl is unplayable")
+        false
+    }
 //</editor-fold>
 
+@ExperimentalSerializationApi
 @UnstableApi
 fun DataSpec.process(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): DataSpec = runBlocking( Dispatchers.IO ) {
-    val cpn = CharUtils.randomString( 16 )
-    val playerResponse =
+    val signatureTimestamp = getSignatureTimestampOrNull( videoId )
+    var lastException: Throwable? = null
+    var playableFormat: PlayerResponse.StreamingData.Format? = null
+    var playableUrl: String? = null
+
+    var index = 0
+    while( index < CONTEXTS.size ) {
+        val context = CONTEXTS[index]
         try {
-            getAndroidResponse( videoId, cpn )
-        } catch ( e: Exception ) {
-            when( e ) {
-                is LoginRequiredException,
-                is UnplayableException -> getIosResponse( videoId, cpn )
-                else -> throw e
+            val response = NewInnertube.player(
+                songId = videoId,
+                context = context,
+                localization = CURRENT_LOCALE,
+                signatureTimestamp = signatureTimestamp,
+                visitorData = context.client.visitorData
+            ).getOrThrow()
+
+            checkPlayability( response.playabilityStatus )
+
+            val format = requireNotNull(
+                extractFormat( response.streamingData, audioQualityFormat, connectionMetered )
+            )
+            val streamUrl = format.signatureCipher?.let { signatureCipher ->
+                val (s, sp, url) = with( parseQueryString( signatureCipher ) ) {
+                    Triple(
+                        get("s") ?: throw ParsingException("Could not parse cipher signature"),
+                        get("sp") ?: throw ParsingException("Could not parse cipher signature parameter"),
+                        get("url")?.let( ::URLBuilder ) ?: throw ParsingException("Could not parse cipher url")
+                    )
+                }
+                url.parameters[sp] = YoutubeJavaScriptPlayerManager.deobfuscateSignature( videoId, s )
+                url.toString()
+            } ?: format.url!!
+
+            if( validateStreamUrl( streamUrl ) ) {
+                lastException = null
+
+                playableFormat = format
+                playableUrl = streamUrl
+
+                break
             }
+        } catch ( e: Exception ) {
+            if( e is MissingFieldException )
+                e.message?.also( Toaster::e )
+
+            lastException = e
+            Timber.tag("dataspec").e( e, "Client ${context.client.clientName} returns error ${e.message}" )
         }
 
-    checkPlayability( playerResponse.playabilityStatus )
+        index++
+    }
 
-    val format = extractFormat(
-        playerResponse.streamingData,
-        audioQualityFormat,
-        connectionMetered
-    )
+    if( lastException != null ) throw lastException
+    requireNotNull( playableUrl ) {
+        Timber.tag("dataspec").e("lastException is `null`, so does `playableUrl`")
+    }
 
-    upsertSongFormat( videoId, format!! )
+    playableFormat?.also {
+        upsertSongFormat( videoId, it )
+    }
 
-    YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, format.url.orEmpty() )
+    YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, playableUrl )
                                   .toUri()
-                                  .buildUpon()
-                                  .appendQueryParameter( "range", "$uriPositionOffset-${format.contentLength ?: CHUNK_LENGTH}" )
-                                  .appendQueryParameter( "cpn", cpn )
-                                  .build()
                                   .let( ::withUri )
-                                  .subrange( uriPositionOffset )
+                                  .subrange( uriPositionOffset, playableFormat?.contentLength?.toLong() ?: CHUNK_LENGTH )
 }
 
 //<editor-fold defaultstate="collapsed" desc="Data source factories">
+@OptIn(ExperimentalSerializationApi::class)
 @UnstableApi
 fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.Factory =
     ResolvingDataSource.Factory(
@@ -277,6 +310,7 @@ fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.
             dataSpec.process( videoId, audioQualityFormat, applicationContext.isConnectionMetered() )
     }
 
+@OptIn(ExperimentalSerializationApi::class)
 @UnstableApi
 fun MyDownloadHelper.createDataSourceFactory( context: Context ): DataSource.Factory =
     ResolvingDataSource.Factory(

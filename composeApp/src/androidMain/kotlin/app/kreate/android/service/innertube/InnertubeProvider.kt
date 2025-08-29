@@ -74,8 +74,15 @@ class InnertubeProvider: Innertube.Provider {
 
             headers {
                 append( "X-Goog-Api-Format-Version", "1" )
-                append( "X-Origin", Constants.YOUTUBE_MUSIC_URL )
-                append( "Referer", Constants.YOUTUBE_MUSIC_URL )
+                append(
+                    "X-Origin",
+                    request.dataToSend?.context?.client?.originalUrl
+                        ?: "${url.protocol.name}://${url.host}" )
+                append(
+                    "Referer",
+                    request.dataToSend?.context?.client?.referer
+                        ?: "${url.protocol.name}://${url.host}"
+                )
 
                 val context = request.dataToSend?.context ?: Context.WEB_REMIX_DEFAULT
 
