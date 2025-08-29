@@ -48,6 +48,7 @@ import org.schabi.newpipe.extractor.localization.Localization
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
 import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 import timber.log.Timber
+import kotlin.time.Duration.Companion.seconds
 import me.knighthat.innertube.Innertube as NewInnertube
 import me.knighthat.innertube.request.body.Context as InnertubeContext
 
@@ -254,6 +255,8 @@ private val CONTEXTS = arrayOf(
     InnertubeContext.WEB_DEFAULT
 )
 
+private val cachedStreamUrl = mutableMapOf<String, Cache>()
+
 @ExperimentalSerializationApi
 @UnstableApi
 fun DataSpec.process(
@@ -261,61 +264,91 @@ fun DataSpec.process(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): DataSpec = runBlocking( Dispatchers.IO ) {
-    val signatureTimestamp = getSignatureTimestampOrNull( videoId )
-    val cpn = CharUtils.randomString( 12 )
-    var lastException: Throwable? = null
-    var playableFormat: PlayerResponse.StreamingData.Format? = null
+    val cpn: String
     var playableUrl: String? = null
+    var length: Long
 
-    var index = 0
-    while( index < CONTEXTS.size + 2 ) {
-        try {
-            val response = if( index > CONTEXTS.lastIndex ) {
-                val (gl, hl) = with( CURRENT_LOCALE ) {
-                    ContentCountry(regionCode) to Localization(languageCode)
-                }
+    if( cachedStreamUrl.contains( videoId ) ) {
+        Timber.tag("dataspec").d("Found $videoId in cachedStreamUrl")
 
-                val jsonResponse = if( index == CONTEXTS.lastIndex + 1 )
-                    YoutubeStreamHelper.getAndroidReelPlayerResponse( gl, hl, videoId, cpn )
-                else
-                    YoutubeStreamHelper.getIosPlayerResponse( gl, hl, videoId, cpn, null )
+        val cache = cachedStreamUrl[videoId]!!
 
-                parsePlayerResponseViaReflection( jsonResponse )
-            } else
-                getPlayerResponse( videoId, CONTEXTS[index], signatureTimestamp )
-            val format = extractFormat( response.streamingData, audioQualityFormat, connectionMetered )
-            val streamUrl = extractStreamUrl( videoId, format )
+        // Handle expired url with 30secs offset
+        if( cache.expiredTimeMillis - 30.seconds.inWholeMilliseconds <= System.currentTimeMillis() ) {
+            Timber.tag("dataspec").d("url for $videoId has expired!")
 
-            if( validateStreamUrl( streamUrl ) ) {
-                lastException = null
+            cachedStreamUrl.remove( videoId )
 
-                playableFormat = format
-                playableUrl = streamUrl
-
-                break
-            }
-        } catch ( e: Exception ) {
-            if( e is MissingFieldException )
-                e.message?.also( Toaster::e )
-
-            lastException = e
-            Timber.tag("dataspec").e( e, "Client returns error ${e.message}" )
+            return@runBlocking process( videoId, audioQualityFormat, connectionMetered )
         }
 
-        // **IMPORTANT**: Missing this causes infinite loop
-        index++
+        cpn = cache.cpn
+        playableUrl = cache.playableUrl
+        length = cache.contentLength
+    } else {
+        Timber.tag("dataspec").d("url for $videoId isn't stored! Fetching new url")
+
+        cpn = CharUtils.randomString( 12 )
+        val signatureTimestamp = getSignatureTimestampOrNull( videoId )
+        var lastException: Throwable? = null
+        var playableFormat: PlayerResponse.StreamingData.Format? = null
+        var expiredInSeconds = 0L
+
+        var index = 0
+        while( index < CONTEXTS.size + 2 ) {
+            try {
+                val response = if( index > CONTEXTS.lastIndex ) {
+                    val (gl, hl) = with( CURRENT_LOCALE ) {
+                        ContentCountry(regionCode) to Localization(languageCode)
+                    }
+
+                    val jsonResponse = if( index == CONTEXTS.lastIndex + 1 )
+                        YoutubeStreamHelper.getAndroidReelPlayerResponse( gl, hl, videoId, cpn )
+                    else
+                        YoutubeStreamHelper.getIosPlayerResponse( gl, hl, videoId, cpn, null )
+
+                    parsePlayerResponseViaReflection( jsonResponse )
+                } else
+                    getPlayerResponse( videoId, CONTEXTS[index], signatureTimestamp )
+                val format = extractFormat( response.streamingData, audioQualityFormat, connectionMetered )
+                val streamUrl = extractStreamUrl( videoId, format )
+
+                if( validateStreamUrl( streamUrl ) ) {
+                    lastException = null
+
+                    playableFormat = format
+                    playableUrl = streamUrl
+                    expiredInSeconds = response.streamingData?.expiresInSeconds?.toLong() ?: 0L
+
+                    break
+                }
+            } catch ( e: Exception ) {
+                if( e is MissingFieldException )
+                    e.message?.also( Toaster::e )
+
+                lastException = e
+                Timber.tag("dataspec").e( e, "Client returns error ${e.message}" )
+            }
+
+            // **IMPORTANT**: Missing this causes infinite loop
+            index++
+        }
+
+        if( lastException != null ) throw lastException
+        requireNotNull( playableUrl ) {
+            Timber.tag("dataspec").e("lastException is `null`, so does `playableUrl`")
+        }
+
+        playableFormat?.also {
+            upsertSongFormat( videoId, it )
+        }
+
+        length = playableFormat?.contentLength?.toLong() ?: CHUNK_LENGTH
+
+        val expiredTimeMillis = expiredInSeconds.seconds.inWholeMilliseconds + System.currentTimeMillis()
+        cachedStreamUrl[videoId] = Cache(cpn, length, playableUrl, expiredTimeMillis)
     }
 
-    if( lastException != null ) throw lastException
-    requireNotNull( playableUrl ) {
-        Timber.tag("dataspec").e("lastException is `null`, so does `playableUrl`")
-    }
-
-    playableFormat?.also {
-        upsertSongFormat( videoId, it )
-    }
-
-    val length = playableFormat?.contentLength?.toLong() ?: CHUNK_LENGTH
     YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, playableUrl )
                                   .toUri()
                                   .buildUpon()
@@ -392,3 +425,10 @@ fun MyDownloadHelper.createDataSourceFactory( context: Context ): DataSource.Fac
             dataSpec.process( videoId, audioQualityFormat, context.isConnectionMetered() )
     }
 //</editor-fold>
+
+data class Cache(
+    val cpn: String,
+    val contentLength: Long,
+    val playableUrl: String,
+    val expiredTimeMillis: Long
+)
