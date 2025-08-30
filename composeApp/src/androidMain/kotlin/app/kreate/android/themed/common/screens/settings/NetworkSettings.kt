@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
 import app.kreate.android.R
+import app.kreate.android.service.NetworkService
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.animatedEntry
@@ -26,7 +27,11 @@ import app.kreate.android.themed.common.component.settings.header
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.ui.styling.Dimensions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.knighthat.component.dialog.InputDialogConstraints
+import me.knighthat.utils.Toaster
 import java.net.Proxy
 
 @Composable
@@ -99,6 +104,17 @@ fun NetworkSettings( paddingValues: PaddingValues ) {
                             titleId = R.string.proxy_port,
                             constraint = InputDialogConstraints.POSITIVE_INTEGER,
                             keyboardOption = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+
+                    if( search appearsIn R.string.setting_entry_test_proxy )
+                        SettingComponents.Text(
+                            title = stringResource( R.string.setting_entry_test_proxy ),
+                            onClick = {
+                                CoroutineScope( Dispatchers.IO ).launch {
+                                    if( NetworkService.verifyProxy(NetworkService.proxy ) )
+                                        Toaster.s( R.string.info_proxy_verified )
+                                }
+                            }
                         )
                 }
             }

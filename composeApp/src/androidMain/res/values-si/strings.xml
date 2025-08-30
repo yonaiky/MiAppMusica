@@ -814,4 +814,6 @@ CC-BY-SA 3.0</string>
     <string name="settings_entry_runtime_log_max_size_per_file">Max size per file</string>
     <string name="setting_description_runtime_log_max_size_per_file">Must be at least %s before rolling over</string>
     <string name="setting_entry_sync_quotes">Sync \"%s\"</string>
+    <string name="setting_entry_test_proxy">Test proxy</string>
+    <string name="info_proxy_verified">Proxy is correctly configured</string>
 </resources>
