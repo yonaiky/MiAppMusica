@@ -162,7 +162,7 @@ fun DiscordLoginAndGetToken( onDone: () -> Unit ) {
 //<editor-fold desc="Awesome adaptation to make song's thumbnail to show up in RPC. Thanks to NEVARLeVrai">
 // https://github.com/NEVARLeVrai/N-Zik
 private const val APPLICATION_ID = "1370148610158759966"
-private const val TEMP_FILE_HOST = "https://litterbox.catbox.moe/resources/internals/api.php "
+private const val TEMP_FILE_HOST = "https://litterbox.catbox.moe/resources/internals/api.php"
 private const val MAX_DIMENSION = 1024                           // Per Discord's guidelines
 private const val MAX_FILE_SIZE_BYTES = 2L * 1024 * 1024     // 2 MB in bytes
 
