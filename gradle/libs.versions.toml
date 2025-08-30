@@ -46,10 +46,6 @@ license-report = "2.9"
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "kotlinxCoroutines" }
 
-# Compose
-# Used by built-in game(s)
-compose-runtime-livedata = {  group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose" }
-
 # Room
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }

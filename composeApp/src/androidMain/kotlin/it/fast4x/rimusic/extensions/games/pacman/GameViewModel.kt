@@ -3,12 +3,15 @@ package it.fast4x.rimusic.extensions.games.pacman
 import android.util.Log
 import android.util.Range
 import androidx.compose.runtime.MutableState
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import it.fast4x.rimusic.extensions.games.pacman.utils.GameConstants.incrementValue
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
 class GameViewModel : ViewModel() {
 
     private val logTag = "GameViewModel"
@@ -25,15 +28,13 @@ class GameViewModel : ViewModel() {
          when going down = 100f
          when going up = 280f
           */
-    private var _characterStartAngle = MutableLiveData(25f)
-    val characterStartAngle: LiveData<Float>
-        get() = _characterStartAngle
+    var characterStartAngle by mutableFloatStateOf( 25f )
 
 
     // handle presses
     fun rightPress(characterXOffset: MutableState<Float>, characterYOffset: MutableState<Float>) {
         rightPress = true
-        _characterStartAngle.postValue(25f) // change direction character is facing
+        characterStartAngle = 25f       // change direction character is facing
         viewModelScope.launch {
             while (rightPress) {
                 delay(500)
@@ -72,7 +73,7 @@ class GameViewModel : ViewModel() {
 
     fun leftPress(characterXOffset: MutableState<Float>, characterYOffset: MutableState<Float>) {
         leftPress = true
-        _characterStartAngle.postValue(200f) // change direction character is facing
+        characterStartAngle = 200f          // change direction character is facing
         viewModelScope.launch {
             while (leftPress) {
                 delay(500)
@@ -111,7 +112,7 @@ class GameViewModel : ViewModel() {
 
     fun upPress(characterYOffset: MutableState<Float>, characterXOffset: MutableState<Float>) {
         upPress = true
-        _characterStartAngle.postValue(280f) // change direction character is facing
+        characterStartAngle = 280f       // change direction character is facing
         viewModelScope.launch {
             while (upPress) {
                 delay(500)
@@ -146,7 +147,7 @@ class GameViewModel : ViewModel() {
 
     fun downPress(characterYOffset: MutableState<Float>, characterXOffset: MutableState<Float>) {
         downPress = true
-        _characterStartAngle.postValue(100f) // change direction character is facing
+        characterStartAngle = 100f       // change direction character is facing
         viewModelScope.launch {
             while (downPress) {
                 delay(500)

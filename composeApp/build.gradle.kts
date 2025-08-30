@@ -60,8 +60,6 @@ kotlin {
             implementation(libs.nanojson)
             implementation(libs.androidx.webkit)
 
-            // Related to built-in game, maybe removed in future?
-            implementation(libs.compose.runtime.livedata)
             implementation( libs.androidx.glance.widgets )
             implementation( libs.androidx.constraintlayout )
 

@@ -33,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -142,8 +141,6 @@ fun GameBorder(
     orangeEnemyDrawable: Int,
     reverseEnemyDrawable: Int
 ) {
-    val characterStartAngle by gameViewModel.characterStartAngle.observeAsState()
-
     FullScreenDialog(showDialog = gameOverDialogState.shouldShow, gameOverDialogState.message.value)
 
     Box(
@@ -206,7 +203,7 @@ fun GameBorder(
             // character
             drawArc(
                 color = Color.Yellow,
-                startAngle = characterStartAngle ?: 30f,
+                startAngle = gameViewModel.characterStartAngle,
                 sweepAngle = if (gameStatsModel.isGameStarted.value) mouthAnimation else 360f * animateCharacterSweepAngle.value,
                 useCenter = true,
                 topLeft = Offset(
@@ -225,7 +222,7 @@ fun GameBorder(
             for (i in pacFoodState.foodList) {
                 drawArc(
                     color = Color.Yellow,
-                    startAngle = characterStartAngle ?: 30f,
+                    startAngle = gameViewModel.characterStartAngle,
                     sweepAngle = 360f,
                     useCenter = true,
                     topLeft = Offset(i.xPos.toFloat(), i.yPos.toFloat()),
@@ -242,7 +239,7 @@ fun GameBorder(
             for(i in pacFoodState.bonusFoodList){
                 drawArc(
                     color = PacmanOrange,
-                    startAngle = characterStartAngle ?: 30f,
+                    startAngle = gameViewModel.characterStartAngle,
                     sweepAngle = 360f,
                     useCenter = true,
                     topLeft = Offset(i.xPos.toFloat(), i.yPos.toFloat()),
