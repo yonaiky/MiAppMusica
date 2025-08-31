@@ -9,7 +9,7 @@
         <item quantity="other">%d sorğu</item>
     </plurals>
     <plurals name="file">
-        <item quantity="one">%d file</item>
-        <item quantity="other">%d file</item>
+        <item quantity="one">%d fayl</item>
+        <item quantity="other">%d fayl</item>
     </plurals>
 </resources>
