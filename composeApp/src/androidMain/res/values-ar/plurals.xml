@@ -24,12 +24,4 @@
         <item quantity="many">%d ملف</item>
         <item quantity="other">%d ملف</item>
     </plurals>
-    <plurals name="file">
-        <item quantity="one">%d file</item>
-        <item quantity="zero">%d file</item>
-        <item quantity="two">%d file</item>
-        <item quantity="many">%d file</item>
-        <item quantity="other">%d file</item>
-        <item quantity="few">%d file</item>
-    </plurals>
 </resources>

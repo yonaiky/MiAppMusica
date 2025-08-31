@@ -12,9 +12,4 @@
         <item quantity="one">%d archivo</item>
         <item quantity="other">%d archivos</item>
     </plurals>
-    <plurals name="file">
-        <item quantity="one">%d file</item>
-        <item quantity="many">%d file</item>
-        <item quantity="other">%d file</item>
-    </plurals>
 </resources>
