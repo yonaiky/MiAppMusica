@@ -6,34 +6,33 @@
   <defs
      id="defs1">
     <linearGradient
-       id="linearGradient2">
+       id="linearGradient5">
       <stop
          style="stop-color:#f468b9;stop-opacity:1;"
          offset="0"
-         id="stop2" />
+         id="stop5" />
       <stop
          style="stop-color:#2314c1;stop-opacity:1;"
          offset="1"
-         id="stop3" />
+         id="stop6" />
     </linearGradient>
     <linearGradient
-       xlink:href="#linearGradient2"
-       id="linearGradient3"
-       x1="20.122026"
-       y1="41.177303"
-       x2="71.90641"
-       y2="77.437119"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.1429326,0,0,1.0848912,1.4088566,-10.341878)" />
+       xlink:href="#linearGradient5"
+       id="linearGradient6"
+       x1="-3.3406432"
+       y1="13.849649"
+       x2="111.34064"
+       y2="94.150352"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <g
      id="layer1">
-    <ellipse
-       style="fill:none;fill-rule:evenodd;stroke:url(#linearGradient3);stroke-width:8.90827;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:normal"
-       id="path2"
-       cx="54"
-       cy="54"
-       rx="31.545862"
-       ry="31.545864" />
+    <rect
+       style="fill:url(#linearGradient6);fill-rule:evenodd;stroke:none;stroke-width:32;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+       id="rect1"
+       width="108"
+       height="108"
+       x="0"
+       y="0" />
   </g>
 </svg>
