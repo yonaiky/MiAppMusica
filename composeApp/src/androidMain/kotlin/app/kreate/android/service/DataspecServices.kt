@@ -57,7 +57,7 @@ import me.knighthat.innertube.Innertube as NewInnertube
 import me.knighthat.innertube.request.body.Context as InnertubeContext
 
 private const val LOG_TAG = "dataspec"
-private const val CHUNK_LENGTH = 512 * 1024L     // 512Kb
+private const val CHUNK_LENGTH = 128 * 1024L     // 128Kb
 
 /**
  * Acts as a lock to keep [upsertSongFormat] from starting before
