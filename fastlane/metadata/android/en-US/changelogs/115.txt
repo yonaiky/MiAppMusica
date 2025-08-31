@@ -1,0 +1,18 @@
+Added:
+- New crash handler system
+- Runtime logging (enabled in settings) with many fine-tuning options
+- Synced albums, artists, playlists from YT account in respected tabs
+- New playback implementation to bypass blocks
+- Advanced caching to reduce request to YT server
+- Error detection to ignore and refetch corrupted chunk in cache
+- Square icon
+
+Changed:
+- Swipeable changelogs
+- Exported settings file extension to csv
+
+Fixed:
+- Changing certain settings caused the screen to jump to top
+- "System language" unchanged when new language is selected
+- Localization of Hebrew and Indonesian failed to apply
+- App refused to start when Proxy is in place
