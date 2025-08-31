@@ -437,7 +437,7 @@ fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.
         return@Factory if( isLocal || isCached() || isDownloaded() ){
             Timber.tag( LOG_TAG ).d( "$videoId exists in cache, proceeding to use from cache" )
             // No need to fetch online for already cached data
-            dataSpec.subrange( dataSpec.uriPositionOffset, CHUNK_LENGTH )
+            dataSpec.subrange( dataSpec.uriPositionOffset, C.LENGTH_UNSET.toLong() )
         }else
             dataSpec.process( videoId, audioQualityFormat, applicationContext.isConnectionMetered() )
     }
@@ -465,7 +465,7 @@ fun MyDownloadHelper.createDataSourceFactory( context: Context ): DataSource.Fac
         return@Factory if( isDownloaded ){
             Timber.tag( LOG_TAG ).d( "$videoId is downloaded, proceeding to use from cache" )
             // No need to fetch online for already cached data
-            dataSpec.subrange( dataSpec.uriPositionOffset, CHUNK_LENGTH )
+            dataSpec.subrange( dataSpec.uriPositionOffset, C.LENGTH_UNSET.toLong() )
         }else
             dataSpec.process( videoId, audioQualityFormat, context.isConnectionMetered() )
     }
