@@ -1,0 +1,2 @@
+Fixed:
+- Crash on startup on some devices
