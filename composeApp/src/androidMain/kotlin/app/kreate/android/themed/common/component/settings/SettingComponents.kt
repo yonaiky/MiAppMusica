@@ -270,7 +270,21 @@ object SettingComponents {
         trailingContent: @Composable RowScope.() -> Unit = {},
         onValueChanged: (T) -> Unit = {}
     ) =
-        ListEntry( title, getName, preference.value, { preference.getList() }, modifier, subtitle, isEnabled, action, trailingContent, onValueChanged )
+        ListEntry(
+            title = title,
+            getName = getName,
+            initialValue = preference.value,
+            getList = { preference.getList() },
+            modifier = modifier,
+            subtitle = subtitle,
+            isEnabled = isEnabled,
+            action = action,
+            trailingContent = trailingContent,
+            onValueChanged = {
+                preference.value = it
+                onValueChanged( it )
+            }
+        )
 
     @Composable
     inline fun <reified T: Enum<T>> EnumEntry(
