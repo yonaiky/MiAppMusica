@@ -264,7 +264,7 @@ class PlayerServiceModern:
         // throw error because it isn't init yet.
         // Problem can be solved by loading it here
         Preferences.load( this )
-        NewInnertube.client = InnertubeProvider()
+        NewInnertube.setProvider( InnertubeProvider() )
         ImageFactory.init( this )
         NewPipe.init( NewPipeDownloader() )
 

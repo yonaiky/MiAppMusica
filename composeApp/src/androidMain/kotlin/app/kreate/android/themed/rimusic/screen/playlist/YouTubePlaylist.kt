@@ -247,7 +247,7 @@ fun YouTubePlaylist(
                          }
             else if ( playlistPage?.visitorData != null || useLogin )
                 Innertube.playlistContinued(
-                             if( useLogin ) Innertube.client.visitorData else playlistPage!!.visitorData!!,
+                             if( useLogin ) null else playlistPage!!.visitorData!!,
                              it,
                              CURRENT_LOCALE,
                              params,
