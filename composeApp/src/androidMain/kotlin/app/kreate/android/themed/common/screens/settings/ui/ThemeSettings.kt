@@ -285,6 +285,17 @@ fun LazyListScope.themeSettingsSection( search: SettingEntrySearch ) {
         }
     }
     animatedEntry(
+        key = "colorPaletteIsNeitherPureBlackOrModernBlack",
+        visible = Preferences.COLOR_PALETTE.neither( ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ),
+        modifier = Modifier.padding( start = 25.dp )
+    ) {
+        if( search appearsIn R.string.theme_mode )
+            SettingComponents.EnumEntry(
+                titleId = R.string.theme_mode,
+                preference = Preferences.THEME_MODE
+            )
+    }
+    animatedEntry(
         key = "colorPaletteNameIsCustomColor",
         visible = colorPaletteName == ColorPaletteName.CustomColor,
         modifier = Modifier.padding( start = 25.dp )

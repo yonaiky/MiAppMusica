@@ -15,19 +15,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
-import app.kreate.android.themed.common.component.settings.animatedEntry
 import app.kreate.android.themed.common.component.settings.entry
 import app.kreate.android.themed.common.component.settings.header
 import app.kreate.android.themed.common.screens.settings.ui.SwipeActionSettings
 import app.kreate.android.themed.common.screens.settings.ui.themeSettingsSection
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.CarouselSize
-import it.fast4x.rimusic.enums.ColorPaletteName
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.PlayerBackgroundColors
 import it.fast4x.rimusic.enums.PlayerThumbnailSize
@@ -130,17 +127,6 @@ fun UiSettings( paddingValues: PaddingValues ) {
                 }
             }
             themeSettingsSection( search )
-            animatedEntry(
-                key = "colorPaletteIsNeitherPureBlackOrModernBlack",
-                visible = Preferences.COLOR_PALETTE.neither( ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ),
-                modifier = Modifier.padding( start = 25.dp )
-            ) {
-                if( search appearsIn R.string.theme_mode )
-                    SettingComponents.EnumEntry(
-                        titleId = R.string.theme_mode,
-                        preference = Preferences.COLOR_PALETTE
-                    )
-            }
             entry( search, R.string.navigation_bar_position ) {
                 val subtitleId by remember { derivedStateOf {
                     // Use [Preferences] for observable state (because of [derivedStateOf])

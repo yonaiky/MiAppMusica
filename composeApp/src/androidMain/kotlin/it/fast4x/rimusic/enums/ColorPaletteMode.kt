@@ -8,11 +8,11 @@ enum class ColorPaletteMode(
     @field:StringRes override val textId: Int
 ): TextView {
 
-    Light( R.string._light ),
+    Light( R.string.theme_light ),
 
-    Dark( R.string.dark ),
+    Dark( R.string.theme_dark ),
 
-    PitchBlack( R.string.system ),
+    PitchBlack( R.string.theme_pitch_black ),
 
-    System( R.string.theme_mode_pitch_black );
+    System( R.string.theme_system );
 }

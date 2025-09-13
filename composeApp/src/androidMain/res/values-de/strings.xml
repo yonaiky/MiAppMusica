@@ -819,4 +819,8 @@
     <string name="setting_description_cache_location_system">Store both cached and downloaded in the app\'s cache, which can be deleted by clearing the cache in settings</string>
     <string name="setting_description_cache_location_private">Store both cached and downloaded songs in the app\'s private storage, which can only be deleted if the app\'s data is wiped</string>
     <string name="setting_description_cache_location_split">Cached songs live in app\'s cache, and downloaded songs live in app\'s private storage</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_pitch_black">Pitch black</string>
+    <string name="theme_system">System</string>
 </resources>
