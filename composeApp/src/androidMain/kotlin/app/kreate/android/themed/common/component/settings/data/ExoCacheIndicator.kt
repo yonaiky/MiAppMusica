@@ -1,5 +1,6 @@
 package app.kreate.android.themed.common.component.settings.data
 
+import androidx.compose.runtime.getValue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import app.kreate.android.Preferences
@@ -11,7 +12,11 @@ class ExoCacheIndicator(
 ): CacheUsageIndicator() {
 
     override fun updateProgress() {
-        super.progress = cache.cacheSpace.toFloat() / preference.value
+        val maxSize by preference
+        super.progress = if( maxSize == 0L )
+            0f
+        else
+            cache.cacheSpace.toFloat() / maxSize
     }
 
     override fun onConfirm() {
