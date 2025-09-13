@@ -140,8 +140,9 @@ object MyDownloadHelper {
             // check location set by user and return
             // appropriate path with [CACHE_DIRNAME] appended.
             else -> when( Preferences.EXO_CACHE_LOCATION.value ) {
-                ExoPlayerCacheLocation.System  -> context.cacheDir
-                ExoPlayerCacheLocation.Private -> context.filesDir
+                ExoPlayerCacheLocation.System   -> context.cacheDir
+                ExoPlayerCacheLocation.Private,
+                ExoPlayerCacheLocation.SPLIT    -> context.filesDir
             }.resolve( CACHE_DIRNAME )
         }
 

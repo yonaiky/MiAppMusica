@@ -222,8 +222,9 @@ class PlayerServiceModern:
             // check location set by user and return
             // appropriate path with [CACHE_DIRNAME] appended.
             else -> when( Preferences.EXO_CACHE_LOCATION.value ) {
-                ExoPlayerCacheLocation.System  -> cacheDir
-                ExoPlayerCacheLocation.Private -> filesDir
+                ExoPlayerCacheLocation.System,
+                ExoPlayerCacheLocation.SPLIT    -> cacheDir
+                ExoPlayerCacheLocation.Private  -> filesDir
             }.resolve( CACHE_DIRNAME )
         }
 

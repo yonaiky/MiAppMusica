@@ -236,6 +236,14 @@ fun DataSettings( paddingValues: PaddingValues ) {
                     }
                 }
             }
+            entry( search, R.string.set_cache_location ) {
+                SettingComponents.EnumEntry(
+                    preference = Preferences.EXO_CACHE_LOCATION,
+                    title = stringResource( R.string.set_cache_location ),
+                    subtitle = stringResource( Preferences.EXO_CACHE_LOCATION.value.subtitleId ),
+                    action = SettingComponents.Action.RESTART_APP
+                )
+            }
 
             header(
                 titleId = R.string.title_backup_and_restore,
