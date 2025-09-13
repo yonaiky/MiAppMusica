@@ -1,6 +1,11 @@
 package app.kreate.android.themed.common.screens.settings.ui
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
@@ -10,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,7 +25,6 @@ import app.kreate.android.R
 import app.kreate.android.themed.common.component.settings.SettingComponents
 import app.kreate.android.themed.common.component.settings.SettingEntrySearch
 import app.kreate.android.themed.common.component.settings.SettingHeader
-import app.kreate.android.themed.common.component.settings.animatedEntry
 import app.kreate.android.themed.common.component.settings.entry
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.ColorPaletteMode
@@ -284,33 +289,41 @@ fun LazyListScope.themeSettingsSection( search: SettingEntrySearch ) {
                 Preferences.THEME_MODE.value = ColorPaletteMode.System
         }
     }
-    animatedEntry(
-        key = "colorPaletteIsNeitherPureBlackOrModernBlack",
-        visible = Preferences.COLOR_PALETTE.neither( ColorPaletteName.PureBlack, ColorPaletteName.ModernBlack ),
-        modifier = Modifier.padding( start = 25.dp )
-    ) {
-        if( search appearsIn R.string.theme_mode )
-            SettingComponents.EnumEntry(
-                titleId = R.string.theme_mode,
-                preference = Preferences.THEME_MODE
-            )
-    }
-    animatedEntry(
-        key = "colorPaletteNameIsCustomColor",
-        visible = colorPaletteName == ColorPaletteName.CustomColor,
-        modifier = Modifier.padding( start = 25.dp )
-    ) {
-        SettingComponents.ColorPicker(
-            preference = Preferences.CUSTOM_COLOR,
-            titleId = R.string.customcolor,
-            subtitle = stringResource( R.string.restarting_rimusic_is_required )
-        )
-    }
-    animatedEntry(
-        key = "colorPaletteNameIsCustomized",
-        visible = colorPaletteName == ColorPaletteName.Customized,
-        modifier = Modifier.padding( start = 25.dp )
-    ) {
-        IndividualColorSection( search )
+    item {
+        AnimatedContent(
+            targetState = Preferences.COLOR_PALETTE.value,
+            transitionSpec = {
+                expandVertically(
+                    animationSpec = tween(durationMillis = 300, delayMillis = 300),
+                    expandFrom = Alignment.Top
+                ) togetherWith shrinkVertically(
+                    animationSpec = tween(300),
+                    shrinkTowards = Alignment.Top
+                )
+            },
+            modifier = Modifier.padding( start = SettingComponents.CHILDREN_PADDING.dp )
+        ) {
+            when( it ) {
+                ColorPaletteName.PureBlack,
+                ColorPaletteName.ModernBlack -> { /* Does nothing */ }
+
+                ColorPaletteName.Customized -> IndividualColorSection( search )
+
+                ColorPaletteName.CustomColor ->
+                    if( search appearsIn R.string.customcolor )
+                        SettingComponents.ColorPicker(
+                            preference = Preferences.CUSTOM_COLOR,
+                            titleId = R.string.customcolor,
+                            subtitle = stringResource( R.string.restarting_rimusic_is_required )
+                        )
+
+                else ->
+                    if( search appearsIn R.string.theme_mode )
+                        SettingComponents.EnumEntry(
+                            titleId = R.string.theme_mode,
+                            preference = Preferences.THEME_MODE
+                        )
+            }
+        }
     }
 }
