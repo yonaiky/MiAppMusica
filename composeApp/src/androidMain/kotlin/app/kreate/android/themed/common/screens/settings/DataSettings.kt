@@ -151,6 +151,7 @@ fun DataSettings( paddingValues: PaddingValues ) {
                     val subtitle by remember( indicator.progress ) {
                         cacheSubtitle( context, Preferences.IMAGE_CACHE_SIZE, cache::size )
                     }
+                    val maxCacheSize by Preferences.IMAGE_CACHE_SIZE
 
                     SettingComponents.StorageSizeEntry(
                         context = context,
@@ -160,14 +161,15 @@ fun DataSettings( paddingValues: PaddingValues ) {
                         currentValue = cache.size,
                         action = SettingComponents.Action.RESTART_APP
                     ) {
-                        if( Preferences.IMAGE_CACHE_SIZE.value > 0 )
+                        if( maxCacheSize > 0 )
                             indicator.ToolBarButton()
                     }
 
-                    indicator.ProgressBar( progressBarModifier )
+                    if( maxCacheSize > 0 )
+                        indicator.ProgressBar( progressBarModifier )
 
-                    LaunchedEffect( Preferences.IMAGE_CACHE_SIZE.value ) {
-                        if( 0L == Preferences.IMAGE_CACHE_SIZE.value )
+                    LaunchedEffect( maxCacheSize ) {
+                        if( 0L == maxCacheSize )
                             indicator.onConfirm()
                     }
                 }
@@ -196,7 +198,8 @@ fun DataSettings( paddingValues: PaddingValues ) {
                             indicator.ToolBarButton()
                     }
 
-                    indicator.ProgressBar( progressBarModifier )
+                    if( maxCacheSize > 0 )
+                        indicator.ProgressBar( progressBarModifier )
 
                     LaunchedEffect( maxCacheSize ) {
                         if( 0L == maxCacheSize )
@@ -228,7 +231,8 @@ fun DataSettings( paddingValues: PaddingValues ) {
                             indicator.ToolBarButton()
                     }
 
-                    indicator.ProgressBar( progressBarModifier )
+                    if( maxCacheSize > 0 )
+                        indicator.ProgressBar( progressBarModifier )
 
                     LaunchedEffect( maxCacheSize ) {
                         if( 0L == maxCacheSize )
