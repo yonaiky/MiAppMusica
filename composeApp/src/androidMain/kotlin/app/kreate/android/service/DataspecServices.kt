@@ -382,14 +382,15 @@ fun DataSpec.process(
         cache = cachedStreamUrl[videoId]!!
     }
 
+    val startPosition = position + uriPositionOffset
     YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, cache.playableUrl )
                                   .toUri()
                                   .buildUpon()
-                                  .appendQueryParameter( "range", "$uriPositionOffset-${cache.contentLength}" )
+                                  .appendQueryParameter( "range", "$startPosition-${cache.contentLength}" )
                                   .appendQueryParameter( "cpn", cache.cpn )
                                   .build()
                                   .let( ::withUri )
-                                  .subrange( uriPositionOffset, C.LENGTH_UNSET.toLong() )
+                                  .subrange( startPosition, C.LENGTH_UNSET.toLong() )
 }
 
 //<editor-fold defaultstate="collapsed" desc="Data source factories">
