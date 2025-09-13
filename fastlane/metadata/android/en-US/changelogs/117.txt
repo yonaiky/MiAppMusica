@@ -1,0 +1,10 @@
+Fixed:
+- Missing "Set cache location" in Data Settings
+- "Source error" in AA
+- App crashed when cache size set to 0 (disabled)
+- "Theme mode" and "Theme" has the same options
+- No option to select light mode
+
+Changed:
+- Hide cache indicator when it's disabled
+- Apply marquee effect (scrolling text) to setting entries
