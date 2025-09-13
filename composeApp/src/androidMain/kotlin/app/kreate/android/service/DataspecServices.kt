@@ -22,7 +22,6 @@ import io.ktor.client.request.head
 import io.ktor.http.URLBuilder
 import io.ktor.http.parseQueryString
 import it.fast4x.rimusic.Database
-import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AudioQualityFormat
 import it.fast4x.rimusic.isConnectionMeteredEnabled
 import it.fast4x.rimusic.models.Format
@@ -99,9 +98,9 @@ private val jsonParser =
  * New record will be created and insert into database
  *
  */
-private fun upsertSongInfo( videoId: String ) {       // Use this to prevent suspension of thread while waiting for response from YT
+private fun upsertSongInfo( context: Context, videoId: String ) {       // Use this to prevent suspension of thread while waiting for response from YT
     // Skip adding if it's just added in previous call
-    if( videoId == justInserted || !isNetworkAvailable( appContext() ) ) return
+    if( videoId == justInserted || !isNetworkAvailable( context ) ) return
 
     Timber.tag( LOG_TAG ).v( "fetching and upserting $videoId's information to the database" )
 
@@ -117,7 +116,7 @@ private fun upsertSongInfo( videoId: String ) {       // Use this to prevent sus
                     .onFailure {
                         Timber.tag( LOG_TAG ).e( it, "failed to upsert $videoId's information to database" )
 
-                        val message= it.message ?: appContext().getString( R.string.failed_to_fetch_original_property )
+                        val message= it.message ?: context.getString( R.string.failed_to_fetch_original_property )
                         Toaster.e( message )
                     }
     }
@@ -432,7 +431,7 @@ fun PlayerServiceModern.createDataSourceFactory( context: Context ): DataSource.
         val isLocal = dataSpec.uri.scheme == ContentResolver.SCHEME_CONTENT || dataSpec.uri.scheme == ContentResolver.SCHEME_FILE
 
         if( !isLocal )
-            upsertSongInfo( videoId )
+            upsertSongInfo( applicationContext, videoId )
 
         return@Factory if( isLocal || isCached() || isDownloaded() ){
             Timber.tag( LOG_TAG ).d( "$videoId exists in cache, proceeding to use from cache" )
@@ -458,7 +457,7 @@ fun MyDownloadHelper.createDataSourceFactory( context: Context ): DataSource.Fac
         val videoId: String = dataSpec.uri
                                       .toString()
                                       .substringAfter( "watch?v=" )
-                                      .also( ::upsertSongInfo )
+                                      .also { upsertSongInfo( context, it ) }
 
         val isDownloaded = downloadCache.isCached( videoId, dataSpec.position, CHUNK_LENGTH )
 
