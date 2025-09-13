@@ -86,7 +86,6 @@ import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.coil3.ImageFactory
-import app.kreate.android.service.innertube.InnertubeProvider
 import app.kreate.android.service.updater.UpdatePlugins
 import coil3.request.allowHardware
 import coil3.toBitmap
@@ -310,9 +309,6 @@ class MainActivity :
         ExperimentalMaterial3Api::class
     )
     fun startApp() {
-        me.knighthat.innertube.Innertube.client = InnertubeProvider()
-        ImageFactory.init( this )
-
         // Used in QuickPics for load data from remote instead of last saved in SharedPreferences
         Preferences.IS_DATA_KEY_LOADED.value = false
 
