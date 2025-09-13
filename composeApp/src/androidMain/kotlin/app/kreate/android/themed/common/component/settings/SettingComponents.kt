@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import app.kreate.android.Preferences
 import app.kreate.android.R
 import app.kreate.android.themed.common.component.ColorPickerDialog
+import app.kreate.android.utils.scrollingText
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import it.fast4x.rimusic.ui.components.themed.Switch
@@ -134,6 +135,7 @@ object SettingComponents {
                                         .semiBold
                                         .copy( colorPalette().text ),
                     modifier = Modifier.padding( bottom = 4.dp )
+                                       .scrollingText()
                 )
 
                 if( subtitle.isNotBlank() )
