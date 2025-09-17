@@ -4,14 +4,19 @@ import android.app.Application
 import androidx.compose.runtime.getValue
 import app.kreate.android.BuildConfig
 import app.kreate.android.Preferences
+import app.kreate.android.coil3.ImageFactory
+import app.kreate.android.service.innertube.InnertubeProvider
 import app.kreate.android.utils.CrashHandler
 import app.kreate.android.utils.logging.RollingFileLoggingTree
+import me.knighthat.innertube.Innertube
 import timber.log.Timber
 
 class MainApplication : Application() {
 
     override fun onCreate() {
         Preferences.load( this )
+        Innertube.setProvider( InnertubeProvider() )
+        ImageFactory.init( this )
 
         super.onCreate()
         //DatabaseInitializer()
