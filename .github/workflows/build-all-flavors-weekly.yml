@@ -107,7 +107,10 @@ jobs:
           distribution: "corretto"
 
       - name: Restore Gradle dependencies & build cache
-        uses: actions/cache@v4.2.4
+        # actions/cache/restore only downloads the cache
+        # This will save time uploading the cache, since cache
+        # builder is handled by another workflow
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/.gradle/caches
@@ -146,7 +149,10 @@ jobs:
           distribution: "corretto"
 
       - name: Restore Gradle dependencies & build cache
-        uses: actions/cache@v4.2.4
+        # actions/cache/restore only downloads the cache
+        # This will save time uploading the cache, since cache
+        # builder is handled by another workflow
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/.gradle/caches
@@ -185,7 +191,10 @@ jobs:
           distribution: "corretto"
 
       - name: Restore Gradle dependencies & build cache
-        uses: actions/cache@v4.2.4
+        # actions/cache/restore only downloads the cache
+        # This will save time uploading the cache, since cache
+        # builder is handled by another workflow
+        uses: actions/cache/restore@v4
         with:
           path: |
             ~/.gradle/caches
