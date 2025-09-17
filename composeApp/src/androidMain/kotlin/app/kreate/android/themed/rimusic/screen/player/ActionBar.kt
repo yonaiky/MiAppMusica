@@ -203,7 +203,7 @@ fun BoxScope.ActionBar(
                         .padding(horizontal = 12.dp)
                         .fillMaxWidth()
                 ) {
-                    val coroutine = rememberCoroutineScope { Dispatchers.Default }
+                    val coroutine = rememberCoroutineScope()
                     var currentIndex by remember { mutableIntStateOf( binder.player.currentMediaItemIndex ) }
                     var nextIndex by remember { mutableIntStateOf( binder.player.nextMediaItemIndex ) }
                     val mediaItems = remember { mutableStateListOf<MediaItem>() }
