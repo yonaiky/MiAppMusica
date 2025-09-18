@@ -1,0 +1,2 @@
+Fixed:
+- App crashed on start up when logged in #676
