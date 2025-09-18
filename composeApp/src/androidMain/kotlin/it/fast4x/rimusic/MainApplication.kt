@@ -15,8 +15,6 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         Preferences.load( this )
-        Innertube.setProvider( InnertubeProvider() )
-        ImageFactory.init( this )
 
         super.onCreate()
         //DatabaseInitializer()
@@ -32,6 +30,9 @@ class MainApplication : Application() {
 
         if( BuildConfig.DEBUG || (isRuntimeLogEnabled && Preferences.RUNTIME_LOG_SHARED.value) )
             Timber.plant( Timber.DebugTree() )
+
+        Innertube.setProvider( InnertubeProvider() )
+        ImageFactory.init( this )
     }
 
     override fun onTerminate() {
