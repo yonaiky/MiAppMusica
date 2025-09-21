@@ -1,6 +1,5 @@
 package app.kreate.android.themed.rimusic.component.album
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,24 +12,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.kreate.android.Preferences
 import app.kreate.android.coil3.ImageFactory
+import app.kreate.android.enums.PlatformIndicatorType
+import app.kreate.android.themed.rimusic.component.MultiplatformItem
 import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.innertube.toAlbum
 import app.kreate.android.utils.scrollingText
@@ -45,12 +43,14 @@ import it.fast4x.rimusic.utils.semiBold
 import it.fast4x.rimusic.utils.shimmerEffect
 import me.knighthat.innertube.model.InnertubeAlbum
 
-object AlbumItem {
+object AlbumItem: MultiplatformItem {
 
     const val VERTICAL_SPACING = 5
     const val HORIZONTAL_SPACING = 10
     const val ROW_SPACING = VERTICAL_SPACING * 4
     const val COLUMN_SPACING = HORIZONTAL_SPACING
+
+    override val platformIndicatorType: PlatformIndicatorType by Preferences.ALBUMS_PLATFORM_INDICATOR
 
     /**
      * Text is clipped if exceeds length limit, plus,
@@ -149,19 +149,7 @@ object AlbumItem {
             )
 
             if( albumId.startsWith( "MPREb_" ) )
-                Image(
-                    painter = painterResource( R.drawable.ytmusic ),
-                    colorFilter = ColorFilter.tint(
-                        Color.Red
-                            .copy( 0.75f )
-                            .compositeOver( Color.White )
-                    ),
-                    contentDescription = "YouTube\'s logo",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size( 40.dp )
-                                       .padding( all = 5.dp )
-                                       .align( Alignment.TopStart )
-                )
+                PlatformIndicator()
         }
 
     @Composable

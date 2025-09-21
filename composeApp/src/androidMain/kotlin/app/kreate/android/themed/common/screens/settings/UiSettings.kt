@@ -293,6 +293,29 @@ fun UiSettings( paddingValues: PaddingValues ) {
                         title = showMonthly
                     )
             }
+            entry( search, R.string.setting_entry_platform_indicator, "playlistsPlatformIndicator" ) {
+                SettingComponents.EnumEntry(
+                    preference = Preferences.PLAYLISTS_PLATFORM_INDICATOR,
+                    title = stringResource( R.string.setting_entry_platform_indicator )
+                )
+            }
+
+            header( R.string.albums )
+            entry( search, R.string.setting_entry_platform_indicator, "albumsPlatformIndicator" ) {
+                SettingComponents.EnumEntry(
+                    preference = Preferences.ALBUMS_PLATFORM_INDICATOR,
+                    title = stringResource( R.string.setting_entry_platform_indicator )
+                )
+            }
+
+
+            header( R.string.artists )
+            entry( search, R.string.setting_entry_platform_indicator, "artistsPlatformIndicator" ) {
+                SettingComponents.EnumEntry(
+                    preference = Preferences.ARTISTS_PLATFORM_INDICATOR,
+                    title = stringResource( R.string.setting_entry_platform_indicator )
+                )
+            }
 
             header( R.string.smart_recommendations )
             entry( search, R.string.statistics_max_number_of_items ) {

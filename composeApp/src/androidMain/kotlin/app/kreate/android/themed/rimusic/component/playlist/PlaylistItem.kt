@@ -25,10 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,9 +35,11 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastJoinToString
 import androidx.compose.ui.util.fastZip
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.kreate.android.Preferences
 import app.kreate.android.coil3.ImageFactory
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
+import app.kreate.android.enums.PlatformIndicatorType
+import app.kreate.android.themed.rimusic.component.MultiplatformItem
 import app.kreate.android.utils.ItemUtils
 import app.kreate.android.utils.scrollingText
 import it.fast4x.innertube.Innertube
@@ -62,15 +61,16 @@ import kotlinx.coroutines.flow.mapLatest
 import me.knighthat.innertube.model.InnertubePlaylist
 import me.knighthat.innertube.response.Runs
 
-object PlaylistItem {
+object PlaylistItem: MultiplatformItem {
 
     const val VERTICAL_SPACING = 5
     const val HORIZONTAL_SPACING = 10
     const val ROW_SPACING = VERTICAL_SPACING * 4
     const val COLUMN_SPACING = HORIZONTAL_SPACING
+
     val REGEX_PLAYLIST_ID = Regex("^(PL|UU|LL|RD|OL|VL)")
     val CORNERS = listOf( Alignment.TopStart, Alignment.TopEnd, Alignment.BottomStart, Alignment.BottomEnd )
-
+    override val platformIndicatorType: PlatformIndicatorType by Preferences.PLAYLISTS_PLATFORM_INDICATOR
 
     /**
      * Text is clipped if exceeds length limit, plus,
@@ -144,18 +144,7 @@ object PlaylistItem {
             )
 
             if( showPlatformIcon && browseId?.matches( REGEX_PLAYLIST_ID ) == true )
-                Image(
-                    painter = painterResource( R.drawable.ytmusic ),
-                    colorFilter = ColorFilter.tint(
-                        Color.Red
-                             .copy( 0.75f )
-                             .compositeOver( Color.White )
-                    ),
-                    contentDescription = "YouTube\'s logo",
-                    modifier = Modifier.size( 40.dp )
-                                       .padding( all = 5.dp )
-                                       .align( Alignment.TopStart )
-                )
+                PlatformIndicator()
         }
 
     /**
@@ -206,20 +195,7 @@ object PlaylistItem {
                 )
 
                 if( showPlatformIcon && browseId?.matches( REGEX_PLAYLIST_ID ) == true )
-                    Image(
-                        painter = painterResource( R.drawable.ytmusic ),
-                        colorFilter = ColorFilter.tint(
-                            Color.Red
-                                .copy( 0.75f )
-                                .compositeOver( Color.White )
-                        ),
-                        contentDescription = "YouTube\'s logo",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(all = 5.dp)
-                            .align(Alignment.TopStart)
-                    )
+                    PlatformIndicator()
 
                 thumbnailContent()
             }
@@ -243,20 +219,7 @@ object PlaylistItem {
                             }
 
                 if( showPlatformIcon && browseId?.matches( REGEX_PLAYLIST_ID ) == true )
-                    Image(
-                        painter = painterResource( R.drawable.ytmusic ),
-                        colorFilter = ColorFilter.tint(
-                            Color.Red
-                                .copy( 0.75f )
-                                .compositeOver( Color.White )
-                        ),
-                        contentDescription = "YouTube\'s logo",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .padding(all = 5.dp)
-                            .align(Alignment.TopStart)
-                    )
+                    PlatformIndicator()
 
                 thumbnailContent()
             }

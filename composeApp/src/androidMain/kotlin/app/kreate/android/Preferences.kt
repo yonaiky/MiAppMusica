@@ -19,6 +19,7 @@ import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import app.kreate.android.Preferences.Companion.preferences
+import app.kreate.android.enums.PlatformIndicatorType
 import app.kreate.android.utils.innertube.getSystemCountryCode
 import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.enums.AlbumSortBy
@@ -797,6 +798,16 @@ sealed class Preferences<T>(
             Long(preferences, "DebugLogMaxSizePerFile", "", 5L * 1024 * 1024)   // 5 Mb
         }
         //</editor-fold>
+
+        val ALBUMS_PLATFORM_INDICATOR by lazy {
+            Enum(preferences, "AlbumPlatformIndicator", "", PlatformIndicatorType.ICON)
+        }
+        val ARTISTS_PLATFORM_INDICATOR by lazy {
+            Enum(preferences, "ArtistsPlatformIndicator", "", PlatformIndicatorType.ICON)
+        }
+        val PLAYLISTS_PLATFORM_INDICATOR by lazy {
+            Enum(preferences, "PlaylistPlatformIndicator", "", PlatformIndicatorType.ICON)
+        }
 
         val HOME_SONGS_TOP_PLAYLIST_PERIOD by lazy {
             Enum( preferences, "HomeSongsTopPlaylistPeriod", "", StatisticsType.All )
