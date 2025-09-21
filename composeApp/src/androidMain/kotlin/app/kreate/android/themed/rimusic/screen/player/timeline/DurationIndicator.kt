@@ -74,6 +74,8 @@ private fun RowScope.SkipTimeButton(
     doubleTapAdjustment: Long = 10_000L,
     longTapAdjustment: Long = 30_000L
 ) {
+    if( !Preferences.PLAYER_SHOW_SEEK_BUTTONS.value ) return
+
     fun seekTo( adjustment: Long ) {
         val adjustedPosition = position.operation( adjustment )
         val newPosition = valueSelector( adjustedPosition, comparedValue )

@@ -398,6 +398,9 @@ sealed class Preferences<T>(
         val PLAYER_SHOW_SONGS_REMAINING_TIME by lazy {
             Boolean( preferences, "PlayerShowSongsRemainingTime", "showRemainingSongTime", true )
         }
+        val PLAYER_SHOW_SEEK_BUTTONS by lazy {
+            Boolean(preferences, "PlayerShowSeekButtons", "", true)
+        }
         val PLAYER_SHOW_TOP_ACTIONS_BAR by lazy {
             Boolean( preferences, "PlayerShowTopActionsBar", "showTopActionsBar", true )
         }

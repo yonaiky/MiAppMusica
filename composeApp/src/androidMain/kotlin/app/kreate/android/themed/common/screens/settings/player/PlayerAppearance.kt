@@ -702,6 +702,12 @@ fun LazyListScope.playerAppearanceSection( search: SettingEntrySearch, isLandsca
             R.string.show_remaining_song_time
         )
     }
+    entry( search, R.string.setting_entry_show_seek_forward_backward ) {
+        SettingComponents.BooleanEntry(
+            preference = Preferences.PLAYER_SHOW_SEEK_BUTTONS,
+            title = stringResource( R.string.setting_entry_show_seek_forward_backward )
+        )
+    }
     entry( search, R.string.show_next_songs_in_player ) {
         SettingComponents.BooleanEntry(
             Preferences.PLAYER_SHOW_NEXT_IN_QUEUE,
