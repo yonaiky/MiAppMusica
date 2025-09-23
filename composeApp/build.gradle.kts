@@ -141,7 +141,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.tuusuario.miappmusica"
+        applicationId = "com.yonaiky.miappmusica"
         minSdk = 21
         targetSdk = 36
         versionCode = 119
@@ -160,7 +160,7 @@ android {
         }
     }
 
-    namespace = "com.tuusuario.miappmusica"
+    namespace = "com.yonaiky.miappmusica"
 
     buildTypes {
         debug {
@@ -191,6 +191,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
         create( "uncompressed" ) {
             // App's properties
