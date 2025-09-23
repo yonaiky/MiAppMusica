@@ -103,6 +103,37 @@ val ModernBlackColorPalette = DefaultDarkColorPalette.copy(
     background3 = DefaultDarkColorPalette.accent
 )
 
+// Google-inspired color palettes
+val GoogleLightColorPalette = ColorPalette(
+    background0 = Color(0xfffafafa), // Google's surface
+    background1 = Color(0xffffffff), // Google's surface container
+    background2 = Color(0xfff5f5f5), // Google's surface variant
+    background3 = Color(0xffe8e8e8), // Google's outline
+    background4 = Color(0xffe0e0e0), // Google's outline variant
+    text = Color(0xff1f1f1f), // Google's on surface
+    textSecondary = Color(0xff5f6368), // Google's on surface variant
+    textDisabled = Color(0xff9aa0a6), // Google's outline
+    iconButtonPlayer = Color(0xff1f1f1f),
+    accent = Color(0xff4285f4), // Google Blue
+    onAccent = Color.White,
+    isDark = false
+)
+
+val GoogleDarkColorPalette = ColorPalette(
+    background0 = Color(0xff121212), // Google's dark surface
+    background1 = Color(0xff1e1e1e), // Google's surface container
+    background2 = Color(0xff2d2d2d), // Google's surface variant
+    background3 = Color(0xff3e3e3e), // Google's outline
+    background4 = Color(0xff4e4e4e), // Google's outline variant
+    text = Color(0xffe8eaed), // Google's on surface
+    textSecondary = Color(0xff9aa0a6), // Google's on surface variant
+    textDisabled = Color(0xff5f6368), // Google's outline
+    iconButtonPlayer = Color(0xffe8eaed),
+    accent = Color(0xff4285f4), // Google Blue
+    onAccent = Color.White,
+    isDark = true
+)
+
 fun colorPaletteOf(
     colorPaletteName: ColorPaletteName,
     colorPaletteMode: ColorPaletteMode,
@@ -120,6 +151,14 @@ fun colorPaletteOf(
         }
         ColorPaletteName.PureBlack -> PureBlackColorPalette
         ColorPaletteName.ModernBlack -> ModernBlackColorPalette
+        ColorPaletteName.Google -> when (colorPaletteMode) {
+            ColorPaletteMode.Light -> GoogleLightColorPalette
+            ColorPaletteMode.Dark, ColorPaletteMode.PitchBlack -> GoogleDarkColorPalette
+            ColorPaletteMode.System -> when (isSystemInDarkMode) {
+                true -> GoogleDarkColorPalette
+                false -> GoogleLightColorPalette
+            }
+        }
     }
 }
 

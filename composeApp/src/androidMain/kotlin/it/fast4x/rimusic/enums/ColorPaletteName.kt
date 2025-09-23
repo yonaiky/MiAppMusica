@@ -20,5 +20,7 @@ enum class ColorPaletteName(
 
     Customized( R.string.theme_customized ),
 
-    CustomColor( R.string.customcolor);
+    CustomColor( R.string.customcolor),
+
+    Google( R.string.theme_google );
 }

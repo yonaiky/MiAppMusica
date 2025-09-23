@@ -60,7 +60,7 @@ data class Typography(
 fun typographyOf(color: Color, useSystemFont: Boolean, applyFontPadding: Boolean, fontType: FontType): Typography {
     val textStyle = TextStyle(
         fontFamily = if (useSystemFont) {
-            FontFamily.Default
+            FontFamily.Default // Roboto por defecto en Android
         } else {
                 FontFamily(
                     Font(
