@@ -1,7 +1,7 @@
 <div align="center">
   <img alt="project's banner" src="./assets/design/app_banner.png" width="250px" />    
   <p>
-    <b>Kreate</b> is a <a href="https://github.com/fast4x/RiMusic">RiMusic</a> fork with performance in mind
+    <b>MiAppMusica</b> is a <a href="https://github.com/knighthat/Kreate">Kreate</a> fork with custom modifications
   </p>
     
   <br>

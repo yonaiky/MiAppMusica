@@ -6,7 +6,7 @@ import org.gradle.internal.extensions.stdlib.capitalized
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val APP_NAME = "Kreate"
+val APP_NAME = "MiAppMusica"
 
 plugins {
     // Multiplatform
@@ -141,7 +141,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "me.knighthat.kreate"
+        applicationId = "com.tuusuario.miappmusica"
         minSdk = 21
         targetSdk = 36
         versionCode = 119
@@ -160,7 +160,7 @@ android {
         }
     }
 
-    namespace = "app.kreate.android"
+    namespace = "com.tuusuario.miappmusica"
 
     buildTypes {
         debug {
